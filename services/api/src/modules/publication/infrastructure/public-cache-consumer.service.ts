@@ -1,6 +1,7 @@
 import type { DatabaseService } from "../../../platform/database/database.service.js";
 import { queuedEventId, type PgmqService } from "../../../platform/integration/pgmq.service.js";
 import type { PublicCachePort } from "../application/public-cache.port.js";
+import type { PublicReadCache } from "./public-read-cache.js";
 
 const CONSUMER_KEY = "publication.public-cache";
 const QUEUE = "integration_public_cache" as const;
@@ -18,12 +19,16 @@ export class PublicCacheConsumerService {
   public constructor(
     private readonly database: DatabaseService,
     private readonly pgmq: PgmqService,
+    private readonly publicReadCache: PublicReadCache,
   ) {}
 
   public async processBatch(publicCache: PublicCachePort, limit = 25): Promise<PublicCacheConsumerResult> {
-    const messages = await this.database.transaction((transaction) => this.pgmq.read(transaction, QUEUE, 120, limit));
+    const messages = await this.pgmq.read(this.database.db, QUEUE, 120, limit);
     if (messages.length === 0) return { received: 0, purged: false, duplicates: 0 };
 
+    // Drop cached public reads before the edge purge, so the render that refills
+    // the page cache cannot store the release that was just replaced.
+    await this.publicReadCache.invalidate();
     await publicCache.purge();
     let duplicates = 0;
     await this.database.transaction(async (transaction) => {

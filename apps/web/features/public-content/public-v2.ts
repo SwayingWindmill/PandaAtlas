@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { components } from "@zhipanda/api-client";
+import { cache } from "react";
 
 export type { PublicCoverage } from "@/features/public-content/public-release";
 
@@ -408,7 +409,7 @@ function v2Envelope<T>(
   };
 }
 
-async function loadCore(): Promise<V2CoreDataset | null> {
+const loadCore = cache(async (): Promise<V2CoreDataset | null> => {
   const client = createServerV2Client();
   const [pandas, places, residencies, events, lineage] = await Promise.all([
     client.GET("/api/v2/pandas"),
@@ -426,7 +427,7 @@ async function loadCore(): Promise<V2CoreDataset | null> {
     events: events.data.items,
     lineage: lineage.data.items,
   };
-}
+});
 
 function buildCorePandas(core: V2CoreDataset, pandaIds?: ReadonlySet<string>): PandaDetail[] {
   const placesById = new Map(core.places.map((place) => [place.placeId, place]));
@@ -441,7 +442,7 @@ function buildCorePandas(core: V2CoreDataset, pandaIds?: ReadonlySet<string>): P
   ));
 }
 
-export async function loadV2PublicAtlasDataset(locale: PublicLocale): Promise<PublicContentEnvelope<PublicAtlasDataset> | null> {
+export const loadV2PublicAtlasDataset = cache(async (locale: PublicLocale): Promise<PublicContentEnvelope<PublicAtlasDataset> | null> => {
   const core = await loadCore();
   if (!core) return null;
   const pandas = buildCorePandas(core);
@@ -453,7 +454,7 @@ export async function loadV2PublicAtlasDataset(locale: PublicLocale): Promise<Pu
     { state: "complete", scope: "canonical V2 public pandas, places, residencies, life events, and lineage" },
     locale,
   );
-}
+});
 
 export async function loadV2PublicMapDataset(locale: PublicLocale): Promise<PublicContentEnvelope<PublicMapDataset> | null> {
   return loadV2PublicAtlasDataset(locale);
@@ -465,7 +466,7 @@ export interface V2SiteSearchIndex {
 }
 
 // Names only, for the site-wide navigation search: two list reads instead of the full atlas dataset.
-export async function loadV2SiteSearchIndex(): Promise<V2SiteSearchIndex | null> {
+export const loadV2SiteSearchIndex = cache(async (): Promise<V2SiteSearchIndex | null> => {
   const client = createServerV2Client();
   const [pandas, places] = await Promise.all([client.GET("/api/v2/pandas"), client.GET("/api/v2/places")]);
   if (!pandas.data || !places.data) return null;
@@ -485,16 +486,21 @@ export async function loadV2SiteSearchIndex(): Promise<V2SiteSearchIndex | null>
       region: place.region ?? null,
     })),
   };
-}
+});
 
 // The first published photo of each panda, for pages that show a handful of pandas from the list.
-export async function loadV2PandaCovers(pandaIds: readonly string[]): Promise<Map<string, PandaDetail["media"][number]>> {
-  if (pandaIds.length === 0) return new Map();
+const loadPandaCoversByKey = cache(async (idsKey: string): Promise<Map<string, PandaDetail["media"][number]>> => {
   const result = await createServerV2Client().GET("/api/v2/panda-covers", {
-    params: { query: { ids: [...pandaIds].join(",") } },
+    params: { query: { ids: idsKey } },
   });
   if (!result.data) return new Map();
   return new Map(result.data.items.map((media) => [media.pandaId, mapMedia(media, new Map())]));
+});
+
+export function loadV2PandaCovers(pandaIds: readonly string[]): Promise<Map<string, PandaDetail["media"][number]>> {
+  const idsKey = [...new Set(pandaIds)].sort().join(",");
+  if (idsKey === "") return Promise.resolve(new Map());
+  return loadPandaCoversByKey(idsKey);
 }
 
 export interface PandaCoverMedia {
@@ -519,7 +525,7 @@ export function pandaCoverMedia(
   };
 }
 
-export async function loadV2PublicLineageDataset(locale: PublicLocale): Promise<PublicContentEnvelope<PublicLineageDataset> | null> {
+export const loadV2PublicLineageDataset = cache(async (locale: PublicLocale): Promise<PublicContentEnvelope<PublicLineageDataset> | null> => {
   const core = await loadCore();
   if (!core) return null;
   const pandas = buildCorePandas(core);
@@ -530,12 +536,12 @@ export async function loadV2PublicLineageDataset(locale: PublicLocale): Promise<
     { state: "complete", scope: "canonical V2 public lineage assertions and panda identities" },
     locale,
   );
-}
+});
 
-export async function loadV2PublicPandaProfile(
+export const loadV2PublicPandaProfile = cache(async (
   input: string,
   locale: PublicLocale,
-): Promise<PublicContentEnvelope<PublicProfileRecord> | null> {
+): Promise<PublicContentEnvelope<PublicProfileRecord> | null> => {
   // Panda-scoped reads only: the detail resolves canonical/legacy slugs and IDs, and carries the
   // relatives the family sections need, so the full panda list is never loaded here (#531).
   const client = createServerV2Client();
@@ -590,21 +596,21 @@ export async function loadV2PublicPandaProfile(
     locale,
     sources,
   );
-}
+});
 
-export async function resolveV2PublicPlaceReference(input: string): Promise<{ id: string; slug: string } | null> {
+export const resolveV2PublicPlaceReference = cache(async (input: string): Promise<{ id: string; slug: string } | null> => {
   const client = createServerV2Client();
   const result = await client.GET("/api/v2/places");
   if (!result.data) return null;
   const normalized = input.trim();
   const place = result.data.items.find((item) => item.placeId === normalized || item.slug === normalized);
   return place ? { id: place.placeId, slug: place.slug } : null;
-}
+});
 
-export async function loadV2PublicPlace(
+export const loadV2PublicPlace = cache(async (
   input: string,
   locale: PublicLocale,
-): Promise<PublicContentEnvelope<PublicPlaceRecord> | null> {
+): Promise<PublicContentEnvelope<PublicPlaceRecord> | null> => {
   const core = await loadCore();
   if (!core) return null;
   const place = core.places.find((item) => item.placeId === input || item.slug === input);
@@ -620,7 +626,7 @@ export async function loadV2PublicPlace(
     { state: "partial", scope: "canonical V2 public place identity, panda residencies, and life events; institution detail is not published by V2" },
     locale,
   );
-}
+});
 
 export interface PublicInstitutionRecord {
   institution: V2Institution;
@@ -630,10 +636,10 @@ export interface PublicInstitutionRecord {
   pandas: PandaDetail[];
 }
 
-export async function loadV2PublicInstitution(
+export const loadV2PublicInstitution = cache(async (
   slug: string,
   locale: PublicLocale,
-): Promise<PublicContentEnvelope<PublicInstitutionRecord> | null> {
+): Promise<PublicContentEnvelope<PublicInstitutionRecord> | null> => {
   const client = createServerV2Client();
   const [detail, core] = await Promise.all([
     client.GET("/api/v2/institutions/{slug}", { params: { path: { slug: slug.trim() } } }),
@@ -651,15 +657,15 @@ export async function loadV2PublicInstitution(
     { state: "complete", scope: "canonical V2 institution profile, facility visit guides, and panda residencies" },
     locale,
   );
-}
+});
 
-export async function loadV2PublicInstitutionSlugs(): Promise<string[]> {
+export const loadV2PublicInstitutionSlugs = cache(async (): Promise<string[]> => {
   const result = await createServerV2Client().GET("/api/v2/institutions");
   return result.data?.items.map((item) => item.slug) ?? [];
-}
+});
 
 /** The institution page that replaces a facility's place page, when the facility belongs to one. */
-export async function resolveV2InstitutionSlugForPlace(placeId: string): Promise<string | null> {
+export const resolveV2InstitutionSlugForPlace = cache(async (placeId: string): Promise<string | null> => {
   const client = createServerV2Client();
   const [places, institutions] = await Promise.all([
     client.GET("/api/v2/places"),
@@ -668,7 +674,7 @@ export async function resolveV2InstitutionSlugForPlace(placeId: string): Promise
   const place = places.data?.items.find((item) => item.placeId === placeId);
   if (!place?.institutionId || place.placeType !== "facility") return null;
   return institutions.data?.items.find((item) => item.institutionId === place.institutionId)?.slug ?? null;
-}
+});
 
 function sourceOccurrence(event: PandaDetail["events"][number], pandasById: Map<string, PandaDetail>): PublicMomentOccurrence {
   return {

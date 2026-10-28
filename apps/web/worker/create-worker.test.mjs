@@ -32,6 +32,16 @@ test("media responses carry the security headers", async () => {
   assertSecured(response, "media");
 });
 
+test("the cached entrypoint accepts a purge forwarded by the gateway", async () => {
+  const context = { cache: { purge: async () => ({ success: true, errors: [] }) } };
+  const response = await worker.fetch(
+    new Request("https://zhipanda.com/__public-cache/purge", { method: "POST", headers: { "x-zhipanda-cache-purge": "1" } }),
+    {},
+    context,
+  );
+  assert.equal(response.status, 204);
+});
+
 test("cache-purge responses carry the security headers", async () => {
   const context = { props: { publicCachePurge: true }, cache: { purge: async () => ({ success: true, errors: [] }) } };
   const response = await worker.fetch(new Request("https://zhipanda.com/__public-cache/purge", { method: "POST" }), {}, context);

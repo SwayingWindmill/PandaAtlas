@@ -34,7 +34,9 @@ import {
 } from "./application/publication.application.js";
 import { PublicReadController } from "./http/public-read.controller.js";
 import { PublicationController } from "./http/publication.controller.js";
+import { CachingPublicReadRepository } from "./infrastructure/caching-public-read.repository.js";
 import { PostgresPublicReadRepository } from "./infrastructure/postgres-public-read.repository.js";
+import { PublicReadCache } from "./infrastructure/public-read-cache.js";
 import { PostgresPublicationChangeQuery } from "./infrastructure/postgres-publication-change.query.js";
 import { PostgresPublicationCoordinator } from "./infrastructure/postgres-publication.coordinator.js";
 import { PostgresPublicationInspectionQuery } from "./infrastructure/postgres-publication-inspection.query.js";
@@ -83,9 +85,14 @@ import { PublicCacheConsumerService } from "./infrastructure/public-cache-consum
       inject: [PUBLICATION_COORDINATOR],
     },
     {
+      provide: PublicReadCache,
+      useFactory: () => new PublicReadCache(),
+    },
+    {
       provide: PUBLIC_READ_PORT,
-      useFactory: (database: DatabaseService) => new PostgresPublicReadRepository(database),
-      inject: [DatabaseService],
+      useFactory: (database: DatabaseService, cache: PublicReadCache) =>
+        new CachingPublicReadRepository(new PostgresPublicReadRepository(database, cache), cache),
+      inject: [DatabaseService, PublicReadCache],
     },
     { provide: PUBLICATION_CHANGE_PORT, useFactory: () => new PostgresPublicationChangeQuery() },
     {
@@ -96,8 +103,9 @@ import { PublicCacheConsumerService } from "./infrastructure/public-cache-consum
     },
     {
       provide: PublicCacheConsumerService,
-      useFactory: (database: DatabaseService, pgmq: PgmqService) => new PublicCacheConsumerService(database, pgmq),
-      inject: [DatabaseService, PgmqService],
+      useFactory: (database: DatabaseService, pgmq: PgmqService, cache: PublicReadCache) =>
+        new PublicCacheConsumerService(database, pgmq, cache),
+      inject: [DatabaseService, PgmqService, PublicReadCache],
     },
   ],
   exports: [PUBLICATION_PORT, PUBLIC_READ_PORT, PUBLICATION_CHANGE_PORT, PublicCacheConsumerService],

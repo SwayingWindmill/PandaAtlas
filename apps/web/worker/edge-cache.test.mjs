@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { isPublicCachePurge, PUBLIC_EDGE_CACHE_CONTROL, purgePublicCache, withEdgeCachePolicy } from "./edge-cache.mjs";
+import { isPublicCachePurge, PUBLIC_EDGE_CACHE_CONTROL, publicPageCacheKey, purgePublicCache, withEdgeCachePolicy } from "./edge-cache.mjs";
 
 const VINEXT_DYNAMIC = "private, no-cache, no-store, max-age=0, must-revalidate";
 
@@ -27,6 +27,27 @@ test("RSC navigation payloads are cached like their page, keeping the framework 
   const response = apply("/zh/pandas?_rsc", { headers: { "Content-Type": "text/x-component", "Cache-Control": VINEXT_DYNAMIC, Vary: vary } });
   assert.equal(response.headers.get("Cloudflare-CDN-Cache-Control"), PUBLIC_EDGE_CACHE_CONTROL);
   assert.equal(response.headers.get("Vary"), vary);
+});
+
+test("tracking and probe parameters share the canonical page cache key", () => {
+  const canonical = publicPageCacheKey(new Request("https://www.zhipanda.com/zh"));
+  assert.equal(publicPageCacheKey(new Request("https://zhipanda.com/zh?probe=99&utm_source=newsletter")), canonical);
+  assert.equal(
+    publicPageCacheKey(new Request("https://www.zhipanda.com/zh/moments?utm_medium=email&year=2026&utm_source=x")),
+    "/zh/moments?year=2026",
+  );
+  assert.notEqual(
+    publicPageCacheKey(new Request("https://www.zhipanda.com/zh/pandas?_rsc=1")),
+    publicPageCacheKey(new Request("https://www.zhipanda.com/zh/pandas")),
+  );
+});
+
+test("RSC router state stays in the page cache key", () => {
+  const tree = "%5B%22%22%5D";
+  const first = publicPageCacheKey(new Request("https://www.zhipanda.com/zh", { headers: { RSC: "1", "Next-Router-State-Tree": tree } }));
+  const second = publicPageCacheKey(new Request("https://www.zhipanda.com/zh", { headers: { RSC: "1", "Next-Router-State-Tree": "other" } }));
+  assert.notEqual(first, second);
+  assert.match(first, /next-router-state-tree=/u);
 });
 
 test("sitemap.xml is cached at the edge", () => {
@@ -78,7 +99,7 @@ test("only an invocation carrying the API binding's props may purge", () => {
   assert.equal(isPublicCachePurge({ props: { publicCachePurge: "true" } }), false);
 });
 
-test("a purge request clears every cached response of the default entrypoint", async () => {
+test("a purge request clears every cached response of the page entrypoint", async () => {
   const context = purgeContext();
   const response = await purgePublicCache(new Request("https://zhipanda.com/__public-cache/purge", { method: "POST" }), context);
   assert.equal(response.status, 204);

@@ -20,6 +20,8 @@ test("production Workers are reachable only through zhipanda.com custom domains"
 
 test("the production Web Worker serves cacheable responses from Workers Cache", () => {
   assert.deepEqual(workers.web.cache, { enabled: true });
+  assert.deepEqual(workers.web.exports.default, { type: "worker", cache: { enabled: false } });
+  assert.deepEqual(workers.web.exports.PublicPages, { type: "worker", cache: { enabled: true } });
 });
 
 test("the API authorizes Web public-cache purges through its service binding props, not a secret", () => {

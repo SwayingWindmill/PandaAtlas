@@ -1,5 +1,10 @@
-import { sql } from "kysely";
+import { sql, type Kysely } from "kysely";
+import type { Database } from "../database/database.types.js";
 import type { DatabaseTransaction } from "../database/database.service.js";
+
+// A single statement does not need an explicit transaction. pg.Pool would
+// otherwise send BEGIN and COMMIT around an empty queue poll.
+export type PgmqExecutor = Kysely<Database> | DatabaseTransaction;
 
 export type IntegrationConsumerQueue =
   | "integration_updates"
@@ -50,7 +55,7 @@ export class PgmqService {
   }
 
   public async read(
-    transaction: DatabaseTransaction,
+    executor: PgmqExecutor,
     queue: PgmqQueue,
     visibilityTimeoutSeconds: number,
     limit: number,
@@ -62,7 +67,7 @@ export class PgmqService {
     }>`
       select msg_id::text, read_ct::int, message
       from pgmq.read(${queue}::text, ${visibilityTimeoutSeconds}::integer, ${limit}::integer, '{}'::jsonb)
-    `.execute(transaction);
+    `.execute(executor);
     return result.rows.map((row) => ({
       msgId: row.msg_id,
       readCount: row.read_ct,

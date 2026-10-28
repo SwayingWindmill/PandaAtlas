@@ -1,4 +1,4 @@
-import { isPublicCachePurge, purgePublicCache, withEdgeCachePolicy } from "./edge-cache.mjs";
+import { isPublicCachePurge, PUBLIC_CACHE_PURGE_HEADER, purgePublicCache, withEdgeCachePolicy } from "./edge-cache.mjs";
 import { isMediaRequest, serveMedia } from "./media.mjs";
 import { withSecurityHeaders } from "./security-headers.mjs";
 
@@ -6,7 +6,9 @@ import { withSecurityHeaders } from "./security-headers.mjs";
 // response leaves through the security-header policy.
 export function createWorker(app) {
   async function respond(request, env, context) {
-    if (isPublicCachePurge(context)) return purgePublicCache(request, context);
+    if (isPublicCachePurge(context) || request.headers.get(PUBLIC_CACHE_PURGE_HEADER) === "1") {
+      return purgePublicCache(request, context);
+    }
     const response = isMediaRequest(new URL(request.url))
       ? await serveMedia(request, env)
       : await app.fetch(request, env, context);
