@@ -377,7 +377,7 @@ const commands = [
     description: "Reject Markdown links and inline repository paths that point at missing files.",
     command: "node",
     args: ["scripts/release/check-doc-references.mjs"],
-    requires: ["git", "node"],
+    requires: ["git", "node", "node_modules"],
     effect: "read-only",
   },
   {

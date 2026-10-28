@@ -5,7 +5,7 @@ PandaAtlas powers ZhiPanda, a panda-fan product for exploring individual pandas,
 ## Current system
 
 - Web: `apps/web`, Next-compatible App Router source running on vinext + Vite as Cloudflare Worker `zhipanda-v2-web`.
-- API: `services/api`, NestJS 11 on the Express adapter running as Cloudflare Worker `zhipanda-v2-api`.
+- API: `services/api`, NestJS 12 on the Express adapter running as Cloudflare Worker `zhipanda-v2-api`.
 - Business data and identity: Supabase PostgreSQL/PostGIS and Supabase Auth.
 - Production database transport: Cloudflare Hyperdrive.
 - Public media: Cloudflare R2.

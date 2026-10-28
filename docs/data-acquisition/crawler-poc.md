@@ -45,7 +45,7 @@ The current candidate fixture contains only an individual name in Chinese and En
 |---|---|---|
 | `public-http` | Public API or HTML source | robots, allowlist, domain delay, deterministic parser |
 | `authorized-session` | Account PandaAtlas is authorized to automate | credential reference outside reports, persistent cookies, no MFA bypass |
-| `browser-rendered` | JavaScript-required public source | Playwright-rendered session and browser evidence |
+| `browser-rendered` | JavaScript-required public source | StealthyFetcher-rendered session and browser evidence |
 | `browser-stealth` | Reviewed source where ordinary browser automation exposes detectable runtime markers | source-specific fingerprint review, StealthyFetcher, challenge solving disabled, no identity rotation |
 | `approved-proxy` | Stable approved egress or regional access | one configured proxy, no automatic rotation after blocking |
 | `stealth-lab` | PandaAtlas-owned loopback experiment only | no external host, no challenge solving, no Canvas hiding |
@@ -57,13 +57,13 @@ Anti-detection is a first-class evaluation dimension rather than an implicit byp
 - browser-consistent User-Agent and request headers;
 - Chrome TLS/HTTP impersonation through Scrapling's static fetcher;
 - cookie and authorized-session persistence;
-- JavaScript execution through `DynamicFetcher`;
+- JavaScript execution through `StealthyFetcher` (Scrapling 0.5 removed the plain Playwright `DynamicFetcher`);
 - navigator and request fingerprints through `StealthyFetcher`;
 - behavior after a controlled 403 human challenge.
 
 The Python 3.12 static experiment produced a Chrome 146-style User-Agent, browser Accept and language headers, `sec-ch-ua`, `sec-fetch-site`, and a browser referer. The same fetcher session reused the loopback authorization cookie. The controlled challenge remained a terminal `stop-and-review` state and did not trigger identity switching.
 
-The strict Windows experiment used installed system Chrome and measured a material difference:
+Scrapling 0.4's strict Windows experiment used installed system Chrome and measured a material difference. Scrapling 0.5 keeps only the Patchright stealth backend, so that split is no longer available:
 
 - `DynamicFetcher` executed JavaScript and returned a realistic Chrome environment, but exposed `navigator.webdriver=true`;
 - `StealthyFetcher` executed the same page and returned `navigator.webdriver=false`;

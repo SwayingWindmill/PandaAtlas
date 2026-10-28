@@ -174,9 +174,11 @@ export function developmentPlanOutputs(plan) {
   const requirements = new Set(
     plan.groups.flatMap((group) => group.commands.flatMap((command) => command.requires)),
   );
+  const executes = plan.groups.length > 0;
   return {
-    run_checks: plan.groups.length > 0 ? "true" : "false",
-    requires_node_modules: requirements.has("node_modules") ? "true" : "false",
+    run_checks: executes ? "true" : "false",
+    // Documentation checks run before every executed scope and import workspace packages.
+    requires_node_modules: executes || requirements.has("node_modules") ? "true" : "false",
     requires_python: requirements.has("python") ? "true" : "false",
     requires_uv: requirements.has("uv") ? "true" : "false",
     scopes: plan.scopes.join(","),

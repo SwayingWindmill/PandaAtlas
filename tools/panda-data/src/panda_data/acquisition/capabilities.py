@@ -82,7 +82,7 @@ def build_fetch_plan(policy: SourcePolicy, engine: str) -> dict[str, Any]:
         "follow_redirects": "safe",
     }
     if policy.capability is CapabilityMode.BROWSER_RENDERED:
-        fetcher = "DynamicFetcher"
+        fetcher = "StealthyFetcher"
         options = {
             "headless": True,
             "real_chrome": True,

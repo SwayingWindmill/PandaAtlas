@@ -149,7 +149,6 @@ export function AdminOverview() {
                 <div className="divide-y divide-slate-100">
                   {workspaces.map((item) => (
                     <Link key={item.href} href={item.href as Route}
-                      aria-label={item.href === "/admin/audit/evidence" ? "查看审计证据" : undefined}
                       className="group flex min-h-16 items-center justify-between gap-4 px-5 py-3 transition-colors hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-[-2px]">
                       <span className="min-w-0">
                         <span className="block text-sm font-medium text-slate-900">{item.label}</span>

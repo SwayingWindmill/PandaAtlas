@@ -224,3 +224,13 @@ test("the release scope installs workspace dependencies, because its tests load 
   // A workflow-only pull request plans only the release scope (#572).
   assert.equal(developmentPlanOutputs(createPlanForScopes(["release"])).requires_node_modules, "true");
 });
+
+test("Python-only scopes still install workspace dependencies for documentation checks", () => {
+  // tools/panda-data changes plan curation and data only. verify:dev still imports `ignore`.
+  const outputs = developmentPlanOutputs(createPlanForScopes(["curation", "data"]));
+  assert.equal(outputs.run_checks, "true");
+  assert.equal(outputs.requires_node_modules, "true");
+  assert.equal(outputs.requires_python, "true");
+  assert.equal(outputs.requires_uv, "true");
+  assert.equal(developmentPlanOutputs(createPlanForScopes([])).requires_node_modules, "false");
+});

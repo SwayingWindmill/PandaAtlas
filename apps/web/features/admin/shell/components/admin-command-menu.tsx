@@ -43,7 +43,7 @@ export function AdminCommandMenu({ session }: { session: AdminSession }) {
         type="button"
         variant="outline"
         onClick={() => setOpen(true)}
-        aria-label="搜索工作区"
+        aria-label="搜索工作区 Ctrl K"
         aria-keyshortcuts="Control+K Meta+K"
         className="group h-9 min-w-9 justify-center gap-3 border-slate-200 bg-white px-2.5 text-sm font-normal text-slate-600 shadow-sm hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 sm:min-w-56 sm:justify-between sm:px-3"
       >

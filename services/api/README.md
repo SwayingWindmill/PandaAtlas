@@ -5,7 +5,7 @@
 ## Runtime
 
 - Node.js 24
-- NestJS 11 on the Express adapter (`@nestjs/platform-express`)
+- NestJS 12 on the Express adapter (`@nestjs/platform-express`)
 - Cloudflare Worker `zhipanda-v2-api`
 - Supabase PostgreSQL as the sole business-data authority
 - Supabase Auth UUID identity
