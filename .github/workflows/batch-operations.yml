@@ -110,7 +110,7 @@ jobs:
 
       - name: Set up Python
         if: needs.plan.outputs.requires_python == 'true'
-        uses: actions/setup-python@v7.0.0
+        uses: actions/setup-python@v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -170,7 +170,7 @@ jobs:
 
       - name: Set up Python
         if: needs.plan.outputs.requires_python == 'true'
-        uses: actions/setup-python@v7.0.0
+        uses: actions/setup-python@v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 

@@ -1,30 +1,29 @@
-import type { Metadata, Route } from "next";
-import { notFound, permanentRedirect } from "next/navigation";
-import { StructuredMapPage } from "@/features/map/structured-map-page";
-import { loadHabitatMapInput } from "@/features/map/map-data-source";
-import { parseStructuredMapQuery, structuredMapHref } from "@/features/map/map-query";
-import { buildStructuredMapViewModel } from "@/features/map/map-view-model";
-import { buildMapVisualizationModel } from "@/features/map/visualization/map-visual-model";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import type { MapCover } from "@/features/map/panda-world-map";
+import { PandaMapPage } from "@/features/map/panda-map-page";
+import { buildPandaMapViewModel } from "@/features/map/panda-map-view-model";
+import { WORLD_HEIGHT, WORLD_WIDTH } from "@/features/map/world-land.generated";
 import {
-  loadV2PublicMapDataset,
-  type PublicCoverage,
+  loadV2PandaCovers,
+  loadV2PublicMapOverview,
+  pandaCoverMedia,
 } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
 interface LocalizedMapPageProps {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 const metadataCopy = {
   zh: {
     title: "熊猫地图 | 吱熊猫",
-    description: "探索大熊猫生活过的机构与地点，以及公开的野生家园范围和资料来源。",
+    description: "世界上哪些动物园和基地住着大熊猫，现在住着哪几只。",
   },
   en: {
     title: "Panda map | ZhiPanda",
-    description: "Explore institutions and places where giant pandas have lived, plus published wild habitat coverage and sources.",
+    description: "The zoos and breeding centers around the world where giant pandas live, and which pandas live there now.",
   },
 } as const;
 
@@ -36,54 +35,20 @@ export async function generateMetadata({ params }: LocalizedMapPageProps): Promi
   return buildPublicMetadata({ locale, title: t.title, description: t.description, path: "/map" });
 }
 
-export default async function LocalizedMapPage({ params, searchParams }: LocalizedMapPageProps) {
-  const [{ locale: rawLocale }, rawQuery] = await Promise.all([params, searchParams]);
+export default async function LocalizedMapPage({ params }: LocalizedMapPageProps) {
+  const { locale: rawLocale } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
-
-  const envelope = await loadV2PublicMapDataset(locale);
+  const envelope = await loadV2PublicMapOverview(locale);
   if (!envelope) notFound();
-  const habitatInput = await loadHabitatMapInput({ bbox: "73,18,136,54" });
-  const parsed = parseStructuredMapQuery(rawQuery, envelope.release.id);
-  const initialView = buildStructuredMapViewModel(
-    envelope.data,
-    envelope.sources,
-    habitatInput,
-    parsed.state,
-    locale,
-  );
-  const country = parsed.state.country === "all"
-    || initialView.countries.some((option) => option.code === parsed.state.country)
-    ? parsed.state.country
-    : "all";
-  const selected = parsed.state.selected && initialView.validResultIds.has(parsed.state.selected)
-    ? parsed.state.selected
-    : "";
-  const canonicalState = { ...parsed.state, country, selected };
-  if (parsed.needsNormalization || country !== parsed.state.country || selected !== parsed.state.selected) {
-    permanentRedirect(structuredMapHref(locale, canonicalState) as Route);
+  const view = buildPandaMapViewModel(envelope.data.entries, locale, { width: WORLD_WIDTH, height: WORLD_HEIGHT });
+  const coverIds = view.items.flatMap((item) => (item.coverPandaId ? [item.coverPandaId] : []));
+  const assets = await loadV2PandaCovers(coverIds);
+  const covers: Record<string, MapCover> = {};
+  for (const item of view.items) {
+    const asset = item.coverPandaId ? assets.get(item.coverPandaId) : undefined;
+    const media = asset ? pandaCoverMedia(asset, item.name, locale) : null;
+    if (media && item.coverPandaId) covers[item.coverPandaId] = { src: media.src, alt: media.alt };
   }
-  const view = country === parsed.state.country && selected === parsed.state.selected
-    ? initialView
-    : buildStructuredMapViewModel(envelope.data, envelope.sources, habitatInput, canonicalState, locale);
-  const visualization = buildMapVisualizationModel(view, habitatInput, locale, canonicalState);
-  const coverage: PublicCoverage = view.hasPartialCoverage
-    ? {
-        state: "partial",
-        scope: "reviewed institutions and residencies plus an explicitly cached partial habitat release",
-      }
-    : envelope.coverage;
-
-  return (
-    <StructuredMapPage
-      locale={locale}
-      state={canonicalState}
-      view={view}
-      visualization={visualization}
-      release={envelope.release}
-      delivery={envelope.delivery}
-      coverage={coverage}
-      localeDelivery={envelope.locale}
-    />
-  );
+  return <PandaMapPage locale={locale} view={view} covers={covers} />;
 }

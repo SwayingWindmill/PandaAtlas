@@ -46,7 +46,7 @@
     "@types/node": "^24.0.0",
     "@types/pg": "^8.23.1",
     "@vitest/coverage-v8": "^4.0.0",
-    "cf": "1.0.0-beta.12",
+    "cf": "1.0.0-beta.21",
     "kysely-codegen": "^0.20.0",
     "light-my-request": "^6.8.0",
     "unplugin-swc": "^1.5.0",

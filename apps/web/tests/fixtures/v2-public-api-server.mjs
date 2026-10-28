@@ -73,6 +73,8 @@ const places = [
     nameEn: "Zoo Atlanta",
     countryCode: "US",
     region: "Atlanta",
+    longitude: -84.372,
+    latitude: 33.734,
   },
   {
     placeId: ids.washington,
@@ -106,6 +108,8 @@ const places = [
     nameEn: "Ueno Zoo",
     countryCode: "JP",
     region: "Tokyo",
+    longitude: 139.7714,
+    latitude: 35.7163,
   },
 ];
 

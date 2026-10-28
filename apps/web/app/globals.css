@@ -18,8 +18,6 @@
 @import "../styles/my-pandas.css";
 @import "../styles/community-contribution.css";
 @import "../styles/structured-lineage.css";
-@import "../styles/structured-map.css";
-@import "../styles/map-visualization.css";
 @import "../styles/reduced-motion.css";
 
 @custom-variant dark (&:is(.dark *));
