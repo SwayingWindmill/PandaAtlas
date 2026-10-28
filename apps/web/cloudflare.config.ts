@@ -10,13 +10,13 @@ export default defineConfig(({ mode }) => ({
     compatibilityDate: "2026-10-01",
     compatibilityFlags: ["nodejs_compat"],
     observability: { enabled: true, redactQueryString: true },
-    // Workers Cache serves public pages from the PublicPages entrypoint. The default
-    // entrypoint stays uncached so it can strip tracking parameters and choose that
-    // cache key; worker/edge-cache.mjs decides which responses are cacheable.
-    cache: { enabled: true },
+    // Cache is off for the Worker, so the default gateway runs on every request and can
+    // strip tracking parameters. Only PublicPages is cached. A key named "default" in
+    // exports is emitted by the Vite plugin as `export const default`, which is invalid.
+    // worker/edge-cache.mjs decides which responses that entrypoint may store.
+    cache: { enabled: false },
     // Retire the OpenNext cache Durable Objects that production still provisions; vinext has no ISR/tag cache.
     exports: {
-      default: exports.worker({ cache: { enabled: false } }),
       PublicPages: exports.worker({ cache: { enabled: true } }),
       DOQueueHandler: exports.durableObject({ state: "deleted" }),
       DOShardedTagCache: exports.durableObject({ state: "deleted" }),

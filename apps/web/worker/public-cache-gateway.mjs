@@ -8,7 +8,7 @@ export function routeCachedPublicRequest(request, env, ctx, direct) {
   if (isPublicCachePurge(ctx)) {
     const headers = new Headers(request.headers);
     headers.set(PUBLIC_CACHE_PURGE_HEADER, "1");
-    const purgeRequest = new Request(request, { headers });
+    const purgeRequest = cloneRequest(request, request.url, headers);
     return pages ? pages.fetch(purgeRequest) : direct.fetch(purgeRequest, env, ctx);
   }
 
@@ -23,14 +23,24 @@ function canonicalPublicRequest(request) {
   if (suppliedPurgeHeader) headers.delete(PUBLIC_CACHE_PURGE_HEADER);
 
   if (request.method !== "GET" && request.method !== "HEAD") {
-    return suppliedPurgeHeader ? new Request(request, { headers }) : request;
+    return suppliedPurgeHeader ? cloneRequest(request, request.url, headers) : request;
   }
 
   const url = new URL(request.url);
   const search = normalizedSearch(url.searchParams);
   if (search === url.search.replace(/^\?/u, "") && !suppliedPurgeHeader) return request;
   url.search = search;
-  return new Request(url, { method: request.method, headers });
+  // Keep redirect: "manual". A fresh Request follows redirects, which would turn
+  // the app's 308 into the destination's 200 and leave the browser on the old URL.
+  return cloneRequest(request, url, headers);
+}
+
+function cloneRequest(request, url, headers) {
+  return new Request(url, {
+    method: request.method,
+    headers,
+    redirect: request.redirect,
+  });
 }
 
 function normalizedSearch(params) {
@@ -38,6 +48,7 @@ function normalizedSearch(params) {
   for (const key of [...kept.keys()]) {
     if (isIgnorableQueryParam(key)) kept.delete(key);
   }
-  kept.sort();
+  // Keep the caller's parameter order. Sorting here would change redirect
+  // Location strings; the cache key sorts on its own.
   return kept.toString();
 }
