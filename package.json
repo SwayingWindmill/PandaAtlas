@@ -74,7 +74,7 @@
     "esbuild": "^0.28.2",
     "eslint": "^9.39.0",
     "globals": "^17.13.0",
-    "ignore": "^7.0.12",
+    "ignore": "^7.0.14",
     "mdast-util-from-markdown": "^2.1.0",
     "supabase": "2.110.0",
     "typescript": "^5.9.0",
