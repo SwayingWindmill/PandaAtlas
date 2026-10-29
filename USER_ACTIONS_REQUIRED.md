@@ -35,7 +35,7 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 
 - **Which pandas the welcome suggests.** First launch offers living pandas that can be visited, youngest first, plus search. A curated list (the pandas most fans arrive for) would serve newcomers better; name the list or the rule.
 
-- **Learning content (科普, 专题, 认脸指南, 认脸挑战).** No content model or text exists; the canvas uses placeholders such as `[形状和左右差别]`. Decide the content and who writes it before a schema is built for it.
+- **Publish the 科普 drafts.** The six screens are in the app. Every entry in `data/curation/learning/learning.json` is `draft`, so production builds do not show it (the public API returns published entries only; a development build previews the file). A writer fills each slot listed in `docs/learning-content-brief.md`. After you review the text, remove the `[草稿]` and `[draft]` marks, set `status` to `published`, add an https source and the day it was checked, then run `python scripts/curation/build_learning_content_migration.py --write` and ship that migration. Until then the production app says 科普还在写.
 - **Official posts (官方动态, 官方最近说).** The API's updates feed lists release changes, not posts by bases. Quoting official social posts needs a source, its terms of use and an acquisition decision.
 - **On-site mode (我在基地) and wild areas (野外保护区).** Need zone maps, panda-area positions and wild-area places, which no data covers yet.
 - **iOS lock-screen widget.** Needs a native widget extension and a development build; out of scope for the Expo-managed app until decided.

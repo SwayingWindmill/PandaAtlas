@@ -1004,6 +1004,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/learning": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Published 科普 cards, topics, terms, face guides and face challenges */
+        get: operations["getLearningCatalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/updates": {
         parameters: {
             query?: never;
@@ -2018,6 +2035,123 @@ export interface components {
             /** @enum {string} */
             resourceKind: "panda" | "place" | "media" | "evidence";
             resourceId: string;
+        };
+        LearningTextDto: {
+            zh: string;
+            en: string;
+        };
+        LearningArticleParagraphDto: {
+            text: components["schemas"]["LearningTextDto"];
+            refs: string[];
+        };
+        LearningArticleSectionDto: {
+            heading: components["schemas"]["LearningTextDto"];
+            paragraphs: components["schemas"]["LearningArticleParagraphDto"][];
+        };
+        LearningArticleBodyDto: {
+            sections: components["schemas"]["LearningArticleSectionDto"][];
+        };
+        LearningArticleFactDto: {
+            text: components["schemas"]["LearningTextDto"];
+            refs: string[];
+        };
+        LearningArticleImageDto: {
+            /** @enum {string} */
+            role: "hero" | "inline" | "compare";
+            /** @enum {string} */
+            type: "existing" | "wanted";
+            pandaSlug: string | null;
+            asset?: string;
+            credit?: string;
+            caption: components["schemas"]["LearningTextDto"];
+            shot?: components["schemas"]["LearningTextDto"];
+        };
+        LearningArticleReferenceDto: {
+            id: string;
+            title: string;
+            publisher: string;
+            /** Format: uri */
+            url: string;
+            /** Format: date */
+            citedOn: string;
+        };
+        LearningArticleDto: {
+            slug: string;
+            /** @enum {string} */
+            category: "外形与识别" | "食性" | "繁殖与成长" | "保护";
+            title: components["schemas"]["LearningTextDto"];
+            dek: components["schemas"]["LearningTextDto"];
+            pullQuote: components["schemas"]["LearningTextDto"];
+            body: components["schemas"]["LearningArticleBodyDto"];
+            keyFacts: components["schemas"]["LearningArticleFactDto"][];
+            images: components["schemas"]["LearningArticleImageDto"][];
+            references: components["schemas"]["LearningArticleReferenceDto"][];
+            relatedArticles: string[];
+        };
+        LearningSourceDto: {
+            title: components["schemas"]["LearningTextDto"];
+            /** Format: uri */
+            url: string;
+            /** Format: date */
+            citedOn: string;
+        };
+        LearningCardDto: {
+            slug: string;
+            title: components["schemas"]["LearningTextDto"];
+            summary: components["schemas"]["LearningTextDto"];
+            body: components["schemas"]["LearningTextDto"];
+            sources: components["schemas"]["LearningSourceDto"][];
+        };
+        LearningTopicSectionDto: {
+            heading: components["schemas"]["LearningTextDto"];
+            body: components["schemas"]["LearningTextDto"];
+        };
+        LearningTopicDto: {
+            slug: string;
+            title: components["schemas"]["LearningTextDto"];
+            summary: components["schemas"]["LearningTextDto"];
+            sections: components["schemas"]["LearningTopicSectionDto"][];
+            cardSlugs: string[];
+            sources: components["schemas"]["LearningSourceDto"][];
+        };
+        LearningTermDto: {
+            slug: string;
+            term: components["schemas"]["LearningTextDto"];
+            definition: components["schemas"]["LearningTextDto"];
+            relatedSlugs: string[];
+            sources: components["schemas"]["LearningSourceDto"][];
+        };
+        LearningFaceTipDto: {
+            /** @enum {string} */
+            key: "shape" | "leftRight" | "eyePatches" | "ears";
+            label: components["schemas"]["LearningTextDto"];
+            body: components["schemas"]["LearningTextDto"];
+        };
+        LearningFaceGuideDto: {
+            slug: string;
+            /** @description Canonical slug of a published panda. The photo comes from that panda's media. */
+            pandaSlug: string;
+            title: components["schemas"]["LearningTextDto"];
+            tips: components["schemas"]["LearningFaceTipDto"][];
+            sources: components["schemas"]["LearningSourceDto"][];
+        };
+        LearningChallengeDto: {
+            slug: string;
+            answerPandaSlug: string;
+            decoyPandaSlugs: string[];
+            prompt: components["schemas"]["LearningTextDto"];
+            tip: components["schemas"]["LearningTextDto"];
+            sources: components["schemas"]["LearningSourceDto"][];
+        };
+        LearningCatalogDto: {
+            /** @example 2026.10.29.2 */
+            version: string;
+            articles: components["schemas"]["LearningArticleDto"][];
+            cards: components["schemas"]["LearningCardDto"][];
+            topics: components["schemas"]["LearningTopicDto"][];
+            terms: components["schemas"]["LearningTermDto"][];
+            faceGuides: components["schemas"]["LearningFaceGuideDto"][];
+            challenges: components["schemas"]["LearningChallengeDto"][];
         };
         UpdateTargetDto: {
             /** @enum {string} */
@@ -3864,6 +3998,32 @@ export interface operations {
         };
         responses: {
             204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getLearningCatalog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LearningCatalogDto"];
+                };
+            };
+            /** @description The stored learning catalog is missing or invalid. */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
