@@ -122,6 +122,11 @@ export function learningText(value: LearningText | undefined): string {
   return value?.en.trim() ?? "";
 }
 
+/** A face-guide tip with no body is a slot the writer left blank, so the screen omits it. */
+export function visibleTips<T extends { body: LearningText }>(tips: readonly T[]): T[] {
+  return tips.filter((tip) => learningText(tip.body).length > 0);
+}
+
 export function entryBySlug<T extends { slug: string }>(entries: readonly T[], slug: string): T | undefined {
   return entries.find((entry) => entry.slug === slug);
 }

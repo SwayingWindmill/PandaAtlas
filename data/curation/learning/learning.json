@@ -1,44 +1,107 @@
 {
-  "$comment": "科普, 专题, 名词解释, 认脸指南 and 认脸挑战. Edit this file, then run python scripts/curation/build_learning_content_migration.py --write. Draft entries stay in the database and are left out of GET /api/v2/learning. The writer brief is docs/learning-content-brief.md. Placeholder text is marked [草稿] / [draft] and is not a fact.",
+  "$comment": "科普, 专题, 名词解释, 认脸指南 and 认脸挑战. Edit this file, then run python scripts/curation/build_learning_content_migration.py --write. Draft entries stay in the database and are left out of GET /api/v2/learning. The writer brief is docs/learning-content-brief.md. A draft may be unmarked copy the owner is still reviewing; only status published is served.",
   "version": "2026.10.29.1",
   "cards": [
     {
       "slug": "black-eye-patches",
       "status": "draft",
-      "title": { "zh": "[草稿] 黑眼圈", "en": "[draft] Eye patches" },
-      "summary": { "zh": "[草稿] 占位摘要。", "en": "[draft] Placeholder summary." },
+      "title": {
+        "zh": "黑眼圈",
+        "en": "Eye patches"
+      },
+      "summary": {
+        "zh": "大熊猫眼周的黑斑叫眼斑。研究认为，它可能帮助大熊猫相互辨认，或向对手表示攻击性。",
+        "en": "The black marks around a giant panda's eyes may help pandas recognize one another or signal aggression to rivals."
+      },
       "body": {
-        "zh": "[草稿] 占位正文。正式文字由撰稿人填写，并注明来源后才能发布。",
-        "en": "[draft] Placeholder body. A writer replaces it and cites a source before it is published."
+        "zh": "大熊猫的耳朵、眼斑、口鼻、四肢和肩部是黑色，身体其余部分是白色。2017年发表在《行为生态学》上的一项研究，把大熊猫各部位的毛色与195种其他食肉动物和39个熊亚种比较。研究认为，头部的深色斑纹不用于伪装，而用于交流：黑耳朵可能传达凶猛的警告，黑眼斑可能帮助大熊猫相互辨认，或向竞争对手表示攻击性。2008年的一项实验中，两只幼年大熊猫学会了分辨形状只有细微差别的眼斑图案，6个月和12个月后再测试时仍然记得。",
+        "en": "A giant panda has black fur on its ears, eye patches, muzzle, legs and shoulders; the rest of its coat is white. A 2017 study in Behavioral Ecology compared the fur of each body region with 195 other carnivore species and 39 bear subspecies. It concluded that the dark head markings are not camouflage but communication: dark ears may convey ferocity as a warning, and dark eye patches may help pandas recognize each other or signal aggression toward competitors. In a 2008 experiment, two juvenile giant pandas learned to tell apart eye-patch shapes that differed only subtly, and still remembered them when tested again six and twelve months later."
       },
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "加州大学戴维斯分校：大熊猫为什么是黑白的",
+            "en": "UC Davis: Why Pandas Are Black and White"
+          },
+          "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
+          "citedOn": "2026-10-29"
+        },
+        {
+          "title": {
+            "zh": "史密森尼国家动物园：大熊猫",
+            "en": "Smithsonian's National Zoo: Giant Panda"
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-10-29"
+        },
+        {
+          "title": {
+            "zh": "亚特兰大动物园：熊猫动态（11月6日）",
+            "en": "Zoo Atlanta: Panda Updates – Friday, November 6"
+          },
+          "url": "https://zooatlanta.org/panda-updates-friday-november-6/",
+          "citedOn": "2026-10-29"
+        }
       ]
     },
     {
       "slug": "bamboo",
       "status": "draft",
-      "title": { "zh": "[草稿] 竹子", "en": "[draft] Bamboo" },
-      "summary": { "zh": "[草稿] 占位摘要。", "en": "[draft] Placeholder summary." },
+      "title": {
+        "zh": "竹子",
+        "en": "Bamboo"
+      },
+      "summary": {
+        "zh": "大熊猫的食物几乎全是竹子。竹子营养很少，所以它每天要吃12～38公斤。",
+        "en": "Giant pandas eat almost nothing but bamboo. Bamboo has little nutritional value, so a panda eats 12–38 kg of it a day."
+      },
       "body": {
-        "zh": "[草稿] 占位正文。正式文字由撰稿人填写，并注明来源后才能发布。",
-        "en": "[draft] Placeholder body. A writer replaces it and cites a source before it is published."
+        "zh": "大熊猫每天的食物几乎全部是多种竹子的叶、茎和笋。竹子营养价值很低，大熊猫每天要吃12～38公斤才能满足能量需要。约1%的食物是其他植物甚至肉类，它偶尔会捕食鼠兔等小动物。大熊猫的消化系统更接近食肉动物，吃下的食物有很多未经消化就排出，因此每天要花10～16小时觅食和进食。它通常坐着吃，用腕骨延长形成的“伪拇指”握住竹竿，再用有力的颌和牙齿把竹子咬碎。",
+        "en": "A giant panda's daily diet consists almost entirely of the leaves, stems and shoots of various bamboo species. Bamboo has very little nutritional value, so a panda must eat 12–38 kg every day to meet its energy needs. About 1% of its diet is other plants and even meat; pandas sometimes hunt pikas and other small animals. Its digestive system is closer to a carnivore's, so much of what it eats passes through undigested, and it spends 10 to 16 hours a day foraging and eating. A panda usually eats sitting upright, grasping stems with a \"pseudo thumb\" formed by an elongated wrist bone, and crushes the bamboo with powerful jaws and teeth."
       },
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "世界自然基金会：大熊猫吃什么",
+            "en": "WWF: What do pandas eat?"
+          },
+          "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
+          "citedOn": "2026-10-29"
+        },
+        {
+          "title": {
+            "zh": "史密森尼国家动物园：大熊猫",
+            "en": "Smithsonian's National Zoo: Giant Panda"
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-10-29"
+        }
       ]
     },
     {
       "slug": "cubs",
       "status": "draft",
-      "title": { "zh": "[草稿] 幼仔", "en": "[draft] Cubs" },
-      "summary": { "zh": "[草稿] 占位摘要。", "en": "[draft] Placeholder summary." },
+      "title": {
+        "zh": "幼仔",
+        "en": "Cubs"
+      },
+      "summary": {
+        "zh": "刚出生的大熊猫平均约120克，只有母亲体重的千分之一，一岁半时离开母亲独立生活。",
+        "en": "A newborn giant panda weighs about 120 g on average, one-thousandth of its mother's weight, and lives on its own at 18 months."
+      },
       "body": {
-        "zh": "[草稿] 占位正文。正式文字由撰稿人填写，并注明来源后才能发布。",
-        "en": "[draft] Placeholder body. A writer replaces it and cites a source before it is published."
+        "zh": "初生幼仔体重只有母亲的千分之一，平均约120克，最轻51克，最重225克。它粉色的皮肤上长着白毛，眼睛和耳朵还没有发育完全。出生一到两周，肩带、四肢和耳朵渐渐变黑；一个月时长出黑白相间的毛，体重1～2公斤，还不能行走；六到八周睁眼；三个月能慢慢爬动；半岁能自由行走，开始学吃竹子；一岁开始长恒牙；一岁半离开母亲，独立生活。",
+        "en": "A newborn cub weighs one-thousandth of its mother's weight, about 120 g on average, ranging from 51 g to 225 g. It has white hair on pink skin, and its eyes and ears are not fully developed. At one to two weeks, its shoulder band, limbs and ears gradually turn black. At one month it has black-and-white fur and weighs 1–2 kg, but cannot walk. Its eyes open at six to eight weeks, and it can crawl slowly at three months. At six months it walks freely and starts learning to eat bamboo. Permanent teeth begin to grow at one year, and at 18 months it leaves its mother to live on its own."
       },
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "成都大熊猫繁育研究基地：大熊猫生长发育",
+            "en": "Chengdu Panda Base: Giant panda growth and development"
+          },
+          "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/370.html",
+          "citedOn": "2026-10-29"
+        }
       ]
     }
   ],
@@ -46,43 +109,117 @@
     {
       "slug": "telling-faces-apart",
       "status": "draft",
-      "title": { "zh": "[草稿] 怎么认脸", "en": "[draft] Telling faces apart" },
-      "summary": { "zh": "[草稿] 占位摘要。", "en": "[draft] Placeholder summary." },
+      "title": {
+        "zh": "怎么认脸",
+        "en": "Telling faces apart"
+      },
+      "summary": {
+        "zh": "饲养员区分大熊猫，会看脸颊、眼斑、口鼻斑纹和耳朵。两只熊猫之间的差别往往很细微，要逐处对照。",
+        "en": "Keepers tell giant pandas apart by their cheeks, eye patches, muzzle markings and ears. The differences between two pandas are often subtle, so compare one feature at a time."
+      },
       "sections": [
         {
-          "heading": { "zh": "[草稿] 形状和左右差别", "en": "[draft] Shape and left-right difference" },
-          "body": { "zh": "[草稿] [形状和左右差别]", "en": "[draft] [shape and left-right difference]" }
+          "heading": {
+            "zh": "脸型和左右差别",
+            "en": "Face shape and left-right differences"
+          },
+          "body": {
+            "zh": "脸型因个体而异：史密森尼国家动物园指出，宝力的两颊不如青宝蓬松；亚特兰大动物园称伦伦以圆润蓬松的脸颊出名。同一只熊猫的左右眼斑也不一定一样：亚特兰大动物园描述，喜伦右眼斑的顶部明显向下垂。",
+            "en": "Face shape varies between individuals. Smithsonian's National Zoo notes that Bao Li's cheeks are not as fluffy as Qing Bao's, and Zoo Atlanta says Lun Lun is known for her round, fluffy cheeks. A panda's left and right eye patches are not always the same: Zoo Atlanta describes Xi Lun's right eye patch as having a dramatic drop downward at the top."
+          }
         },
         {
-          "heading": { "zh": "[草稿] 看照片", "en": "[draft] Look at the photo" },
+          "heading": {
+            "zh": "看照片",
+            "en": "Reading a photo"
+          },
           "body": {
-            "zh": "[草稿] 占位正文。正式文字由撰稿人填写，并注明来源后才能发布。",
-            "en": "[draft] Placeholder body. A writer replaces it and cites a source before it is published."
+            "zh": "看照片时可以逐处对照。眼斑：看宽窄和尖端朝向，例如宝力的眼斑较宽，尖端向外翘。口鼻：喜伦的口鼻上有一条横贯的线，雅伦的则更像一个点。耳朵：洋洋的耳朵被称为“雷达耳”，游客常凭它在远处区分洋洋和伦伦。照片拍到背部时，还可以看从前腿绕过背部的黑带粗细。",
+            "en": "Compare one feature at a time. Eye patches: check their width and the direction of the tips; Bao Li's patches are wide, with pointy tips that flare out. Muzzle: Xi Lun has a line all the way across her snout, while Ya Lun's is more of a dot. Ears: Yang Yang's are known as \"radar ears\", and visitors often use them to tell him from Lun Lun at a distance. If the photo shows the back, check how thick the black band is that runs from the front legs across the back."
           }
         }
       ],
-      "cardSlugs": ["black-eye-patches"],
+      "cardSlugs": [
+        "black-eye-patches"
+      ],
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "史密森尼国家动物园：怎样区分两只大熊猫",
+            "en": "Smithsonian's National Zoo: How Can You Tell the Giant Pandas Apart?"
+          },
+          "url": "https://nationalzoo.si.edu/animals/news/how-can-you-tell-giant-pandas-apart",
+          "citedOn": "2026-10-29"
+        },
+        {
+          "title": {
+            "zh": "亚特兰大动物园：伦伦",
+            "en": "Zoo Atlanta: Lun Lun"
+          },
+          "url": "https://zooatlanta.org/animal-legend/lun-lun/",
+          "citedOn": "2026-10-29"
+        },
+        {
+          "title": {
+            "zh": "亚特兰大动物园：熊猫动态（12月13日）",
+            "en": "Zoo Atlanta: Panda Updates – Monday, December 13"
+          },
+          "url": "https://zooatlanta.org/panda-updates-monday-december-13/",
+          "citedOn": "2026-10-29"
+        },
+        {
+          "title": {
+            "zh": "亚特兰大动物园：熊猫动态（12月27日）",
+            "en": "Zoo Atlanta: Panda Updates – Wednesday, December 27"
+          },
+          "url": "https://zooatlanta.org/panda-updates-wednesday-december-27/",
+          "citedOn": "2026-10-29"
+        }
       ]
     },
     {
       "slug": "what-pandas-eat",
       "status": "draft",
-      "title": { "zh": "[草稿] 吃什么", "en": "[draft] What pandas eat" },
-      "summary": { "zh": "[草稿] 占位摘要。", "en": "[draft] Placeholder summary." },
+      "title": {
+        "zh": "吃什么",
+        "en": "What pandas eat"
+      },
+      "summary": {
+        "zh": "野生大熊猫的食物约99%是竹子，其余是其他植物和少量肉类。在动物园里，它们还吃营养饼干和果蔬。",
+        "en": "About 99% of a wild giant panda's diet is bamboo; the rest is other plants and a little meat. In zoos, pandas also eat nutritious biscuits, fruit and vegetables."
+      },
       "sections": [
         {
-          "heading": { "zh": "[草稿] 主食", "en": "[draft] Staple food" },
+          "heading": {
+            "zh": "主食",
+            "en": "Staple food"
+          },
           "body": {
-            "zh": "[草稿] 占位正文。正式文字由撰稿人填写，并注明来源后才能发布。",
-            "en": "[draft] Placeholder body. A writer replaces it and cites a source before it is published."
+            "zh": "大熊猫的主食是竹子，吃的是多种竹子的叶、茎和笋，每天12～38公斤。约1%的食物是其他植物甚至肉类，它偶尔会捕食鼠兔等小动物。在史密森尼国家动物园，大熊猫除竹子外还吃营养丰富的饼干、胡萝卜和苹果。",
+            "en": "Bamboo is the giant panda's staple food: the leaves, stems and shoots of various bamboo species, 12–38 kg a day. About 1% of its diet is other plants and even meat, and it sometimes hunts pikas and other small animals. At Smithsonian's National Zoo, pandas are fed highly nutritious biscuits, carrots and apples as well as bamboo."
           }
         }
       ],
-      "cardSlugs": ["bamboo"],
+      "cardSlugs": [
+        "bamboo"
+      ],
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "世界自然基金会：大熊猫吃什么",
+            "en": "WWF: What do pandas eat?"
+          },
+          "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
+          "citedOn": "2026-10-29"
+        },
+        {
+          "title": {
+            "zh": "史密森尼国家动物园：大熊猫常见问题",
+            "en": "Smithsonian's National Zoo: Giant Panda FAQs"
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs",
+          "citedOn": "2026-10-29"
+        }
       ]
     }
   ],
@@ -90,31 +227,86 @@
     {
       "slug": "eye-patch",
       "status": "draft",
-      "term": { "zh": "[草稿] 黑眼圈", "en": "[draft] Eye patches" },
-      "definition": { "zh": "[草稿] 占位释义。", "en": "[draft] Placeholder definition." },
+      "term": {
+        "zh": "黑眼圈",
+        "en": "Eye patches"
+      },
+      "definition": {
+        "zh": "大熊猫眼睛周围的黑色毛斑，也叫眼斑。各只熊猫的眼斑形状有细微差别，饲养员常靠它区分个体；研究认为它可能帮助大熊猫相互辨认。",
+        "en": "The black fur patches around a giant panda's eyes. Their shape differs subtly between individuals, and keepers often use them to tell pandas apart; research suggests they may help pandas recognize one another."
+      },
       "relatedSlugs": [],
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "加州大学戴维斯分校：大熊猫为什么是黑白的",
+            "en": "UC Davis: Why Pandas Are Black and White"
+          },
+          "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
+          "citedOn": "2026-10-29"
+        },
+        {
+          "title": {
+            "zh": "亚特兰大动物园：熊猫动态（11月6日）",
+            "en": "Zoo Atlanta: Panda Updates – Friday, November 6"
+          },
+          "url": "https://zooatlanta.org/panda-updates-friday-november-6/",
+          "citedOn": "2026-10-29"
+        }
       ]
     },
     {
       "slug": "bamboo-diet",
       "status": "draft",
-      "term": { "zh": "[草稿] 食竹", "en": "[draft] Bamboo diet" },
-      "definition": { "zh": "[草稿] 占位释义。", "en": "[draft] Placeholder definition." },
+      "term": {
+        "zh": "食竹",
+        "en": "Bamboo diet"
+      },
+      "definition": {
+        "zh": "大熊猫以竹子为主食的习性。它的食物几乎全是竹子的叶、茎和笋，每天要吃12～38公斤；它虽然有食肉动物的消化系统，却几乎只吃竹子。",
+        "en": "The giant panda's habit of living on bamboo. Its diet is almost entirely bamboo leaves, stems and shoots, 12–38 kg a day. It has the digestive system of a carnivore, yet depends almost entirely on bamboo."
+      },
       "relatedSlugs": [],
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "世界自然基金会：大熊猫吃什么",
+            "en": "WWF: What do pandas eat?"
+          },
+          "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
+          "citedOn": "2026-10-29"
+        }
       ]
     },
     {
       "slug": "subadult",
       "status": "draft",
-      "term": { "zh": "[草稿] 亚成体", "en": "[draft] Subadult" },
-      "definition": { "zh": "[草稿] 占位释义。", "en": "[draft] Placeholder definition." },
+      "term": {
+        "zh": "亚成体",
+        "en": "Subadult"
+      },
+      "definition": {
+        "zh": "一岁半到性成熟前的大熊猫，相当于人类的青少年。这一阶段食物从奶逐渐过渡到竹子。圈养条件下，雌性约5岁、雄性约6岁性成熟。",
+        "en": "A giant panda between 18 months and sexual maturity, comparable to a human teenager. During this stage its diet shifts from milk to bamboo. In human care, females mature at about 5 years and males at about 6."
+      },
       "relatedSlugs": [],
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "成都大熊猫繁育研究基地：大熊猫生长发育",
+            "en": "Chengdu Panda Base: Giant panda growth and development"
+          },
+          "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/370.html",
+          "citedOn": "2026-10-29"
+        },
+        {
+          "title": {
+            "zh": "成都大熊猫繁育研究基地：繁殖",
+            "en": "Chengdu Panda Base: Reproduction"
+          },
+          "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/361.html",
+          "citedOn": "2026-10-29"
+        }
       ]
     }
   ],
@@ -123,62 +315,130 @@
       "slug": "bao-li",
       "status": "draft",
       "pandaSlug": "bao-li",
-      "title": { "zh": "[草稿] 宝力", "en": "[draft] Bao Li" },
+      "title": {
+        "zh": "宝力",
+        "en": "Bao Li"
+      },
       "tips": [
         {
           "key": "shape",
-          "label": { "zh": "[草稿] 形状", "en": "[draft] Shape" },
-          "body": { "zh": "[草稿] [形状和左右差别]", "en": "[draft] [shape and left-right difference]" }
+          "label": {
+            "zh": "脸型",
+            "en": "Face shape"
+          },
+          "body": {
+            "zh": "两颊不如青宝蓬松。",
+            "en": "His cheeks are not as fluffy as Qing Bao's."
+          }
         },
         {
           "key": "leftRight",
-          "label": { "zh": "[草稿] 左右差别", "en": "[draft] Left and right" },
-          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+          "label": {
+            "zh": "左右差别",
+            "en": "Left and right"
+          },
+          "body": {
+            "zh": "",
+            "en": ""
+          }
         },
         {
           "key": "eyePatches",
-          "label": { "zh": "[草稿] 黑眼圈", "en": "[draft] Eye patches" },
-          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+          "label": {
+            "zh": "黑眼圈",
+            "en": "Eye patches"
+          },
+          "body": {
+            "zh": "眼斑较宽，尖端比青宝的更向外翘。",
+            "en": "His eye patches are wider, with pointy tips that flare out more than Qing Bao's."
+          }
         },
         {
           "key": "ears",
-          "label": { "zh": "[草稿] 耳朵", "en": "[draft] Ears" },
-          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+          "label": {
+            "zh": "耳朵",
+            "en": "Ears"
+          },
+          "body": {
+            "zh": "",
+            "en": ""
+          }
         }
       ],
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "史密森尼国家动物园：怎样区分两只大熊猫",
+            "en": "Smithsonian's National Zoo: How Can You Tell the Giant Pandas Apart?"
+          },
+          "url": "https://nationalzoo.si.edu/animals/news/how-can-you-tell-giant-pandas-apart",
+          "citedOn": "2026-10-29"
+        }
       ]
     },
     {
       "slug": "lun-lun",
       "status": "draft",
       "pandaSlug": "lun-lun",
-      "title": { "zh": "[草稿] 伦伦", "en": "[draft] Lun Lun" },
+      "title": {
+        "zh": "伦伦",
+        "en": "Lun Lun"
+      },
       "tips": [
         {
           "key": "shape",
-          "label": { "zh": "[草稿] 形状", "en": "[draft] Shape" },
-          "body": { "zh": "[草稿] [形状和左右差别]", "en": "[draft] [shape and left-right difference]" }
+          "label": {
+            "zh": "脸型",
+            "en": "Face shape"
+          },
+          "body": {
+            "zh": "两颊圆润蓬松。",
+            "en": "She has round, fluffy cheeks."
+          }
         },
         {
           "key": "leftRight",
-          "label": { "zh": "[草稿] 左右差别", "en": "[draft] Left and right" },
-          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+          "label": {
+            "zh": "左右差别",
+            "en": "Left and right"
+          },
+          "body": {
+            "zh": "",
+            "en": ""
+          }
         },
         {
           "key": "eyePatches",
-          "label": { "zh": "[草稿] 黑眼圈", "en": "[draft] Eye patches" },
-          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+          "label": {
+            "zh": "黑眼圈",
+            "en": "Eye patches"
+          },
+          "body": {
+            "zh": "",
+            "en": ""
+          }
         },
         {
           "key": "ears",
-          "label": { "zh": "[草稿] 耳朵", "en": "[draft] Ears" },
-          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+          "label": {
+            "zh": "耳朵",
+            "en": "Ears"
+          },
+          "body": {
+            "zh": "",
+            "en": ""
+          }
         }
       ],
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "亚特兰大动物园：伦伦",
+            "en": "Zoo Atlanta: Lun Lun"
+          },
+          "url": "https://zooatlanta.org/animal-legend/lun-lun/",
+          "citedOn": "2026-10-29"
+        }
       ]
     }
   ],
@@ -187,22 +447,64 @@
       "slug": "bao-li-round",
       "status": "draft",
       "answerPandaSlug": "bao-li",
-      "decoyPandaSlugs": ["lun-lun", "lei-lei", "yang-yang"],
-      "prompt": { "zh": "[草稿] 看照片，选出这只熊猫", "en": "[draft] Which panda is this?" },
-      "tip": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." },
+      "decoyPandaSlugs": [
+        "lun-lun",
+        "lei-lei",
+        "yang-yang"
+      ],
+      "prompt": {
+        "zh": "看照片，选出这只熊猫",
+        "en": "Look at the photo and pick this panda"
+      },
+      "tip": {
+        "zh": "看眼斑：宝力的眼斑较宽，尖端向外翘；再看脸颊：他的两颊不如青宝蓬松。",
+        "en": "Check the eye patches: Bao Li's are wide, with pointy tips that flare out. Then check the cheeks: they are not as fluffy as Qing Bao's."
+      },
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "史密森尼国家动物园：怎样区分两只大熊猫",
+            "en": "Smithsonian's National Zoo: How Can You Tell the Giant Pandas Apart?"
+          },
+          "url": "https://nationalzoo.si.edu/animals/news/how-can-you-tell-giant-pandas-apart",
+          "citedOn": "2026-10-29"
+        }
       ]
     },
     {
       "slug": "lun-lun-round",
       "status": "draft",
       "answerPandaSlug": "lun-lun",
-      "decoyPandaSlugs": ["bao-li", "ya-lun", "yang-yang"],
-      "prompt": { "zh": "[草稿] 看照片，选出这只熊猫", "en": "[draft] Which panda is this?" },
-      "tip": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." },
+      "decoyPandaSlugs": [
+        "bao-li",
+        "ya-lun",
+        "yang-yang"
+      ],
+      "prompt": {
+        "zh": "看照片，选出这只熊猫",
+        "en": "Look at the photo and pick this panda"
+      },
+      "tip": {
+        "zh": "看脸颊：伦伦的两颊圆润蓬松。再看耳朵：洋洋的“雷达耳”常被用来区分他和伦伦。",
+        "en": "Check the cheeks: Lun Lun's are round and fluffy. Then check the ears: Yang Yang's \"radar ears\" are often used to tell him from Lun Lun."
+      },
       "sources": [
-        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+        {
+          "title": {
+            "zh": "亚特兰大动物园：伦伦",
+            "en": "Zoo Atlanta: Lun Lun"
+          },
+          "url": "https://zooatlanta.org/animal-legend/lun-lun/",
+          "citedOn": "2026-10-29"
+        },
+        {
+          "title": {
+            "zh": "亚特兰大动物园：熊猫动态（12月27日）",
+            "en": "Zoo Atlanta: Panda Updates – Wednesday, December 27"
+          },
+          "url": "https://zooatlanta.org/panda-updates-wednesday-december-27/",
+          "citedOn": "2026-10-29"
+        }
       ]
     }
   ]

@@ -55,19 +55,30 @@ def panda_slugs() -> set[str]:
     return slugs
 
 
-def validate_text(value: object, label: str, limit_key: str, status: str, errors: list[str]) -> None:
+def validate_text(
+    value: object,
+    label: str,
+    limit_key: str,
+    status: str,
+    errors: list[str],
+    *,
+    allow_empty: bool = False,
+) -> None:
     zh_max, en_max = LIMITS[limit_key]
     if not isinstance(value, dict) or set(value) != {"zh", "en"}:
         errors.append(f"{label}: must be an object with zh and en")
         return
-    for language, mark, limit in (("zh", "[草稿]", zh_max), ("en", "[draft]", en_max)):
+    for language, limit in (("zh", zh_max), ("en", en_max)):
         text = value.get(language)
         field = f"{label}.{language}"
-        if not isinstance(text, str) or not text.strip() or len(text) > limit:
-            errors.append(f"{field}: must be 1 to {limit} characters")
+        if not isinstance(text, str) or len(text) > limit:
+            errors.append(f"{field}: must be at most {limit} characters")
             continue
-        if status == "draft" and mark not in text:
-            errors.append(f"{field}: draft text must include {mark}")
+        if not text.strip():
+            if not allow_empty:
+                errors.append(f"{field}: must be 1 to {limit} characters")
+            continue
+        # Drafts may be unmarked while the owner reviews them. Published copy must not look like a draft.
         if status == "published" and ("[草稿]" in text or "[draft]" in text):
             errors.append(f"{field}: published text must not include a draft mark")
 
@@ -84,15 +95,16 @@ def validate_sources(sources: object, label: str, status: str, errors: list[str]
         validate_text(source.get("title"), f"{field}.title", "source", status, errors)
         url = source.get("url")
         cited_on = source.get("citedOn")
-        if status == "draft":
-            if url is not None:
-                errors.append(f"{field}.url: draft sources keep url null until the citation is real")
-            if cited_on is not None:
-                errors.append(f"{field}.citedOn: draft sources keep citedOn null")
+        if url is None and cited_on is None:
+            if status == "published":
+                errors.append(f"{field}.url: published sources need an absolute https URL")
+            continue
+        if url is None or cited_on is None:
+            errors.append(f"{field}: url and citedOn go together")
             continue
         parsed = urlparse(url) if isinstance(url, str) else None
         if parsed is None or parsed.scheme != "https" or not parsed.netloc:
-            errors.append(f"{field}.url: published sources need an absolute https URL")
+            errors.append(f"{field}.url: must be an absolute https URL")
         try:
             if not isinstance(cited_on, str) or not ISO_DAY.match(cited_on):
                 raise ValueError
@@ -240,7 +252,7 @@ def validate_content(content: object, known_pandas: set[str] | None = None) -> l
                     errors.append(f"{tip_label}: must have key, label and body")
                     continue
                 validate_text(tip.get("label"), f"{tip_label}.label", "label", status, errors)
-                validate_text(tip.get("body"), f"{tip_label}.body", "tip", status, errors)
+                validate_text(tip.get("body"), f"{tip_label}.body", "tip", status, errors, allow_empty=True)
         validate_sources(guide.get("sources"), f"{label}.sources", status, errors)
 
     challenge_rows = content.get("challenges")

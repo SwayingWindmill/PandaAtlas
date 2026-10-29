@@ -113,13 +113,20 @@ class ValidateLearningContentTests(unittest.TestCase):
         errors = BUILDER.validate_content(content, PANDAS)
         self.assertTrue(any(fragment in error for error in errors), errors)
 
-    def test_draft_text_must_be_marked_and_published_text_must_not(self) -> None:
-        self.assert_error(lambda c: c["cards"][0]["title"].update(zh="黑眼圈"), "[草稿]")
+    def test_unmarked_drafts_are_allowed_and_published_text_must_not_look_like_a_draft(self) -> None:
+        content = document()
+        content["cards"][0]["title"] = {"zh": "黑眼圈", "en": "Eye patches"}
+        self.assertEqual(BUILDER.validate_content(content, PANDAS), [])
         self.assert_error(lambda c: c["cards"][0]["body"].update(en="[draft] A real fact."), "draft mark", "published")
 
     def test_published_sources_need_an_https_citation(self) -> None:
         self.assert_error(lambda c: c["cards"][0]["sources"][0].update(url="http://example.test/a"), "https", "published")
-        self.assert_error(lambda c: c["cards"][0]["sources"][0].update(url="https://example.test/a"), "url", "draft")
+        self.assert_error(lambda c: c["cards"][0]["sources"][0].update(url="https://example.test/a"), "citedOn", "draft")
+
+    def test_a_face_tip_body_may_be_empty(self) -> None:
+        content = document()
+        content["faceGuides"][0]["tips"][1]["body"] = {"zh": "", "en": ""}
+        self.assertEqual(BUILDER.validate_content(content, PANDAS), [])
 
     def test_face_tips_and_real_pandas(self) -> None:
         self.assert_error(lambda c: c["faceGuides"][0]["tips"].pop(), "tips")

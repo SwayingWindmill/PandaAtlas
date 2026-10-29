@@ -7,6 +7,7 @@ import {
   catalogIsEmpty,
   learningText,
   resolveChallenge,
+  visibleTips,
 } from "./catalog";
 
 const text = { zh: "[草稿] 黑眼圈", en: "[draft] Eye patches" };
@@ -94,6 +95,15 @@ describe("resolveChallenge", () => {
     expect(resolved?.photoPandaId).toBe("1");
     expect(resolved?.options.map((option) => option.slug)).toEqual(["bao-li", "lei-lei", "lun-lun", "yang-yang"]);
     expect(learningText(challenge.tip)).toBe("[草稿] 占位提示。");
+  });
+
+  it("hides a face-guide tip whose body is empty", () => {
+    const tips = [
+      { body: { zh: "两颊圆润。", en: "Round cheeks." } },
+      { body: { zh: "", en: "" } },
+      { body: { zh: "  ", en: "" } },
+    ];
+    expect(visibleTips(tips)).toEqual([{ body: { zh: "两颊圆润。", en: "Round cheeks." } }]);
   });
 
   it("does not invent a name when a panda is missing from the release", () => {

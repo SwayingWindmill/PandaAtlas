@@ -1,46 +1,57 @@
-import type { Href } from "expo-router";
-import type { ReactNode } from "react";
-import { View } from "react-native";
+import { router } from "expo-router";
+import { Baby, Eye, Leaf, ScanFace, Sparkles } from "lucide-react-native";
+import type { LucideIcon } from "lucide-react-native";
+import { ScrollView, View } from "react-native";
+import { useCSSVariable } from "uniwind";
 
+import { PressableCard } from "@/components/card";
+import { Chip } from "@/components/chip";
+import { Hero } from "@/components/hero";
 import { LoadFailed } from "@/components/load-failed";
-import { NavRow } from "@/components/nav-row";
 import { Page } from "@/components/page";
+import { SectionHeader } from "@/components/section-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { catalogIsEmpty, learningText } from "@/features/learning/catalog";
-import { useLearningCatalog } from "@/features/learning/use-catalog";
+import { IconWell } from "@/features/learning/icon-well";
+import { PandaPhoto } from "@/features/learning/panda-photo";
+import { useLearningCatalog, useLearningPandas } from "@/features/learning/use-catalog";
+import { usePandaCover } from "@/lib/covers";
 
-function cardHref(slug: string): Href {
-  return { pathname: "/learn/cards/[slug]", params: { slug } };
+const CARD_ICONS: Record<string, LucideIcon> = {
+  "black-eye-patches": Eye,
+  bamboo: Leaf,
+  cubs: Baby,
+};
+
+const TOPIC_ICONS: Record<string, LucideIcon> = {
+  "telling-faces-apart": ScanFace,
+  "what-pandas-eat": Leaf,
+};
+
+function openCard(slug: string) {
+  router.push({ pathname: "/learn/cards/[slug]", params: { slug } });
 }
 
-function topicHref(slug: string): Href {
-  return { pathname: "/learn/topics/[slug]", params: { slug } };
+function openTopic(slug: string) {
+  router.push({ pathname: "/learn/topics/[slug]", params: { slug } });
 }
 
-function termHref(slug: string): Href {
-  return { pathname: "/learn/terms/[slug]", params: { slug } };
+function openTerm(slug: string) {
+  router.push({ pathname: "/learn/terms/[slug]", params: { slug } });
 }
 
-function faceHref(slug: string): Href {
-  return { pathname: "/learn/faces/[slug]", params: { slug } };
-}
-
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <View className="gap-1">
-      <Text variant="h2">{title}</Text>
-      <View>{children}</View>
-    </View>
-  );
+function openFace(slug: string) {
+  router.push({ pathname: "/learn/faces/[slug]", params: { slug } });
 }
 
 export default function LearnScreen() {
   const { state, reload } = useLearningCatalog();
+  const { pandas } = useLearningPandas();
   if (state.status !== "ready") {
     return (
       <Page label="科普" title="认识大熊猫">
-        {state.status === "loading" ? <Skeleton className="h-24 w-full" accessibilityLabel="正在加载" /> : null}
+        {state.status === "loading" ? <Skeleton className="h-72 w-full rounded-xl" accessibilityLabel="正在加载" /> : null}
         {state.status === "failed" ? <LoadFailed message="科普暂时打不开。" onRetry={reload} /> : null}
       </Page>
     );
@@ -55,59 +66,133 @@ export default function LearnScreen() {
     );
   }
 
-  const showFaces = catalog.faceGuides.length > 0 || catalog.challenges.length > 0;
+  const featured = catalog.faceGuides[0];
+  const featuredPanda = featured ? pandas?.find((panda) => panda.slug === featured.pandaSlug) : undefined;
+  const tagline = catalog.topics[0] ? learningText(catalog.topics[0].summary) : learningText(catalog.cards[0]?.summary);
+
   return (
-    <Page label="科普" title="认识大熊猫">
+    <Page label="科普" title="认识大熊猫" contentContainerClassName="gap-8 px-5 pb-16">
+      <FeaturedHero pandaId={featuredPanda?.id ?? null} title={featured ? learningText(featured.title) : "认识大熊猫"} subtitle={tagline} />
+
       {catalog.cards.length > 0 ? (
-        <Section title="知识卡">
-          {catalog.cards.map((card, index) => (
-            <NavRow
-              key={card.slug}
-              label={learningText(card.title)}
-              href={cardHref(card.slug)}
-              last={index === catalog.cards.length - 1}
-            />
-          ))}
-        </Section>
+        <View className="gap-3">
+          <SectionHeader title="知识卡" meta={`${catalog.cards.length} 张`} />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-3 pr-1">
+            {catalog.cards.map((card) => (
+              <PressableCard
+                key={card.slug}
+                accessibilityRole="button"
+                accessibilityLabel={learningText(card.title)}
+                onPress={() => openCard(card.slug)}
+                className="w-44"
+              >
+                <View className="gap-3 p-4">
+                  <IconWell icon={CARD_ICONS[card.slug] ?? Eye} />
+                  <Text className="font-bold">{learningText(card.title)}</Text>
+                  <Text className="text-muted-foreground" numberOfLines={3}>
+                    {learningText(card.summary)}
+                  </Text>
+                </View>
+              </PressableCard>
+            ))}
+          </ScrollView>
+        </View>
       ) : null}
+
       {catalog.topics.length > 0 ? (
-        <Section title="专题">
-          {catalog.topics.map((topic, index) => (
-            <NavRow
+        <View className="gap-3">
+          <SectionHeader title="专题" />
+          {catalog.topics.map((topic) => (
+            <PressableCard
               key={topic.slug}
-              label={learningText(topic.title)}
-              href={topicHref(topic.slug)}
-              last={index === catalog.topics.length - 1}
-            />
+              accessibilityRole="button"
+              accessibilityLabel={learningText(topic.title)}
+              onPress={() => openTopic(topic.slug)}
+            >
+              <View className="flex-row items-center gap-4 p-4">
+                <IconWell icon={TOPIC_ICONS[topic.slug] ?? ScanFace} large />
+                <View className="min-w-0 flex-1 gap-1">
+                  <Text className="font-bold">{learningText(topic.title)}</Text>
+                  <Text className="text-muted-foreground" numberOfLines={2}>
+                    {learningText(topic.summary)}
+                  </Text>
+                </View>
+              </View>
+            </PressableCard>
           ))}
-        </Section>
+        </View>
       ) : null}
+
       {catalog.terms.length > 0 ? (
-        <Section title="名词解释">
-          {catalog.terms.map((term, index) => (
-            <NavRow
-              key={term.slug}
-              label={learningText(term.term)}
-              href={termHref(term.slug)}
-              last={index === catalog.terms.length - 1}
-            />
-          ))}
-        </Section>
+        <View className="gap-3">
+          <SectionHeader title="名词解释" />
+          <View className="flex-row flex-wrap gap-2">
+            {catalog.terms.map((term) => (
+              <Chip key={term.slug} label={learningText(term.term)} onPress={() => openTerm(term.slug)} />
+            ))}
+          </View>
+        </View>
       ) : null}
-      {showFaces ? (
-        <Section title="认脸指南">
-          {catalog.faceGuides.map((guide, index) => (
-            <NavRow
-              key={guide.slug}
-              label={learningText(guide.title)}
-              href={faceHref(guide.slug)}
-              last={catalog.challenges.length === 0 && index === catalog.faceGuides.length - 1}
-            />
-          ))}
-          {catalog.challenges.length > 0 ? <NavRow label="认脸挑战" href="/learn/challenge" last /> : null}
-        </Section>
+
+      {catalog.faceGuides.length > 0 ? (
+        <View className="gap-3">
+          <SectionHeader title="认脸指南" />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-3 pr-1">
+            {catalog.faceGuides.map((guide) => {
+              const panda = pandas?.find((item) => item.slug === guide.pandaSlug);
+              const title = learningText(guide.title);
+              return (
+                <PressableCard
+                  key={guide.slug}
+                  accessibilityRole="button"
+                  accessibilityLabel={title}
+                  onPress={() => openFace(guide.slug)}
+                  className="w-40"
+                >
+                  <PandaPhoto pandaId={panda?.id ?? null} label={title} aspect="4/5" rounded={false} />
+                  <Text className="px-3 py-3 font-bold">{title}</Text>
+                </PressableCard>
+              );
+            })}
+          </ScrollView>
+        </View>
       ) : null}
+
+      {catalog.challenges.length > 0 ? <ChallengeCard prompt={learningText(catalog.challenges[0]?.prompt)} /> : null}
+
       {catalog.version ? <Text variant="muted">{`资料版本 ${catalog.version}`}</Text> : null}
     </Page>
   );
+}
+
+function ChallengeCard({ prompt }: { prompt: string }) {
+  const ink = useCSSVariable("--color-primary-foreground");
+  return (
+    <PressableCard accessibilityRole="button" accessibilityLabel="认脸挑战" onPress={() => router.push("/learn/challenge")} className="bg-primary">
+      <View className="flex-row items-center gap-4 p-5">
+        <View className="size-14 items-center justify-center rounded-xl bg-background/15">
+          <Sparkles size={28} color={String(ink)} strokeWidth={2} />
+        </View>
+        <View className="min-w-0 flex-1 gap-1">
+          <Text variant="small" className="text-highlight">
+            认脸挑战
+          </Text>
+          <Text variant="h2" className="text-primary-foreground">
+            {prompt}
+          </Text>
+          <Text className="text-primary-foreground">开始</Text>
+        </View>
+      </View>
+    </PressableCard>
+  );
+}
+
+function FeaturedHero({ pandaId, title, subtitle }: { pandaId: string | null; title: string; subtitle: string }) {
+  const photo = pandaId ? <Cover pandaId={pandaId} title={title} subtitle={subtitle} /> : <Hero imageUrl={null} label="认一认" title={title} subtitle={subtitle} />;
+  return photo;
+}
+
+function Cover({ pandaId, title, subtitle }: { pandaId: string; title: string; subtitle: string }) {
+  const photo = usePandaCover(pandaId);
+  return <Hero imageUrl={photo} label="认一认" title={title} subtitle={subtitle} />;
 }

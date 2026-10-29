@@ -1,25 +1,28 @@
 import * as WebBrowser from "expo-web-browser";
+import { ExternalLink } from "lucide-react-native";
 import { Pressable, View } from "react-native";
+import { useCSSVariable } from "uniwind";
 
+import { Card } from "@/components/card";
 import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
 
 import { type LearningSource, learningText } from "./catalog";
 
-/** Citations under a learning page. A draft source has no link until a writer adds one. */
+/** Citations under a learning page, one tappable row per source. */
 export function LearningSources({ sources }: { sources: readonly LearningSource[] }) {
-  if (sources.length === 0) return null;
+  const ink = useCSSVariable("--color-muted-foreground");
+  const cited = sources.filter((source) => learningText(source.title));
+  if (cited.length === 0) return null;
   return (
-    <View className="gap-1">
+    <View className="gap-3">
       <Text variant="h2">来源</Text>
-      <View>
-        {sources.map((source, index) => {
+      <Card>
+        {cited.map((source, index) => {
           const title = learningText(source.title);
-          const last = index === sources.length - 1;
-          const row = cn("border-t-hairline border-border py-3", last && "border-b-hairline");
+          const row = index > 0 ? "border-t-hairline border-border" : "";
           if (!source.url) {
             return (
-              <View key={`${title}-${index}`} className={row}>
+              <View key={`${title}-${index}`} className={`px-4 py-3 ${row}`}>
                 <Text className="text-muted-foreground">{title}</Text>
               </View>
             );
@@ -29,15 +32,16 @@ export function LearningSources({ sources }: { sources: readonly LearningSource[
             <Pressable
               key={url}
               onPress={() => void WebBrowser.openBrowserAsync(url)}
-              role="link"
+              accessibilityRole="link"
               accessibilityLabel={title}
-              className={cn(row, "active:bg-accent")}
+              className={`min-h-11 flex-row items-center gap-3 px-4 py-3 active:bg-accent ${row}`}
             >
-              <Text className="font-bold">{title}</Text>
+              <ExternalLink size={16} color={String(ink)} strokeWidth={2} />
+              <Text className="min-w-0 flex-1 font-bold">{title}</Text>
             </Pressable>
           );
         })}
-      </View>
+      </Card>
     </View>
   );
 }
