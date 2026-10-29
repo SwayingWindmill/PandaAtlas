@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-29T16:40:00Z",
+  "title": "Design System: 吱熊猫",
+  "extensions": {
+    "colorMeta": {
+      "canvas": { "role": "neutral", "displayName": "Olive paper", "canonical": "#fcfdfc", "tonalRamp": ["#1d211c", "#60655f", "#b9bcb8", "#d7dad7", "#e7e9e7", "#eff1ef", "#fcfdfc", "#fcfdfc"] },
+      "canvas-dark": { "role": "neutral", "displayName": "Olive paper, dark", "canonical": "#111210", "tonalRamp": ["#111210", "#181917", "#212220", "#282a27", "#383a36", "#5c625b", "#afb5ad", "#eceeec"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#1d211c", "tonalRamp": ["#1d211c", "#60655f", "#b9bcb8", "#d7dad7", "#e7e9e7", "#eff1ef", "#fcfdfc", "#fcfdfc"] },
+      "ink-dark": { "role": "neutral", "displayName": "Ink, dark", "canonical": "#eceeec", "tonalRamp": ["#111210", "#212220", "#383a36", "#5c625b", "#afb5ad", "#eceeec", "#eceeec", "#eceeec"] },
+      "muted": { "role": "neutral", "displayName": "Muted ink", "canonical": "#60655f", "tonalRamp": ["#1d211c", "#60655f", "#b9bcb8", "#d7dad7", "#e7e9e7", "#eff1ef", "#fcfdfc", "#fcfdfc"] },
+      "muted-dark": { "role": "neutral", "displayName": "Muted ink, dark", "canonical": "#afb5ad", "tonalRamp": ["#111210", "#383a36", "#5c625b", "#afb5ad", "#eceeec", "#eceeec", "#eceeec", "#eceeec"] },
+      "line": { "role": "neutral", "displayName": "Hairline", "canonical": "#d7dad7", "tonalRamp": ["#1d211c", "#60655f", "#b9bcb8", "#d7dad7", "#e7e9e7", "#eff1ef", "#fcfdfc", "#fcfdfc"] },
+      "line-dark": { "role": "neutral", "displayName": "Hairline, dark", "canonical": "#383a36", "tonalRamp": ["#111210", "#212220", "#282a27", "#383a36", "#5c625b", "#afb5ad", "#eceeec", "#eceeec"] },
+      "surface-subtle": { "role": "neutral", "displayName": "Subtle surface", "canonical": "#eff1ef", "tonalRamp": ["#1d211c", "#60655f", "#b9bcb8", "#d7dad7", "#e7e9e7", "#eff1ef", "#fcfdfc", "#fcfdfc"] },
+      "surface-subtle-dark": { "role": "neutral", "displayName": "Subtle surface, dark", "canonical": "#212220", "tonalRamp": ["#111210", "#181917", "#212220", "#282a27", "#383a36", "#5c625b", "#afb5ad", "#eceeec"] },
+      "jade": { "role": "accent", "displayName": "Jade", "canonical": "#29a383", "tonalRamp": ["#0d2d23", "#208368", "#29a383", "#1fd8a4", "#e6f7ed", "#e6f7ed", "#e6f7ed", "#e6f7ed"] },
+      "warning": { "role": "warning", "displayName": "Amber", "canonical": "#ab6400", "tonalRamp": ["#ab6400", "#ffca16", "#ffca16", "#ffca16", "#ffca16", "#ffca16", "#ffca16", "#ffca16"] },
+      "destructive": { "role": "danger", "displayName": "Red", "canonical": "#ce2c31", "tonalRamp": ["#ce2c31", "#ff9592", "#ff9592", "#ff9592", "#ff9592", "#ff9592", "#ff9592", "#ff9592"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The screen's only title." },
+      "title": { "displayName": "Title", "purpose": "Section headings." },
+      "body": { "displayName": "Body", "purpose": "Sentences, names, and buttons." },
+      "meta": { "displayName": "Meta", "purpose": "The line under a row, a label, the version." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "answer", "value": "250ms ease-out", "purpose": "The quiz result fades in. Nothing else on these screens animates in." }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "390px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one decision on a screen. Ink on paper.",
+      "html": "<button class=\"ds-btn-primary\">看宝力的资料</button>",
+      "css": ".ds-btn-primary { background: #1d211c; color: #fcfdfc; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: 'Noto Sans SC', sans-serif; font-size: 16px; font-weight: 700; } .ds-btn-primary:hover { background: #60655f; } .ds-btn-primary:focus-visible { outline: 2px solid #29a383; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "The alternate action beside the primary.",
+      "html": "<button class=\"ds-btn-secondary\">再来一次</button>",
+      "css": ".ds-btn-secondary { background: #eff1ef; color: #1d211c; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: 'Noto Sans SC', sans-serif; font-size: 16px; font-weight: 700; } .ds-btn-secondary:hover { background: #e7e9e7; } .ds-btn-secondary:focus-visible { outline: 2px solid #29a383; outline-offset: 2px; }"
+    },
+    {
+      "name": "Index Row",
+      "kind": "custom",
+      "refersTo": "plate",
+      "description": "One entry in the manual. The name is the control.",
+      "html": "<a class=\"ds-row\" href=\"#\"><span class=\"ds-row-name\">黑眼圈</span><span class=\"ds-row-meta\">大熊猫眼周的黑斑叫眼斑。</span></a>",
+      "css": ".ds-row { display: flex; flex-direction: column; justify-content: center; min-height: 44px; padding: 12px 0; border-top: 0.5px solid #d7dad7; text-decoration: none; color: #1d211c; font-family: 'Noto Sans SC', sans-serif; } .ds-row-name { font-size: 16px; font-weight: 700; } .ds-row-meta { margin-top: 4px; font-size: 12px; color: #60655f; } .ds-row:hover { background: #e7e9e7; } .ds-row:focus-visible { outline: 2px solid #29a383; }"
+    },
+    {
+      "name": "Plate",
+      "kind": "custom",
+      "refersTo": "plate",
+      "description": "A published photograph, edge to edge, captioned underneath.",
+      "html": "<figure class=\"ds-plate\"><div class=\"ds-plate-photo\"></div><figcaption><strong>宝力</strong><span>两颊不如青宝蓬松。</span></figcaption></figure>",
+      "css": ".ds-plate { margin: 0; font-family: 'Noto Sans SC', sans-serif; color: #1d211c; } .ds-plate-photo { aspect-ratio: 4 / 5; background: #eff1ef; } .ds-plate figcaption { padding: 12px 20px 0; } .ds-plate strong { display: block; font-size: 20px; font-weight: 800; } .ds-plate span { display: block; margin-top: 4px; font-size: 16px; line-height: 1.75; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A plate in the atlas.",
+    "overview": "吱熊猫 is a book of named pandas, not a kit of cards. The page is olive paper. A hairline separates one fact from the next. When a screen is about one animal, that animal's photograph is the page: edge to edge, with the name and the distinguishing mark set underneath in the column, never on a scrim.",
+    "keyCharacteristics": [
+      "One photograph, full width, captioned in the column.",
+      "Lists are hairline rows. A row is a name, then at most one muted line.",
+      "Four sizes only: 32, 20, 16, 12. Noto Sans SC.",
+      "Jade is rare, and the 科普 screens do not use it.",
+      "Dark mode is the same structure on the dark olive ground."
+    ],
+    "rules": [
+      { "name": "The Paper Rule", "body": "The ground is olive-1 (`#fcfdfc` light, `#111210` dark). Do not introduce a second neutral, a gradient ground, or true black.", "section": "colors" },
+      { "name": "The Accent Rule", "body": "Jade does not fill a button, a card, or a progress bar. A primary action is ink on paper, reversed.", "section": "colors" },
+      { "name": "The Four Size Rule", "body": "If a hierarchy is weak, change weight, color, or space. Do not add a size.", "section": "typography" },
+      { "name": "The Plate Rule", "body": "The first figure on 科普 is one published photograph of a named panda. The caption sits under the picture. Text is not placed on the picture.", "section": "layout" },
+      { "name": "The Flat Rule", "body": "A hairline or a change of type does the separating. A shadow and a border are not combined, and a resting row has neither a shadow nor a fill.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use a published photograph of the panda the sentence is about.",
+      "Do keep draft 科普 out of the public catalog.",
+      "Do reveal quiz names only after the answer, and do not repeat the choice photo as the question."
+    ],
+    "donts": [
+      "Don't put an icon in a tinted square.",
+      "Don't use a gradient hero, a scrim, or glass.",
+      "Don't use the same rounded card for every fact.",
+      "Don't put a kicker above the title.",
+      "Don't introduce a color, a type size, or a shadow the rest of the atlas does not already use."
+    ]
+  }
+}

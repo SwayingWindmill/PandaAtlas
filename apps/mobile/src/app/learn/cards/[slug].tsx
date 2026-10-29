@@ -1,14 +1,11 @@
-import { useLocalSearchParams } from "expo-router";
-import { Eye } from "lucide-react-native";
-import { View } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
 
-import { Card } from "@/components/card";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { entryBySlug, learningText } from "@/features/learning/catalog";
-import { IconWell } from "@/features/learning/icon-well";
+import { NeighborRows, neighborsAt } from "@/features/learning/rows";
 import { LearningSources } from "@/features/learning/sources";
 import { useLearningCatalog } from "@/features/learning/use-catalog";
 
@@ -21,25 +18,26 @@ export default function LearnCardScreen() {
   const { state, reload } = useLearningCatalog();
   if (state.status !== "ready") {
     return (
-      <Page label="知识卡" title="知识卡">
-        {state.status === "loading" ? <Skeleton className="h-40 w-full rounded-xl" accessibilityLabel="正在加载" /> : null}
+      <Page title="知识卡">
+        {state.status === "loading" ? <Skeleton className="h-40 w-full" accessibilityLabel="正在加载" /> : null}
         {state.status === "failed" ? <LoadFailed message="科普暂时打不开。" onRetry={reload} /> : null}
       </Page>
     );
   }
   const card = entryBySlug(state.catalog.cards, slug);
-  if (!card) return <Page label="知识卡" title="没有这一篇" />;
+  if (!card) return <Page title="没有这一篇" />;
+  const index = state.catalog.cards.findIndex((item) => item.slug === card.slug);
+  const { previous, next } = neighborsAt(state.catalog.cards, index);
   return (
-    <Page label="知识卡" title={learningText(card.title)} contentContainerClassName="gap-6 px-5 pb-16">
-      <Card>
-        <View className="gap-3 bg-highlight-soft p-5">
-          <IconWell icon={Eye} />
-          <Text className="leading-6">{learningText(card.summary)}</Text>
-        </View>
-      </Card>
-      <Card>
-        <Text className="p-5 leading-7">{learningText(card.body)}</Text>
-      </Card>
+    <Page title={learningText(card.title)} contentContainerClassName="gap-8 px-5 pb-16">
+      <Text className="leading-7">{learningText(card.summary)}</Text>
+      <Text className="leading-7">{learningText(card.body)}</Text>
+      <NeighborRows
+        previous={previous}
+        next={next}
+        labelOf={(entry) => learningText(entry.title)}
+        onOpen={(entry) => router.push({ pathname: "/learn/cards/[slug]", params: { slug: entry.slug } })}
+      />
       <LearningSources sources={card.sources} />
     </Page>
   );

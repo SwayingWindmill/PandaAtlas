@@ -1,14 +1,11 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { View } from "react-native";
 
-import { Card } from "@/components/card";
-import { Chip } from "@/components/chip";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
-import { SectionHeader } from "@/components/section-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { entryBySlug, learningText } from "@/features/learning/catalog";
+import { IndexRow, ManualSection, NeighborRows, neighborsAt } from "@/features/learning/rows";
 import { LearningSources } from "@/features/learning/sources";
 import { useLearningCatalog } from "@/features/learning/use-catalog";
 
@@ -21,37 +18,41 @@ export default function TermScreen() {
   const { state, reload } = useLearningCatalog();
   if (state.status !== "ready") {
     return (
-      <Page label="名词解释" title="名词解释">
-        {state.status === "loading" ? <Skeleton className="h-32 w-full rounded-xl" accessibilityLabel="正在加载" /> : null}
+      <Page title="名词解释">
+        {state.status === "loading" ? <Skeleton className="h-32 w-full" accessibilityLabel="正在加载" /> : null}
         {state.status === "failed" ? <LoadFailed message="科普暂时打不开。" onRetry={reload} /> : null}
       </Page>
     );
   }
   const term = entryBySlug(state.catalog.terms, slug);
-  if (!term) return <Page label="名词解释" title="没有这一篇" />;
+  if (!term) return <Page title="没有这一篇" />;
   const related = term.relatedSlugs.flatMap((relatedSlug) => {
     const item = entryBySlug(state.catalog.terms, relatedSlug);
     return item ? [item] : [];
   });
+  const index = state.catalog.terms.findIndex((item) => item.slug === term.slug);
+  const { previous, next } = neighborsAt(state.catalog.terms, index);
   return (
-    <Page label="名词解释" title={learningText(term.term)} contentContainerClassName="gap-6 px-5 pb-16">
-      <Card>
-        <Text className="p-5 leading-7">{learningText(term.definition)}</Text>
-      </Card>
+    <Page title={learningText(term.term)} contentContainerClassName="gap-8 px-5 pb-16">
+      <Text className="leading-7">{learningText(term.definition)}</Text>
       {related.length > 0 ? (
-        <View className="gap-3">
-          <SectionHeader title="相关名词" />
-          <View className="flex-row flex-wrap gap-2">
-            {related.map((item) => (
-              <Chip
-                key={item.slug}
-                label={learningText(item.term)}
-                onPress={() => router.push({ pathname: "/learn/terms/[slug]", params: { slug: item.slug } })}
-              />
-            ))}
-          </View>
-        </View>
+        <ManualSection title="相关名词">
+          {related.map((item, itemIndex) => (
+            <IndexRow
+              key={item.slug}
+              label={learningText(item.term)}
+              onPress={() => router.push({ pathname: "/learn/terms/[slug]", params: { slug: item.slug } })}
+              last={itemIndex === related.length - 1}
+            />
+          ))}
+        </ManualSection>
       ) : null}
+      <NeighborRows
+        previous={previous}
+        next={next}
+        labelOf={(entry) => learningText(entry.term)}
+        onOpen={(entry) => router.push({ pathname: "/learn/terms/[slug]", params: { slug: entry.slug } })}
+      />
       <LearningSources sources={term.sources} />
     </Page>
   );

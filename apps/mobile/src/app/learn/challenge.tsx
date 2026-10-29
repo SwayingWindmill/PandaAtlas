@@ -1,11 +1,8 @@
 import { Image } from "expo-image";
-import { Check, X } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { useCSSVariable } from "uniwind";
 
-import { Card } from "@/components/card";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
@@ -24,7 +21,6 @@ export default function FaceChallengeScreen() {
   const [index, setIndex] = useState(0);
   const [chosen, setChosen] = useState<string | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
-  const markInk = useCSSVariable("--color-primary-foreground");
   const photoKey =
     state.status === "ready" && pandas
       ? [...new Set(state.catalog.challenges.flatMap((challenge) => [challenge.answerPandaSlug, ...challenge.decoyPandaSlugs]))]
@@ -54,11 +50,11 @@ export default function FaceChallengeScreen() {
 
   if (state.status !== "ready" || (pandas === null && !pandasFailed)) {
     return (
-      <Page label="认脸挑战" title="看照片认熊猫">
+      <Page title="看照片认熊猫">
         {state.status === "failed" ? (
           <LoadFailed message="科普暂时打不开。" onRetry={reload} />
         ) : (
-          <Skeleton className="h-64 w-full rounded-xl" accessibilityLabel="正在出题" />
+          <Skeleton className="h-64 w-full" accessibilityLabel="正在出题" />
         )}
       </Page>
     );
@@ -76,20 +72,18 @@ export default function FaceChallengeScreen() {
 
   if (!round) {
     return (
-      <Page label="认脸挑战" title="看照片认熊猫">
-        <Card>
-          <Text className="p-5 text-muted-foreground">
-            {state.catalog.challenges.length === 0 ? "现在还没有认脸挑战。" : "这道题的熊猫还不在当前资料里。"}
-          </Text>
-        </Card>
+      <Page title="看照片认熊猫">
+        <Text className="text-muted-foreground">
+          {state.catalog.challenges.length === 0 ? "现在还没有认脸挑战。" : "这道题的熊猫还不在当前资料里。"}
+        </Text>
       </Page>
     );
   }
 
   if (!photosReady || pandas === null) {
     return (
-      <Page label="认脸挑战" title="看照片认熊猫">
-        <Skeleton className="h-64 w-full rounded-xl" accessibilityLabel="正在出题" />
+      <Page title="看照片认熊猫">
+        <Skeleton className="h-64 w-full" accessibilityLabel="正在出题" />
       </Page>
     );
   }
@@ -103,7 +97,6 @@ export default function FaceChallengeScreen() {
   const answered = chosen !== null;
   const answerSlug = round.answerSlug;
   const correct = chosen === answerSlug;
-  const progress = (index + (answered ? 1 : 0)) / playable.length;
   const answer = presented.options.find((option) => option.slug === answerSlug);
   const showNames = presented.mode === "compare" || answered;
 
@@ -125,35 +118,24 @@ export default function FaceChallengeScreen() {
   }
 
   return (
-    <Page label="认脸挑战" title={presented.title} contentContainerClassName="gap-5 px-5 pb-16">
-      <View className="gap-2">
-        <View className="flex-row items-center justify-between">
-          <Text variant="small" className="text-highlight-foreground">
-            {`${index + 1} / ${playable.length}`}
-          </Text>
-          <Text variant="small" className="text-muted-foreground">
-            {`得分 ${correctCount}`}
-          </Text>
-        </View>
-        <View className="h-1.5 overflow-hidden rounded-full bg-muted">
-          <View className="h-full rounded-full bg-highlight" style={{ width: `${Math.round(progress * 100)}%` }} />
-        </View>
+    <Page title={presented.title} contentContainerClassName="gap-6 px-5 pb-16">
+      <View className="flex-row items-center justify-between">
+        <Text variant="muted">{`${index + 1} / ${playable.length}`}</Text>
+        <Text variant="muted">{`得分 ${correctCount}`}</Text>
       </View>
 
       {presented.questionPhotoUrl ? (
-        <Card>
-          <View className="aspect-[4/3] overflow-hidden">
-            <Image
-              source={presented.questionPhotoUrl}
-              style={{ width: "100%", height: "100%" }}
-              contentFit="cover"
-              accessibilityLabel="待认熊猫的另一张照片"
-            />
-          </View>
-        </Card>
+        <View className="-mx-5 aspect-[4/3] overflow-hidden">
+          <Image
+            source={presented.questionPhotoUrl}
+            style={{ width: "100%", height: "100%" }}
+            contentFit="cover"
+            accessibilityLabel="待认熊猫的另一张照片"
+          />
+        </View>
       ) : null}
 
-      <View accessibilityLabel="选项" className="flex-row flex-wrap gap-3">
+      <View accessibilityLabel="选项" className="flex-row flex-wrap justify-between gap-y-3">
         {presented.options.map((option, optionIndex) => {
           const isAnswer = answered && option.slug === answerSlug;
           const wrongPick = chosen === option.slug && !isAnswer;
@@ -166,19 +148,21 @@ export default function FaceChallengeScreen() {
               accessibilityRole="button"
               accessibilityLabel={label}
               accessibilityState={{ selected: chosen === option.slug }}
-              className={cn(
-                "basis-[47%] overflow-hidden rounded-xl border-hairline border-border bg-card active:opacity-90",
-                isAnswer && "border-foreground",
-                wrongPick && "border-destructive",
-              )}
-              style={({ pressed }) => ({ transform: [{ scale: pressed && !answered ? 0.97 : 1 }] })}
+              className="w-[48%]"
             >
-              <View>
+              <View
+                className={cn(
+                  "overflow-hidden border-hairline",
+                  isAnswer ? "border-foreground" : wrongPick ? "border-destructive" : "border-border",
+                )}
+              >
                 <ChoicePhoto url={option.photoUrl} pandaId={option.pandaId} label={label} />
-                {isAnswer ? <Mark icon="check" color={String(markInk)} /> : null}
-                {wrongPick ? <Mark icon="wrong" color={String(markInk)} /> : null}
               </View>
-              {showNames ? <Text className="px-3 py-3 text-center font-bold">{option.name}</Text> : <View className="h-4" />}
+              {showNames ? (
+                <Text className={cn("py-2 text-center", isAnswer ? "font-bold" : wrongPick ? "text-destructive" : "text-muted-foreground")}>
+                  {option.name}
+                </Text>
+              ) : null}
             </Pressable>
           );
         })}
@@ -186,12 +170,8 @@ export default function FaceChallengeScreen() {
 
       {answered ? (
         <Animated.View entering={FadeIn.duration(250)} className="gap-4" accessibilityLiveRegion="polite">
-          <Card>
-            <View className="gap-2 p-5">
-              <Text variant="h2">{correct ? "认对了" : "这次没认对"}</Text>
-              <Text className="leading-6 text-muted-foreground">{round.tip}</Text>
-            </View>
-          </Card>
+          <Text variant="h2">{correct ? "认对了" : "这次没认对"}</Text>
+          <Text className="leading-6">{round.tip}</Text>
           <View className="flex-row flex-wrap gap-2">
             {index < playable.length - 1 ? (
               <Button onPress={next}>
@@ -219,14 +199,6 @@ function ChoicePhoto({ url, pandaId, label }: { url: string | null; pandaId: str
   return (
     <View className="aspect-square overflow-hidden">
       <Image source={url} style={{ width: "100%", height: "100%" }} contentFit="cover" accessible={false} />
-    </View>
-  );
-}
-
-function Mark({ icon, color }: { icon: "check" | "wrong"; color: string }) {
-  return (
-    <View className={cn("absolute right-2 top-2 size-8 items-center justify-center rounded-full", icon === "check" ? "bg-primary" : "bg-destructive")}>
-      {icon === "check" ? <Check size={18} color={color} strokeWidth={2.4} /> : <X size={18} color={color} strokeWidth={2.4} />}
     </View>
   );
 }
