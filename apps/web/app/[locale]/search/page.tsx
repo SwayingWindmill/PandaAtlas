@@ -53,7 +53,6 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
   const state = parseSearchQuery(rawSearch);
   const stories = listFamilyStories();
   const dataset = await loadV2PublicSearchDataset(stories);
-  if (!dataset) notFound();
   const view = buildSearchViewModel({ ...dataset, stories }, state, locale);
   const t = copy[locale];
 

@@ -141,7 +141,6 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
   if (!locale) notFound();
 
   const envelope = await loadV2PublicAtlasDataset(locale);
-  if (!envelope) notFound();
   const parsed = parseAtlasQuery(rawQuery, envelope.data.facilities);
   const view = buildAtlasSearchViewModel(envelope.data.pandas, envelope.data.facilities, parsed.state, locale);
   const canonicalState = { ...parsed.state, page: view.page };

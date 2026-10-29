@@ -10,8 +10,9 @@ export interface SiteNavigationModel {
   searchResults: ArchiveSearchResult[];
 }
 
-// The navigation is part of every public page, so a failed read degrades to an empty search
-// instead of failing the page.
+// Search is chrome on every public page, including pages that do not otherwise read the API.
+// A failed index leaves the menu empty. A failed page read is not caught here: that read throws
+// an uncached 503 instead of a not-found page.
 export const loadSiteNavigation = cache(async (locale: PublicLocale): Promise<SiteNavigationModel> => {
   const index = await loadV2SiteSearchIndex().catch(() => null);
   if (!index) return { searchResults: [] };

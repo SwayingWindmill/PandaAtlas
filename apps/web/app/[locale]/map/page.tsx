@@ -40,7 +40,6 @@ export default async function LocalizedMapPage({ params }: LocalizedMapPageProps
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
   const envelope = await loadV2PublicMapOverview(locale);
-  if (!envelope) notFound();
   const view = buildPandaMapViewModel(envelope.data.entries, locale, { width: WORLD_WIDTH, height: WORLD_HEIGHT });
   const coverIds = view.items.flatMap((item) => (item.coverPandaId ? [item.coverPandaId] : []));
   const assets = await loadV2PandaCovers(coverIds);

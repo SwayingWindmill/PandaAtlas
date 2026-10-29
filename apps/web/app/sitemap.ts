@@ -20,21 +20,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       { url: `${siteUrl}/${locale}/privacy`, changeFrequency: "monthly", priority: 0.3 },
     );
 
-    try {
-      for (const slug of await loadV2PublicInstitutionSlugs()) {
-        entries.push({ url: `${siteUrl}/${locale}/institutions/${slug}`, changeFrequency: "monthly", priority: 0.7 });
-      }
-      const envelope = await loadV2PublicAtlasDataset(locale);
-      if (!envelope) continue;
-      for (const panda of envelope.data.pandas) {
-        entries.push({
-          url: `${siteUrl}/${locale}/pandas/${panda.slug}`,
-          changeFrequency: "monthly",
-          priority: 0.8,
-        });
-      }
-    } catch {
-      continue;
+    for (const slug of await loadV2PublicInstitutionSlugs()) {
+      entries.push({ url: `${siteUrl}/${locale}/institutions/${slug}`, changeFrequency: "monthly", priority: 0.7 });
+    }
+    const envelope = await loadV2PublicAtlasDataset(locale);
+    for (const panda of envelope.data.pandas) {
+      entries.push({
+        url: `${siteUrl}/${locale}/pandas/${panda.slug}`,
+        changeFrequency: "monthly",
+        priority: 0.8,
+      });
     }
   }
   return entries;
