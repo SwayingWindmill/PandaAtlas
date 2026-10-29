@@ -84,6 +84,8 @@ export class AsyncDownstreamRunnerService {
         .join("; ");
       throw new Error(`Async downstream stages failed: ${summary}`, { cause: failures[0]?.error });
     }
+    // /health/async treats a last success older than 60 minutes as stalled, which is four
+    // 15-minute cycles. Writing less often would age a healthy idle worker into that window.
     await this.heartbeat.recordSuccess();
     return stages;
   }

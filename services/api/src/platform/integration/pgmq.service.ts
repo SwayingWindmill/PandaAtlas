@@ -23,6 +23,15 @@ export interface PgmqMessage {
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
 
+// pgmq stores a queue named <name> in pgmq.q_<name>. Names are letters, digits and underscores,
+// at most 47 characters. The probe interpolates only names that match; anything else falls
+// through to pgmq.read, which binds the name as a parameter.
+const PGMQ_QUEUE_NAME = /^[A-Za-z0-9_]{1,47}$/u;
+
+function pgmqQueueTable(queue: string): string | undefined {
+  return PGMQ_QUEUE_NAME.test(queue) ? `q_${queue}` : undefined;
+}
+
 // The outbox event an integration-event message names, when it names a well-formed one.
 export function queuedEventId(message: PgmqMessage): string | undefined {
   const eventId = message.message.eventId;
@@ -60,6 +69,10 @@ export class PgmqService {
     visibilityTimeoutSeconds: number,
     limit: number,
   ): Promise<PgmqMessage[]> {
+    // pgmq.read locks and rewrites visibility even when the queue is empty. The cron's
+    // steady state is an empty queue, so an index probe on vt replaces that call.
+    // A message that arrives after this probe waits for the next cycle.
+    if (!(await this.hasVisibleMessage(executor, queue))) return [];
     const result = await sql<{
       msg_id: string;
       read_ct: number;
@@ -73,6 +86,17 @@ export class PgmqService {
       readCount: row.read_ct,
       message: row.message,
     }));
+  }
+
+  private async hasVisibleMessage(executor: PgmqExecutor, queue: string): Promise<boolean> {
+    const table = pgmqQueueTable(queue);
+    if (table === undefined) return true;
+    const result = await sql<{ ready: boolean }>`
+      select exists (
+        select 1 from pgmq.${sql.raw(table)} where vt <= now() limit 1
+      ) as ready
+    `.execute(executor);
+    return result.rows[0]?.ready === true;
   }
 
   public async archive(transaction: DatabaseTransaction, queue: PgmqQueue, msgId: string): Promise<void> {
