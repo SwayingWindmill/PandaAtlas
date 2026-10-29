@@ -172,8 +172,68 @@ describe("PostgresPublicReadRepository snapshot", () => {
     await repository.listPlaces();
 
     expect(calls.filter((call) => call.startsWith("one:publication.current_release"))).toHaveLength(1);
-    expect(calls.filter((call) => call.includes("delivery_control_events"))).toHaveLength(2);
+    expect(calls.filter((call) => call.includes("delivery_control_events"))).toHaveLength(1);
     expect(calls.filter((call) => call === "many:public_read.pandas")).toHaveLength(1);
     expect(calls.filter((call) => call === "many:public_read.places")).toHaveLength(1);
+  });
+
+  it("hides the release when the newest suspension applies", async () => {
+    const calls: string[] = [];
+    const db = chain((table, many) => {
+      calls.push(`${many ? "many" : "one"}:${table}`);
+      if (table.startsWith("publication.current_release")) {
+        return { release_id: RELEASE.releaseId, version: RELEASE.version, lifecycle_state: "sealed" };
+      }
+      if (table === "publication.delivery_control_events") {
+        return [
+          { control_kind: "release_suspension", resource_kind: null, resource_id: null, action: "apply" },
+          { control_kind: "release_suspension", resource_kind: null, resource_id: null, action: "lift" },
+        ];
+      }
+      return many ? [] : undefined;
+    });
+    const repository = new PostgresPublicReadRepository({ db } as never, new PublicReadCache());
+
+    await expect(repository.listPandas()).resolves.toEqual({ kind: "unavailable" });
+    expect(calls.filter((call) => call === "many:public_read.pandas")).toHaveLength(0);
+    expect(calls.filter((call) => call.includes("delivery_control_events"))).toHaveLength(1);
+  });
+
+  it("drops a panda whose newest takedown applies and keeps one that was lifted", async () => {
+    const db = chain((table, many) => {
+      if (table.startsWith("publication.current_release")) {
+        return { release_id: RELEASE.releaseId, version: RELEASE.version, lifecycle_state: "sealed" };
+      }
+      if (table === "publication.delivery_control_events") {
+        return [
+          { control_kind: "resource_takedown", resource_kind: "panda", resource_id: "panda-hidden", action: "apply" },
+          { control_kind: "resource_takedown", resource_kind: "panda", resource_id: "panda-shown", action: "lift" },
+          { control_kind: "resource_takedown", resource_kind: "panda", resource_id: "panda-shown", action: "apply" },
+          { control_kind: "release_suspension", resource_kind: null, resource_id: null, action: "lift" },
+        ];
+      }
+      if (table === "public_read.pandas") {
+        return [
+          { panda_id: "panda-hidden", canonical_slug: "hidden", legacy_slugs: [], names: [], listing_facts: [] },
+          { panda_id: "panda-shown", canonical_slug: "shown", legacy_slugs: [], names: [], listing_facts: [{ fieldKey: "sex" }] },
+        ];
+      }
+      return many ? [] : undefined;
+    });
+    const repository = new PostgresPublicReadRepository({ db } as never, new PublicReadCache());
+
+    await expect(repository.listPandas()).resolves.toEqual({
+      kind: "ok",
+      value: {
+        release: RELEASE,
+        items: [{
+          pandaId: "panda-shown",
+          canonicalSlug: "shown",
+          legacySlugs: [],
+          names: [],
+          facts: [{ fieldKey: "sex" }],
+        }],
+      },
+    });
   });
 });

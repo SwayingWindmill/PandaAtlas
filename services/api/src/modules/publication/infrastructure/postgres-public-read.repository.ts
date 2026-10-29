@@ -17,19 +17,17 @@ import type {
   PublicResidencySummary,
   PublicStats,
 } from "../application/public-read.application.js";
-import { LISTING_FACT_KEYS } from "../application/public-read.application.js";
 import { familyCircleIds } from "../application/family-circle.js";
 import type { FacilityVisitGuide, InstitutionProfile } from "../../places/application/visitor-content.js";
 import type { PublicReadCache } from "./public-read-cache.js";
 
-// Filters `facts` in Postgres so list reads never transfer curation facts.
-const listingFactsPath = `$[*] ? (${LISTING_FACT_KEYS.map((key) => `@.fieldKey == "${key}"`).join(" || ")})`;
+// listing_facts is the stored projection of LISTING_FACT_KEYS. Reading it avoids detoasting facts.
 const listingPandaColumns = [
   "panda_id",
   "canonical_slug",
   "legacy_slugs",
   "names",
-  sql<unknown>`jsonb_path_query_array(facts, ${listingFactsPath}::jsonpath)`.as("facts"),
+  "listing_facts",
 ] as const;
 
 interface DeliveryControls {
@@ -430,11 +428,7 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   private snapshot(): Promise<PublicSnapshot | undefined> {
     return this.cache.remember(
       "snapshot",
-      async () => {
-        const release = await this.resolveCurrentRelease(this.database.db);
-        if (release === undefined) return undefined;
-        return { release, controls: await this.loadDeliveryControls(this.database.db) };
-      },
+      () => this.loadReleaseAndControls(this.database.db),
       (snapshot) => snapshot !== undefined,
     );
   }
@@ -471,7 +465,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     });
   }
 
-  private async resolveCurrentRelease(db: Kysely<Database>): Promise<PublicReadRelease | undefined> {
+  // One round trip for suspension and takedowns. Both tables are empty in steady state,
+  // and the snapshot cache keeps later requests in this generation off this query.
+  private async loadReleaseAndControls(db: Kysely<Database>): Promise<PublicSnapshot | undefined> {
     const row = await db
       .selectFrom("publication.current_release as current")
       .innerJoin("publication.releases as release", "release.release_id", "current.release_id")
@@ -479,42 +475,50 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       .where("current.singleton", "=", true)
       .executeTakeFirst();
     if (row === undefined || row.lifecycle_state !== "sealed") return undefined;
-    const suspension = await db
-      .selectFrom("publication.delivery_control_events")
-      .select("action")
-      .where("control_kind", "=", "release_suspension")
-      .where("release_id", "=", row.release_id)
-      .orderBy("occurred_at", "desc")
-      .orderBy("control_event_id", "desc")
-      .executeTakeFirst();
-    return suspension?.action === "apply" ? undefined : { releaseId: row.release_id, version: row.version };
-  }
 
-  private async loadDeliveryControls(db: Kysely<Database>): Promise<DeliveryControls> {
-    const rows = await db
+    const events = await db
       .selectFrom("publication.delivery_control_events")
-      .select(["resource_kind", "resource_id", "action"])
-      .where("control_kind", "=", "resource_takedown")
+      .select(["control_kind", "resource_kind", "resource_id", "action"])
+      .where((expression) =>
+        expression.or([
+          expression.and([
+            expression("control_kind", "=", "release_suspension"),
+            expression("release_id", "=", row.release_id),
+          ]),
+          expression("control_kind", "=", "resource_takedown"),
+        ]),
+      )
       .orderBy("occurred_at", "desc")
       .orderBy("control_event_id", "desc")
       .execute();
-    const seen = new Set<string>();
+
     const controls: DeliveryControls = {
       panda: new Set(),
       place: new Set(),
       media: new Set(),
       evidence: new Set(),
     };
-    for (const row of rows) {
-      if (row.resource_kind === null || row.resource_id === null) continue;
-      const key = `${row.resource_kind}:${row.resource_id}`;
+    const seen = new Set<string>();
+    let suspended = false;
+    let sawSuspension = false;
+    for (const event of events) {
+      if (event.control_kind === "release_suspension") {
+        if (!sawSuspension) {
+          sawSuspension = true;
+          suspended = event.action === "apply";
+        }
+        continue;
+      }
+      if (event.resource_kind === null || event.resource_id === null) continue;
+      const key = `${event.resource_kind}:${event.resource_id}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      if (row.action === "apply" && row.resource_kind in controls) {
-        controls[row.resource_kind as keyof DeliveryControls].add(row.resource_id);
+      if (event.action === "apply" && event.resource_kind in controls) {
+        controls[event.resource_kind as keyof DeliveryControls].add(event.resource_id);
       }
     }
-    return controls;
+    if (suspended) return undefined;
+    return { release: { releaseId: row.release_id, version: row.version }, controls };
   }
 
   private mapPanda(row: {
@@ -522,14 +526,16 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     canonical_slug: string;
     legacy_slugs: string[];
     names: unknown;
-    facts: unknown;
+    facts?: unknown;
+    listing_facts?: unknown;
   }): PublicPandaSummary {
     return {
       pandaId: row.panda_id,
       canonicalSlug: row.canonical_slug,
       legacySlugs: row.legacy_slugs,
       names: row.names as PublicPandaSummary["names"],
-      facts: row.facts as PublicPandaSummary["facts"],
+      // Detail reads select every fact. Lists and relatives select listing_facts only.
+      facts: (row.facts ?? row.listing_facts) as PublicPandaSummary["facts"],
     };
   }
 
