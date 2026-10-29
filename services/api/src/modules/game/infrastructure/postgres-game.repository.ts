@@ -38,11 +38,18 @@ export class PostgresGameRepository implements GameRepository {
 
   public async getGuessQuestion(difficultyFilter?: GameDifficulty): Promise<GuessQuestion | undefined> {
     // Only questions whose photo is public in the active release, so a client can show it directly.
+    // The release id is a value so the media lookup can use (release_id, asset_id) instead of
+    // reading every media row in the projection.
+    const current = await this.database.db
+      .selectFrom("publication.current_release")
+      .select("release_id")
+      .where("singleton", "=", true)
+      .executeTakeFirst();
+    if (current === undefined) return undefined;
     let query = this.database.db
       .selectFrom("game.questions as question")
-      .innerJoin("publication.current_release as current", (join) => join.onTrue())
       .innerJoin("public_read.media as media", (join) =>
-        join.onRef("media.release_id", "=", "current.release_id").onRef("media.asset_id", "=", "question.media_asset_id"))
+        join.on("media.release_id", "=", current.release_id).onRef("media.asset_id", "=", "question.media_asset_id"))
       .select(["question.question_id", "question.media_asset_id", "question.difficulty", "question.option_panda_ids", "media.object_key"])
       .where("question.state", "=", "published");
     if (difficultyFilter !== undefined) {
