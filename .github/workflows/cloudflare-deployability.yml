@@ -75,3 +75,6 @@ jobs:
 
       - name: Boot the built API Worker in workerd
         run: npm run check:worker-boot -w @zhipanda/api
+
+      - name: Boot the built Web Worker in workerd
+        run: npm run check:worker-boot -w web

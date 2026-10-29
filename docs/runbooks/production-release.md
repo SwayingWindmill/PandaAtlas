@@ -5,7 +5,7 @@ Production changes reach Cloudflare only through the `Production Deploy` workflo
 ## Release
 
 1. Merge the pull request into `main`. If it touches the Web app, the API, the API client, a migration or the root manifests, the workflow starts automatically; otherwise run it with **Run workflow** on `main`.
-2. Wait for the `build` job. It builds both Workers from that commit and boots the API Worker in workerd.
+2. Wait for the `build` job. It builds both Workers from that commit and boots each built Worker in workerd.
 3. Approve the `production` Environment deployment in the workflow run. The job:
    1. applies every pending migration in `infra/supabase/migrations` with `supabase db push`;
    2. deploys the API Worker, then the Web Worker, each version tagged with the first 12 characters of the commit;
