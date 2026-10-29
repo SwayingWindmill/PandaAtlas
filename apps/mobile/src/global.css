@@ -3,21 +3,50 @@
 @import "tw-animate-css";
 
 /*
- * The ZhiPanda design system (docs/design/zhipanda-design-system.md) for native screens.
- * Colors are Radix Colors steps, named after React Native Reusables' tokens:
- * olive is the neutral, jade the only accent, amber warnings, red errors.
+ * App tokens. iOS system colors, with the panda green as tint.
+ * Values match src/lib/theme.ts. The website keeps its own Radix tokens.
  */
 @theme {
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 
-  --text-display: 32px;
-  --text-display--line-height: 1.15;
+  --text-large-title: 34px;
+  --text-large-title--line-height: 41px;
+  --text-title1: 28px;
+  --text-title1--line-height: 36px;
+  --text-title2: 22px;
+  --text-title2--line-height: 28px;
+  --text-title3: 20px;
+  --text-title3--line-height: 26px;
+  --text-headline: 17px;
+  --text-headline--line-height: 24px;
+  --text-body: 17px;
+  --text-body--line-height: 26px;
+  --text-callout: 16px;
+  --text-callout--line-height: 24px;
+  --text-subhead: 15px;
+  --text-subhead--line-height: 22px;
+  --text-footnote: 13px;
+  --text-footnote--line-height: 18px;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+
+  /* Existing class names follow the iOS body and caption sizes. */
+  --text-base: 17px;
+  --text-base--line-height: 26px;
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 15px;
+  --text-sm--line-height: 22px;
+  --text-xl: 22px;
+  --text-xl--line-height: 28px;
+  --text-display: 34px;
+  --text-display--line-height: 41px;
 }
 
-/* Every line and border is 0.5px (design system rule 6). */
+/* Separators are a hairline. Text does not use them as structure. */
 @utility border-hairline {
   border-width: 0.5px;
 }
@@ -41,53 +70,53 @@
 @layer theme {
   :root {
     @variant light {
-      --color-background: #fcfdfc; /* olive-1 */
-      --color-foreground: #1d211c; /* olive-12 */
-      --color-card: #fcfdfc;
-      --color-card-foreground: #1d211c;
-      --color-popover: #fcfdfc;
-      --color-popover-foreground: #1d211c;
-      --color-primary: #1d211c; /* olive-12: solid black-pill primary button */
-      --color-primary-foreground: #fcfdfc;
-      --color-secondary: #eff1ef; /* olive-3 */
-      --color-secondary-foreground: #1d211c;
-      --color-muted: #eff1ef; /* olive-3 */
-      --color-muted-foreground: #60655f; /* olive-11 */
-      --color-accent: #e7e9e7; /* olive-4: pressed and hover */
-      --color-accent-foreground: #1d211c;
-      --color-destructive: #ce2c31; /* red-11 */
-      --color-border: #d7dad7; /* olive-6 */
-      --color-input: #b9bcb8; /* olive-8 */
-      --color-ring: #29a383; /* jade-9: keyboard focus */
-      --color-highlight: #29a383; /* jade-9 */
-      --color-highlight-foreground: #208368; /* jade-11 */
-      --color-highlight-soft: #e6f7ed; /* jade-3 */
-      --color-warning: #ab6400; /* amber-11 */
+      --color-background: #f2f2f7; /* systemGroupedBackground */
+      --color-foreground: #000000; /* label */
+      --color-card: #ffffff; /* secondarySystemGroupedBackground */
+      --color-card-foreground: #000000;
+      --color-popover: #ffffff;
+      --color-popover-foreground: #000000;
+      --color-primary: #1b7f64; /* panda green, white label passes AA */
+      --color-primary-foreground: #ffffff;
+      --color-secondary: #e5e5ea; /* system fill */
+      --color-secondary-foreground: #000000;
+      --color-muted: #e5e5ea;
+      --color-muted-foreground: #636366; /* secondary label, AA on white and grouped */
+      --color-accent: #d1d1d6; /* pressed */
+      --color-accent-foreground: #000000;
+      --color-destructive: #ce2c31;
+      --color-border: #c6c6c8; /* opaqueSeparator */
+      --color-input: #e5e5ea;
+      --color-ring: #1b7f64;
+      --color-highlight: #1b7f64;
+      --color-highlight-foreground: #1b7f64;
+      --color-highlight-soft: #e5f4ee;
+      --color-warning: #b25000;
     }
 
     @variant dark {
-      --color-background: #111210; /* olive-1 dark */
-      --color-foreground: #eceeec; /* olive-12 dark */
-      --color-card: #181917;
-      --color-card-foreground: #eceeec;
-      --color-popover: #181917;
-      --color-popover-foreground: #eceeec;
-      --color-primary: #eceeec;
-      --color-primary-foreground: #111210;
-      --color-secondary: #212220; /* olive-3 dark */
-      --color-secondary-foreground: #eceeec;
-      --color-muted: #212220;
-      --color-muted-foreground: #afb5ad; /* olive-11 dark */
-      --color-accent: #282a27; /* olive-4 dark */
-      --color-accent-foreground: #eceeec;
-      --color-destructive: #ff9592; /* red-11 dark */
-      --color-border: #383a36; /* olive-6 dark */
-      --color-input: #5c625b; /* olive-8 dark */
-      --color-ring: #29a383;
-      --color-highlight: #29a383;
-      --color-highlight-foreground: #1fd8a4; /* jade-11 dark */
-      --color-highlight-soft: #0d2d23; /* jade-3 dark */
-      --color-warning: #ffca16; /* amber-11 dark */
+      --color-background: #000000; /* systemGroupedBackground */
+      --color-foreground: #ffffff;
+      --color-card: #1c1c1e; /* secondarySystemGroupedBackground */
+      --color-card-foreground: #ffffff;
+      --color-popover: #1c1c1e;
+      --color-popover-foreground: #ffffff;
+      --color-primary: #1b7f64;
+      --color-primary-foreground: #ffffff;
+      --color-secondary: #2c2c2e;
+      --color-secondary-foreground: #ffffff;
+      --color-muted: #2c2c2e;
+      --color-muted-foreground: #aeaeb2;
+      --color-accent: #3a3a3c;
+      --color-accent-foreground: #ffffff;
+      --color-destructive: #ff6961;
+      --color-border: #38383a;
+      --color-input: #2c2c2e;
+      --color-ring: #3ddc97;
+      --color-highlight: #3ddc97;
+      --color-highlight-foreground: #3ddc97;
+      --color-highlight-soft: #0d2d23;
+      --color-warning: #ff9f0a;
     }
   }
 }

@@ -29,8 +29,8 @@ const toggleVariants = cva(
   }
 );
 
-/** Selected: olive-4 fill and an olive-12 line; no accent colour (design system 2.3). */
-const toggleSelected = 'border-foreground bg-accent';
+/** Selected chip takes the tint. Unselected stays a quiet outline. */
+const toggleSelected = 'border-transparent bg-primary';
 
 function Toggle({
   className,
@@ -39,7 +39,7 @@ function Toggle({
   ...props
 }: React.ComponentProps<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>) {
   return (
-    <TextClassContext.Provider value={cn('text-base text-foreground', props.pressed && 'font-bold')}>
+    <TextClassContext.Provider value={cn('text-base text-foreground', props.pressed && 'font-semibold text-primary-foreground')}>
       <TogglePrimitive.Root
         // The web primitive renders a plain button; expose its state as native does.
         aria-pressed={props.pressed}

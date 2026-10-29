@@ -1,11 +1,9 @@
-import { router } from "expo-router";
-import type { ReactNode } from "react";
-import { useNavigationState } from "expo-router/react-navigation";
 import { Image } from "expo-image";
+import { router, Stack } from "expo-router";
+import type { ReactNode } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { BackButton } from "@/components/page";
 import { LoadFailed } from "@/components/load-failed";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -23,13 +21,14 @@ function openArticle(slug: string) {
 export default function LearnScreen() {
   const theme = useReadingTheme();
   const insets = useSafeAreaInsets();
-  const canGoBack = useNavigationState((state) => (state?.index ?? 0) > 0);
   const { state, reload } = useLearningCatalog();
   const { pandas } = useLearningPandas();
+  const bar = <Stack.Screen options={{ title: "", headerLargeTitleEnabled: false }} />;
 
   if (state.status !== "ready") {
     return (
-      <View style={{ flex: 1, backgroundColor: theme.canvas, paddingTop: insets.top + 12, paddingHorizontal: 20 }}>
+      <View style={{ flex: 1, backgroundColor: theme.canvas, paddingHorizontal: 20 }}>
+        {bar}
         {state.status === "loading" ? <Skeleton className="h-80 w-full" accessibilityLabel="正在加载" /> : null}
         {state.status === "failed" ? <LoadFailed message="科普暂时打不开。" onRetry={reload} /> : null}
       </View>
@@ -39,9 +38,9 @@ export default function LearnScreen() {
   const { catalog } = state;
   if (catalogIsEmpty(catalog) || catalog.articles.length === 0) {
     return (
-      <View style={{ flex: 1, backgroundColor: theme.canvas, paddingTop: insets.top + 12, paddingHorizontal: 20, gap: 16 }}>
-        {canGoBack ? <BackButton /> : null}
-        <Text style={{ fontSize: 34, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
+      <View style={{ flex: 1, backgroundColor: theme.canvas, paddingHorizontal: 20, gap: 16 }}>
+        {bar}
+        <Text style={{ fontSize: 34, lineHeight: 41, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
           认识大熊猫
         </Text>
         <Text style={{ fontSize: 17, color: theme.secondary }}>科普还在写。</Text>
@@ -53,10 +52,14 @@ export default function LearnScreen() {
   if (featured === undefined) return null;
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: theme.canvas }} contentContainerStyle={{ paddingTop: insets.top + 8, paddingBottom: insets.bottom + 48, gap: 32 }}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: theme.canvas }}
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={{ paddingTop: 8, paddingBottom: insets.bottom + 48, gap: 32 }}
+    >
+      {bar}
       <View style={{ paddingHorizontal: 20, gap: 8 }}>
-        {canGoBack ? <BackButton /> : null}
-        <Text style={{ fontSize: 34, lineHeight: 40, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
+        <Text style={{ fontSize: 34, lineHeight: 41, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
           认识大熊猫
         </Text>
       </View>

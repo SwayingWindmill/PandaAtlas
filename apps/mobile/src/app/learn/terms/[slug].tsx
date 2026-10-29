@@ -18,14 +18,14 @@ export default function TermScreen() {
   const { state, reload } = useLearningCatalog();
   if (state.status !== "ready") {
     return (
-      <Page title="名词解释">
+      <Page title="名词解释" prominent>
         {state.status === "loading" ? <Skeleton className="h-32 w-full" accessibilityLabel="正在加载" /> : null}
         {state.status === "failed" ? <LoadFailed message="科普暂时打不开。" onRetry={reload} /> : null}
       </Page>
     );
   }
   const term = entryBySlug(state.catalog.terms, slug);
-  if (!term) return <Page title="没有这一篇" />;
+  if (!term) return <Page title="没有这一篇" prominent />;
   const related = term.relatedSlugs.flatMap((relatedSlug) => {
     const item = entryBySlug(state.catalog.terms, relatedSlug);
     return item ? [item] : [];
@@ -33,8 +33,8 @@ export default function TermScreen() {
   const index = state.catalog.terms.findIndex((item) => item.slug === term.slug);
   const { previous, next } = neighborsAt(state.catalog.terms, index);
   return (
-    <Page title={learningText(term.term)} contentContainerClassName="gap-8 px-5 pb-16">
-      <Text className="leading-7">{learningText(term.definition)}</Text>
+    <Page title={learningText(term.term)} prominent contentContainerClassName="gap-8 px-4 pb-16">
+      <Text variant="body">{learningText(term.definition)}</Text>
       {related.length > 0 ? (
         <ManualSection title="相关名词">
           {related.map((item, itemIndex) => (

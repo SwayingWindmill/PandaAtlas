@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test";
 
 test("a fan reads the draft 科普 pages", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "去看看" }).click();
+  await page.getByRole("button", { name: "认识大熊猫" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "认识大熊猫" })).toBeVisible();
 
   await page.getByRole("button", { name: "黑眼圈不是熬夜熬的：大熊猫眼斑从哪来、有什么用" }).click();

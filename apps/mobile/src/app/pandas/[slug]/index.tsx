@@ -1,14 +1,11 @@
 import { Image } from "expo-image";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, { Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
 import { LoadFailed } from "@/components/load-failed";
-import { BackButton } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -16,24 +13,8 @@ import { PandaActions } from "@/features/engagement/panda-actions";
 import { relativesOf } from "@/features/family/family";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type Profile, loadProfile, longDate } from "@/features/pandas/profile";
+import { useIOSColors } from "@/lib/theme";
 import { cn } from "@/lib/utils";
-
-function ShareButton({ profile, className }: { profile: Profile; className?: string }) {
-  const ink = String(useCSSVariable("--color-foreground"));
-  return (
-    <Button
-      variant="secondary"
-      size="icon"
-      className={className}
-      accessibilityLabel="分享"
-      onPress={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })}
-    >
-      <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={ink} strokeWidth={2} strokeLinecap="round">
-        <Path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6" />
-      </Svg>
-    </Button>
-  );
-}
 
 function Facts({ facts }: { facts: Profile["facts"] }) {
   // Two facts per row, the way an infobox reads.
@@ -224,7 +205,7 @@ function Sources({ sources }: { sources: Profile["sources"] }) {
 
 export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
-  const insets = useSafeAreaInsets();
+  const { groupedBackground } = useIOSColors();
   const muted = useCSSVariable("--color-muted");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [failed, setFailed] = useState(false);
@@ -241,13 +222,22 @@ export default function ProfileScreen() {
     load();
   }
 
-  const top = { top: insets.top + 8 };
   const cover = profile?.photos[0];
+  const share = profile ? (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="分享"
+      hitSlop={8}
+      onPress={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })}
+    >
+      <Text className="font-semibold text-primary">分享</Text>
+    </Pressable>
+  ) : null;
 
   if (!profile) {
     return (
-      <View className="flex-1 bg-background px-5" style={{ paddingTop: insets.top + 12 }}>
-        <BackButton />
+      <View className="flex-1 bg-background px-4">
+        <Stack.Screen options={{ title: "", headerLargeTitleEnabled: false }} />
         {failed ? (
           <LoadFailed message="资料暂时打不开。" onRetry={retry} className="mt-6" />
         ) : (
@@ -261,7 +251,17 @@ export default function ProfileScreen() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-background" contentContainerClassName="pb-12">
+    <ScrollView className="flex-1 bg-background" contentInsetAdjustmentBehavior="automatic" contentContainerClassName="pb-12">
+      <Stack.Screen
+        options={{
+          title: "",
+          headerLargeTitleEnabled: false,
+          headerTransparent: false,
+          headerStyle: { backgroundColor: groupedBackground },
+          headerShadowVisible: false,
+          headerRight: () => share,
+        }}
+      />
       {cover ? (
         <View>
           <Pressable
@@ -276,28 +276,20 @@ export default function ProfileScreen() {
               accessible={false}
             />
             {profile.photos.length > 1 ? (
-              <View className="absolute right-4 bottom-4 rounded-full bg-background px-3 py-1">
-                <Text variant="small">共 {profile.photos.length} 张</Text>
+              <View className="absolute right-4 bottom-4 rounded-full bg-card px-3 py-1">
+                <Text variant="footnote">共 {profile.photos.length} 张</Text>
               </View>
             ) : null}
           </Pressable>
-          <View className="absolute inset-x-4 flex-row justify-between" style={top}>
-            <BackButton className="bg-background" />
-            <ShareButton profile={profile} className="bg-background" />
-          </View>
           {cover.credit ? (
-            <Text variant="muted" className="px-5 pt-2" numberOfLines={1}>
+            <Text variant="footnote" className="px-4 pt-2 text-muted-foreground" numberOfLines={1}>
               {cover.credit}
             </Text>
           ) : null}
         </View>
       ) : (
-        <View className="gap-4 px-5" style={{ paddingTop: insets.top + 12 }}>
-          <View className="flex-row justify-between">
-            <BackButton />
-            <ShareButton profile={profile} />
-          </View>
-          <View className="items-start gap-2 rounded-lg bg-muted p-5">
+        <View className="gap-4 px-4 pt-4">
+          <View className="items-start gap-2 rounded-[10px] bg-card p-5">
             <Text className="text-muted-foreground">暂无照片</Text>
             <Button
               variant="outline"
@@ -309,8 +301,8 @@ export default function ProfileScreen() {
         </View>
       )}
 
-      <View className="gap-7 px-5 pt-6">
-        <Text variant="h1">{profile.name}</Text>
+      <View className="gap-7 px-4 pt-6">
+        <Text variant="largeTitle">{profile.name}</Text>
         {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
         <Button
           variant="secondary"
