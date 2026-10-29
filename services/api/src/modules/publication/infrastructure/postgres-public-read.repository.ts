@@ -465,8 +465,8 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     });
   }
 
-  // One round trip for suspension and takedowns. Both tables are empty in steady state,
-  // and the snapshot cache keeps later requests in this generation off this query.
+  // One round trip for suspension and takedowns. Delivery controls are empty in steady
+  // state, and the snapshot cache keeps later requests in this generation off this query.
   private async loadReleaseAndControls(db: Kysely<Database>): Promise<PublicSnapshot | undefined> {
     const row = await db
       .selectFrom("publication.current_release as current")
