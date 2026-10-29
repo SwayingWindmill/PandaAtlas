@@ -8,9 +8,15 @@ import {
   ENGAGEMENT_PRIVACY_PORT,
   type EngagementPrivacyPort,
 } from "../engagement/application/engagement-privacy.port.js";
+import {
+  CONTRIBUTION_PRIVACY_PORT,
+  type ContributionPrivacyPort,
+} from "../contribution/application/contribution-privacy.port.js";
+import { ContributionModule } from "../contribution/contribution.module.js";
 import { EngagementModule } from "../engagement/engagement.module.js";
 import { GAME_PRIVACY_PORT, type GamePrivacyPort } from "../game/application/game-privacy.port.js";
 import { GameModule } from "../game/game.module.js";
+import { AUTH_USER_DELETION, type AuthUserDeletion } from "../identity/application/auth-user-deletion.js";
 import { IDENTITY_PRIVACY_PORT, type IdentityPrivacyPort } from "../identity/application/identity-privacy.port.js";
 import { IdentityModule } from "../identity/identity.module.js";
 import {
@@ -34,6 +40,7 @@ import { PrivacyRequestProcessorService } from "./infrastructure/privacy-request
     IntegrationModule,
     RequestContextModule,
     IdentityModule,
+    ContributionModule,
     EngagementModule,
     GameModule,
     NotificationModule,
@@ -60,7 +67,9 @@ import { PrivacyRequestProcessorService } from "./infrastructure/privacy-request
         engagement: EngagementPrivacyPort,
         game: GamePrivacyPort,
         notification: NotificationPrivacyPort,
-      ) => new PrivacyRequestProcessorService(database, outbox, identity, engagement, game, notification),
+        contribution: ContributionPrivacyPort,
+        authUsers: AuthUserDeletion,
+      ) => new PrivacyRequestProcessorService(database, outbox, identity, engagement, game, notification, contribution, authUsers),
       inject: [
         DatabaseService,
         IntegrationOutboxService,
@@ -68,6 +77,8 @@ import { PrivacyRequestProcessorService } from "./infrastructure/privacy-request
         ENGAGEMENT_PRIVACY_PORT,
         GAME_PRIVACY_PORT,
         NOTIFICATION_PRIVACY_PORT,
+        CONTRIBUTION_PRIVACY_PORT,
+        AUTH_USER_DELETION,
       ],
     },
   ],

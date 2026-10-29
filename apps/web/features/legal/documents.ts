@@ -51,7 +51,7 @@ const terms: Record<PublicLocale, LegalDocument> = {
     description: "吱熊猫用户协议草稿。说明网站和 App 的账号、纠错，以及已发布的熊猫资料。",
     bannerTitle: "这是草稿，尚未生效",
     bannerBody:
-      "方括号中的运营方名称、联系邮箱和生效日期尚未填写。注销账号后纠错如何去标识，以及登录记录是否一并删除，仍待运营方确认。确认之前，正文写的是程序今天实际做的事。",
+      "方括号中的运营方名称、联系邮箱和生效日期尚未填写。填上之前，这份文本还没有生效。",
     effective: `生效日期：${LEGAL_PLACEHOLDERS.zh.effectiveDate}`,
     relatedLabel: "隐私政策",
     relatedPath: "/privacy",
@@ -124,7 +124,7 @@ const terms: Record<PublicLocale, LegalDocument> = {
     description: "Draft terms for ZhiPanda. They describe accounts, corrections, and the published panda information on the website and app.",
     bannerTitle: "This is a draft and is not in effect",
     bannerBody:
-      "The operator name, contact email, and effective date in brackets are not filled in. How corrections are de-identified after account deletion, and whether the sign-in record is deleted too, still need the operator to confirm. Until then, the text below describes what the product does today.",
+      "The operator name, contact email, and effective date in brackets are not filled in. This text is not in effect until they are.",
     effective: `Effective date: ${LEGAL_PLACEHOLDERS.en.effectiveDate}`,
     relatedLabel: "Privacy",
     relatedPath: "/privacy",
@@ -200,7 +200,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
     description: "吱熊猫隐私政策草稿。说明账号、关注、见过、图鉴、纠错、通知、导出和注销实际如何处理。",
     bannerTitle: "这是草稿，尚未生效",
     bannerBody:
-      "方括号中的运营方名称、联系邮箱和生效日期尚未填写。注销账号后纠错如何去标识，以及登录记录是否一并删除，仍待运营方确认。确认之前，正文写的是程序今天实际做的事。",
+      "方括号中的运营方名称、联系邮箱和生效日期尚未填写。填上之前，这份文本还没有生效。",
     effective: `生效日期：${LEGAL_PLACEHOLDERS.zh.effectiveDate}`,
     relatedLabel: "用户协议",
     relatedPath: "/terms",
@@ -280,10 +280,8 @@ const privacy: Record<PublicLocale, LegalDocument> = {
           "在 App 的「账号与数据」里，完成验证器验证之后，可以申请导出或注销。",
           "导出是一份 JSON。里面有账号标识、邮箱、账号状态、时间、显示名和简介，关注、合集、去过的地点、见过，猜熊猫作答、图鉴和每日熊猫结果，以及通知偏好和通知内容。导出文件可下载 24 小时，到期后这份副本失效。申请记录会留下。",
           "注销完成时：关注、合集、去过的地点和见过会被删除。猜熊猫作答、图鉴和每日熊猫结果会被删除。通知偏好会被删除。通知正文会被换成一条已清除的标记，类别和时间可能还在，尚未发出的通知邮件不再发送。显示名和简介会被删除。账号上的邮箱会被清空，账号标记为已注销。账号的内部标识，以及一条记下这次注销的状态记录，会留下。你在申请里写的原因，会留在这条申请记录里。",
-        ],
-        pending: [
-          "待运营方确认：注销后，已提交的纠错会保留，但会去标识（匿名化），不再关联到你的账号。在确认并按此处理之前，纠错仍留在审核记录中，并可能仍通过内部账号标识关联到已注销的账号。今天的注销不会改动这些纠错。",
-          "待运营方确认：用来登录的认证记录（邮箱、会话，以及已登记的验证器）保存在 Supabase Auth。今天的注销不会删除这条认证记录。是否一并删除，尚未决定。",
+          "已提交的纠错会留在审核记录里。纠错的内容和审核过程都保留。提交人的账号关联，以及能把纠错认回这个人的标识，会被去掉。",
+          "用来登录的邮箱、会话和验证器保存在 Supabase Auth。账号资料清除完成之后，这条登录记录会被删除。",
         ],
       },
       {
@@ -291,7 +289,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         heading: "保存多久",
         paragraphs: [
           "账号里的关注、见过、合集、地点和游戏结果，会保留到你自己删掉，或者注销完成。导出副本保留不超过 24 小时。",
-          "纠错为审核而保留。注销之后如何处理，见上一节里待确认的说明。",
+          "纠错为审核而保留。注销之后，纠错还在，但不再关联到已注销的账号。",
           "设备上的公开页面副本，会在超出最近打开的数量时丢掉较旧的单页。外观设置会留到你改掉或卸掉 App。退出登录会清掉设备上的会话。",
           "故障日志没有在应用里另设保存期限。",
         ],
@@ -301,7 +299,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         heading: "你可以做什么",
         paragraphs: [
           "可以退出登录、修改显示名、分别开关两类通知的 App 内和邮件、取消关注、取消见过、删除合集和去过的记录。",
-          "可以申请导出，或申请注销。注销的范围和尚未决定的部分，写在上面。",
+          "可以申请导出，或申请注销。注销会删掉什么、纠错会留下什么，写在上面。",
           "《用户协议》和这份政策可以从网站页脚，以及 App「我的」里打开。",
         ],
       },
@@ -321,7 +319,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
     description: "Draft privacy policy for ZhiPanda. It describes accounts, follows, seen marks, the panda book, corrections, notices, export, and deletion as they work today.",
     bannerTitle: "This is a draft and is not in effect",
     bannerBody:
-      "The operator name, contact email, and effective date in brackets are not filled in. How corrections are de-identified after account deletion, and whether the sign-in record is deleted too, still need the operator to confirm. Until then, the text below describes what the product does today.",
+      "The operator name, contact email, and effective date in brackets are not filled in. This text is not in effect until they are.",
     effective: `Effective date: ${LEGAL_PLACEHOLDERS.en.effectiveDate}`,
     relatedLabel: "Terms",
     relatedPath: "/terms",
@@ -401,10 +399,8 @@ const privacy: Record<PublicLocale, LegalDocument> = {
           "In the app, under Account and data, you can request an export or deletion after you verify with your authenticator.",
           "The export is a JSON file. It includes the account id, email, account state, times, display name and introduction, follows, collections, visits, seen marks, Guess Panda answers, panda-book entries, Daily Panda results, notification preferences, and notification content. The file can be downloaded for 24 hours. After that, this copy expires. The request record remains.",
           "When deletion finishes: follows, collections, visits, and seen marks are deleted. Guess Panda answers, panda-book entries, and Daily Panda results are deleted. Notification preferences are deleted. Notification text is replaced with an erased marker. The category and time may remain, and notification email that has not been sent is not sent. The display name and introduction are deleted. The email on the panda account is cleared and the account is marked deleted. The internal account id remains, along with a state record of this deletion. A reason you wrote on the request stays on that request record.",
-        ],
-        pending: [
-          "Pending operator confirmation: after deletion, submitted corrections are kept but de-identified (anonymized), so they are no longer linked to your account. Until that is confirmed and in place, corrections stay in the review records and may still be linked to the deleted account's internal identifier. Deletion today does not change those corrections.",
-          "Pending operator confirmation: the sign-in record (the email, the session, and an authenticator you enrolled) is stored by Supabase Auth. Deletion today does not delete that sign-in record. Whether it should be deleted as well is not decided.",
+          "Submitted corrections stay in the review records. The correction and its review history are kept. The link to the account, and the identifiers that could tie the correction back to the person, are removed.",
+          "The email, session, and authenticator used to sign in are stored by Supabase Auth. After the panda account data has been cleared, that sign-in record is deleted.",
         ],
       },
       {
@@ -412,7 +408,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         heading: "How long it is kept",
         paragraphs: [
           "Follows, seen marks, collections, visits, and game results stay until you delete them or deletion of the account finishes. An export copy is kept for no more than 24 hours.",
-          "Corrections are kept for review. What happens to them after account deletion is the pending note in the previous section.",
+          "Corrections are kept for review. After account deletion they remain, no longer linked to the deleted account.",
           "On the device, older individual public pages are dropped once the recent-page limit is passed. Appearance stays until you change it or remove the app. Signing out clears the session stored on the device.",
           "The application does not set a separate retention period for the failure logs.",
         ],
@@ -422,7 +418,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         heading: "What you can do",
         paragraphs: [
           "You can sign out, change your display name, turn each notice kind on or off for the app and for email, unfollow, remove a seen mark, and delete a collection or a visit.",
-          "You can request an export or deletion. The scope, and the parts not yet decided, are above.",
+          "You can request an export or deletion. What deletion removes, and that corrections stay without your account, is above.",
           "These Terms and this Privacy policy can be opened from the website footer and from Me in the app.",
         ],
       },

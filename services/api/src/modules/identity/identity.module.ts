@@ -9,7 +9,9 @@ import { RequestContextModule } from "../../platform/request-context/request-con
 import { IDENTITY_NOTIFICATION_CONTACT_PORT } from "./application/identity-notification.port.js";
 import { IDENTITY_PRIVACY_PORT } from "./application/identity-privacy.port.js";
 import { IDENTITY_PORT } from "./application/identity.port.js";
+import { AUTH_USER_DELETION } from "./application/auth-user-deletion.js";
 import { StaffInvitationsService } from "./infrastructure/staff-invitations.service.js";
+import { SupabaseAuthUserDeletion } from "./infrastructure/supabase-auth-deletion.js";
 import { StaffRolesService } from "./infrastructure/staff-roles.service.js";
 import { StaffAccountLifecycleService } from "./infrastructure/staff-account-lifecycle.service.js";
 import { ApplicationAccessGuard } from "./http/application-access.guard.js";
@@ -41,6 +43,8 @@ import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.r
     },
     ApplicationAccessGuard,
     StaffInvitationsService,
+    SupabaseAuthUserDeletion,
+    { provide: AUTH_USER_DELETION, useExisting: SupabaseAuthUserDeletion },
     StaffRolesService,
     StaffAccountLifecycleService,
     {
@@ -52,6 +56,6 @@ import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.r
       useExisting: ApplicationAccessGuard,
     },
   ],
-  exports: [IDENTITY_NOTIFICATION_CONTACT_PORT, IDENTITY_PRIVACY_PORT],
+  exports: [IDENTITY_NOTIFICATION_CONTACT_PORT, IDENTITY_PRIVACY_PORT, AUTH_USER_DELETION],
 })
 export class IdentityModule {}

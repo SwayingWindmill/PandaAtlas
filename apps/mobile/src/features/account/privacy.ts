@@ -42,6 +42,9 @@ export function requestReason(kind: PrivacyKind, written: string): string {
   return reason.length >= 3 ? reason : DEFAULT_REASON[kind];
 }
 
+export const DELETION_NOTICE =
+  "注销后，账号和登录记录会删除，关注、见过、图鉴和通知记录会清除，不能恢复。已提交的纠错会保留，但不再关联到你。";
+
 export function exportFileName(createdAt: string): string {
   return `zhipanda-export-${createdAt.slice(0, 10)}.json`;
 }

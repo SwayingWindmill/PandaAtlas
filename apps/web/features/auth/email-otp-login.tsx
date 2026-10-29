@@ -1,7 +1,9 @@
 "use client";
 
+import type { Route } from "next";
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -48,6 +50,11 @@ const copy = {
     changeEmail: "更换邮箱",
     invalidOtp: "验证码不正确，请检查后重试。",
     magicLinkFailed: "登录链接无效或已过期，请重新登录。",
+    consentBefore: "登录即表示同意",
+    terms: "《用户协议》",
+    consentBetween: "和",
+    privacy: "《隐私政策》",
+    consentAfter: "",
   },
   en: {
     account: "ZhiPanda account",
@@ -65,6 +72,11 @@ const copy = {
     changeEmail: "Use another email",
     invalidOtp: "That verification code is not correct. Check it and try again.",
     magicLinkFailed: "That sign-in link is invalid or expired. Sign in again.",
+    consentBefore: "Signing in means you agree to the ",
+    terms: "Terms",
+    consentBetween: " and the ",
+    privacy: "Privacy",
+    consentAfter: " policy",
   },
 } as const;
 
@@ -296,6 +308,17 @@ export function EmailOtpLogin() {
             </a>
           </p>
         ) : null}
+        <p className="mt-4 text-sm leading-6 text-stone-700">
+          {t.consentBefore}
+          <Link href={`/${locale}/terms` as Route} className="font-semibold text-stone-950 underline underline-offset-2">
+            {t.terms}
+          </Link>
+          {t.consentBetween}
+          <Link href={`/${locale}/privacy` as Route} className="font-semibold text-stone-950 underline underline-offset-2">
+            {t.privacy}
+          </Link>
+          {t.consentAfter}
+        </p>
       </div>
     </section>
   );

@@ -108,6 +108,40 @@ export class PostgresIdentityRepository
     };
   }
 
+  public async beginPrivacyErasure(
+    transaction: DatabaseTransaction,
+    accountId: string,
+    requestId: string,
+    correlationId: string,
+  ): Promise<void> {
+    const account = await transaction
+      .selectFrom("identity.accounts")
+      .select("state")
+      .where("account_id", "=", accountId)
+      .forUpdate()
+      .executeTakeFirstOrThrow();
+    if (account.state === "deleting" || account.state === "deleted") return;
+    const now = new Date();
+    await transaction
+      .updateTable("identity.accounts")
+      .set({ state: "deleting", state_reason: `privacy:${requestId}`, state_changed_at: now })
+      .where("account_id", "=", accountId)
+      .executeTakeFirstOrThrow();
+    await transaction
+      .insertInto("identity.account_state_events")
+      .values({
+        account_id: accountId,
+        previous_state: account.state,
+        next_state: "deleting",
+        actor_account_id: accountId,
+        reason: `Privacy request ${requestId}`,
+        correlation_id: correlationId,
+        idempotency_key: `privacy:${requestId}:deleting`,
+      })
+      .onConflict((conflict) => conflict.column("idempotency_key").doNothing())
+      .execute();
+  }
+
   public async erasePrivacySubject(
     transaction: DatabaseTransaction,
     accountId: string,
