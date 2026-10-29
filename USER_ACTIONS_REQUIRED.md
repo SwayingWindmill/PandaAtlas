@@ -20,9 +20,20 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 
 ## Legal
 
-- **User agreement and privacy policy.** The canvas login asks fans to accept them, and both app stores require a privacy policy URL, but no such pages exist (website issue #348). The app's sign-in shows no consent line until the documents are written and published.
+- **Fill in the draft user agreement and privacy policy, then take them out of draft.** Drafts are on the website at `/{locale}/terms` and `/{locale}/privacy` (Chinese and English), linked from the footer and listed in `sitemap.xml`. The app's 我的 rows and the sign-in line 「登录即表示同意《用户协议》和《隐私政策》」 open `https://www.zhipanda.com/zh/terms` and `https://www.zhipanda.com/zh/privacy`. A banner on each page says the text is a draft and is not in effect. App stores can use `https://www.zhipanda.com/zh/privacy` as the public privacy policy URL once you accept the text. Replace every placeholder, confirm the decisions below, make the product match, then remove the draft banner and the pending notes in the same change.
 
-- **What account deletion keeps.** Deleting an account erases follows, 见过, game records, notifications and the identity, but leaves submitted 纠错 (contributions) in the review records. The app's deletion text names only what is erased. Decide whether contributions are kept, anonymized or deleted, and say so in the privacy policy (#348).
+  Placeholders, written the same way in the pages:
+
+  - `[运营方名称]` / `[Operator name]`
+  - `[联系邮箱]` / `[Contact email]`
+  - `[生效日期]` / `[Effective date]`
+
+  Pending decisions:
+
+  - **What account deletion does to 纠错.** The draft says contributions are kept but de-identified (anonymized) after deletion. Today deletion does not change them: they stay in the review records, still tied to the account id (`community_intake.submissions.account_id`). Confirm that wording, or choose kept-as-is or deleted. Then change deletion so it matches the sentence, update the app's 注销账号 line (it still names only what is erased), and remove the pending note.
+  - **Whether deletion also removes the Supabase Auth user.** Today the panda account's email is cleared and the account is marked deleted. The sign-in record (email, session, and any TOTP enrollment) in Supabase Auth is not deleted. Confirm whether that record should be deleted too, and say so in the policy.
+
+- **Website sign-in does not repeat the consent line.** The app's sign-in screen does. The website login still only asks for the email code. The terms say a website sign-in creates the same kind of account and is covered by the same documents. Add the same sentence there if you want the website login to show it.
 
 ## Product and content decisions
 

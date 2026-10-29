@@ -6,6 +6,7 @@ import { useCSSVariable } from "uniwind";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { SignInConsent } from "@/features/legal/legal-links";
 import { SignInError, useSession } from "@/features/session/session";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -97,6 +98,7 @@ export default function SignInScreen() {
         </View>
       )}
       {error ? <Text className="text-destructive">{error}</Text> : null}
+      <SignInConsent />
     </Page>
   );
 }

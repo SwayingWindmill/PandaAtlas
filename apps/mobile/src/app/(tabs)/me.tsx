@@ -11,6 +11,7 @@ import { Text } from "@/components/ui/text";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { type Appearance, useAppearance } from "@/features/appearance/appearance";
 import { statusLabel } from "@/features/corrections/correction";
+import { LegalLinks } from "@/features/legal/legal-links";
 import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
 import { shortDay } from "@/features/engagement/seen";
 import { useFollowed } from "@/features/engagement/favorites";
@@ -263,6 +264,7 @@ export default function MeScreen() {
       {state.status === "signedIn" ? <Contributions /> : null}
       {state.status === "signedIn" ? <AccountLinks /> : null}
       <Display />
+      <LegalLinks />
       {state.status === "signedIn" || state.status === "unavailable" ? (
         <View className="border-t-hairline border-border pt-4">
           <Button variant="secondary" className="self-start" onPress={() => void signOut()}>

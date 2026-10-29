@@ -61,6 +61,10 @@ const coreJourneys = [
     name: "English Ueno twins Family Story",
     path: "/en/families/ueno-twins",
   },
+  { name: "Chinese terms", path: "/zh/terms" },
+  { name: "English terms", path: "/en/terms" },
+  { name: "Chinese privacy", path: "/zh/privacy" },
+  { name: "English privacy", path: "/en/privacy" },
 ];
 
 for (const journey of coreJourneys) {
