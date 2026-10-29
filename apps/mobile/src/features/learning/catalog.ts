@@ -113,6 +113,22 @@ export interface ResolvedChallenge {
   options: { slug: string; pandaId: string; name: string }[];
 }
 
+export interface PresentedOption {
+  slug: string;
+  pandaId: string;
+  name: string;
+  /** Cover photo. Null when this release has no picture of the panda. */
+  photoUrl: string | null;
+}
+
+export interface PresentedChallenge {
+  /** `compare`: a second photo is the question and the choices are named. `named`: one photo each, so the name is the question and the choices stay unnamed until the answer. */
+  mode: "compare" | "named";
+  title: string;
+  questionPhotoUrl: string | null;
+  options: PresentedOption[];
+}
+
 export class CatalogUnavailable extends Error {}
 
 /** Chinese, then English. The app has no locale switch; the file keeps both. */
@@ -210,4 +226,27 @@ export function resolveChallenge(challenge: CatalogChallenge, pandas: readonly L
     photoPandaId: answer.pandaId,
     options: [...ready].sort((a, b) => a.slug.localeCompare(b.slug)),
   };
+}
+
+/**
+ * The question must not be the same picture as the correct choice, and the choice must not be
+ * labeled with the name when that name is the question.
+ * A second published photo of the answer panda becomes the question; the choice keeps the cover.
+ * With only one photo, the question is 「哪一只是{名字}？」 and there is no large photo.
+ */
+export function presentChallenge(round: ResolvedChallenge, photos: ReadonlyMap<string, readonly string[]>): PresentedChallenge {
+  const options: PresentedOption[] = round.options.map((option) => ({
+    slug: option.slug,
+    pandaId: option.pandaId,
+    name: option.name,
+    photoUrl: photos.get(option.pandaId)?.[0] ?? null,
+  }));
+  const answer = options.find((option) => option.slug === round.answerSlug);
+  const answerPhotos = photos.get(round.photoPandaId) ?? [];
+  const cover = answerPhotos[0];
+  const other = answerPhotos.find((url) => url !== cover);
+  if (other) {
+    return { mode: "compare", title: round.prompt, questionPhotoUrl: other, options };
+  }
+  return { mode: "named", title: `哪一只是${answer?.name ?? ""}？`, questionPhotoUrl: null, options };
 }

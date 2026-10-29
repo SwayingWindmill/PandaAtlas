@@ -6,6 +6,7 @@ import {
   assembleCatalog,
   catalogIsEmpty,
   learningText,
+  presentChallenge,
   resolveChallenge,
   visibleTips,
 } from "./catalog";
@@ -109,5 +110,46 @@ describe("resolveChallenge", () => {
   it("does not invent a name when a panda is missing from the release", () => {
     if (challenge === undefined) throw new Error("fixture");
     expect(resolveChallenge(challenge, pandas.slice(0, 2))).toBeNull();
+  });
+});
+
+describe("presentChallenge", () => {
+  const round = assembleCatalog(null, bundled, true).challenges[0];
+
+  function resolved() {
+    if (round === undefined) throw new Error("fixture");
+    const value = resolveChallenge(round, pandas);
+    if (value === null) throw new Error("fixture");
+    return value;
+  }
+
+  it("asks with a second photo and keeps the cover on the correct choice", () => {
+    const photos = new Map<string, string[]>([
+      ["1", ["https://photos.example/bao-cover", "https://photos.example/bao-other"]],
+      ["2", ["https://photos.example/lei"]],
+      ["3", ["https://photos.example/lun"]],
+      ["4", ["https://photos.example/yang"]],
+    ]);
+    const presented = presentChallenge(resolved(), photos);
+    expect(presented.mode).toBe("compare");
+    expect(presented.questionPhotoUrl).toBe("https://photos.example/bao-other");
+    expect(presented.title).toBe("[草稿] 看照片，选出这只熊猫");
+    expect(presented.options.find((option) => option.slug === "bao-li")?.photoUrl).toBe("https://photos.example/bao-cover");
+  });
+
+  it("asks by name and drops the question photo when the answer has only one picture", () => {
+    const photos = new Map<string, string[]>(pandas.map((panda) => [panda.id, [`https://photos.example/${panda.slug}`]]));
+    const presented = presentChallenge(resolved(), photos);
+    expect(presented).toMatchObject({
+      mode: "named",
+      title: "哪一只是宝力？",
+      questionPhotoUrl: null,
+    });
+    expect(presented.options.map((option) => option.name)).toEqual(["宝力", "蕾蕾", "伦伦", "洋洋"]);
+  });
+
+  it("treats a repeated photo url as a single picture", () => {
+    const photos = new Map<string, string[]>([["1", ["https://photos.example/bao", "https://photos.example/bao"]]]);
+    expect(presentChallenge(resolved(), photos).mode).toBe("named");
   });
 });

@@ -28,12 +28,30 @@ function Empty({ aspect, rounded }: { aspect: Aspect; rounded: boolean }) {
   );
 }
 
-function Cover({ pandaId, label, aspect, rounded }: { pandaId: string; label: string; aspect: Aspect; rounded: boolean }) {
+function Cover({
+  pandaId,
+  label,
+  aspect,
+  rounded,
+  decorative,
+}: {
+  pandaId: string;
+  label: string;
+  aspect: Aspect;
+  rounded: boolean;
+  decorative: boolean;
+}) {
   const photo = usePandaCover(pandaId);
   if (!photo) return <Empty aspect={aspect} rounded={rounded} />;
   return (
     <Frame aspect={aspect} rounded={rounded}>
-      <Image source={photo} style={{ width: "100%", height: "100%" }} contentFit="cover" accessibilityLabel={label} />
+      <Image
+        source={photo}
+        style={{ width: "100%", height: "100%" }}
+        contentFit="cover"
+        accessible={!decorative}
+        accessibilityLabel={decorative ? undefined : label}
+      />
     </Frame>
   );
 }
@@ -44,12 +62,15 @@ export function PandaPhoto({
   label,
   aspect,
   rounded = true,
+  decorative = false,
 }: {
   pandaId: string | null;
   label: string;
   aspect: Aspect;
   rounded?: boolean;
+  /** Inside a labeled button, the picture should not repeat the name. */
+  decorative?: boolean;
 }) {
   if (!pandaId) return <Empty aspect={aspect} rounded={rounded} />;
-  return <Cover pandaId={pandaId} label={label} aspect={aspect} rounded={rounded} />;
+  return <Cover pandaId={pandaId} label={label} aspect={aspect} rounded={rounded} decorative={decorative} />;
 }
