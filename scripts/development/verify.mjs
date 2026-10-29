@@ -115,6 +115,11 @@ export function classifyDevelopmentScopes(paths) {
     if (changedPath.startsWith("apps/mobile/")) addScope(scopes, "mobile");
     if (changedPath.startsWith("services/api/")) addScope(scopes, "api");
     if (changedPath.startsWith("packages/api-client/")) addScope(scopes, "api");
+    // The website and the app both draw this outline.
+    if (changedPath.startsWith("packages/world-map/")) {
+      addScope(scopes, "web");
+      addScope(scopes, "mobile");
+    }
     if (
       changedPath === "scripts/development/check-api-contract.mjs" ||
       changedPath === "scripts/development/check-api-db-types.mjs" ||

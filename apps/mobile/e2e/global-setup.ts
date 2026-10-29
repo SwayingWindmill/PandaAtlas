@@ -129,6 +129,17 @@ export default async function globalSetup(): Promise<void> {
       region: "Chengdu, Sichuan",
       nameZh: zoo.facility,
       countryCode: "CN",
+      // Beijing, not the seeded Sichuan bases: those sit on one map dot, and this one must be tappable alone.
+      // The region stays Chengdu so 找熊猫's area chip still matches.
+      center: { longitude: 116.3394, latitude: 39.9375 },
+    });
+    // A published place with no coordinates: the map lists it and draws no dot.
+    await places.createPlace({
+      slug: `e2e-place-${run}`,
+      placeType: "facility",
+      nameZh: `测试地点${run}`,
+      countryCode: "JP",
+      region: "Tokyo",
     });
 
     // The fixture panda lives at the zoo's facility, for 所在地 and 生活过的地方 on its profile.
