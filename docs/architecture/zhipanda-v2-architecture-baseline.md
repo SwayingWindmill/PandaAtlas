@@ -48,9 +48,9 @@ Bindings, schedules, domains and versions live in `docs/deployment/runtime-statu
 
 ## 4. Repository layout
 
-The layout and the three npm workspaces are listed in `docs/monorepo-structure.md`. Use npm workspaces only. Do not add Turborepo, Nx, Lerna, Changesets, pnpm migration, project-reference graphs, or shared-config packages without a measured problem they solve.
+The layout and the npm workspaces are listed in `docs/monorepo-structure.md`. Use npm workspaces only. Do not add Turborepo, Nx, Lerna, Changesets, pnpm migration, project-reference graphs, or shared-config packages without a measured problem they solve.
 
-The only initial shared npm package is `api-client`.
+Shared npm packages are `api-client` (generated API types and client) and `world-map` (the Natural Earth land outline and projection the website and the app both draw).
 
 Do not create generic `shared`, `common`, `utils`, `types`, `domain`, `config`, `ui`, `eslint-config`, or `tsconfig` packages as architectural escape hatches.
 

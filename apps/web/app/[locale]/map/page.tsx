@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { MapCover } from "@/features/map/panda-world-map";
 import { PandaMapPage } from "@/features/map/panda-map-page";
 import { buildPandaMapViewModel } from "@/features/map/panda-map-view-model";
-import { WORLD_HEIGHT, WORLD_WIDTH } from "@/features/map/world-land.generated";
+import { WORLD_HEIGHT, WORLD_WIDTH } from "@zhipanda/world-map";
 import {
   loadV2PandaCovers,
   loadV2PublicMapOverview,

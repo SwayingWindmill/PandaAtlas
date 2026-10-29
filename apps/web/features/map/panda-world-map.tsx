@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import type { PandaMapCluster } from "@/features/map/panda-map-view-model";
-import { WORLD_HEIGHT, WORLD_LAND_PATH, WORLD_WIDTH } from "@/features/map/world-land.generated";
+import { WORLD_CHINA_SHARE, WORLD_HEIGHT, WORLD_LAND_PATH, WORLD_WIDTH } from "@zhipanda/world-map";
 import type { PublicLocale } from "@/foundation/content/locales";
 
 import styles from "./panda-map-page.module.css";
@@ -43,9 +43,6 @@ const copy = {
 /** The smallest tap target, so even an empty place's small dot is easy to hit. */
 const MIN_TARGET = 28;
 
-/** Where China sits across the map's width. */
-const CHINA_SHARE = 0.76;
-
 function dotSize(count: number): number {
   return count ? Math.min(44, 18 + Math.sqrt(count) * 5) : 12;
 }
@@ -60,7 +57,7 @@ export function PandaWorldMap({ locale, clusters, covers }: PandaWorldMapProps) 
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage || stage.scrollWidth <= stage.clientWidth) return;
-    stage.scrollLeft = stage.scrollWidth * CHINA_SHARE - stage.clientWidth / 2;
+    stage.scrollLeft = stage.scrollWidth * WORLD_CHINA_SHARE - stage.clientWidth / 2;
   }, []);
 
   useEffect(() => {

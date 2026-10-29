@@ -2,8 +2,8 @@
  * World land outline for the panda map, projected with d3-geo's Natural Earth projection and fitted
  * to longitudes -170 to 180 and latitudes -50 to 78 (Antarctica left out). Generated once from
  * world-atlas 2.0.2 countries-110m (Natural Earth, public domain) with d3-geo 3.1.1 and
- * topojson-client 3.1.0; regenerate the same way if the frame changes. Self-hosted so the map page
- * requests no third-party tiles.
+ * topojson-client 3.1.0; regenerate the same way if the frame changes. Self-hosted so the website
+ * and the app draw the same outline and request no third-party tiles.
  */
 
 export const WORLD_WIDTH = 1000;

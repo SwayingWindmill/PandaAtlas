@@ -4,10 +4,12 @@
 PandaAtlas/
   apps/
     web/                    # Next.js app router on vinext + Vite, Cloudflare Worker
+    mobile/                 # Expo app, iOS, Android and web
   services/
     api/                    # NestJS (Express) API, Cloudflare Worker
   packages/
     api-client/             # generated, typed API client
+    world-map/              # Natural Earth outline and projection shared by the website and the app
   tools/
     panda-data/             # offline Python acquisition/curation/media tooling (uv)
   infra/
@@ -22,9 +24,11 @@ PandaAtlas/
 
 The npm workspaces are exactly:
 
-- `apps/web`
-- `services/api`
 - `packages/api-client`
+- `packages/world-map`
+- `apps/web`
+- `apps/mobile`
+- `services/api`
 
 ## Runtime boundaries
 
