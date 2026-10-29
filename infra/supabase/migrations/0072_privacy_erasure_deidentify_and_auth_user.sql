@@ -23,9 +23,6 @@ begin
 end
 $drop_account_auth_fkey$;
 
-comment on column identity.accounts.account_id is
-  'Stable account key. It matches auth.users.id until account deletion removes the Auth user.';
-
 do $staff_invitation_auth_fkey$
 declare
   constraint_name text;
