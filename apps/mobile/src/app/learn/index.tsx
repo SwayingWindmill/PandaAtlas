@@ -53,7 +53,7 @@ export default function LearnScreen() {
   if (featured === undefined) return null;
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: theme.canvas }} contentContainerStyle={{ paddingTop: insets.top + 8, paddingBottom: insets.bottom + 40, gap: 28 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: theme.canvas }} contentContainerStyle={{ paddingTop: insets.top + 8, paddingBottom: insets.bottom + 48, gap: 32 }}>
       <View style={{ paddingHorizontal: 20, gap: 8 }}>
         {canGoBack ? <BackButton /> : null}
         <Text style={{ fontSize: 34, lineHeight: 40, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
@@ -67,7 +67,7 @@ export default function LearnScreen() {
         const articles = rest.filter((article) => article.category === category);
         if (articles.length === 0) return null;
         return (
-          <View key={category} style={{ paddingHorizontal: 20, gap: 12 }}>
+          <View key={category} style={{ paddingHorizontal: 20, gap: 16 }}>
             <Text style={{ fontSize: 22, lineHeight: 28, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
               {category}
             </Text>
@@ -78,7 +78,7 @@ export default function LearnScreen() {
         );
       })}
 
-      <View style={{ paddingHorizontal: 20, gap: 12 }}>
+      <View style={{ paddingHorizontal: 20, gap: 16 }}>
         <Text style={{ fontSize: 22, lineHeight: 28, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
           名词和认脸
         </Text>
@@ -128,10 +128,10 @@ function FeaturedArticle({ article }: { article: CatalogArticle }) {
       style={{ marginHorizontal: 20, borderRadius: 16, backgroundColor: theme.card, overflow: "hidden" }}
     >
       {hero?.asset ? <Image source={hero.asset} style={{ width: "100%", height: 280 }} contentFit="cover" accessible={false} /> : null}
-      <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16, gap: 6 }}>
-        <Text style={{ fontSize: 28, lineHeight: 34, fontWeight: "700", color: theme.ink }}>{title}</Text>
-        <Text style={{ fontSize: 17, lineHeight: 24, color: theme.secondary }}>{learningText(article.dek)}</Text>
-        <Text style={{ fontSize: 13, lineHeight: 18, color: theme.secondary }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 20, gap: 8 }}>
+        <Text style={{ fontSize: 28, lineHeight: theme.dark ? 42 : 40, fontWeight: "700", color: theme.ink }}>{title}</Text>
+        <Text style={{ fontSize: 17, lineHeight: theme.dark ? 30 : 28, color: theme.secondary }}>{learningText(article.dek)}</Text>
+        <Text style={{ marginTop: 4, fontSize: 13, lineHeight: 18, color: theme.secondary }}>
           {`${article.category}    ${readingMinutes(article)} 分钟`}
         </Text>
       </View>
@@ -148,14 +148,14 @@ function FeedArticle({ article }: { article: CatalogArticle }) {
       accessibilityRole="button"
       accessibilityLabel={title}
       onPress={() => openArticle(article.slug)}
-      style={{ flexDirection: "row", gap: 12, borderRadius: 12, backgroundColor: theme.card, overflow: "hidden" }}
+      style={{ flexDirection: "row", gap: 16, borderRadius: 12, backgroundColor: theme.card, overflow: "hidden" }}
     >
-      {hero?.asset ? <Image source={hero.asset} style={{ width: 104, height: 104 }} contentFit="cover" accessible={false} /> : null}
-      <View style={{ flex: 1, justifyContent: "center", paddingRight: 14, gap: 4 }}>
-        <Text style={{ fontSize: 17, lineHeight: 22, fontWeight: "600", color: theme.ink }} numberOfLines={2}>
+      {hero?.asset ? <Image source={hero.asset} style={{ width: 120, height: 168 }} contentFit="cover" accessible={false} /> : null}
+      <View style={{ flex: 1, justifyContent: "center", paddingTop: 16, paddingBottom: 16, paddingRight: 16, gap: 8 }}>
+        <Text style={{ fontSize: 17, lineHeight: theme.dark ? 28 : 26, fontWeight: "600", color: theme.ink }} numberOfLines={2}>
           {title}
         </Text>
-        <Text style={{ fontSize: 13, lineHeight: 18, color: theme.secondary }} numberOfLines={2}>
+        <Text style={{ fontSize: 15, lineHeight: theme.dark ? 26 : 24, color: theme.secondary }} numberOfLines={2}>
           {learningText(article.dek)}
         </Text>
         <Text style={{ fontSize: 13, lineHeight: 18, color: theme.secondary }}>{`${readingMinutes(article)} 分钟`}</Text>
@@ -184,20 +184,24 @@ function InsetRow({
       accessibilityLabel={label}
       onPress={onPress}
       style={{
-        minHeight: 44,
+        minHeight: 52,
         flexDirection: "row",
         alignItems: "center",
-        gap: 12,
+        gap: 16,
         paddingHorizontal: 16,
-        paddingVertical: 10,
+        paddingVertical: 16,
         borderTopWidth: first ? 0 : 0.5,
         borderTopColor: theme.separator,
       }}
     >
-      {photo ? <View style={{ width: 36, height: 36, overflow: "hidden", borderRadius: 6 }}>{photo}</View> : null}
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 17, color: theme.ink }}>{label}</Text>
-        {detail ? <Text style={{ fontSize: 13, color: theme.secondary }}>{detail}</Text> : null}
+      {photo ? <View style={{ width: 44, height: 44, overflow: "hidden", borderRadius: 8 }}>{photo}</View> : null}
+      <View style={{ flex: 1, gap: 4 }}>
+        <Text style={{ fontSize: 17, lineHeight: 26, color: theme.ink }}>{label}</Text>
+        {detail ? (
+          <Text style={{ fontSize: 13, lineHeight: 20, color: theme.secondary }} numberOfLines={2}>
+            {detail}
+          </Text>
+        ) : null}
       </View>
     </Pressable>
   );

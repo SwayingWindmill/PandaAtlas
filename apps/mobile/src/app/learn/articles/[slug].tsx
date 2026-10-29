@@ -111,15 +111,15 @@ export default function ArticleScreen() {
             ))}
           </View>
         ) : null}
-        <View style={{ marginHorizontal: 20, marginTop: 32, backgroundColor: theme.fill, borderRadius: 12, padding: 16, gap: 10 }}>
-          <Text style={{ fontSize: 17, fontWeight: "700", color: theme.ink }}>要点</Text>
+        <View style={{ marginHorizontal: 20, marginTop: 32, backgroundColor: theme.fill, borderRadius: 12, padding: 20, gap: 16 }}>
+          <Text style={{ fontSize: 17, lineHeight: 26, fontWeight: "700", color: theme.ink }}>要点</Text>
           {article.keyFacts.map((fact, index) => (
-            <View key={learningText(fact.text)} style={{ borderTopWidth: index === 0 ? 0 : 0.5, borderTopColor: theme.separator, paddingTop: index === 0 ? 0 : 10 }}>
+            <View key={learningText(fact.text)} style={{ borderTopWidth: index === 0 ? 0 : 0.5, borderTopColor: theme.separator, paddingTop: index === 0 ? 0 : 16 }}>
               <RichParagraph text={fact.text} refs={fact.refs} numbers={numbers} />
             </View>
           ))}
         </View>
-        <View style={{ paddingHorizontal: 20, paddingTop: 36, gap: 8 }}>
+        <View style={{ paddingHorizontal: 20, paddingTop: 40, gap: 16 }}>
           <Text style={{ fontSize: 22, lineHeight: 28, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
             参考文献
           </Text>
@@ -131,15 +131,15 @@ export default function ArticleScreen() {
               onPress={() => {
                 if (reference.url) void WebBrowser.openBrowserAsync(reference.url);
               }}
-              style={{ paddingVertical: 8, borderTopWidth: 0.5, borderTopColor: theme.separator }}
+              style={{ paddingVertical: 16, gap: 4, borderTopWidth: 0.5, borderTopColor: theme.separator }}
             >
-              <Text style={{ fontSize: 17, lineHeight: 24, fontWeight: "600", color: theme.ink }}>{`${index + 1}. ${reference.title}`}</Text>
-              <Text style={{ fontSize: 13, lineHeight: 18, color: theme.secondary }}>{reference.publisher}</Text>
+              <Text style={{ fontSize: 17, lineHeight: 26, fontWeight: "600", color: theme.ink }}>{`${index + 1}. ${reference.title}`}</Text>
+              <Text style={{ fontSize: 13, lineHeight: 20, color: theme.secondary }}>{reference.publisher}</Text>
             </Pressable>
           ))}
         </View>
         {related.length > 0 ? (
-          <View style={{ paddingHorizontal: 20, paddingTop: 36, gap: 12 }}>
+          <View style={{ paddingHorizontal: 20, paddingTop: 40, gap: 16 }}>
             <Text style={{ fontSize: 22, lineHeight: 28, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
               相关文章
             </Text>
@@ -261,14 +261,14 @@ function RelatedArticle({ article }: { article: CatalogArticle }) {
       accessibilityRole="button"
       accessibilityLabel={title}
       onPress={() => router.push({ pathname: "/learn/articles/[slug]", params: { slug: article.slug } })}
-      style={{ flexDirection: "row", gap: 12, borderRadius: 12, backgroundColor: theme.fill, overflow: "hidden" }}
+      style={{ flexDirection: "row", gap: 16, borderRadius: 12, backgroundColor: theme.fill, overflow: "hidden" }}
     >
-      {hero?.asset ? <Image source={hero.asset} style={{ width: 88, height: 88 }} contentFit="cover" accessible={false} /> : null}
-      <View style={{ flex: 1, justifyContent: "center", paddingRight: 12, gap: 4 }}>
-        <Text style={{ fontSize: 17, lineHeight: 22, fontWeight: "600", color: theme.ink }} numberOfLines={2}>
+      {hero?.asset ? <Image source={hero.asset} style={{ width: 112, height: 112 }} contentFit="cover" accessible={false} /> : null}
+      <View style={{ flex: 1, justifyContent: "center", paddingTop: 16, paddingBottom: 16, paddingRight: 16, gap: 8 }}>
+        <Text style={{ fontSize: 17, lineHeight: 26, fontWeight: "600", color: theme.ink }} numberOfLines={2}>
           {title}
         </Text>
-        <Text style={{ fontSize: 13, color: theme.secondary }}>{`${readingMinutes(article)} 分钟`}</Text>
+        <Text style={{ fontSize: 13, lineHeight: 18, color: theme.secondary }}>{`${readingMinutes(article)} 分钟`}</Text>
       </View>
     </Pressable>
   );
