@@ -23,6 +23,16 @@ export interface PgmqMessage {
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
 
+// pgmq stores each queue in its own table. The names are a closed set, so the identifier is not input.
+const QUEUE_TABLE = {
+  integration_updates: "q_integration_updates",
+  integration_notification: "q_integration_notification",
+  integration_audit: "q_integration_audit",
+  integration_public_cache: "q_integration_public_cache",
+  notification_provider: "q_notification_provider",
+  notification_provider_dlq: "q_notification_provider_dlq",
+} as const satisfies Record<PgmqQueue, string>;
+
 // The outbox event an integration-event message names, when it names a well-formed one.
 export function queuedEventId(message: PgmqMessage): string | undefined {
   const eventId = message.message.eventId;
@@ -60,6 +70,10 @@ export class PgmqService {
     visibilityTimeoutSeconds: number,
     limit: number,
   ): Promise<PgmqMessage[]> {
+    // pgmq.read locks and rewrites visibility even when the queue is empty. The cron's
+    // steady state is an empty queue, so an index probe on vt replaces that call.
+    // A message that arrives after this probe waits for the next cycle.
+    if (!(await this.hasVisibleMessage(executor, queue))) return [];
     const result = await sql<{
       msg_id: string;
       read_ct: number;
@@ -73,6 +87,16 @@ export class PgmqService {
       readCount: row.read_ct,
       message: row.message,
     }));
+  }
+
+  private async hasVisibleMessage(executor: PgmqExecutor, queue: PgmqQueue): Promise<boolean> {
+    const table = QUEUE_TABLE[queue];
+    const result = await sql<{ ready: boolean }>`
+      select exists (
+        select 1 from pgmq.${sql.raw(table)} where vt <= now() limit 1
+      ) as ready
+    `.execute(executor);
+    return result.rows[0]?.ready === true;
   }
 
   public async archive(transaction: DatabaseTransaction, queue: PgmqQueue, msgId: string): Promise<void> {
