@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { isPublicCachePurge, PUBLIC_EDGE_CACHE_CONTROL, publicPageCacheKey, purgePublicCache, withEdgeCachePolicy } from "./edge-cache.mjs";
+import { isPublicCachePurge, PUBLIC_EDGE_CACHE_CONTROL, PUBLIC_NOT_FOUND_EDGE_CACHE_CONTROL, publicPageCacheKey, purgePublicCache, withEdgeCachePolicy } from "./edge-cache.mjs";
 
 const VINEXT_DYNAMIC = "private, no-cache, no-store, max-age=0, must-revalidate";
 
@@ -36,6 +36,10 @@ test("tracking and probe parameters share the canonical page cache key", () => {
     publicPageCacheKey(new Request("https://www.zhipanda.com/zh/moments?utm_medium=email&year=2026&utm_source=x")),
     "/zh/moments?year=2026",
   );
+  assert.equal(
+    publicPageCacheKey(new Request("https://zhipanda.com/zh/pandas/not-a-panda?utm_source=crawler&probe=1")),
+    "/zh/pandas/not-a-panda",
+  );
   assert.notEqual(
     publicPageCacheKey(new Request("https://www.zhipanda.com/zh/pandas?_rsc=1")),
     publicPageCacheKey(new Request("https://www.zhipanda.com/zh/pandas")),
@@ -54,12 +58,66 @@ test("sitemap.xml is cached at the edge", () => {
   assert.equal(apply("/sitemap.xml", { headers: { "Content-Type": "application/xml" } }).headers.get("Cloudflare-CDN-Cache-Control"), PUBLIC_EDGE_CACHE_CONTROL);
 });
 
+test("a genuine not-found for a public page is cached at the edge for ten minutes", async () => {
+  for (const path of ["/zh/pandas/missing", "/en/families/no-such-story", "/zh/places/unknown", "/en/games/missing"]) {
+    const response = apply(path, { ...page, status: 404 });
+    assert.equal(response.status, 404, path);
+    assert.equal(response.headers.get("Cloudflare-CDN-Cache-Control"), PUBLIC_NOT_FOUND_EDGE_CACHE_CONTROL, path);
+    assert.equal(response.headers.get("Cache-Control"), "public, max-age=0, must-revalidate", path);
+    assert.doesNotMatch(response.headers.get("Cloudflare-CDN-Cache-Control"), /stale-while-revalidate/u, path);
+  }
+  assert.equal(await apply("/zh/pandas/missing", { ...page, status: 404 }).text(), "body");
+
+  const vary = "RSC, Next-Router-State-Tree, Next-Router-Prefetch";
+  const rsc = apply("/zh/pandas/missing?_rsc", {
+    status: 404,
+    headers: { "Content-Type": "text/x-component", "Cache-Control": VINEXT_DYNAMIC, Vary: vary },
+  });
+  assert.equal(rsc.headers.get("Cloudflare-CDN-Cache-Control"), PUBLIC_NOT_FOUND_EDGE_CACHE_CONTROL);
+  assert.equal(rsc.headers.get("Vary"), vary);
+
+  const head = apply("/en/pandas/missing", { ...page, status: 404, method: "HEAD" });
+  assert.equal(head.status, 404);
+  assert.equal(head.headers.get("Cloudflare-CDN-Cache-Control"), PUBLIC_NOT_FOUND_EDGE_CACHE_CONTROL);
+});
+
+test("not-found responses outside a public page, and errors, stay uncacheable", () => {
+  const cases = [
+    ["/zh/pandas/missing", { ...page, status: 500 }],
+    ["/zh/pandas/missing", { ...page, status: 503 }],
+    ["/zh", { ...page, status: 500 }],
+    ["/zh/pandas/missing", { ...page, status: 401 }],
+    ["/zh/pandas/missing", { ...page, status: 403 }],
+    ["/zh/pandas/missing", { ...page, status: 410 }],
+    ["/zh/me", { ...page, status: 404 }],
+    ["/admin", { ...page, status: 404 }],
+    ["/zh/contribute", { ...page, status: 404 }],
+    ["/sitemap.xml", { status: 404, headers: { "Content-Type": "application/xml", "Cache-Control": VINEXT_DYNAMIC } }],
+    ["/zh/pandas/missing", { status: 404, headers: { "Content-Type": "application/json", "Cache-Control": VINEXT_DYNAMIC } }],
+    ["/zh/pandas/missing", { ...page, status: 404, headers: { ...page.headers, "Set-Cookie": "sb-session=1" } }],
+    ["/zh/pandas/missing", { ...page, status: 404, requestHeaders: { Authorization: "Bearer token" } }],
+    ["/zh/pandas/missing", { ...page, status: 404, method: "POST" }],
+  ];
+  for (const [path, init] of cases) {
+    const response = apply(path, init);
+    assert.equal(response.headers.get("Cloudflare-CDN-Cache-Control"), null, path);
+    assert.equal(response.headers.get("Cache-Control"), VINEXT_DYNAMIC, path);
+  }
+
+  const bare = apply("/zh/pandas/missing", { status: 404 });
+  assert.equal(bare.headers.get("Cloudflare-CDN-Cache-Control"), null);
+  assert.equal(bare.headers.get("Cache-Control"), "private, no-store");
+
+  const serverError = apply("/zh/pandas/missing", { status: 500, headers: { "Content-Type": "text/html; charset=utf-8" } });
+  assert.equal(serverError.headers.get("Cloudflare-CDN-Cache-Control"), null);
+  assert.equal(serverError.headers.get("Cache-Control"), "private, no-store");
+});
+
 test("private routes, errors and personalised responses keep their own no-store policy", () => {
   const cases = [
     ["/zh/me", page],
     ["/zh/contribute", page],
     ["/admin", page],
-    ["/zh/pandas/missing", { ...page, status: 404 }],
     ["/zh", { headers: { ...page.headers, "Set-Cookie": "sb-session=1" } }],
     ["/zh", { ...page, requestHeaders: { Authorization: "Bearer token" } }],
     ["/zh", { ...page, method: "POST" }],
@@ -99,7 +157,7 @@ test("only an invocation carrying the API binding's props may purge", () => {
   assert.equal(isPublicCachePurge({ props: { publicCachePurge: "true" } }), false);
 });
 
-test("a purge request clears every cached response of the page entrypoint", async () => {
+test("a purge request clears every cached response of the page entrypoint, including public not-found entries", async () => {
   const context = purgeContext();
   const response = await purgePublicCache(new Request("https://zhipanda.com/__public-cache/purge", { method: "POST" }), context);
   assert.equal(response.status, 204);
