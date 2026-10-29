@@ -81,11 +81,23 @@ test("a genuine not-found for a public page is cached at the edge for ten minute
   assert.equal(head.headers.get("Cloudflare-CDN-Cache-Control"), PUBLIC_NOT_FOUND_EDGE_CACHE_CONTROL);
 });
 
+test("server errors are not cached even when they carry a public cache header", () => {
+  for (const status of [500, 502, 503, 504]) {
+    const response = apply("/zh", {
+      status,
+      headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=86400", "Cloudflare-CDN-Cache-Control": PUBLIC_EDGE_CACHE_CONTROL },
+    });
+    assert.equal(response.status, status);
+    assert.equal(response.headers.get("Cache-Control"), "private, no-store");
+    assert.equal(response.headers.get("Cloudflare-CDN-Cache-Control"), null);
+  }
+  const sitemap = apply("/sitemap.xml", { status: 503, headers: { "Content-Type": "application/xml", "Cache-Control": PUBLIC_EDGE_CACHE_CONTROL } });
+  assert.equal(sitemap.headers.get("Cache-Control"), "private, no-store");
+  assert.equal(sitemap.headers.get("Cloudflare-CDN-Cache-Control"), null);
+});
+
 test("not-found responses outside a public page, and errors, stay uncacheable", () => {
   const cases = [
-    ["/zh/pandas/missing", { ...page, status: 500 }],
-    ["/zh/pandas/missing", { ...page, status: 503 }],
-    ["/zh", { ...page, status: 500 }],
     ["/zh/pandas/missing", { ...page, status: 401 }],
     ["/zh/pandas/missing", { ...page, status: 403 }],
     ["/zh/pandas/missing", { ...page, status: 410 }],

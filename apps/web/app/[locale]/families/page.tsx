@@ -80,7 +80,6 @@ export default async function FamiliesPage({ params, searchParams }: FamiliesPag
 
   if (view === "lineage") {
     const envelope = await loadV2PublicLineageDataset(locale);
-    if (!envelope) notFound();
     const defaultNode = envelope.data.nodes.find((node) => node.profile_available) ?? envelope.data.nodes[0];
     if (!defaultNode) notFound();
     const defaultFocus: LineageFocusReference = { id: defaultNode.id, slug: defaultNode.slug };
@@ -142,7 +141,6 @@ export default async function FamiliesPage({ params, searchParams }: FamiliesPag
 
   const stories = listFamilyStories();
   const membersByStory = await loadV2FamilyStoryMembers(stories);
-  if (!membersByStory) notFound();
   const t = copy[locale];
 
   return (

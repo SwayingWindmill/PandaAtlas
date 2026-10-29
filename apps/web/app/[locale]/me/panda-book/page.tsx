@@ -42,7 +42,6 @@ export default async function PandaBookRoute({ params }: PandaBookRouteProps) {
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
   const envelope = await loadV2PublicAtlasDataset(locale);
-  if (!envelope) notFound();
   const pandas = buildGamePandas(envelope.data.pandas, locale).map((panda) => ({
     id: panda.id,
     name: panda.name,

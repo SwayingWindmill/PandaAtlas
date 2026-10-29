@@ -43,7 +43,6 @@ export default async function CollectionsPage({ params }: CollectionsPageProps) 
   if (!locale) notFound();
 
   const envelope = await loadV2PublicAtlasDataset(locale);
-  if (!envelope) notFound();
   const view = buildMyPandasViewModel(envelope.data, locale);
 
   return (

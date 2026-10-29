@@ -2,6 +2,7 @@ import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { loadPublicPandaActivity } from "@/features/feed/feed-api";
 import { loadV2PublicPandaProfile } from "@/features/public-content/public-v2";
+import { readPublicMetadata } from "@/lib/server/public-read";
 import { buildTrustedProfilePageViewModel } from "@/features/profile/profile-page-view-model";
 import { TrustedProfilePage } from "@/features/profile/trusted-profile-page";
 import { parsePublicLocale } from "@/foundation/content/locales";
@@ -19,7 +20,7 @@ interface LocalizedPandaPageProps {
 export async function generateMetadata({ params }: LocalizedPandaPageProps): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const locale = parsePublicLocale(rawLocale);
-  const envelope = locale ? await loadV2PublicPandaProfile(slug, locale) : null;
+  const envelope = locale ? await readPublicMetadata(() => loadV2PublicPandaProfile(slug, locale)) : null;
   if (!locale || !envelope) return {};
 
   const profile = buildTrustedProfilePageViewModel(envelope.data, locale);

@@ -41,7 +41,6 @@ export default async function GameHistoryRoute({ params }: GameHistoryRouteProps
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
   const envelope = await loadV2PublicAtlasDataset(locale);
-  if (!envelope) notFound();
   const pandas = envelope.data.pandas.map((panda) => ({
     id: panda.id,
     name: locale === "zh" ? panda.name_zh : panda.name_en ?? panda.name_zh,
