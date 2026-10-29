@@ -8,14 +8,10 @@ test("a fan reads the draft 科普 pages", async ({ page }) => {
   await page.getByRole("link", { name: "去看看" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "认识大熊猫" })).toBeVisible();
 
-  await page.getByRole("button", { name: "黑眼圈" }).first().click();
-  await expect(page.getByText("大熊猫眼周的黑斑叫眼斑")).toBeVisible();
-  await expect(page.getByRole("link", { name: "加州大学戴维斯分校：大熊猫为什么是黑白的" })).toBeVisible();
-
-  await page.goto("/learn");
-  await page.getByRole("button", { name: "怎么认脸" }).click();
-  await expect(page.getByRole("heading", { name: "脸型和左右差别" })).toBeVisible();
-  await expect(page.getByText("脸型因个体而异")).toBeVisible();
+  await page.getByRole("button", { name: "黑眼圈不是熬夜熬的：大熊猫眼斑从哪来、有什么用" }).click();
+  await expect(page.getByText("提到大熊猫，几乎每个人第一个想到的都是那对")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Giant panda" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "黑白配色里最显眼的一笔" })).toBeVisible();
 
   await page.goto("/learn");
   await page.getByRole("button", { name: "亚成体" }).click();

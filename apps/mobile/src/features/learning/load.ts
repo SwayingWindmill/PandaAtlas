@@ -11,7 +11,8 @@ export async function loadLearningCatalog(): Promise<LearningCatalog> {
   let remote: LearningCatalog | null = null;
   try {
     const { data } = await api.GET("/api/v2/learning");
-    if (data) remote = data;
+    // The OpenAPI block is a flat bag of optional fields. The server only returns one shape per block type.
+    if (data) remote = data as unknown as LearningCatalog;
   } catch {
     remote = null;
   }

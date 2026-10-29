@@ -130,9 +130,113 @@ export class LearningChallengeDto {
   public declare sources: LearningSourceDto[];
 }
 
+export class LearningArticleParagraphDto {
+  @ApiProperty({ type: LearningTextDto })
+  public declare text: LearningTextDto;
+
+  @ApiProperty({ type: [String] })
+  public declare refs: string[];
+}
+
+export class LearningArticleSectionDto {
+  @ApiProperty({ type: LearningTextDto })
+  public declare heading: LearningTextDto;
+
+  @ApiProperty({ type: [LearningArticleParagraphDto] })
+  public declare paragraphs: LearningArticleParagraphDto[];
+}
+
+export class LearningArticleBodyDto {
+  @ApiProperty({ type: [LearningArticleSectionDto] })
+  public declare sections: LearningArticleSectionDto[];
+}
+
+export class LearningArticleFactDto {
+  @ApiProperty({ type: LearningTextDto })
+  public declare text: LearningTextDto;
+
+  @ApiProperty({ type: [String] })
+  public declare refs: string[];
+}
+
+export class LearningArticleImageDto {
+  @ApiProperty({ enum: ["hero", "inline", "compare"] })
+  public declare role: "hero" | "inline" | "compare";
+
+  @ApiProperty({ enum: ["existing", "wanted"] })
+  public declare type: "existing" | "wanted";
+
+  @ApiProperty({ type: String, nullable: true })
+  public declare pandaSlug: string | null;
+
+  @ApiProperty({ required: false })
+  public declare asset?: string;
+
+  @ApiProperty({ required: false })
+  public declare credit?: string;
+
+  @ApiProperty({ type: LearningTextDto })
+  public declare caption: LearningTextDto;
+
+  @ApiProperty({ type: LearningTextDto, required: false })
+  public declare shot?: LearningTextDto;
+}
+
+export class LearningArticleReferenceDto {
+  @ApiProperty()
+  public declare id: string;
+
+  @ApiProperty()
+  public declare title: string;
+
+  @ApiProperty()
+  public declare publisher: string;
+
+  @ApiProperty({ format: "uri" })
+  public declare url: string;
+
+  @ApiProperty({ format: "date" })
+  public declare citedOn: string;
+}
+
+export class LearningArticleDto {
+  @ApiProperty()
+  public declare slug: string;
+
+  @ApiProperty({ enum: ["外形与识别", "食性", "繁殖与成长", "保护"] })
+  public declare category: string;
+
+  @ApiProperty({ type: LearningTextDto })
+  public declare title: LearningTextDto;
+
+  @ApiProperty({ type: LearningTextDto })
+  public declare dek: LearningTextDto;
+
+  @ApiProperty({ type: LearningTextDto })
+  public declare pullQuote: LearningTextDto;
+
+  @ApiProperty({ type: LearningArticleBodyDto })
+  public declare body: LearningArticleBodyDto;
+
+  @ApiProperty({ type: [LearningArticleFactDto] })
+  public declare keyFacts: LearningArticleFactDto[];
+
+  @ApiProperty({ type: [LearningArticleImageDto] })
+  public declare images: LearningArticleImageDto[];
+
+  @ApiProperty({ type: [LearningArticleReferenceDto] })
+  public declare references: LearningArticleReferenceDto[];
+
+  @ApiProperty({ type: [String] })
+  public declare relatedArticles: string[];
+}
+
 export class LearningCatalogDto {
-  @ApiProperty({ example: "2026.10.29.1" })
+  @ApiProperty({ example: "2026.10.29.2" })
   public declare version: string;
+
+  @ApiProperty({ type: [LearningArticleDto] })
+  public declare articles: LearningArticleDto[];
 
   @ApiProperty({ type: [LearningCardDto] })
   public declare cards: LearningCardDto[];

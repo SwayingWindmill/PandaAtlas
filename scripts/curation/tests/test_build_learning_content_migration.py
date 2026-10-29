@@ -46,6 +46,7 @@ def document(status: str = "draft") -> dict:
     sample = card(status)
     return {
         "version": "2026.10.29.1",
+        "articles": [],
         "cards": [sample],
         "topics": [
             {

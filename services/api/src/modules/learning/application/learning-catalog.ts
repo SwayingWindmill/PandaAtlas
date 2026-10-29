@@ -58,8 +58,30 @@ export interface PublicLearningChallenge {
   sources: LearningSource[];
 }
 
+export interface PublicLearningArticle {
+  slug: string;
+  category: string;
+  title: LearningText;
+  dek: LearningText;
+  pullQuote: LearningText;
+  body: { sections: { heading: LearningText; paragraphs: { text: LearningText; refs: string[] }[] }[] };
+  keyFacts: { text: LearningText; refs: string[] }[];
+  images: {
+    role: string;
+    type: string;
+    pandaSlug: string | null;
+    asset?: string;
+    credit?: string;
+    caption: LearningText;
+    shot?: LearningText;
+  }[];
+  references: { id: string; title: string; publisher: string; url: string; citedOn: string }[];
+  relatedArticles: string[];
+}
+
 export interface PublicLearningCatalog {
   version: string;
+  articles: PublicLearningArticle[];
   cards: PublicLearningCard[];
   topics: PublicLearningTopic[];
   terms: PublicLearningTerm[];
@@ -69,6 +91,7 @@ export interface PublicLearningCatalog {
 
 export const EMPTY_LEARNING_CATALOG: PublicLearningCatalog = {
   version: "",
+  articles: [],
   cards: [],
   topics: [],
   terms: [],
@@ -150,7 +173,7 @@ function list(value: unknown, label: string): unknown[] {
 export function publishedCatalog(row: LearningCatalogRow | null): PublicLearningCatalog {
   if (row === null) return EMPTY_LEARNING_CATALOG;
   const document = record(row.document, "document");
-  exactKeys(document, ["version", "cards", "topics", "terms", "faceGuides", "challenges"], "document");
+  exactKeys(document, ["version", "articles", "cards", "topics", "terms", "faceGuides", "challenges"], "document");
   if (document.version !== row.version || typeof document.version !== "string") fail("document version does not match the catalog");
 
   const cards = list(document.cards, "cards").flatMap((item, index): PublicLearningCard[] => {
@@ -246,5 +269,117 @@ export function publishedCatalog(row: LearningCatalogRow | null): PublicLearning
     return status === "published" ? [projected] : [];
   });
 
-  return { version: row.version, cards, topics, terms, faceGuides, challenges };
+  const articles = list(document.articles, "articles").flatMap((item, index) => projectArticle(item, index));
+
+  return { version: row.version, articles, cards, topics, terms, faceGuides, challenges };
+}
+
+const ARTICLE_KEYS = [
+  "slug",
+  "status",
+  "category",
+  "title",
+  "dek",
+  "pullQuote",
+  "body",
+  "keyFacts",
+  "images",
+  "references",
+  "relatedArticles",
+  "stats",
+  "glossaryTerms",
+] as const;
+
+function projectArticle(item: unknown, index: number): PublicLearningArticle[] {
+  const article = record(item, `articles[${index}]`);
+  const sourceKey = ["sourceCardSlug", "sourceTopicSlug"].filter((key) => Object.hasOwn(article, key));
+  if (sourceKey.length !== 1) fail(`articles[${index}] needs one source slug`);
+  exactKeys(article, [...ARTICLE_KEYS, sourceKey[0] ?? ""], `articles[${index}]`);
+  const status = statusOf(article, `articles[${index}]`);
+  if (typeof article.category !== "string") fail(`articles[${index}].category must be a string`);
+  const projected: PublicLearningArticle = {
+    slug: slug(article.slug, `articles[${index}].slug`),
+    category: article.category,
+    title: zhText(article.title, `articles[${index}].title`),
+    dek: zhText(article.dek, `articles[${index}].dek`),
+    pullQuote: zhText(article.pullQuote, `articles[${index}].pullQuote`, ["drawnFromBody"]),
+    body: articleBody(article.body, `articles[${index}].body`),
+    keyFacts: articleFacts(article.keyFacts, `articles[${index}].keyFacts`),
+    images: articleImages(article.images, `articles[${index}].images`),
+    references: articleReferences(article.references, `articles[${index}].references`, status === "published"),
+    relatedArticles: slugs(article.relatedArticles, `articles[${index}].relatedArticles`),
+  };
+  return status === "published" ? [projected] : [];
+}
+
+function zhText(value: unknown, label: string, extra: string[] = []): LearningText {
+  const item = record(value, label);
+  const allowed = new Set(["zh", "en", ...extra]);
+  if (!Object.hasOwn(item, "zh") || Object.keys(item).some((key) => !allowed.has(key))) fail(`${label} must include zh`);
+  if (typeof item.zh !== "string") fail(`${label}.zh must be a string`);
+  if (item.en !== undefined && typeof item.en !== "string") fail(`${label}.en must be a string`);
+  return { zh: item.zh, en: typeof item.en === "string" ? item.en : "" };
+}
+
+function articleBody(value: unknown, label: string): PublicLearningArticle["body"] {
+  const body = record(value, label);
+  exactKeys(body, ["sections"], label);
+  const sections = list(body.sections, `${label}.sections`).map((section, index) => {
+    const fields = record(section, `${label}.sections[${index}]`);
+    exactKeys(fields, ["heading", "paragraphs"], `${label}.sections[${index}]`);
+    return {
+      heading: zhText(fields.heading, `${label}.sections[${index}].heading`),
+      paragraphs: list(fields.paragraphs, `${label}.sections[${index}].paragraphs`).map((paragraph, paragraphIndex) => {
+        const row = record(paragraph, `${label}.sections[${index}].paragraphs[${paragraphIndex}]`);
+        exactKeys(row, ["text", "refs"], `${label}.sections[${index}].paragraphs[${paragraphIndex}]`);
+        return { text: zhText(row.text, `${label}.sections[${index}].paragraphs[${paragraphIndex}].text`), refs: slugs(row.refs, `${label}.refs`) };
+      }),
+    };
+  });
+  return { sections };
+}
+
+function articleFacts(value: unknown, label: string): PublicLearningArticle["keyFacts"] {
+  return list(value, label).map((fact, index) => {
+    const row = record(fact, `${label}[${index}]`);
+    exactKeys(row, ["text", "refs"], `${label}[${index}]`);
+    return { text: zhText(row.text, `${label}[${index}].text`), refs: slugs(row.refs, `${label}[${index}].refs`) };
+  });
+}
+
+function articleImages(value: unknown, label: string): PublicLearningArticle["images"] {
+  return list(value, label).map((image, index) => {
+    const row = record(image, `${label}[${index}]`);
+    if (row.type === "wanted") {
+      return {
+        role: typeof row.role === "string" ? row.role : fail(`${label}[${index}].role`),
+        type: "wanted",
+        pandaSlug: typeof row.pandaSlug === "string" ? row.pandaSlug : null,
+        caption: zhText(row.caption, `${label}[${index}].caption`),
+        shot: row.shot === undefined ? undefined : zhText(row.shot, `${label}[${index}].shot`),
+      };
+    }
+    if (row.type !== "existing" || typeof row.asset !== "string") fail(`${label}[${index}] must be an existing or wanted figure`);
+    return {
+      role: typeof row.role === "string" ? row.role : fail(`${label}[${index}].role`),
+      type: "existing",
+      pandaSlug: typeof row.pandaSlug === "string" ? row.pandaSlug : null,
+      asset: row.asset,
+      credit: typeof row.credit === "string" ? row.credit : "",
+      caption: zhText(row.caption, `${label}[${index}].caption`),
+    };
+  });
+}
+
+function articleReferences(value: unknown, label: string, published: boolean): PublicLearningArticle["references"] {
+  if (!Array.isArray(value) || value.length === 0) fail(`${label} needs a reference`);
+  return value.map((item, index) => {
+    const reference = record(item, `${label}[${index}]`);
+    exactKeys(reference, ["id", "title", "publisher", "url", "citedOn"], `${label}[${index}]`);
+    if (typeof reference.title !== "string" || typeof reference.publisher !== "string") fail(`${label}[${index}] needs title and publisher`);
+    if (!published) return { id: slug(reference.id, `${label}[${index}].id`), title: reference.title, publisher: reference.publisher, url: "", citedOn: "" };
+    if (typeof reference.url !== "string" || !reference.url.startsWith("https://")) fail(`${label}[${index}].url must be https`);
+    if (typeof reference.citedOn !== "string" || !/^\d{4}-\d{2}-\d{2}$/u.test(reference.citedOn)) fail(`${label}[${index}].citedOn must be a day`);
+    return { id: slug(reference.id, `${label}[${index}].id`), title: reference.title, publisher: reference.publisher, url: reference.url, citedOn: reference.citedOn };
+  });
 }

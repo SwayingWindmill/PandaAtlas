@@ -77,7 +77,7 @@ components:
 
 **Creative North Star: "A plate in the atlas."**
 
-吱熊猫 is a book of named pandas, not a kit of cards. The page is olive paper. A hairline separates one fact from the next. When a screen is about one animal, that animal's photograph is the page: edge to edge, with the name and the distinguishing mark set underneath in the column, never on a scrim.
+吱熊猫 is a book of named pandas, not a kit of cards. The atlas stays on olive paper. A 科普 article is the exception: it reads like an iOS story, on system white and system black, because a long column wants the contrast Apple News uses. The photograph is still the cover, and the title sits under it.
 
 **Key Characteristics:**
 

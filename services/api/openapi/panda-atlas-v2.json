@@ -5959,6 +5959,212 @@
           "en"
         ]
       },
+      "LearningArticleParagraphDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "text",
+          "refs"
+        ]
+      },
+      "LearningArticleSectionDto": {
+        "type": "object",
+        "properties": {
+          "heading": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "paragraphs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleParagraphDto"
+            }
+          }
+        },
+        "required": [
+          "heading",
+          "paragraphs"
+        ]
+      },
+      "LearningArticleBodyDto": {
+        "type": "object",
+        "properties": {
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleSectionDto"
+            }
+          }
+        },
+        "required": [
+          "sections"
+        ]
+      },
+      "LearningArticleFactDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "text",
+          "refs"
+        ]
+      },
+      "LearningArticleImageDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "hero",
+              "inline",
+              "compare"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "existing",
+              "wanted"
+            ]
+          },
+          "pandaSlug": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "asset": {
+            "type": "string"
+          },
+          "credit": {
+            "type": "string"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "shot": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          }
+        },
+        "required": [
+          "role",
+          "type",
+          "pandaSlug",
+          "caption"
+        ]
+      },
+      "LearningArticleReferenceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "citedOn": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "publisher",
+          "url",
+          "citedOn"
+        ]
+      },
+      "LearningArticleDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "外形与识别",
+              "食性",
+              "繁殖与成长",
+              "保护"
+            ]
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "dek": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "pullQuote": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "body": {
+            "$ref": "#/components/schemas/LearningArticleBodyDto"
+          },
+          "keyFacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleFactDto"
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleImageDto"
+            }
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleReferenceDto"
+            }
+          },
+          "relatedArticles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "category",
+          "title",
+          "dek",
+          "pullQuote",
+          "body",
+          "keyFacts",
+          "images",
+          "references",
+          "relatedArticles"
+        ]
+      },
       "LearningSourceDto": {
         "type": "object",
         "properties": {
@@ -6199,7 +6405,13 @@
         "properties": {
           "version": {
             "type": "string",
-            "example": "2026.10.29.1"
+            "example": "2026.10.29.2"
+          },
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleDto"
+            }
           },
           "cards": {
             "type": "array",
@@ -6234,6 +6446,7 @@
         },
         "required": [
           "version",
+          "articles",
           "cards",
           "topics",
           "terms",

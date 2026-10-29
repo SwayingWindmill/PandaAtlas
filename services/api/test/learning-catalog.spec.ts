@@ -21,6 +21,7 @@ function entry(status: "draft" | "published", slug: string) {
 function document(status: "draft" | "published" = "published") {
   return {
     version: "2026.10.29.1",
+    articles: [],
     cards: [entry("draft", "draft-card"), entry(status, "black-eye-patches")],
     topics: [],
     terms: [],
@@ -33,6 +34,7 @@ describe("publishedCatalog", () => {
   it("returns an empty catalog when no row is stored", () => {
     expect(publishedCatalog(null)).toEqual({
       version: "",
+      articles: [],
       cards: [],
       topics: [],
       terms: [],

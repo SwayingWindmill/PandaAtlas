@@ -2040,6 +2040,54 @@ export interface components {
             zh: string;
             en: string;
         };
+        LearningArticleParagraphDto: {
+            text: components["schemas"]["LearningTextDto"];
+            refs: string[];
+        };
+        LearningArticleSectionDto: {
+            heading: components["schemas"]["LearningTextDto"];
+            paragraphs: components["schemas"]["LearningArticleParagraphDto"][];
+        };
+        LearningArticleBodyDto: {
+            sections: components["schemas"]["LearningArticleSectionDto"][];
+        };
+        LearningArticleFactDto: {
+            text: components["schemas"]["LearningTextDto"];
+            refs: string[];
+        };
+        LearningArticleImageDto: {
+            /** @enum {string} */
+            role: "hero" | "inline" | "compare";
+            /** @enum {string} */
+            type: "existing" | "wanted";
+            pandaSlug: string | null;
+            asset?: string;
+            credit?: string;
+            caption: components["schemas"]["LearningTextDto"];
+            shot?: components["schemas"]["LearningTextDto"];
+        };
+        LearningArticleReferenceDto: {
+            id: string;
+            title: string;
+            publisher: string;
+            /** Format: uri */
+            url: string;
+            /** Format: date */
+            citedOn: string;
+        };
+        LearningArticleDto: {
+            slug: string;
+            /** @enum {string} */
+            category: "外形与识别" | "食性" | "繁殖与成长" | "保护";
+            title: components["schemas"]["LearningTextDto"];
+            dek: components["schemas"]["LearningTextDto"];
+            pullQuote: components["schemas"]["LearningTextDto"];
+            body: components["schemas"]["LearningArticleBodyDto"];
+            keyFacts: components["schemas"]["LearningArticleFactDto"][];
+            images: components["schemas"]["LearningArticleImageDto"][];
+            references: components["schemas"]["LearningArticleReferenceDto"][];
+            relatedArticles: string[];
+        };
         LearningSourceDto: {
             title: components["schemas"]["LearningTextDto"];
             /** Format: uri */
@@ -2096,8 +2144,9 @@ export interface components {
             sources: components["schemas"]["LearningSourceDto"][];
         };
         LearningCatalogDto: {
-            /** @example 2026.10.29.1 */
+            /** @example 2026.10.29.2 */
             version: string;
+            articles: components["schemas"]["LearningArticleDto"][];
             cards: components["schemas"]["LearningCardDto"][];
             topics: components["schemas"]["LearningTopicDto"][];
             terms: components["schemas"]["LearningTermDto"][];

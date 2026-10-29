@@ -5,7 +5,7 @@ export type LearningStatus = "draft" | "published";
 
 export interface LearningText {
   zh: string;
-  en: string;
+  en?: string;
 }
 
 export interface LearningSource {
@@ -74,8 +74,76 @@ export interface LearningChallenge {
   sources: LearningSource[];
 }
 
+export interface LearningParagraph {
+  text: LearningText;
+  refs: string[];
+}
+
+export interface LearningArticleSection {
+  heading: LearningText;
+  paragraphs: LearningParagraph[];
+}
+
+export interface LearningFact {
+  text: LearningText;
+  refs: string[];
+}
+
+export interface LearningArticleImage {
+  role: "hero" | "inline" | "compare";
+  type: "existing" | "wanted";
+  pandaSlug: string | null;
+  asset?: string;
+  sourcePage?: string;
+  credit?: string;
+  rights?: string;
+  shot?: LearningText;
+  caption: LearningText;
+  captionRefs: string[];
+}
+
+export interface LearningArticleReference {
+  id: string;
+  title: string;
+  publisher: string;
+  url: string | null;
+  citedOn: string | null;
+}
+
+export interface LearningArticle {
+  slug: string;
+  status: LearningStatus;
+  category: string;
+  title: LearningText;
+  dek: LearningText;
+  pullQuote: LearningText & { drawnFromBody?: boolean };
+  body: { sections: LearningArticleSection[] };
+  keyFacts: LearningFact[];
+  images: LearningArticleImage[];
+  references: LearningArticleReference[];
+  relatedArticles: string[];
+  stats: { bodyChars: number; bodyCjkChars: number; sectionCount: number; referenceCount: number };
+  glossaryTerms: { slug: string; label: string; inLearningJson: boolean }[];
+  sourceCardSlug?: string;
+  sourceTopicSlug?: string;
+}
+
+export function articleHero(article: { images: LearningArticleImage[] }): LearningArticleImage | undefined {
+  return article.images.find((image) => image.role === "hero" && image.type === "existing" && image.asset);
+}
+
+/** About 400 Chinese characters a minute. Derived from the draft, not stored as a separate claim. */
+export function readingMinutes(article: { body: { sections: LearningArticleSection[] } }): number {
+  const chars = article.body.sections.reduce(
+    (sum, section) => sum + section.paragraphs.reduce((inner, paragraph) => inner + learningText(paragraph.text).length, 0),
+    0,
+  );
+  return Math.max(1, Math.round(chars / 400));
+}
+
 export interface LearningDocument {
   version: string;
+  articles: LearningArticle[];
   cards: LearningCard[];
   topics: LearningTopic[];
   terms: LearningTerm[];
@@ -83,6 +151,7 @@ export interface LearningDocument {
   challenges: LearningChallenge[];
 }
 
+export type CatalogArticle = Omit<LearningArticle, "status">;
 export type CatalogCard = Omit<LearningCard, "status">;
 export type CatalogTopic = Omit<LearningTopic, "status">;
 export type CatalogTerm = Omit<LearningTerm, "status">;
@@ -91,6 +160,7 @@ export type CatalogChallenge = Omit<LearningChallenge, "status">;
 
 export interface LearningCatalog {
   version: string;
+  articles: CatalogArticle[];
   cards: CatalogCard[];
   topics: CatalogTopic[];
   terms: CatalogTerm[];
@@ -133,9 +203,9 @@ export class CatalogUnavailable extends Error {}
 
 /** Chinese, then English. The app has no locale switch; the file keeps both. */
 export function learningText(value: LearningText | undefined): string {
-  const zh = value?.zh.trim();
+  const zh = value?.zh?.trim();
   if (zh) return zh;
-  return value?.en.trim() ?? "";
+  return value?.en?.trim() ?? "";
 }
 
 /** A face-guide tip with no body is a slot the writer left blank, so the screen omits it. */
@@ -182,6 +252,7 @@ export function assembleCatalog(
     if (remote === null) throw new CatalogUnavailable("Learning catalog is unavailable");
     return remote;
   }
+  const draftArticles = bundled ? visible(bundled.articles, true) : [];
   const draftCards = bundled ? visible(bundled.cards, true) : [];
   const draftTopics = bundled ? visible(bundled.topics, true) : [];
   const draftTerms = bundled ? visible(bundled.terms, true) : [];
@@ -189,6 +260,7 @@ export function assembleCatalog(
   const draftChallenges = bundled ? visible(bundled.challenges, true) : [];
   return {
     version: remote?.version || bundled?.version || "",
+    articles: mergeBySlug(draftArticles, remote?.articles ?? []),
     cards: mergeBySlug(draftCards, remote?.cards ?? []),
     topics: mergeBySlug(draftTopics, remote?.topics ?? []),
     terms: mergeBySlug(draftTerms, remote?.terms ?? []),
@@ -199,6 +271,7 @@ export function assembleCatalog(
 
 export function catalogIsEmpty(catalog: LearningCatalog): boolean {
   return (
+    catalog.articles.length === 0 &&
     catalog.cards.length === 0 &&
     catalog.topics.length === 0 &&
     catalog.terms.length === 0 &&

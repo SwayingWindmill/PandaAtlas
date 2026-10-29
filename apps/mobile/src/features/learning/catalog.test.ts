@@ -16,6 +16,7 @@ const source = { title: text, url: null, citedOn: null };
 
 const bundled: LearningDocument = {
   version: "2026.10.29.1",
+  articles: [],
   cards: [
     { slug: "draft-card", status: "draft", title: text, summary: text, body: text, sources: [source] },
     {
@@ -54,7 +55,7 @@ describe("assembleCatalog", () => {
   it("shows only the published API catalog in a production build", () => {
     const remote = assembleCatalog(null, bundled, true);
     const production = assembleCatalog(
-      { version: "2026.10.29.1", cards: remote.cards.filter((card) => card.slug === "live-card"), topics: [], terms: [], faceGuides: [], challenges: [] },
+      { version: "2026.10.29.1", articles: [], cards: remote.cards.filter((card) => card.slug === "live-card"), topics: [], terms: [], faceGuides: [], challenges: [] },
       bundled,
       false,
     );
@@ -66,6 +67,7 @@ describe("assembleCatalog", () => {
     const catalog = assembleCatalog(
       {
         version: "2026.11.01.1",
+        articles: [],
         cards: [{ slug: "live-card", title: { zh: "新正文", en: "New" }, summary: text, body: text, sources: [source] }],
         topics: [],
         terms: [],
