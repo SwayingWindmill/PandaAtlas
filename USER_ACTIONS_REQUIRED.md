@@ -19,9 +19,13 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 
 ## Legal
 
-- **User agreement and privacy policy.** The canvas login asks fans to accept them, and both app stores require a privacy policy URL, but no such pages exist (website issue #348). The app's sign-in shows no consent line until the documents are written and published.
+- **Fill in the draft user agreement and privacy policy, then take them out of draft.** Drafts are on the website at `/{locale}/terms` and `/{locale}/privacy` (Chinese and English), linked from the footer, the website sign-in page, and `sitemap.xml`. The app's 我的 rows and both sign-in lines open `https://www.zhipanda.com/zh/terms` and `https://www.zhipanda.com/zh/privacy`. A banner on each page says the text is a draft and is not in effect. App stores can use `https://www.zhipanda.com/zh/privacy` as the public privacy policy URL once you accept the text. Replace every placeholder below, then remove the draft banner in the same change.
 
-- **What account deletion keeps.** Deleting an account erases follows, 见过, game records, notifications and the identity, but leaves submitted 纠错 (contributions) in the review records. The app's deletion text names only what is erased. Decide whether contributions are kept, anonymized or deleted, and say so in the privacy policy (#348).
+  Placeholders, written the same way in the pages:
+
+  - `[运营方名称]` / `[Operator name]`
+  - `[联系邮箱]` / `[Contact email]`
+  - `[生效日期]` / `[Effective date]`
 
 ## Product and content decisions
 

@@ -74,7 +74,7 @@ export function Navbar1({
         <Link
           href={`/${locale}` as Route}
           className="flex min-h-11 shrink-0 items-center text-[var(--pa-color-ink)]"
-          aria-label={zh ? "吱熊猫首页" : "ZhiPanda home"}
+          aria-label={zh ? "吱熊猫首页" : "吱熊猫 ZhiPanda home"}
         >
           <ZhiPandaLogo locale={locale} />
         </Link>
@@ -113,7 +113,7 @@ export function Navbar1({
           <Link
             href={languageDestination as Route}
             hrefLang={languageHrefLang}
-            aria-label={zh ? "English" : "中文"}
+            aria-label={zh ? "EN English" : "中文"}
             className="hidden min-h-11 items-center px-2 text-base font-medium text-[var(--pa-color-ink-muted)] hover:text-[var(--pa-color-ink)] lg:inline-flex"
           >
             {zh ? "EN" : "中文"}

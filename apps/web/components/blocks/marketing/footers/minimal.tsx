@@ -42,7 +42,7 @@ export default function FooterMinimal({
             <Link
               href={`/${locale}` as Route}
               className="inline-flex"
-              aria-label={zh ? "吱熊猫首页" : "ZhiPanda home"}
+              aria-label={zh ? "吱熊猫首页" : "吱熊猫 ZhiPanda home"}
             >
               <ZhiPandaLogo locale={locale} />
             </Link>
@@ -69,9 +69,21 @@ export default function FooterMinimal({
           </div>
         </div>
 
-        <p className="mt-10 border-t-[0.5px] border-[var(--pa-color-line)] pt-5 text-xs text-[var(--pa-color-ink-muted)]">
-          © {new Date().getFullYear()} ZhiPanda
-        </p>
+        <div className="mt-10 flex flex-wrap items-center gap-x-6 border-t-[0.5px] border-[var(--pa-color-line)] pt-5">
+          <p className="text-xs text-[var(--pa-color-ink-muted)]">© {new Date().getFullYear()} ZhiPanda</p>
+          <Link
+            href={`/${locale}/terms` as Route}
+            className="inline-flex min-h-10 items-center text-base font-medium hover:underline hover:underline-offset-[3px]"
+          >
+            {zh ? "用户协议" : "Terms"}
+          </Link>
+          <Link
+            href={`/${locale}/privacy` as Route}
+            className="inline-flex min-h-10 items-center text-base font-medium hover:underline hover:underline-offset-[3px]"
+          >
+            {zh ? "隐私政策" : "Privacy"}
+          </Link>
+        </div>
       </div>
     </footer>
   );

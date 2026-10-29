@@ -13,6 +13,8 @@ import {
 import { PANDA_REFERENCE_PORT, type PandaReferencePort } from "../panda/application/panda.application.js";
 import { PandaModule } from "../panda/panda.module.js";
 import { ContributionController } from "./http/contribution.controller.js";
+import { CONTRIBUTION_PRIVACY_PORT } from "./application/contribution-privacy.port.js";
+import { PostgresContributionPrivacyQuery } from "./infrastructure/postgres-contribution-privacy.query.js";
 import { PostgresContributionReviewParticipant } from "./infrastructure/postgres-contribution-review.participant.js";
 import { PostgresContributionRepository } from "./infrastructure/postgres-contribution.repository.js";
 
@@ -34,7 +36,8 @@ import { PostgresContributionRepository } from "./infrastructure/postgres-contri
     { provide: CONTRIBUTION_PORT, useExisting: ContributionApplication },
     { provide: CONTRIBUTION_REVIEW_PORT, useExisting: ContributionApplication },
     { provide: CONTRIBUTION_REVIEW_PARTICIPANT, useClass: PostgresContributionReviewParticipant },
+    { provide: CONTRIBUTION_PRIVACY_PORT, useClass: PostgresContributionPrivacyQuery },
   ],
-  exports: [CONTRIBUTION_PORT, CONTRIBUTION_REVIEW_PORT, CONTRIBUTION_REVIEW_PARTICIPANT],
+  exports: [CONTRIBUTION_PORT, CONTRIBUTION_REVIEW_PORT, CONTRIBUTION_REVIEW_PARTICIPANT, CONTRIBUTION_PRIVACY_PORT],
 })
 export class ContributionModule {}

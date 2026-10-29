@@ -2,8 +2,10 @@ import { sql } from "kysely";
 import type { JsonObject } from "../../../platform/database/database.privacy.generated.js";
 import type { DatabaseService, DatabaseTransaction } from "../../../platform/database/database.service.js";
 import type { IntegrationOutboxService } from "../../../platform/integration/integration-outbox.service.js";
+import type { ContributionPrivacyPort } from "../../contribution/application/contribution-privacy.port.js";
 import type { EngagementPrivacyPort } from "../../engagement/application/engagement-privacy.port.js";
 import type { GamePrivacyPort } from "../../game/application/game-privacy.port.js";
+import type { AuthUserDeletion } from "../../identity/application/auth-user-deletion.js";
 import type { IdentityPrivacyPort } from "../../identity/application/identity-privacy.port.js";
 import type { NotificationPrivacyPort } from "../../notification/application/notification-privacy.port.js";
 
@@ -32,6 +34,8 @@ export class PrivacyRequestProcessorService {
     private readonly engagement: EngagementPrivacyPort,
     private readonly game: GamePrivacyPort,
     private readonly notification: NotificationPrivacyPort,
+    private readonly contribution: ContributionPrivacyPort,
+    private readonly authUsers: AuthUserDeletion,
   ) {}
 
   public async processBatch(limit = 5): Promise<PrivacyProcessorResult> {
@@ -112,6 +116,8 @@ export class PrivacyRequestProcessorService {
           })
           .execute();
       } else if (request.kind === "account_deletion") {
+        await this.identity.beginPrivacyErasure(transaction, request.account_id, requestId, request.correlation_id);
+        await this.contribution.erasePrivacySubject(transaction, request.account_id);
         await this.runParticipant("engagement", () =>
           this.engagement.erasePrivacySubject(transaction, request.account_id),
         );
@@ -126,6 +132,7 @@ export class PrivacyRequestProcessorService {
           this.identity.erasePrivacySubject(transaction, request.account_id, requestId, request.correlation_id),
         );
         await this.completeStep(transaction, requestId, "identity");
+        await this.authUsers.deleteUser(request.account_id);
       } else {
         throw new Error(`Unsupported privacy request kind ${request.kind}`);
       }

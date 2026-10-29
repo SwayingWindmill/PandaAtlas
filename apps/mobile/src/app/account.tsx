@@ -13,6 +13,7 @@ import {
   canRequest,
   latestRequest,
   requestReason,
+  DELETION_NOTICE,
   requestStatus,
 } from "@/features/account/privacy";
 import {
@@ -105,7 +106,7 @@ function DeletionSection({
   return (
     <View className="items-start gap-3 border-t-hairline border-border pt-6">
       <Text variant="h2">注销账号</Text>
-      <Text className="text-muted-foreground">注销后，账号会删除，关注、见过、图鉴和通知记录会清除，不能恢复。</Text>
+      <Text className="text-muted-foreground">{DELETION_NOTICE}</Text>
       {request ? <Status request={request} /> : null}
       {canRequest(request) && !confirming ? (
         <Button variant="outline" onPress={() => setConfirming(true)}>

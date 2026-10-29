@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   type PrivacyRequest,
+  DELETION_NOTICE,
   canRequest,
   exportFileName,
   latestRequest,
@@ -51,6 +52,12 @@ describe("requestStatus and requestReason", () => {
   it("falls back to the default reason below the API's minimum", () => {
     expect(requestReason("account_deletion", " 不用了 ")).toBe("不用了");
     expect(requestReason("account_deletion", " 走 ")).toBe("在 App 中申请注销账号。");
+  });
+
+  it("says deletion removes the sign-in record and keeps de-identified corrections", () => {
+    expect(DELETION_NOTICE).toBe(
+      "注销后，账号和登录记录会删除，关注、见过、图鉴和通知记录会清除，不能恢复。已提交的纠错会保留，但不再关联到你。",
+    );
   });
 
   it("names the export file by its day", () => {
