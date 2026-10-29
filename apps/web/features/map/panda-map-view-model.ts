@@ -1,4 +1,4 @@
-import { projectToWorld } from "@/features/map/world-land.generated";
+import { clusterWorldPoints, projectToWorld } from "@zhipanda/world-map";
 import type { PublicMapEntry } from "@/features/public-content/public-v2";
 import type { PublicLocale } from "@/foundation/content/locales";
 
@@ -17,9 +17,6 @@ export interface PandaMapItem {
   coverPandaId: string | null;
   point: { x: number; y: number } | null;
 }
-
-/** Dots closer than this, in outline units, are drawn as one: 34 units keep 24px tap targets apart on a phone. */
-const CLUSTER_DISTANCE = 34;
 
 export interface PandaMapCluster {
   id: string;
@@ -89,15 +86,8 @@ export function buildPandaMapViewModel(
   });
   items.sort((left, right) => right.residentCount - left.residentCount || left.name.localeCompare(right.name, locale));
 
-  // Greedy clustering, biggest places first, so a busy base keeps its own position.
-  const clusters: Array<{ x: number; y: number; items: PandaMapItem[] }> = [];
-  for (const item of items) {
-    if (!item.point) continue;
-    const near = clusters.find((cluster) =>
-      Math.hypot(cluster.x - item.point!.x, cluster.y - item.point!.y) < CLUSTER_DISTANCE);
-    if (near) near.items.push(item);
-    else clusters.push({ x: item.point.x, y: item.point.y, items: [item] });
-  }
+  // Biggest places come first, so a busy base keeps the shared dot's position.
+  const clusters = clusterWorldPoints(items, (item) => item.point);
 
   const living = items.filter((item) => item.residentCount > 0);
   return {

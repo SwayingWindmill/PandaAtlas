@@ -81,6 +81,7 @@ export default function FindScreen() {
           ListHeaderComponent={
             deferredQuery.trim() || area !== "全部" ? undefined : (
               <View className="mb-3">
+                <NavRow label="熊猫在哪里" href="/map" />
                 {hasInstitutions ? <NavRow label="基地和动物园" href="/institutions" /> : null}
                 <NavRow label="查两只熊猫的关系" href="/relationship" last />
               </View>

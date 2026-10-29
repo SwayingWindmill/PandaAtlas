@@ -5,6 +5,7 @@
   "packageManager": "npm@10.9.0",
   "workspaces": [
     "packages/api-client",
+    "packages/world-map",
     "apps/web",
     "apps/mobile",
     "services/api"

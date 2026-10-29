@@ -15,7 +15,6 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 - **App builds and store release.** The app (`com.zhipanda.app`) has no EAS project yet, so it runs only in development. Releasing it needs an Expo account to own the EAS project, an Apple Developer Program membership and a Google Play Console account; then `eas init`, `eas build` and `eas submit` (the same accounts cover the push credentials below).
 
 - **Push notifications.** Reminders (the canvas 提醒 sheet) need Expo/EAS push with an APNs key (Apple Developer account) and an FCM server key (Firebase). The in-app notification inbox and its preferences work without them.
-- **Map on Android.** The 找熊猫 map needs either a Google Maps Android API key (react-native-maps) or a chosen MapLibre tile provider and its key. iOS can use Apple Maps without a key; the decision covers both.
 - **Sign in with Apple / WeChat / phone.** The canvas login offers them; the app signs in with email codes today. Apple needs an Apple Developer team and a Services ID configured in Supabase Auth (also required by App Review once any third-party login ships); WeChat needs a WeChat Open Platform app; phone codes need an SMS provider (e.g. Twilio) configured in Supabase Auth.
 
 ## Legal
