@@ -9,6 +9,8 @@
 --
 -- The expression must stay the same as LISTING_FACT_KEYS in public-read.application.ts.
 -- jsonb_path_query_array is immutable in this Postgres, which a generated column requires.
+-- The column is NOT NULL: Postgres otherwise records a generated column as nullable, and
+-- kysely-codegen types it as Json | null.
 
 begin;
 
@@ -19,6 +21,6 @@ alter table public_read.pandas
       facts,
       '$[*] ? (@.fieldKey == "sex" || @.fieldKey == "life_status" || @.fieldKey == "birth_date" || @.fieldKey == "death_date")'::jsonpath
     )
-  ) stored;
+  ) stored not null;
 
 commit;
