@@ -14,7 +14,7 @@ async function save(entry: OfflineEntry, body: string): Promise<void> {
   const stored = await AsyncStorage.getItem(PAGES);
   const { pages, drop } = keepRecent(stored ? (JSON.parse(stored) as string[]) : [], entry.key);
   await AsyncStorage.setItem(PAGES, JSON.stringify(pages));
-  if (drop.length > 0) await AsyncStorage.multiRemove(drop);
+  if (drop.length > 0) await AsyncStorage.removeMany(drop);
 }
 
 /** openapi-fetch middleware for the public API client. */
