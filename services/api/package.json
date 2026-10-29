@@ -43,7 +43,7 @@
     "@nestjs/cli": "^12.0.11",
     "@nestjs/testing": "^12.3.2",
     "@swc/core": "^1.16.20",
-    "@types/node": "^24.0.0",
+    "@types/node": "^26.6.5",
     "@types/pg": "^8.23.1",
     "@vitest/coverage-v8": "^5.0.5",
     "cf": "1.0.0-beta.21",
