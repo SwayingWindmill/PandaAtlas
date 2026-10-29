@@ -5,6 +5,7 @@ import { ContributionModule } from "./modules/contribution/contribution.module.j
 import { EvidenceModule } from "./modules/evidence/evidence.module.js";
 import { EngagementModule } from "./modules/engagement/engagement.module.js";
 import { GameModule } from "./modules/game/game.module.js";
+import { LearningModule } from "./modules/learning/learning.module.js";
 import { IdentityModule } from "./modules/identity/identity.module.js";
 import { LifeHistoryModule } from "./modules/life-history/life-history.module.js";
 import { LineageModule } from "./modules/lineage/lineage.module.js";
@@ -30,6 +31,7 @@ import { HttpPlatformModule } from "./platform/http/http-platform.module.js";
     ReviewModule,
     EngagementModule,
     GameModule,
+    LearningModule,
     EvidenceModule,
     PandaModule,
     PlacesModule,

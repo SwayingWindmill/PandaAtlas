@@ -2389,6 +2389,31 @@
         ]
       }
     },
+    "/api/v2/learning": {
+      "get": {
+        "operationId": "getLearningCatalog",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LearningCatalogDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The stored learning catalog is missing or invalid."
+          }
+        },
+        "summary": "Published 科普 cards, topics, terms, face guides and face challenges",
+        "tags": [
+          "Learning"
+        ]
+      }
+    },
     "/api/v2/updates": {
       "get": {
         "operationId": "listUpdates",
@@ -5917,6 +5942,303 @@
           "reason",
           "resourceKind",
           "resourceId"
+        ]
+      },
+      "LearningTextDto": {
+        "type": "object",
+        "properties": {
+          "zh": {
+            "type": "string"
+          },
+          "en": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "zh",
+          "en"
+        ]
+      },
+      "LearningSourceDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "citedOn": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "title",
+          "url",
+          "citedOn"
+        ]
+      },
+      "LearningCardDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "body": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningSourceDto"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "summary",
+          "body",
+          "sources"
+        ]
+      },
+      "LearningTopicSectionDto": {
+        "type": "object",
+        "properties": {
+          "heading": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "body": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          }
+        },
+        "required": [
+          "heading",
+          "body"
+        ]
+      },
+      "LearningTopicDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningTopicSectionDto"
+            }
+          },
+          "cardSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningSourceDto"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "summary",
+          "sections",
+          "cardSlugs",
+          "sources"
+        ]
+      },
+      "LearningTermDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "term": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "definition": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "relatedSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningSourceDto"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "term",
+          "definition",
+          "relatedSlugs",
+          "sources"
+        ]
+      },
+      "LearningFaceTipDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "shape",
+              "leftRight",
+              "eyePatches",
+              "ears"
+            ]
+          },
+          "label": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "body": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "body"
+        ]
+      },
+      "LearningFaceGuideDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "pandaSlug": {
+            "type": "string",
+            "description": "Canonical slug of a published panda. The photo comes from that panda's media."
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "tips": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningFaceTipDto"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningSourceDto"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "pandaSlug",
+          "title",
+          "tips",
+          "sources"
+        ]
+      },
+      "LearningChallengeDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "answerPandaSlug": {
+            "type": "string"
+          },
+          "decoyPandaSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "prompt": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "tip": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningSourceDto"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "answerPandaSlug",
+          "decoyPandaSlugs",
+          "prompt",
+          "tip",
+          "sources"
+        ]
+      },
+      "LearningCatalogDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "example": "2026.10.29.1"
+          },
+          "cards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningCardDto"
+            }
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningTopicDto"
+            }
+          },
+          "terms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningTermDto"
+            }
+          },
+          "faceGuides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningFaceGuideDto"
+            }
+          },
+          "challenges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningChallengeDto"
+            }
+          }
+        },
+        "required": [
+          "version",
+          "cards",
+          "topics",
+          "terms",
+          "faceGuides",
+          "challenges"
         ]
       },
       "UpdateTargetDto": {

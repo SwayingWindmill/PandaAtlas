@@ -1,0 +1,209 @@
+{
+  "$comment": "科普, 专题, 名词解释, 认脸指南 and 认脸挑战. Edit this file, then run python scripts/curation/build_learning_content_migration.py --write. Draft entries stay in the database and are left out of GET /api/v2/learning. The writer brief is docs/learning-content-brief.md. Placeholder text is marked [草稿] / [draft] and is not a fact.",
+  "version": "2026.10.29.1",
+  "cards": [
+    {
+      "slug": "black-eye-patches",
+      "status": "draft",
+      "title": { "zh": "[草稿] 黑眼圈", "en": "[draft] Eye patches" },
+      "summary": { "zh": "[草稿] 占位摘要。", "en": "[draft] Placeholder summary." },
+      "body": {
+        "zh": "[草稿] 占位正文。正式文字由撰稿人填写，并注明来源后才能发布。",
+        "en": "[draft] Placeholder body. A writer replaces it and cites a source before it is published."
+      },
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    },
+    {
+      "slug": "bamboo",
+      "status": "draft",
+      "title": { "zh": "[草稿] 竹子", "en": "[draft] Bamboo" },
+      "summary": { "zh": "[草稿] 占位摘要。", "en": "[draft] Placeholder summary." },
+      "body": {
+        "zh": "[草稿] 占位正文。正式文字由撰稿人填写，并注明来源后才能发布。",
+        "en": "[draft] Placeholder body. A writer replaces it and cites a source before it is published."
+      },
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    },
+    {
+      "slug": "cubs",
+      "status": "draft",
+      "title": { "zh": "[草稿] 幼仔", "en": "[draft] Cubs" },
+      "summary": { "zh": "[草稿] 占位摘要。", "en": "[draft] Placeholder summary." },
+      "body": {
+        "zh": "[草稿] 占位正文。正式文字由撰稿人填写，并注明来源后才能发布。",
+        "en": "[draft] Placeholder body. A writer replaces it and cites a source before it is published."
+      },
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "slug": "telling-faces-apart",
+      "status": "draft",
+      "title": { "zh": "[草稿] 怎么认脸", "en": "[draft] Telling faces apart" },
+      "summary": { "zh": "[草稿] 占位摘要。", "en": "[draft] Placeholder summary." },
+      "sections": [
+        {
+          "heading": { "zh": "[草稿] 形状和左右差别", "en": "[draft] Shape and left-right difference" },
+          "body": { "zh": "[草稿] [形状和左右差别]", "en": "[draft] [shape and left-right difference]" }
+        },
+        {
+          "heading": { "zh": "[草稿] 看照片", "en": "[draft] Look at the photo" },
+          "body": {
+            "zh": "[草稿] 占位正文。正式文字由撰稿人填写，并注明来源后才能发布。",
+            "en": "[draft] Placeholder body. A writer replaces it and cites a source before it is published."
+          }
+        }
+      ],
+      "cardSlugs": ["black-eye-patches"],
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    },
+    {
+      "slug": "what-pandas-eat",
+      "status": "draft",
+      "title": { "zh": "[草稿] 吃什么", "en": "[draft] What pandas eat" },
+      "summary": { "zh": "[草稿] 占位摘要。", "en": "[draft] Placeholder summary." },
+      "sections": [
+        {
+          "heading": { "zh": "[草稿] 主食", "en": "[draft] Staple food" },
+          "body": {
+            "zh": "[草稿] 占位正文。正式文字由撰稿人填写，并注明来源后才能发布。",
+            "en": "[draft] Placeholder body. A writer replaces it and cites a source before it is published."
+          }
+        }
+      ],
+      "cardSlugs": ["bamboo"],
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    }
+  ],
+  "terms": [
+    {
+      "slug": "eye-patch",
+      "status": "draft",
+      "term": { "zh": "[草稿] 黑眼圈", "en": "[draft] Eye patches" },
+      "definition": { "zh": "[草稿] 占位释义。", "en": "[draft] Placeholder definition." },
+      "relatedSlugs": [],
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    },
+    {
+      "slug": "bamboo-diet",
+      "status": "draft",
+      "term": { "zh": "[草稿] 食竹", "en": "[draft] Bamboo diet" },
+      "definition": { "zh": "[草稿] 占位释义。", "en": "[draft] Placeholder definition." },
+      "relatedSlugs": [],
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    },
+    {
+      "slug": "subadult",
+      "status": "draft",
+      "term": { "zh": "[草稿] 亚成体", "en": "[draft] Subadult" },
+      "definition": { "zh": "[草稿] 占位释义。", "en": "[draft] Placeholder definition." },
+      "relatedSlugs": [],
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    }
+  ],
+  "faceGuides": [
+    {
+      "slug": "bao-li",
+      "status": "draft",
+      "pandaSlug": "bao-li",
+      "title": { "zh": "[草稿] 宝力", "en": "[draft] Bao Li" },
+      "tips": [
+        {
+          "key": "shape",
+          "label": { "zh": "[草稿] 形状", "en": "[draft] Shape" },
+          "body": { "zh": "[草稿] [形状和左右差别]", "en": "[draft] [shape and left-right difference]" }
+        },
+        {
+          "key": "leftRight",
+          "label": { "zh": "[草稿] 左右差别", "en": "[draft] Left and right" },
+          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+        },
+        {
+          "key": "eyePatches",
+          "label": { "zh": "[草稿] 黑眼圈", "en": "[draft] Eye patches" },
+          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+        },
+        {
+          "key": "ears",
+          "label": { "zh": "[草稿] 耳朵", "en": "[draft] Ears" },
+          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+        }
+      ],
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    },
+    {
+      "slug": "lun-lun",
+      "status": "draft",
+      "pandaSlug": "lun-lun",
+      "title": { "zh": "[草稿] 伦伦", "en": "[draft] Lun Lun" },
+      "tips": [
+        {
+          "key": "shape",
+          "label": { "zh": "[草稿] 形状", "en": "[draft] Shape" },
+          "body": { "zh": "[草稿] [形状和左右差别]", "en": "[draft] [shape and left-right difference]" }
+        },
+        {
+          "key": "leftRight",
+          "label": { "zh": "[草稿] 左右差别", "en": "[draft] Left and right" },
+          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+        },
+        {
+          "key": "eyePatches",
+          "label": { "zh": "[草稿] 黑眼圈", "en": "[draft] Eye patches" },
+          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+        },
+        {
+          "key": "ears",
+          "label": { "zh": "[草稿] 耳朵", "en": "[draft] Ears" },
+          "body": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." }
+        }
+      ],
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    }
+  ],
+  "challenges": [
+    {
+      "slug": "bao-li-round",
+      "status": "draft",
+      "answerPandaSlug": "bao-li",
+      "decoyPandaSlugs": ["lun-lun", "lei-lei", "yang-yang"],
+      "prompt": { "zh": "[草稿] 看照片，选出这只熊猫", "en": "[draft] Which panda is this?" },
+      "tip": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." },
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    },
+    {
+      "slug": "lun-lun-round",
+      "status": "draft",
+      "answerPandaSlug": "lun-lun",
+      "decoyPandaSlugs": ["bao-li", "ya-lun", "yang-yang"],
+      "prompt": { "zh": "[草稿] 看照片，选出这只熊猫", "en": "[draft] Which panda is this?" },
+      "tip": { "zh": "[草稿] 占位提示。", "en": "[draft] Placeholder tip." },
+      "sources": [
+        { "title": { "zh": "[草稿] 来源待写", "en": "[draft] Source to be cited" }, "url": null, "citedOn": null }
+      ]
+    }
+  ]
+}

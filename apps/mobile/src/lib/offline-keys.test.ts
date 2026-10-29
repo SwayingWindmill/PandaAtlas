@@ -12,6 +12,10 @@ describe("offlineEntry", () => {
       key: "offline:/api/v2/updates?limit=10",
       page: false,
     });
+    expect(offlineEntry("https://api.zhipanda.com/api/v2/learning")).toEqual({
+      key: "offline:/api/v2/learning",
+      page: false,
+    });
     expect(offlineEntry("https://api.zhipanda.com/api/v2/pandas/fu-bao")).toEqual({
       key: "offline:/api/v2/pandas/fu-bao",
       page: true,

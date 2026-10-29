@@ -38,6 +38,17 @@ export default function TodayScreen() {
       </View>
       <View className="gap-3 rounded-lg border-hairline border-border p-5">
         <Text variant="small" className="text-highlight-foreground">
+          科普
+        </Text>
+        <Text variant="h2">认识大熊猫</Text>
+        <Link href="/learn" asChild>
+          <Button variant="secondary" className="self-start">
+            <Text>去看看</Text>
+          </Button>
+        </Link>
+      </View>
+      <View className="gap-3 rounded-lg border-hairline border-border p-5">
+        <Text variant="small" className="text-highlight-foreground">
           熊猫日历
         </Text>
         <Text variant="h2">这个月谁过生日</Text>

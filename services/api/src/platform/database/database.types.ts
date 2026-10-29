@@ -16,6 +16,7 @@ import type { DB as UpdatesDatabase } from "./database.updates.generated.js";
 import type { DB as NotificationDatabase } from "./database.notification.generated.js";
 import type { DB as PrivacyDatabase } from "./database.privacy.generated.js";
 import type { DB as AuditDatabase } from "./database.audit.generated.js";
+import type { DB as LearningDatabase } from "./database.learning.js";
 
 export type Database = IdentityDatabase &
   IntegrationDatabase &
@@ -34,4 +35,5 @@ export type Database = IdentityDatabase &
   UpdatesDatabase &
   NotificationDatabase &
   PrivacyDatabase &
-  AuditDatabase;
+  AuditDatabase &
+  LearningDatabase;
