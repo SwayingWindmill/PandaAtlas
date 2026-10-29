@@ -6,7 +6,7 @@ export default defineConfig(() => ({
       name: "zhipanda-v2-api",
       entrypoint: "./worker/index.mjs",
       domains: ["api.zhipanda.com"],
-      triggers: [triggers.scheduled({ schedule: "*/5 * * * *" })],
+      triggers: [triggers.scheduled({ schedule: "*/15 * * * *" })],
       workersDev: false,
       // Run next to the only back end: Supabase Postgres in AWS ap-northeast-1 (Tokyo).
       placement: { region: "aws:ap-northeast-1" },
