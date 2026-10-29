@@ -54,6 +54,22 @@ describe("PgmqService.read", () => {
     expect(statements[0]).not.toContain("pgmq.read");
   });
 
+  it("probes a queue pgmq named itself, including a test queue", async () => {
+    const { db, statements } = recordingDb(() => [{ ready: false }]);
+    await expect(pgmq.read(db, "integration_test_consumer" as "integration_updates", 60, 25)).resolves.toEqual([]);
+    expect(statements).toEqual([expect.stringContaining("pgmq.q_integration_test_consumer")]);
+    expect(statements[0]).not.toContain("pgmq.read");
+  });
+
+  it("falls back to pgmq.read when the queue name is not a table identifier", async () => {
+    const { db, statements } = recordingDb(() => [{ msg_id: "3", read_ct: 1, message: { eventId: "x" } }]);
+    await expect(pgmq.read(db, "not a queue" as "integration_updates", 60, 25)).resolves.toEqual([
+      { msgId: "3", readCount: 1, message: { eventId: "x" } },
+    ]);
+    expect(statements).toHaveLength(1);
+    expect(statements[0]).toContain("pgmq.read");
+  });
+
   it("reads only after a visible message is found", async () => {
     const { db, statements } = recordingDb((statement) =>
       statement.includes("pgmq.read")

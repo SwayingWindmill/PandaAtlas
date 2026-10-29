@@ -23,15 +23,14 @@ export interface PgmqMessage {
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
 
-// pgmq stores each queue in its own table. The names are a closed set, so the identifier is not input.
-const QUEUE_TABLE = {
-  integration_updates: "q_integration_updates",
-  integration_notification: "q_integration_notification",
-  integration_audit: "q_integration_audit",
-  integration_public_cache: "q_integration_public_cache",
-  notification_provider: "q_notification_provider",
-  notification_provider_dlq: "q_notification_provider_dlq",
-} as const satisfies Record<PgmqQueue, string>;
+// pgmq stores a queue named <name> in pgmq.q_<name>. Names are letters, digits and underscores,
+// at most 47 characters. The probe interpolates only names that match; anything else falls
+// through to pgmq.read, which binds the name as a parameter.
+const PGMQ_QUEUE_NAME = /^[A-Za-z0-9_]{1,47}$/u;
+
+function pgmqQueueTable(queue: string): string | undefined {
+  return PGMQ_QUEUE_NAME.test(queue) ? `q_${queue}` : undefined;
+}
 
 // The outbox event an integration-event message names, when it names a well-formed one.
 export function queuedEventId(message: PgmqMessage): string | undefined {
@@ -89,8 +88,9 @@ export class PgmqService {
     }));
   }
 
-  private async hasVisibleMessage(executor: PgmqExecutor, queue: PgmqQueue): Promise<boolean> {
-    const table = QUEUE_TABLE[queue];
+  private async hasVisibleMessage(executor: PgmqExecutor, queue: string): Promise<boolean> {
+    const table = pgmqQueueTable(queue);
+    if (table === undefined) return true;
     const result = await sql<{ ready: boolean }>`
       select exists (
         select 1 from pgmq.${sql.raw(table)} where vt <= now() limit 1
