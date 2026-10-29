@@ -147,7 +147,7 @@ export class ApplicationAccessGuard implements CanActivate {
     }
 
     if (requiresLiveSession) {
-      let live = false;
+      let live: boolean;
       try {
         live = await this.identity.isLiveSession(
           verifiedIdentity.sessionId,
