@@ -19,7 +19,8 @@
     "test:accessibility": "playwright test --config playwright.accessibility.config.ts",
     "check:browser": "node scripts/check-playwright-runtime.mjs",
     "test:admin-shell": "node scripts/run-admin-shell-tests.mjs",
-    "build:cloudflare": "node scripts/build-cloudflare.mjs"
+    "build:cloudflare": "node scripts/build-cloudflare.mjs",
+    "check:worker-boot": "node scripts/check-worker-boot.mjs"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",

@@ -47,6 +47,9 @@ jobs:
       - name: Boot the built API Worker in workerd
         run: npm run check:worker-boot -w @zhipanda/api
 
+      - name: Boot the built Web Worker in workerd
+        run: npm run check:worker-boot -w web
+
       - name: Keep the build output for the approved deploy
         uses: actions/upload-artifact@v7.0.2
         with:
