@@ -5,7 +5,7 @@ import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ListCell, ListSection } from "@/components/grouped-list";
-import { ScanFace } from "@/components/icons";
+import { BookA, type LucideIcon, Newspaper, ScanFace } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
@@ -16,7 +16,6 @@ import { Text } from "@/components/ui/text";
 import { CONTENT_ENTER } from "@/design/motion";
 import {
   articleHero,
-  catalogIsEmpty,
   type CatalogArticle,
   learningText,
   readingMinutes,
@@ -27,6 +26,37 @@ import { HAIRLINE, RADIUS } from "@/lib/surface";
 
 const CATEGORY_ORDER = ["外形与识别", "食性", "繁殖与成长", "保护"];
 const TITLE = "认识大熊猫";
+
+/** The shelves 认识大熊猫 shows, in page order. A shelf with nothing published is listed under 还在写 instead. */
+type Shelf = "articles" | "faces" | "terms";
+const SHELF_NAME: Record<Shelf, { label: string; icon: LucideIcon }> = {
+  articles: { label: "科普文章", icon: Newspaper },
+  faces: { label: "认脸指南", icon: ScanFace },
+  terms: { label: "名词解释", icon: BookA },
+};
+
+/**
+ * The shelves still being written: one quiet group at the end, a row per shelf, so what is ready leads the page
+ * and nothing stands empty in its place. The words name the shelf only; the app writes no 科普 of its own.
+ */
+function StillWriting({ shelves }: { shelves: Shelf[] }) {
+  if (shelves.length === 0) return null;
+  return (
+    <View className="px-inset">
+      <ListSection title="还在写" footer="写好后会出现在这里。">
+        {shelves.map((shelf, index) => (
+          <ListCell
+            key={shelf}
+            icon={SHELF_NAME[shelf].icon}
+            label={SHELF_NAME[shelf].label}
+            accessibilityLabel={`${SHELF_NAME[shelf].label}，还在写`}
+            last={index === shelves.length - 1}
+          />
+        ))}
+      </ListSection>
+    </View>
+  );
+}
 
 function openArticle(slug: string) {
   router.push({ pathname: "/learn/articles/[slug]", params: { slug } });
@@ -65,7 +95,13 @@ export default function LearnScreen() {
   }
 
   const { catalog } = state;
-  if (catalogIsEmpty(catalog) || catalog.articles.length === 0) {
+  const ready: Record<Shelf, boolean> = {
+    articles: catalog.articles.length > 0,
+    faces: catalog.faceGuides.length > 0 || catalog.challenges.length > 0,
+    terms: catalog.terms.length > 0,
+  };
+  // Nothing on any shelf: one sentence for the page, as before.
+  if (!ready.articles && !ready.faces && !ready.terms) {
     return (
       <View className="flex-1 gap-section bg-background pt-stack-tight">
         {bar}
@@ -74,9 +110,9 @@ export default function LearnScreen() {
       </View>
     );
   }
+  const pending = (Object.keys(ready) as Shelf[]).filter((shelf) => !ready[shelf]);
 
   const [featured, ...rest] = catalog.articles;
-  if (featured === undefined) return null;
   const faceGuides = catalog.faceGuides.map((guide) => ({
     guide,
     panda: pandas?.find((item) => item.slug === guide.pandaSlug) ?? null,
@@ -92,9 +128,11 @@ export default function LearnScreen() {
       <Animated.View entering={CONTENT_ENTER} className="gap-section pt-stack-tight">
         <Masthead count={catalog.articles.length} />
 
-        <View className="px-inset">
-          <FeaturedArticle article={featured} />
-        </View>
+        {featured ? (
+          <View className="px-inset">
+            <FeaturedArticle article={featured} />
+          </View>
+        ) : null}
 
         {CATEGORY_ORDER.map((category) => {
           const articles = rest.filter((article) => article.category === category);
@@ -181,6 +219,8 @@ export default function LearnScreen() {
             </ListSection>
           </View>
         ) : null}
+
+        <StillWriting shelves={pending} />
 
         {catalog.version ? (
           <Text variant="footnote" className="px-inset text-muted-foreground">{`资料版本 ${catalog.version}`}</Text>

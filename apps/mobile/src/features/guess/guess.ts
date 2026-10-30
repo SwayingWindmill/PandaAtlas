@@ -1,11 +1,13 @@
 import { loadPandaIndex } from "@/features/pandas/pandas";
 import { api, authedApi, publicMediaUrl } from "@/lib/api";
 
-import type { GuessDifficulty } from "./difficulty";
+import { DIFFICULTIES, type GuessDifficulty, type LevelProbe } from "./difficulty";
+
+const DIFFICULTY_VALUES = DIFFICULTIES.map(({ value }) => value);
 
 // 猜熊猫: a published photo and four names. The server keeps the answer until a choice is sent.
 
-export { DIFFICULTIES, type GuessDifficulty, difficultyOf } from "./difficulty";
+export { DIFFICULTIES, type GuessDifficulty, type LevelProbe, difficultyOf, offeredLevels } from "./difficulty";
 
 export interface GuessQuestion {
   questionId: string;
@@ -51,4 +53,25 @@ export async function answerQuestion(questionId: string, selectedPandaId: string
     : await api.POST("/api/v2/games/guess/answer", { body }).then(({ data }) => data);
   if (!result) throw new Error("Answer not accepted");
   return { correct: result.correct, answerPandaId: result.answerPandaId, tips: result.recognitionTips };
+}
+
+export type LevelCheck = { probe: LevelProbe; question?: GuessQuestion };
+
+/**
+ * Asks each level for a question once, so a level with none can be left out of the picker before anyone taps it.
+ * A question that comes back is kept, so choosing that level shows it without a second request.
+ */
+export async function probeLevels(): Promise<Record<GuessDifficulty, LevelCheck>> {
+  const checks = await Promise.all(
+    DIFFICULTY_VALUES.map((difficulty) =>
+      loadQuestion(difficulty).then(
+        (question): LevelCheck => ({ probe: "ready", question }),
+        (error: unknown): LevelCheck => ({ probe: error instanceof NoQuestionError ? "empty" : "unknown" }),
+      ),
+    ),
+  );
+  return Object.fromEntries(DIFFICULTY_VALUES.map((difficulty, index) => [difficulty, checks[index]])) as Record<
+    GuessDifficulty,
+    LevelCheck
+  >;
 }

@@ -9,6 +9,7 @@ import { Page } from "@/components/page";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { ScreenState } from "@/components/screen-state";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
@@ -16,11 +17,13 @@ import { type ComparePoint, type Comparison, comparePandas, missingLine } from "
 import { PandaPhoto } from "@/features/learning/panda-photo";
 import { LearningSources } from "@/features/learning/sources";
 import { useLearningCatalog } from "@/features/learning/use-catalog";
+import { type Pair, PairSlots, PandaPicker, type SlotKey, nextSlot } from "@/features/pandas/pair-picker";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
 
 // 比一比: two pandas side by side, with only the distinguishing points 文献与写作 has written and sourced.
+// Without a pair in the link (from 找熊猫), the page first asks for two pandas; the user picks both, nothing is suggested.
 
 function param(value: string | string[] | undefined): string {
   return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
@@ -173,10 +176,46 @@ function Points({ comparison, a, b }: { comparison: Comparison; a: PandaListItem
 
 type Load = { status: "loading" } | { status: "ready"; pandas: PandaListItem[] } | { status: "failed" };
 
+/** The two slots and the panda list; once both are chosen and differ, one button opens the comparison. */
+function PickPair({ pandas, preset }: { pandas: PandaListItem[]; preset: PandaListItem | null }) {
+  const [pair, setPair] = useState<Pair>({ first: preset, second: null });
+  const [picking, setPicking] = useState<SlotKey | null>(preset ? "second" : "first");
+  const { first, second } = pair;
+
+  function pick(panda: PandaListItem) {
+    if (!picking) return;
+    const next = { ...pair, [picking]: panda };
+    setPair(next);
+    setPicking(nextSlot(next));
+  }
+
+  return (
+    <Page label="选两只熊猫，并排看区分要点。" title="比一比" keyboardShouldPersistTaps="handled">
+      <PairSlots pair={pair} picking={picking} onSlot={setPicking} />
+      {picking ? (
+        <PandaPicker key={picking} pandas={pandas} onPick={pick} />
+      ) : first && second ? (
+        first.slug === second.slug ? (
+          <ScreenState message="选了同一只熊猫，换一只看看。" className="py-stack" />
+        ) : (
+          <Button
+            onPress={() => router.push({ pathname: "/compare", params: { a: first.slug, b: second.slug } })}
+            accessibilityHint="打开并排对比"
+          >
+            <Text className="text-center">{`比一比${first.name}和${second.name}`}</Text>
+          </Button>
+        )
+      ) : null}
+    </Page>
+  );
+}
+
 export default function CompareScreen() {
   const params = useLocalSearchParams<{ a: string; b: string }>();
   const slugA = param(params.a);
   const slugB = param(params.b);
+  // A link with both pandas compares them; one with none or only one asks for the pair first.
+  const choosing = !slugA || !slugB;
   const { state: catalog, reload: reloadCatalog } = useLearningCatalog();
   const [load, setLoad] = useState<Load>({ status: "loading" });
   const loadPandas = useCallback(() => {
@@ -186,7 +225,7 @@ export default function CompareScreen() {
   }, []);
   useEffect(loadPandas, [loadPandas]);
 
-  if (load.status === "failed" || catalog.status === "failed") {
+  if (load.status === "failed" || (!choosing && catalog.status === "failed")) {
     return (
       <Page title="比一比">
         <LoadFailed
@@ -200,23 +239,42 @@ export default function CompareScreen() {
       </Page>
     );
   }
-  if (load.status === "loading" || catalog.status === "loading") {
+  if (load.status === "loading" || (!choosing && catalog.status === "loading")) {
     return (
       <Page title="比一比">
-        <View className="flex-row gap-row" accessibilityLabel="正在加载">
-          <Skeleton className="flex-1 rounded-tile" style={{ aspectRatio: 4 / 5 }} />
-          <Skeleton className="flex-1 rounded-tile" style={{ aspectRatio: 4 / 5 }} />
-        </View>
-        <Skeleton className="h-32 w-full rounded-group" />
+        {choosing ? (
+          <View className="gap-stack" accessibilityLabel="正在加载">
+            <View className="flex-row gap-row">
+              <Skeleton className="h-36 flex-1 rounded-tile" />
+              <Skeleton className="h-36 flex-1 rounded-tile" />
+            </View>
+            <Skeleton className="h-11 w-full rounded-control" />
+          </View>
+        ) : (
+          <>
+            <View className="flex-row gap-row" accessibilityLabel="正在加载">
+              <Skeleton className="flex-1 rounded-tile" style={{ aspectRatio: 4 / 5 }} />
+              <Skeleton className="flex-1 rounded-tile" style={{ aspectRatio: 4 / 5 }} />
+            </View>
+            <Skeleton className="h-32 w-full rounded-group" />
+          </>
+        )}
       </Page>
     );
   }
   const a = load.pandas.find((panda) => panda.slug === slugA);
   const b = load.pandas.find((panda) => panda.slug === slugB);
-  if (!a || !b || a.slug === b.slug) {
+  if (choosing) {
+    return <PickPair pandas={load.pandas} preset={a ?? b ?? null} />;
+  }
+  if (!a || !b || a.slug === b.slug || catalog.status !== "ready") {
     return (
       <Page title="比一比">
-        <ScreenState message="没找到要比的两只熊猫。" actionLabel="去找熊猫" onAction={() => router.replace("/find")} />
+        <ScreenState
+          message="没找到要比的两只熊猫。"
+          actionLabel="重新选两只"
+          onAction={() => router.replace("/compare")}
+        />
       </Page>
     );
   }

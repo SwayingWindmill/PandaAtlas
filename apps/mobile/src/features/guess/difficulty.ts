@@ -13,3 +13,18 @@ export const DIFFICULTIES: readonly { value: GuessDifficulty; label: string; mea
 export function difficultyOf(value: GuessDifficulty): { value: GuessDifficulty; label: string; meaning: string } {
   return DIFFICULTIES.find((item) => item.value === value) ?? { value, label: value, meaning: "" };
 }
+
+/** What a probe of one level found: a question, none published (404), or nothing known (offline, a 500). */
+export type LevelProbe = "ready" | "empty" | "unknown";
+
+/**
+ * The levels to offer, easiest first. A level the server answered with no question is left out, so nobody picks
+ * a level that cannot serve; a level that only failed to load stays in. The current level stays in even when empty,
+ * so the control never loses its selection; switching away hides it.
+ */
+export function offeredLevels(
+  probes: Partial<Record<GuessDifficulty, LevelProbe>>,
+  current: GuessDifficulty | "any",
+): GuessDifficulty[] {
+  return DIFFICULTIES.map(({ value }) => value).filter((value) => probes[value] !== "empty" || value === current);
+}
