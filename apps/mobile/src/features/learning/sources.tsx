@@ -13,7 +13,7 @@ export function LearningSources({ sources }: { sources: readonly LearningSource[
   return (
     <View className="gap-2">
       <Text variant="title2" className="px-4">来源</Text>
-      <View className="overflow-hidden rounded-[10px] bg-card">
+      <View className="overflow-hidden rounded-group bg-card">
         {cited.map((source, index) => {
           const title = learningText(source.title);
           const last = index === cited.length - 1;

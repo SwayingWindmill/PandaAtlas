@@ -11,6 +11,13 @@ const twMerge = extendTailwindMerge({
         {
           text: [
             "display",
+            "title",
+            "subheadline",
+            "reading-title",
+            "reading-heading",
+            "reading-lead",
+            "reading-body",
+            "reading-caption",
             "large-title",
             "title1",
             "title2",

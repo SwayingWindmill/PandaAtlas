@@ -3,6 +3,7 @@
  * the bundle carries only these. One meaning per glyph; reuse the name here before adding one.
  * See DESIGN.md, "Icons", for where an icon belongs and where it does not.
  */
+export { default as Bell } from "lucide-react-native/icons/bell";
 export { default as Binoculars } from "lucide-react-native/icons/binoculars";
 export { default as Cake } from "lucide-react-native/icons/cake";
 export { default as CalendarCheck } from "lucide-react-native/icons/calendar-check";
@@ -10,21 +11,27 @@ export { default as ChevronLeft } from "lucide-react-native/icons/chevron-left";
 export { default as ChevronRight } from "lucide-react-native/icons/chevron-right";
 export { default as CircleQuestionMark } from "lucide-react-native/icons/circle-question-mark";
 export { default as Clock } from "lucide-react-native/icons/clock";
+export { default as FileText } from "lucide-react-native/icons/file-text";
 export { default as Flower } from "lucide-react-native/icons/flower-2";
+export { default as FolderHeart } from "lucide-react-native/icons/folder-heart";
 export { default as Globe } from "lucide-react-native/icons/globe";
 export { default as Hourglass } from "lucide-react-native/icons/hourglass";
 export { default as House } from "lucide-react-native/icons/house";
 export { default as Info } from "lucide-react-native/icons/info";
 export { default as Landmark } from "lucide-react-native/icons/landmark";
 export { default as LayoutGrid } from "lucide-react-native/icons/layout-grid";
+export { default as Lock } from "lucide-react-native/icons/lock";
 export { default as MapPin } from "lucide-react-native/icons/map-pin";
 export { default as Mars } from "lucide-react-native/icons/mars";
 export { default as Navigation } from "lucide-react-native/icons/navigation";
 export { default as Network } from "lucide-react-native/icons/network";
 export { default as PawPrint } from "lucide-react-native/icons/paw-print";
 export { default as Search } from "lucide-react-native/icons/search";
+export { default as Settings } from "lucide-react-native/icons/settings";
 export { default as Share } from "lucide-react-native/icons/share";
+export { default as ShieldCheck } from "lucide-react-native/icons/shield-check";
 export { default as Sun } from "lucide-react-native/icons/sun";
+export { default as SunMoon } from "lucide-react-native/icons/sun-moon";
 export { default as Sunrise } from "lucide-react-native/icons/sunrise";
 export { default as Ticket } from "lucide-react-native/icons/ticket";
 export { default as TramFront } from "lucide-react-native/icons/tram-front";

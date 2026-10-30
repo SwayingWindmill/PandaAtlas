@@ -113,6 +113,7 @@ rounded:
   control: 12px
   group: 10px
   pill: 999px
+  glyph: 8px
 spacing:
   hair-gap: 4px
   stack-tight: 8px
@@ -398,6 +399,7 @@ More space sits above a section heading than between the heading and the group. 
 - **Reading column** (科普): `paper` ground, a lead photograph with its caption below (never text on it), the reading set, large title kept in the column.
 - **Photo card:** one photograph, continuous corners (`card` or `tile`), media placeholder, bottom scrim, on-media title, photo stroke, press scale.
 - **Stat block:** three elevated tiles in a row, `tile` radius, footnote label with glyph over a `stat` value; stacks past font scale 1.35.
+- **Tab roots.** 今天: title and date, story cards, then 你关注的 avatars, a birthday tile scroller (今天生日 or 快过生日了) and 关注的新资料 rows in one group. 找熊猫: search, area chips, a scroller of explore cards (熊猫在哪里, 基地和动物园, 查两只熊猫的关系) while browsing, then the list in one inset group with 56pt photos. 图鉴: the known count as a display figure, a neutral progress track, a stat block for the three ways, then a three-column grid of 4:5 photo tiles closed by a 今天的那只 tile; signed out, softened real covers above the three ways and 登录. 我的: a profile card (monogram avatar, name, 改名字, a 设置 gear), 关注的熊猫 avatars, then 我的合集 / 去过的地点 / 通知 rows and 我的纠错. 设置 (pushed from the gear): a centered profile header, 外观 as a segmented control, glyph rows, the legal pages, 退出登录.
 
 **The Plate Rule.** The first figure on a panda, an institution or a 科普 article is one published photograph. On a panda or institution page it runs full-bleed under the status bar and stretches on pull-down, as Music and App Store heroes do (`components/stretchy-hero.tsx`). A panda's name is a display title below the photo, then 关注 (tinted) and 见过 (plain); an institution's name sits on its photo over a bottom scrim with a footnote line for type and country. The institution hero is the first resident whose cover carries no agency watermark.
 
@@ -431,6 +433,7 @@ Radius roles (`rounded-card` etc., `RADIUS` in `lib/surface.ts`), all with conti
 | `control` | 12 | Search field, segmented control, a small photo in a row |
 | `group` | 10 | Inset grouped lists |
 | `pill` | 999 | Buttons, capsules and chips |
+| `glyph` | 8 | The 30pt square behind a 设置 row glyph, and only there |
 
 **The Concentric Rule.** A shape inside another shape takes the outer radius minus the padding between them (`concentric(outer, padding)`), so the curves share a centre: card 24 with padding 16 → 8; tile 16 with padding 12 → 4; a 44pt avatar in a 52pt capsule with 4pt padding is radius 22 inside 26. Never nest the same radius.
 
@@ -454,6 +457,9 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 | `PhotoOutline` | `photo-outline.tsx` | Edge on rounded photos | Square plates | radius | decorative |
 | `Icon` | `icon.tsx`, `icons.ts` | A category or destination glyph | Buttons, titles, running text | sizes footnote 15, subhead 18, body 22, title3 24, chevron 17; tones secondary, tint, tertiary, label, onMedia | always hidden; the holder carries the name |
 | `ScreenState` / `LoadFailed` | `screen-state.tsx`, `load-failed.tsx` | Empty, failed, offline | Inline errors in a row | empty, error + retry | sentence is announced |
+| `SectionHeader` | `section-header.tsx` | A titled section on a tab root, with count and link | A grouped list's footnote header | title, count, action | title is a heading; action is a link ≥44 |
+| `Segmented` | `segmented.tsx` | Two to four mutually exclusive choices (外观) | Navigation, filters with many options (chips) | track, sliding thumb (`move`; none under Reduce Motion); selection haptic | radiogroup of radios with checked state |
+| `PandaTile` | `panda-tile.tsx` | One panda as a photo tile (图鉴 grid, birthday scroller) | Rows of facts | name, caption, width, aspect; press scale | one label: name and caption |
 | `Skeleton` | `ui/skeleton.tsx` | Loading placeholder in the final layout | Spinners on a page | — | hidden from VoiceOver |
 | `OfflineBanner` | `offline-banner.tsx` | No network | Errors from the API | — | announced once |
 | Warm badge | (class recipe) `rounded-pill bg-warm-soft text-warm` footnote semibold | 今天 / 新 / milestone | Actions or status | — | the text says it; color is never the only signal |
@@ -472,9 +478,12 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 - **Row:** at least 44, body title, optional footnote under it, optional secondary value on the trailing side, a chevron when the row navigates.
 - **Header:** footnote in the secondary label above the group, not a tracked label above a title.
 - **Key–value rows** (去之前): a footnote label over a body value, as Maps' place card lists hours and address.
+- **Section header** (`components/section-header.tsx`): outside a grouped list, a section on a tab root is a `title` heading with an optional secondary count after an ideographic space (关注的熊猫　3) and an optional trailing tint link (看日历, 找熊猫). No icon, no kicker.
+
+**The Settings Glyph Rule.** 设置 alone leads each row with an 18pt tint glyph in a 30pt square, `glyph` radius (8), highlight-soft fill, as the system Settings does (`GlyphSquare`, `ListCell glyph`). Its separators start after the square (`component.settingsGlyph.inset`, 58). 退出登录 is a centered destructive row in its own group. Every other list keeps plain secondary glyphs.
 
 ### Inputs
-- **Search:** 44 tall, `group` radius, elevated fill, secondary-label placeholder. No outline. The system caret for focus.
+- **Search:** 44 tall, `control` radius, elevated fill, secondary-label placeholder. No outline. The system caret for focus.
 
 ### Navigation
 - **Tabs:** 今天, 找熊猫, 图鉴, 我的, with Lucide `sun`, `search`, `layout-grid`, `user-round`. iOS uses the system Liquid Glass bar (`expo-router/native-tabs`, SDK 58), which minimizes on scroll. Android uses the Material bar. Both take the glyphs as template PNGs in `assets/tab-icons/` (25pt, stroke 1.9, `apps/mobile/scripts/tab-icons.mjs`). Web uses `(tabs)/_layout.web.tsx`: a bar-material bar with a blur, same glyphs as components.
@@ -487,7 +496,7 @@ One set: Lucide (`lucide-react-native` on `react-native-svg`), same glyphs on ev
 - **Color:** secondary label. Tint only on an action row (官网, 看官方直播, 导航过去) or the selected tab. Tertiary label for the chevron. On media: white, or label inside Liquid Glass.
 - **Use one** where Settings, Health or Maps would: a leading glyph on a row naming a fixed category or destination (父母, 看家谱, 查关系, 所在机构, every 去之前 fact, 到访, 看官方直播, 官网, 导航过去), or a footnote-size glyph beside a stat label.
 - **One meaning per glyph** (`MapPin` place, `Clock` hours, `CalendarCheck` visit). **All or none in a group.** No icon on a data row (a relative, an event, a source).
-- **Don't** put an icon on a button, a card or section title, beside a large title, in running text, in a tinted square, or fill a glyph to fake selection.
+- **Don't** put an icon on a button with a text label, a card or section title, beside a large title, in running text, in a tinted square (设置 is the one exception, see The Settings Glyph Rule), or fill a glyph to fake selection. A glyph-only toolbar button (返回, 分享, the 设置 gear on 我的) is a 44 circle with an accessible name.
 
 ### Screen state
 - **Loading:** `Skeleton` in the final layout; content arrives with `enter`.
@@ -508,7 +517,7 @@ Navigation is Expo Router's `native-tabs` and native stack (the SDK 58 way to th
 
 ### Don't
 - **Don't** put a kicker above the title.
-- **Don't** put an icon in a tinted square.
+- **Don't** put an icon in a tinted square anywhere but 设置.
 - **Don't** paint a card, a progress track, or a hero with the tint, or use shoot gold for anything tappable.
 - **Don't** hand-roll a glass panel.
 - **Don't** bring the website's olive ground or a custom back button onto the app.
@@ -566,5 +575,6 @@ Kept so screens that predate v2 render. Do not use on a new or redesigned screen
 
 ## Changelog
 
+- **v2.1 (2026-10-29).** The four tab roots and the new 设置 page on v2: section headers, photo tiles, avatar scrollers, the 图鉴 stat block and grid, the profile card. `Segmented`, `SectionHeader`, `PandaTile`; radius `glyph` and The Settings Glyph Rule; 外观, the legal pages and 退出登录 moved from 我的 to 设置.
 - **v2 (2026-10-29).** Single token source `apps/mobile/src/design/tokens.ts` (primitives → semantic → component) generating `global.css` and this front matter. Six purpose-named text styles plus a 科普 reading set; older variants deprecated. 笋金 warm accent (`#846018` / `#E3BD6E`). Signature 竹 bamboo motion. 4pt spacing roles, radius roles with `control` and `pill`, named media colors (scrim, placeholder, photo stroke, glass fallback, bar material). Warn-level design lint. `/dev/design-system` showcase. Merged the app section of `docs/design/zhipanda-design-system.md` (§10) into this file.
 - **v1 (2026-10).** iOS 26 system semantics with the jade tint; four type sizes; story cards, stretchy hero, stat blocks, family chips.

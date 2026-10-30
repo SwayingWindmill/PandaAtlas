@@ -299,6 +299,7 @@ const radii = {
   control: { value: radius.lg, use: "Search field, segmented control, small photo in a row." },
   group: { value: radius.md, use: "Inset grouped lists." },
   pill: { value: radius.full, use: "Buttons, capsules and chips. Height / 2 in practice." },
+  glyph: { value: radius.sm, use: "The 30pt rounded square behind a row glyph on 设置, and only there." },
 } as const;
 
 /** Motion roles. Each pairs a duration with a curve, so a screen asks for a role, not numbers. */
@@ -339,6 +340,10 @@ export const component = {
   searchField: { height: 44, radius: radius.md },
   glassButton: { size: 44 },
   familyChip: { height: 52, padding: space[1], avatar: 44 },
+  /** 设置 rows: a glyph in a tinted rounded square, as the system Settings app draws them. */
+  settingsGlyph: { size: 30, icon: 18, inset: space[4] + 30 + space[3] },
+  /** A segmented control: a 44pt track with the selected segment inset 2pt (concentric radius). */
+  segmented: { height: 44, padding: 2 },
   /** Icons follow the text they sit beside, like SF Symbols. */
   icon: { footnote: 15, subhead: 18, body: 22, title3: 24, chevron: 17 },
   /** The web tab bar (native tabs draw their own). */

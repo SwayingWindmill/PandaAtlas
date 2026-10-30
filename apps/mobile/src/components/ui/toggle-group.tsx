@@ -42,7 +42,7 @@ function ToggleGroupItem({
   const selected = ToggleGroupPrimitive.utils.getIsSelected(value, props.value);
 
   return (
-    <TextClassContext.Provider value={cn('text-base text-foreground', selected && 'font-bold')}>
+    <TextClassContext.Provider value={cn('text-body text-foreground', selected && 'font-semibold text-primary-foreground')}>
       <ToggleGroupPrimitive.Item
         // The web primitive renders a plain button; give it the radio or checkbox semantics native already has.
         role={type === 'single' ? 'radio' : 'checkbox'}

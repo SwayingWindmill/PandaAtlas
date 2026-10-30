@@ -78,7 +78,7 @@ export function FacilityVisits({ facilities }: { facilities: { id: string; name:
                 <Text className="text-subhead font-semibold">{day === today ? "今天已记下" : "记下今天去过"}</Text>
               </Button>
             </View>
-            {index === facilities.length - 1 ? null : <View className={cn(stacked ? "ml-4" : ICON_INSET, "bg-border")} style={{ height: HAIRLINE }} />}
+            {index === facilities.length - 1 ? null : <View className={cn(stacked && "ml-4", "bg-border")} style={[{ height: HAIRLINE }, stacked ? null : ICON_INSET]} />}
           </View>
         );
       })}

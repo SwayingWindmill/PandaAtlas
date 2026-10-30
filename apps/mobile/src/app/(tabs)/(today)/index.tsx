@@ -43,48 +43,51 @@ export default function TodayScreen() {
     <ScrollView
       className="flex-1 bg-background"
       contentInsetAdjustmentBehavior="never"
-      contentContainerClassName="gap-5 px-4 pb-28"
+      contentContainerClassName="gap-section px-4 pb-28"
       contentContainerStyle={{ paddingTop: insets.top + 12 }}
     >
       <Stack.Screen options={{ headerShown: false, title: "今天" }} />
-      <View>
-        <Text variant="display">今天</Text>
-        <Text variant="body" className="text-muted-foreground">
-          {dateLine()}
-        </Text>
+      <View className="gap-stack">
+        {/* The date is the screen's one 笋金 mark: it says when, under the title as News dates its issue. */}
+        <View>
+          <Text variant="display">今天</Text>
+          <Text variant="body" className="text-warm">
+            {dateLine()}
+          </Text>
+        </View>
+        <StoryCard
+          featured
+          id={featured.id}
+          title={featured.title}
+          feature={featured.feature}
+          href={featured.href}
+          photo={photos[0]}
+          height={lead}
+        />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="-mx-4"
+          contentContainerClassName="px-4"
+          contentContainerStyle={{ gap: GAP }}
+          snapToInterval={small + GAP}
+          snapToAlignment="start"
+          decelerationRate="fast"
+        >
+          {rest.map((story, index) => (
+            <StoryCard
+              key={story.id}
+              id={story.id}
+              title={story.title}
+              feature={story.feature}
+              href={story.href}
+              photo={photos[index + 1]}
+              width={small}
+              height={smallHeight}
+            />
+          ))}
+        </ScrollView>
       </View>
-      <StoryCard
-        featured
-        id={featured.id}
-        title={featured.title}
-        feature={featured.feature}
-        href={featured.href}
-        photo={photos[0]}
-        height={lead}
-      />
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        className="-mx-4"
-        contentContainerClassName="px-4"
-        contentContainerStyle={{ gap: GAP }}
-        snapToInterval={small + GAP}
-        snapToAlignment="start"
-        decelerationRate="fast"
-      >
-        {rest.map((story, index) => (
-          <StoryCard
-            key={story.id}
-            id={story.id}
-            title={story.title}
-            feature={story.feature}
-            href={story.href}
-            photo={photos[index + 1]}
-            width={small}
-            height={smallHeight}
-          />
-        ))}
-      </ScrollView>
       <FollowedStrip />
       <TodayBirthdays />
       <FollowedChanges />

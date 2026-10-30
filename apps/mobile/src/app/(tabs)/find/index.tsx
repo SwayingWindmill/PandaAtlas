@@ -1,9 +1,8 @@
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
-import { FlatList, Platform, View } from "react-native";
+import { FlatList, Platform, ScrollView, View, useWindowDimensions } from "react-native";
 
-import { ListSection } from "@/components/grouped-list";
 import { LoadFailed } from "@/components/load-failed";
-import { NavRow } from "@/components/nav-row";
+import { SectionHeader } from "@/components/section-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -12,8 +11,18 @@ import { areaChips } from "@/features/pandas/areas";
 import { PandaRow } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex, searchPandas } from "@/features/pandas/pandas";
 import { SearchField } from "@/features/pandas/search-field";
+import { localToday } from "@/features/engagement/seen";
+import { ExploreCard } from "@/features/pandas/explore-card";
+import { useStoryPhotos } from "@/features/today/story-photos";
+
+const GAP = 12;
+/** 今天 takes the day's first four story photos; 找熊猫 takes the next ones, so no panda repeats. */
+const TODAY_STORIES = 4;
 
 export default function FindScreen() {
+  const { width } = useWindowDimensions();
+  const photos = useStoryPhotos(localToday(), TODAY_STORIES + 3).slice(TODAY_STORIES);
+  const card = Math.round(Math.min((Math.min(width, 700) - 32) * 0.78, 320));
   const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [query, setQuery] = useState("");
@@ -45,6 +54,12 @@ export default function FindScreen() {
     const found = pandas ? searchPandas(pandas, deferredQuery) : [];
     return area === "全部" ? found : found.filter((panda) => panda.area === area);
   }, [pandas, deferredQuery, area]);
+  const browsing = !deferredQuery.trim() && area === "全部";
+  const explore = [
+    { id: "map", title: "熊猫在哪里", href: "/map" as const },
+    ...(hasInstitutions ? [{ id: "institutions", title: "基地和动物园", href: "/institutions" as const }] : []),
+    { id: "relationship", title: "查两只熊猫的关系", href: "/relationship" as const },
+  ];
 
   return (
     <View className="flex-1 bg-background">
@@ -52,14 +67,16 @@ export default function FindScreen() {
         <FlatList
           data={results}
           keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => <PandaRow item={item} last={index === results.length - 1} />}
+          renderItem={({ item, index }) => (
+            <PandaRow item={item} first={index === 0} last={index === results.length - 1} />
+          )}
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerClassName="px-4 pb-24"
+          contentContainerClassName="px-4 pb-28"
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={
-            <View className="gap-4 pb-3">
-              {Platform.OS === "web" ? <Text variant="largeTitle">找熊猫</Text> : null}
+            <View className="gap-stack pb-row">
+              {Platform.OS === "web" ? <Text variant="display">找熊猫</Text> : null}
               <SearchField value={query} onChange={setQuery} />
               {chips.length > 0 ? (
                 <ToggleGroup
@@ -76,25 +93,57 @@ export default function FindScreen() {
                   ))}
                 </ToggleGroup>
               ) : null}
-              {deferredQuery.trim() || area !== "全部" ? null : (
-                <ListSection>
-                  <NavRow label="熊猫在哪里" href="/map" />
-                  {hasInstitutions ? <NavRow label="基地和动物园" href="/institutions" /> : null}
-                  <NavRow label="查两只熊猫的关系" href="/relationship" last />
-                </ListSection>
-              )}
+              {browsing ? (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  className="-mx-4"
+                  contentContainerClassName="px-4"
+                  contentContainerStyle={{ gap: GAP }}
+                  snapToInterval={card + GAP}
+                  snapToAlignment="start"
+                  decelerationRate="fast"
+                >
+                  {explore.map((entry, index) => (
+                    <ExploreCard
+                      key={entry.id}
+                      id={entry.id}
+                      title={entry.title}
+                      href={entry.href}
+                      photo={photos[index]}
+                      width={card}
+                    />
+                  ))}
+                </ScrollView>
+              ) : null}
+              {results.length > 0 ? (
+                <SectionHeader
+                  title={browsing ? "全部熊猫" : area !== "全部" && !deferredQuery.trim() ? area : "搜索结果"}
+                  count={`${results.length} 只`}
+                />
+              ) : null}
             </View>
           }
-          ListEmptyComponent={<Text className="py-4 text-muted-foreground">{`没有找到「${deferredQuery.trim()}」`}</Text>}
+          ListEmptyComponent={
+            <View className="items-center gap-stack-tight py-page">
+              <Text variant="headline">
+                {deferredQuery.trim() ? `没有找到「${deferredQuery.trim()}」` : "这里还没有熊猫"}
+              </Text>
+              <Text variant="subheadline" className="text-center text-muted-foreground">
+                试试熊猫的名字，或换一个地方。
+              </Text>
+            </View>
+          }
         />
       ) : failed ? (
-        <LoadFailed message="熊猫列表暂时打不开。" onRetry={retry} className="mx-5" />
+        <LoadFailed message="熊猫列表暂时打不开。" onRetry={retry} className="mx-4" />
       ) : (
-        <View className="gap-3 px-5 pt-2.5" accessibilityLabel="正在加载熊猫列表">
+        <View className="gap-row px-4 pt-row" accessibilityLabel="正在加载熊猫列表">
+          <Skeleton className="h-11 rounded-control" />
           {[0, 1, 2, 3, 4, 5].map((key) => (
-            <View key={key} className="flex-row items-center gap-3">
-              <Skeleton className="size-14" />
-              <View className="flex-1 gap-2">
+            <View key={key} className="flex-row items-center gap-row">
+              <Skeleton className="size-14 rounded-control" />
+              <View className="flex-1 gap-stack-tight">
                 <Skeleton className="h-4 w-24 rounded-full" />
                 <Skeleton className="h-3 w-40 rounded-full" />
               </View>

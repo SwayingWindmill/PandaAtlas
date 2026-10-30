@@ -39,7 +39,7 @@ function Toggle({
   ...props
 }: React.ComponentProps<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>) {
   return (
-    <TextClassContext.Provider value={cn('text-base text-foreground', props.pressed && 'font-semibold text-primary-foreground')}>
+    <TextClassContext.Provider value={cn('text-body text-foreground', props.pressed && 'font-semibold text-primary-foreground')}>
       <TogglePrimitive.Root
         // The web primitive renders a plain button; expose its state as native does.
         aria-pressed={props.pressed}
