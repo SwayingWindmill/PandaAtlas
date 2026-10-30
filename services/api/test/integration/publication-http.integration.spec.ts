@@ -351,4 +351,86 @@ describe("V2 publication and release-scoped public reads", () => {
       ]),
     );
   });
+
+  it("merges a duplicate place so its residencies, check-ins and old slug all reach the surviving place", async () => {
+    const suffix = randomUUID();
+    const database = app.get(DatabaseService);
+    const pandas = app.get<PandaPort>(PANDA_PORT);
+    const places = app.get<PlacesPort>(PLACES_PORT);
+    const lifeHistory = app.get<LifeHistoryPort>(LIFE_HISTORY_PORT);
+    const publication = app.get<PublicationPort>(PUBLICATION_PORT);
+    const accountId = randomUUID();
+    const context = { actor: { kind: "account" as const, accountId }, correlationId: randomUUID() };
+    await sql`
+      insert into auth.users (id, aud, role, created_at, updated_at)
+      values (${accountId}::uuid, 'authenticated', 'authenticated', now(), now())
+    `.execute(database.db);
+    await database.db.insertInto("identity.accounts").values({ account_id: accountId, email: null }).execute();
+
+    const sourceId = `merge:${suffix}`;
+    await app.get<EvidencePort>(EVIDENCE_PORT).createSource({
+      sourceId,
+      publisher: "Merge Integration Archive",
+      title: "Merge source",
+      url: `https://example.test/merge/${suffix}`,
+      publishedOn: "2026-10-30",
+      lastVerifiedOn: "2026-10-30",
+      languageTag: "en",
+      accessState: "accessible",
+      evidenceTier: "institutional",
+      publicSummary: "Merge summary.",
+      contentSha256: "c".repeat(64),
+    });
+    const panda = await pandas.createPanda({
+      canonicalSlug: `merge-panda-${suffix}`,
+      primaryName: { languageTag: "en", value: `Merge Panda ${suffix}`, sourceIds: [sourceId] },
+    });
+    const survivor = await places.createPlace({ slug: `merge-kept-${suffix}`, placeType: "facility", nameEn: "Kept Base" });
+    const duplicate = await places.createPlace({ slug: `merge-copy-${suffix}`, placeType: "facility", nameEn: "Copy Base" });
+    await lifeHistory.createResidency({
+      residencyId: `merge-residency:${suffix}`,
+      pandaId: panda.pandaId,
+      placeId: duplicate.placeId,
+      residencyType: "primary",
+      startOn: "2020-01-01",
+      startPrecision: "day",
+      status: "confirmed",
+      sourceIds: [sourceId],
+    });
+    // The same visit recorded against both copies, and one against the copy alone.
+    await sql`
+      insert into engagement.location_checkins (account_id, place_id, visited_on) values
+        (${accountId}::uuid, ${duplicate.placeId}, '2026-01-01'),
+        (${accountId}::uuid, ${survivor.placeId}, '2026-01-01'),
+        (${accountId}::uuid, ${duplicate.slug}, '2026-01-02')
+    `.execute(database.db);
+
+    await sql`select place.merge_place(${duplicate.slug}, ${survivor.slug})`.execute(database.db);
+    // A content migration may run the same merge again.
+    await sql`select place.merge_place(${duplicate.slug}, ${survivor.slug})`.execute(database.db);
+
+    const checkins = await database.db
+      .selectFrom("engagement.location_checkins")
+      .select(["place_id", "visited_on"])
+      .where("account_id", "=", accountId)
+      .orderBy("visited_on")
+      .execute();
+    expect(checkins.map((row) => row.place_id)).toEqual([survivor.placeId, survivor.placeId]);
+    const remaining = await database.db.selectFrom("place.places").select("slug").where("place_id", "=", duplicate.placeId).execute();
+    expect(remaining).toEqual([]);
+
+    const release = await publication.build(`merge-${suffix}`, context);
+    expectOkRelease(await publication.seal(release.releaseId, context, "Seal the merge integration release"));
+    expect((await publication.activate(release.releaseId, context, "Activate the merge integration release")).kind).toBe("ok");
+
+    const byOldSlug = await injectHttp(app, { method: "GET", url: `/api/v2/places/${duplicate.slug}` });
+    expect(byOldSlug.statusCode, byOldSlug.body).toBe(200);
+    expect(byOldSlug.json<{ place: { slug: string; legacySlugs?: string[] } }>().place).toMatchObject({
+      slug: survivor.slug,
+      legacySlugs: [duplicate.slug],
+    });
+    const pandaRead = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
+    expect(pandaRead.statusCode, pandaRead.body).toBe(200);
+    expect(pandaRead.json<PublicPandaDetail>().residencies.map((item) => item.placeId)).toEqual([survivor.placeId]);
+  });
 });

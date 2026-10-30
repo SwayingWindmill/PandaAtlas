@@ -1,5 +1,5 @@
 {
-  "$comment": "Visitor content for zoos and breeding centers. Each institution lists the existing facility places it runs, by slug, with a map point and an optional visit guide. Edit here, then run scripts/curation/build_institution_content_migration.py to write the migration. Hours and prices change: only record what an official page says, and update verifiedOn when you recheck.",
+  "$comment": "Visitor content for zoos and breeding centers. Each institution lists the existing facility places it runs, by slug, with a map point and an optional visit guide. legacySlugs lists duplicate places merged into it: the migration moves their residencies, events and check-ins here and keeps the old slug so old links resolve. Edit here, then run scripts/curation/build_institution_content_migration.py to write the migration. Hours and prices change: only record what an official page says, and update verifiedOn when you recheck.",
   "institutions": [
     {
       "slug": "chengdu-research-base",
@@ -22,6 +22,7 @@
       "places": [
         {
           "slug": "chengdu-research-base",
+          "legacySlugs": ["coarse-3b8eeeb3d7314f16", "coarse-8824ed2ed8a8cec0", "coarse-d4ab28d71855efc2"],
           "longitude": 104.1456,
           "latitude": 30.7330,
           "visitGuide": {
@@ -71,6 +72,7 @@
       "places": [
         {
           "slug": "ccrcgp-bifengxia-base",
+          "legacySlugs": ["ccrcgp-yaan-base"],
           "longitude": 102.9762,
           "latitude": 30.0720,
           "visitGuide": {
@@ -91,9 +93,12 @@
             "sourceUrls": ["https://en.wikipedia.org/wiki/Bifengxia_Panda_Base"]
           }
         },
-        { "slug": "ccrcgp-yaan-base", "longitude": 102.9762, "latitude": 30.0720 },
-        { "slug": "ccrcgp-wolong-shenshuping-base", "longitude": 103.3182, "latitude": 31.1032 },
-        { "slug": "ccrcgp-wolong-gengda-base", "longitude": 103.3182, "latitude": 31.1032 }
+        {
+          "slug": "ccrcgp-wolong-shenshuping-base",
+          "legacySlugs": ["ccrcgp-wolong-gengda-base"],
+          "longitude": 103.3182,
+          "latitude": 31.1032
+        }
       ]
     },
     {

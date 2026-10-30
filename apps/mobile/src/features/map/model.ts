@@ -30,6 +30,8 @@ export interface MapPlaceInput {
   region?: string;
   longitude?: number;
   latitude?: number;
+  /** Slugs of duplicate places merged into this one. */
+  legacySlugs?: string[];
 }
 
 export interface MapResidencyInput {
@@ -245,7 +247,8 @@ export function buildPlacePage(
   residencies: readonly MapResidencyInput[],
   pandas: readonly MapPandaInput[],
 ): PlacePage | null {
-  const place = places.find((item) => item.slug === slug);
+  // An old link to a merged duplicate opens the place it was merged into.
+  const place = places.find((item) => item.slug === slug) ?? places.find((item) => item.legacySlugs?.includes(slug));
   if (!place) return null;
   const institution = place.institutionId
     ? institutions.find((item) => item.institutionId === place.institutionId)

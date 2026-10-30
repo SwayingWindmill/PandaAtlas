@@ -103,6 +103,7 @@ export interface PublicReadPlaces {
   country_code: string | null;
   institution_id: string | null;
   latitude: number | null;
+  legacy_slugs: Generated<string[]>;
   longitude: number | null;
   name_en: string | null;
   name_zh: string | null;

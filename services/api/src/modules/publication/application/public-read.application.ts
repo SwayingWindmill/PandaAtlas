@@ -41,6 +41,8 @@ export interface PublicPlaceSummary {
   longitude?: number;
   latitude?: number;
   visitGuide?: FacilityVisitGuide;
+  /** Slugs of duplicate places merged into this one; requests for them get this place. */
+  legacySlugs?: string[];
 }
 
 export interface PublicInstitutionSummary {
