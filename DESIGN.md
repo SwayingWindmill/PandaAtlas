@@ -413,6 +413,10 @@ More space sits above a section heading than between the heading and the group. 
 
 **The Weekly Digest Rule.** 本周新鲜事 is finite and calm: the 7 local days ending today, counted by kind (新生, 首次亮相, 有了名字, 搬家, 回国, 新收录, 新照片), at most three tallies and one line of names on 今天, the full list on `/week`. A birth or move counts when it happened in the last year, not when an old one is first recorded. No push, no streak, no unread count; with nothing new, or on an error, the card is not shown at all.
 
+**The Compare Rule.** 比一比 (`/compare?a=&b=`) puts two pandas side by side: two 4:5 photos that open each profile, the facts already on the profile (性别, 出生年, 所在地), then 区分要点. 区分要点 only repeats what 文献与写作 has written into the learning catalog: the four 认脸指南 slots (脸型, 左右差别, 黑眼圈, 耳朵) in one inset group with a column per panda (stacked with names at large text), 还没写 where one side is empty, then the hints of 认脸挑战 rounds where one is the answer and the other a choice, then the sources. With nothing written it says 区分要点还在整理 and lists, per panda, which slots are still missing. The app never writes identification text of its own. Pairs are offered for a reason that is a fact: 在认脸挑战里一起出现, or 同住{地点} (the pandas 猜熊猫 draws as choices), never 长得像.
+
+**The Guess Level Rule.** 猜熊猫 has a `Segmented` 随机 / 简单 / 中等 / 困难. A level is described by how the choices are drawn (其他选项都不和它住在一起, 有的选项和它住在一起, 四个选项住在同一个地方), not by a promise about faces. An empty level says so and offers 换成随机. After a wrong answer the first action under 下一题 is 比一比 {answer} 和 {picked}.
+
 **The Stat Block Rule.** A panda page leads its facts with three tiles: 性别 (♂/♀), 年龄 or 享年 (birth year under it), 所在地 (tappable) or 离世. The full birth date and birthplace follow as one footnote line, then family, places lived, updates and sources.
 
 **The Family Chip Rule.** Relatives are a horizontal row of capsules: a 44pt round photo inside a 52pt capsule with 4pt padding, the name in headline and the relation in a footnote. 看家谱 and 查关系 stay grouped rows under the chips.
@@ -582,6 +586,7 @@ Kept so screens that predate v2 render. Do not use on a new or redesigned screen
 
 ## Changelog
 
+- **v2.5 (2026-10-30).** 比一比 (The Compare Rule), reached from a panda's 比一比 rows and from a wrong 猜熊猫 answer; 猜熊猫 levels (The Guess Level Rule).
 - **v2.4 (2026-10-30).** A panda's 时间线 (The Timeline Rule), linked from the last row of its 动态; event wording shared through `describeEvent` (a mother in a birth event now reads 迎来幼崽出生). 本周新鲜事 on 今天 and `/week` (The Weekly Digest Rule).
 - **v2.3 (2026-10-30).** 图鉴 becomes the life list (The Life List Rule): numbered entries, 按基地 and 按家族 progress against finite groups; the global progress track and the photo grid are gone. 合集 detail on v2: the album mosaic as its header, an 编辑 / 完成 mode with 移出 and 撤销, 改名字 inline and a 删除合集 confirmation card. `Mosaic` moved to `features/collections/mosaic.tsx`.
 - **v2.2 (2026-10-30).** `enter` shortened to 280ms (it plays on every page open; `hero` keeps 480ms), and list items already on screen no longer animate in. 科普 kickers moved below the title as a muted meta line. 每日一猫 shows the newest clue on the mystery card in place of the clue ring, and only a newly unlocked clue tile animates. Web tab bar `webHeight` 54 with a 14pt label line. `Segmented` and `SearchField` grow with large text. Governance: every frontend PR attaches a skill review record.

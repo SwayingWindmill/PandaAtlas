@@ -1,11 +1,16 @@
 import { loadPandaIndex } from "@/features/pandas/pandas";
 import { api, authedApi, publicMediaUrl } from "@/lib/api";
 
+import type { GuessDifficulty } from "./difficulty";
+
 // 猜熊猫: a published photo and four names. The server keeps the answer until a choice is sent.
+
+export { DIFFICULTIES, type GuessDifficulty, difficultyOf } from "./difficulty";
 
 export interface GuessQuestion {
   questionId: string;
   photoUrl: string;
+  difficulty: GuessDifficulty;
   options: { pandaId: string; name: string; slug: string | null }[];
 }
 
@@ -17,14 +22,19 @@ export interface GuessOutcome {
 
 export class NoQuestionError extends Error {}
 
-export async function loadQuestion(): Promise<GuessQuestion> {
-  const [{ data, response }, pandas] = await Promise.all([api.GET("/api/v2/games/guess/question"), loadPandaIndex()]);
+/** Any level when `difficulty` is undefined. A level with no published question throws NoQuestionError. */
+export async function loadQuestion(difficulty?: GuessDifficulty): Promise<GuessQuestion> {
+  const [{ data, response }, pandas] = await Promise.all([
+    api.GET("/api/v2/games/guess/question", { params: { query: difficulty ? { difficulty } : {} } }),
+    loadPandaIndex(),
+  ]);
   if (response.status === 404) throw new NoQuestionError("No published question");
   if (!data) throw new Error(`Question unavailable (${response.status})`);
   const byId = new Map(pandas.map((panda) => [panda.id, panda]));
   return {
     questionId: data.questionId,
     photoUrl: publicMediaUrl(data.photoObjectKey),
+    difficulty: data.difficulty,
     options: data.optionPandaIds.map((pandaId) => ({
       pandaId,
       name: byId.get(pandaId)?.name ?? "熊猫",
