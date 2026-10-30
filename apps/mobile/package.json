@@ -10,7 +10,9 @@
     "lint": "expo lint",
     "typecheck": "tsc --noEmit && tsc -p e2e",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "design:tokens": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/design-tokens.mjs",
+    "design:tokens:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/design-tokens.mjs --check"
   },
   "dependencies": {
     "@expo/metro-runtime": "~58.0.15",

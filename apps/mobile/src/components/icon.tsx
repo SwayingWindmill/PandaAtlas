@@ -1,13 +1,19 @@
 import { type ColorValue, Platform, type StyleProp, type ViewStyle } from "react-native";
 
 import type { LucideIcon } from "@/components/icons";
+import { component } from "@/design/tokens";
 import { useIOSColors } from "@/lib/theme";
 
 /**
  * Icon sizes follow the text they sit beside, the way SF Symbols scale with their text style.
  * A row icon beside body text is 22; beside a footnote, 15.
  */
-export const ICON_SIZE = { footnote: 15, subhead: 18, body: 22, title3: 24 } as const;
+export const ICON_SIZE = {
+  footnote: component.icon.footnote,
+  subhead: component.icon.subhead,
+  body: component.icon.body,
+  title3: component.icon.title3,
+} as const;
 
 // The DOM has no `accessible` attribute; aria-hidden covers web.
 const HIDDEN = Platform.OS === "web" ? {} : { accessible: false };
@@ -29,7 +35,7 @@ export function Icon({
   size = "body",
   tone = "secondary",
   color,
-  strokeWidth = 1.75,
+  strokeWidth = component.iconStroke.regular,
   style,
 }: {
   icon: LucideIcon;
@@ -46,7 +52,7 @@ export function Icon({
     tint: colors.tint,
     tertiary: colors.tertiaryLabel,
     label: colors.label,
-    onMedia: "#FFFFFF",
+    onMedia: colors.onMedia,
   }[tone];
   const px = typeof size === "number" ? size : ICON_SIZE[size];
   return (

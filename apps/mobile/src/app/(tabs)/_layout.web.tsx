@@ -3,8 +3,11 @@ import { Platform } from "react-native";
 
 import { Icon } from "@/components/icon";
 import { LayoutGrid, Search, Sun, UserRound } from "@/components/icons";
+import { component } from "@/design/tokens";
 import { useWelcomeSeen } from "@/features/onboarding/welcome";
 import { useIOSColors } from "@/lib/theme";
+
+const TAB_ICON = component.tabBar.icon;
 
 export default function WebTabsLayout() {
   const welcomeSeen = useWelcomeSeen();
@@ -21,7 +24,7 @@ export default function WebTabsLayout() {
         bottom: 0,
         borderTopWidth: 0.5,
         borderTopColor: colors.separator,
-        backgroundColor: colors.scheme === "dark" ? "rgba(28,28,30,0.86)" : "rgba(255,255,255,0.86)",
+        backgroundColor: colors.barMaterial,
         backdropFilter: "blur(24px)",
       } as const)
     : undefined;
@@ -32,13 +35,13 @@ export default function WebTabsLayout() {
         tabBarActiveTintColor: colors.tint,
         tabBarInactiveTintColor: colors.secondaryLabel,
         tabBarStyle: bar,
-        tabBarLabelStyle: { fontSize: 10, fontWeight: "500" },
+        tabBarLabelStyle: { fontSize: component.tabBar.label, fontWeight: "500" },
       }}
     >
-      <Tabs.Screen name="(today)" options={{ title: "今天", tabBarIcon: ({ color }) => <Icon icon={Sun} size={25} strokeWidth={1.9} color={color} /> }} />
-      <Tabs.Screen name="find" options={{ title: "找熊猫", tabBarIcon: ({ color }) => <Icon icon={Search} size={25} strokeWidth={1.9} color={color} /> }} />
-      <Tabs.Screen name="book" options={{ title: "图鉴", tabBarIcon: ({ color }) => <Icon icon={LayoutGrid} size={25} strokeWidth={1.9} color={color} /> }} />
-      <Tabs.Screen name="me" options={{ title: "我的", tabBarIcon: ({ color }) => <Icon icon={UserRound} size={25} strokeWidth={1.9} color={color} /> }} />
+      <Tabs.Screen name="(today)" options={{ title: "今天", tabBarIcon: ({ color }) => <Icon icon={Sun} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />
+      <Tabs.Screen name="find" options={{ title: "找熊猫", tabBarIcon: ({ color }) => <Icon icon={Search} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />
+      <Tabs.Screen name="book" options={{ title: "图鉴", tabBarIcon: ({ color }) => <Icon icon={LayoutGrid} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />
+      <Tabs.Screen name="me" options={{ title: "我的", tabBarIcon: ({ color }) => <Icon icon={UserRound} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />
     </Tabs>
   );
 }

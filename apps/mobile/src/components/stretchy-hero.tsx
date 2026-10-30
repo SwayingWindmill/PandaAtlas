@@ -3,9 +3,7 @@ import { Link, router } from "expo-router";
 import type { ReactNode } from "react";
 import { Platform, Pressable, View } from "react-native";
 import Animated, {
-  Easing,
   Extrapolation,
-  FadeIn,
   type SharedValue,
   interpolate,
   useAnimatedStyle,
@@ -16,14 +14,8 @@ import { useCSSVariable } from "uniwind";
 import { GlassButton } from "@/components/glass-button";
 import { ChevronLeft, Share } from "@/components/icons";
 
-/** Strong ease-out: fast start, gentle settle. UI motion never eases in. */
-export const EASE_OUT = Easing.bezier(0.23, 1, 0.32, 1);
-
-/**
- * How a page's content arrives once its data is in: a 280ms fade, so the column does not snap in
- * over the skeleton. Reanimated follows the system Reduce Motion setting for layout animations.
- */
-export const CONTENT_ENTER = FadeIn.duration(280).easing(EASE_OUT);
+// How a page's content arrives, on the bamboo curve. Defined with the other motion tokens.
+export { CONTENT_ENTER, EASE_OUT } from "@/design/motion";
 
 export function goBack() {
   if (router.canGoBack()) router.back();
