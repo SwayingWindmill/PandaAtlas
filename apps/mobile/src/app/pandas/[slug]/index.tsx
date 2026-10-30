@@ -250,17 +250,30 @@ function PlacesLived({ profile }: { profile: Profile }) {
 function Events({ profile }: { profile: Profile }) {
   // Newest first, the way a feed reads.
   const events = [...profile.events].reverse();
+  // The whole life, oldest first and with a source on each line, is one tap away under the latest news.
+  const timeline = (
+    <ListCell
+      label="看时间线"
+      detail="一生的大事按年排好，附上出处"
+      href={{ pathname: "/pandas/[slug]/timeline", params: { slug: profile.slug } }}
+      last={events.length > 0}
+    />
+  );
   return (
     <ListSection title="动态">
       {events.length === 0 ? (
         <>
           <ListCell label={UNKNOWN} />
+          {timeline}
           <ListCell label="知道它的经历？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
         </>
       ) : (
-        events.map((event, index) => (
-          <ListCell key={event.id} label={event.text} meta={event.date} lines={3} last={index === events.length - 1} />
-        ))
+        <>
+          {events.map((event) => (
+            <ListCell key={event.id} label={event.text} meta={event.date} lines={3} />
+          ))}
+          {timeline}
+        </>
       )}
     </ListSection>
   );
