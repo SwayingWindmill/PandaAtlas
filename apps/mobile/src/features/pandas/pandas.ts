@@ -17,6 +17,8 @@ export interface PandaListItem {
   birthDate: string | null;
   deceased: boolean;
   place: string | null;
+  /** Where it lives now, if anywhere is known. */
+  placeId: string | null;
   /** The 找熊猫 area chip it falls under: a base area in China, or 海外. */
   area: string | null;
   /** Slug, every name and the current place, normalized for matching. */
@@ -84,6 +86,7 @@ async function buildIndex(): Promise<PandaListItem[]> {
       birthDate: pandaBirthDate(panda),
       deceased: pandaIsDeceased(panda),
       place,
+      placeId,
       area: areaOf(placeRecord),
       terms: (place ? [...names, place] : names).map(normalizeTerm),
     };

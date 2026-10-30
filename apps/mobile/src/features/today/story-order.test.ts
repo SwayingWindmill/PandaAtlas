@@ -12,6 +12,7 @@ const panda = (id: string, deceased = false): PandaListItem => ({
   birthDate: null,
   deceased,
   place: null,
+  placeId: null,
   area: null,
   terms: [id],
 });
