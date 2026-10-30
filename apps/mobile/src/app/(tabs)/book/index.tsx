@@ -9,12 +9,13 @@ import { Binoculars, Check, MapPin, ScanFace } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PandaThumb } from "@/components/panda-thumb";
+import { SectionHeader } from "@/components/section-header";
 import { Segmented } from "@/components/segmented";
 import { StatTile } from "@/components/stat-tile";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { CONTENT_ENTER } from "@/design/motion";
+import { PAGE_ENTER } from "@/design/motion";
 import {
   type Group,
   type LifeEntry,
@@ -368,21 +369,21 @@ function SignedIn() {
 
   const empty = book.list.entries.length === 0;
   return (
-    <Animated.View entering={CONTENT_ENTER} className="gap-section">
+    <Animated.View entering={PAGE_ENTER} className="gap-section">
       <Stats book={book} />
       {empty ? (
         <>
           <View className="gap-hair-gap px-inset">
-            <Text variant="title3">从第一只开始</Text>
+            <Text variant="title">从第一只开始</Text>
             <Text variant="subheadline" className="text-muted-foreground">
               认出、见过的熊猫会按先后编号，第一只就是 No.1。
             </Text>
           </View>
           <WaysIn title="怎样记下" />
           <View className="gap-row">
-            <Text variant="title3" role="heading" className="px-inset">
-              各个基地
-            </Text>
+            <View className="px-inset">
+              <SectionHeader title="各个基地" />
+            </View>
             <Bases book={book} />
           </View>
         </>

@@ -14,9 +14,6 @@ import { useCSSVariable } from "uniwind";
 import { GlassButton } from "@/components/glass-button";
 import { ChevronLeft, Share } from "@/components/icons";
 
-// How a page's content arrives, on the bamboo curve. Defined with the other motion tokens.
-export { CONTENT_ENTER, EASE_OUT } from "@/design/motion";
-
 export function goBack() {
   if (router.canGoBack()) router.back();
   else router.replace("/");

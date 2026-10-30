@@ -33,7 +33,7 @@ export default function FamilyScreen() {
         {failed ? (
           <LoadFailed message="家谱暂时打不开。" onRetry={retry} />
         ) : (
-          <Skeleton className="h-96 w-full rounded-xl" accessibilityLabel="正在加载家谱" />
+          <Skeleton className="h-96 w-full rounded-tile" accessibilityLabel="正在加载家谱" />
         )}
       </Page>
     );
@@ -50,7 +50,7 @@ export default function FamilyScreen() {
           家人
         </Text>
         {relatives.length === 0 ? (
-          <View className="rounded-lg bg-muted p-4">
+          <View className="rounded-group bg-muted p-4">
             <Text className="text-muted-foreground">暂无家人记录</Text>
           </View>
         ) : (

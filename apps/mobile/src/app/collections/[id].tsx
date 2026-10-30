@@ -271,7 +271,7 @@ export default function CollectionScreen() {
         <View className={cn("gap-stack", !stacked && "flex-row items-center")}>
           <Mosaic pandaIds={collection.pandaIds} size={HERO} />
           <View className="min-w-0 flex-1 gap-hair-gap">
-            <Text variant="title3" className="tabular-nums">
+            <Text variant="stat">
               {members.length > 0 ? `${members.length} 只熊猫` : "还没有熊猫"}
             </Text>
             <Text variant="footnote" className="text-muted-foreground">

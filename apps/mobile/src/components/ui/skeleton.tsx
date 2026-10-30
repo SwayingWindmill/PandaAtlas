@@ -7,7 +7,7 @@ function Skeleton({
   className,
   ...props
 }: React.ComponentProps<typeof View> & React.RefAttributes<View>) {
-  return <View className={cn('bg-secondary rounded-md', className)} {...props} />;
+  return <View className={cn('bg-secondary rounded-group', className)} {...props} />;
 }
 
 export { Skeleton };

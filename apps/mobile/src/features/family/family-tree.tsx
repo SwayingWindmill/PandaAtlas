@@ -33,7 +33,7 @@ function Card({ card }: { card: PlacedCard }) {
     return (
       <View
         style={position}
-        className="absolute items-center justify-center gap-1.5 rounded-lg bg-primary px-2"
+        className="absolute items-center justify-center gap-1.5 rounded-control bg-primary px-2"
         accessibilityLabel={`${member.name}，当前查看`}
       >
         <MemberAvatar member={member} className="size-16" />
@@ -41,7 +41,7 @@ function Card({ card }: { card: PlacedCard }) {
           {member.name}
         </Text>
         {member.birthDate ? (
-          <Text className="text-xs text-primary-foreground/70">{member.birthDate.slice(0, 4)}</Text>
+          <Text variant="footnote" className="text-primary-foreground/70">{member.birthDate.slice(0, 4)}</Text>
         ) : null}
       </View>
     );
@@ -52,7 +52,7 @@ function Card({ card }: { card: PlacedCard }) {
     return (
       <Pressable
         style={position}
-        className="absolute flex-row items-center gap-2 rounded-lg border-hairline border-border bg-card px-2.5 active:bg-accent"
+        className="absolute flex-row items-center gap-2 rounded-control border-hairline border-border bg-card px-2.5 active:bg-accent"
         onPress={() => openFamily(member)}
         role="button"
         accessibilityLabel={label}
@@ -62,7 +62,7 @@ function Card({ card }: { card: PlacedCard }) {
           <Text className="font-bold" numberOfLines={1}>
             {member.name}
           </Text>
-          <Text variant="muted" numberOfLines={1}>
+          <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
             {[member.relation, member.birthDate?.slice(0, 4)].filter(Boolean).join("　")}
           </Text>
         </View>
@@ -73,7 +73,7 @@ function Card({ card }: { card: PlacedCard }) {
   return (
     <Pressable
       style={position}
-      className="absolute items-center justify-center gap-1.5 rounded-lg border-hairline border-border bg-card px-1.5 active:bg-accent"
+      className="absolute items-center justify-center gap-1.5 rounded-control border-hairline border-border bg-card px-1.5 active:bg-accent"
       onPress={() => openFamily(member)}
       role="button"
       accessibilityLabel={label}
@@ -82,7 +82,7 @@ function Card({ card }: { card: PlacedCard }) {
       <Text className="font-bold" numberOfLines={1}>
         {member.name}
       </Text>
-      <Text variant="muted" numberOfLines={1}>
+      <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
         {member.relation}
       </Text>
     </Pressable>
@@ -102,7 +102,7 @@ export function FamilyTree({ family }: { family: Family }) {
   }
 
   return (
-    <View className="overflow-hidden rounded-xl bg-muted" onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
+    <View className="overflow-hidden rounded-tile bg-muted" onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
       {layout ? (
         <ScrollView ref={scroll} horizontal showsHorizontalScrollIndicator={false} onContentSizeChange={centreOnFocus}>
           <View style={{ width: layout.width, height: layout.height }}>
@@ -116,9 +116,9 @@ export function FamilyTree({ family }: { family: Family }) {
               <View
                 key={`${group.x}-${group.label}`}
                 style={{ left: group.x, top: group.y, width: group.width, height: group.height }}
-                className="absolute items-center rounded-xl border-hairline border-dashed border-input pt-1.5"
+                className="absolute items-center rounded-tile border-hairline border-dashed border-input pt-1.5"
               >
-                <Text variant="small" className="text-muted-foreground">
+                <Text variant="footnote" className="text-muted-foreground">
                   {group.label}
                 </Text>
               </View>
@@ -136,7 +136,7 @@ export function FamilyTree({ family }: { family: Family }) {
                 }}
                 className="absolute items-center justify-center rounded-full border-hairline border-dashed border-input"
               >
-                <Text variant="muted">还没有后代</Text>
+                <Text variant="footnote" className="text-muted-foreground">还没有后代</Text>
               </View>
             ) : null}
           </View>

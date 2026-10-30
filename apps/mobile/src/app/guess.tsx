@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { Icon } from "@/components/icon";
@@ -15,7 +15,7 @@ import { Segmented } from "@/components/segmented";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { CONTENT_ENTER } from "@/design/motion";
+import { PAGE_ENTER } from "@/design/motion";
 import { component } from "@/design/tokens";
 import {
   DIFFICULTIES,
@@ -76,9 +76,6 @@ function LevelPicker({
   ];
   return <Segmented value={value} options={options} onChange={onChange} accessibilityLabel="难度" />;
 }
-
-/** The verdict mounts after the page has settled; on web an entering view would overlap the options. */
-const REVEAL = Platform.OS === "web" ? undefined : CONTENT_ENTER;
 
 function pairs<T>(items: readonly T[]): T[][] {
   const rows: T[][] = [];
@@ -267,7 +264,7 @@ export default function GuessScreen() {
       ) : null}
 
       {outcome ? (
-        <Animated.View entering={REVEAL} className="gap-row" accessibilityLiveRegion="polite">
+        <Animated.View entering={PAGE_ENTER} className="gap-row" accessibilityLiveRegion="polite">
           <Text variant="title">{outcome.correct ? "猜对了" : "这次没猜对"}</Text>
           {outcome.tips.map((tip) => (
             <Text key={tip} variant="body" className="text-muted-foreground">

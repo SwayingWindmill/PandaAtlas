@@ -5,7 +5,7 @@ import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Text } from "@/components/ui/text";
-import { CONTENT_ENTER } from "@/design/motion";
+import { PAGE_ENTER } from "@/design/motion";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -56,7 +56,7 @@ export function ReadingPage({
       {...scroll}
     >
       <ReadingHeader />
-      <Animated.View entering={CONTENT_ENTER} className={cn("gap-section px-stack pt-stack-tight", contentClassName)}>
+      <Animated.View entering={PAGE_ENTER} className={cn("gap-section px-stack pt-stack-tight", contentClassName)}>
         <View className="gap-stack-tight">
           <Text variant="readingTitle">{title}</Text>
           <Text variant="footnote" className="text-muted-foreground tabular-nums">

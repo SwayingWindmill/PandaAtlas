@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Platform, Share, StyleSheet, View } from "react-native";
+import { Share, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
@@ -30,7 +30,7 @@ import { Scrim } from "@/components/scrim";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { CONTENT_ENTER } from "@/design/motion";
+import { PAGE_ENTER } from "@/design/motion";
 import { type CheckinSummary, recordTodayOnce } from "@/features/checkin/checkin";
 import {
   feedbackParts,
@@ -53,9 +53,6 @@ import { cn } from "@/lib/utils";
 const MAX_MATCHES = 8;
 const TITLE = "今天是哪只熊猫？";
 const LABEL = "每日一猫";
-
-/** A clue that arrives after a wrong guess rises into place; on web an entering view would overlap its neighbours. */
-const REVEAL = Platform.OS === "web" ? undefined : CONTENT_ENTER;
 
 /** "2026-10-26" -> "10月26日" */
 function shortDate(isoDate: string): string {
@@ -265,7 +262,7 @@ function ClueTile({ clue, index, fresh }: { clue: DailyPandaClue | undefined; in
   return (
     <Animated.View
       // Only a clue unlocked on this visit arrives; the ones already open on load are just there.
-      entering={fresh ? REVEAL : undefined}
+      entering={fresh ? PAGE_ENTER : undefined}
       className="min-h-24 flex-1 justify-between gap-stack-tight rounded-tile bg-card p-inset"
       style={{ borderCurve: "continuous" }}
       accessible
