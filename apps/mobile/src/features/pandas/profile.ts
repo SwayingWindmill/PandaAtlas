@@ -3,6 +3,8 @@ import type { components } from "@zhipanda/api-client";
 import { localToday } from "@/features/engagement/seen";
 import { type Family, familyOf } from "@/features/family/family";
 import { loadInstitutionList } from "@/features/institutions/institutions";
+import { memoryPlaces } from "@/features/on-this-day/load";
+import { type Memory, memoriesOn } from "@/features/on-this-day/on-this-day";
 import { currentPlaceId, loadPlaces, placeName } from "@/features/pandas/pandas";
 import { type PlaceLived, type Stat, headlineStats, infobox, placesLived } from "@/features/pandas/profile-facts";
 import { api, publicMediaUrl } from "@/lib/api";
@@ -24,6 +26,11 @@ export interface Profile {
   /** Sex, age and where it lives (or when it died): the stat blocks under the name. */
   stats: Stat[];
   events: { id: string; date: string; text: string }[];
+  /**
+   * What happened on this day in an earlier year, from its own dated and sourced records. Shown here even
+   * for a panda that has died, as 纪念 (DECEASED_POLICY); 少显示 on 今天 does not reach its own page.
+   */
+  memories: Memory[];
   /** Null when the lineage could not be loaded; the rest of the profile still shows. */
   family: Family | null;
   /** Every place it has lived, newest first. */
@@ -140,6 +147,15 @@ export async function loadProfile(slug: string): Promise<Profile> {
         const told = describeEvent(event, place, birthDate);
         return told ? [{ id: event.eventId, date: shortDate(event), text: told.text }] : [];
       }),
+    memories: memoriesOn({
+      today: localToday(),
+      pandas: [{ id: panda.pandaId, slug: panda.canonicalSlug, name: displayName(panda), birthDate, deceased }],
+      events,
+      residencies,
+      places: memoryPlaces(places),
+      pandaId: panda.pandaId,
+      includeDeceased: true,
+    }),
     family,
     placesLived: placesLived(residencies, (id) => place(id)),
     visit: await visitOf(currentPlaceRecord),

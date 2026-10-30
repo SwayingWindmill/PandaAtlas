@@ -7,6 +7,7 @@ import { SectionHeader } from "@/components/section-header";
 import { type CalendarEntry, calendarMonth, shiftMonth } from "@/features/calendar/calendar";
 import { loadCalendarSources } from "@/features/calendar/sources";
 import { localToday } from "@/features/engagement/seen";
+import { useMemoryPrefs } from "@/features/on-this-day/prefs";
 import { openPanda } from "@/features/pandas/panda-row";
 
 /** How many tiles the shelf shows before 看日历 takes over. */
@@ -27,16 +28,19 @@ function monthDay(date: string) {
 }
 
 /**
- * The birthdays shelf on 今天, a row of portrait photo tiles as Music shows albums. On a day with
- * birthdays it is 今天生日; otherwise it looks ahead to the next ones this month and next, so the
- * shelf still has something true to say. Both come from the calendar's own rules.
+ * The birthdays shelf on 今天, a row of portrait photo tiles as Music shows albums. Today's birthdays are told
+ * by 那年今天; with it turned off, a day with birthdays shows them here as 今天生日. Otherwise the shelf looks
+ * ahead to the next ones this month and next. Both come from the calendar's own rules.
  */
 export function TodayBirthdays() {
   const { width, fontScale } = useWindowDimensions();
   const [shelf, setShelf] = useState<Shelf | null>(null);
+  const prefs = useMemoryPrefs();
+  const onThisDay = prefs ? !prefs.off : null;
 
   useFocusEffect(
     useCallback(() => {
+      if (onThisDay === null) return;
       const today = localToday();
       const year = Number(today.slice(0, 4));
       const month = Number(today.slice(5, 7));
@@ -48,7 +52,7 @@ export function TodayBirthdays() {
             ...calendarMonth(pandas, events, next.year, next.month),
           ];
           const todays = days.find((day) => day.date === today)?.entries.filter(isBirthday) ?? [];
-          if (todays.length > 0) {
+          if (todays.length > 0 && !onThisDay) {
             setShelf({ today: true, entries: todays });
             return;
           }
@@ -56,7 +60,7 @@ export function TodayBirthdays() {
           setShelf({ today: false, entries: upcoming });
         })
         .catch(() => setShelf(null));
-    }, []),
+    }, [onThisDay]),
   );
 
   if (!shelf || shelf.entries.length === 0) return null;
