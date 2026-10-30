@@ -225,7 +225,8 @@ export default function CalendarScreen() {
             className="py-stack"
           />
         ) : (
-          <Animated.View key={`${year}-${month}-${scope}`} entering={PAGE_ENTER}>
+          // Arrival only: stepping months swaps the list in place, as Calendar does.
+          <Animated.View entering={PAGE_ENTER}>
             <DayList days={shown} />
           </Animated.View>
         )
