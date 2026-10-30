@@ -1,15 +1,11 @@
-import { Image } from "expo-image";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { Pressable, TextInput, useWindowDimensions, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useCSSVariable } from "uniwind";
 
-import { Icon } from "@/components/icon";
-import { FolderHeart } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
-import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { ScreenState } from "@/components/screen-state";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,13 +19,10 @@ import {
   createCollection,
   loadCollections,
 } from "@/features/collections/collections";
-import { usePandaCover } from "@/lib/covers";
-import { RADIUS } from "@/lib/surface";
+import { Mosaic } from "@/features/collections/mosaic";
 import { cn } from "@/lib/utils";
 
 const GAP = semantic.spacing.inset.value;
-/** The hairline of background between the four covers of a mosaic. */
-const SEAM = 2;
 
 function NewCollection({ onCreated }: { onCreated: (collection: Collection) => void }) {
   const muted = String(useCSSVariable("--color-muted-foreground"));
@@ -82,43 +75,6 @@ function NewCollection({ onCreated }: { onCreated: (collection: Collection) => v
       <Text variant="footnote" className={cn("px-inset", status === "failed" ? "text-destructive" : "text-muted-foreground")}>
         {status === "failed" ? "没能新建，请再试一次。" : "起个名字，把喜欢的熊猫放在一起。"}
       </Text>
-    </View>
-  );
-}
-
-function Cover({ pandaId, size }: { pandaId: string; size: number }) {
-  const photo = usePandaCover(pandaId);
-  return (
-    <View className="bg-secondary" style={{ width: size, height: size }}>
-      {photo ? (
-        <Image source={photo} style={{ width: size, height: size }} contentFit="cover" transition={200} accessible={false} />
-      ) : null}
-    </View>
-  );
-}
-
-/** Photos' album cover: the first four pandas as a 2×2 mosaic; one panda fills it; none shows the folder. */
-function Mosaic({ pandaIds, size }: { pandaIds: string[]; size: number }) {
-  const half = (size - SEAM) / 2;
-  return (
-    <View
-      className="overflow-hidden rounded-tile bg-secondary"
-      style={{ width: size, height: size, borderCurve: "continuous" }}
-    >
-      {pandaIds.length === 0 ? (
-        <View className="flex-1 items-center justify-center">
-          <Icon icon={FolderHeart} size="title3" tone="secondary" />
-        </View>
-      ) : pandaIds.length < 4 ? (
-        <Cover pandaId={pandaIds[0] ?? ""} size={size} />
-      ) : (
-        <View className="flex-row flex-wrap bg-card" style={{ gap: SEAM }}>
-          {pandaIds.slice(0, 4).map((id) => (
-            <Cover key={id} pandaId={id} size={half} />
-          ))}
-        </View>
-      )}
-      {pandaIds.length > 0 ? <PhotoOutline radius={RADIUS.tile} /> : null}
     </View>
   );
 }
