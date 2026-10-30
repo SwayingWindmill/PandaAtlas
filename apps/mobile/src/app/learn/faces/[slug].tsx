@@ -2,16 +2,19 @@ import { router, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
 
 import { LoadFailed } from "@/components/load-failed";
-import { Page } from "@/components/page";
+import { PhotoOutline } from "@/components/photo-outline";
+import { ScreenState } from "@/components/screen-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { entryBySlug, learningText, visibleTips } from "@/features/learning/catalog";
 import { PandaPhoto } from "@/features/learning/panda-photo";
+import { ReadingPage, ReadingRule, ReadingSkeletonGround } from "@/features/learning/reading-page";
 import { DefinitionRow, NeighborRows, neighborsAt } from "@/features/learning/rows";
 import { LearningSources } from "@/features/learning/sources";
 import { useLearningCatalog, useLearningPandas } from "@/features/learning/use-catalog";
 import { openPanda } from "@/features/pandas/panda-row";
+import { RADIUS } from "@/lib/surface";
 
 function slugParam(value: string | string[] | undefined): string {
   return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
@@ -23,38 +26,45 @@ export default function FaceGuideScreen() {
   const { pandas } = useLearningPandas();
   if (state.status !== "ready") {
     return (
-      <Page title="认脸指南" prominent>
-        {state.status === "loading" ? <Skeleton className="-mx-5 h-80" accessibilityLabel="正在加载" /> : null}
+      <ReadingSkeletonGround>
+        {state.status === "loading" ? (
+          <Skeleton className="aspect-square w-full rounded-tile" accessibilityLabel="正在加载" />
+        ) : null}
         {state.status === "failed" ? <LoadFailed message="科普暂时打不开。" onRetry={reload} /> : null}
-      </Page>
+      </ReadingSkeletonGround>
     );
   }
   const guide = entryBySlug(state.catalog.faceGuides, slug);
-  if (!guide) return <Page title="没有这一篇" prominent />;
+  if (!guide) {
+    return (
+      <ReadingSkeletonGround>
+        <ScreenState message="没有这一篇。" actionLabel="回到科普" onAction={() => router.replace("/learn")} />
+      </ReadingSkeletonGround>
+    );
+  }
   const panda = pandas?.find((item) => item.slug === guide.pandaSlug) ?? null;
   const title = learningText(guide.title);
   const tips = visibleTips(guide.tips);
   const index = state.catalog.faceGuides.findIndex((item) => item.slug === guide.slug);
   const { previous, next } = neighborsAt(state.catalog.faceGuides, index);
   return (
-    <Page title={title} prominent contentContainerClassName="gap-8 px-4 pb-16">
-      <View className="-mx-4 overflow-hidden">
+    <ReadingPage meta="认脸指南" title={title}>
+      <View className="overflow-hidden rounded-tile" style={{ borderCurve: "continuous" }}>
         <PandaPhoto pandaId={panda?.id ?? null} label={title} aspect="4/5" rounded={false} />
+        <PhotoOutline radius={RADIUS.tile} />
       </View>
       {tips.length > 0 ? (
-        <View className="overflow-hidden rounded-[10px] bg-card">
+        <View>
           {tips.map((tip, tipIndex) => (
-            <DefinitionRow
-              key={tip.key}
-              label={learningText(tip.label)}
-              body={learningText(tip.body)}
-              last={tipIndex === tips.length - 1}
-            />
+            <View key={tip.key}>
+              {tipIndex > 0 ? <ReadingRule /> : null}
+              <DefinitionRow label={learningText(tip.label)} body={learningText(tip.body)} index={tipIndex} />
+            </View>
           ))}
         </View>
       ) : null}
       {panda ? (
-        <Button onPress={() => openPanda(panda.slug)}>
+        <Button variant="tinted" onPress={() => openPanda(panda.slug)}>
           <Text>{`看${panda.name}的资料`}</Text>
         </Button>
       ) : null}
@@ -65,6 +75,6 @@ export default function FaceGuideScreen() {
         onOpen={(entry) => router.push({ pathname: "/learn/faces/[slug]", params: { slug: entry.slug } })}
       />
       <LearningSources sources={guide.sources} />
-    </Page>
+    </ReadingPage>
   );
 }

@@ -39,7 +39,7 @@ function Input({ multiline, ...props }: TextInputProps) {
       multiline={multiline}
       textAlignVertical={multiline ? "top" : "center"}
       className={cn(
-        "border-hairline border-input px-4 text-base text-foreground",
+        "border-hairline border-input px-4 text-body text-foreground",
         multiline ? "min-h-24 rounded-lg py-3" : "h-12 rounded-full",
       )}
       {...props}
@@ -70,7 +70,7 @@ function Form({ target }: { target: CorrectionTarget }) {
   if (status === "sent") {
     return (
       <View className="items-start gap-3" accessibilityLiveRegion="polite">
-        <Text variant="h2">已收到</Text>
+        <Text variant="title">已收到</Text>
         <Text className="text-muted-foreground">审核后，结果会出现在「我的」里。谢谢你帮忙把资料改对。</Text>
         <Button onPress={() => router.back()}>
           <Text>回到资料</Text>

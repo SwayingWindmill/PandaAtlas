@@ -1,9 +1,11 @@
 import { Image } from "expo-image";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Linking, Platform, Pressable, View, useWindowDimensions } from "react-native";
+import { Linking, Platform, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
+import { useCSSVariable } from "uniwind";
 
 import { ICON_INSET, ListCell, ListSection } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
@@ -78,9 +80,12 @@ function ResidentTile({ panda, width }: { panda: PandaListItem; width: number })
               />
             ) : null}
             <Scrim id={`resident-${panda.id}`} height="45%" />
-            <Text variant="title" role="none" className="absolute right-0 bottom-0 left-0 p-3 text-white" numberOfLines={2}>
-              {panda.name}
-            </Text>
+            {/* Padding on the wrapper: on web a padded, clamped Text shows a third line in its padding. */}
+            <View className="absolute right-0 bottom-0 left-0 p-3">
+              <Text variant="title" role="none" className="text-white" numberOfLines={2}>
+                {panda.name}
+              </Text>
+            </View>
             <PhotoOutline radius={RADIUS.tile} />
           </View>
         </PressScale>
@@ -220,16 +225,39 @@ function HeroTitle({ institution }: { institution: InstitutionDetail }) {
   );
 }
 
-function PlainTitle({ institution }: { institution: InstitutionDetail }) {
+/**
+ * The top of a page with no curated photo: a plate in the brand's soft tint fading into the page,
+ * with the name in the label color at its foot, so the page keeps the hero's height and rhythm
+ * without showing a photo that was not reviewed. While the covers are still being looked up the
+ * plate stands empty, so a photo that then arrives replaces it without moving the content.
+ */
+function PlateHero({ institution, pending }: { institution: InstitutionDetail; pending: boolean }) {
   const insets = useSafeAreaInsets();
+  const [tint, ground] = useCSSVariable(["--color-highlight-soft", "--color-background"]);
   return (
-    <View className="gap-1 px-4" style={{ paddingTop: insets.top + 64 }}>
-      {institution.meta ? (
-        <Text variant="footnote" className="text-muted-foreground">
-          {institution.meta}
-        </Text>
-      ) : null}
-      <Text variant="display">{institution.name}</Text>
+    <View style={{ height: HERO + insets.top }}>
+      <Svg style={StyleSheet.absoluteFill} width="100%" height="100%" preserveAspectRatio="none">
+        <Defs>
+          <LinearGradient id="institution-plate" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={String(tint)} stopOpacity={1} />
+            <Stop offset="0.55" stopColor={String(tint)} stopOpacity={0.6} />
+            <Stop offset="1" stopColor={String(ground)} stopOpacity={1} />
+          </LinearGradient>
+        </Defs>
+        <Rect x="0" y="0" width="100%" height="100%" fill="url(#institution-plate)" />
+      </Svg>
+      {pending ? null : (
+        <View className="absolute right-0 bottom-0 left-0 gap-hair-gap px-inset pb-inset">
+          <Text variant="display" numberOfLines={3}>
+            {institution.name}
+          </Text>
+          {institution.meta ? (
+            <Text variant="footnote" className="font-semibold text-muted-foreground">
+              {institution.meta}
+            </Text>
+          ) : null}
+        </View>
+      )}
     </View>
   );
 }
@@ -238,7 +266,7 @@ export default function InstitutionScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const [institution, setInstitution] = useState<InstitutionDetail | null>(null);
   const [failed, setFailed] = useState(false);
-  const hero = useInstitutionHero(institution?.residents ?? []);
+  const hero = useInstitutionHero(institution?.residents ?? null);
   const insets = useSafeAreaInsets();
   const scrollY = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler((event) => {
@@ -306,7 +334,7 @@ export default function InstitutionScreen() {
             }
           />
         ) : (
-          <PlainTitle institution={institution} />
+          <PlateHero institution={institution} pending={hero === undefined} />
         )}
         <Animated.View entering={CONTENT_ENTER} className="gap-7 bg-background px-4 pt-5">
           {institution.summary ? <Text variant="body">{institution.summary}</Text> : null}

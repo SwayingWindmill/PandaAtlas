@@ -5,6 +5,7 @@ import Animated, { useReducedMotion } from "react-native-reanimated";
 import { Text } from "@/components/ui/text";
 import { cubicBezierCss, component, concentric, semantic } from "@/design/tokens";
 import { selectionHaptic } from "@/lib/haptics";
+import { cn } from "@/lib/utils";
 
 const { height, padding } = component.segmented;
 const TRACK_RADIUS = semantic.radius.control.value;
@@ -40,7 +41,8 @@ export function Segmented<T extends string>({
       accessibilityLabel={accessibilityLabel}
       onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}
       className="flex-row bg-secondary"
-      style={{ height, padding, borderRadius: TRACK_RADIUS, borderCurve: "continuous" }}
+      // minHeight, not height: at large text a label wraps and the track grows with it.
+      style={{ minHeight: height, padding, borderRadius: TRACK_RADIUS, borderCurve: "continuous" }}
     >
       {segment > 0 ? (
         <Animated.View
@@ -73,9 +75,12 @@ export function Segmented<T extends string>({
               selectionHaptic();
               onChange(option.value);
             }}
-            className="flex-1 items-center justify-center"
+            className="flex-1 items-center justify-center px-1 py-1.5"
           >
-            <Text variant="subheadline" className={selected ? "font-semibold" : "text-muted-foreground"}>
+            <Text
+              variant="subheadline"
+              className={cn("text-center", selected ? "font-semibold" : "text-muted-foreground")}
+            >
               {option.label}
             </Text>
           </Pressable>

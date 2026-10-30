@@ -20,6 +20,8 @@ export default function PhotosScreen() {
   const [photos, setPhotos] = useState<Photo[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [index, setIndex] = useState(0);
+  // The pager's own height: a percentage height inside a horizontal list resolves to 0 on web.
+  const [pageHeight, setPageHeight] = useState(0);
 
   const load = useCallback(() => {
     loadPhotos(slug)
@@ -42,7 +44,8 @@ export default function PhotosScreen() {
       className="flex-1 bg-background"
       style={{ paddingBottom: insets.bottom + 12 }}
     >
-      <Stack.Screen options={{ title: photos && photos.length > 0 ? `${index + 1} / ${photos.length}` : "照片" }} />
+      {/* The counter lives once, under the bar, where VoiceOver hears it change. */}
+      <Stack.Screen options={{ title: "照片" }} />
       {photos && photos.length > 0 ? (
         <Text variant="footnote" className="py-2 text-center text-muted-foreground" accessibilityLiveRegion="polite">
           {index + 1} / {photos.length}
@@ -70,17 +73,22 @@ export default function PhotosScreen() {
             }}
             scrollEventThrottle={16}
             className="mt-4 flex-1"
+            onLayout={(event) => setPageHeight(event.nativeEvent.layout.height)}
             renderItem={({ item, index: position }) => (
               <Image
                 source={item.url}
-                style={{ width, height: "100%" }}
+                style={{ width, height: pageHeight }}
                 contentFit="contain"
                 accessibilityLabel={`第 ${position + 1} 张照片`}
               />
             )}
           />
           <View className="gap-3 px-5 pt-4">
-            {current?.credit ? <Text variant="muted">{current.credit}</Text> : null}
+            {current?.credit ? (
+              <Text variant="footnote" className="text-muted-foreground">
+                {current.credit}
+              </Text>
+            ) : null}
             {photos.length > 1 ? (
               <View className="flex-row justify-between">
                 <Button variant="secondary" disabled={index === 0} onPress={() => go(index - 1)}>

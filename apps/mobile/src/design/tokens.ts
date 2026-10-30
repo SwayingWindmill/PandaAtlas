@@ -306,7 +306,8 @@ const radii = {
 const motion = {
   press: { duration: duration.press, easing: "out", use: "Cards and tiles scale to 0.97 while pressed." },
   enter: {
-    duration: duration.slow, easing: "bamboo",
+    // 280, not 480: it plays on every page open, and UI that repeats that often stays under 300ms.
+    duration: duration.base, easing: "bamboo",
     use: "A page's content arrives once its data is in: fade and an 8pt rise on the bamboo curve.",
   },
   exit: { duration: duration.quick, easing: "out", use: "Something leaves: shorter than it came, no overshoot." },
@@ -347,7 +348,7 @@ export const component = {
   /** Icons follow the text they sit beside, like SF Symbols. */
   icon: { footnote: 15, subhead: 18, body: 22, title3: 24, chevron: 17 },
   /** The web tab bar (native tabs draw their own). */
-  tabBar: { icon: 25, iconStroke: 1.9, label: 10 },
+  tabBar: { icon: 25, iconStroke: 1.9, label: 10, labelLine: 14, webHeight: 54 },
   iconStroke: { regular: 1.75, bold: 2 },
   press: { scale: 0.97, reducedOpacity: 0.85 },
   enter: { rise: space[2] },
