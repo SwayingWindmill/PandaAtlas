@@ -10,6 +10,7 @@ import { ListCell, ListSection } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import {
   Cake,
+  CalendarHeart,
   Check,
   Flower,
   HeartPulse,
@@ -30,6 +31,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { CONTENT_ENTER } from "@/design/motion";
+import { type CheckinSummary, recordTodayOnce } from "@/features/checkin/checkin";
 import {
   feedbackParts,
   guessDailyPanda,
@@ -338,6 +340,19 @@ export default function DailyPandaScreen() {
       active = false;
     };
   }, [state, accountId]);
+  // Opening 每日一猫 signed in counts the day for 每日打卡; quiet, once per day, never blocks the puzzle.
+  const [checkin, setCheckin] = useState<CheckinSummary | null>(null);
+  const puzzleLoaded = state !== null;
+  useEffect(() => {
+    if (!puzzleLoaded || accountId === null) return;
+    let active = true;
+    void recordTodayOnce(accountId).then((summary) => {
+      if (active) setCheckin(summary);
+    });
+    return () => {
+      active = false;
+    };
+  }, [puzzleLoaded, accountId]);
   const savedToBook = state !== null && accountId !== null && savedFor === `${accountId}:${state.puzzleDate}`;
 
   const pandasById = useMemo(() => new Map(pandas.map((panda) => [panda.id, panda])), [pandas]);
@@ -547,6 +562,19 @@ export default function DailyPandaScreen() {
             ))}
           </View>
         </View>
+      ) : null}
+
+      {checkin ? (
+        <ListSection>
+          <ListCell
+            icon={CalendarHeart}
+            label="每日打卡"
+            detail="今天来过了"
+            meta={`累计 ${checkin.totalVisitDays.toLocaleString("zh-CN")} 天`}
+            href="/checkin"
+            last
+          />
+        </ListSection>
       ) : null}
     </Page>
   );

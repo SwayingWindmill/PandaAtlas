@@ -484,6 +484,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/me/daily-checkins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getDailyCheckins"];
+        put?: never;
+        post: operations["recordDailyCheckin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/daily-checkins/leave/{day}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["takeDailyLeave"];
+        post?: never;
+        delete: operations["cancelDailyLeave"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/games/random-panda": {
         parameters: {
             query?: never;
@@ -1580,6 +1612,55 @@ export interface components {
             pandaId: string;
             /** @enum {boolean} */
             deleted: true;
+        };
+        DailyCheckinRulesDto: {
+            /** @description Leave days (请假) per calendar month, retroactive leave included. */
+            leaveDaysPerMonth: number;
+            /** @description Retroactive leaves (补请) per calendar month. */
+            retroLeavesPerMonth: number;
+            /** @description Hours after a missed day during which 补请 stays open. */
+            retroWindowHours: number;
+            /** @description How many days ahead a leave can be planned. */
+            leaveAheadDays: number;
+        };
+        DailyCheckinMonthDto: {
+            /** @example 2026-10 */
+            month: string;
+            visitDays: number;
+            leaveDays: number;
+            leaveLeft: number;
+            retroLeft: number;
+        };
+        DailyCheckinDayDto: {
+            /** Format: date */
+            day: string;
+            /** @enum {string} */
+            kind: "visit" | "leave";
+            retroactive: boolean;
+        };
+        DailyCheckinSummaryDto: {
+            /** Format: date */
+            today: string;
+            rules: components["schemas"]["DailyCheckinRulesDto"];
+            visitedToday: boolean;
+            /** @description All visit days ever. Never resets. */
+            totalVisitDays: number;
+            /** Format: date */
+            firstDay: string | null;
+            thisMonth: components["schemas"]["DailyCheckinMonthDto"];
+            /**
+             * Format: date
+             * @description The missed day 补请 can still cover.
+             */
+            retroDay: string | null;
+            days: components["schemas"]["DailyCheckinDayDto"][];
+        };
+        DailyCheckinTodayDto: {
+            /**
+             * Format: date
+             * @description The member's local calendar date.
+             */
+            today: string;
         };
         RandomPandaDto: {
             /** Format: uuid */
@@ -3137,6 +3218,100 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DeletedSeenPandaDto"];
+                };
+            };
+        };
+    };
+    getDailyCheckins: {
+        parameters: {
+            query: {
+                /** @description The member's local calendar date. */
+                today: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyCheckinSummaryDto"];
+                };
+            };
+        };
+    };
+    recordDailyCheckin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyCheckinTodayDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyCheckinSummaryDto"];
+                };
+            };
+        };
+    };
+    takeDailyLeave: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                day: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyCheckinTodayDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyCheckinSummaryDto"];
+                };
+            };
+        };
+    };
+    cancelDailyLeave: {
+        parameters: {
+            query: {
+                /** @description The member's local calendar date. */
+                today: string;
+            };
+            header?: never;
+            path: {
+                day: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyCheckinSummaryDto"];
                 };
             };
         };

@@ -8,6 +8,8 @@ export { default as Binoculars } from "lucide-react-native/icons/binoculars";
 export { default as BookA } from "lucide-react-native/icons/book-a";
 export { default as Cake } from "lucide-react-native/icons/cake";
 export { default as CalendarCheck } from "lucide-react-native/icons/calendar-check";
+export { default as CalendarDays } from "lucide-react-native/icons/calendar-days";
+export { default as CalendarHeart } from "lucide-react-native/icons/calendar-heart";
 export { default as Check } from "lucide-react-native/icons/check";
 export { default as ChevronLeft } from "lucide-react-native/icons/chevron-left";
 export { default as ChevronRight } from "lucide-react-native/icons/chevron-right";

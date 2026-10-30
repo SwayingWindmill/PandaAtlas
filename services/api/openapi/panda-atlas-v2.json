@@ -1258,6 +1258,149 @@
         ]
       }
     },
+    "/api/v2/me/daily-checkins": {
+      "get": {
+        "operationId": "getDailyCheckins",
+        "parameters": [
+          {
+            "name": "today",
+            "required": true,
+            "in": "query",
+            "description": "The member's local calendar date.",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyCheckinSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "post": {
+        "operationId": "recordDailyCheckin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DailyCheckinTodayDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyCheckinSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/daily-checkins/leave/{day}": {
+      "put": {
+        "operationId": "takeDailyLeave",
+        "parameters": [
+          {
+            "name": "day",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DailyCheckinTodayDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyCheckinSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "delete": {
+        "operationId": "cancelDailyLeave",
+        "parameters": [
+          {
+            "name": "day",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "today",
+            "required": true,
+            "in": "query",
+            "description": "The member's local calendar date.",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyCheckinSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
     "/api/v2/games/random-panda": {
       "get": {
         "operationId": "getRandomPanda",
@@ -4292,6 +4435,151 @@
         "required": [
           "pandaId",
           "deleted"
+        ]
+      },
+      "DailyCheckinRulesDto": {
+        "type": "object",
+        "properties": {
+          "leaveDaysPerMonth": {
+            "type": "number",
+            "description": "Leave days (请假) per calendar month, retroactive leave included."
+          },
+          "retroLeavesPerMonth": {
+            "type": "number",
+            "description": "Retroactive leaves (补请) per calendar month."
+          },
+          "retroWindowHours": {
+            "type": "number",
+            "description": "Hours after a missed day during which 补请 stays open."
+          },
+          "leaveAheadDays": {
+            "type": "number",
+            "description": "How many days ahead a leave can be planned."
+          }
+        },
+        "required": [
+          "leaveDaysPerMonth",
+          "retroLeavesPerMonth",
+          "retroWindowHours",
+          "leaveAheadDays"
+        ]
+      },
+      "DailyCheckinMonthDto": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "example": "2026-10"
+          },
+          "visitDays": {
+            "type": "number"
+          },
+          "leaveDays": {
+            "type": "number"
+          },
+          "leaveLeft": {
+            "type": "number"
+          },
+          "retroLeft": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "month",
+          "visitDays",
+          "leaveDays",
+          "leaveLeft",
+          "retroLeft"
+        ]
+      },
+      "DailyCheckinDayDto": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string",
+            "format": "date"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "visit",
+              "leave"
+            ]
+          },
+          "retroactive": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "day",
+          "kind",
+          "retroactive"
+        ]
+      },
+      "DailyCheckinSummaryDto": {
+        "type": "object",
+        "properties": {
+          "today": {
+            "type": "string",
+            "format": "date"
+          },
+          "rules": {
+            "$ref": "#/components/schemas/DailyCheckinRulesDto"
+          },
+          "visitedToday": {
+            "type": "boolean"
+          },
+          "totalVisitDays": {
+            "type": "number",
+            "description": "All visit days ever. Never resets."
+          },
+          "firstDay": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "thisMonth": {
+            "$ref": "#/components/schemas/DailyCheckinMonthDto"
+          },
+          "retroDay": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "The missed day 补请 can still cover."
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyCheckinDayDto"
+            }
+          }
+        },
+        "required": [
+          "today",
+          "rules",
+          "visitedToday",
+          "totalVisitDays",
+          "firstDay",
+          "thisMonth",
+          "retroDay",
+          "days"
+        ]
+      },
+      "DailyCheckinTodayDto": {
+        "type": "object",
+        "properties": {
+          "today": {
+            "type": "string",
+            "format": "date",
+            "description": "The member's local calendar date."
+          }
+        },
+        "required": [
+          "today"
         ]
       },
       "RandomPandaDto": {
