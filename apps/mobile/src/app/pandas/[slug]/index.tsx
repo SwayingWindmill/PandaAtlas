@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useCallback, useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, useWindowDimensions } from "react-native";
 import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -59,8 +59,22 @@ function statIcon(stat: Stat, deceased: boolean): LucideIcon {
 
 /** How much of the row each block takes: the place needs room for a zoo's name. */
 const STAT_FLEX: Record<Stat["key"], number> = { sex: 1, age: 1.25, place: 1.9 };
+/** Below this width three tiles leave the sex tile too narrow for its label, so the place takes its own row. */
+const STAT_ROW_MIN_WIDTH = 360;
 
-function StatBlock({ stat, deceased, onPress, stacked }: { stat: Stat; deceased: boolean; onPress?: () => void; stacked: boolean }) {
+function StatBlock({
+  stat,
+  deceased,
+  onPress,
+  stacked,
+  wrapped,
+}: {
+  stat: Stat;
+  deceased: boolean;
+  onPress?: () => void;
+  stacked: boolean;
+  wrapped: boolean;
+}) {
   const body = (
     <View
       className="gap-1 bg-card p-3"
@@ -83,7 +97,11 @@ function StatBlock({ stat, deceased, onPress, stacked }: { stat: Stat; deceased:
       ) : null}
     </View>
   );
-  const style = stacked ? undefined : { flex: STAT_FLEX[stat.key] };
+  const style = stacked
+    ? undefined
+    : wrapped && stat.key === "place"
+      ? { flexBasis: "100%" as const }
+      : { flex: STAT_FLEX[stat.key] };
   if (!onPress) {
     return (
       <View style={style} accessible accessibilityLabel={`${stat.label}，${stat.value}${stat.detail ? `，${stat.detail}` : ""}`}>
@@ -107,6 +125,7 @@ function StatBlock({ stat, deceased, onPress, stacked }: { stat: Stat; deceased:
 /** Sex, age and where it lives as three tiles, the way Health leads with its summary. */
 function Stats({ profile }: { profile: Profile }) {
   const stacked = useStacked();
+  const wrapped = useWindowDimensions().width < STAT_ROW_MIN_WIDTH;
   const visit = profile.visit;
   const fact = (label: string) => profile.facts.find((item) => item.label === label)?.value;
   const born = fact("出生");
@@ -117,13 +136,14 @@ function Stats({ profile }: { profile: Profile }) {
       : null;
   return (
     <View className="gap-2">
-    <View className={stacked ? "gap-2" : "flex-row gap-2"}>
+    <View className={stacked ? "gap-2" : wrapped ? "flex-row flex-wrap gap-2" : "flex-row gap-2"}>
       {profile.stats.map((stat) => (
         <StatBlock
           key={stat.key}
           stat={stat}
           deceased={profile.deceased}
           stacked={stacked}
+          wrapped={wrapped}
           onPress={
             stat.key === "place" && visit
               ? () => router.push({ pathname: "/institutions/[slug]", params: { slug: visit.institutionSlug } })

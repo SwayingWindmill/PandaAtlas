@@ -22,6 +22,8 @@ export default function WebTabsLayout() {
         left: 0,
         right: 0,
         bottom: 0,
+        // 49pt left 38pt inside its padding for a 25pt icon and a 14pt label line, so the label was cut.
+        height: component.tabBar.webHeight,
         borderTopWidth: 0.5,
         borderTopColor: colors.separator,
         backgroundColor: colors.barMaterial,
@@ -35,7 +37,8 @@ export default function WebTabsLayout() {
         tabBarActiveTintColor: colors.tint,
         tabBarInactiveTintColor: colors.secondaryLabel,
         tabBarStyle: bar,
-        tabBarLabelStyle: { fontSize: component.tabBar.label, fontWeight: "500" },
+        // An explicit line height so CJK glyphs get their full line.
+        tabBarLabelStyle: { fontSize: component.tabBar.label, lineHeight: component.tabBar.labelLine, fontWeight: "500" },
       }}
     >
       <Tabs.Screen name="(today)" options={{ title: "今天", tabBarIcon: ({ color }) => <Icon icon={Sun} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />

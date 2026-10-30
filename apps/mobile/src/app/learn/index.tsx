@@ -190,7 +190,7 @@ export default function LearnScreen() {
   );
 }
 
-/** The lead story, as News leads its feed: a photo plate, then the kicker, title and dek on the card. */
+/** The lead story, as News leads its feed: a photo plate, then the title, dek and a meta line on the card. */
 function FeaturedArticle({ article }: { article: CatalogArticle }) {
   const title = learningText(article.title);
   const hero = articleHero(article);
@@ -211,16 +211,13 @@ function FeaturedArticle({ article }: { article: CatalogArticle }) {
         />
       ) : null}
       <View className="gap-stack-tight p-stack">
-        <Text variant="footnote" className="font-semibold text-primary">
-          {article.category}
-        </Text>
         <Text variant="title" role="none">
           {title}
         </Text>
         <Text variant="subheadline" className="text-muted-foreground" numberOfLines={3}>
           {learningText(article.dek)}
         </Text>
-        <Text variant="footnote" className="text-muted-foreground">{`${readingMinutes(article)} 分钟`}</Text>
+        <Text variant="footnote" className="text-muted-foreground">{`${article.category}　·　${readingMinutes(article)} 分钟`}</Text>
       </View>
       <PhotoOutline radius={RADIUS.card} />
     </PressScale>

@@ -38,7 +38,7 @@ function chunk<T>(items: readonly T[], size: number): T[][] {
 export default function FaceChallengeScreen() {
   const colors = useIOSColors();
   const { state, reload } = useLearningCatalog();
-  const { pandas, failed: pandasFailed } = useLearningPandas();
+  const { pandas, failed: pandasFailed, reload: reloadPandas } = useLearningPandas();
   const [index, setIndex] = useState(0);
   const [chosen, setChosen] = useState<string | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
@@ -73,11 +73,14 @@ export default function FaceChallengeScreen() {
     };
   }, [photoKey]);
 
-  if (state.status !== "ready" || (pandas === null && !pandasFailed)) {
+  if (state.status !== "ready" || pandas === null) {
     return (
       <ReadingSkeletonGround>
         {state.status === "failed" ? (
           <LoadFailed message="科普暂时打不开。" onRetry={reload} />
+        ) : pandasFailed ? (
+          // Without the panda list no round resolves; say so instead of blaming the question.
+          <LoadFailed message="熊猫资料暂时打不开。" onRetry={reloadPandas} />
         ) : (
           <Skeleton className="w-full rounded-tile" style={{ aspectRatio: 4 / 3 }} accessibilityLabel="正在出题" />
         )}
@@ -85,19 +88,16 @@ export default function FaceChallengeScreen() {
     );
   }
 
-  const playable =
-    pandas === null
-      ? []
-      : state.catalog.challenges.flatMap((challenge) => {
-          const resolved = resolveChallenge(challenge, pandas);
-          return resolved ? [resolved] : [];
-        });
+  const playable = state.catalog.challenges.flatMap((challenge) => {
+    const resolved = resolveChallenge(challenge, pandas);
+    return resolved ? [resolved] : [];
+  });
   const round = playable[index];
   const photosReady = photoKey === "" || photoBySlug !== null;
 
   if (!round) {
     return (
-      <ReadingPage kicker={KICKER} title="看照片认熊猫">
+      <ReadingPage meta={KICKER} title="看照片认熊猫">
         <ScreenState
           message={state.catalog.challenges.length === 0 ? "现在还没有认脸挑战。" : "这道题的熊猫还不在当前资料里。"}
         />
@@ -105,7 +105,7 @@ export default function FaceChallengeScreen() {
     );
   }
 
-  if (!photosReady || pandas === null) {
+  if (!photosReady) {
     return (
       <ReadingSkeletonGround>
         <Skeleton className="w-full rounded-tile" style={{ aspectRatio: 4 / 3 }} accessibilityLabel="正在出题" />
@@ -148,7 +148,7 @@ export default function FaceChallengeScreen() {
   }
 
   return (
-    <ReadingPage kicker={`${KICKER}　${index + 1} / ${playable.length}　得分 ${correctCount}`} title={presented.title}>
+    <ReadingPage meta={`${KICKER}　${index + 1} / ${playable.length}　得分 ${correctCount}`} title={presented.title}>
       {presented.questionPhotoUrl ? (
         <View className="overflow-hidden rounded-tile" style={{ aspectRatio: 4 / 3, borderCurve: "continuous" }}>
           <Image

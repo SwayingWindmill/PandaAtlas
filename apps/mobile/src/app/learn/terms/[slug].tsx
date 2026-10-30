@@ -40,7 +40,7 @@ export default function TermScreen() {
   const index = state.catalog.terms.findIndex((item) => item.slug === term.slug);
   const { previous, next } = neighborsAt(state.catalog.terms, index);
   return (
-    <ReadingPage kicker="名词解释" title={learningText(term.term)}>
+    <ReadingPage meta="名词解释" title={learningText(term.term)}>
       <Text variant="readingBody">{learningText(term.definition)}</Text>
       {related.length > 0 ? (
         <ManualSection title="相关名词">

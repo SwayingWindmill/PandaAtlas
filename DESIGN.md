@@ -528,12 +528,12 @@ Navigation is Expo Router's `native-tabs` and native stack (the SDK 58 way to th
 
 Follows `.agents/skills/animate-expo` and `make-interfaces-feel-better`. Durations and curves are tokens (`src/design/motion.ts`). UI motion never eases in.
 
-**Signature: 竹 bamboo.** A bamboo stalk bends past its mark and springs back without wobbling. Spring `mass 1, stiffness 170, damping 22` (damping ratio ≈ 0.84, about 3% overshoot, settled in ~0.5s); for CSS/keyframes `cubic-bezier(0.3, 1.15, 0.5, 1)` over 480ms. Use it for arrivals: a page's content entering, a photo or card growing into place. **Not** for presses, exits, opacity or color on its own, scrolling, anything repeated in a list, or anything the fan drags (use `snappy`).
+**Signature: 竹 bamboo.** A bamboo stalk bends past its mark and springs back without wobbling. Spring `mass 1, stiffness 170, damping 22` (damping ratio ≈ 0.84, about 3% overshoot, settled in ~0.5s); for CSS/keyframes `cubic-bezier(0.3, 1.15, 0.5, 1)`: 280ms for `enter`, which plays on every page open, and 480ms for `hero`, the rare signature moment. Use it for arrivals: a page's content entering, a photo or card growing into place. **Not** for presses, exits, opacity or color on its own, scrolling, anything repeated in a list, or anything the fan drags (use `snappy`).
 
 | Role | Duration | Curve | Where | Reduce Motion |
 |---|---|---|---|---|
 | press | 120ms | ease-out `(0.23, 1, 0.32, 1)` | Photo cards, tiles, stat blocks, chips scale to 0.97 (`PressScale`); rows keep the system highlight | Dims to 85% instead |
-| enter | 480ms | bamboo | Loaded content fades in and rises 8pt (`CONTENT_ENTER`) | Skipped (system setting) |
+| enter | 280ms | bamboo | Loaded content fades in and rises 8pt (`CONTENT_ENTER`), once per page; a list shows what was already there without animating it | Skipped (system setting) |
 | exit | 200ms | ease-out | Something leaves; shorter than it came | Fade only |
 | move | 280ms | in-out `(0.77, 0, 0.175, 1)` | Something on screen changes place | Instant |
 | hero | 480ms / spring | bamboo | A card zooming into its page (`Link.AppleZoom` on iOS 18+, the stack push elsewhere) | System |
@@ -553,6 +553,7 @@ Follows `.agents/skills/animate-expo` and `make-interfaces-feel-better`. Duratio
 - **Sync check:** `src/design/tokens.test.ts` runs in `npm test` and fails if `global.css` or this front matter is stale; it also checks contrast (AA for text roles and the accent) and the 4pt grid.
 - **Lint this file:** `npx -y -p @google/design.md designmd lint DESIGN.md`.
 - **Adding a token:** add it to `tokens.ts` (primitive first, then a role), run `npm run design:tokens -w @zhipanda/mobile`, document the role here, and show it on `/dev/design-system`.
+- **Skill review (required for every frontend PR):** any PR that changes a screen, component, token or motion in `apps/mobile` (or the website UI) runs the skill checks in `.agents/skills` before it is merged: `impeccable` (critique + audit, craft floor), `review-animations` (when motion changes), `break-ui` (long names, large Dynamic Type, empty / error / loading, dark mode, small screens, Reduce Motion), `make-interfaces-feel-better`, and `apple-design` / `emil-design-eng` where relevant. Real findings are fixed in the same PR or listed as out of scope. The record goes in `docs/design/reviews/YYYY-MM-DD-pr<number>-skill-review.md` (for each skill: what was checked, findings, the fix or decision), and the PR description links it with a short summary. Example: `docs/design/reviews/2026-10-30-pr749-skill-review.md`.
 
 ## Deprecated
 
@@ -575,6 +576,7 @@ Kept so screens that predate v2 render. Do not use on a new or redesigned screen
 
 ## Changelog
 
+- **v2.2 (2026-10-30).** `enter` shortened to 280ms (it plays on every page open; `hero` keeps 480ms), and list items already on screen no longer animate in. 科普 kickers moved below the title as a muted meta line. 每日一猫 shows the newest clue on the mystery card in place of the clue ring, and only a newly unlocked clue tile animates. Web tab bar `webHeight` 54 with a 14pt label line. `Segmented` and `SearchField` grow with large text. Governance: every frontend PR attaches a skill review record.
 - **v2.1 (2026-10-29).** The four tab roots and the new 设置 page on v2: section headers, photo tiles, avatar scrollers, the 图鉴 stat block and grid, the profile card. `Segmented`, `SectionHeader`, `PandaTile`; radius `glyph` and The Settings Glyph Rule; 外观, the legal pages and 退出登录 moved from 我的 to 设置.
 - **v2 (2026-10-29).** Single token source `apps/mobile/src/design/tokens.ts` (primitives → semantic → component) generating `global.css` and this front matter. Six purpose-named text styles plus a 科普 reading set; older variants deprecated. 笋金 warm accent (`#846018` / `#E3BD6E`). Signature 竹 bamboo motion. 4pt spacing roles, radius roles with `control` and `pill`, named media colors (scrim, placeholder, photo stroke, glass fallback, bar material). Warn-level design lint. `/dev/design-system` showcase. Merged the app section of `docs/design/zhipanda-design-system.md` (§10) into this file.
 - **v1 (2026-10).** iOS 26 system semantics with the jade tint; four type sizes; story cards, stretchy hero, stat blocks, family chips.

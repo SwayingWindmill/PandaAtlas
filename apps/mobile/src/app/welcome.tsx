@@ -1,11 +1,12 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Icon } from "@/components/icon";
 import { Check } from "@/components/icons";
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
@@ -88,12 +89,18 @@ export default function WelcomeScreen() {
   const deferred = useDeferredValue(query);
   const [selected, setSelected] = useState<PandaListItem[]>([]);
   const [status, setStatus] = useState<"idle" | "following" | "failed">("idle");
+  const [loadFailed, setLoadFailed] = useState(false);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     loadPandaIndex()
       .then(setPandas)
-      .catch(() => setPandas([]));
+      .catch(() => setLoadFailed(true));
   }, []);
+  useEffect(load, [load]);
+  function retry() {
+    setLoadFailed(false);
+    load();
+  }
 
   const shown = useMemo(
     () => (pandas ? (deferred.trim() ? searchPandas(pandas, deferred).slice(0, 12) : suggestions(pandas)) : []),
@@ -130,7 +137,9 @@ export default function WelcomeScreen() {
     <View className="flex-1 bg-background">
       <Page label="欢迎来到吱熊猫" title="先关注几只熊猫" back={false} keyboardShouldPersistTaps="handled">
         <SearchField value={query} onChange={setQuery} label="搜索想关注的熊猫" />
-        {pandas === null ? (
+        {pandas === null && loadFailed ? (
+          <LoadFailed message="熊猫列表暂时打不开。" onRetry={retry} />
+        ) : pandas === null ? (
           <View className="gap-row" accessibilityLabel="正在加载熊猫">
             {[0, 1].map((row) => (
               <View key={row} className="flex-row gap-row">

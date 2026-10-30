@@ -34,6 +34,8 @@ Matt Pocock skills are tracked under `.agents/skills/` as the synced release (v1
 
 For frontend UX/UI work (designing, restyling or accepting a visual change), read `docs/agents/frontend-review.md` plus the design system for the surface: `DESIGN.md` (the single source of truth for the app, generated from `apps/mobile/src/design/tokens.ts`) or `docs/design/zhipanda-design-system.md` §1–9 for the website.
 
+Every frontend PR (any change to a screen, component, design token or motion) must run the skill checks in `.agents/skills` before merging: `impeccable`, `break-ui`, `make-interfaces-feel-better`, `review-animations` when motion changes, and `apple-design` / `emil-design-eng` where relevant. Fix real findings in the same PR, list anything out of scope, and attach a review record at `docs/design/reviews/YYYY-MM-DD-pr<number>-skill-review.md`, linked from the PR description. See DESIGN.md → Governance.
+
 ### Issue tracker
 
 Work is tracked in GitHub Issues for `SwayingWindmill/PandaAtlas`. For project-status or next-work questions, use live `main` plus GitHub state as described in `docs/agents/issue-tracker.md`.

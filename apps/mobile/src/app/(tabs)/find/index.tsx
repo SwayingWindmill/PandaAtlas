@@ -63,6 +63,12 @@ export default function FindScreen() {
 
   return (
     <View className="flex-1 bg-background">
+      {/* While loading or after a failure the list header isn't there, so the web title stands on its own. */}
+      {!pandas && Platform.OS === "web" ? (
+        <Text variant="display" className="px-4">
+          找熊猫
+        </Text>
+      ) : null}
       {pandas ? (
         <FlatList
           data={results}

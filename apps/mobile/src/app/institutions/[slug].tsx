@@ -80,9 +80,12 @@ function ResidentTile({ panda, width }: { panda: PandaListItem; width: number })
               />
             ) : null}
             <Scrim id={`resident-${panda.id}`} height="45%" />
-            <Text variant="title" role="none" className="absolute right-0 bottom-0 left-0 p-3 text-white" numberOfLines={2}>
-              {panda.name}
-            </Text>
+            {/* Padding on the wrapper: on web a padded, clamped Text shows a third line in its padding. */}
+            <View className="absolute right-0 bottom-0 left-0 p-3">
+              <Text variant="title" role="none" className="text-white" numberOfLines={2}>
+                {panda.name}
+              </Text>
+            </View>
             <PhotoOutline radius={RADIUS.tile} />
           </View>
         </PressScale>

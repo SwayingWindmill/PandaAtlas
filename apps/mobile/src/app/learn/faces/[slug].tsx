@@ -48,7 +48,7 @@ export default function FaceGuideScreen() {
   const index = state.catalog.faceGuides.findIndex((item) => item.slug === guide.slug);
   const { previous, next } = neighborsAt(state.catalog.faceGuides, index);
   return (
-    <ReadingPage kicker="认脸指南" title={title}>
+    <ReadingPage meta="认脸指南" title={title}>
       <View className="overflow-hidden rounded-tile" style={{ borderCurve: "continuous" }}>
         <PandaPhoto pandaId={panda?.id ?? null} label={title} aspect="4/5" rounded={false} />
         <PhotoOutline radius={RADIUS.tile} />

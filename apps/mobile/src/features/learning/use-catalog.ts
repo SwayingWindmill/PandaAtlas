@@ -27,13 +27,20 @@ export function useLearningCatalog(): { state: CatalogLoad; reload: () => void }
   return { state, reload };
 }
 
-export function useLearningPandas(): { pandas: LearningPanda[] | null; failed: boolean } {
+export function useLearningPandas(): { pandas: LearningPanda[] | null; failed: boolean; reload: () => void } {
   const [pandas, setPandas] = useState<LearningPanda[] | null>(null);
   const [failed, setFailed] = useState(false);
-  useEffect(() => {
+  const load = useCallback(() => {
     loadPandaIndex()
       .then((items) => setPandas(items.map((item) => ({ id: item.id, slug: item.slug, name: item.name }))))
       .catch(() => setFailed(true));
   }, []);
-  return { pandas, failed };
+  const reload = useCallback(() => {
+    setFailed(false);
+    load();
+  }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
+  return { pandas, failed, reload };
 }

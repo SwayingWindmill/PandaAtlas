@@ -28,19 +28,20 @@ function ReadingHeader() {
 
 /**
  * The 科普 reading column (DESIGN.md, "Reading column"): the `paper` ground, the large title kept in
- * the column under a kicker naming the kind of page, and the reading set below. Terms, face guides
+ * the column with a secondary line under it naming the kind of page (DESIGN.md: no kicker above a title),
+ * and the reading set below. Terms, face guides
  * and the challenge use it; an article draws its own column because its lead photo comes first.
  * The column arrives with `enter` once, when the page first has its data.
  */
 export function ReadingPage({
-  kicker,
+  meta,
   title,
   lead,
   children,
   contentClassName,
   ...scroll
 }: {
-  kicker: string;
+  meta: string;
   title: string;
   lead?: string;
   children?: ReactNode;
@@ -57,10 +58,10 @@ export function ReadingPage({
       <ReadingHeader />
       <Animated.View entering={CONTENT_ENTER} className={cn("gap-section px-stack pt-stack-tight", contentClassName)}>
         <View className="gap-stack-tight">
-          <Text variant="footnote" className="font-semibold text-primary">
-            {kicker}
-          </Text>
           <Text variant="readingTitle">{title}</Text>
+          <Text variant="footnote" className="text-muted-foreground tabular-nums">
+            {meta}
+          </Text>
           {lead ? <Text variant="readingLead">{lead}</Text> : null}
         </View>
         {children}

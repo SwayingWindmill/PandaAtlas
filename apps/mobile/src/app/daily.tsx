@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Platform, Share, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
-import Svg, { Defs, LinearGradient, Path, Rect, Stop } from "react-native-svg";
+import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
 import { ListCell, ListSection } from "@/components/grouped-list";
@@ -86,39 +86,25 @@ function clueGlyph(clue: DailyPandaClue): LucideIcon {
 }
 
 /**
- * The ring on the mystery card: one arc per clue, filled in the tint as each one is unlocked, the way
- * Activity closes a ring. It shows how much of the panda is known without showing any of the panda.
+ * The mystery card before any photo: the newest clue itself, large, over the plate. The card shows
+ * what is known about the panda, never a progress meter in place of it (DESIGN.md, craft floor), and
+ * nothing beyond the clues already unlocked.
  */
-function ClueRing({ total, unlocked }: { total: number; unlocked: number }) {
-  const [tint, rest] = useCSSVariable(["--color-primary", "--color-border"]);
-  const size = 132;
-  const radius = 58;
-  const centre = size / 2;
-  const gap = total > 1 ? 14 : 0;
-  const arcs = Array.from({ length: total }, (_, index) => {
-    const span = 360 / total;
-    const from = ((-90 + index * span + gap / 2) * Math.PI) / 180;
-    const to = ((-90 + (index + 1) * span - gap / 2) * Math.PI) / 180;
-    const point = (angle: number) => `${centre + radius * Math.cos(angle)} ${centre + radius * Math.sin(angle)}`;
-    const large = span - gap > 180 ? 1 : 0;
-    return { d: `M ${point(from)} A ${radius} ${radius} 0 ${large} 1 ${point(to)}`, on: index < unlocked };
-  });
+function NewestClue({ state }: { state: DailyPandaState }) {
+  const newest = state.clues
+    .flatMap((clue) => (clue.kind === "photo" ? [] : [clue]))
+    .at(-1);
+  const count = `已解锁 ${state.clues.length} / ${state.clueCount} 条`;
   return (
-    <View style={{ width: size, height: size }} className="items-center justify-center">
-      <Svg style={StyleSheet.absoluteFill} width={size} height={size}>
-        {arcs.map((arc, index) => (
-          <Path
-            key={index}
-            d={arc.d}
-            stroke={String(arc.on ? tint : rest)}
-            strokeWidth={8}
-            strokeLinecap="round"
-            fill="none"
-          />
-        ))}
-      </Svg>
-      <Text variant="display" className="text-primary">
-        ?
+    <View className="flex-1 justify-center gap-stack-tight p-stack">
+      <Text variant="display" className={newest ? undefined : "text-primary"}>
+        {newest ? newest.text : "?"}
+      </Text>
+      <Text variant="footnote" className="text-muted-foreground tabular-nums">
+        {newest ? `${newest.label}　·　${count}` : count}
+      </Text>
+      <Text variant="subheadline" className="text-muted-foreground">
+        猜错一次，多一条线索
       </Text>
     </View>
   );
@@ -142,7 +128,7 @@ function Plate({ id }: { id: string }) {
 
 /**
  * The card at the top. Before the photo clue is unlocked the app has no picture of the panda at all,
- * so the card is a plate with the clue ring, never a blurred photo that could be read. Once the photo
+ * so the card is a plate with the newest clue, never a blurred photo that could be read. Once the photo
  * clue arrives it shows that photo. Once the day is over it shows the answer's reviewed cover (or the
  * photo clue, or the plate when there is neither) with the answer's name.
  */
@@ -163,7 +149,8 @@ function MysteryCard({
   return (
     <View
       className="overflow-hidden rounded-card bg-card"
-      style={{ aspectRatio: 4 / 3, borderCurve: "continuous" }}
+      // A photo keeps 4:3; the clue plate grows with its text so large type never clips.
+      style={photoUrl || state.finished ? { aspectRatio: 4 / 3, borderCurve: "continuous" } : { minHeight: 240, borderCurve: "continuous" }}
       accessibilityLiveRegion="polite"
     >
       {photoUrl ? (
@@ -182,12 +169,6 @@ function MysteryCard({
         <>
           {photoUrl ? <Scrim id="daily-scrim" height="60%" /> : null}
           <View className="absolute right-0 bottom-0 left-0 gap-hair-gap p-inset">
-            <Text
-              variant="footnote"
-              className={cn("font-semibold", photoUrl ? "text-white/85" : "text-muted-foreground")}
-            >
-              今天的答案
-            </Text>
             <Text variant="display" className={photoUrl ? "text-white" : undefined} numberOfLines={2}>
               {answerName ?? "这只熊猫"}
             </Text>
@@ -220,15 +201,7 @@ function MysteryCard({
           </View>
         </View>
       ) : (
-        <View className="flex-1 items-center justify-center gap-stack-tight p-inset">
-          <ClueRing total={state.clueCount} unlocked={state.clues.length} />
-          <View className="items-center gap-hair-gap">
-            <Text variant="headline">猜错一次，多一条线索</Text>
-            <Text variant="footnote" className="text-muted-foreground tabular-nums">
-              {`已解锁 ${state.clues.length} / ${state.clueCount} 条`}
-            </Text>
-          </View>
-        </View>
+        <NewestClue state={state} />
       )}
       {photoUrl ? <PhotoOutline radius={RADIUS.card} /> : null}
     </View>
@@ -266,7 +239,7 @@ function Attempts({ state }: { state: DailyPandaState }) {
 }
 
 /** One clue as a tile: its glyph on a soft tint, what it is about, and the fact itself. */
-function ClueTile({ clue, index }: { clue: DailyPandaClue | undefined; index: number }) {
+function ClueTile({ clue, index, fresh }: { clue: DailyPandaClue | undefined; index: number; fresh: boolean }) {
   const [glyph] = useCSSVariable(["--color-highlight-foreground"]);
   if (clue === undefined) {
     return (
@@ -289,7 +262,8 @@ function ClueTile({ clue, index }: { clue: DailyPandaClue | undefined; index: nu
   const text = clue.kind === "photo" ? "在上面的卡片里" : clue.text;
   return (
     <Animated.View
-      entering={REVEAL}
+      // Only a clue unlocked on this visit arrives; the ones already open on load are just there.
+      entering={fresh ? REVEAL : undefined}
       className="min-h-24 flex-1 justify-between gap-stack-tight rounded-tile bg-card p-inset"
       style={{ borderCurve: "continuous" }}
       accessible
@@ -332,11 +306,13 @@ export default function DailyPandaScreen() {
   const [guessFailed, setGuessFailed] = useState(false);
   const [pending, setPending] = useState(false);
   const [search, setSearch] = useState("");
+  const [openedWith, setOpenedWith] = useState(0);
 
   const load = useCallback(() => {
     Promise.all([loadDailyPanda(), loadPandaChoices()])
       .then(([puzzle, choices]) => {
         setState(puzzle);
+        setOpenedWith(puzzle.clues.length);
         setPandas(choices);
       })
       .catch(() => setLoadFailed(true));
@@ -514,7 +490,12 @@ export default function DailyPandaScreen() {
           {pairs(slots).map((row) => (
             <View key={row[0]!.index} className="flex-row gap-row">
               {row.map(({ index, clue }) => (
-                <ClueTile key={`${index}-${clue ? "open" : "locked"}`} clue={clue} index={index} />
+                <ClueTile
+                  key={`${index}-${clue ? "open" : "locked"}`}
+                  clue={clue}
+                  index={index}
+                  fresh={index >= openedWith}
+                />
               ))}
               {row.length === 1 ? <View className="flex-1" /> : null}
             </View>

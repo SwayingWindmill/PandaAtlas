@@ -125,11 +125,11 @@ export default function ArticleScreen() {
             className="gap-row px-stack pt-section"
             style={hero?.asset ? undefined : { paddingTop: insets.top + 64 }}
           >
-            <Text variant="footnote" className="font-semibold text-primary">
-              {`${article.category}　·　${readingMinutes(article)} 分钟`}
-            </Text>
             <Text variant="readingTitle">{title}</Text>
             <Text variant="readingLead">{learningText(article.dek)}</Text>
+            <Text variant="footnote" className="text-muted-foreground">
+              {`${article.category}　·　${readingMinutes(article)} 分钟`}
+            </Text>
           </View>
 
           <PullQuote text={learningText(article.pullQuote)} />
@@ -338,13 +338,10 @@ function RelatedArticle({ article }: { article: CatalogArticle }) {
       style={{ borderCurve: "continuous" }}
     >
       <View className="min-w-0 flex-1 gap-hair-gap">
-        <Text variant="footnote" className="font-semibold text-primary">
-          {article.category}
-        </Text>
         <Text variant="headline" numberOfLines={3}>
           {title}
         </Text>
-        <Text variant="footnote" className="text-muted-foreground">{`${readingMinutes(article)} 分钟`}</Text>
+        <Text variant="footnote" className="text-muted-foreground">{`${article.category}　·　${readingMinutes(article)} 分钟`}</Text>
       </View>
       {hero?.asset ? (
         <View className="size-20 overflow-hidden rounded-control" style={{ borderCurve: "continuous" }}>
