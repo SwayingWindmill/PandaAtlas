@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { Easing, Keyframe, ReduceMotion } from "react-native-reanimated";
 
 import { cubicBezierCss, primitive, semantic, component } from "@/design/tokens";
@@ -35,3 +36,9 @@ export const CONTENT_ENTER = new Keyframe({
 })
   .duration(semantic.motion.enter.duration)
   .reduceMotion(ReduceMotion.System);
+
+/**
+ * CONTENT_ENTER where it belongs: on iOS and Android. The web build is a preview and a test
+ * target, where an arriving page should simply be there, so it gets no entering animation.
+ */
+export const PAGE_ENTER = Platform.OS === "web" ? undefined : CONTENT_ENTER;

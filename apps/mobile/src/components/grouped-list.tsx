@@ -80,6 +80,7 @@ export function ListCell({
   role = "button",
   tone = "label",
   lines,
+  chevron = true,
 }: {
   label: string;
   detail?: string;
@@ -98,6 +99,8 @@ export function ListCell({
   tone?: "label" | "tint" | "destructive";
   /** Lines the label may wrap to. Defaults to 1, or 2 with a detail line. */
   lines?: number;
+  /** The disclosure chevron on a tappable row. Off for a row that chooses rather than opens (a picker). */
+  chevron?: boolean;
 }) {
   const stacked = useStacked();
   const open = href ? () => router.push(href) : onPress;
@@ -139,7 +142,7 @@ export function ListCell({
           {stacked ? metaText : null}
         </View>
         {stacked ? null : metaText}
-        {open && tone === "label" ? <Chevron /> : null}
+        {open && chevron && tone === "label" ? <Chevron /> : null}
       </Pressable>
       {last ? null : (
         <View

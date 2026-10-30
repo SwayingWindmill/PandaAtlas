@@ -1,15 +1,109 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { Image } from "expo-image";
+import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
+import Animated from "react-native-reanimated";
 
+import { ListCell, ListSection } from "@/components/grouped-list";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
+import { PandaTile } from "@/components/panda-tile";
+import { PhotoOutline } from "@/components/photo-outline";
+import { ScreenState } from "@/components/screen-state";
+import { Scrim } from "@/components/scrim";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { PAGE_ENTER } from "@/design/motion";
+import { semantic } from "@/design/tokens";
+import { type HeroPhoto, useInstitutionHero } from "@/features/institutions/institution-hero";
 import { loadPlacePage } from "@/features/map/load";
-import { type PlacePage } from "@/features/map/model";
+import { type MapPandaInput, type PlacePage } from "@/features/map/model";
 import { openPanda } from "@/features/pandas/panda-row";
-import { cn } from "@/lib/utils";
+import { RADIUS } from "@/lib/surface";
+
+const GAP = semantic.spacing.row.value;
+
+/** The lead photograph, from curated covers only; a placeholder of the same shape while it is looked up. */
+function Lead({ hero }: { hero: HeroPhoto | null | undefined }) {
+  if (hero === null) return null;
+  if (hero === undefined) return <Skeleton className="w-full rounded-card" style={{ aspectRatio: 4 / 3 }} />;
+  return (
+    <View
+      className="w-full overflow-hidden rounded-card bg-secondary"
+      style={{ aspectRatio: 4 / 3, borderCurve: "continuous" }}
+      accessible
+      role="img"
+      accessibilityLabel={`照片里是${hero.pandaName}`}
+    >
+      <Image source={hero.url} style={{ width: "100%", height: "100%" }} contentFit="cover" transition={200} accessible={false} />
+      <Scrim id="place-lead" height="40%" />
+      <Text variant="footnote" className="absolute bottom-row left-inset font-semibold text-on-media" numberOfLines={1}>
+        {hero.pandaName}
+      </Text>
+      <PhotoOutline radius={RADIUS.card} />
+    </View>
+  );
+}
+
+/** Who lives here, as portrait tiles two to a row; one to a row at the largest text sizes. */
+function Residents({ pandas }: { pandas: MapPandaInput[] }) {
+  const { fontScale } = useWindowDimensions();
+  const [width, setWidth] = useState(0);
+  const columns = fontScale >= 2 ? 1 : 2;
+  const tile = width > 0 ? Math.floor((width - GAP * (columns - 1)) / columns) : 0;
+  return (
+    <View className="gap-1.5">
+      <Text variant="footnote" role="heading" className="px-inset text-muted-foreground tabular-nums">
+        {`住在这里的熊猫　${pandas.length} 只`}
+      </Text>
+      <View className="flex-row flex-wrap" style={{ gap: GAP }} onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
+        {tile > 0
+          ? pandas.map((panda) => (
+              <PandaTile
+                key={panda.id}
+                pandaId={panda.id}
+                name={panda.name}
+                width={tile}
+                onPress={() => openPanda(panda.slug)}
+                accessibilityLabel={panda.name}
+              />
+            ))
+          : null}
+      </View>
+    </View>
+  );
+}
+
+function Loaded({ place }: { place: PlacePage }) {
+  const hero = useInstitutionHero(place.residents);
+  const institution = place.institution;
+  return (
+    <Animated.View entering={PAGE_ENTER} className="gap-section">
+      <Lead hero={place.residents.length > 0 ? hero : null} />
+      {place.residents.length > 0 ? (
+        <Residents pandas={place.residents} />
+      ) : (
+        <ScreenState message="现在没有熊猫住在这里。" className="py-stack" />
+      )}
+      {institution ? (
+        <ListSection title="所属">
+          <ListCell
+            label={institution.name}
+            detail="基地和动物园"
+            href={{ pathname: "/institutions/[slug]", params: { slug: institution.slug } }}
+            accessibilityLabel={`${institution.name}，基地和动物园`}
+            last
+          />
+        </ListSection>
+      ) : null}
+      {hero?.credit ? (
+        <Text variant="footnote" className="px-inset text-muted-foreground">
+          {`顶部照片：${hero.pandaName}，${hero.credit}`}
+        </Text>
+      ) : null}
+    </Animated.View>
+  );
+}
 
 export default function PlaceScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -39,53 +133,23 @@ export default function PlaceScreen() {
         {failed ? (
           <LoadFailed message="这一页暂时打不开。" onRetry={retry} />
         ) : missing ? (
-          <Text className="text-muted-foreground">没有这个地点。</Text>
+          <ScreenState message="没有这个地点。" />
         ) : (
-          <Skeleton className="h-24 w-full" accessibilityLabel="正在加载" />
+          <View className="gap-section" accessibilityLabel="正在加载">
+            <Skeleton className="w-full rounded-card" style={{ aspectRatio: 4 / 3 }} />
+            <View className="flex-row gap-row">
+              <Skeleton className="flex-1 rounded-tile" style={{ aspectRatio: 4 / 5 }} />
+              <Skeleton className="flex-1 rounded-tile" style={{ aspectRatio: 4 / 5 }} />
+            </View>
+          </View>
         )}
       </Page>
     );
   }
 
-  const institution = place.institution;
   return (
     <Page label={place.where ?? undefined} title={place.name}>
-      {institution ? (
-        <Pressable
-          onPress={() => router.push({ pathname: "/institutions/[slug]", params: { slug: institution.slug } })}
-          role="button"
-          accessibilityLabel={`${institution.name}，基地和动物园`}
-          className="flex-row items-center gap-3 border-b-hairline border-t-hairline border-border py-3 active:bg-accent"
-        >
-          <View className="min-w-0 flex-1">
-            <Text className="font-bold">{institution.name}</Text>
-            <Text variant="muted">基地和动物园</Text>
-          </View>
-          <Text className="text-muted-foreground">›</Text>
-        </Pressable>
-      ) : null}
-      {place.residents.length > 0 ? (
-        <View className="gap-3">
-          <Text variant="h2">住在这里的熊猫</Text>
-          <View>
-            {place.residents.map((panda, index) => (
-              <Pressable
-                key={panda.id}
-                onPress={() => openPanda(panda.slug)}
-                role="button"
-                accessibilityLabel={panda.name}
-                className={cn(
-                  "flex-row items-center justify-between border-t-hairline border-border py-3 active:bg-accent",
-                  index === place.residents.length - 1 && "border-b-hairline",
-                )}
-              >
-                <Text className="font-bold">{panda.name}</Text>
-                <Text className="text-muted-foreground">›</Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
-      ) : null}
+      <Loaded place={place} />
     </Page>
   );
 }
