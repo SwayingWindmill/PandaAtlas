@@ -1,7 +1,9 @@
 import { Image } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Linking, Platform, Pressable, View, useWindowDimensions } from "react-native";
+import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ICON_INSET, ListCell, ListSection } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
@@ -20,16 +22,23 @@ import {
   Video,
 } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
-import { Page } from "@/components/page";
+import { PhotoOutline } from "@/components/photo-outline";
+import { PressScale } from "@/components/press-scale";
+import { Scrim } from "@/components/scrim";
+import { CONTENT_ENTER, HeroToolbar, StretchyHero } from "@/components/stretchy-hero";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { useInstitutionHero } from "@/features/institutions/institution-hero";
 import { type Facility, type InstitutionDetail, hostname, loadInstitution } from "@/features/institutions/institutions";
-import { FacilityVisits } from "@/features/visits/facility-visits";
 import { openPanda } from "@/features/pandas/panda-row";
 import type { PandaListItem } from "@/features/pandas/pandas";
 import { longDate } from "@/features/pandas/profile";
+import { FacilityVisits } from "@/features/visits/facility-visits";
 import { usePandaCover } from "@/lib/covers";
+import { HAIRLINE, RADIUS } from "@/lib/surface";
 
+/** Under a resident's photo while it loads, dark enough that the white name already reads. */
+const PLACEHOLDER = "#3A3A3C";
 const GUTTER = 16;
 const GAP = 12;
 
@@ -42,31 +51,40 @@ function openMaps(name: string, { latitude, longitude }: NonNullable<Facility["c
   void Linking.openURL(url);
 }
 
-/** Four tiles a row at the default text size, three at large sizes, two at the accessibility sizes. */
+/** Two large tiles a row, one at the accessibility sizes, where the name needs the width. */
 function columnsFor(fontScale: number) {
-  if (fontScale >= 2) return 2;
-  if (fontScale >= 1.35) return 3;
-  return 4;
+  return fontScale >= 2 ? 1 : 2;
 }
 
+/** A resident as a portrait photograph with its name in white over the scrim, as Music lays out artists. */
 function ResidentTile({ panda, width }: { panda: PandaListItem; width: number }) {
   const photo = usePandaCover(panda.id);
-  const height = (width * 5) / 4;
+  const height = Math.round((width * 5) / 4);
   return (
-    <Pressable onPress={() => openPanda(panda.slug)} role="button" accessibilityLabel={panda.name} style={{ width }} className="gap-1.5 active:opacity-70">
-      <View className="items-center justify-center overflow-hidden rounded-[10px] bg-secondary" style={{ width, height }}>
-        {photo ? (
-          <Image source={photo} style={{ width, height }} contentFit="cover" accessible={false} transition={150} />
-        ) : (
-          <Text variant="title3" className="text-muted-foreground">
-            {panda.name.slice(0, 1)}
-          </Text>
-        )}
-      </View>
-      <Text variant="footnote" numberOfLines={2}>
-        {panda.name}
-      </Text>
-    </Pressable>
+    <Link href={{ pathname: "/pandas/[slug]", params: { slug: panda.slug } }} asChild>
+      <Link.AppleZoom>
+        <PressScale role="link" accessibilityLabel={panda.name} style={{ width, height }}>
+          <View
+            style={{ flex: 1, borderRadius: RADIUS.tile, borderCurve: "continuous", overflow: "hidden", backgroundColor: PLACEHOLDER }}
+          >
+            {photo ? (
+              <Image
+                source={photo}
+                style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+                contentFit="cover"
+                accessible={false}
+                transition={200}
+              />
+            ) : null}
+            <Scrim id={`resident-${panda.id}`} height="45%" />
+            <Text variant="title" role="none" className="absolute right-0 bottom-0 left-0 p-3 text-white" numberOfLines={2}>
+              {panda.name}
+            </Text>
+            <PhotoOutline radius={RADIUS.tile} />
+          </View>
+        </PressScale>
+      </Link.AppleZoom>
+    </Link>
   );
 }
 
@@ -76,7 +94,7 @@ function Residents({ pandas }: { pandas: PandaListItem[] }) {
   const tile = Math.floor((Math.min(width, 700) - GUTTER * 2 - GAP * (columns - 1)) / columns);
   return (
     <View className="gap-1.5">
-      <Text variant="footnote" role="heading" className="px-4 text-muted-foreground">
+      <Text variant="footnote" role="heading" className="px-4 text-muted-foreground tabular-nums">
         {`住在这里的熊猫　${pandas.length} 只`}
       </Text>
       <View className="flex-row flex-wrap" style={{ gap: GAP }}>
@@ -127,7 +145,7 @@ function GuideRow({ label, value, last }: { label: string; value: string; last: 
           <Text variant="body">{value}</Text>
         </View>
       </View>
-      {last ? null : <View className={`${ICON_INSET} h-hairline bg-border`} />}
+      {last ? null : <View className={`${ICON_INSET} bg-border`} style={{ height: HAIRLINE }} />}
     </View>
   );
 }
@@ -182,10 +200,49 @@ function Sources({ institution }: { institution: InstitutionDetail }) {
   );
 }
 
+/** Hero height below the status bar, a little shorter than a panda's: the name sits on it. */
+const HERO = 300;
+
+/** The name and meta in white over the hero's scrim, as Music sets an artist's name on the photo. */
+function HeroTitle({ institution }: { institution: InstitutionDetail }) {
+  return (
+    <View pointerEvents="none" className="absolute right-0 bottom-0 left-0 gap-1 px-4 pb-4">
+      <Text variant="display" className="text-white" numberOfLines={3}>
+        {institution.name}
+      </Text>
+      {institution.meta ? (
+        <Text variant="footnote" className="font-semibold text-white/85">
+          {institution.meta}
+        </Text>
+      ) : null}
+    </View>
+  );
+}
+
+function PlainTitle({ institution }: { institution: InstitutionDetail }) {
+  const insets = useSafeAreaInsets();
+  return (
+    <View className="gap-1 px-4" style={{ paddingTop: insets.top + 64 }}>
+      {institution.meta ? (
+        <Text variant="footnote" className="text-muted-foreground">
+          {institution.meta}
+        </Text>
+      ) : null}
+      <Text variant="display">{institution.name}</Text>
+    </View>
+  );
+}
+
 export default function InstitutionScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const [institution, setInstitution] = useState<InstitutionDetail | null>(null);
   const [failed, setFailed] = useState(false);
+  const hero = useInstitutionHero(institution?.residents ?? []);
+  const insets = useSafeAreaInsets();
+  const scrollY = useSharedValue(0);
+  const onScroll = useAnimatedScrollHandler((event) => {
+    scrollY.set(event.contentOffset.y);
+  });
 
   const load = useCallback(() => {
     loadInstitution(slug)
@@ -201,13 +258,23 @@ export default function InstitutionScreen() {
 
   if (!institution) {
     return (
-      <Page title="基地和动物园">
+      <View className="flex-1 bg-background">
+        <Stack.Screen options={{ headerShown: false }} />
         {failed ? (
-          <LoadFailed message="这一页暂时打不开。" onRetry={retry} />
+          <View className="px-4" style={{ paddingTop: insets.top + 64 }}>
+            <LoadFailed message="这一页暂时打不开。" onRetry={retry} />
+          </View>
         ) : (
-          <Skeleton className="h-72 w-full" accessibilityLabel="正在加载" />
+          <View className="gap-4" accessibilityLabel="正在加载">
+            <Skeleton className="w-full rounded-none" style={{ height: HERO + insets.top }} />
+            <View className="flex-row gap-3 px-4">
+              <Skeleton className="h-56 flex-1 rounded-2xl" />
+              <Skeleton className="h-56 flex-1 rounded-2xl" />
+            </View>
+          </View>
         )}
-      </Page>
+        <HeroToolbar />
+      </View>
     );
   }
 
@@ -215,46 +282,75 @@ export default function InstitutionScreen() {
   const several = institution.facilities.length > 1;
 
   return (
-    <Page label={institution.meta} title={institution.name}>
-      {institution.summary ? (
-        <View className="rounded-[10px] bg-card px-4 py-3">
-          <Text variant="body">{institution.summary}</Text>
-        </View>
-      ) : null}
-      {institution.residents.length > 0 ? <Residents pandas={institution.residents} /> : null}
-      {guided.map((facility) => (
-        <FacilityGuide key={facility.id} facility={facility} title={several ? `去之前　${facility.name}` : "去之前"} />
-      ))}
-      {institution.facilities.length > 0 ? <FacilityVisits facilities={institution.facilities} /> : null}
-      {institution.former.length > 0 ? <Former pandas={institution.former} /> : null}
-      {institution.liveCamUrl || institution.websiteUrl ? (
-        <ListSection>
-          {institution.liveCamUrl ? (
-            <ListCell
-              icon={Video}
-              label="看官方直播"
-              tone="tint"
-              role="link"
-              accessibilityHint="在浏览器中打开"
-              onPress={() => void Linking.openURL(institution.liveCamUrl!)}
-              last={!institution.websiteUrl}
-            />
+    <View className="flex-1 bg-background">
+      <Stack.Screen options={{ headerShown: false, title: institution.name }} />
+      <Animated.ScrollView
+        className="flex-1"
+        contentInsetAdjustmentBehavior="never"
+        contentContainerClassName="pb-16"
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+      >
+        {hero ? (
+          <StretchyHero
+            url={hero.url}
+            height={HERO}
+            scrollY={scrollY}
+            label={`${institution.name}，照片里是${hero.pandaName}`}
+            overlay={
+              <>
+                <Scrim id="institution-hero" height="70%" />
+                <HeroTitle institution={institution} />
+              </>
+            }
+          />
+        ) : (
+          <PlainTitle institution={institution} />
+        )}
+        <Animated.View entering={CONTENT_ENTER} className="gap-7 bg-background px-4 pt-5">
+          {institution.summary ? <Text variant="body">{institution.summary}</Text> : null}
+          {institution.residents.length > 0 ? <Residents pandas={institution.residents} /> : null}
+          {guided.map((facility) => (
+            <FacilityGuide key={facility.id} facility={facility} title={several ? `去之前　${facility.name}` : "去之前"} />
+          ))}
+          {institution.facilities.length > 0 ? <FacilityVisits facilities={institution.facilities} /> : null}
+          {institution.former.length > 0 ? <Former pandas={institution.former} /> : null}
+          {institution.liveCamUrl || institution.websiteUrl ? (
+            <ListSection>
+              {institution.liveCamUrl ? (
+                <ListCell
+                  icon={Video}
+                  label="看官方直播"
+                  tone="tint"
+                  role="link"
+                  accessibilityHint="在浏览器中打开"
+                  onPress={() => void Linking.openURL(institution.liveCamUrl!)}
+                  last={!institution.websiteUrl}
+                />
+              ) : null}
+              {institution.websiteUrl ? (
+                <ListCell
+                  icon={Globe}
+                  label="官网"
+                  meta={hostname(institution.websiteUrl)}
+                  tone="tint"
+                  role="link"
+                  accessibilityHint="在浏览器中打开"
+                  onPress={() => void Linking.openURL(institution.websiteUrl!)}
+                  last
+                />
+              ) : null}
+            </ListSection>
           ) : null}
-          {institution.websiteUrl ? (
-            <ListCell
-              icon={Globe}
-              label="官网"
-              meta={hostname(institution.websiteUrl)}
-              tone="tint"
-              role="link"
-              accessibilityHint="在浏览器中打开"
-              onPress={() => void Linking.openURL(institution.websiteUrl!)}
-              last
-            />
+          <Sources institution={institution} />
+          {hero?.credit ? (
+            <Text variant="footnote" className="px-4 text-muted-foreground">
+              {`顶部照片：${hero.pandaName}，${hero.credit}`}
+            </Text>
           ) : null}
-        </ListSection>
-      ) : null}
-      <Sources institution={institution} />
-    </Page>
+        </Animated.View>
+      </Animated.ScrollView>
+      <HeroToolbar />
+    </View>
   );
 }

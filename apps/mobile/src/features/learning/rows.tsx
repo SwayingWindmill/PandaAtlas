@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
 import { Text } from "@/components/ui/text";
+import { HAIRLINE } from "@/lib/surface";
 
 /** A reading section: the heading, then an inset group. */
 export function ManualSection({ title, meta, children }: { title: string; meta?: string; children: ReactNode }) {
@@ -33,7 +34,7 @@ export function IndexRow({ label, detail, onPress, last }: { label: string; deta
           </Text>
         ) : null}
       </Pressable>
-      {last ? null : <View className="ml-4 h-hairline bg-border" />}
+      {last ? null : <View className="ml-4 bg-border" style={{ height: HAIRLINE }} />}
     </View>
   );
 }
@@ -46,7 +47,7 @@ export function DefinitionRow({ label, body, last }: { label: string; body: stri
         <Text variant="footnote" className="text-muted-foreground">{label}</Text>
         <Text variant="body">{body}</Text>
       </View>
-      {last ? null : <View className="ml-4 h-hairline bg-border" />}
+      {last ? null : <View className="ml-4 bg-border" style={{ height: HAIRLINE }} />}
     </View>
   );
 }

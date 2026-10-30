@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { PandaListItem } from "@/features/pandas/pandas";
 
-import { pickStoryPhotos, storyCandidates } from "./story-order";
+import { hasBurnedInMark, pickStoryPhotos, storyCandidates } from "./story-order";
 
 const panda = (id: string, deceased = false): PandaListItem => ({
   id,
@@ -43,5 +43,21 @@ describe("pickStoryPhotos", () => {
     const picks = pickStoryPhotos(["a", "b", "c", "d", "e"].map((id) => panda(id)), covers, 3);
     expect(picks.map((pick) => pick.pandaId)).toEqual(["a", "d", "e"]);
     expect(new Set(picks.map((pick) => pick.url)).size).toBe(3);
+  });
+});
+
+describe("hasBurnedInMark", () => {
+  it("flags covers credited to Xinhua, in English or Chinese", () => {
+    expect(hasBurnedInMark({ creator: "Xinhua via People's Daily Online", attributionText: null })).toBe(true);
+    expect(hasBurnedInMark({ creator: null, attributionText: "照片 新华社" })).toBe(true);
+  });
+
+  it("flags Pandapia's logo-stamped crops", () => {
+    expect(hasBurnedInMark({ creator: "Pandapia", attributionText: "Pandapia" })).toBe(true);
+  });
+
+  it("keeps other credits and covers without one", () => {
+    expect(hasBurnedInMark({ creator: "Smithsonian's National Zoo", attributionText: "CC BY 4.0" })).toBe(false);
+    expect(hasBurnedInMark({})).toBe(false);
   });
 });

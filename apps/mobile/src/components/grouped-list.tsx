@@ -5,6 +5,7 @@ import { Pressable, useWindowDimensions, View } from "react-native";
 import { Icon } from "@/components/icon";
 import { ChevronRight, type LucideIcon } from "@/components/icons";
 import { Text } from "@/components/ui/text";
+import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
 /** At accessibility text sizes a value no longer fits beside its label, so it moves under it. */
@@ -111,7 +112,7 @@ export function ListCell({
         {stacked ? null : metaText}
         {open && tone === "label" ? <Chevron /> : null}
       </Pressable>
-      {last ? null : <View className={cn("h-hairline bg-border", icon ? ICON_INSET : leading ? "ml-16" : "ml-4")} />}
+      {last ? null : <View className={cn("bg-border", icon ? ICON_INSET : leading ? "ml-16" : "ml-4")} style={{ height: HAIRLINE }} />}
     </View>
   );
 }

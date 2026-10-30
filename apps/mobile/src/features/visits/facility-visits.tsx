@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { localToday, shortDay } from "@/features/engagement/seen";
 import { useSession } from "@/features/session/session";
+import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
 import { type Visit, lastVisitByPlace, loadVisits, recordVisit } from "./visits";
@@ -77,7 +78,7 @@ export function FacilityVisits({ facilities }: { facilities: { id: string; name:
                 <Text className="text-subhead font-semibold">{day === today ? "今天已记下" : "记下今天去过"}</Text>
               </Button>
             </View>
-            {index === facilities.length - 1 ? null : <View className={cn(stacked ? "ml-4" : ICON_INSET, "h-hairline bg-border")} />}
+            {index === facilities.length - 1 ? null : <View className={cn(stacked ? "ml-4" : ICON_INSET, "bg-border")} style={{ height: HAIRLINE }} />}
           </View>
         );
       })}
