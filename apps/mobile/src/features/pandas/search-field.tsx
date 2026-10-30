@@ -1,6 +1,8 @@
 import { TextInput, View } from "react-native";
-import Svg, { Circle, Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
+
+import { Icon } from "@/components/icon";
+import { Search } from "@/components/icons";
 
 /** The round search field of 找熊猫 and the 查关系 picker. */
 export function SearchField({
@@ -17,10 +19,7 @@ export function SearchField({
   const muted = String(useCSSVariable("--color-muted-foreground"));
   return (
     <View className="h-11 flex-row items-center gap-2 rounded-[10px] bg-card px-3">
-      <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={muted} strokeWidth={2} strokeLinecap="round">
-        <Circle cx={11} cy={11} r={7} />
-        <Path d="m20 20-3.5-3.5" />
-      </Svg>
+      <Icon icon={Search} size="subhead" strokeWidth={2} />
       <TextInput
         value={value}
         onChangeText={onChange}

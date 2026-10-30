@@ -207,7 +207,13 @@ App 用 iOS 26 的系统界面，不跟网站的橄榄纸和四档字号。品�
 - **空和失败：** `ScreenState` / `LoadFailed`：一句说明，需要时一个「重试」。不要再套一块灰色圆角卡片。
 - **照片：** 科普文章以照片开头，说明放在照片下面，不叠字。熊猫资料页的头图通栏铺到状态栏下，下拉时拉伸；名字是图下的大标题，下面一行是性别和所在机构，再下面是「关注」（tinted 胶囊）和「见过」（plain）。返回和分享是悬在图上的圆形 Liquid Glass 按钮（`components/glass-button.tsx`），非 iOS 用半透明深色圆片。之后是内嵌分组：基本信息、家族、所在机构、动态。
 - **今天：** 34pt 粗体大标题「今天」加日期，下面是 App Store Today 式故事卡：20pt 连续圆角，每张一张不同熊猫的照片，底部黑色渐变压暗，白色标题，标题下一行脚注写功能名和照片里的熊猫。卡片上不放标题之上的小字。
-- **图标：** 用 `components/symbol.tsx`（`expo-symbols`）：iOS 是真 SF Symbols，Android 和 Web 用对应的 Material Symbols。标签栏 `sun.max`、`magnifyingglass`、`square.grid.2x2`、`person`；工具栏 `chevron.backward`、`square.and.arrow.up`。
+- **图标：** 只用 Lucide（`lucide-react-native`，画在 `react-native-svg` 上），iOS、Android、Web 一套。用到的每个图标都从 `components/icons.ts` 按文件单独导入，通过 `components/icon.tsx` 画。标签栏是 `sun`、`search`、`layout-grid`、`user-round`，原生标签栏只收图片，所以转成 `assets/tab-icons/` 里的模板 PNG（25pt，描边 1.9，`scripts/tab-icons.mjs` 生成），由系统着色；Web 直接画组件。工具栏是 `chevron-left`、`share`。
+  - **大小跟字走：** 正文旁 22，subhead 旁 18，脚注旁 15；行尾箭头 17。描边 1.75，箭头和工具栏 2–2.25。
+  - **颜色：** 默认次要文字色。只有动作行（官网、看官方直播、导航过去）和选中的标签用 tint。行尾箭头用 tertiary label。图上的工具栏图标是白色，Liquid Glass 里用 label 色。
+  - **该用：** 像设置、健康、地图那样，放在分组行的最前面，标出这一行是哪类信息或去哪里：基本信息各行（性别直接显示 ♂/♀、出生、出生地、所在地、离世、享年）、父母、看家谱、查关系、当前所在机构、去之前各项（开放时间、门票、熊猫馆、地址、什么时候去、怎么去……）、到访、直播、官网、导航过去。
+  - **一个图标一个意思：** `MapPin` 是地点，`Clock` 是时间，`CalendarCheck` 是到访。先在 `icons.ts` 里找，没有再加。
+  - **数据行不加：** 亲属名字、动态、资料来源、以前住过的熊猫是内容本身，不配图标。有图标的行分隔线缩进到文字（50px）。
+  - **不该用：** 按钮（关注、见过、记下今天去过）、卡片标题和分组标题、大标题旁、正文里、为了填空的装饰位。不要把图标放进有色方块，也不要靠填色假装选中。
 - **动态字体：** `Text` 保留 `allowFontScaling`。字号放大到 1.35 倍以上时，行尾的值换到标签下面，照片格子从 4 列降到 3 列、2 列。机构页「去之前」每项是脚注标签加正文值，像地图的地点卡。
 - **科普：** 首页和文章保持已认可的阅读栏。知识卡和专题路由已删除；条目仍留在目录数据里，不从 API 拿掉。
 - **组件来源：** 导航用 Expo Router 的 `native-tabs` 和原生栈，这是 SDK 58 里系统标签和 Liquid Glass 的入口。`expo-glass-effect` 已随 SDK 装上，但 `GlassView` 在非 iOS 上只是普通 `View`，`isLiquidGlassAvailable()` 在非 iOS 返回 false，所以只在 iOS 且 `isLiquidGlassAvailable()` 时用它画悬浮圆形按钮，别处退回半透明圆片，不拿它冒充卡片玻璃。按钮、开关、骨架仍用已经放进 `src/components/ui/` 的 React Native Reusables，再按本节改色。分组列表没有对应的维护组件：系统列表是导航器的一部分，RN 里没有可装的 UITableView，所以 `grouped-list.tsx` 只补这一块。

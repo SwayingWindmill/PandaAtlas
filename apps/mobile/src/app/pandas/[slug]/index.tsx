@@ -15,6 +15,23 @@ import { useCSSVariable } from "uniwind";
 
 import { GlassButton } from "@/components/glass-button";
 import { ListCell, ListSection } from "@/components/grouped-list";
+import {
+  Cake,
+  ChevronLeft,
+  CircleQuestionMark,
+  Flower,
+  Hourglass,
+  House,
+  Landmark,
+  type LucideIcon,
+  MapPin,
+  Mars,
+  Network,
+  Share,
+  Users,
+  Venus,
+  Waypoints,
+} from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -45,11 +62,10 @@ function Toolbar({ slug }: { slug?: string }) {
       className="absolute right-0 left-0 flex-row justify-between px-4"
       style={{ top: insets.top + 6 }}
     >
-      <GlassButton sf="chevron.backward" md="arrow_back_ios_new" label="返回" onPress={goBack} />
+      <GlassButton icon={ChevronLeft} label="返回" onPress={goBack} />
       {slug ? (
         <GlassButton
-          sf="square.and.arrow.up"
-          md="ios_share"
+          icon={Share}
           label="分享"
           onPress={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug } })}
         />
@@ -105,12 +121,31 @@ function Hero({ profile, scrollY }: { profile: Profile; scrollY: { value: number
   );
 }
 
+/** The glyph for each 基本信息 fact. 性别 shows the sex itself, so the row reads at a glance. */
+function factIcon(label: string, value: string): LucideIcon {
+  if (label === "性别") return value === "雄" ? Mars : value === "雌" ? Venus : CircleQuestionMark;
+  const icons: Record<string, LucideIcon> = {
+    出生: Cake,
+    出生地: MapPin,
+    离世: Flower,
+    享年: Hourglass,
+    所在地: House,
+  };
+  return icons[label] ?? CircleQuestionMark;
+}
+
 function Basics({ profile }: { profile: Profile }) {
   const rows = profile.facts.filter((fact) => fact.label !== "父母");
   return (
     <ListSection title="基本信息">
       {rows.map((fact, index) => (
-        <ListCell key={fact.label} label={fact.label} meta={fact.value} last={index === rows.length - 1} />
+        <ListCell
+          key={fact.label}
+          icon={factIcon(fact.label, fact.value)}
+          label={fact.label}
+          meta={fact.value}
+          last={index === rows.length - 1}
+        />
       ))}
     </ListSection>
   );
@@ -122,7 +157,7 @@ function Family({ profile }: { profile: Profile }) {
   if (relatives.length === 0) {
     return (
       <ListSection title="家族">
-        <ListCell label="父母" meta={parents?.value ?? UNKNOWN} last />
+        <ListCell icon={Users} label="父母" meta={parents?.value ?? UNKNOWN} last />
       </ListSection>
     );
   }
@@ -137,8 +172,8 @@ function Family({ profile }: { profile: Profile }) {
           onPress={() => openPanda(member.slug)}
         />
       ))}
-      <ListCell label="看家谱" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} />
-      <ListCell label="查关系" href={{ pathname: "/relationship", params: { from: profile.slug } }} last />
+      <ListCell icon={Network} label="看家谱" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} />
+      <ListCell icon={Waypoints} label="查关系" href={{ pathname: "/relationship", params: { from: profile.slug } }} last />
     </ListSection>
   );
 }
@@ -150,6 +185,7 @@ function Institution({ profile }: { profile: Profile }) {
     <ListSection title={profile.deceased ? "生活过的地方" : "所在机构"}>
       {profile.visit ? (
         <ListCell
+          icon={Landmark}
           label={profile.visit.place}
           detail={profile.visit.address ?? "参观指南"}
           href={{ pathname: "/institutions/[slug]", params: { slug: profile.visit.institutionSlug } }}

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
-import Svg, { Path } from "react-native-svg";
-import { useCSSVariable } from "uniwind";
 
+import { Icon } from "@/components/icon";
+import { ChevronLeft, ChevronRight } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
@@ -29,17 +29,8 @@ type Sources = { pandas: CalendarPanda[]; events: CalendarEvent[] };
 const WEEK = ["一", "二", "三", "四", "五", "六", "日"];
 
 function MonthButton({ to, direction, onPress }: { to: number; direction: "back" | "forward"; onPress: () => void }) {
-  const ink = String(useCSSVariable("--color-foreground"));
   const chevron = (
-    <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
-      <Path
-        d={direction === "back" ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"}
-        stroke={ink}
-        strokeWidth={2.2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
+    <Icon icon={direction === "back" ? ChevronLeft : ChevronRight} size={16} tone="label" strokeWidth={2.25} />
   );
   return (
     <Button

@@ -194,9 +194,21 @@ Inset groups are 10px. Quiz photos and featured articles are 12–16px. Buttons 
 - **Focus:** the system caret. A tint ring when the control is a button.
 
 ### Navigation
-- **Tabs:** four sections, 今天, 找熊猫, 图鉴, 我的, with `sun.max`, `magnifyingglass`, `square.grid.2x2`, `person`. iOS uses SF Symbols and the system Liquid Glass bar (`expo-router/native-tabs`, SDK 58). The bar minimizes on scroll down. Android uses Material symbols and the Material bar. Web uses a blurred bottom bar, which is not Liquid Glass. Every other icon goes through `components/symbol.tsx` (`expo-symbols`): a real SF Symbol on iOS, the matching Material Symbol on Android and web.
+- **Tabs:** four sections, 今天, 找熊猫, 图鉴, 我的, with Lucide `sun`, `search`, `layout-grid`, `user-round`. iOS uses the system Liquid Glass bar (`expo-router/native-tabs`, SDK 58), which minimizes on scroll down. Android uses the Material bar. Both take the glyphs as template PNGs in `assets/tab-icons/` (25pt, stroke 1.9, made by `scripts/tab-icons.mjs`), and the bar tints them. Web uses a blurred bottom bar, which is not Liquid Glass, and draws the same glyphs as components.
 - **Stack:** large title on a tab root, inline title on a pushed screen. 科普 home, articles, terms, face guides and the challenge keep the large title in the column and leave the bar as a back button. Back is the system chevron, labeled 返回, and the edge-swipe stays on.
 - **Selected tab:** the tint. Unselected tabs are the secondary label.
+
+### Icons
+One set: Lucide (`lucide-react-native` on `react-native-svg`), the same glyphs on iOS, Android and web. Every glyph the app uses is exported from `components/icons.ts`, one file per icon, and drawn through `components/icon.tsx`. An icon is decoration: the row or button that holds it carries the accessible name.
+
+- **Size:** follows the text beside it. 22 beside body, 18 beside subhead, 15 beside footnote. The disclosure chevron is 17.
+- **Stroke:** 1.75. Chevrons and toolbar glyphs 2 to 2.25, so a small glyph keeps its weight.
+- **Color:** the secondary label. The tint only when the icon sits on an action row (官网, 看官方直播, 导航过去) or marks the selected tab. The chevron is the tertiary label. Toolbar glyphs over a photo are white, or the label color inside Liquid Glass.
+- **Use one** where Settings, Health or Maps would: a leading glyph on a grouped row that names a fixed category or a destination. 基本信息 rows (性别 shows ♂/♀, 出生, 出生地, 所在地, 离世, 享年), 父母, 看家谱, 查关系, the current 所在机构, every 去之前 fact (开放时间, 门票, 熊猫馆, 地址, 什么时候去, 怎么去…), 到访, 看官方直播, 官网, 导航过去. Also the tab bar, the toolbar back and share, the disclosure chevron and the search field.
+- **One meaning per glyph.** `MapPin` is a place, `Clock` is hours, `CalendarCheck` is a visit. Reuse the vocabulary in `icons.ts` before adding a glyph.
+- **All or none in a group.** Rows with icons inset their separator to the label (50px). A row that is data (a relative's name, an event, a source, a former resident) gets no icon, even in a section where the fixed rows have one.
+- **Don't** put an icon on a button (关注, 见过, 记下今天去过), on a card or section title, beside a large title, inside running text, or anywhere just to fill space.
+- **Don't** put an icon in a tinted square, and don't fill or recolor a Lucide glyph to fake a selected state.
 
 ### Screen state
 A failed load or an empty catalog is one secondary sentence, centered, and a secondary button when the fan can retry. It is not a filled card.

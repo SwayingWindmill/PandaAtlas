@@ -3,7 +3,22 @@ import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Linking, Platform, Pressable, View, useWindowDimensions } from "react-native";
 
-import { ListCell, ListSection } from "@/components/grouped-list";
+import { ICON_INSET, ListCell, ListSection } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
+import {
+  Binoculars,
+  Clock,
+  Globe,
+  Info,
+  type LucideIcon,
+  MapPin,
+  Navigation,
+  PawPrint,
+  Sunrise,
+  Ticket,
+  TramFront,
+  Video,
+} from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -83,22 +98,36 @@ function Former({ pandas }: { pandas: PandaListItem[] }) {
   );
 }
 
+/** The glyph for each 去之前 fact, the way Maps marks hours, address and transit on a place card. */
+const GUIDE_ICON: Record<string, LucideIcon> = {
+  开放时间: Clock,
+  门票: Ticket,
+  熊猫馆: PawPrint,
+  地址: MapPin,
+  什么时候去: Sunrise,
+  怎么找到熊猫: Binoculars,
+  怎么去: TramFront,
+  提示: Info,
+};
+
 /**
  * One 去之前 fact, the way Maps lays out a place card: a footnote label over the value, in a
  * grouped card with inset separators. The value wraps freely, so it reads at every text size.
+ * The icon sits on the label's line, not centred on a long value.
  */
 function GuideRow({ label, value, last }: { label: string; value: string; last: boolean }) {
   return (
     <View accessible accessibilityLabel={`${label}，${value}`}>
-      <View className="gap-0.5 px-4 py-3">
-        <Text variant="footnote" className="text-muted-foreground">
-          {label}
-        </Text>
-        <Text variant="body">
-          {value}
-        </Text>
+      <View className="flex-row gap-3 px-4 py-3">
+        <Icon icon={GUIDE_ICON[label] ?? Info} style={{ marginTop: 6 }} />
+        <View className="min-w-0 flex-1 gap-0.5">
+          <Text variant="footnote" className="text-muted-foreground">
+            {label}
+          </Text>
+          <Text variant="body">{value}</Text>
+        </View>
       </View>
-      {last ? null : <View className="ml-4 h-hairline bg-border" />}
+      {last ? null : <View className={`${ICON_INSET} h-hairline bg-border`} />}
     </View>
   );
 }
@@ -121,6 +150,7 @@ function FacilityGuide({ facility, title }: { facility: Facility; title: string 
       ))}
       {coordinates ? (
         <ListCell
+          icon={Navigation}
           label="导航过去"
           tone="tint"
           accessibilityLabel={`在地图中导航到${facility.name}`}
@@ -201,6 +231,7 @@ export default function InstitutionScreen() {
         <ListSection>
           {institution.liveCamUrl ? (
             <ListCell
+              icon={Video}
               label="看官方直播"
               tone="tint"
               role="link"
@@ -211,6 +242,7 @@ export default function InstitutionScreen() {
           ) : null}
           {institution.websiteUrl ? (
             <ListCell
+              icon={Globe}
               label="官网"
               meta={hostname(institution.websiteUrl)}
               tone="tint"

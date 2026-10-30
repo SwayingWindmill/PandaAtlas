@@ -2,7 +2,9 @@ import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { View } from "react-native";
 
-import { ListCell, ListSection, useStacked } from "@/components/grouped-list";
+import { ICON_INSET, ListCell, ListSection, useStacked } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
+import { CalendarCheck } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { localToday, shortDay } from "@/features/engagement/seen";
@@ -41,7 +43,7 @@ export function FacilityVisits({ facilities }: { facilities: { id: string; name:
   if (session.status === "signedOut") {
     return (
       <ListSection title="到访">
-        <ListCell label="登录后记下到访" tone="tint" onPress={() => router.push("/sign-in")} last />
+        <ListCell icon={CalendarCheck} label="登录后记下到访" tone="tint" onPress={() => router.push("/sign-in")} last />
       </ListSection>
     );
   }
@@ -56,6 +58,7 @@ export function FacilityVisits({ facilities }: { facilities: { id: string; name:
         return (
           <View key={facility.id}>
             <View className={cn("gap-3 px-4 py-3", stacked ? "items-start" : "flex-row items-center")}>
+              {stacked ? null : <Icon icon={CalendarCheck} />}
               <View className="min-w-0 flex-1 gap-0.5">
                 <Text variant="body" numberOfLines={stacked ? undefined : 1}>
                   {facility.name}
@@ -74,7 +77,7 @@ export function FacilityVisits({ facilities }: { facilities: { id: string; name:
                 <Text className="text-subhead font-semibold">{day === today ? "今天已记下" : "记下今天去过"}</Text>
               </Button>
             </View>
-            {index === facilities.length - 1 ? null : <View className="ml-4 h-hairline bg-border" />}
+            {index === facilities.length - 1 ? null : <View className={cn(stacked ? "ml-4" : ICON_INSET, "h-hairline bg-border")} />}
           </View>
         );
       })}
