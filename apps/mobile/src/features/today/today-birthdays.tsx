@@ -1,63 +1,111 @@
-import { router, useFocusEffect } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Pressable, View } from "react-native";
+import { ScrollView, View, useWindowDimensions } from "react-native";
 
-import { ListSection } from "@/components/grouped-list";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
-import { type CalendarEntry, calendarMonth } from "@/features/calendar/calendar";
+import { PandaTile } from "@/components/panda-tile";
+import { SectionHeader } from "@/components/section-header";
+import { type CalendarEntry, calendarMonth, shiftMonth } from "@/features/calendar/calendar";
 import { loadCalendarSources } from "@/features/calendar/sources";
 import { localToday } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
-import { cn } from "@/lib/utils";
 
-const SHOWN = 5;
+/** How many tiles the shelf shows before 看日历 takes over. */
+const SHOWN = 10;
+const GAP = 12;
 
-/** 今天生日 on 今天: pandas whose birthday (or birth) falls on the fan's today, from the same rules as the calendar. */
+interface Shelf {
+  /** True when the entries are today's; otherwise they are the next birthdays this month and next. */
+  today: boolean;
+  entries: CalendarEntry[];
+}
+
+const isBirthday = (entry: CalendarEntry) => entry.key.startsWith("birthday:");
+
+/** "11月3日" for an upcoming birthday's date. */
+function monthDay(date: string) {
+  return `${Number(date.slice(5, 7))}月${Number(date.slice(8, 10))}日`;
+}
+
+/**
+ * The birthdays shelf on 今天, a row of portrait photo tiles as Music shows albums. On a day with
+ * birthdays it is 今天生日; otherwise it looks ahead to the next ones this month and next, so the
+ * shelf still has something true to say. Both come from the calendar's own rules.
+ */
 export function TodayBirthdays() {
-  const [entries, setEntries] = useState<CalendarEntry[]>([]);
+  const { width, fontScale } = useWindowDimensions();
+  const [shelf, setShelf] = useState<Shelf | null>(null);
 
   useFocusEffect(
     useCallback(() => {
       const today = localToday();
+      const year = Number(today.slice(0, 4));
+      const month = Number(today.slice(5, 7));
       loadCalendarSources()
         .then(({ pandas, events }) => {
-          const month = calendarMonth(pandas, events, Number(today.slice(0, 4)), Number(today.slice(5, 7)));
-          const day = month.find((item) => item.date === today);
-          setEntries(day?.entries.filter((entry) => entry.key.startsWith("birthday:")) ?? []);
+          const next = shiftMonth(year, month, 1);
+          const days = [
+            ...calendarMonth(pandas, events, year, month),
+            ...calendarMonth(pandas, events, next.year, next.month),
+          ];
+          const todays = days.find((day) => day.date === today)?.entries.filter(isBirthday) ?? [];
+          if (todays.length > 0) {
+            setShelf({ today: true, entries: todays });
+            return;
+          }
+          const upcoming = days.filter((day) => day.date > today).flatMap((day) => day.entries.filter(isBirthday));
+          setShelf({ today: false, entries: upcoming });
         })
-        .catch(() => setEntries([]));
+        .catch(() => setShelf(null));
     }, []),
   );
 
-  if (entries.length === 0) return null;
-  const more = entries.length - SHOWN;
+  if (!shelf || shelf.entries.length === 0) return null;
+  // About two and a half tiles show, so the next one peeks in; they widen at large text sizes.
+  const tile = Math.round(Math.min((Math.min(width, 700) - 32) * 0.4, 180) * Math.min(Math.max(fontScale, 1), 1.4));
+  const more = shelf.entries.length - SHOWN;
+
   return (
-    <View className="gap-3">
-      <ListSection title="今天生日">
-        {entries.slice(0, SHOWN).map((entry, index, shown) => (
-          <Pressable
-            key={entry.key}
-            onPress={() => openPanda(entry.slug)}
-            role="button"
-            accessibilityLabel={`${entry.name}，${entry.what}`}
-            className={cn(
-              "min-h-11 flex-row items-center justify-between gap-3 px-4 py-2.5 active:bg-accent",
-              index < shown.length - 1 && "border-b-hairline border-border",
-            )}
-          >
-            <Text className="min-w-0 flex-1 font-bold" numberOfLines={1}>
-              {entry.name}
-            </Text>
-            <Text variant="muted">{entry.what === "出生" ? "今天出生" : entry.what.replace("生日", "了")}</Text>
-          </Pressable>
-        ))}
-      </ListSection>
-      {more > 0 ? (
-        <Button variant="secondary" className="self-start" onPress={() => router.push("/calendar")}>
-          <Text>{`还有 ${more} 只，看日历`}</Text>
-        </Button>
-      ) : null}
+    <View className="gap-row">
+      <SectionHeader
+        title={shelf.today ? "今天生日" : "快过生日了"}
+        count={shelf.today ? `${shelf.entries.length} 只` : undefined}
+        action={{
+          label: more > 0 ? `还有 ${more} 只` : "看日历",
+          href: "/calendar",
+          accessibilityLabel: more > 0 ? `还有 ${more} 只，看日历` : "看日历",
+        }}
+      />
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className="-mx-inset"
+        contentContainerClassName="px-inset"
+        contentContainerStyle={{ gap: GAP }}
+        snapToInterval={tile + GAP}
+        snapToAlignment="start"
+        decelerationRate="fast"
+      >
+        {shelf.entries.slice(0, SHOWN).map((entry) => {
+          const caption = shelf.today
+            ? entry.what === "出生"
+              ? "今天出生"
+              : entry.what
+            : `${monthDay(entry.date)}　${entry.what}`;
+          return (
+            <PandaTile
+              key={entry.key}
+              pandaId={entry.pandaId}
+              name={entry.name}
+              caption={caption}
+              width={tile}
+              onPress={() => openPanda(entry.slug)}
+              accessibilityLabel={
+                shelf.today ? `${entry.name}，${entry.what}` : `${entry.name}，${monthDay(entry.date)}${entry.what}`
+              }
+            />
+          );
+        })}
+      </ScrollView>
     </View>
   );
 }

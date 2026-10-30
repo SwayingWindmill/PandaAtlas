@@ -8,14 +8,17 @@ import { usePandaCover } from "@/lib/covers";
 
 type Aspect = "4/3" | "4/5" | "1/1";
 
-const ASPECT = {
-  "4/3": "aspect-[4/3]",
-  "4/5": "aspect-[4/5]",
-  "1/1": "aspect-square",
-} as const;
+const ASPECT = { "4/3": 4 / 3, "4/5": 4 / 5, "1/1": 1 } as const;
 
 function Frame({ aspect, rounded, children }: { aspect: Aspect; rounded: boolean; children: ReactNode }) {
-  return <View className={cn(ASPECT[aspect], "overflow-hidden", rounded && "rounded-xl")}>{children}</View>;
+  return (
+    <View
+      className={cn("overflow-hidden", rounded && "rounded-tile")}
+      style={{ aspectRatio: ASPECT[aspect], borderCurve: "continuous" }}
+    >
+      {children}
+    </View>
+  );
 }
 
 function Empty({ aspect, rounded }: { aspect: Aspect; rounded: boolean }) {

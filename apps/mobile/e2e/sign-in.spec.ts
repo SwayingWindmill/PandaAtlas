@@ -15,6 +15,8 @@ test("a fan signs in with an emailed code, names the account, stays signed in, a
   await page.reload();
   await expect(page.getByText("竹子爱好者").last()).toBeVisible();
 
+  // 退出登录 lives in 设置, behind the gear on 我的.
+  await page.getByRole("button", { name: "设置" }).click();
   await page.getByRole("button", { name: "退出登录" }).click();
   await expect(page.getByRole("button", { name: "登录" })).toBeVisible();
 });

@@ -146,7 +146,7 @@ function GuideRow({ label, value, last }: { label: string; value: string; last: 
           <Text variant="body">{value}</Text>
         </View>
       </View>
-      {last ? null : <View className={`${ICON_INSET} bg-border`} style={{ height: HAIRLINE }} />}
+      {last ? null : <View className="bg-border" style={[{ height: HAIRLINE }, ICON_INSET]} />}
     </View>
   );
 }

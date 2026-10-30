@@ -51,11 +51,11 @@ export function Page({
     >
       {inContent ? (
         <View className="gap-1">
-          <Text variant="largeTitle">{title}</Text>
-          {label ? <Text variant="subhead" className="text-muted-foreground">{label}</Text> : null}
+          <Text variant="display">{title}</Text>
+          {label ? <Text variant="subheadline" className="text-muted-foreground">{label}</Text> : null}
         </View>
       ) : label ? (
-        <Text variant="subhead" className="text-muted-foreground">
+        <Text variant="subheadline" className="text-muted-foreground">
           {label}
         </Text>
       ) : null}

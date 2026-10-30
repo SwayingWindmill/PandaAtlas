@@ -28,8 +28,8 @@ export async function signIn(page: Page, email: string): Promise<void> {
   await page.goto("/me");
   await page.getByRole("button", { name: "登录" }).click();
   await enterCode(page, email);
-  // Only the signed-in 我的 tab offers sign-out; the code screen also shows the address, so it proves nothing.
-  await expect(page.getByRole("button", { name: "退出登录" })).toBeVisible();
+  // Only the signed-in 我的 tab offers 改名字; the code screen also shows the address, so it proves nothing.
+  await expect(page.getByRole("button", { name: "改名字" })).toBeVisible();
 }
 
 /** Completes the sign-in screen the app has just opened; it returns to where the fan came from. */

@@ -42,6 +42,7 @@
   --radius-control: 12px;
   --radius-group: 10px;
   --radius-pill: 999px;
+  --radius-glyph: 8px;
 
   /* Spacing roles on the 4pt scale (numbers like p-4 still work: 4 × 4px). */
   --spacing-hair-gap: 4px;

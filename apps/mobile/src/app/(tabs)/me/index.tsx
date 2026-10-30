@@ -1,91 +1,110 @@
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
-import { ListSection } from "@/components/grouped-list";
-import { NavRow } from "@/components/nav-row";
+import { ListCell, ListSection } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
+import { Bell, FolderHeart, MapPin, Settings } from "@/components/icons";
 import { Page } from "@/components/page";
+import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { type Appearance, useAppearance } from "@/features/appearance/appearance";
 import { statusLabel } from "@/features/corrections/correction";
-import { LegalLinks } from "@/features/legal/legal-links";
 import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
-import { shortDay } from "@/features/engagement/seen";
 import { useFollowed } from "@/features/engagement/favorites";
+import { shortDay } from "@/features/engagement/seen";
 import { loadInbox } from "@/features/notifications/inbox";
 import { unreadCount } from "@/features/notifications/notifications";
-import { PandaRow, openPanda } from "@/features/pandas/panda-row";
+import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
+import { ProfileAvatar } from "@/features/profile/avatar";
+import { NICKNAME_MAX, displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
-import { authedApi } from "@/lib/api";
+import { PandaAvatar } from "@/features/today/followed-strip";
+import { successHaptic } from "@/lib/haptics";
+import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
-const NICKNAME_MAX = 40;
+const AVATAR = 72;
+
+/** The round 设置 button in the corner of the profile card, as Music and the App Store put the account. */
+function SettingsButton() {
+  return (
+    <Pressable
+      onPress={() => router.push("/settings")}
+      role="button"
+      accessibilityLabel="设置"
+      className="absolute right-row top-row size-11 items-center justify-center rounded-full bg-secondary active:opacity-70"
+    >
+      <Icon icon={Settings} size="subhead" tone="label" />
+    </Pressable>
+  );
+}
+
+function ProfileCard({ children }: { children: React.ReactNode }) {
+  return (
+    <View className="gap-stack rounded-card bg-card p-stack" style={{ borderCurve: "continuous" }}>
+      {children}
+      <SettingsButton />
+    </View>
+  );
+}
 
 function SignedOut() {
   return (
-    <View className="items-start gap-3">
-      <Text className="text-muted-foreground">登录后，关注的熊猫和图鉴会保存在你的账号里。</Text>
+    <ProfileCard>
+      <ProfileAvatar name={null} size={AVATAR} />
+      <View className="gap-hair-gap">
+        <Text variant="title">还没有登录</Text>
+        <Text variant="subheadline" className="text-muted-foreground">
+          登录后，关注的熊猫和图鉴会保存在你的账号里。
+        </Text>
+      </View>
       <Button onPress={() => router.push("/sign-in")}>
         <Text>登录</Text>
       </Button>
-    </View>
+    </ProfileCard>
   );
 }
 
 function Profile({ email }: { email: string | null }) {
   const muted = String(useCSSVariable("--color-muted-foreground"));
-  const [profile, setProfile] = useState<{ nickname: string; bio: string } | null>(null);
+  const { profile, rename } = useProfile();
   const [draft, setDraft] = useState("");
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState<"idle" | "saving" | "failed">("idle");
 
-  const load = useCallback(() => {
-    void authedApi.GET("/api/v2/me/profile").then(({ data }) => {
-      if (data) setProfile({ nickname: data.nickname, bio: data.bio });
-    });
-  }, []);
-  useEffect(load, [load]);
-
   async function save() {
-    if (!profile) return;
     setStatus("saving");
-    const { data } = await authedApi.PUT("/api/v2/me/profile", { body: { nickname: draft.trim(), bio: profile.bio } });
-    if (!data) {
+    if (!(await rename(draft))) {
       setStatus("failed");
       return;
     }
-    setProfile({ nickname: data.nickname, bio: data.bio });
+    successHaptic();
     setEditing(false);
     setStatus("idle");
   }
 
-  if (!profile) return <Skeleton className="h-16 w-full" accessibilityLabel="正在加载" />;
-  const name = profile.nickname || email || "熊猫粉丝";
+  if (!profile) return <Skeleton className="h-44 w-full rounded-card" accessibilityLabel="正在加载" />;
+  const name = displayName(profile, email);
 
   return (
-    <View className="gap-3">
-      <View className="flex-row items-center gap-3">
-        <View className="size-12 items-center justify-center rounded-full bg-secondary">
-          <Text className="font-semibold">{name.slice(0, 1).toUpperCase()}</Text>
-        </View>
-        <View className="min-w-0 flex-1">
-          <Text className="font-bold" numberOfLines={1}>
-            {name}
+    <ProfileCard>
+      <ProfileAvatar name={name} size={AVATAR} />
+      <View className="gap-hair-gap">
+        <Text variant="title" numberOfLines={1}>
+          {name}
+        </Text>
+        {email && email !== name ? (
+          <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
+            {email}
           </Text>
-          {email ? (
-            <Text variant="muted" numberOfLines={1}>
-              {email}
-            </Text>
-          ) : null}
-        </View>
+        ) : null}
       </View>
       {editing ? (
-        <View className="gap-2">
+        <View className="gap-stack-tight">
           <TextInput
             value={draft}
             onChangeText={(value) => setDraft(value.slice(0, NICKNAME_MAX))}
@@ -93,21 +112,28 @@ function Profile({ email }: { email: string | null }) {
             placeholderTextColor={muted}
             accessibilityLabel="名字"
             autoFocus
-            className="h-14 rounded-full border-hairline border-input px-5 text-base text-foreground"
+            maxFontSizeMultiplier={2}
+            className="h-11 rounded-control bg-secondary px-row text-body text-foreground"
+            style={{ borderCurve: "continuous" }}
           />
-          <View className="flex-row gap-2">
-            <Button onPress={save} disabled={status === "saving" || draft.trim().length === 0}>
+          <View className="flex-row gap-stack-tight">
+            <Button size="sm" onPress={() => void save()} disabled={status === "saving" || draft.trim().length === 0}>
               <Text>保存</Text>
             </Button>
-            <Button variant="secondary" onPress={() => setEditing(false)}>
+            <Button size="sm" variant="plain" onPress={() => setEditing(false)}>
               <Text>取消</Text>
             </Button>
           </View>
-          {status === "failed" ? <Text className="text-destructive">没能保存，请再试一次。</Text> : null}
+          {status === "failed" ? (
+            <Text variant="footnote" className="text-destructive">
+              没能保存，请再试一次。
+            </Text>
+          ) : null}
         </View>
       ) : (
         <Button
-          variant="secondary"
+          variant="tinted"
+          size="sm"
           className="self-start"
           onPress={() => {
             setDraft(profile.nickname);
@@ -117,26 +143,7 @@ function Profile({ email }: { email: string | null }) {
           <Text>改名字</Text>
         </Button>
       )}
-    </View>
-  );
-}
-
-function AccountLinks() {
-  const [unread, setUnread] = useState(0);
-  useFocusEffect(
-    useCallback(() => {
-      loadInbox()
-        .then((messages) => setUnread(unreadCount(messages)))
-        .catch(() => setUnread(0));
-    }, []),
-  );
-  return (
-    <ListSection>
-      <NavRow label="我的合集" href="/collections" />
-      <NavRow label="去过的地点" href="/visits" />
-      <NavRow label="通知" meta={unread > 0 ? `${unread} 条未读` : undefined} href="/notifications" />
-      <NavRow label="账号与数据" href="/account" last />
-    </ListSection>
+    </ProfileCard>
   );
 }
 
@@ -149,18 +156,53 @@ function Following() {
   if (followed === null || pandas === null) return null;
   const items = pandas.filter((panda) => followed.has(panda.id));
   return (
-    <View className="gap-2">
-      <Text variant="h2">{`关注的熊猫　${items.length}`}</Text>
+    <View className="gap-row">
+      <SectionHeader
+        title="关注的熊猫"
+        count={String(items.length)}
+        action={items.length === 0 ? { label: "找熊猫", href: "/find" } : undefined}
+      />
       {items.length === 0 ? (
-        <Text className="text-muted-foreground">在熊猫资料页点「关注」。</Text>
+        <Text variant="subheadline" className="text-muted-foreground">
+          在熊猫资料页点「关注」，它们会排在这里。
+        </Text>
       ) : (
-        <View>
-          {items.map((item, index) => (
-            <PandaRow key={item.id} item={item} last={index === items.length - 1} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="-mx-inset"
+          contentContainerClassName="gap-row px-inset"
+        >
+          {items.map((panda) => (
+            <PandaAvatar key={panda.id} panda={panda} />
           ))}
-        </View>
+        </ScrollView>
       )}
     </View>
+  );
+}
+
+function Destinations() {
+  const [unread, setUnread] = useState(0);
+  useFocusEffect(
+    useCallback(() => {
+      loadInbox()
+        .then((messages) => setUnread(unreadCount(messages)))
+        .catch(() => setUnread(0));
+    }, []),
+  );
+  return (
+    <ListSection>
+      <ListCell label="我的合集" icon={FolderHeart} href="/collections" />
+      <ListCell label="去过的地点" icon={MapPin} href="/visits" />
+      <ListCell
+        label="通知"
+        icon={Bell}
+        meta={unread > 0 ? `${unread} 条未读` : undefined}
+        href="/notifications"
+        last
+      />
+    </ListSection>
   );
 }
 
@@ -180,38 +222,46 @@ function Contributions() {
   );
   if (!items || items.length === 0) return null;
   return (
-    <View className="gap-2">
-      <Text variant="h2">{`我的纠错　${items.length}`}</Text>
-      <View>
+    <View className="gap-row">
+      <SectionHeader title="我的纠错" count={String(items.length)} />
+      <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
         {items.map((item, index) => {
           const panda = pandas.get(item.targetPandaId);
           const name = panda?.name ?? "熊猫";
           const status = statusLabel(item.status);
           return (
-            <Pressable
-              key={item.submissionId}
-              disabled={!panda}
-              onPress={() => panda && openPanda(panda.slug)}
-              role="button"
-              accessibilityLabel={`${name}，${status}`}
-              className={cn(
-                "gap-0.5 border-t-hairline border-border py-3 active:bg-accent",
-                index === items.length - 1 && "border-b-hairline",
-              )}
-            >
-              <View className="flex-row items-center justify-between gap-3">
-                <Text className="min-w-0 flex-1 font-bold" numberOfLines={1}>
-                  {name}
+            <View key={item.submissionId}>
+              <Pressable
+                disabled={!panda}
+                onPress={() => panda && openPanda(panda.slug)}
+                role="button"
+                accessibilityLabel={`${name}，${status}`}
+                className="min-h-11 gap-hair-gap px-inset py-row active:bg-accent"
+              >
+                <View className="flex-row items-center justify-between gap-row">
+                  <Text variant="headline" className="min-w-0 flex-1" numberOfLines={1}>
+                    {name}
+                  </Text>
+                  <Text
+                    variant="subheadline"
+                    className={cn(
+                      item.status === "accepted" ? "font-semibold text-foreground" : "text-muted-foreground",
+                    )}
+                  >
+                    {status}
+                  </Text>
+                </View>
+                <Text variant="footnote" className="text-muted-foreground tabular-nums">
+                  {`${shortDay(item.submittedAt.slice(0, 10))}提交`}
                 </Text>
-                <Text
-                  className={cn(item.status === "accepted" ? "font-bold text-foreground" : "text-muted-foreground")}
-                >
-                  {status}
-                </Text>
-              </View>
-              <Text variant="muted">{`${shortDay(item.submittedAt.slice(0, 10))}提交`}</Text>
-              {item.statusExplanation ? <Text variant="muted">{item.statusExplanation}</Text> : null}
-            </Pressable>
+                {item.statusExplanation ? (
+                  <Text variant="subheadline" className="text-muted-foreground">
+                    {item.statusExplanation}
+                  </Text>
+                ) : null}
+              </Pressable>
+              {index < items.length - 1 ? <View className="ml-inset bg-border" style={{ height: HAIRLINE }} /> : null}
+            </View>
           );
         })}
       </View>
@@ -219,60 +269,28 @@ function Contributions() {
   );
 }
 
-const APPEARANCES: { value: Appearance; label: string }[] = [
-  { value: "system", label: "跟随系统" },
-  { value: "light", label: "浅色" },
-  { value: "dark", label: "深色" },
-];
-
-function Display() {
-  const [appearance, setAppearance] = useAppearance();
-  return (
-    <View className="gap-3">
-      <Text variant="h2">显示</Text>
-      <ToggleGroup
-        type="single"
-        variant="outline"
-        value={appearance}
-        onValueChange={(value) => {
-          const choice = APPEARANCES.find((item) => item.value === value);
-          if (choice) setAppearance(choice.value);
-        }}
-        accessibilityLabel="外观"
-      >
-        {APPEARANCES.map((item) => (
-          <ToggleGroupItem key={item.value} value={item.value} accessibilityLabel={item.label}>
-            <Text>{item.label}</Text>
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
-      <ListSection>
-        <NavRow label="内容和照片从哪来" href="/about" last />
-      </ListSection>
-    </View>
-  );
-}
-
 export default function MeScreen() {
-  const { state, signOut } = useSession();
+  const { state } = useSession();
   return (
     <Page title="我的" back={false}>
-      {state.status === "loading" ? <Skeleton className="h-16 w-full" accessibilityLabel="正在加载" /> : null}
+      {state.status === "loading" ? (
+        <Skeleton className="h-44 w-full rounded-card" accessibilityLabel="正在加载" />
+      ) : null}
       {state.status === "signedOut" ? <SignedOut /> : null}
       {state.status === "unavailable" ? (
-        <Text className="text-muted-foreground">账号暂时不可用，请稍后再试。</Text>
+        <ProfileCard>
+          <ProfileAvatar name={null} size={AVATAR} />
+          <Text variant="subheadline" className="text-muted-foreground">
+            账号暂时不可用，请稍后再试。
+          </Text>
+        </ProfileCard>
       ) : null}
-      {state.status === "signedIn" ? <Profile email={state.email} /> : null}
-      {state.status === "signedIn" ? <Following /> : null}
-      {state.status === "signedIn" ? <Contributions /> : null}
-      {state.status === "signedIn" ? <AccountLinks /> : null}
-      <Display />
-      <LegalLinks />
-      {state.status === "signedIn" || state.status === "unavailable" ? (
-        <View className="border-t-hairline border-border pt-4">
-          <Button variant="secondary" className="self-start" onPress={() => void signOut()}>
-            <Text>退出登录</Text>
-          </Button>
+      {state.status === "signedIn" ? (
+        <View className="gap-section">
+          <Profile email={state.email} />
+          <Following />
+          <Destinations />
+          <Contributions />
         </View>
       ) : null}
     </Page>

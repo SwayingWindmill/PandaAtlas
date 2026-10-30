@@ -1,6 +1,7 @@
 import * as WebBrowser from "expo-web-browser";
 
 import { ListCell, ListSection } from "@/components/grouped-list";
+import type { LucideIcon } from "@/components/icons";
 import { Text } from "@/components/ui/text";
 
 import { type LegalDocumentId, legalDocuments, signInConsent } from "./legal";
@@ -10,12 +11,13 @@ function openDocument(url: string) {
 }
 
 /** A grouped row that opens a public legal page in the in-app browser. */
-export function LegalRow({ id, last }: { id: LegalDocumentId; last?: boolean }) {
+export function LegalRow({ id, last, glyph }: { id: LegalDocumentId; last?: boolean; glyph?: LucideIcon }) {
   const document = legalDocuments[id];
   return (
     <ListCell
       label={document.label}
       last={last}
+      glyph={glyph}
       onPress={() => openDocument(document.url)}
       role="link"
       accessibilityLabel={document.label}

@@ -12,7 +12,7 @@ export function ManualSection({ title, meta, children }: { title: string; meta?:
         <Text variant="title2">{title}</Text>
         {meta ? <Text variant="footnote" className="text-muted-foreground">{meta}</Text> : null}
       </View>
-      <View className="overflow-hidden rounded-[10px] bg-card">{children}</View>
+      <View className="overflow-hidden rounded-group bg-card">{children}</View>
     </View>
   );
 }
@@ -72,7 +72,7 @@ export function NeighborRows<T extends { slug: string }>({
 }) {
   if (!previous && !next) return null;
   return (
-    <View className="overflow-hidden rounded-[10px] bg-card">
+    <View className="overflow-hidden rounded-group bg-card">
       {previous ? <IndexRow label={labelOf(previous)} detail="上一篇" onPress={() => onOpen(previous)} last={!next} /> : null}
       {next ? <IndexRow label={labelOf(next)} detail="下一篇" onPress={() => onOpen(next)} last /> : null}
     </View>

@@ -131,7 +131,7 @@ export default function CollectionScreen() {
           {members.map((panda, index) => (
             <View key={panda.id} className="flex-row items-center gap-2">
               <View className="min-w-0 flex-1">
-                <PandaRow item={panda} last={index === members.length - 1} />
+                <PandaRow item={panda} first={index === 0} last={index === members.length - 1} />
               </View>
               <Button
                 variant="secondary"

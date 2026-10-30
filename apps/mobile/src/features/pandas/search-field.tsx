@@ -18,7 +18,10 @@ export function SearchField({
 }) {
   const muted = String(useCSSVariable("--color-muted-foreground"));
   return (
-    <View className="h-11 flex-row items-center gap-2 rounded-[10px] bg-card px-3">
+    <View
+      className="h-11 flex-row items-center gap-2 rounded-control bg-card px-3"
+      style={{ borderCurve: "continuous" }}
+    >
       <Icon icon={Search} size="subhead" strokeWidth={2} />
       <TextInput
         value={value}
@@ -30,7 +33,7 @@ export function SearchField({
         autoFocus={autoFocus}
         clearButtonMode="while-editing"
         returnKeyType="search"
-        className="h-full flex-1 text-base text-foreground"
+        className="h-full flex-1 text-body text-foreground"
       />
     </View>
   );
