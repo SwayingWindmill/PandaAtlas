@@ -1,11 +1,10 @@
 import { Image } from "expo-image";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Platform, Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as WebBrowser from "expo-web-browser";
 
-import { BackButton } from "@/components/page";
 import { LoadFailed } from "@/components/load-failed";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -34,9 +33,21 @@ export default function ArticleScreen() {
   const { state, reload } = useLearningCatalog();
   const [compact, setCompact] = useState(false);
 
+  const bar = (
+    <Stack.Screen
+      options={{
+        title: "",
+        headerLargeTitleEnabled: false,
+        headerTransparent: Platform.OS === "ios",
+        headerShadowVisible: false,
+      }}
+    />
+  );
+
   if (state.status !== "ready") {
     return (
-      <View style={{ flex: 1, backgroundColor: theme.paper, paddingTop: insets.top + 12, paddingHorizontal: 20 }}>
+      <View style={{ flex: 1, backgroundColor: theme.paper, paddingHorizontal: 20 }}>
+        {bar}
         {state.status === "loading" ? <Skeleton className="mt-16 h-80 w-full" accessibilityLabel="正在加载" /> : null}
         {state.status === "failed" ? <LoadFailed message="科普暂时打不开。" onRetry={reload} /> : null}
       </View>
@@ -46,9 +57,9 @@ export default function ArticleScreen() {
   const article = entryBySlug(state.catalog.articles, slug);
   if (!article) {
     return (
-      <View style={{ flex: 1, backgroundColor: theme.paper, paddingTop: insets.top + 12, paddingHorizontal: 20, gap: 16 }}>
-        <BackButton />
-        <Text style={{ fontSize: 28, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
+      <View style={{ flex: 1, backgroundColor: theme.paper, paddingHorizontal: 20, gap: 16 }}>
+        {bar}
+        <Text style={{ fontSize: 28, lineHeight: 36, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
           没有这一篇
         </Text>
       </View>
@@ -66,7 +77,17 @@ export default function ArticleScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.paper }}>
+      <Stack.Screen
+        options={{
+          title: compact ? title : "",
+          headerLargeTitleEnabled: false,
+          headerTransparent: Platform.OS === "ios" && !compact,
+          headerShadowVisible: false,
+          headerStyle: compact ? { backgroundColor: theme.paper } : { backgroundColor: "transparent" },
+        }}
+      />
       <ScrollView
+        contentInsetAdjustmentBehavior="never"
         scrollEventThrottle={16}
         onScroll={(event) => {
           const next = event.nativeEvent.contentOffset.y > 300;
@@ -149,30 +170,6 @@ export default function ArticleScreen() {
           </View>
         ) : null}
       </ScrollView>
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          paddingTop: insets.top,
-          paddingHorizontal: 12,
-          paddingBottom: 8,
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 8,
-          backgroundColor: compact ? theme.paper : "transparent",
-          borderBottomWidth: compact ? 0.5 : 0,
-          borderBottomColor: theme.separator,
-        }}
-      >
-        <BackButton />
-        {compact ? (
-          <Text style={{ flex: 1, fontSize: 17, fontWeight: "600", color: theme.ink }} numberOfLines={1}>
-            {title}
-          </Text>
-        ) : null}
-      </View>
     </View>
   );
 }

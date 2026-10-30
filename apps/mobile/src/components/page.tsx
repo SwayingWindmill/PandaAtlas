@@ -1,71 +1,64 @@
-import { router } from "expo-router";
-import { useNavigationState } from "expo-router/react-navigation";
-import type { ReactNode } from "react";
-import { ScrollView, type ScrollViewProps, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, { Path } from "react-native-svg";
-import { useCSSVariable } from "uniwind";
+import { useNavigation } from "expo-router";
+import { useLayoutEffect, type ReactNode } from "react";
+import { Platform, ScrollView, type ScrollViewProps, View } from "react-native";
 
-import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
-
-export function BackButton({ className }: { className?: string }) {
-  const ink = useCSSVariable("--color-foreground");
-  return (
-    <Button
-      variant="secondary"
-      size="icon"
-      className={cn("self-start", className)}
-      onPress={() => router.back()}
-      accessibilityLabel="返回"
-    >
-      <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-        <Path d="M15 5l-7 7 7 7" stroke={String(ink)} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
-      </Svg>
-    </Button>
-  );
-}
 
 /**
- * Back button, a one-line label and the screen's only h1. Tab roots pass `back={false}`: switching
- * tabs is not a history the button should walk.
+ * Where the screen title is drawn.
+ * iOS tab roots use the system large title, which collapses on scroll.
+ * iOS pushed screens use the inline system title, except reading screens (`prominent`),
+ * which keep the large title in the column the way 科普 does.
+ * Web has no large-title bar, so the title is always in the column. Android uses the toolbar.
  */
-export function PageHeader({ label, title, back = true }: { label?: string; title: string; back?: boolean }) {
-  // Subscribed, so the button appears once the push settles; a screen opened directly has nothing beneath it.
-  const canGoBack = useNavigationState((state) => (state?.index ?? 0) > 0);
-  return (
-    <View className="gap-4">
-      {back && canGoBack ? <BackButton /> : null}
-      <View className="gap-1">
-        {label ? (
-          <Text variant="small" className="text-highlight-foreground">
-            {label}
-          </Text>
-        ) : null}
-        <Text variant="h1">{title}</Text>
-      </View>
-    </View>
-  );
+function contentOwnsTitle(prominent: boolean) {
+  if (Platform.OS === "web") return true;
+  return prominent && Platform.OS === "ios";
 }
 
-/** Every scrolling screen's frame: the header, then content. */
 export function Page({
   label,
   title,
-  back,
+  back = true,
+  prominent = false,
   children,
   ...scroll
-}: { label?: string; title: string; back?: boolean; children?: ReactNode } & Omit<ScrollViewProps, "children">) {
-  const insets = useSafeAreaInsets();
+}: {
+  label?: string;
+  title: string;
+  back?: boolean;
+  /** Draw the large title in the column, and leave the bar as a back button. */
+  prominent?: boolean;
+  children?: ReactNode;
+} & Omit<ScrollViewProps, "children">) {
+  const navigation = useNavigation();
+  const inContent = contentOwnsTitle(prominent);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: inContent ? "" : title,
+      headerLargeTitleEnabled: Platform.OS === "ios" && !prominent && !back,
+      headerBackVisible: back,
+      headerShown: !(Platform.OS === "web" && !back),
+    });
+  }, [navigation, title, back, prominent, inContent]);
+
   return (
     <ScrollView
       className="flex-1 bg-background"
-      contentContainerClassName="gap-6 px-5 pb-12"
-      contentContainerStyle={{ paddingTop: insets.top + 12 }}
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerClassName="gap-6 px-4 pb-28"
       {...scroll}
     >
-      <PageHeader label={label} title={title} back={back} />
+      {inContent ? (
+        <View className="gap-1">
+          <Text variant="largeTitle">{title}</Text>
+          {label ? <Text variant="subhead" className="text-muted-foreground">{label}</Text> : null}
+        </View>
+      ) : label ? (
+        <Text variant="subhead" className="text-muted-foreground">
+          {label}
+        </Text>
+      ) : null}
       {children}
     </ScrollView>
   );

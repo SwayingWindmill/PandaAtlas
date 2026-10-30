@@ -1,32 +1,40 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-29T16:40:00Z",
+  "generatedAt": "2026-10-29T18:00:00Z",
   "title": "Design System: 吱熊猫",
   "extensions": {
     "colorMeta": {
-      "canvas": { "role": "neutral", "displayName": "Olive paper", "canonical": "#fcfdfc", "tonalRamp": ["#1d211c", "#60655f", "#b9bcb8", "#d7dad7", "#e7e9e7", "#eff1ef", "#fcfdfc", "#fcfdfc"] },
-      "canvas-dark": { "role": "neutral", "displayName": "Olive paper, dark", "canonical": "#111210", "tonalRamp": ["#111210", "#181917", "#212220", "#282a27", "#383a36", "#5c625b", "#afb5ad", "#eceeec"] },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#1d211c", "tonalRamp": ["#1d211c", "#60655f", "#b9bcb8", "#d7dad7", "#e7e9e7", "#eff1ef", "#fcfdfc", "#fcfdfc"] },
-      "ink-dark": { "role": "neutral", "displayName": "Ink, dark", "canonical": "#eceeec", "tonalRamp": ["#111210", "#212220", "#383a36", "#5c625b", "#afb5ad", "#eceeec", "#eceeec", "#eceeec"] },
-      "muted": { "role": "neutral", "displayName": "Muted ink", "canonical": "#60655f", "tonalRamp": ["#1d211c", "#60655f", "#b9bcb8", "#d7dad7", "#e7e9e7", "#eff1ef", "#fcfdfc", "#fcfdfc"] },
-      "muted-dark": { "role": "neutral", "displayName": "Muted ink, dark", "canonical": "#afb5ad", "tonalRamp": ["#111210", "#383a36", "#5c625b", "#afb5ad", "#eceeec", "#eceeec", "#eceeec", "#eceeec"] },
-      "line": { "role": "neutral", "displayName": "Hairline", "canonical": "#d7dad7", "tonalRamp": ["#1d211c", "#60655f", "#b9bcb8", "#d7dad7", "#e7e9e7", "#eff1ef", "#fcfdfc", "#fcfdfc"] },
-      "line-dark": { "role": "neutral", "displayName": "Hairline, dark", "canonical": "#383a36", "tonalRamp": ["#111210", "#212220", "#282a27", "#383a36", "#5c625b", "#afb5ad", "#eceeec", "#eceeec"] },
-      "surface-subtle": { "role": "neutral", "displayName": "Subtle surface", "canonical": "#eff1ef", "tonalRamp": ["#1d211c", "#60655f", "#b9bcb8", "#d7dad7", "#e7e9e7", "#eff1ef", "#fcfdfc", "#fcfdfc"] },
-      "surface-subtle-dark": { "role": "neutral", "displayName": "Subtle surface, dark", "canonical": "#212220", "tonalRamp": ["#111210", "#181917", "#212220", "#282a27", "#383a36", "#5c625b", "#afb5ad", "#eceeec"] },
-      "jade": { "role": "accent", "displayName": "Jade", "canonical": "#29a383", "tonalRamp": ["#0d2d23", "#208368", "#29a383", "#1fd8a4", "#e6f7ed", "#e6f7ed", "#e6f7ed", "#e6f7ed"] },
-      "warning": { "role": "warning", "displayName": "Amber", "canonical": "#ab6400", "tonalRamp": ["#ab6400", "#ffca16", "#ffca16", "#ffca16", "#ffca16", "#ffca16", "#ffca16", "#ffca16"] },
-      "destructive": { "role": "danger", "displayName": "Red", "canonical": "#ce2c31", "tonalRamp": ["#ce2c31", "#ff9592", "#ff9592", "#ff9592", "#ff9592", "#ff9592", "#ff9592", "#ff9592"] }
+      "grouped": { "role": "neutral", "displayName": "Grouped background", "canonical": "#F2F2F7", "tonalRamp": ["#000000", "#1C1C1E", "#2C2C2E", "#636366", "#C6C6C8", "#E5E5EA", "#F2F2F7", "#FFFFFF"] },
+      "grouped-dark": { "role": "neutral", "displayName": "Grouped background, dark", "canonical": "#000000", "tonalRamp": ["#000000", "#1C1C1E", "#2C2C2E", "#3A3A3C", "#636366", "#AEAEB2", "#FFFFFF", "#FFFFFF"] },
+      "surface": { "role": "neutral", "displayName": "Elevated group", "canonical": "#FFFFFF", "tonalRamp": ["#000000", "#1C1C1E", "#F2F2F7", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "surface-dark": { "role": "neutral", "displayName": "Elevated group, dark", "canonical": "#1C1C1E", "tonalRamp": ["#000000", "#1C1C1E", "#2C2C2E", "#3A3A3C", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "label": { "role": "neutral", "displayName": "Label", "canonical": "#000000", "tonalRamp": ["#000000", "#636366", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "label-dark": { "role": "neutral", "displayName": "Label, dark", "canonical": "#FFFFFF", "tonalRamp": ["#000000", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "secondary-label": { "role": "neutral", "displayName": "Secondary label", "canonical": "#636366", "tonalRamp": ["#000000", "#636366", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "secondary-label-dark": { "role": "neutral", "displayName": "Secondary label, dark", "canonical": "#AEAEB2", "tonalRamp": ["#000000", "#636366", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "separator": { "role": "neutral", "displayName": "Separator", "canonical": "#C6C6C8", "tonalRamp": ["#38383A", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8"] },
+      "separator-dark": { "role": "neutral", "displayName": "Separator, dark", "canonical": "#38383A", "tonalRamp": ["#000000", "#1C1C1E", "#38383A", "#636366", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "tint": { "role": "primary", "displayName": "Jade", "canonical": "#165C3C", "tonalRamp": ["#0B2A1C", "#165C3C", "#7DCAA4", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8"] },
+      "tint-dark": { "role": "primary", "displayName": "Pale jade", "canonical": "#7DCAA4", "tonalRamp": ["#0B2A1C", "#165C3C", "#7DCAA4", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8"] },
+      "button": { "role": "primary", "displayName": "Button fill", "canonical": "#165C3C", "tonalRamp": ["#0B2A1C", "#165C3C", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "button-label": { "role": "neutral", "displayName": "Button label", "canonical": "#FFFFFF", "tonalRamp": ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "fill": { "role": "neutral", "displayName": "System fill", "canonical": "#E5E5EA", "tonalRamp": ["#2C2C2E", "#D1D1D6", "#E5E5EA", "#F2F2F7", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "fill-dark": { "role": "neutral", "displayName": "System fill, dark", "canonical": "#2C2C2E", "tonalRamp": ["#000000", "#1C1C1E", "#2C2C2E", "#3A3A3C", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "warning": { "role": "warning", "displayName": "Warning", "canonical": "#B25000", "tonalRamp": ["#B25000", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A"] },
+      "warning-dark": { "role": "warning", "displayName": "Warning, dark", "canonical": "#FF9F0A", "tonalRamp": ["#B25000", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A"] },
+      "destructive": { "role": "danger", "displayName": "Destructive", "canonical": "#CE2C31", "tonalRamp": ["#CE2C31", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961"] },
+      "destructive-dark": { "role": "danger", "displayName": "Destructive, dark", "canonical": "#FF6961", "tonalRamp": ["#CE2C31", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961"] }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "The screen's only title." },
-      "title": { "displayName": "Title", "purpose": "Section headings." },
-      "body": { "displayName": "Body", "purpose": "Sentences, names, and buttons." },
-      "meta": { "displayName": "Meta", "purpose": "The line under a row, a label, the version." }
+      "large-title": { "displayName": "Large Title", "purpose": "Tab roots and 科普 titles in the column." },
+      "title1": { "displayName": "Title 1", "purpose": "A featured title or the screen's main figure." },
+      "title2": { "displayName": "Title 2", "purpose": "A section in a reading column." },
+      "body": { "displayName": "Body", "purpose": "Names, sentences, and buttons." },
+      "footnote": { "displayName": "Footnote", "purpose": "Group headers, captions, the version line." }
     },
     "shadows": [],
     "motion": [
-      { "name": "answer", "value": "250ms ease-out", "purpose": "The quiz result fades in. Nothing else on these screens animates in." }
+      { "name": "system", "value": "system push, sheet, and tab transitions", "purpose": "Navigation uses the platform transition. The quiz answer fades in over 250ms." }
     ],
     "breakpoints": [
       { "name": "phone", "value": "390px" }
@@ -37,63 +45,72 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The one decision on a screen. Ink on paper.",
-      "html": "<button class=\"ds-btn-primary\">看宝力的资料</button>",
-      "css": ".ds-btn-primary { background: #1d211c; color: #fcfdfc; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: 'Noto Sans SC', sans-serif; font-size: 16px; font-weight: 700; } .ds-btn-primary:hover { background: #60655f; } .ds-btn-primary:focus-visible { outline: 2px solid #29a383; outline-offset: 2px; }"
+      "description": "The one filled action. Panda green, white label.",
+      "html": "<button class=\"ds-btn-primary\">看资料</button>",
+      "css": ".ds-btn-primary { background: #165C3C; color: #fff; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; font-size: 17px; font-weight: 600; } .ds-btn-primary:hover { background: #176b54; } .ds-btn-primary:focus-visible { outline: 2px solid #165C3C; outline-offset: 2px; }"
     },
     {
       "name": "Secondary Button",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "The alternate action beside the primary.",
-      "html": "<button class=\"ds-btn-secondary\">再来一次</button>",
-      "css": ".ds-btn-secondary { background: #eff1ef; color: #1d211c; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: 'Noto Sans SC', sans-serif; font-size: 16px; font-weight: 700; } .ds-btn-secondary:hover { background: #e7e9e7; } .ds-btn-secondary:focus-visible { outline: 2px solid #29a383; outline-offset: 2px; }"
+      "description": "The alternate action. System fill, no tint.",
+      "html": "<button class=\"ds-btn-secondary\">重试</button>",
+      "css": ".ds-btn-secondary { background: #E5E5EA; color: #000; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; font-size: 17px; font-weight: 600; } .ds-btn-secondary:hover { background: #D1D1D6; } .ds-btn-secondary:focus-visible { outline: 2px solid #165C3C; outline-offset: 2px; }"
     },
     {
-      "name": "Index Row",
+      "name": "Grouped Cell",
       "kind": "custom",
-      "refersTo": "plate",
-      "description": "One entry in the manual. The name is the control.",
-      "html": "<a class=\"ds-row\" href=\"#\"><span class=\"ds-row-name\">黑眼圈</span><span class=\"ds-row-meta\">大熊猫眼周的黑斑叫眼斑。</span></a>",
-      "css": ".ds-row { display: flex; flex-direction: column; justify-content: center; min-height: 44px; padding: 12px 0; border-top: 0.5px solid #d7dad7; text-decoration: none; color: #1d211c; font-family: 'Noto Sans SC', sans-serif; } .ds-row-name { font-size: 16px; font-weight: 700; } .ds-row-meta { margin-top: 4px; font-size: 12px; color: #60655f; } .ds-row:hover { background: #e7e9e7; } .ds-row:focus-visible { outline: 2px solid #29a383; }"
+      "refersTo": "grouped-cell",
+      "description": "One row in an inset group. The whole row is the control.",
+      "html": "<div class=\"ds-group\"><a class=\"ds-cell\" href=\"#\"><span><span class=\"ds-cell-name\">认识大熊猫</span><span class=\"ds-cell-detail\">科普</span></span><span class=\"ds-chevron\"></span></a></div>",
+      "css": ".ds-group { background: #fff; border-radius: 10px; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; } .ds-cell { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 12px 16px; text-decoration: none; color: #000; } .ds-cell-name { display: block; font-size: 17px; line-height: 26px; } .ds-cell-detail { display: block; margin-top: 2px; font-size: 13px; line-height: 18px; color: #636366; } .ds-chevron { width: 8px; height: 8px; border-right: 1.6px solid #636366; border-top: 1.6px solid #636366; transform: rotate(45deg); } .ds-cell:hover { background: #D1D1D6; } .ds-cell:focus-visible { outline: 2px solid #165C3C; outline-offset: -2px; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "grouped-cell",
+      "description": "The 找熊猫 search. Filled, 10px corners, no stroke.",
+      "html": "<label class=\"ds-search\"><span class=\"ds-search-icon\"></span><input placeholder=\"名字或基地\" aria-label=\"搜索熊猫\" /></label>",
+      "css": ".ds-search { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; background: #fff; border-radius: 10px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; } .ds-search input { flex: 1; border: none; background: transparent; font-size: 17px; outline: none; } .ds-search input::placeholder { color: #636366; } .ds-search-icon { width: 14px; height: 14px; border: 1.6px solid #636366; border-radius: 50%; position: relative; } .ds-search:focus-within { outline: 2px solid #165C3C; outline-offset: 2px; }"
     },
     {
       "name": "Plate",
       "kind": "custom",
-      "refersTo": "plate",
+      "refersTo": "grouped-cell",
       "description": "A published photograph, edge to edge, captioned underneath.",
-      "html": "<figure class=\"ds-plate\"><div class=\"ds-plate-photo\"></div><figcaption><strong>宝力</strong><span>两颊不如青宝蓬松。</span></figcaption></figure>",
-      "css": ".ds-plate { margin: 0; font-family: 'Noto Sans SC', sans-serif; color: #1d211c; } .ds-plate-photo { aspect-ratio: 4 / 5; background: #eff1ef; } .ds-plate figcaption { padding: 12px 20px 0; } .ds-plate strong { display: block; font-size: 20px; font-weight: 800; } .ds-plate span { display: block; margin-top: 4px; font-size: 16px; line-height: 1.75; }"
+      "html": "<figure class=\"ds-plate\"><div class=\"ds-plate-photo\"></div><figcaption>宝力　两颊不如青宝蓬松。</figcaption></figure>",
+      "css": ".ds-plate { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; color: #000; } .ds-plate-photo { aspect-ratio: 4 / 5; background: #E5E5EA; } .ds-plate figcaption { padding: 8px 16px 0; font-size: 13px; line-height: 18px; color: #636366; }"
     }
   ],
   "narrative": {
-    "northStar": "A plate in the atlas.",
-    "overview": "吱熊猫 is a book of named pandas, not a kit of cards. The page is olive paper. A hairline separates one fact from the next. When a screen is about one animal, that animal's photograph is the page: edge to edge, with the name and the distinguishing mark set underneath in the column, never on a scrim.",
+    "northStar": "A photograph on the system shelf.",
+    "overview": "吱熊猫 is a phone atlas of named giant pandas. The shelf is the iOS 26 interface a fan already knows: a large title, a system back chevron, a Liquid Glass tab bar, and inset grouped lists. The thing on the shelf is a photograph of one animal. Green is the tint on the selected tab, a link, and the filled button. The website keeps its olive paper. The app does not.",
     "keyCharacteristics": [
-      "One photograph, full width, captioned in the column.",
-      "Lists are hairline rows. A row is a name, then at most one muted line.",
-      "Four sizes only: 32, 20, 16, 12. Noto Sans SC.",
-      "Jade is rare, and the 科普 screens do not use it.",
-      "Dark mode is the same structure on the dark olive ground."
+      "Tab roots use a 34px large title that collapses into the bar on iOS.",
+      "Lists that navigate are inset groups with a 10px radius.",
+      "Body is 17px, with line height opened for Chinese.",
+      "One tint, the panda green. Photographs carry the rest of the color.",
+      "Dark mode is true black grouped background and elevated #1C1C1E groups."
     ],
     "rules": [
-      { "name": "The Paper Rule", "body": "The ground is olive-1 (`#fcfdfc` light, `#111210` dark). Do not introduce a second neutral, a gradient ground, or true black.", "section": "colors" },
-      { "name": "The Accent Rule", "body": "Jade does not fill a button, a card, or a progress bar. A primary action is ink on paper, reversed.", "section": "colors" },
-      { "name": "The Four Size Rule", "body": "If a hierarchy is weak, change weight, color, or space. Do not add a size.", "section": "typography" },
-      { "name": "The Plate Rule", "body": "The first figure on 科普 is one published photograph of a named panda. The caption sits under the picture. Text is not placed on the picture.", "section": "layout" },
-      { "name": "The Flat Rule", "body": "A hairline or a change of type does the separating. A shadow and a border are not combined, and a resting row has neither a shadow nor a fill.", "section": "elevation" }
+      { "name": "The Tint Rule", "body": "Green marks what a fan can do: the selected tab, a link, the one filled button, a correct quiz pick. It does not fill a card or sit above a title.", "section": "colors" },
+      { "name": "The Shelf Rule", "body": "Page ground is the system grouped background. Do not bring the website's olive paper onto a screen.", "section": "colors" },
+      { "name": "The System Style Rule", "body": "Pick an iOS text style. Do not invent a size between them.", "section": "typography" },
+      { "name": "The Plate Rule", "body": "The first figure on a panda or a 科普 article is one published photograph. The caption sits under the picture. Text is not placed on the picture.", "section": "layout" },
+      { "name": "The System Material Rule", "body": "Blur and glass belong to the tab bar and the navigation bar, drawn by the system. A card does not get its own glass.", "section": "elevation" }
     ],
     "dos": [
       "Do use a published photograph of the panda the sentence is about.",
       "Do keep draft 科普 out of the public catalog.",
-      "Do reveal quiz names only after the answer, and do not repeat the choice photo as the question."
+      "Do use the system back button and the system tab bar.",
+      "Do test light and dark."
     ],
     "donts": [
-      "Don't put an icon in a tinted square.",
-      "Don't use a gradient hero, a scrim, or glass.",
-      "Don't use the same rounded card for every fact.",
       "Don't put a kicker above the title.",
-      "Don't introduce a color, a type size, or a shadow the rest of the atlas does not already use."
+      "Don't put an icon in a tinted square.",
+      "Don't paint a card, a progress track, or a hero with the green tint.",
+      "Don't hand-roll a glass panel. The system bar is the only glass.",
+      "Don't bring the website's olive ground or custom back button onto the app."
     ]
   }
 }

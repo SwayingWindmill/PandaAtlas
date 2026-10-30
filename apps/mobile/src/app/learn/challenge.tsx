@@ -50,7 +50,7 @@ export default function FaceChallengeScreen() {
 
   if (state.status !== "ready" || (pandas === null && !pandasFailed)) {
     return (
-      <Page title="看照片认熊猫">
+      <Page title="看照片认熊猫" prominent>
         {state.status === "failed" ? (
           <LoadFailed message="科普暂时打不开。" onRetry={reload} />
         ) : (
@@ -72,7 +72,7 @@ export default function FaceChallengeScreen() {
 
   if (!round) {
     return (
-      <Page title="看照片认熊猫">
+      <Page title="看照片认熊猫" prominent>
         <Text className="text-muted-foreground">
           {state.catalog.challenges.length === 0 ? "现在还没有认脸挑战。" : "这道题的熊猫还不在当前资料里。"}
         </Text>
@@ -82,7 +82,7 @@ export default function FaceChallengeScreen() {
 
   if (!photosReady || pandas === null) {
     return (
-      <Page title="看照片认熊猫">
+      <Page title="看照片认熊猫" prominent>
         <Skeleton className="h-64 w-full" accessibilityLabel="正在出题" />
       </Page>
     );
@@ -118,14 +118,14 @@ export default function FaceChallengeScreen() {
   }
 
   return (
-    <Page title={presented.title} contentContainerClassName="gap-6 px-5 pb-16">
+    <Page title={presented.title} prominent contentContainerClassName="gap-6 px-4 pb-16">
       <View className="flex-row items-center justify-between">
         <Text variant="muted">{`${index + 1} / ${playable.length}`}</Text>
         <Text variant="muted">{`得分 ${correctCount}`}</Text>
       </View>
 
       {presented.questionPhotoUrl ? (
-        <View className="-mx-5 aspect-[4/3] overflow-hidden">
+        <View className="-mx-4 aspect-[4/3] overflow-hidden">
           <Image
             source={presented.questionPhotoUrl}
             style={{ width: "100%", height: "100%" }}
@@ -152,8 +152,8 @@ export default function FaceChallengeScreen() {
             >
               <View
                 className={cn(
-                  "overflow-hidden border-hairline",
-                  isAnswer ? "border-foreground" : wrongPick ? "border-destructive" : "border-border",
+                  "overflow-hidden rounded-[12px] border-2",
+                  isAnswer ? "border-primary" : wrongPick ? "border-destructive" : "border-transparent",
                 )}
               >
                 <ChoicePhoto url={option.photoUrl} pandaId={option.pandaId} label={label} />

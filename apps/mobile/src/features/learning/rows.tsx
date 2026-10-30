@@ -2,46 +2,51 @@ import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
 import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
 
-/** A manual section: the heading, then hairline rows. Space above the heading comes from the page. */
+/** A reading section: the heading, then an inset group. */
 export function ManualSection({ title, meta, children }: { title: string; meta?: string; children: ReactNode }) {
   return (
     <View className="gap-2">
-      <View className="flex-row items-baseline justify-between gap-3">
-        <Text variant="h2">{title}</Text>
-        {meta ? <Text variant="muted">{meta}</Text> : null}
+      <View className="flex-row items-baseline justify-between gap-3 px-4">
+        <Text variant="title2">{title}</Text>
+        {meta ? <Text variant="footnote" className="text-muted-foreground">{meta}</Text> : null}
       </View>
-      <View>{children}</View>
+      <View className="overflow-hidden rounded-[10px] bg-card">{children}</View>
     </View>
   );
 }
 
-/** One contents line. The accessible name is the entry, not the section. */
+/** One contents line inside a grouped section. */
 export function IndexRow({ label, detail, onPress, last }: { label: string; detail?: string; onPress: () => void; last: boolean }) {
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      onPress={onPress}
-      className={cn("min-h-11 justify-center border-t-hairline border-border py-3 active:bg-accent", last && "border-b-hairline")}
-    >
-      <Text className="font-bold">{label}</Text>
-      {detail ? (
-        <Text variant="muted" className="mt-1" numberOfLines={2}>
-          {detail}
-        </Text>
-      ) : null}
-    </Pressable>
+    <View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        onPress={onPress}
+        className="min-h-11 justify-center px-4 py-3 active:bg-accent"
+      >
+        <Text variant="body">{label}</Text>
+        {detail ? (
+          <Text variant="footnote" className="text-muted-foreground" numberOfLines={2}>
+            {detail}
+          </Text>
+        ) : null}
+      </Pressable>
+      {last ? null : <View className="ml-4 h-hairline bg-border" />}
+    </View>
   );
 }
 
-/** A face-guide mark: a 12px label over the sentence, ruled like the profile fact list. */
+/** A face-guide mark: the name, then the sentence, inside the group. */
 export function DefinitionRow({ label, body, last }: { label: string; body: string; last: boolean }) {
   return (
-    <View className={cn("gap-1 border-t-hairline border-border py-3", last && "border-b-hairline")}>
-      <Text variant="muted">{label}</Text>
-      <Text className="leading-6">{body}</Text>
+    <View>
+      <View className="gap-1 px-4 py-3">
+        <Text variant="footnote" className="text-muted-foreground">{label}</Text>
+        <Text variant="body">{body}</Text>
+      </View>
+      {last ? null : <View className="ml-4 h-hairline bg-border" />}
     </View>
   );
 }
@@ -66,10 +71,8 @@ export function NeighborRows<T extends { slug: string }>({
 }) {
   if (!previous && !next) return null;
   return (
-    <View>
-      {previous ? (
-        <IndexRow label={labelOf(previous)} detail="上一篇" onPress={() => onOpen(previous)} last={!next} />
-      ) : null}
+    <View className="overflow-hidden rounded-[10px] bg-card">
+      {previous ? <IndexRow label={labelOf(previous)} detail="上一篇" onPress={() => onOpen(previous)} last={!next} /> : null}
       {next ? <IndexRow label={labelOf(next)} detail="下一篇" onPress={() => onOpen(next)} last /> : null}
     </View>
   );

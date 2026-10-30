@@ -1,10 +1,9 @@
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
-import { FlatList, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { FlatList, Platform, View } from "react-native";
 
+import { ListSection } from "@/components/grouped-list";
 import { LoadFailed } from "@/components/load-failed";
 import { NavRow } from "@/components/nav-row";
-import { PageHeader } from "@/components/page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -15,7 +14,6 @@ import { type PandaListItem, loadPandaIndex, searchPandas } from "@/features/pan
 import { SearchField } from "@/features/pandas/search-field";
 
 export default function FindScreen() {
-  const insets = useSafeAreaInsets();
   const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [query, setQuery] = useState("");
@@ -50,42 +48,42 @@ export default function FindScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <View className="gap-4 px-5 pb-3" style={{ paddingTop: insets.top + 12 }}>
-        <PageHeader title="找熊猫" back={false} />
-        <SearchField value={query} onChange={setQuery} />
-        {chips.length > 0 ? (
-          <ToggleGroup
-            type="single"
-            variant="outline"
-            value={area}
-            onValueChange={(value) => setArea(value ?? "全部")}
-            accessibilityLabel="按地方看"
-          >
-            {["全部", ...chips].map((chip) => (
-              <ToggleGroupItem key={chip} value={chip} accessibilityLabel={chip}>
-                <Text>{chip}</Text>
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        ) : null}
-      </View>
-
       {pandas ? (
         <FlatList
           data={results}
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => <PandaRow item={item} last={index === results.length - 1} />}
-          contentContainerClassName="px-5 pb-12"
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerClassName="px-4 pb-24"
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={
-            deferredQuery.trim() || area !== "全部" ? undefined : (
-              <View className="mb-3">
-                <NavRow label="熊猫在哪里" href="/map" />
-                {hasInstitutions ? <NavRow label="基地和动物园" href="/institutions" /> : null}
-                <NavRow label="查两只熊猫的关系" href="/relationship" last />
-              </View>
-            )
+            <View className="gap-4 pb-3">
+              {Platform.OS === "web" ? <Text variant="largeTitle">找熊猫</Text> : null}
+              <SearchField value={query} onChange={setQuery} />
+              {chips.length > 0 ? (
+                <ToggleGroup
+                  type="single"
+                  variant="outline"
+                  value={area}
+                  onValueChange={(value) => setArea(value ?? "全部")}
+                  accessibilityLabel="按地方看"
+                >
+                  {["全部", ...chips].map((chip) => (
+                    <ToggleGroupItem key={chip} value={chip} accessibilityLabel={chip}>
+                      <Text>{chip}</Text>
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              ) : null}
+              {deferredQuery.trim() || area !== "全部" ? null : (
+                <ListSection>
+                  <NavRow label="熊猫在哪里" href="/map" />
+                  {hasInstitutions ? <NavRow label="基地和动物园" href="/institutions" /> : null}
+                  <NavRow label="查两只熊猫的关系" href="/relationship" last />
+                </ListSection>
+              )}
+            </View>
           }
           ListEmptyComponent={<Text className="py-4 text-muted-foreground">{`没有找到「${deferredQuery.trim()}」`}</Text>}
         />

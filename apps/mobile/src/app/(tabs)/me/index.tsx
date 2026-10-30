@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
+import { ListSection } from "@/components/grouped-list";
 import { NavRow } from "@/components/nav-row";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
@@ -69,8 +70,8 @@ function Profile({ email }: { email: string | null }) {
   return (
     <View className="gap-3">
       <View className="flex-row items-center gap-3">
-        <View className="size-12 items-center justify-center rounded-full bg-primary">
-          <Text className="font-bold text-primary-foreground">{name.slice(0, 1).toUpperCase()}</Text>
+        <View className="size-12 items-center justify-center rounded-full bg-secondary">
+          <Text className="font-semibold">{name.slice(0, 1).toUpperCase()}</Text>
         </View>
         <View className="min-w-0 flex-1">
           <Text className="font-bold" numberOfLines={1}>
@@ -130,12 +131,12 @@ function AccountLinks() {
     }, []),
   );
   return (
-    <View>
+    <ListSection>
       <NavRow label="我的合集" href="/collections" />
       <NavRow label="去过的地点" href="/visits" />
       <NavRow label="通知" meta={unread > 0 ? `${unread} 条未读` : undefined} href="/notifications" />
       <NavRow label="账号与数据" href="/account" last />
-    </View>
+    </ListSection>
   );
 }
 
@@ -245,7 +246,9 @@ function Display() {
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
-      <NavRow label="内容和照片从哪来" href="/about" last />
+      <ListSection>
+        <NavRow label="内容和照片从哪来" href="/about" last />
+      </ListSection>
     </View>
   );
 }

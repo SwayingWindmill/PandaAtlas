@@ -8,7 +8,10 @@ import { setFollowing, useFollowed } from "@/features/engagement/favorites";
 import { type Seen, loadSeen, localToday, markSeen, shortDay, unmarkSeen } from "@/features/engagement/seen";
 import { useSession } from "@/features/session/session";
 
-/** 关注 and 见过 on a living panda's profile; signed-out fans are sent to sign in first. */
+/**
+ * 关注 and 见过 under a living panda's name, as iOS pairs a primary and a secondary action:
+ * 关注 is a tinted capsule, 见过 is plain tint text. Signed-out fans are sent to sign in first.
+ */
 export function PandaActions({ pandaId, name }: { pandaId: string; name: string }) {
   const { state } = useSession();
   const followed = useFollowed();
@@ -44,36 +47,37 @@ export function PandaActions({ pandaId, name }: { pandaId: string; name: string 
 
   if (!signedIn) {
     return (
-      <View className="flex-row gap-2">
-        <Button className="flex-1" onPress={() => router.push("/sign-in")}>
-          <Text>关注</Text>
+      <View className="flex-row flex-wrap items-center gap-2">
+        <Button variant="tinted" size="sm" className="min-w-24 px-5" accessibilityLabel={`关注${name}`} onPress={() => router.push("/sign-in")}>
+          <Text className="text-body font-semibold">关注</Text>
         </Button>
-        <Button variant="secondary" className="flex-1" onPress={() => router.push("/sign-in")}>
-          <Text>见过</Text>
+        <Button variant="plain" size="sm" accessibilityLabel={`记下见过${name}`} onPress={() => router.push("/sign-in")}>
+          <Text className="text-body font-semibold">见过</Text>
         </Button>
       </View>
     );
   }
 
   return (
-    <View className="flex-row gap-2">
+    <View className="flex-row flex-wrap items-center gap-2">
       <Button
-        variant={following ? "secondary" : "default"}
-        className="flex-1"
+        variant={following ? "secondary" : "tinted"}
+        size="sm"
+        className="min-w-24 px-5"
         disabled={followed === null}
         accessibilityLabel={following ? `已关注${name}，点按取消` : `关注${name}`}
         onPress={() => void setFollowing(pandaId, !following)}
       >
-        <Text>{following ? "已关注" : "关注"}</Text>
+        <Text className="text-body font-semibold">{following ? "已关注" : "关注"}</Text>
       </Button>
       <Button
-        variant="secondary"
-        className="flex-1"
+        variant="plain"
+        size="sm"
         disabled={busy || seen === undefined}
         accessibilityLabel={seen ? `${seen.seenOn ? shortDay(seen.seenOn) : ""}见过${name}，点按取消` : `记下见过${name}`}
         onPress={() => void toggleSeen()}
       >
-        <Text>{seen ? `见过${seen.seenOn ? `　${shortDay(seen.seenOn)}` : ""}` : "见过"}</Text>
+        <Text className="text-body font-semibold">{seen ? `见过${seen.seenOn ? `　${shortDay(seen.seenOn)}` : ""}` : "见过"}</Text>
       </Button>
     </View>
   );

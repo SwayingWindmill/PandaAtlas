@@ -1,4 +1,4 @@
-import { useUniwind } from "uniwind";
+import { useIOSColors } from "@/lib/theme";
 
 export interface ReadingTheme {
   dark: boolean;
@@ -12,21 +12,20 @@ export interface ReadingTheme {
 }
 
 /**
- * 科普 articles use iOS system colors. Apple News and Settings read on white and true black,
- * not the atlas olive, so a long column keeps the contrast a phone reader expects.
- * The rest of the app stays on the olive tokens.
+ * 科普 reads on the same iOS system colors as the rest of the app.
+ * The index sits on the grouped background. An article column sits on system background,
+ * white in light mode and black in dark mode.
  */
 export function useReadingTheme(): ReadingTheme {
-  const { theme } = useUniwind();
-  const dark = theme === "dark";
+  const colors = useIOSColors();
   return {
-    dark,
-    canvas: dark ? "#000000" : "#F2F2F7",
-    paper: dark ? "#000000" : "#FFFFFF",
-    card: dark ? "#1C1C1E" : "#FFFFFF",
-    ink: dark ? "#FFFFFF" : "#000000",
-    secondary: dark ? "#AEAEB2" : "#636366",
-    separator: dark ? "#38383A" : "#C6C6C8",
-    fill: dark ? "#1C1C1E" : "#F2F2F7",
+    dark: colors.scheme === "dark",
+    canvas: colors.groupedBackground,
+    paper: colors.background,
+    card: colors.card,
+    ink: colors.label,
+    secondary: colors.secondaryLabel,
+    separator: colors.separator,
+    fill: colors.groupedBackground,
   };
 }

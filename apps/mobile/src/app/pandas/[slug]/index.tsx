@@ -1,233 +1,226 @@
 import { Image } from "expo-image";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, { Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
+import { GlassButton } from "@/components/glass-button";
+import { ListCell, ListSection } from "@/components/grouped-list";
 import { LoadFailed } from "@/components/load-failed";
-import { BackButton } from "@/components/page";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PandaActions } from "@/features/engagement/panda-actions";
 import { relativesOf } from "@/features/family/family";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type Profile, loadProfile, longDate } from "@/features/pandas/profile";
-import { cn } from "@/lib/utils";
+import { UNKNOWN } from "@/features/pandas/profile-facts";
 
-function ShareButton({ profile, className }: { profile: Profile; className?: string }) {
-  const ink = String(useCSSVariable("--color-foreground"));
+/** Hero height below the status bar. The photo runs under the status bar too. */
+const HERO = 340;
+
+function goBack() {
+  if (router.canGoBack()) router.back();
+  else router.replace("/");
+}
+
+function correct(slug: string) {
+  router.push({ pathname: "/pandas/[slug]/correct", params: { slug } });
+}
+
+/** The top bar over the photo: Liquid Glass back and share, fixed while the page scrolls. */
+function Toolbar({ slug }: { slug?: string }) {
+  const insets = useSafeAreaInsets();
   return (
-    <Button
-      variant="secondary"
-      size="icon"
-      className={className}
-      accessibilityLabel="分享"
-      onPress={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })}
+    <View
+      pointerEvents="box-none"
+      className="absolute right-0 left-0 flex-row justify-between px-4"
+      style={{ top: insets.top + 6 }}
     >
-      <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={ink} strokeWidth={2} strokeLinecap="round">
-        <Path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6" />
-      </Svg>
-    </Button>
-  );
-}
-
-function Facts({ facts }: { facts: Profile["facts"] }) {
-  // Two facts per row, the way an infobox reads.
-  const rows: Profile["facts"][] = [];
-  for (let index = 0; index < facts.length; index += 2) rows.push(facts.slice(index, index + 2));
-  return (
-    <View>
-      {rows.map((row, rowIndex) => (
-        <View key={row.map((fact) => fact.label).join("/")} className="flex-row gap-5">
-          {[0, 1].map((column) => {
-            const fact = row[column];
-            return (
-              <View
-                key={column}
-                className={cn(
-                  "flex-1 py-2.5",
-                  fact && "border-t-hairline border-border",
-                  fact && rowIndex === rows.length - 1 && "border-b-hairline",
-                )}
-              >
-                {fact ? (
-                  <>
-                    <Text variant="muted">{fact.label}</Text>
-                    <Text className="font-bold">{fact.value}</Text>
-                  </>
-                ) : null}
-              </View>
-            );
-          })}
-        </View>
-      ))}
-    </View>
-  );
-}
-
-/** A section with nothing published yet: says so, and offers 纠错 for the panda. */
-function Unknown({ slug, ask }: { slug: string; ask?: string }) {
-  return (
-    <View className="items-start gap-2">
-      <Text className="text-muted-foreground">暂无记录</Text>
-      {ask ? (
-        <Button variant="secondary" onPress={() => router.push({ pathname: "/pandas/[slug]/correct", params: { slug } })}>
-          <Text>{ask}</Text>
-        </Button>
+      <GlassButton sf="chevron.backward" md="arrow_back_ios_new" label="返回" onPress={goBack} />
+      {slug ? (
+        <GlassButton
+          sf="square.and.arrow.up"
+          md="ios_share"
+          label="分享"
+          onPress={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug } })}
+        />
       ) : null}
     </View>
   );
 }
 
-function Events({ events, slug }: { events: Profile["events"]; slug: string }) {
-  if (events.length === 0) {
+/** "雄　史密森尼国家动物园": sex and where it lives now, or that it has died. */
+function subtitleOf(profile: Profile): string {
+  const fact = (label: string) => profile.facts.find((item) => item.label === label)?.value;
+  const sex = fact("性别");
+  const where = profile.deceased ? "已离世" : (profile.visit?.place ?? fact("所在地"));
+  return [sex, where].filter((part) => part && part !== UNKNOWN).join("　");
+}
+
+function Hero({ profile, scrollY }: { profile: Profile; scrollY: { value: number } }) {
+  const insets = useSafeAreaInsets();
+  const muted = String(useCSSVariable("--color-muted"));
+  const height = HERO + insets.top;
+  const cover = profile.photos[0];
+  // Pulling down stretches the photo from its bottom edge; scrolling up lets it drift a little slower.
+  const stretch = useAnimatedStyle(() => ({
+    transform: [
+      { translateY: interpolate(scrollY.value, [-height, 0, height], [-height / 2, 0, height * 0.35], Extrapolation.CLAMP) },
+      { scale: interpolate(scrollY.value, [-height, 0], [2, 1], Extrapolation.CLAMP) },
+    ],
+  }));
+
+  if (!cover) {
     return (
-      <View className="gap-3">
-        <Text variant="h2">经历</Text>
-        <Unknown slug={slug} ask="知道它的经历？告诉我们" />
+      <View style={{ paddingTop: insets.top + 64 }} className="px-4">
+        <ListSection>
+          <ListCell label="暂无照片" />
+          <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
+        </ListSection>
       </View>
     );
   }
   return (
-    <View className="gap-3">
-      <Text variant="h2">经历</Text>
-      <View className="gap-2.5">
-        {events.map((event) => (
-          <View key={event.id} className="flex-row">
-            <Text className="w-18 font-bold">{event.date}</Text>
-            <Text className="flex-1">{event.text}</Text>
-          </View>
-        ))}
-      </View>
+    <View style={{ height, overflow: Platform.OS === "web" ? "hidden" : "visible" }}>
+      <Animated.View style={[{ height, backgroundColor: muted }, stretch]}>
+        <Pressable
+          onPress={() => router.push({ pathname: "/pandas/[slug]/photos", params: { slug: profile.slug } })}
+          role="button"
+          accessibilityLabel={`查看${profile.name}的照片，共 ${profile.photos.length} 张`}
+          style={{ flex: 1 }}
+        >
+          <Image source={cover.url} style={{ flex: 1 }} contentFit="cover" accessible={false} transition={200} />
+        </Pressable>
+      </Animated.View>
     </View>
   );
 }
 
-function Relatives({ profile }: { profile: Profile }) {
+function Basics({ profile }: { profile: Profile }) {
+  const rows = profile.facts.filter((fact) => fact.label !== "父母");
+  return (
+    <ListSection title="基本信息">
+      {rows.map((fact, index) => (
+        <ListCell key={fact.label} label={fact.label} meta={fact.value} last={index === rows.length - 1} />
+      ))}
+    </ListSection>
+  );
+}
+
+function Family({ profile }: { profile: Profile }) {
   const relatives = profile.family ? relativesOf(profile.family) : [];
+  const parents = profile.facts.find((fact) => fact.label === "父母");
   if (relatives.length === 0) {
     return (
-      <View className="gap-3">
-        <Text variant="h2">家人</Text>
-        <Unknown slug={profile.slug} />
-      </View>
+      <ListSection title="家族">
+        <ListCell label="父母" meta={parents?.value ?? UNKNOWN} last />
+      </ListSection>
     );
   }
   return (
-    <View className="gap-3">
-      <Text variant="h2">家人</Text>
-      <View className="flex-row flex-wrap gap-2">
-        {relatives.map((member) => (
-          <Pressable
-            key={member.id}
-            onPress={() => openPanda(member.slug)}
-            role="button"
-            accessibilityLabel={`${member.name}，${member.relation}`}
-            className="h-11 flex-row items-center gap-2 rounded-full bg-secondary px-4 active:bg-accent"
-          >
-            <Text className="font-bold">{member.name}</Text>
-            <Text variant="muted">{member.relation}</Text>
-          </Pressable>
-        ))}
-      </View>
-      <View className="flex-row flex-wrap gap-2">
-        <Button
-          variant="outline"
-          onPress={() => router.push({ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } })}
-        >
-          <Text>看家谱</Text>
-        </Button>
-        <Button variant="outline" onPress={() => router.push({ pathname: "/relationship", params: { from: profile.slug } })}>
-          <Text>查关系</Text>
-        </Button>
-      </View>
-    </View>
+    <ListSection title="家族">
+      {relatives.map((member) => (
+        <ListCell
+          key={member.id}
+          label={member.name}
+          meta={member.relation}
+          accessibilityLabel={`${member.name}，${member.relation}`}
+          onPress={() => openPanda(member.slug)}
+        />
+      ))}
+      <ListCell label="看家谱" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} />
+      <ListCell label="查关系" href={{ pathname: "/relationship", params: { from: profile.slug } }} last />
+    </ListSection>
   );
 }
 
-function PlacesLived({ places }: { places: Profile["placesLived"] }) {
+function Institution({ profile }: { profile: Profile }) {
+  const past = profile.placesLived.filter((place) => !place.current);
+  if (!profile.visit && past.length === 0) return null;
   return (
-    <View className="gap-3">
-      <Text variant="h2">生活过的地方</Text>
-      <View>
-        {places.map((place, index) => (
-          <View
-            key={`${place.place}-${place.years}`}
-            className={cn(
-              "flex-row items-center justify-between gap-3 border-t-hairline border-border py-2.5",
-              index === places.length - 1 && "border-b-hairline",
-            )}
-          >
-            <Text className={cn("min-w-0 flex-1", place.current && "font-bold")} numberOfLines={1}>
-              {place.place}
-            </Text>
-            {place.years ? <Text variant="muted">{place.years}</Text> : null}
-          </View>
-        ))}
-      </View>
-    </View>
+    <ListSection title={profile.deceased ? "生活过的地方" : "所在机构"}>
+      {profile.visit ? (
+        <ListCell
+          label={profile.visit.place}
+          detail={profile.visit.address ?? "参观指南"}
+          href={{ pathname: "/institutions/[slug]", params: { slug: profile.visit.institutionSlug } }}
+          last={past.length === 0}
+        />
+      ) : null}
+      {past.map((place, index) => (
+        <ListCell
+          key={`${place.place}-${place.years}`}
+          label={place.place}
+          meta={place.years || undefined}
+          last={index === past.length - 1}
+        />
+      ))}
+    </ListSection>
   );
 }
 
-function Visit({ visit }: { visit: NonNullable<Profile["visit"]> }) {
+function Events({ profile }: { profile: Profile }) {
+  // Newest first, the way a feed reads.
+  const events = [...profile.events].reverse();
   return (
-    <View className="gap-3 rounded-lg border-hairline border-border p-4">
-      <Text variant="h2">去看它</Text>
-      <View>
-        <Text className="font-bold">{visit.place}</Text>
-        {visit.address ? <Text variant="muted">{visit.address}</Text> : null}
-      </View>
-      <Button
-        variant="secondary"
-        className="self-start"
-        onPress={() => router.push({ pathname: "/institutions/[slug]", params: { slug: visit.institutionSlug } })}
-      >
-        <Text>参观指南</Text>
-      </Button>
-    </View>
+    <ListSection title="动态">
+      {events.length === 0 ? (
+        <>
+          <ListCell label={UNKNOWN} />
+          <ListCell label="知道它的经历？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
+        </>
+      ) : (
+        events.map((event, index) => (
+          <ListCell key={event.id} label={event.text} meta={event.date} lines={3} last={index === events.length - 1} />
+        ))
+      )}
+    </ListSection>
   );
 }
+
+/** Sources a fan sees before asking for the rest; a long list would bury the actions below it. */
+const SOURCES_SHOWN = 5;
 
 function Sources({ sources }: { sources: Profile["sources"] }) {
+  const [all, setAll] = useState(false);
+  const shown = all ? sources : sources.slice(0, SOURCES_SHOWN);
+  const hidden = sources.length - shown.length;
   return (
-    <View className="gap-3">
-      <Text variant="h2">资料来源</Text>
-      <View>
-        {sources.map((source, index) => (
-          <Pressable
-            key={source.id}
-            onPress={() => void WebBrowser.openBrowserAsync(source.url)}
-            role="link"
-            accessibilityLabel={`${source.publisher}，${source.title}`}
-            accessibilityHint="在浏览器中打开"
-            className={cn(
-              "gap-0.5 border-t-hairline border-border py-3 active:bg-accent",
-              index === sources.length - 1 && "border-b-hairline",
-            )}
-          >
-            <Text className="font-bold" numberOfLines={2}>
-              {source.title}
-            </Text>
-            <Text variant="muted" numberOfLines={1}>
-              {source.publisher}　核实于 {longDate(source.lastVerifiedOn)}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
-    </View>
+    <ListSection title="资料来源">
+      {shown.map((source, index) => (
+        <ListCell
+          key={source.id}
+          role="link"
+          label={source.title}
+          detail={`${source.publisher}　核实于 ${longDate(source.lastVerifiedOn)}`}
+          accessibilityLabel={`${source.publisher}，${source.title}`}
+          accessibilityHint="在浏览器中打开"
+          onPress={() => void WebBrowser.openBrowserAsync(source.url)}
+          last={hidden === 0 && index === shown.length - 1}
+        />
+      ))}
+      {hidden > 0 ? <ListCell tone="tint" label={`显示全部 ${sources.length} 条`} onPress={() => setAll(true)} last /> : null}
+    </ListSection>
   );
 }
 
 export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
-  const insets = useSafeAreaInsets();
-  const muted = useCSSVariable("--color-muted");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [failed, setFailed] = useState(false);
+  const scrollY = useSharedValue(0);
+  const onScroll = useAnimatedScrollHandler((event) => {
+    scrollY.value = event.contentOffset.y;
+  });
 
   const load = useCallback(() => {
     loadProfile(slug)
@@ -241,98 +234,73 @@ export default function ProfileScreen() {
     load();
   }
 
-  const top = { top: insets.top + 8 };
-  const cover = profile?.photos[0];
-
   if (!profile) {
     return (
-      <View className="flex-1 bg-background px-5" style={{ paddingTop: insets.top + 12 }}>
-        <BackButton />
+      <View className="flex-1 bg-background">
+        <Stack.Screen options={{ headerShown: false }} />
         {failed ? (
-          <LoadFailed message="资料暂时打不开。" onRetry={retry} className="mt-6" />
+          <View className="px-4 pt-28">
+            <LoadFailed message="资料暂时打不开。" onRetry={retry} />
+          </View>
         ) : (
-          <View className="mt-6 gap-4" accessibilityLabel="正在加载资料">
-            <Skeleton className="h-72 w-full" />
-            <Skeleton className="h-8 w-32 rounded-full" />
+          <View className="gap-4" accessibilityLabel="正在加载资料">
+            <Skeleton className="h-96 w-full rounded-none" />
+            <View className="gap-3 px-4">
+              <Skeleton className="h-10 w-32" />
+              <Skeleton className="h-5 w-48" />
+            </View>
           </View>
         )}
+        <Toolbar />
       </View>
     );
   }
 
+  const subtitle = subtitleOf(profile);
   return (
-    <ScrollView className="flex-1 bg-background" contentContainerClassName="pb-12">
-      {cover ? (
-        <View>
-          <Pressable
-            onPress={() => router.push({ pathname: "/pandas/[slug]/photos", params: { slug: profile.slug } })}
-            role="button"
-            accessibilityLabel={`查看${profile.name}的照片，共 ${profile.photos.length} 张`}
-          >
-            <Image
-              source={cover.url}
-              style={{ width: "100%", height: 380, backgroundColor: String(muted) }}
-              contentFit="cover"
-              accessible={false}
-            />
-            {profile.photos.length > 1 ? (
-              <View className="absolute right-4 bottom-4 rounded-full bg-background px-3 py-1">
-                <Text variant="small">共 {profile.photos.length} 张</Text>
-              </View>
-            ) : null}
-          </Pressable>
-          <View className="absolute inset-x-4 flex-row justify-between" style={top}>
-            <BackButton className="bg-background" />
-            <ShareButton profile={profile} className="bg-background" />
+    <View className="flex-1 bg-background">
+      <Stack.Screen options={{ headerShown: false, title: profile.name }} />
+      <Animated.ScrollView
+        className="flex-1"
+        contentInsetAdjustmentBehavior="never"
+        contentContainerClassName="pb-16"
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+      >
+        <Hero profile={profile} scrollY={scrollY} />
+        <View className="gap-7 bg-background px-4 pt-5">
+          <View className="gap-3">
+            <View className="gap-0.5">
+              <Text variant="largeTitle">{profile.name}</Text>
+              {subtitle ? (
+                <Text variant="subhead" className="text-muted-foreground">
+                  {subtitle}
+                </Text>
+              ) : null}
+            </View>
+            {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
           </View>
-          {cover.credit ? (
-            <Text variant="muted" className="px-5 pt-2" numberOfLines={1}>
-              {cover.credit}
+          <Basics profile={profile} />
+          <Family profile={profile} />
+          <Institution profile={profile} />
+          <Events profile={profile} />
+          {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
+          <ListSection>
+            <ListCell
+              label="加入合集"
+              tone="tint"
+              onPress={() => router.push({ pathname: "/pandas/[slug]/collect", params: { slug: profile.slug } })}
+            />
+            <ListCell label="资料有误？纠错" tone="tint" onPress={() => correct(profile.slug)} last />
+          </ListSection>
+          {profile.photos[0]?.credit ? (
+            <Text variant="footnote" className="px-4 text-muted-foreground">
+              {`封面照片：${profile.photos[0].credit}`}
             </Text>
           ) : null}
         </View>
-      ) : (
-        <View className="gap-4 px-5" style={{ paddingTop: insets.top + 12 }}>
-          <View className="flex-row justify-between">
-            <BackButton />
-            <ShareButton profile={profile} />
-          </View>
-          <View className="items-start gap-2 rounded-lg bg-muted p-5">
-            <Text className="text-muted-foreground">暂无照片</Text>
-            <Button
-              variant="outline"
-              onPress={() => router.push({ pathname: "/pandas/[slug]/correct", params: { slug: profile.slug } })}
-            >
-              <Text>有它的照片？告诉我们</Text>
-            </Button>
-          </View>
-        </View>
-      )}
-
-      <View className="gap-7 px-5 pt-6">
-        <Text variant="h1">{profile.name}</Text>
-        {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
-        <Button
-          variant="secondary"
-          className="self-start"
-          onPress={() => router.push({ pathname: "/pandas/[slug]/collect", params: { slug: profile.slug } })}
-        >
-          <Text>加入合集</Text>
-        </Button>
-        {profile.facts.length > 0 ? <Facts facts={profile.facts} /> : null}
-        <Events events={profile.events} slug={profile.slug} />
-        <Relatives profile={profile} />
-        {profile.placesLived.length > 0 ? <PlacesLived places={profile.placesLived} /> : null}
-        {profile.visit ? <Visit visit={profile.visit} /> : null}
-        {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
-        <Button
-          variant="outline"
-          className="self-start"
-          onPress={() => router.push({ pathname: "/pandas/[slug]/correct", params: { slug: profile.slug } })}
-        >
-          <Text>资料有误？纠错</Text>
-        </Button>
-      </View>
-    </ScrollView>
+      </Animated.ScrollView>
+      <Toolbar slug={profile.slug} />
+    </View>
   );
 }

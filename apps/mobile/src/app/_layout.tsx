@@ -5,28 +5,26 @@ import { Stack } from "expo-router";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { useUniwind } from "uniwind";
 
 import { OfflineBanner } from "@/components/offline-banner";
 import { applyStoredAppearance } from "@/features/appearance/appearance";
 import { SessionProvider } from "@/features/session/session";
-import { NAV_THEME } from "@/lib/theme";
+import { stackScreenOptions } from "@/lib/screen-options";
+import { NAV_THEME, useIOSColors } from "@/lib/theme";
 
 export default function RootLayout() {
-  const { theme } = useUniwind();
-  const scheme = theme === "dark" ? "dark" : "light";
-  // The fan's 外观 choice in 我的, when they made one; otherwise the system's.
+  const { scheme } = useIOSColors();
   useEffect(() => {
     void applyStoredAppearance();
   }, []);
 
-  // Screens draw their own back button and title (components/page.tsx), so there is no nav bar.
   return (
     <SessionProvider>
       <ThemeProvider value={NAV_THEME[scheme]}>
         <StatusBar style={scheme === "dark" ? "light" : "dark"} />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="pandas/[slug]/photos" options={{ presentation: "fullScreenModal" }} />
+        <Stack screenOptions={{ ...stackScreenOptions(scheme), headerLargeTitleEnabled: false }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="pandas/[slug]/photos" options={{ presentation: "fullScreenModal", title: "照片" }} />
         </Stack>
         <OfflineBanner />
         <PortalHost />

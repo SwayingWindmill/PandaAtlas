@@ -1,11 +1,10 @@
 import { Image } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LoadFailed } from "@/components/load-failed";
-import { BackButton } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -41,16 +40,14 @@ export default function PhotosScreen() {
       aria-modal
       accessibilityLabel="照片"
       className="flex-1 bg-background"
-      style={{ paddingTop: insets.top + 12, paddingBottom: insets.bottom + 12 }}
+      style={{ paddingBottom: insets.bottom + 12 }}
     >
-      <View className="flex-row items-center justify-between px-5">
-        <BackButton />
-        {photos && photos.length > 0 ? (
-          <Text className="font-bold" accessibilityLiveRegion="polite">
-            {index + 1} / {photos.length}
-          </Text>
-        ) : null}
-      </View>
+      <Stack.Screen options={{ title: photos && photos.length > 0 ? `${index + 1} / ${photos.length}` : "照片" }} />
+      {photos && photos.length > 0 ? (
+        <Text variant="footnote" className="py-2 text-center text-muted-foreground" accessibilityLiveRegion="polite">
+          {index + 1} / {photos.length}
+        </Text>
+      ) : null}
       {photos === null ? (
         failed ? (
           <LoadFailed message="照片暂时打不开。" onRetry={() => { setFailed(false); load(); }} className="mx-5 mt-6" />

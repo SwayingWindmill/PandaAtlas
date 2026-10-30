@@ -19,10 +19,11 @@ The app talks to `https://api.zhipanda.com` by default. To point it at a local A
 ## Styling and components
 
 Screens are styled with Tailwind class names through [Uniwind](https://docs.uniwind.dev/)
-(Tailwind 4). The design tokens live in `src/global.css`: the same Radix olive and jade steps,
-radii and four text sizes as the website's design system (`docs/design/zhipanda-design-system.md`),
-with a dark set. Use the token classes (`bg-background`, `text-muted-foreground`,
-`border-hairline border-border`, `text-display`) rather than hex values or `StyleSheet`.
+(Tailwind 4). The design tokens live in `src/global.css` and `src/lib/theme.ts`: iOS system
+colors, the panda green as tint, and the iOS type scale. The website keeps its own Radix tokens.
+Rules for the app are `docs/design/zhipanda-design-system.md` §10 and `DESIGN.md`. Use the token
+classes (`bg-background`, `text-muted-foreground`, `border-hairline border-border`,
+`text-large-title`) rather than hex values or `StyleSheet`.
 
 UI components come from [React Native Reusables](https://reactnativereusables.com/), the shadcn/ui
 port built on RN Primitives. Its CLI copies each component's source into `src/components/ui/`,

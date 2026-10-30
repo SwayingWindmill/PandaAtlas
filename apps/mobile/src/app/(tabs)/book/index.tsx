@@ -135,7 +135,7 @@ function SignedIn() {
     <>
       <View className="gap-2.5">
         <View className="flex-row items-baseline gap-2">
-          <Text variant="h1">{String(view.knownCount)}</Text>
+          <Text variant="title1">{String(view.knownCount)}</Text>
           <Text variant="muted">{`只已认识，共收录 ${view.publishedCount} 只`}</Text>
         </View>
         <View

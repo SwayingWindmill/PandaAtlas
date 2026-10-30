@@ -2,6 +2,7 @@ import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { Pressable, View } from "react-native";
 
+import { ListSection } from "@/components/grouped-list";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { type CalendarEntry, calendarMonth } from "@/features/calendar/calendar";
@@ -32,11 +33,8 @@ export function TodayBirthdays() {
   if (entries.length === 0) return null;
   const more = entries.length - SHOWN;
   return (
-    <View className="gap-3 rounded-lg border-hairline border-border p-5">
-      <Text variant="small" className="text-highlight-foreground">
-        今天生日
-      </Text>
-      <View>
+    <View className="gap-3">
+      <ListSection title="今天生日">
         {entries.slice(0, SHOWN).map((entry, index, shown) => (
           <Pressable
             key={entry.key}
@@ -44,7 +42,7 @@ export function TodayBirthdays() {
             role="button"
             accessibilityLabel={`${entry.name}，${entry.what}`}
             className={cn(
-              "flex-row items-center justify-between gap-3 py-2.5 active:bg-accent",
+              "min-h-11 flex-row items-center justify-between gap-3 px-4 py-2.5 active:bg-accent",
               index < shown.length - 1 && "border-b-hairline border-border",
             )}
           >
@@ -54,7 +52,7 @@ export function TodayBirthdays() {
             <Text variant="muted">{entry.what === "出生" ? "今天出生" : entry.what.replace("生日", "了")}</Text>
           </Pressable>
         ))}
-      </View>
+      </ListSection>
       {more > 0 ? (
         <Button variant="secondary" className="self-start" onPress={() => router.push("/calendar")}>
           <Text>{`还有 ${more} 只，看日历`}</Text>

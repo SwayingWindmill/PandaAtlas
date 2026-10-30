@@ -2,7 +2,6 @@ import * as WebBrowser from "expo-web-browser";
 import { Pressable, View } from "react-native";
 
 import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
 
 import { type LearningSource, learningText } from "./catalog";
 
@@ -12,30 +11,31 @@ export function LearningSources({ sources }: { sources: readonly LearningSource[
   if (cited.length === 0) return null;
   return (
     <View className="gap-2">
-      <Text variant="h2">来源</Text>
-      <View>
+      <Text variant="title2" className="px-4">来源</Text>
+      <View className="overflow-hidden rounded-[10px] bg-card">
         {cited.map((source, index) => {
           const title = learningText(source.title);
           const last = index === cited.length - 1;
-          const row = cn("min-h-11 justify-center border-t-hairline border-border py-3", last && "border-b-hairline");
-          if (!source.url) {
-            return (
-              <View key={`${title}-${index}`} className={row}>
-                <Text className="text-muted-foreground">{title}</Text>
-              </View>
-            );
-          }
-          const url = source.url;
-          return (
+          const row = "min-h-11 justify-center px-4 py-3";
+          const body = !source.url ? (
+            <View className={row}>
+              <Text className="text-muted-foreground">{title}</Text>
+            </View>
+          ) : (
             <Pressable
-              key={url}
-              onPress={() => void WebBrowser.openBrowserAsync(url)}
+              onPress={() => void WebBrowser.openBrowserAsync(source.url ?? "")}
               accessibilityRole="link"
               accessibilityLabel={title}
-              className={cn(row, "active:bg-accent")}
+              className={`${row} active:bg-accent`}
             >
-              <Text className="font-bold">{title}</Text>
+              <Text className="font-semibold">{title}</Text>
             </Pressable>
+          );
+          return (
+            <View key={`${title}-${index}`}>
+              {body}
+              {last ? null : <View className="ml-4 h-hairline bg-border" />}
+            </View>
           );
         })}
       </View>

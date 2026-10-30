@@ -2,7 +2,7 @@
 version: 1
 slug: "apps-mobile-src-app-learn-index-tsx"
 primary_target: "apps/mobile/src/app/learn/index.tsx"
-related_targets: ["apps/mobile/src/app/learn/cards/[slug].tsx","apps/mobile/src/app/learn/topics/[slug].tsx","apps/mobile/src/app/learn/terms/[slug].tsx","apps/mobile/src/app/learn/faces/[slug].tsx","apps/mobile/src/app/learn/challenge.tsx"]
+related_targets: ["apps/mobile/src/app/learn/articles/[slug].tsx","apps/mobile/src/app/learn/terms/[slug].tsx","apps/mobile/src/app/learn/faces/[slug].tsx","apps/mobile/src/app/learn/challenge.tsx"]
 ---
 
 ## Scope
