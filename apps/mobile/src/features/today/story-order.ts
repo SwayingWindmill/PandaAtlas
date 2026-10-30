@@ -1,8 +1,10 @@
 // Pure picking logic for 今天's story-card photos, kept free of React Native so it is unit tested.
 import type { PandaListItem } from "@/features/pandas/pandas";
+import { CURATED_COVERS } from "./curated-covers";
 
 export interface StoryPhoto {
   pandaId: string;
+  slug: string;
   name: string;
   url: string;
 }
@@ -34,19 +36,29 @@ export function storyCandidates(pandas: PandaListItem[], day: string): PandaList
   return items;
 }
 
+/** Pandas whose current cover was cleared for full-bleed use; see curated-covers.ts. */
+export function hasCuratedCover(pandaId: string, curated: ReadonlyMap<string, string> = CURATED_COVERS): boolean {
+  return curated.has(pandaId);
+}
+
+/** True when the cover the API returns is the very photo that was reviewed, not a newer one. */
+export function isCuratedCover(
+  cover: { pandaId: string; contentSha256: string },
+  curated: ReadonlyMap<string, string> = CURATED_COVERS,
+): boolean {
+  const hash = curated.get(cover.pandaId);
+  return hash !== undefined && cover.contentSha256.startsWith(hash);
+}
+
 /** The first `count` candidates that have a cover, each a different panda and a different photo. */
-export function pickStoryPhotos(
-  candidates: PandaListItem[],
-  covers: Map<string, string>,
-  count: number,
-): StoryPhoto[] {
+export function pickStoryPhotos(candidates: PandaListItem[], covers: Map<string, string>, count: number): StoryPhoto[] {
   const used = new Set<string>();
   const picks: StoryPhoto[] = [];
   for (const panda of candidates) {
     const url = covers.get(panda.id);
     if (!url || used.has(url)) continue;
     used.add(url);
-    picks.push({ pandaId: panda.id, name: panda.name, url });
+    picks.push({ pandaId: panda.id, slug: panda.slug, name: panda.name, url });
     if (picks.length === count) break;
   }
   return picks;

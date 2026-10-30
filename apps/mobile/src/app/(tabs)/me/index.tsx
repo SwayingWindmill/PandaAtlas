@@ -1,3 +1,4 @@
+import { Image } from "expo-image";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
@@ -5,7 +6,7 @@ import { useCSSVariable } from "uniwind";
 
 import { ListCell, ListSection } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Bell, FolderHeart, MapPin, Settings } from "@/components/icons";
+import { Bell, FolderHeart, LayoutGrid, MapPin, PawPrint, Settings } from "@/components/icons";
 import { Page } from "@/components/page";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ import { Text } from "@/components/ui/text";
 import { statusLabel } from "@/features/corrections/correction";
 import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
 import { useFollowed } from "@/features/engagement/favorites";
-import { shortDay } from "@/features/engagement/seen";
+import { localToday, shortDay } from "@/features/engagement/seen";
 import { loadInbox } from "@/features/notifications/inbox";
 import { unreadCount } from "@/features/notifications/notifications";
 import { openPanda } from "@/features/pandas/panda-row";
@@ -23,6 +24,8 @@ import { ProfileAvatar } from "@/features/profile/avatar";
 import { NICKNAME_MAX, displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
 import { PandaAvatar } from "@/features/today/followed-strip";
+import { StoryPhotoTile } from "@/features/today/story-photo-tile";
+import { type StoryPhoto, useStoryPhotos } from "@/features/today/story-photos";
 import { successHaptic } from "@/lib/haptics";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
@@ -52,20 +55,87 @@ function ProfileCard({ children }: { children: React.ReactNode }) {
   );
 }
 
-function SignedOut() {
+/** Photos in the signed-out card, then the 今天的熊猫 strip under it. */
+const COLLAGE = 3;
+const STRIP = 6;
+const STRIP_TILE = 128;
+const COLLAGE_HEIGHT = 196;
+
+function CollagePhoto({ photo, style }: { photo: StoryPhoto | undefined; style: object }) {
   return (
-    <ProfileCard>
-      <ProfileAvatar name={null} size={AVATAR} />
-      <View className="gap-hair-gap">
-        <Text variant="title">还没有登录</Text>
-        <Text variant="subheadline" className="text-muted-foreground">
-          登录后，关注的熊猫和图鉴会保存在你的账号里。
-        </Text>
+    <View className="overflow-hidden bg-secondary" style={style}>
+      {photo ? (
+        <Image source={photo.url} style={{ flex: 1 }} contentFit="cover" transition={200} accessible={false} />
+      ) : null}
+    </View>
+  );
+}
+
+/**
+ * Three of today's reviewed panda photos across the top of the signed-out card, one large and two
+ * stacked, as the App Store fronts a story. Real pandas, named in the footnote under the title.
+ */
+function Collage({ photos }: { photos: StoryPhoto[] }) {
+  return (
+    <View className="flex-row gap-hair-gap" style={{ height: COLLAGE_HEIGHT }} accessible={false}>
+      <CollagePhoto photo={photos[0]} style={{ flex: 3 }} />
+      <View className="gap-hair-gap" style={{ flex: 2 }}>
+        <CollagePhoto photo={photos[1]} style={{ flex: 1 }} />
+        <CollagePhoto photo={photos[2]} style={{ flex: 1 }} />
       </View>
-      <Button onPress={() => router.push("/sign-in")}>
-        <Text>登录</Text>
-      </Button>
-    </ProfileCard>
+    </View>
+  );
+}
+
+function SignedOut() {
+  const photos = useStoryPhotos(localToday(), COLLAGE + STRIP);
+  const pictured = photos.slice(0, COLLAGE).map((photo) => photo.name);
+  const strip = photos.slice(COLLAGE);
+  return (
+    <View className="gap-section">
+      <View className="overflow-hidden rounded-card bg-card" style={{ borderCurve: "continuous" }}>
+        <Collage photos={photos} />
+        <View className="gap-stack p-stack">
+          <View className="gap-hair-gap">
+            <Text variant="title">把喜欢的熊猫留在身边</Text>
+            <Text variant="subheadline" className="text-muted-foreground">
+              登录后，关注的熊猫、图鉴和去过的地点都保存在你的账号里，换手机也不会丢。
+            </Text>
+            {pictured.length > 0 ? (
+              <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
+                {`照片：${pictured.join("、")}`}
+              </Text>
+            ) : null}
+          </View>
+          <Button onPress={() => router.push("/sign-in")}>
+            <Text>登录</Text>
+          </Button>
+        </View>
+        <SettingsButton />
+      </View>
+      <ListSection title="登录后可以">
+        <ListCell icon={PawPrint} label="关注熊猫" detail="在今天页第一时间看到它们的新动态" />
+        <ListCell icon={LayoutGrid} label="点亮图鉴" detail="猜中每日一猫、去现场见过，都记进你的图鉴" />
+        <ListCell icon={FolderHeart} label="收进合集" detail="把喜欢的熊猫按自己的方式分组" />
+        <ListCell icon={MapPin} label="记下去过的地点" detail="去过的基地和动物园，一处不落" />
+        <ListCell icon={Bell} label="收到通知" detail="关注的熊猫资料更新时告诉你" last />
+      </ListSection>
+      {strip.length > 0 ? (
+        <View className="gap-row">
+          <SectionHeader title="今天的熊猫" action={{ label: "找熊猫", href: "/find" }} />
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className="-mx-inset"
+            contentContainerClassName="gap-row px-inset"
+          >
+            {strip.map((photo) => (
+              <StoryPhotoTile key={photo.pandaId} photo={photo} width={STRIP_TILE} slot={`me-${photo.pandaId}`} />
+            ))}
+          </ScrollView>
+        </View>
+      ) : null}
+    </View>
   );
 }
 

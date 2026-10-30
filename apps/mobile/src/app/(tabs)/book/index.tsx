@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
@@ -28,6 +27,7 @@ import { localToday } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
+import { LockedPhotoTile, StoryPhotoTile } from "@/features/today/story-photo-tile";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { authedApi } from "@/lib/api";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
@@ -107,39 +107,90 @@ function WayStats({ view }: { view: BookView }) {
   );
 }
 
+/** Which tiles of the signed-out preview show a panda; the rest wait under a lock. */
+function isOpenTile(index: number, columns: number) {
+  return index === 0 || index === columns + 1;
+}
+
+/**
+ * The signed-out 图鉴: a preview of the grid where two real pandas are lit and the rest wait under a
+ * lock, what the 图鉴 is for, and how a panda gets in. The only number is the real catalog size; the
+ * progress card is marked 示例 and counts just the two lit tiles above it.
+ */
 function SignedOut() {
   const { columns, tile } = useGrid();
-  // Real pandas, softened: a glimpse of what the 图鉴 fills with, not a claim the fan has met them.
   const photos = useStoryPhotos(localToday(), columns * 2);
+  const [published, setPublished] = useState<number | null>(null);
+  useEffect(() => {
+    loadPandaIndex()
+      .then((pandas) => setPublished(pandas.length))
+      .catch(() => setPublished(null));
+  }, []);
+  const lit = Array.from({ length: columns * 2 }, (_, index) => index).filter((index) => isOpenTile(index, columns));
   return (
     <>
-      <View
-        className="flex-row flex-wrap"
-        style={{ gap: GAP }}
-        accessible={false}
-        importantForAccessibility="no-hide-descendants"
-      >
-        {Array.from({ length: columns * 2 }, (_, index) => (
-          <View
-            key={index}
-            className="overflow-hidden bg-secondary"
-            style={{ width: tile, aspectRatio: 4 / 5, borderRadius: RADIUS.tile, borderCurve: "continuous" }}
-          >
-            {photos[index] ? (
-              <Image
-                source={photos[index].url}
-                style={{ flex: 1, opacity: 0.55 }}
-                blurRadius={24}
-                contentFit="cover"
-                transition={200}
-                accessible={false}
-              />
-            ) : null}
-          </View>
-        ))}
+      <View className="gap-stack">
+        <View className="flex-row flex-wrap" style={{ gap: GAP }}>
+          {Array.from({ length: columns * 2 }, (_, index) =>
+            isOpenTile(index, columns) ? (
+              <StoryPhotoTile key={index} photo={photos[index]} width={tile} slot={`book-${index}`} />
+            ) : (
+              <LockedPhotoTile key={index} photo={photos[index]} width={tile} />
+            ),
+          )}
+        </View>
+        <View className="gap-hair-gap">
+          <Text variant="title">认识一只，点亮一格</Text>
+          <Text variant="subheadline" className="text-muted-foreground">
+            {published === null
+              ? "猜中、答对或亲眼见过的熊猫，都会收进你的图鉴，一格一格亮起来。"
+              : `吱熊猫收录了 ${published} 只熊猫。猜中、答对或亲眼见过的，都会收进你的图鉴，一格一格亮起来。`}
+          </Text>
+        </View>
       </View>
+      <View className="gap-stack-tight">
+        <Button onPress={() => router.push("/sign-in")}>
+          <Text>登录，开始收集</Text>
+        </Button>
+        <Button variant="plain" onPress={() => router.push("/daily")}>
+          <Text>先去猜今天的每日一猫</Text>
+        </Button>
+      </View>
+      {published !== null ? (
+        <View
+          className="gap-row rounded-card bg-card p-stack"
+          style={{ borderCurve: "continuous" }}
+          accessible
+          accessibilityLabel={`示例：登录后进度这样显示，已认识 ${lit.length} 只，共收录 ${published} 只`}
+        >
+          <View className="flex-row items-center justify-between gap-row">
+            <Text variant="footnote" className="text-muted-foreground">
+              登录后，进度会这样显示
+            </Text>
+            <View className="rounded-pill bg-secondary px-row py-hair-gap">
+              <Text variant="footnote" role="none" className="text-muted-foreground">
+                示例
+              </Text>
+            </View>
+          </View>
+          <View className="flex-row items-baseline gap-stack-tight">
+            <Text variant="display" role="none" className="tabular-nums">
+              {String(lit.length)}
+            </Text>
+            <Text variant="subheadline" className="min-w-0 flex-1 text-muted-foreground">
+              {`只已认识，共收录 ${published} 只`}
+            </Text>
+          </View>
+          <View className="h-1.5 overflow-hidden rounded-full bg-secondary">
+            <View
+              className="h-1.5 rounded-full bg-foreground"
+              style={{ width: `${(lit.length / published) * 100}%`, minWidth: 6 }}
+            />
+          </View>
+        </View>
+      ) : null}
       <View className="gap-row">
-        <Text variant="title">登录后，这里会记下</Text>
+        <SectionHeader title="怎样点亮一格" />
         <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
           {WAYS.map(({ icon, line }, index) => (
             <View key={line}>
@@ -155,14 +206,6 @@ function SignedOut() {
             </View>
           ))}
         </View>
-      </View>
-      <View className="gap-stack-tight">
-        <Button onPress={() => router.push("/sign-in")}>
-          <Text>登录</Text>
-        </Button>
-        <Button variant="plain" onPress={() => router.push("/daily")}>
-          <Text>先去猜今天的每日一猫</Text>
-        </Button>
       </View>
     </>
   );
