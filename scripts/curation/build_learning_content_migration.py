@@ -22,12 +22,16 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_PATH = ROOT / "data" / "curation" / "learning" / "learning.json"
 PANDA_CSV = ROOT / "data" / "curation" / "pandas" / "pandas.csv"
 MEDIA_CSV = ROOT / "data" / "curation" / "pandas" / "media.csv"
+PUBLISHED_PANDAS = ROOT / "data" / "curation" / "learning" / "published-pandas.json"
 MIGRATIONS_DIR = ROOT / "infra" / "supabase" / "migrations"
 MIGRATION_SUFFIX = "_learning_content.sql"
 
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 VERSION = re.compile(r"^\d{4}\.\d{2}\.\d{2}\.\d+$")
 ISO_DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+COMMONS_FILE_PAGE = "https://commons.wikimedia.org/wiki/File:"
+COMMONS_ASSET_PREFIXES = ("https://commons.wikimedia.org/wiki/Special:Redirect/file/", "https://upload.wikimedia.org/")
+FREE_LICENSE = re.compile(r"^(CC BY(-SA)? \d\.\d( [a-z]{2})?|CC0 1\.0|Public domain)$")
 STATUSES = {"draft", "published"}
 FACE_TIP_KEYS = ("shape", "leftRight", "eyePatches", "ears")
 COLLECTIONS = ("articles", "cards", "topics", "terms", "faceGuides", "challenges")
@@ -86,6 +90,11 @@ def panda_slugs() -> set[str]:
             continue
         slugs.add(line.split(",", 1)[0])
     return slugs
+
+
+def published_panda_slugs() -> set[str]:
+    snapshot = json.loads(PUBLISHED_PANDAS.read_text(encoding="utf-8"))
+    return set(snapshot["slugs"])
 
 
 def validate_text(
@@ -178,9 +187,14 @@ def validate_known_slugs(values: object, label: str, known: set[str], errors: li
             errors.append(f"{label}: unknown slug {item}")
 
 
-def validate_content(content: object, known_pandas: set[str] | None = None) -> list[str]:
+def validate_content(
+    content: object,
+    known_pandas: set[str] | None = None,
+    published_pandas: set[str] | None = None,
+) -> list[str]:
     errors: list[str] = []
     pandas = panda_slugs() if known_pandas is None else known_pandas
+    published = published_panda_slugs() if published_pandas is None else published_pandas
     if not isinstance(content, dict):
         return ["learning: must be an object"]
     unknown = set(content) - {"$comment", "version", *COLLECTIONS}
@@ -305,8 +319,10 @@ def validate_content(content: object, known_pandas: set[str] | None = None) -> l
         require_slug(challenge.get("slug"), f"{label}.slug", challenges, errors)
         status = require_status(challenge, label, errors)
         answer = challenge.get("answerPandaSlug")
-        if answer not in pandas:
-            errors.append(f"{label}.answerPandaSlug: {answer} is not a panda in data/curation/pandas/pandas.csv")
+        # The app can only show a challenge whose every option is in the published release, so
+        # options use published canonical slugs (data/curation/learning/published-pandas.json).
+        if answer not in published:
+            errors.append(f"{label}.answerPandaSlug: {answer} is not a published panda in {PUBLISHED_PANDAS.name}")
         decoys = challenge.get("decoyPandaSlugs")
         if not isinstance(decoys, list) or len(decoys) != 3 or len(set(decoys)) != 3:
             errors.append(f"{label}.decoyPandaSlugs: must be three different pandas")
@@ -314,8 +330,8 @@ def validate_content(content: object, known_pandas: set[str] | None = None) -> l
             errors.append(f"{label}.decoyPandaSlugs: the answer cannot also be a decoy")
         else:
             for decoy in decoys:
-                if decoy not in pandas:
-                    errors.append(f"{label}.decoyPandaSlugs: {decoy} is not a panda in data/curation/pandas/pandas.csv")
+                if decoy not in published:
+                    errors.append(f"{label}.decoyPandaSlugs: {decoy} is not a published panda in {PUBLISHED_PANDAS.name}")
         validate_text(challenge.get("prompt"), f"{label}.prompt", "prompt", status, errors)
         validate_text(challenge.get("tip"), f"{label}.tip", "tip", status, errors)
         validate_sources(challenge.get("sources"), f"{label}.sources", status, errors)
@@ -542,7 +558,18 @@ def validate_article_images(
                 continue
             panda_slug = image.get("pandaSlug")
             asset = image.get("asset")
-            if panda_slug not in pandas:
+            if panda_slug is None:
+                # A figure that shows no particular panda (a newborn, a forest) is a free-licensed
+                # Wikimedia Commons file with its own page, credit and license.
+                source_page = image.get("sourcePage")
+                if not isinstance(source_page, str) or not source_page.startswith(COMMONS_FILE_PAGE):
+                    errors.append(f"{image_label}.sourcePage: a figure without a panda must be a Wikimedia Commons file page")
+                if not isinstance(asset, str) or not asset.startswith(COMMONS_ASSET_PREFIXES):
+                    errors.append(f"{image_label}.asset: a figure without a panda must be served from Wikimedia Commons")
+                rights = image.get("rights")
+                if not isinstance(rights, str) or not FREE_LICENSE.match(rights):
+                    errors.append(f"{image_label}.rights: a figure without a panda needs a free license such as CC BY-SA 4.0")
+            elif panda_slug not in pandas:
                 errors.append(f"{image_label}.pandaSlug: {panda_slug} is not a panda")
             elif not isinstance(asset, str) or asset not in assets.get(str(panda_slug), set()):
                 errors.append(f"{image_label}.asset: must be an approved photo of {panda_slug}")

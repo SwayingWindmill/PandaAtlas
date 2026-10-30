@@ -31,7 +31,13 @@
 
 `type` 为 `existing` 的图必须用 `data/curation/pandas/media.csv` 里 `review_status` 为 `approved` 的那一行：`pandaSlug`、`asset`、`sourcePage`、`credit`、`rights`、`caption`、`captionRefs`。`role` 是 `hero`、`inline` 或 `compare`。
 
-`type` 为 `wanted` 的图还没有可公开的照片。不要填 `asset`。`collection_only` 的图不能拿来顶上。页面留一块「配图待补」，下面仍用撰稿人的 `caption`。
+不拍某只熊猫的图（新生幼仔、竹林、进食动作）可以把 `pandaSlug` 写成 `null`，这时图必须来自 Wikimedia Commons：`sourcePage` 是 `https://commons.wikimedia.org/wiki/File:` 开头的文件页，`asset` 用 Commons 的地址，`credit` 写作者，`rights` 写自由许可（如 `CC BY-SA 4.0`、`CC BY-SA 2.5 es`、`CC0 1.0`、`Public domain`）。只有亲自打开文件页核对过许可和描述的图才能用。
+
+`type` 为 `wanted` 的图还没有可公开的照片。不要填 `asset`。`collection_only` 的图不能拿来顶上。正式包里不显示这一格，开发包里留一块「配图待补」，下面仍用撰稿人的 `caption`。
+
+## 认脸挑战
+
+`challenges` 的 `answerPandaSlug` 和三个 `decoyPandaSlugs` 必须是已发布熊猫的规范 slug，写在 `published-pandas.json` 里。缺一只，App 就会把整道题藏起来。新的熊猫版本发布后，运行 `python scripts/curation/refresh_published_pandas.py` 更新这个文件。
 
 ## 名词
 
@@ -39,4 +45,4 @@
 
 ## 例子
 
-见文件里的 `black-eye-patches`。封面是喜伦的已审核照片；新生幼仔那一张是 `wanted`，页面不显示 collection_only 的幼仔图。
+见文件里的 `black-eye-patches`。封面是喜伦的已审核照片；新生幼仔那一张不拍某只熊猫，`pandaSlug` 为 `null`，用的是 Wikimedia Commons 上授权的成都基地新生幼仔照片。

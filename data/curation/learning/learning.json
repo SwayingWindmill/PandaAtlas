@@ -1,6 +1,6 @@
 {
   "$comment": "科普文章、知识卡、专题、名词解释、认脸指南和认脸挑战。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, then run python scripts/curation/build_learning_content_migration.py --write. Draft entries stay in the database and are left out of GET /api/v2/learning.",
-  "version": "2026.10.29.3",
+  "version": "2026.10.30.1",
   "articles": [
     {
       "slug": "black-eye-patches",
@@ -221,11 +221,12 @@
         },
         {
           "role": "inline",
-          "type": "wanted",
+          "type": "existing",
           "pandaSlug": null,
-          "shot": {
-            "zh": "约1～2周大的新生幼仔特写，粉色皮肤上眼斑刚开始显现、眼睛仍闭着。PandaAtlas 目前没有可公开使用的此类图片（成都基地新生幼仔照片在 media.csv 中为 collection_only），需另找授权图片。"
-          },
+          "asset": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chengdu-pandas-d18.jpg",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Chengdu-pandas-d18.jpg",
+          "credit": "Colegota / Wikimedia Commons",
+          "rights": "CC BY-SA 2.5 es",
           "caption": {
             "zh": "幼仔眼斑先于眼睛“睁开”。"
           },
@@ -829,11 +830,12 @@
         },
         {
           "role": "inline",
-          "type": "wanted",
+          "type": "existing",
           "pandaSlug": null,
-          "shot": {
-            "zh": "新生幼仔（粉色、稀疏白毛）的特写，用于“刚出生有多小”一节。PandaAtlas 现有的成都基地新生幼仔照片（bao-xin、qing-qing-chengdu-2017-07-26、xiao-xin-chengdu-2017）在 media.csv 中为 collection_only，不能公开展示，需另找授权图片。"
-          },
+          "asset": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chengdu-pandas-d18.jpg",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Chengdu-pandas-d18.jpg",
+          "credit": "Colegota / Wikimedia Commons",
+          "rights": "CC BY-SA 2.5 es",
           "caption": {
             "zh": "新生幼仔皮肤粉红，只有稀疏的白毛。"
           },
@@ -1524,11 +1526,12 @@
         },
         {
           "role": "inline",
-          "type": "wanted",
-          "pandaSlug": "bao-li",
-          "shot": {
-            "zh": "大熊猫坐姿进食、前爪握竹的近景，能看清“伪拇指”的对握动作；宝力现有照片是栖息地全景，不够近，建议另找授权近景（可优先找宝力或真真）。"
-          },
+          "type": "existing",
+          "pandaSlug": null,
+          "asset": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chengdu_pandas_eating.jpg",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Chengdu_pandas_eating.jpg",
+          "credit": "Hyjk2000 / Wikimedia Commons",
+          "rights": "CC BY-SA 3.0",
           "caption": {
             "zh": "坐着吃竹子时，前爪靠“伪拇指”握住竹秆。"
           },
@@ -2119,7 +2122,7 @@
       "decoyPandaSlugs": [
         "lun-lun",
         "lei-lei",
-        "yang-yang"
+        "yang-yang-atlanta"
       ],
       "prompt": {
         "zh": "看照片，选出这只熊猫",
@@ -2146,8 +2149,8 @@
       "answerPandaSlug": "lun-lun",
       "decoyPandaSlugs": [
         "bao-li",
-        "ya-lun",
-        "yang-yang"
+        "xi-lun",
+        "yang-yang-atlanta"
       ],
       "prompt": {
         "zh": "看照片，选出这只熊猫",
