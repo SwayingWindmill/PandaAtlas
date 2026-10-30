@@ -64,7 +64,7 @@ function VisitRow({ visit, place, last, onRemove }: { visit: Visit; place: strin
       <View className={cn("min-h-11 flex-row gap-row py-stack-tight pl-inset", stacked ? "items-start pr-inset" : "items-center")}>
         <DateLeaf date={visit.visitedOn} />
         <View className="min-w-0 flex-1">
-          <Text variant="body" numberOfLines={stacked ? undefined : 2} accessibilityLabel={`${longDate(visit.visitedOn)}，${place}`}>
+          <Text variant="body" accessibilityLabel={`${longDate(visit.visitedOn)}，${place}`}>
             {place}
           </Text>
           {stacked ? remove : null}

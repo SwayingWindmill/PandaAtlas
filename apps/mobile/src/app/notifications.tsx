@@ -164,7 +164,10 @@ export default function NotificationsScreen() {
         setPreferences(stored);
       })
       .catch(() => setFailed(true));
-    void loadPandaIndex().then((list) => setPandas(new Map(list.map((panda) => [panda.id, panda]))));
+    // Avatars only: without the panda list, each message keeps its bell.
+    loadPandaIndex()
+      .then((list) => setPandas(new Map(list.map((panda) => [panda.id, panda]))))
+      .catch(() => undefined);
   }, []);
   useEffect(load, [load]);
 
