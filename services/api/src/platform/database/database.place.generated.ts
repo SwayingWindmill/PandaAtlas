@@ -42,11 +42,11 @@ export interface PlacePlaces {
   center: string | null;
   country_code: string | null;
   created_at: Generated<Timestamp>;
+  institution_id: string | null;
   /**
    * Slugs of duplicate places merged into this one; old links resolve here.
    */
   legacy_slugs: Generated<string[]>;
-  institution_id: string | null;
   name_en: string | null;
   name_zh: string | null;
   place_id: Generated<string>;
