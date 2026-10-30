@@ -21,7 +21,7 @@ const TODAY_STORIES = 4;
 
 export default function FindScreen() {
   const { width } = useWindowDimensions();
-  const photos = useStoryPhotos(localToday(), TODAY_STORIES + 3).slice(TODAY_STORIES);
+  const photos = useStoryPhotos(localToday(), TODAY_STORIES + 4).slice(TODAY_STORIES);
   const card = Math.round(Math.min((Math.min(width, 700) - 32) * 0.78, 320));
   const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -59,6 +59,8 @@ export default function FindScreen() {
     { id: "map", title: "熊猫在哪里", href: "/map" as const },
     ...(hasInstitutions ? [{ id: "institutions", title: "基地和动物园", href: "/institutions" as const }] : []),
     { id: "relationship", title: "查两只熊猫的关系", href: "/relationship" as const },
+    // The user picks both pandas on /compare; nothing here proposes a pair.
+    { id: "compare", title: "比一比两只熊猫", href: "/compare" as const },
   ];
 
   return (

@@ -14,7 +14,7 @@ const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
 
 /**
  * A landscape photo card that opens one of 找熊猫's ways in (熊猫在哪里, 基地和动物园, 查两只熊猫的
- * 关系), as Music's Browse leads with large artwork: a real panda photo, the destination's name in
+ * 关系, 比一比两只熊猫), as Music's Browse leads with large artwork: a real panda photo, the destination's name in
  * white and a footnote that names the panda pictured, so the photo never pretends to be something else.
  */
 export function ExploreCard({

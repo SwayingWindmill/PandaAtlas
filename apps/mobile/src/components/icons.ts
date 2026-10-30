@@ -5,6 +5,7 @@
  */
 export { default as Bell } from "lucide-react-native/icons/bell";
 export { default as Binoculars } from "lucide-react-native/icons/binoculars";
+export { default as BookA } from "lucide-react-native/icons/book-a";
 export { default as Cake } from "lucide-react-native/icons/cake";
 export { default as CalendarCheck } from "lucide-react-native/icons/calendar-check";
 export { default as Check } from "lucide-react-native/icons/check";
@@ -29,6 +30,7 @@ export { default as MapPin } from "lucide-react-native/icons/map-pin";
 export { default as Mars } from "lucide-react-native/icons/mars";
 export { default as Navigation } from "lucide-react-native/icons/navigation";
 export { default as Network } from "lucide-react-native/icons/network";
+export { default as Newspaper } from "lucide-react-native/icons/newspaper";
 export { default as PawPrint } from "lucide-react-native/icons/paw-print";
 export { default as RotateCw } from "lucide-react-native/icons/rotate-cw";
 export { default as ScanFace } from "lucide-react-native/icons/scan-face";

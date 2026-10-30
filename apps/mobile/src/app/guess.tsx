@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -16,15 +16,19 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { CONTENT_ENTER } from "@/design/motion";
+import { component } from "@/design/tokens";
 import {
   DIFFICULTIES,
   type GuessDifficulty,
   type GuessOutcome,
   type GuessQuestion,
+  type LevelProbe,
   NoQuestionError,
   answerQuestion,
   difficultyOf,
   loadQuestion,
+  offeredLevels,
+  probeLevels,
 } from "@/features/guess/guess";
 import { openPanda } from "@/features/pandas/panda-row";
 import { useSession } from "@/features/session/session";
@@ -40,13 +44,37 @@ const TITLE = "这是哪只熊猫？";
 
 type Level = "any" | GuessDifficulty;
 
-const LEVELS: readonly { value: Level; label: string }[] = [
-  { value: "any", label: "随机" },
-  ...DIFFICULTIES.map(({ value, label }) => ({ value, label })),
-];
+type Probes = Partial<Record<GuessDifficulty, LevelProbe>>;
 
-function LevelPicker({ value, onChange }: { value: Level; onChange: (level: Level) => void }) {
-  return <Segmented value={value} options={LEVELS} onChange={onChange} accessibilityLabel="难度" />;
+/**
+ * 随机 and the levels that have questions. While the levels are being checked the control is a placeholder of the
+ * same height, so a level with no questions never appears and then vanishes. With only 随机 left there is no choice.
+ */
+function LevelPicker({
+  value,
+  probes,
+  onChange,
+}: {
+  value: Level;
+  probes: Probes | null;
+  onChange: (level: Level) => void;
+}) {
+  if (probes === null) {
+    return (
+      <Skeleton
+        className="w-full rounded-control"
+        style={{ height: component.segmented.height }}
+        accessibilityLabel="正在查看难度"
+      />
+    );
+  }
+  const offered = offeredLevels(probes, value);
+  if (offered.length === 0) return null;
+  const options: { value: Level; label: string }[] = [
+    { value: "any", label: "随机" },
+    ...DIFFICULTIES.filter((item) => offered.includes(item.value)).map(({ value: level, label }) => ({ value: level, label })),
+  ];
+  return <Segmented value={value} options={options} onChange={onChange} accessibilityLabel="难度" />;
 }
 
 /** The verdict mounts after the page has settled; on web an entering view would overlap the options. */
@@ -67,15 +95,48 @@ export default function GuessScreen() {
   const [outcome, setOutcome] = useState<GuessOutcome | null>(null);
   const [answerFailed, setAnswerFailed] = useState(false);
   const [level, setLevel] = useState<Level>("any");
+  const [probes, setProbes] = useState<Probes | null>(null);
+  // A question each level returned while being checked, shown the first time that level is chosen.
+  const prefetched = useRef(new Map<GuessDifficulty, GuessQuestion>());
+
+  useEffect(() => {
+    let live = true;
+    probeLevels()
+      .then((checks) => {
+        if (!live) return;
+        const found: Probes = {};
+        for (const { value } of DIFFICULTIES) {
+          found[value] = checks[value].probe;
+          const question = checks[value].question;
+          if (question) prefetched.current.set(value, question);
+        }
+        setProbes(found);
+      })
+      .catch(() => live && setProbes({}));
+    return () => {
+      live = false;
+    };
+  }, []);
 
   const next = useCallback(() => {
+    const show = (question: GuessQuestion) => {
+      setChosen(null);
+      setOutcome(null);
+      setLoad({ status: "ready", question });
+    };
+    const ready = level === "any" ? undefined : prefetched.current.get(level);
+    if (ready && level !== "any") {
+      prefetched.current.delete(level);
+      show(ready);
+      return;
+    }
     loadQuestion(level === "any" ? undefined : level)
-      .then((question) => {
-        setChosen(null);
-        setOutcome(null);
-        setLoad({ status: "ready", question });
-      })
-      .catch((error: unknown) => setLoad({ status: error instanceof NoQuestionError ? "empty" : "failed" }));
+      .then(show)
+      .catch((error: unknown) => {
+        const empty = error instanceof NoQuestionError;
+        if (empty && level !== "any") setProbes((current) => ({ ...current, [level]: "empty" }));
+        setLoad({ status: empty ? "empty" : "failed" });
+      });
   }, [level]);
   useEffect(next, [next]);
 
@@ -108,7 +169,7 @@ export default function GuessScreen() {
   if (load.status !== "ready") {
     return (
       <Page label="猜熊猫" title={TITLE}>
-        <LevelPicker value={level} onChange={changeLevel} />
+        <LevelPicker value={level} probes={probes} onChange={changeLevel} />
         {load.status === "loading" ? (
           <View className="gap-inset" accessibilityLabel="正在出题">
             <Skeleton className="w-full rounded-card" style={{ aspectRatio: 4 / 3 }} />
@@ -137,7 +198,7 @@ export default function GuessScreen() {
   const shown = difficultyOf(question.difficulty);
   return (
     <Page label={`猜熊猫　第 ${round} 题`} title={TITLE}>
-      <LevelPicker value={level} onChange={changeLevel} />
+      <LevelPicker value={level} probes={probes} onChange={changeLevel} />
       <View className="overflow-hidden rounded-card bg-media-placeholder" style={{ borderCurve: "continuous" }}>
         <Image
           source={question.photoUrl}
