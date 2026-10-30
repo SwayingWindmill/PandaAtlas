@@ -19,6 +19,7 @@ export { default as Clock } from "lucide-react-native/icons/clock";
 export { default as Download } from "lucide-react-native/icons/download";
 export { default as Ellipsis } from "lucide-react-native/icons/ellipsis";
 export { default as FileText } from "lucide-react-native/icons/file-text";
+export { default as Flag } from "lucide-react-native/icons/flag";
 export { default as Flower } from "lucide-react-native/icons/flower-2";
 export { default as FolderHeart } from "lucide-react-native/icons/folder-heart";
 export { default as Globe } from "lucide-react-native/icons/globe";

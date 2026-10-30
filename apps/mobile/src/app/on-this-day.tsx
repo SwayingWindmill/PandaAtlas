@@ -11,22 +11,24 @@ import { PAGE_ENTER } from "@/design/motion";
 import { localToday, shortDay } from "@/features/engagement/seen";
 import { MemoryGroup, UndoLine } from "@/features/on-this-day/memory-group";
 import { GROUPS, type MemoryPrefs, visibleMemories } from "@/features/on-this-day/on-this-day";
+import { useMilestonePrefs } from "@/features/milestones/prefs";
 import { setMemoryPrefs, showLess, useMemoryPrefs } from "@/features/on-this-day/prefs";
 import { OnThisDaySettings } from "@/features/on-this-day/settings-section";
 import { useMemories } from "@/features/on-this-day/use-memories";
 import { tapHaptic } from "@/lib/haptics";
 
 /**
- * 那年今天: everything the card on 今天 has for this day, grouped as 你的记录, 回国, 来到新家 and 生日,
+ * 那年今天: everything the card on 今天 has for this day, grouped as 你的记录, 回国, 来到新家, 满月和百天 and 生日,
  * with its switches at the foot. A panda that has died is remembered on its own page instead.
  */
 export default function OnThisDayScreen() {
   const prefs = useMemoryPrefs();
+  const milestones = useMilestonePrefs();
   const { memories, sources, failed, reload } = useMemories();
   const [undo, setUndo] = useState<{ message: string; before: MemoryPrefs } | null>(null);
   const day = shortDay(localToday());
 
-  if (!memories || !prefs) {
+  if (!memories || !prefs || !milestones) {
     return (
       <Page title="那年今天" label={day}>
         {failed ? <LoadFailed message="那年今天暂时打不开。" onRetry={reload} /> : <OnThisDaySkeleton />}
@@ -40,7 +42,7 @@ export default function OnThisDayScreen() {
     setUndo({ message, before: prefs });
     setMemoryPrefs(next);
   }
-  const shown = visibleMemories(memories, prefs);
+  const shown = visibleMemories(memories, prefs, !milestones.off);
 
   return (
     <Page title="那年今天" label={day}>
@@ -56,7 +58,7 @@ export default function OnThisDayScreen() {
           />
         ) : null}
         {shown.length === 0 ? (
-          <ScreenState message="往年的今天没有记下的事。有确切日期和出处的生日、搬家和回国，会在那一天出现在这里。" />
+          <ScreenState message="往年的今天没有记下的事。有确切日期和出处的生日、满月、搬家和回国，会在那一天出现在这里。" />
         ) : (
           GROUPS.map((group) => {
             const items = shown.filter((memory) => group.kinds.includes(memory.kind));

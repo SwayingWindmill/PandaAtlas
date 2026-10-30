@@ -11,6 +11,8 @@ import { ScreenState } from "@/components/screen-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
+import { MilestoneBadge } from "@/features/milestones/badge";
+import { useMilestonePrefs } from "@/features/milestones/prefs";
 import { type PandaTimeline, loadTimeline } from "@/features/timeline/load";
 import type { Milestone, MilestoneSource } from "@/features/timeline/timeline";
 import { HAIRLINE } from "@/lib/surface";
@@ -27,6 +29,7 @@ export default function TimelineScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const [timeline, setTimeline] = useState<PandaTimeline | null>(null);
   const [failed, setFailed] = useState(false);
+  const milestones = useMilestonePrefs();
 
   const load = useCallback(() => {
     loadTimeline(slug)
@@ -40,7 +43,7 @@ export default function TimelineScreen() {
     load();
   }
 
-  if (!timeline) {
+  if (!timeline || !milestones) {
     return (
       <Page title="时间线">
         {failed ? <LoadFailed message="时间线暂时打不开。" onRetry={retry} /> : <TimelineSkeleton />}
@@ -60,10 +63,22 @@ export default function TimelineScreen() {
     );
   }
 
+  // 满月, 满百天, birthdays and becoming a parent are worked out from the record; they go with 里程碑's switch.
+  const years = timeline.years
+    .map((year) => ({
+      ...year,
+      milestones: milestones.off
+        ? year.milestones
+            .filter((milestone) => !milestone.counted)
+            .map((milestone) => (milestone.recordedText ? { ...milestone, text: milestone.recordedText } : milestone))
+        : year.milestones,
+    }))
+    .filter((year) => year.milestones.length > 0);
+
   return (
     <Page title={`${timeline.name}的时间线`} label={timeline.summary ?? undefined}>
       <Animated.View entering={PAGE_ENTER} className="gap-section">
-        {timeline.years.map((year) => (
+        {years.map((year) => (
           <ListSection key={year.year} title={year.age ? `${year.year} · ${year.age}` : year.year}>
             {year.milestones.map((milestone, index) => (
               <MilestoneRow key={milestone.id} milestone={milestone} last={index === year.milestones.length - 1} />
@@ -103,12 +118,20 @@ function MilestoneRow({ milestone, last }: { milestone: Milestone; last: boolean
         ) : null}
         <View className={cn("min-w-0 gap-1", stacked ? "self-stretch" : "flex-1")}>
           <Text variant="body">{milestone.text}</Text>
-          {milestone.note ? (
+          {milestone.note && milestone.counted ? (
+            <View className="flex-row flex-wrap items-center gap-stack-tight">
+              <MilestoneBadge label="里程碑" />
+              <Text variant="footnote" className="text-muted-foreground">
+                {milestone.note}
+              </Text>
+            </View>
+          ) : milestone.note ? (
             <Text variant="footnote" className="text-muted-foreground">
               {milestone.note}
             </Text>
           ) : null}
-          {milestone.sources.length > 0 ? (
+          {milestone.counted && milestone.kind !== "parent" ? null : milestone.sources.length > 0 ? (
+            // A counted day is worked out from the birth row above, whose sources are shown there.
             milestone.sources.map((source) => <SourceLink key={source.id} source={source} />)
           ) : milestone.note ? null : (
             <Text variant="footnote" className="text-muted-foreground">

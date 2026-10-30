@@ -1,5 +1,7 @@
 import type { components } from "@zhipanda/api-client";
 
+import type { PandaMilestone } from "../milestones/milestones";
+
 // A panda's life as dated milestones, the way zoos tell it ("his top 12 milestones"): its life events and the
 // stays in its residency record, merged into one list, oldest first, each with the sources that state it.
 // A stay's start or end that a life event already tells (arrival 2011-02-21 at 上野 and the stay there that
@@ -12,7 +14,21 @@ export type Residency = Schemas["PublicResidencySummaryDto"];
 export type Evidence = Schemas["PublicEvidenceSummaryDto"];
 
 export type MilestoneKind =
-  "birth" | "cub" | "move" | "arrive" | "home" | "debut" | "naming" | "death" | "stay" | "leave";
+  | "birth"
+  | "cub"
+  | "move"
+  | "arrive"
+  | "home"
+  | "debut"
+  | "naming"
+  | "death"
+  | "stay"
+  | "leave"
+  // 里程碑 worked out from the record: 满月, 满百天, a birthday, becoming a parent.
+  | "month"
+  | "hundred"
+  | "age"
+  | "parent";
 
 export interface MilestoneSource {
   id: string;
@@ -33,6 +49,10 @@ export interface Milestone {
   /** A qualifier under the text: "只知道所在国家" for a country-level stay. */
   note?: string;
   sources: MilestoneSource[];
+  /** A 里程碑 worked out from the record rather than recorded itself; it goes with the 里程碑 switch. */
+  counted?: boolean;
+  /** A recorded cub birth retold as becoming a parent keeps its own words for when 里程碑 is off. */
+  recordedText?: string;
 }
 
 export interface TimelineYear {
@@ -46,7 +66,7 @@ export interface Timeline {
   years: TimelineYear[];
   /** Milestones without a date, after the dated ones. */
   undated: Milestone[];
-  /** "8 个里程碑 · 2005–2024 · 住过 2 个地方". Null when there is nothing. */
+  /** "8 条记录 · 2005–2024 · 住过 2 个地方": what is recorded, not the 里程碑 worked out from it. Null when there is nothing. */
   summary: string | null;
   count: number;
 }
@@ -148,6 +168,8 @@ export function buildTimeline(input: {
   birthDate: string | null;
   /** From the profile's facts: told when no death event is on record. */
   deathDate?: string | null;
+  /** 里程碑 worked out from the record (milestones.ts): 满月, 满百天, birthdays, becoming a parent. */
+  counted?: PandaMilestone[];
 }): Timeline {
   const evidence = new Map(input.evidence.map((item) => [item.sourceId, item]));
   const milestones: Milestone[] = [];
@@ -253,6 +275,37 @@ export function buildTimeline(input: {
     });
   }
 
+  // Becoming a parent is the day the first cub was born; a birth event may already tell that day as 迎来幼崽出生,
+  // and then it is one milestone, said the 里程碑 way, with the sources of both.
+  for (const item of input.counted ?? []) {
+    const sources = sourcesOf(item.sourceIds, evidence);
+    // With no birth date of its own on record, the panda's cub's birth event reads as a birth; the parent link
+    // says whose it is.
+    const cub =
+      item.kind === "parent"
+        ? milestones.find(
+            (m) => m.date === item.date && (m.kind === "cub" || (m.kind === "birth" && !input.birthDate && !m.id.startsWith("fact:"))),
+          )
+        : undefined;
+    if (cub) {
+      cub.kind = "cub";
+      cub.recordedText = cub.text;
+      cub.text = item.text;
+      addSources(cub, sources);
+      continue;
+    }
+    milestones.push({
+      id: `counted:${item.id}`,
+      kind: item.kind,
+      date: item.date,
+      dayLabel: dayLabel(item.date),
+      text: item.text,
+      note: item.note,
+      sources,
+      counted: true,
+    });
+  }
+
   const dated = milestones
     .filter((milestone) => milestone.date)
     .sort((a, b) => a.date.localeCompare(b.date) || ORDER.indexOf(a.kind) - ORDER.indexOf(b.kind));
@@ -271,16 +324,32 @@ export function buildTimeline(input: {
     group.milestones.push(milestone);
   }
 
-  const count = dated.length + undated.length;
+  // The summary counts what is recorded; counted days come and go with the 里程碑 switch.
+  const count = dated.filter((milestone) => !milestone.counted).length + undated.length;
   const places = new Set(stays.map((stay) => stay.placeId).filter((id) => input.place(id)));
   const span =
     years.length === 0 ? null : years.length === 1 ? years[0]!.year : `${years[0]!.year}–${years.at(-1)!.year}`;
   const summary =
     count === 0
       ? null
-      : [`${count} 个里程碑`, span, places.size > 0 ? `住过 ${places.size} 个地方` : null].filter(Boolean).join(" · ");
+      : [`${count} 条记录`, span, places.size > 0 ? `住过 ${places.size} 个地方` : null].filter(Boolean).join(" · ");
   return { years, undated, summary, count };
 }
 
 /** Within one day: born before anything else, gone after everything else. */
-const ORDER: MilestoneKind[] = ["birth", "cub", "naming", "leave", "move", "arrive", "home", "stay", "debut", "death"];
+const ORDER: MilestoneKind[] = [
+  "birth",
+  "cub",
+  "parent",
+  "month",
+  "hundred",
+  "age",
+  "naming",
+  "leave",
+  "move",
+  "arrive",
+  "home",
+  "stay",
+  "debut",
+  "death",
+];

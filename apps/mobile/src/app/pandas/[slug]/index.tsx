@@ -32,7 +32,8 @@ import { CompareRows } from "@/features/compare/compare-rows";
 import { PandaActions } from "@/features/engagement/panda-actions";
 import { type FamilyMember, relativesOf } from "@/features/family/family";
 import { sourceLine } from "@/features/on-this-day/memory-group";
-import { DECEASED_POLICY } from "@/features/on-this-day/on-this-day";
+import { useMilestonesOn } from "@/features/milestones/prefs";
+import { DECEASED_POLICY, isCubDay } from "@/features/on-this-day/on-this-day";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type Profile, loadProfile, longDate } from "@/features/pandas/profile";
 import { type Stat, UNKNOWN } from "@/features/pandas/profile-facts";
@@ -257,15 +258,19 @@ function PlacesLived({ profile }: { profile: Profile }) {
  */
 function Memories({ profile }: { profile: Profile }) {
   const sources = new Map(profile.sources.map((source) => [source.id, source]));
+  // 满月 and 满百天 are 里程碑, and go with its switch.
+  const milestonesOn = useMilestonesOn();
+  const memories = profile.memories.filter((memory) => milestonesOn || !isCubDay(memory));
+  if (memories.length === 0) return null;
   return (
     <ListSection title={profile.deceased ? DECEASED_POLICY.heading : "那年今天"}>
-      {profile.memories.map((memory, index) => (
+      {memories.map((memory, index) => (
         <ListCell
           key={memory.key}
           label={memory.text}
           detail={sourceLine(memory, memory.sourceIds.map((id) => sources.get(id)).find(Boolean)) ?? undefined}
           lines={3}
-          last={index === profile.memories.length - 1}
+          last={index === memories.length - 1}
         />
       ))}
     </ListSection>

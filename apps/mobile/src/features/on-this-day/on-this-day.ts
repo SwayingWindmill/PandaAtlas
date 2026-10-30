@@ -1,3 +1,5 @@
+import { buildLifeList } from "../book/book";
+import { CUB_DAY_TEXT, MILESTONE_CONFIG, cubDayOn, visitNumbers } from "../milestones/milestones";
 import { type LifeEvent, type Residency, describeEvent } from "../timeline/timeline";
 
 // 那年今天: what happened on this calendar day in an earlier year, told only from records that already exist.
@@ -22,7 +24,8 @@ export const DECEASED_POLICY = {
   push: false,
 } as const;
 
-export type MemoryKind = "birthday" | "home" | "arrival" | "death" | "seen" | "recognized" | "visit";
+export type MemoryKind =
+  "month" | "hundred" | "birthday" | "home" | "arrival" | "death" | "seen" | "recognized" | "visit";
 
 export interface MemorySubject {
   /** `panda:<id>` or `place:<id>`: what 少显示 hides. */
@@ -40,7 +43,7 @@ export interface Memory {
   subject: MemorySubject;
   /** The day it happened, YYYY-MM-DD. */
   date: string;
-  /** Whole years since then; at least 1. */
+  /** Whole years since then; at least 1, except 0 for a cub's 满月 or 满百天 (a 里程碑, not a memory). */
   years: number;
   /** One plain sentence: "3 岁生日", "2 年前的今天回国，住进雅安碧峰峡基地". */
   text: string;
@@ -49,6 +52,8 @@ export interface Memory {
   /** True for the fan's own records. */
   personal: boolean;
   deceased: boolean;
+  /** A 里程碑 the record was, said after the sentence while 里程碑 is on: "是你的第 10 只熊猫". */
+  milestone?: string;
 }
 
 export interface MemoryPanda {
@@ -71,11 +76,11 @@ export interface MemoryPlace {
 
 export interface PersonalRecords {
   /** 见过: the day the fan saw the panda in person. */
-  seen: { pandaId: string; seenOn?: string | null; placeId?: string | null }[];
+  seen: { pandaId: string; seenOn?: string | null; placeId?: string | null; firstSeenAt?: string }[];
   /** 认出: the first time the fan picked it out in a game (an ISO date-time). */
   recognized: { pandaId: string; firstGame: "daily_panda" | "guess_panda"; firstMetAt: string }[];
   /** 到访: a day the fan went to a place. */
-  visits: { checkinId: string; placeId: string; visitedOn: string }[];
+  visits: { checkinId: string; placeId: string; visitedOn: string; createdAt?: string }[];
 }
 
 export interface MemoryInput {
@@ -132,7 +137,21 @@ const GAME: Record<PersonalRecords["recognized"][number]["firstGame"], string> =
 };
 
 /** Order on a day: the fan's own first, then coming home, coming to a place, birthdays; older first within. */
-const ORDER: MemoryKind[] = ["seen", "recognized", "visit", "home", "arrival", "birthday", "death"];
+const ORDER: MemoryKind[] = ["seen", "recognized", "visit", "home", "arrival", "month", "hundred", "birthday", "death"];
+
+/** "是你的第 10 只熊猫" when the panda's 图鉴 number is a milestone. */
+function pandaMilestone(count: number | undefined): string | undefined {
+  if (count === undefined || !(MILESTONE_CONFIG.pandas as readonly number[]).includes(count)) return undefined;
+  return count === 1 ? "是你的第一只熊猫" : `是你的第 ${count} 只熊猫`;
+}
+
+/** "是你第一次回来" when the visit's count at its place is a milestone. */
+function visitMilestone(count: number | undefined): string | undefined {
+  if (count === undefined || !(MILESTONE_CONFIG.visits as readonly number[]).includes(count)) return undefined;
+  if (count === 1) return "是你第一次来";
+  if (count === 2) return "是你第一次回来";
+  return `是你第 ${count} 次来`;
+}
 
 export function memoriesOn(input: MemoryInput): Memory[] {
   const { today } = input;
@@ -227,18 +246,34 @@ export function memoriesOn(input: MemoryInput): Memory[] {
     });
   }
 
-  // Birthdays: the profile's birth date, with the birth event's sources when one records that day.
+  // Birthdays: the profile's birth date, with the birth event's sources when one records that day. A cub's
+  // 满月 and 满百天 are told the same way, for a living cub only: they are about the days ahead.
   for (const panda of input.pandas) {
     if (!wanted(panda) || !panda.birthDate) continue;
+    const birthSources = () =>
+      input.events.find(
+        (event) =>
+          event.eventType === "birth" &&
+          event.eventStatus === "completed" &&
+          event.occurredOn === panda.birthDate &&
+          event.participantIds.includes(panda.id),
+      )?.sourceIds ?? [];
+    const cubDay = panda.deceased ? null : cubDayOn(panda.birthDate, today);
+    if (cubDay) {
+      out.push({
+        key: `${cubDay}:${panda.id}`,
+        kind: cubDay,
+        subject: pandaSubject(panda),
+        date: panda.birthDate,
+        years: 0,
+        text: `今天${CUB_DAY_TEXT[cubDay]}`,
+        sourceIds: birthSources(),
+        personal: false,
+        deceased: false,
+      });
+    }
     const years = anniversaryYears(panda.birthDate, today);
     if (years === null) continue;
-    const birth = input.events.find(
-      (event) =>
-        event.eventType === "birth" &&
-        event.eventStatus === "completed" &&
-        event.occurredOn === panda.birthDate &&
-        event.participantIds.includes(panda.id),
-    );
     out.push({
       key: `birthday:${panda.id}`,
       kind: "birthday",
@@ -247,7 +282,7 @@ export function memoriesOn(input: MemoryInput): Memory[] {
       years,
       // A panda that has died is not given a birthday; its page says when it was born.
       text: panda.deceased ? `${years} 年前的今天出生` : `${years} 岁生日`,
-      sourceIds: birth?.sourceIds ?? [],
+      sourceIds: birthSources(),
       personal: false,
       deceased: panda.deceased,
     });
@@ -255,6 +290,22 @@ export function memoriesOn(input: MemoryInput): Memory[] {
 
   const personal = input.personal;
   if (personal) {
+    // The 图鉴's numbers, the way it counts them, so "你的第 10 只" here is the No.10 there.
+    const numbers = new Map(
+      buildLifeList(
+        personal.recognized.map((item) => ({ ...item, timesMet: 1 })),
+        personal.seen.flatMap((item) => {
+          const firstSeenAt = item.firstSeenAt ?? item.seenOn;
+          return firstSeenAt ? [{ ...item, firstSeenAt }] : [];
+        }),
+      ).entries.map((entry) => [entry.pandaId, entry]),
+    );
+    // The milestone belongs to whichever way the fan met the panda first.
+    const firstWay = (pandaId: string, date: string) => {
+      const entry = numbers.get(pandaId);
+      return entry && entry.firstOn.slice(0, 10) === date ? pandaMilestone(entry.number) : undefined;
+    };
+    const visitCounts = visitNumbers(personal.visits);
     for (const item of personal.seen) {
       if (!item.seenOn) continue;
       const years = anniversaryYears(item.seenOn, today);
@@ -271,6 +322,7 @@ export function memoriesOn(input: MemoryInput): Memory[] {
         sourceIds: [],
         personal: true,
         deceased: panda.deceased,
+        milestone: firstWay(panda.id, item.seenOn),
       });
     }
     for (const item of personal.recognized) {
@@ -288,6 +340,7 @@ export function memoriesOn(input: MemoryInput): Memory[] {
         sourceIds: [],
         personal: true,
         deceased: panda.deceased,
+        milestone: firstWay(panda.id, date),
       });
     }
     if (!input.pandaId) {
@@ -307,6 +360,7 @@ export function memoriesOn(input: MemoryInput): Memory[] {
           sourceIds: [],
           personal: true,
           deceased: false,
+          milestone: visitMilestone(visitCounts.get(visit.checkinId)),
         });
       }
     }
@@ -329,16 +383,27 @@ export interface MemoryPrefs {
 
 export const DEFAULT_PREFS: MemoryPrefs = { off: false, less: [] };
 
-/** What 今天 and the 那年今天 page show: no deceased panda (per DECEASED_POLICY), nothing shown less. */
-export function visibleMemories(memories: Memory[], prefs: MemoryPrefs): Memory[] {
+/**
+ * What 今天 and the 那年今天 page show: no deceased panda (per DECEASED_POLICY), nothing shown less, and with
+ * 里程碑 off, no 满月 or 满百天 and no "你的第 10 只"; with it on, that is said after the sentence.
+ */
+export function visibleMemories(memories: Memory[], prefs: MemoryPrefs, milestonesOn = true): Memory[] {
   const less = new Set(prefs.less);
-  return memories.filter((memory) => !less.has(memory.subject.key) && (DECEASED_POLICY.onToday || !memory.deceased));
+  return memories
+    .filter((memory) => !less.has(memory.subject.key) && (DECEASED_POLICY.onToday || !memory.deceased))
+    .filter((memory) => milestonesOn || !isCubDay(memory))
+    .map((memory) => (milestonesOn && memory.milestone ? { ...memory, text: `${memory.text}，${memory.milestone}` } : memory));
+}
+
+export function isCubDay(memory: Pick<Memory, "kind">): boolean {
+  return memory.kind === "month" || memory.kind === "hundred";
 }
 
 /** Where a memory's line under the sentence says it comes from, when it has no published source. */
 export function ownRecord(memory: Memory): string | null {
   if (memory.kind === "seen" || memory.kind === "recognized") return "来自你的图鉴";
   if (memory.kind === "visit") return "来自你的到访记录";
+  if (isCubDay(memory) && memory.sourceIds.length === 0) return "按资料卡的出生日期推算";
   if (memory.sourceIds.length === 0) return "来自资料卡，这一条还没有单独的出处";
   return null;
 }
@@ -348,6 +413,7 @@ export const GROUPS: { title: string; kinds: MemoryKind[] }[] = [
   { title: "你的记录", kinds: ["seen", "recognized", "visit"] },
   { title: "回国", kinds: ["home"] },
   { title: "来到新家", kinds: ["arrival"] },
+  { title: "满月和百天", kinds: ["month", "hundred"] },
   { title: "生日", kinds: ["birthday"] },
 ];
 
