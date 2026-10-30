@@ -5,6 +5,18 @@ import { DynamicColorIOS, Platform } from "react-native";
 import { useWelcomeSeen } from "@/features/onboarding/welcome";
 import { IOS, useIOSColors } from "@/lib/theme";
 
+/**
+ * Lucide glyphs (sun, search, layout-grid, user-round) rasterized to template PNGs at 25pt,
+ * because the system tab bar takes images, not components. The bar tints them: secondary
+ * label at rest, tint when selected. Regenerate with `node scripts/tab-icons.mjs`.
+ */
+const TAB_ICON = {
+  today: require("../../../assets/tab-icons/today.png"),
+  find: require("../../../assets/tab-icons/search.png"),
+  book: require("../../../assets/tab-icons/atlas.png"),
+  me: require("../../../assets/tab-icons/me.png"),
+};
+
 const iosTint = Platform.OS === "ios" ? DynamicColorIOS({ light: IOS.light.tint, dark: IOS.dark.tint }) : null;
 
 export default function TabsLayout() {
@@ -19,19 +31,19 @@ export default function TabsLayout() {
     <NativeTabs tintColor={tint} minimizeBehavior="onScrollDown" disableTransparentOnScrollEdge>
       <NativeTabs.Trigger name="(today)">
         <NativeTabs.Trigger.Label>今天</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: "sun.max", selected: "sun.max.fill" }} md="wb_sunny" />
+        <NativeTabs.Trigger.Icon src={TAB_ICON.today} renderingMode="template" />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="find">
         <NativeTabs.Trigger.Label>找熊猫</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="magnifyingglass" md="search" />
+        <NativeTabs.Trigger.Icon src={TAB_ICON.find} renderingMode="template" />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="book">
         <NativeTabs.Trigger.Label>图鉴</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: "square.grid.2x2", selected: "square.grid.2x2.fill" }} md="grid_view" />
+        <NativeTabs.Trigger.Icon src={TAB_ICON.book} renderingMode="template" />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="me">
         <NativeTabs.Trigger.Label>我的</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: "person", selected: "person.fill" }} md="person" />
+        <NativeTabs.Trigger.Icon src={TAB_ICON.me} renderingMode="template" />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

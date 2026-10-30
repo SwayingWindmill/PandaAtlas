@@ -1,8 +1,8 @@
 import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
-import type { AndroidSymbol, SFSymbol } from "expo-symbols";
 import { Platform, Pressable, View } from "react-native";
 
-import { Icon } from "@/components/symbol";
+import { Icon } from "@/components/icon";
+import type { LucideIcon } from "@/components/icons";
 import { useIOSColors } from "@/lib/theme";
 
 const SIZE = 44;
@@ -13,19 +13,17 @@ const SIZE = 44;
  * on any picture.
  */
 export function GlassButton({
-  sf,
-  md,
+  icon,
   label,
   onPress,
 }: {
-  sf: SFSymbol;
-  md: AndroidSymbol;
+  icon: LucideIcon;
   label: string;
   onPress: () => void;
 }) {
-  const { scheme, label: labelColor } = useIOSColors();
+  const { scheme } = useIOSColors();
   const glass = Platform.OS === "ios" && isLiquidGlassAvailable();
-  const icon = <Icon sf={sf} md={md} size={20} weight="semibold" color={glass ? labelColor : "#FFFFFF"} />;
+  const glyph = <Icon icon={icon} size="body" tone={glass ? "label" : "onMedia"} strokeWidth={2} />;
   return (
     <Pressable
       onPress={onPress}
@@ -42,7 +40,7 @@ export function GlassButton({
           colorScheme={scheme}
           style={{ flex: 1, alignItems: "center", justifyContent: "center", borderRadius: SIZE / 2 }}
         >
-          {icon}
+          {glyph}
         </GlassView>
       ) : (
         <View
@@ -51,7 +49,7 @@ export function GlassButton({
             Platform.OS === "web" ? ({ backdropFilter: "blur(20px) saturate(1.6)" } as object) : null,
           ]}
         >
-          {icon}
+          {glyph}
         </View>
       )}
     </Pressable>

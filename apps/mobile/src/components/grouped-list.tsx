@@ -2,9 +2,9 @@ import { type Href, router } from "expo-router";
 import type { ReactNode } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 
-import { Icon } from "@/components/symbol";
+import { Icon } from "@/components/icon";
+import { ChevronRight, type LucideIcon } from "@/components/icons";
 import { Text } from "@/components/ui/text";
-import { useIOSColors } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 /** At accessibility text sizes a value no longer fits beside its label, so it moves under it. */
@@ -14,11 +14,13 @@ export function useStacked() {
   return useWindowDimensions().fontScale >= STACK_AT_FONT_SCALE;
 }
 
-/** The disclosure chevron: SF Symbol chevron.forward in tertiary label, as Settings draws it. */
+/** The disclosure chevron in tertiary label, as Settings draws it. */
 export function Chevron() {
-  const { tertiaryLabel } = useIOSColors();
-  return <Icon sf="chevron.forward" md="chevron_right" size={14} weight="semibold" color={tertiaryLabel} />;
+  return <Icon icon={ChevronRight} size={17} tone="tertiary" strokeWidth={2.25} />;
 }
+
+/** Where a row's separator starts when it has a leading icon: under the label, as in Settings. */
+export const ICON_INSET = "ml-[50px]";
 
 /** An inset grouped section: footnote header, white (or elevated) rounded group, optional footer. */
 export function ListSection({ title, footer, children }: { title?: string; footer?: string; children: ReactNode }) {
@@ -39,6 +41,8 @@ export function ListSection({ title, footer, children }: { title?: string; foote
  * One row in a grouped section. The separator is inset and stops before the last row.
  * `meta` is the trailing value (Settings' "detail" text); at large Dynamic Type sizes it
  * wraps under the label instead of squeezing it. `tone="tint"` is an action row.
+ * `icon` is a leading glyph that names the row's category (出生, 地址, 官网); give one to every
+ * row in a group or to none, and never to a row that is itself data (a name, an event).
  */
 export function ListCell({
   label,
@@ -48,6 +52,7 @@ export function ListCell({
   onPress,
   last,
   leading,
+  icon,
   accessibilityLabel,
   accessibilityHint,
   role = "button",
@@ -61,6 +66,7 @@ export function ListCell({
   onPress?: () => void;
   last?: boolean;
   leading?: ReactNode;
+  icon?: LucideIcon;
   accessibilityLabel?: string;
   accessibilityHint?: string;
   role?: "button" | "link";
@@ -90,7 +96,7 @@ export function ListCell({
         accessibilityHint={accessibilityHint}
         className="min-h-11 flex-row items-center gap-3 px-4 py-3 active:bg-accent"
       >
-        {leading}
+        {icon ? <Icon icon={icon} tone={tone === "tint" ? "tint" : "secondary"} /> : leading}
         <View className="min-w-0 flex-1 gap-0.5">
           <Text variant="body" className={tone === "tint" ? "text-primary" : undefined} numberOfLines={labelLines}>
             {label}
@@ -105,7 +111,7 @@ export function ListCell({
         {stacked ? null : metaText}
         {open && tone === "label" ? <Chevron /> : null}
       </Pressable>
-      {last ? null : <View className={cn("h-hairline bg-border", leading ? "ml-16" : "ml-4")} />}
+      {last ? null : <View className={cn("h-hairline bg-border", icon ? ICON_INSET : leading ? "ml-16" : "ml-4")} />}
     </View>
   );
 }
