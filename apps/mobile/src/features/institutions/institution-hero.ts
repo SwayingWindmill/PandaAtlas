@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { hasBurnedInMark } from "@/features/today/story-order";
 import { api, publicMediaUrl } from "@/lib/api";
+
+import { heroCandidates, pickInstitutionHero } from "./hero-pick";
 
 export interface HeroPhoto {
   url: string;
@@ -11,34 +12,43 @@ export interface HeroPhoto {
 }
 
 /**
- * The photograph at the top of an institution page: the first resident whose cover carries no
- * agency watermark. Null while loading, offline, or when no resident has a clean photo.
+ * The photograph at the top of an institution page, drawn only from curated covers. `undefined`
+ * while the covers are still being looked up; null when no resident has one or the call failed,
+ * so the page sets its name on a plain plate instead.
  */
-export function useInstitutionHero(residents: { id: string; name: string }[]): HeroPhoto | null {
-  const [hero, setHero] = useState<HeroPhoto | null>(null);
-  const ids = residents
-    .slice(0, 12)
-    .map((panda) => panda.id)
-    .join(",");
+export function useInstitutionHero(residents: { id: string; name: string }[] | null): HeroPhoto | null | undefined {
+  const [found, setFound] = useState<{ ids: string; hero: HeroPhoto | null } | null>(null);
+  const candidates = heroCandidates(residents ?? []);
+  const ids = candidates.map((panda) => panda.id).join(",");
   useEffect(() => {
     if (!ids) return;
     let active = true;
     api
       .GET("/api/v2/panda-covers", { params: { query: { ids } } })
       .then(({ data }) => {
-        const covers = new Map((data?.items ?? []).filter((cover) => !hasBurnedInMark(cover)).map((cover) => [cover.pandaId, cover]));
-        const panda = residents.find((item) => covers.has(item.id));
-        const cover = panda ? covers.get(panda.id) : undefined;
-        if (!active || !panda || !cover) return;
+        if (!active) return;
+        const pick = pickInstitutionHero(candidates, data?.items ?? []);
+        if (!pick) {
+          setFound({ ids, hero: null });
+          return;
+        }
+        const { panda, cover } = pick;
         const credit = [cover.attributionText ?? cover.creator, cover.license].filter(Boolean).join("，");
-        setHero({ url: publicMediaUrl(cover.objectKey), credit: credit || null, pandaName: panda.name });
+        setFound({
+          ids,
+          hero: { url: publicMediaUrl(cover.objectKey), credit: credit || null, pandaName: panda.name },
+        });
       })
-      .catch(() => undefined);
+      .catch(() => {
+        if (active) setFound({ ids, hero: null });
+      });
     return () => {
       active = false;
     };
-    // `ids` stands for `residents`: the list is rebuilt on every render.
+    // `ids` stands for `candidates`: the list is rebuilt on every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ids]);
-  return hero;
+  if (residents === null) return undefined;
+  if (!ids) return null;
+  return found?.ids === ids ? found.hero : undefined;
 }

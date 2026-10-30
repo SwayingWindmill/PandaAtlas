@@ -4,17 +4,22 @@ import { useCSSVariable } from "uniwind";
 import { Icon } from "@/components/icon";
 import { Search } from "@/components/icons";
 
-/** The round search field of 找熊猫 and the 查关系 picker. */
+/** The round search field of 找熊猫, the 查关系 picker, 每日一猫 and the welcome picker. */
 export function SearchField({
   value,
   onChange,
   label = "搜索熊猫",
+  placeholder = "名字或基地",
   autoFocus,
+  editable,
 }: {
   value: string;
   onChange: (value: string) => void;
   label?: string;
+  /** What the empty field suggests typing; 找熊猫 searches names and bases. */
+  placeholder?: string;
   autoFocus?: boolean;
+  editable?: boolean;
 }) {
   const muted = String(useCSSVariable("--color-muted-foreground"));
   return (
@@ -26,11 +31,12 @@ export function SearchField({
       <TextInput
         value={value}
         onChangeText={onChange}
-        placeholder="名字或基地"
+        placeholder={placeholder}
         placeholderTextColor={muted}
         accessibilityLabel={label}
         autoCorrect={false}
         autoFocus={autoFocus}
+        editable={editable}
         clearButtonMode="while-editing"
         returnKeyType="search"
         className="h-full flex-1 text-body text-foreground"

@@ -1,25 +1,48 @@
 import { Image } from "expo-image";
 import { router, Stack } from "expo-router";
-import type { ReactNode } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
+import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { ListCell, ListSection } from "@/components/grouped-list";
+import { ScanFace } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
+import { PhotoOutline } from "@/components/photo-outline";
+import { PressScale } from "@/components/press-scale";
+import { ScreenState } from "@/components/screen-state";
+import { SectionHeader } from "@/components/section-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { articleHero, catalogIsEmpty, type CatalogArticle, learningText, readingMinutes } from "@/features/learning/catalog";
+import { CONTENT_ENTER } from "@/design/motion";
+import {
+  articleHero,
+  catalogIsEmpty,
+  type CatalogArticle,
+  learningText,
+  readingMinutes,
+} from "@/features/learning/catalog";
 import { PandaPhoto } from "@/features/learning/panda-photo";
-import { useReadingTheme } from "@/features/learning/reading-theme";
 import { useLearningCatalog, useLearningPandas } from "@/features/learning/use-catalog";
+import { HAIRLINE, RADIUS } from "@/lib/surface";
 
 const CATEGORY_ORDER = ["外形与识别", "食性", "繁殖与成长", "保护"];
+const TITLE = "认识大熊猫";
 
 function openArticle(slug: string) {
   router.push({ pathname: "/learn/articles/[slug]", params: { slug } });
 }
 
+/** The large title kept in the column, as 科普 does on every platform. */
+function Masthead({ count }: { count?: number }) {
+  return (
+    <View className="gap-hair-gap px-inset">
+      <Text variant="display">{TITLE}</Text>
+      {count ? <Text variant="subheadline" className="text-muted-foreground">{`${count} 篇科普`}</Text> : null}
+    </View>
+  );
+}
+
 export default function LearnScreen() {
-  const theme = useReadingTheme();
   const insets = useSafeAreaInsets();
   const { state, reload } = useLearningCatalog();
   const { pandas } = useLearningPandas();
@@ -27,9 +50,15 @@ export default function LearnScreen() {
 
   if (state.status !== "ready") {
     return (
-      <View style={{ flex: 1, backgroundColor: theme.canvas, paddingHorizontal: 20 }}>
+      <View className="flex-1 gap-section bg-background pt-stack-tight">
         {bar}
-        {state.status === "loading" ? <Skeleton className="h-80 w-full" accessibilityLabel="正在加载" /> : null}
+        <Masthead />
+        {state.status === "loading" ? (
+          <View className="gap-row px-inset" accessibilityLabel="正在加载">
+            <Skeleton className="h-72 w-full rounded-card" />
+            <Skeleton className="h-28 w-full rounded-group" />
+          </View>
+        ) : null}
         {state.status === "failed" ? <LoadFailed message="科普暂时打不开。" onRetry={reload} /> : null}
       </View>
     );
@@ -38,174 +67,203 @@ export default function LearnScreen() {
   const { catalog } = state;
   if (catalogIsEmpty(catalog) || catalog.articles.length === 0) {
     return (
-      <View style={{ flex: 1, backgroundColor: theme.canvas, paddingHorizontal: 20, gap: 16 }}>
+      <View className="flex-1 gap-section bg-background pt-stack-tight">
         {bar}
-        <Text style={{ fontSize: 34, lineHeight: 41, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
-          认识大熊猫
-        </Text>
-        <Text style={{ fontSize: 17, color: theme.secondary }}>科普还在写。</Text>
+        <Masthead />
+        <ScreenState message="科普还在写。" />
       </View>
     );
   }
 
   const [featured, ...rest] = catalog.articles;
   if (featured === undefined) return null;
+  const faceGuides = catalog.faceGuides.map((guide) => ({
+    guide,
+    panda: pandas?.find((item) => item.slug === guide.pandaSlug) ?? null,
+  }));
 
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: theme.canvas }}
+      className="flex-1 bg-background"
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingTop: 8, paddingBottom: insets.bottom + 48, gap: 32 }}
+      contentContainerStyle={{ paddingBottom: insets.bottom + 48 }}
     >
       {bar}
-      <View style={{ paddingHorizontal: 20, gap: 8 }}>
-        <Text style={{ fontSize: 34, lineHeight: 41, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
-          认识大熊猫
-        </Text>
-      </View>
+      <Animated.View entering={CONTENT_ENTER} className="gap-section pt-stack-tight">
+        <Masthead count={catalog.articles.length} />
 
-      <FeaturedArticle article={featured} />
-
-      {CATEGORY_ORDER.map((category) => {
-        const articles = rest.filter((article) => article.category === category);
-        if (articles.length === 0) return null;
-        return (
-          <View key={category} style={{ paddingHorizontal: 20, gap: 16 }}>
-            <Text style={{ fontSize: 22, lineHeight: 28, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
-              {category}
-            </Text>
-            {articles.map((article) => (
-              <FeedArticle key={article.slug} article={article} />
-            ))}
-          </View>
-        );
-      })}
-
-      <View style={{ paddingHorizontal: 20, gap: 16 }}>
-        <Text style={{ fontSize: 22, lineHeight: 28, fontWeight: "700", color: theme.ink }} accessibilityRole="header">
-          名词和认脸
-        </Text>
-        <View style={{ borderRadius: 12, backgroundColor: theme.card, overflow: "hidden" }}>
-          {catalog.terms.map((term, index) => (
-            <InsetRow
-              key={term.slug}
-              label={learningText(term.term)}
-              first={index === 0}
-              onPress={() => router.push({ pathname: "/learn/terms/[slug]", params: { slug: term.slug } })}
-            />
-          ))}
-          {catalog.faceGuides.map((guide) => {
-            const panda = pandas?.find((item) => item.slug === guide.pandaSlug);
-            const title = learningText(guide.title);
-            return (
-              <InsetRow
-                key={guide.slug}
-                label={title}
-                photo={<PandaPhoto pandaId={panda?.id ?? null} label={title} aspect="1/1" rounded={false} decorative />}
-                onPress={() => router.push({ pathname: "/learn/faces/[slug]", params: { slug: guide.slug } })}
-              />
-            );
-          })}
-          {catalog.challenges.length > 0 ? (
-            <InsetRow label="认脸挑战" detail={learningText(catalog.challenges[0]?.prompt)} onPress={() => router.push("/learn/challenge")} />
-          ) : null}
+        <View className="px-inset">
+          <FeaturedArticle article={featured} />
         </View>
-      </View>
 
-      {catalog.version ? (
-        <Text style={{ paddingHorizontal: 20, fontSize: 13, color: theme.secondary }}>{`资料版本 ${catalog.version}`}</Text>
-      ) : null}
+        {CATEGORY_ORDER.map((category) => {
+          const articles = rest.filter((article) => article.category === category);
+          if (articles.length === 0) return null;
+          return (
+            <View key={category} className="gap-row px-inset">
+              <SectionHeader title={category} count={`${articles.length} 篇`} />
+              <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
+                {articles.map((article, index) => (
+                  <FeedArticle key={article.slug} article={article} last={index === articles.length - 1} />
+                ))}
+              </View>
+            </View>
+          );
+        })}
+
+        {faceGuides.length > 0 || catalog.challenges.length > 0 ? (
+          <View className="gap-row">
+            <View className="px-inset">
+              <SectionHeader title="认脸" count={faceGuides.length > 0 ? `${faceGuides.length} 只` : undefined} />
+            </View>
+            {faceGuides.length > 0 ? (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerClassName="gap-row px-inset"
+              >
+                {faceGuides.map(({ guide, panda }) => {
+                  const title = learningText(guide.title);
+                  return (
+                    <PressScale
+                      key={guide.slug}
+                      accessibilityRole="button"
+                      accessibilityLabel={`认脸指南：${title}`}
+                      onPress={() => router.push({ pathname: "/learn/faces/[slug]", params: { slug: guide.slug } })}
+                      className="w-36 gap-stack-tight"
+                    >
+                      <View className="overflow-hidden rounded-tile" style={{ borderCurve: "continuous" }}>
+                        <PandaPhoto pandaId={panda?.id ?? null} label={title} aspect="4/5" rounded={false} decorative />
+                        <PhotoOutline radius={RADIUS.tile} />
+                      </View>
+                      <View className="gap-hair-gap px-hair-gap">
+                        <Text variant="headline" numberOfLines={2}>
+                          {title}
+                        </Text>
+                        <Text variant="footnote" className="text-muted-foreground">
+                          认脸指南
+                        </Text>
+                      </View>
+                    </PressScale>
+                  );
+                })}
+              </ScrollView>
+            ) : null}
+            {catalog.challenges.length > 0 ? (
+              <View className="px-inset pt-stack-tight">
+                <ListSection>
+                  <ListCell
+                    icon={ScanFace}
+                    label="认脸挑战"
+                    detail={learningText(catalog.challenges[0]?.prompt) || undefined}
+                    href="/learn/challenge"
+                    last
+                  />
+                </ListSection>
+              </View>
+            ) : null}
+          </View>
+        ) : null}
+
+        {catalog.terms.length > 0 ? (
+          <View className="px-inset">
+            <ListSection title="名词">
+              {catalog.terms.map((term, index) => (
+                <ListCell
+                  key={term.slug}
+                  label={learningText(term.term)}
+                  detail={learningText(term.definition)}
+                  lines={1}
+                  href={{ pathname: "/learn/terms/[slug]", params: { slug: term.slug } }}
+                  last={index === catalog.terms.length - 1}
+                />
+              ))}
+            </ListSection>
+          </View>
+        ) : null}
+
+        {catalog.version ? (
+          <Text variant="footnote" className="px-inset text-muted-foreground">{`资料版本 ${catalog.version}`}</Text>
+        ) : null}
+      </Animated.View>
     </ScrollView>
   );
 }
 
+/** The lead story, as News leads its feed: a photo plate, then the kicker, title and dek on the card. */
 function FeaturedArticle({ article }: { article: CatalogArticle }) {
-  const theme = useReadingTheme();
   const title = learningText(article.title);
   const hero = articleHero(article);
   return (
-    <Pressable
+    <PressScale
       accessibilityRole="button"
       accessibilityLabel={title}
       onPress={() => openArticle(article.slug)}
-      style={{ marginHorizontal: 20, borderRadius: 16, backgroundColor: theme.card, overflow: "hidden" }}
+      className="overflow-hidden rounded-card bg-card"
+      style={{ borderCurve: "continuous" }}
     >
-      {hero?.asset ? <Image source={hero.asset} style={{ width: "100%", height: 280 }} contentFit="cover" accessible={false} /> : null}
-      <View style={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 20, gap: 8 }}>
-        <Text style={{ fontSize: 28, lineHeight: theme.dark ? 42 : 40, fontWeight: "700", color: theme.ink }}>{title}</Text>
-        <Text style={{ fontSize: 17, lineHeight: theme.dark ? 30 : 28, color: theme.secondary }}>{learningText(article.dek)}</Text>
-        <Text style={{ marginTop: 4, fontSize: 13, lineHeight: 18, color: theme.secondary }}>
-          {`${article.category}    ${readingMinutes(article)} 分钟`}
+      {hero?.asset ? (
+        <Image
+          source={hero.asset}
+          style={{ width: "100%", aspectRatio: 4 / 3 }}
+          contentFit="cover"
+          accessible={false}
+        />
+      ) : null}
+      <View className="gap-stack-tight p-stack">
+        <Text variant="footnote" className="font-semibold text-primary">
+          {article.category}
         </Text>
-      </View>
-    </Pressable>
-  );
-}
-
-function FeedArticle({ article }: { article: CatalogArticle }) {
-  const theme = useReadingTheme();
-  const title = learningText(article.title);
-  const hero = articleHero(article);
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={title}
-      onPress={() => openArticle(article.slug)}
-      style={{ flexDirection: "row", gap: 16, borderRadius: 12, backgroundColor: theme.card, overflow: "hidden" }}
-    >
-      {hero?.asset ? <Image source={hero.asset} style={{ width: 120, height: 168 }} contentFit="cover" accessible={false} /> : null}
-      <View style={{ flex: 1, justifyContent: "center", paddingTop: 16, paddingBottom: 16, paddingRight: 16, gap: 8 }}>
-        <Text style={{ fontSize: 17, lineHeight: theme.dark ? 28 : 26, fontWeight: "600", color: theme.ink }} numberOfLines={2}>
+        <Text variant="title" role="none">
           {title}
         </Text>
-        <Text style={{ fontSize: 15, lineHeight: theme.dark ? 26 : 24, color: theme.secondary }} numberOfLines={2}>
+        <Text variant="subheadline" className="text-muted-foreground" numberOfLines={3}>
           {learningText(article.dek)}
         </Text>
-        <Text style={{ fontSize: 13, lineHeight: 18, color: theme.secondary }}>{`${readingMinutes(article)} 分钟`}</Text>
+        <Text variant="footnote" className="text-muted-foreground">{`${readingMinutes(article)} 分钟`}</Text>
       </View>
-    </Pressable>
+      <PhotoOutline radius={RADIUS.card} />
+    </PressScale>
   );
 }
 
-function InsetRow({
-  label,
-  detail,
-  photo,
-  first,
-  onPress,
-}: {
-  label: string;
-  detail?: string;
-  photo?: ReactNode;
-  first?: boolean;
-  onPress: () => void;
-}) {
-  const theme = useReadingTheme();
+/** A story in a section: title and dek on the left, a square photo on the right, as News lists them. */
+function FeedArticle({ article, last }: { article: CatalogArticle; last: boolean }) {
+  const title = learningText(article.title);
+  const hero = articleHero(article);
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      onPress={onPress}
-      style={{
-        minHeight: 52,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 16,
-        paddingHorizontal: 16,
-        paddingVertical: 16,
-        borderTopWidth: first ? 0 : 0.5,
-        borderTopColor: theme.separator,
-      }}
-    >
-      {photo ? <View style={{ width: 44, height: 44, overflow: "hidden", borderRadius: 8 }}>{photo}</View> : null}
-      <View style={{ flex: 1, gap: 4 }}>
-        <Text style={{ fontSize: 17, lineHeight: 26, color: theme.ink }}>{label}</Text>
-        {detail ? (
-          <Text style={{ fontSize: 13, lineHeight: 20, color: theme.secondary }} numberOfLines={2}>
-            {detail}
+    <View>
+      <PressScale
+        accessibilityRole="button"
+        accessibilityLabel={title}
+        onPress={() => openArticle(article.slug)}
+        className="flex-row items-start gap-row bg-card p-inset"
+      >
+        <View className="min-w-0 flex-1 gap-hair-gap">
+          <Text variant="headline" numberOfLines={3}>
+            {title}
           </Text>
+          <Text variant="subheadline" className="text-muted-foreground" numberOfLines={2}>
+            {learningText(article.dek)}
+          </Text>
+          <Text
+            variant="footnote"
+            className="pt-hair-gap text-muted-foreground"
+          >{`${readingMinutes(article)} 分钟`}</Text>
+        </View>
+        {hero?.asset ? (
+          <View className="size-24 overflow-hidden rounded-control" style={{ borderCurve: "continuous" }}>
+            <Image
+              source={hero.asset}
+              style={{ width: "100%", height: "100%" }}
+              contentFit="cover"
+              accessible={false}
+            />
+            <PhotoOutline radius={RADIUS.control} />
+          </View>
         ) : null}
-      </View>
-    </Pressable>
+      </PressScale>
+      {last ? null : <View className="ml-inset bg-border" style={{ height: HAIRLINE }} />}
+    </View>
   );
 }

@@ -32,19 +32,27 @@ function Card({ profile, cardRef }: { profile: Profile; cardRef: RefObject<Compo
         />
       ) : null}
       <View className="gap-3 p-5">
-        <Text variant="h1">{profile.name}</Text>
+        <Text variant="display">{profile.name}</Text>
         <View className="flex-row flex-wrap gap-x-5 gap-y-2">
           {profile.facts.map((fact) => (
             <View key={fact.label}>
-              <Text variant="muted">{fact.label}</Text>
+              <Text variant="footnote" className="text-muted-foreground">
+                {fact.label}
+              </Text>
               <Text className="font-bold">{fact.value}</Text>
             </View>
           ))}
         </View>
-        {cover?.credit ? <Text variant="muted">{cover.credit}</Text> : null}
+        {cover?.credit ? (
+          <Text variant="footnote" className="text-muted-foreground">
+            {cover.credit}
+          </Text>
+        ) : null}
         <View className="border-t-hairline border-border pt-3">
           <Text className="font-bold">吱熊猫</Text>
-          <Text variant="muted">{profileUrl(profile.slug).replace("https://", "")}</Text>
+          <Text variant="footnote" className="text-muted-foreground">
+            {profileUrl(profile.slug).replace("https://", "")}
+          </Text>
         </View>
       </View>
     </View>

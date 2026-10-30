@@ -25,7 +25,9 @@ function Empty({ aspect, rounded }: { aspect: Aspect; rounded: boolean }) {
   return (
     <Frame aspect={aspect} rounded={rounded}>
       <View className="flex-1 items-center justify-center bg-muted">
-        <Text className="text-muted-foreground">暂无照片</Text>
+        <Text variant="footnote" className="text-muted-foreground">
+          暂无照片
+        </Text>
       </View>
     </Frame>
   );

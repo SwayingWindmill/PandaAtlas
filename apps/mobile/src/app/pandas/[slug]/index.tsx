@@ -319,9 +319,9 @@ export default function ProfileScreen() {
             <View className="gap-3 px-4">
               <Skeleton className="h-10 w-32" />
               <View className="flex-row gap-2">
-                <Skeleton className="h-24 flex-1 rounded-2xl" />
-                <Skeleton className="h-24 flex-1 rounded-2xl" />
-                <Skeleton className="h-24 flex-[1.9] rounded-2xl" />
+                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.sex }} />
+                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.age }} />
+                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.place }} />
               </View>
             </View>
           </View>

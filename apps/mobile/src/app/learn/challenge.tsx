@@ -1,21 +1,42 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
-import { Pressable, View } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
+import { Platform, View } from "react-native";
+import Animated from "react-native-reanimated";
 
+import { Icon } from "@/components/icon";
+import { Check, X } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
-import { Page } from "@/components/page";
+import { PhotoOutline } from "@/components/photo-outline";
+import { PressScale } from "@/components/press-scale";
+import { ScreenState } from "@/components/screen-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { CONTENT_ENTER } from "@/design/motion";
 import { presentChallenge, resolveChallenge } from "@/features/learning/catalog";
 import { PandaPhoto } from "@/features/learning/panda-photo";
+import { ReadingPage, ReadingSkeletonGround } from "@/features/learning/reading-page";
 import { useLearningCatalog, useLearningPandas } from "@/features/learning/use-catalog";
 import { openPanda } from "@/features/pandas/panda-row";
 import { loadPhotos } from "@/features/pandas/profile";
+import { selectionHaptic, successHaptic } from "@/lib/haptics";
+import { RADIUS } from "@/lib/surface";
+import { useIOSColors } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
+const KICKER = "认脸挑战";
+
+/** The verdict mounts after the page has settled; on web an entering view would overlap the options. */
+const REVEAL = Platform.OS === "web" ? undefined : CONTENT_ENTER;
+
+function chunk<T>(items: readonly T[], size: number): T[][] {
+  const rows: T[][] = [];
+  for (let start = 0; start < items.length; start += size) rows.push(items.slice(start, start + size));
+  return rows;
+}
+
 export default function FaceChallengeScreen() {
+  const colors = useIOSColors();
   const { state, reload } = useLearningCatalog();
   const { pandas, failed: pandasFailed } = useLearningPandas();
   const [index, setIndex] = useState(0);
@@ -23,7 +44,11 @@ export default function FaceChallengeScreen() {
   const [correctCount, setCorrectCount] = useState(0);
   const photoKey =
     state.status === "ready" && pandas
-      ? [...new Set(state.catalog.challenges.flatMap((challenge) => [challenge.answerPandaSlug, ...challenge.decoyPandaSlugs]))]
+      ? [
+          ...new Set(
+            state.catalog.challenges.flatMap((challenge) => [challenge.answerPandaSlug, ...challenge.decoyPandaSlugs]),
+          ),
+        ]
           .sort()
           .join(",")
       : "";
@@ -50,13 +75,13 @@ export default function FaceChallengeScreen() {
 
   if (state.status !== "ready" || (pandas === null && !pandasFailed)) {
     return (
-      <Page title="看照片认熊猫" prominent>
+      <ReadingSkeletonGround>
         {state.status === "failed" ? (
           <LoadFailed message="科普暂时打不开。" onRetry={reload} />
         ) : (
-          <Skeleton className="h-64 w-full" accessibilityLabel="正在出题" />
+          <Skeleton className="w-full rounded-tile" style={{ aspectRatio: 4 / 3 }} accessibilityLabel="正在出题" />
         )}
-      </Page>
+      </ReadingSkeletonGround>
     );
   }
 
@@ -72,19 +97,19 @@ export default function FaceChallengeScreen() {
 
   if (!round) {
     return (
-      <Page title="看照片认熊猫" prominent>
-        <Text className="text-muted-foreground">
-          {state.catalog.challenges.length === 0 ? "现在还没有认脸挑战。" : "这道题的熊猫还不在当前资料里。"}
-        </Text>
-      </Page>
+      <ReadingPage kicker={KICKER} title="看照片认熊猫">
+        <ScreenState
+          message={state.catalog.challenges.length === 0 ? "现在还没有认脸挑战。" : "这道题的熊猫还不在当前资料里。"}
+        />
+      </ReadingPage>
     );
   }
 
   if (!photosReady || pandas === null) {
     return (
-      <Page title="看照片认熊猫" prominent>
-        <Skeleton className="h-64 w-full" accessibilityLabel="正在出题" />
-      </Page>
+      <ReadingSkeletonGround>
+        <Skeleton className="w-full rounded-tile" style={{ aspectRatio: 4 / 3 }} accessibilityLabel="正在出题" />
+      </ReadingSkeletonGround>
     );
   }
 
@@ -103,7 +128,12 @@ export default function FaceChallengeScreen() {
   function choose(slug: string) {
     if (chosen !== null) return;
     setChosen(slug);
-    if (slug === answerSlug) setCorrectCount((count) => count + 1);
+    if (slug === answerSlug) {
+      successHaptic();
+      setCorrectCount((count) => count + 1);
+    } else {
+      selectionHaptic();
+    }
   }
 
   function next() {
@@ -118,61 +148,79 @@ export default function FaceChallengeScreen() {
   }
 
   return (
-    <Page title={presented.title} prominent contentContainerClassName="gap-6 px-4 pb-16">
-      <View className="flex-row items-center justify-between">
-        <Text variant="muted">{`${index + 1} / ${playable.length}`}</Text>
-        <Text variant="muted">{`得分 ${correctCount}`}</Text>
-      </View>
-
+    <ReadingPage kicker={`${KICKER}　${index + 1} / ${playable.length}　得分 ${correctCount}`} title={presented.title}>
       {presented.questionPhotoUrl ? (
-        <View className="-mx-4 aspect-[4/3] overflow-hidden">
+        <View className="overflow-hidden rounded-tile" style={{ aspectRatio: 4 / 3, borderCurve: "continuous" }}>
           <Image
             source={presented.questionPhotoUrl}
             style={{ width: "100%", height: "100%" }}
             contentFit="cover"
             accessibilityLabel="待认熊猫的另一张照片"
           />
+          <PhotoOutline radius={RADIUS.tile} />
         </View>
       ) : null}
 
-      <View accessibilityLabel="选项" className="flex-row flex-wrap justify-between gap-y-3">
-        {presented.options.map((option, optionIndex) => {
-          const isAnswer = answered && option.slug === answerSlug;
-          const wrongPick = chosen === option.slug && !isAnswer;
-          const label = showNames ? option.name : `照片 ${optionIndex + 1}`;
-          return (
-            <Pressable
-              key={option.slug}
-              onPress={() => choose(option.slug)}
-              disabled={answered}
-              accessibilityRole="button"
-              accessibilityLabel={label}
-              accessibilityState={{ selected: chosen === option.slug }}
-              className="w-[48%]"
-            >
-              <View
-                className={cn(
-                  "overflow-hidden rounded-[12px] border-2",
-                  isAnswer ? "border-primary" : wrongPick ? "border-destructive" : "border-transparent",
-                )}
-              >
-                <ChoicePhoto url={option.photoUrl} pandaId={option.pandaId} label={label} />
-              </View>
-              {showNames ? (
-                <Text className={cn("py-2 text-center", isAnswer ? "font-bold" : wrongPick ? "text-destructive" : "text-muted-foreground")}>
-                  {option.name}
-                </Text>
-              ) : null}
-            </Pressable>
-          );
-        })}
+      <View accessibilityLabel="选项" className="gap-row">
+        {chunk(presented.options, 2).map((row) => (
+          <View key={row.map((option) => option.slug).join()} className="flex-row gap-row">
+            {row.map((option) => {
+              const optionIndex = presented.options.indexOf(option);
+              const isAnswer = answered && option.slug === answerSlug;
+              const wrongPick = chosen === option.slug && !isAnswer;
+              const label = showNames ? option.name : `照片 ${optionIndex + 1}`;
+              return (
+                <PressScale
+                  key={option.slug}
+                  onPress={() => choose(option.slug)}
+                  disabled={answered}
+                  accessibilityRole="button"
+                  accessibilityLabel={label}
+                  accessibilityState={{ selected: chosen === option.slug }}
+                  containerStyle={{ flex: 1 }}
+                  className="gap-stack-tight"
+                >
+                  <View
+                    className={cn(
+                      "overflow-hidden rounded-tile border-2",
+                      isAnswer ? "border-primary" : wrongPick ? "border-destructive" : "border-transparent",
+                    )}
+                    style={{ borderCurve: "continuous" }}
+                  >
+                    <ChoicePhoto url={option.photoUrl} pandaId={option.pandaId} label={label} />
+                  </View>
+                  {showNames ? (
+                    <View className="flex-row items-center justify-center gap-hair-gap">
+                      {isAnswer ? <Icon icon={Check} size="subhead" tone="tint" /> : null}
+                      {wrongPick ? <Icon icon={X} size="subhead" color={colors.destructive} /> : null}
+                      <Text
+                        variant="subheadline"
+                        className={cn(
+                          "text-center",
+                          isAnswer
+                            ? "font-semibold text-primary"
+                            : wrongPick
+                              ? "text-destructive"
+                              : "text-muted-foreground",
+                        )}
+                      >
+                        {option.name}
+                      </Text>
+                    </View>
+                  ) : null}
+                </PressScale>
+              );
+            })}
+            {row.length === 1 ? <View className="flex-1" /> : null}
+          </View>
+        ))}
       </View>
 
       {answered ? (
-        <Animated.View entering={FadeIn.duration(250)} className="gap-4" accessibilityLiveRegion="polite">
-          <Text variant="h2">{correct ? "认对了" : "这次没认对"}</Text>
-          <Text className="leading-6">{round.tip}</Text>
-          <View className="flex-row flex-wrap gap-2">
+        <Animated.View entering={REVEAL} className="gap-row" accessibilityLiveRegion="polite">
+          <Text variant="readingHeading">{correct ? "认对了" : "这次没认对"}</Text>
+          <Text variant="readingBody">{round.tip}</Text>
+          <View className="gap-stack-tight pt-stack-tight">
             {index < playable.length - 1 ? (
               <Button onPress={next}>
                 <Text>下一题</Text>
@@ -183,14 +231,14 @@ export default function FaceChallengeScreen() {
               </Button>
             )}
             {answer ? (
-              <Button variant="secondary" onPress={() => openPanda(answer.slug)}>
+              <Button variant="tinted" onPress={() => openPanda(answer.slug)}>
                 <Text>{`看${answer.name}的资料`}</Text>
               </Button>
             ) : null}
           </View>
         </Animated.View>
       ) : null}
-    </Page>
+    </ReadingPage>
   );
 }
 

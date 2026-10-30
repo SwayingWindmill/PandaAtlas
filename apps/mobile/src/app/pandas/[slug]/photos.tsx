@@ -80,7 +80,11 @@ export default function PhotosScreen() {
             )}
           />
           <View className="gap-3 px-5 pt-4">
-            {current?.credit ? <Text variant="muted">{current.credit}</Text> : null}
+            {current?.credit ? (
+              <Text variant="footnote" className="text-muted-foreground">
+                {current.credit}
+              </Text>
+            ) : null}
             {photos.length > 1 ? (
               <View className="flex-row justify-between">
                 <Button variant="secondary" disabled={index === 0} onPress={() => go(index - 1)}>

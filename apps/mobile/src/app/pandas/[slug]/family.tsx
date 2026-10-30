@@ -46,7 +46,7 @@ export default function FamilyScreen() {
       <FamilyTree family={family} />
 
       <View>
-        <Text variant="h2" className="mb-2">
+        <Text variant="title" className="mb-2">
           家人
         </Text>
         {relatives.length === 0 ? (
@@ -68,7 +68,7 @@ export default function FamilyScreen() {
               <MemberAvatar member={member} />
               <View className="min-w-0 flex-1">
                 <Text className="font-bold">{member.name}</Text>
-                <Text variant="muted" numberOfLines={1}>
+                <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
                   {memberMeta(member)}
                 </Text>
               </View>
