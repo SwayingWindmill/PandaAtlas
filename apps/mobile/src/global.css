@@ -76,7 +76,7 @@
       --color-card-foreground: #000000;
       --color-popover: #ffffff;
       --color-popover-foreground: #000000;
-      --color-primary: #1b7f64; /* panda green, white label passes AA */
+      --color-primary: #165c3c; /* tint: deep bamboo green, 8:1 on white */
       --color-primary-foreground: #ffffff;
       --color-secondary: #e5e5ea; /* system fill */
       --color-secondary-foreground: #000000;
@@ -87,10 +87,10 @@
       --color-destructive: #ce2c31;
       --color-border: #c6c6c8; /* opaqueSeparator */
       --color-input: #e5e5ea;
-      --color-ring: #1b7f64;
-      --color-highlight: #1b7f64;
-      --color-highlight-foreground: #1b7f64;
-      --color-highlight-soft: #e5f4ee;
+      --color-ring: #165c3c;
+      --color-highlight: #165c3c;
+      --color-highlight-foreground: #165c3c;
+      --color-highlight-soft: #e3ebe8; /* tint at 12%, the tinted-button fill */
       --color-warning: #b25000;
     }
 
@@ -101,8 +101,8 @@
       --color-card-foreground: #ffffff;
       --color-popover: #1c1c1e;
       --color-popover-foreground: #ffffff;
-      --color-primary: #1b7f64;
-      --color-primary-foreground: #ffffff;
+      --color-primary: #7dcaa4; /* tint: pale jade, 11:1 on black */
+      --color-primary-foreground: #000000;
       --color-secondary: #2c2c2e;
       --color-secondary-foreground: #ffffff;
       --color-muted: #2c2c2e;
@@ -112,10 +112,10 @@
       --color-destructive: #ff6961;
       --color-border: #38383a;
       --color-input: #2c2c2e;
-      --color-ring: #3ddc97;
-      --color-highlight: #3ddc97;
-      --color-highlight-foreground: #3ddc97;
-      --color-highlight-soft: #0d2d23;
+      --color-ring: #7dcaa4;
+      --color-highlight: #7dcaa4;
+      --color-highlight-foreground: #7dcaa4;
+      --color-highlight-soft: #16241e; /* tint at 18% */
       --color-warning: #ff9f0a;
     }
   }

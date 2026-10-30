@@ -3,8 +3,9 @@ import { useUniwind } from "uniwind";
 
 /**
  * iOS system colors. Grouped backgrounds, labels and separators are the system values.
- * Tint is the panda green, darkened just enough that white button labels and tint text
- * clear WCAG AA. Dark mode uses the brighter green for tint text on black.
+ * Tint is a deep bamboo green (#165C3C, 8:1 on white) in light mode and a pale jade
+ * (#7DCAA4, 11:1 on black) in dark mode, where filled buttons take black labels.
+ * highlightSoft is the tint at about 12% (light) and 18% (dark): the iOS "tinted" button fill.
  */
 export const IOS = {
   light: {
@@ -14,14 +15,15 @@ export const IOS = {
     label: "#000000",
     secondaryLabel: "#636366",
     separator: "#C6C6C8",
-    tint: "#1B7F64",
-    button: "#1B7F64",
+    tertiaryLabel: "#C4C4C7",
+    tint: "#165C3C",
+    button: "#165C3C",
     buttonLabel: "#FFFFFF",
     destructive: "#CE2C31",
     warning: "#B25000",
     fill: "#E5E5EA",
     pressed: "#D1D1D6",
-    highlightSoft: "#E5F4EE",
+    highlightSoft: "#E3EBE8",
   },
   dark: {
     groupedBackground: "#000000",
@@ -30,14 +32,15 @@ export const IOS = {
     label: "#FFFFFF",
     secondaryLabel: "#AEAEB2",
     separator: "#38383A",
-    tint: "#3DDC97",
-    button: "#1B7F64",
-    buttonLabel: "#FFFFFF",
+    tertiaryLabel: "#5B5B60",
+    tint: "#7DCAA4",
+    button: "#7DCAA4",
+    buttonLabel: "#000000",
     destructive: "#FF6961",
     warning: "#FF9F0A",
     fill: "#2C2C2E",
     pressed: "#3A3A3C",
-    highlightSoft: "#0D2D23",
+    highlightSoft: "#16241E",
   },
 } as const;
 

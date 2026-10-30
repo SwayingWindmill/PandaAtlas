@@ -14,9 +14,9 @@
       "secondary-label-dark": { "role": "neutral", "displayName": "Secondary label, dark", "canonical": "#AEAEB2", "tonalRamp": ["#000000", "#636366", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
       "separator": { "role": "neutral", "displayName": "Separator", "canonical": "#C6C6C8", "tonalRamp": ["#38383A", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8"] },
       "separator-dark": { "role": "neutral", "displayName": "Separator, dark", "canonical": "#38383A", "tonalRamp": ["#000000", "#1C1C1E", "#38383A", "#636366", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
-      "tint": { "role": "primary", "displayName": "Panda green", "canonical": "#1B7F64", "tonalRamp": ["#0D2D23", "#1B7F64", "#3DDC97", "#E5F4EE", "#E5F4EE", "#E5F4EE", "#E5F4EE", "#E5F4EE"] },
-      "tint-dark": { "role": "primary", "displayName": "Bright tint", "canonical": "#3DDC97", "tonalRamp": ["#0D2D23", "#1B7F64", "#3DDC97", "#E5F4EE", "#E5F4EE", "#E5F4EE", "#E5F4EE", "#E5F4EE"] },
-      "button": { "role": "primary", "displayName": "Button fill", "canonical": "#1B7F64", "tonalRamp": ["#0D2D23", "#1B7F64", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "tint": { "role": "primary", "displayName": "Jade", "canonical": "#165C3C", "tonalRamp": ["#0B2A1C", "#165C3C", "#7DCAA4", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8"] },
+      "tint-dark": { "role": "primary", "displayName": "Pale jade", "canonical": "#7DCAA4", "tonalRamp": ["#0B2A1C", "#165C3C", "#7DCAA4", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8"] },
+      "button": { "role": "primary", "displayName": "Button fill", "canonical": "#165C3C", "tonalRamp": ["#0B2A1C", "#165C3C", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
       "button-label": { "role": "neutral", "displayName": "Button label", "canonical": "#FFFFFF", "tonalRamp": ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
       "fill": { "role": "neutral", "displayName": "System fill", "canonical": "#E5E5EA", "tonalRamp": ["#2C2C2E", "#D1D1D6", "#E5E5EA", "#F2F2F7", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
       "fill-dark": { "role": "neutral", "displayName": "System fill, dark", "canonical": "#2C2C2E", "tonalRamp": ["#000000", "#1C1C1E", "#2C2C2E", "#3A3A3C", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
@@ -47,7 +47,7 @@
       "refersTo": "button-primary",
       "description": "The one filled action. Panda green, white label.",
       "html": "<button class=\"ds-btn-primary\">看资料</button>",
-      "css": ".ds-btn-primary { background: #1B7F64; color: #fff; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; font-size: 17px; font-weight: 600; } .ds-btn-primary:hover { background: #176b54; } .ds-btn-primary:focus-visible { outline: 2px solid #1B7F64; outline-offset: 2px; }"
+      "css": ".ds-btn-primary { background: #165C3C; color: #fff; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; font-size: 17px; font-weight: 600; } .ds-btn-primary:hover { background: #176b54; } .ds-btn-primary:focus-visible { outline: 2px solid #165C3C; outline-offset: 2px; }"
     },
     {
       "name": "Secondary Button",
@@ -55,7 +55,7 @@
       "refersTo": "button-secondary",
       "description": "The alternate action. System fill, no tint.",
       "html": "<button class=\"ds-btn-secondary\">重试</button>",
-      "css": ".ds-btn-secondary { background: #E5E5EA; color: #000; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; font-size: 17px; font-weight: 600; } .ds-btn-secondary:hover { background: #D1D1D6; } .ds-btn-secondary:focus-visible { outline: 2px solid #1B7F64; outline-offset: 2px; }"
+      "css": ".ds-btn-secondary { background: #E5E5EA; color: #000; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; font-size: 17px; font-weight: 600; } .ds-btn-secondary:hover { background: #D1D1D6; } .ds-btn-secondary:focus-visible { outline: 2px solid #165C3C; outline-offset: 2px; }"
     },
     {
       "name": "Grouped Cell",
@@ -63,7 +63,7 @@
       "refersTo": "grouped-cell",
       "description": "One row in an inset group. The whole row is the control.",
       "html": "<div class=\"ds-group\"><a class=\"ds-cell\" href=\"#\"><span><span class=\"ds-cell-name\">认识大熊猫</span><span class=\"ds-cell-detail\">科普</span></span><span class=\"ds-chevron\"></span></a></div>",
-      "css": ".ds-group { background: #fff; border-radius: 10px; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; } .ds-cell { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 12px 16px; text-decoration: none; color: #000; } .ds-cell-name { display: block; font-size: 17px; line-height: 26px; } .ds-cell-detail { display: block; margin-top: 2px; font-size: 13px; line-height: 18px; color: #636366; } .ds-chevron { width: 8px; height: 8px; border-right: 1.6px solid #636366; border-top: 1.6px solid #636366; transform: rotate(45deg); } .ds-cell:hover { background: #D1D1D6; } .ds-cell:focus-visible { outline: 2px solid #1B7F64; outline-offset: -2px; }"
+      "css": ".ds-group { background: #fff; border-radius: 10px; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; } .ds-cell { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 12px 16px; text-decoration: none; color: #000; } .ds-cell-name { display: block; font-size: 17px; line-height: 26px; } .ds-cell-detail { display: block; margin-top: 2px; font-size: 13px; line-height: 18px; color: #636366; } .ds-chevron { width: 8px; height: 8px; border-right: 1.6px solid #636366; border-top: 1.6px solid #636366; transform: rotate(45deg); } .ds-cell:hover { background: #D1D1D6; } .ds-cell:focus-visible { outline: 2px solid #165C3C; outline-offset: -2px; }"
     },
     {
       "name": "Search Field",
@@ -71,7 +71,7 @@
       "refersTo": "grouped-cell",
       "description": "The 找熊猫 search. Filled, 10px corners, no stroke.",
       "html": "<label class=\"ds-search\"><span class=\"ds-search-icon\"></span><input placeholder=\"名字或基地\" aria-label=\"搜索熊猫\" /></label>",
-      "css": ".ds-search { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; background: #fff; border-radius: 10px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; } .ds-search input { flex: 1; border: none; background: transparent; font-size: 17px; outline: none; } .ds-search input::placeholder { color: #636366; } .ds-search-icon { width: 14px; height: 14px; border: 1.6px solid #636366; border-radius: 50%; position: relative; } .ds-search:focus-within { outline: 2px solid #1B7F64; outline-offset: 2px; }"
+      "css": ".ds-search { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; background: #fff; border-radius: 10px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; } .ds-search input { flex: 1; border: none; background: transparent; font-size: 17px; outline: none; } .ds-search input::placeholder { color: #636366; } .ds-search-icon { width: 14px; height: 14px; border: 1.6px solid #636366; border-radius: 50%; position: relative; } .ds-search:focus-within { outline: 2px solid #165C3C; outline-offset: 2px; }"
     },
     {
       "name": "Plate",

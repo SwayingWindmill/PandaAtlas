@@ -3,13 +3,14 @@ import { NativeTabs } from "expo-router/native-tabs";
 import { DynamicColorIOS, Platform } from "react-native";
 
 import { useWelcomeSeen } from "@/features/onboarding/welcome";
-import { IOS } from "@/lib/theme";
+import { IOS, useIOSColors } from "@/lib/theme";
 
-const tint =
-  Platform.OS === "ios" ? DynamicColorIOS({ light: IOS.light.tint, dark: IOS.dark.tint }) : IOS.light.button;
+const iosTint = Platform.OS === "ios" ? DynamicColorIOS({ light: IOS.light.tint, dark: IOS.dark.tint }) : null;
 
 export default function TabsLayout() {
   const welcomeSeen = useWelcomeSeen();
+  const { tint: schemeTint } = useIOSColors();
+  const tint = iosTint ?? schemeTint;
   if (welcomeSeen === null) return null;
   if (!welcomeSeen) return <Redirect href="/welcome" />;
   // iOS 26 draws this bar in Liquid Glass and ignores backgroundColor and blurEffect.

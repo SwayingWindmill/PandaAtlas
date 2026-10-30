@@ -195,17 +195,20 @@ App 的自查看第 10 节和 `DESIGN.md`，不按下面的四档字号和 Radix
 
 ## 10. App（`apps/mobile`）
 
-App 用 iOS 26 的系统界面，不跟网站的橄榄纸和四档字号。品牌留在熊猫照片和一点绿色 tint 上。Android 用同一套颜色和列表，导航交给系统的 Material 标签栏和工具栏。Web 导出用同一套排版，标签栏是一条带模糊的底栏，不是 Liquid Glass。
+App 用 iOS 26 的系统界面，不跟网站的橄榄纸和四档字号。品牌留在熊猫照片和一点深玉绿 tint 上。Android 用同一套颜色和列表，导航交给系统的 Material 标签栏和工具栏。Web 导出用同一套排版，标签栏是一条带模糊的底栏，不是 Liquid Glass。
 
 样板是科普：`learn/index.tsx` 和 `learn/articles/[slug].tsx`。名词、认脸和认脸挑战用同一套阅读栏。
 
-- **颜色：** 系统分组背景 `#F2F2F7` / `#000000`，分组里的表面 `#FFFFFF` / `#1C1C1E`，标签黑/白，次要文字 `#636366` / `#AEAEB2`，分隔线 `#C6C6C8` / `#38383A`。Tint 是熊猫绿 `#1B7F64`（深色里的文字 tint 是 `#3DDC97`）。主按钮用 `#1B7F64` 底、白字，这样浅色和深色都过 WCAG AA。不要再写 Radix olive。
+- **颜色：** 系统分组背景 `#F2F2F7` / `#000000`，分组里的表面 `#FFFFFF` / `#1C1C1E`，标签黑/白，次要文字 `#636366` / `#AEAEB2`，分隔线 `#C6C6C8` / `#38383A`。Tint 浅色是深玉绿 `#165C3C`（白底 7.98:1），深色是浅玉绿 `#7DCAA4`（黑底 10.86:1）。主按钮浅色用 `#165C3C` 底、白字，深色用 `#7DCAA4` 底、黑字。「关注」这类 tinted 胶囊按钮用 `#E3EBE8` / `#16241E` 底、tint 字；「见过」这类 plain 按钮只有 tint 字。不要再写 Radix olive。
 - **深色：** 跟随系统，我的里可以改成浅色或深色。`true black` 是分组背景，不是装饰。
 - **字号：** `Text` 用 iOS 字阶，行高给中文留出空：Large Title 34/41、Title1 28/36、Title2 22/28、Title3 20/26、Headline 17/24 semibold、Body 17/26、Callout 16/24、Subhead 15/22、Footnote 13/18、Caption 12/16。旧名字 `h1` `h2` `h3` `muted` `small` 映射到这一阶。西文走系统字体（旧金山 / 苹方），不另载一套展示字体。
 - **导航：** 根布局是原生栈。四个标签各包一层栈，标签根屏在 iOS 上用大标题，滚动时收成栏内标题。返回是系统返回，可从屏幕左缘滑回。iOS 26 的标签栏由系统画成 Liquid Glass；不要给它设背景色，设了会关掉系统材质（见 `src/lib/screen-options.ts`）。Android 是 Material 3 底栏。Web 用 `_layout.web.tsx`。
 - **列表：** 设置和目录用 `ListSection` + `ListCell`（或 `NavRow`）：圆角 10 的内嵌分组，行高至少 44，分隔线从文字缩进，最后一行没有线。长名单（找熊猫的结果）可以通栏。
 - **空和失败：** `ScreenState` / `LoadFailed`：一句说明，需要时一个「重试」。不要再套一块灰色圆角卡片。
-- **照片：** 资料页和科普文章以照片开头，说明放在照片下面，不叠字、不加文字阴影。返回和分享在系统栏里。
+- **照片：** 科普文章以照片开头，说明放在照片下面，不叠字。熊猫资料页的头图通栏铺到状态栏下，下拉时拉伸；名字是图下的大标题，下面一行是性别和所在机构，再下面是「关注」（tinted 胶囊）和「见过」（plain）。返回和分享是悬在图上的圆形 Liquid Glass 按钮（`components/glass-button.tsx`），非 iOS 用半透明深色圆片。之后是内嵌分组：基本信息、家族、所在机构、动态。
+- **今天：** 34pt 粗体大标题「今天」加日期，下面是 App Store Today 式故事卡：20pt 连续圆角，每张一张不同熊猫的照片，底部黑色渐变压暗，白色标题，标题下一行脚注写功能名和照片里的熊猫。卡片上不放标题之上的小字。
+- **图标：** 用 `components/symbol.tsx`（`expo-symbols`）：iOS 是真 SF Symbols，Android 和 Web 用对应的 Material Symbols。标签栏 `sun.max`、`magnifyingglass`、`square.grid.2x2`、`person`；工具栏 `chevron.backward`、`square.and.arrow.up`。
+- **动态字体：** `Text` 保留 `allowFontScaling`。字号放大到 1.35 倍以上时，行尾的值换到标签下面，照片格子从 4 列降到 3 列、2 列。机构页「去之前」每项是脚注标签加正文值，像地图的地点卡。
 - **科普：** 首页和文章保持已认可的阅读栏。知识卡和专题路由已删除；条目仍留在目录数据里，不从 API 拿掉。
-- **组件来源：** 导航用 Expo Router 的 `native-tabs` 和原生栈，这是 SDK 58 里系统标签和 Liquid Glass 的入口。`expo-glass-effect` 已随 SDK 装上，但 `GlassView` 在非 iOS 上只是普通 `View`，`isLiquidGlassAvailable()` 在非 iOS 返回 false，所以不用它冒充玻璃。按钮、开关、骨架仍用已经放进 `src/components/ui/` 的 React Native Reusables，再按本节改色。分组列表没有对应的维护组件：系统列表是导航器的一部分，RN 里没有可装的 UITableView，所以 `grouped-list.tsx` 只补这一块。
+- **组件来源：** 导航用 Expo Router 的 `native-tabs` 和原生栈，这是 SDK 58 里系统标签和 Liquid Glass 的入口。`expo-glass-effect` 已随 SDK 装上，但 `GlassView` 在非 iOS 上只是普通 `View`，`isLiquidGlassAvailable()` 在非 iOS 返回 false，所以只在 iOS 且 `isLiquidGlassAvailable()` 时用它画悬浮圆形按钮，别处退回半透明圆片，不拿它冒充卡片玻璃。按钮、开关、骨架仍用已经放进 `src/components/ui/` 的 React Native Reusables，再按本节改色。分组列表没有对应的维护组件：系统列表是导航器的一部分，RN 里没有可装的 UITableView，所以 `grouped-list.tsx` 只补这一块。
 

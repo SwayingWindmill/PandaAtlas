@@ -84,6 +84,9 @@ function Text({
       className={cn(textVariants({ variant }), textClass, className)}
       role={variant ? ROLE[variant] : undefined}
       aria-level={variant ? ARIA_LEVEL[variant] : undefined}
+      // Dynamic Type: every text style follows the system text size. Layouts that would
+      // clip at accessibility sizes read useWindowDimensions().fontScale and restack.
+      allowFontScaling
       {...props}
     />
   );

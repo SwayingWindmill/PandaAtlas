@@ -7,7 +7,7 @@ const buttonVariants = cva(
   cn(
     'group shrink-0 flex-row items-center justify-center gap-2 rounded-full shadow-none',
     Platform.select({
-      web: "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive whitespace-nowrap outline-none transition-all focus-visible:ring-[3px] disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      web: "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive whitespace-nowrap outline-none transition-[opacity,box-shadow] focus-visible:ring-[3px] disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
     })
   ),
   {
@@ -29,6 +29,11 @@ const buttonVariants = cva(
             web: 'hover:bg-accent dark:hover:bg-input/50',
           })
         ),
+        // The iOS "tinted" style: a translucent tint capsule with tint text.
+        tinted: cn(
+          'bg-highlight-soft active:opacity-70',
+          Platform.select({ web: 'hover:opacity-85' })
+        ),
         secondary: cn(
           'bg-secondary active:bg-accent',
           Platform.select({ web: 'hover:bg-secondary/80' })
@@ -37,6 +42,8 @@ const buttonVariants = cva(
           'active:bg-accent dark:active:bg-accent/50',
           Platform.select({ web: 'hover:bg-accent dark:hover:bg-accent/50' })
         ),
+        // A borderless text button in the tint, as iOS draws secondary actions.
+        plain: 'active:opacity-60',
         link: '',
       },
       size: {
@@ -67,8 +74,10 @@ const buttonTextVariants = cva(
           'group-active:text-accent-foreground',
           Platform.select({ web: 'group-hover:text-accent-foreground' })
         ),
+        tinted: 'text-primary',
         secondary: 'text-secondary-foreground',
         ghost: 'group-active:text-accent-foreground',
+        plain: 'text-primary',
         link: cn(
           'text-primary group-active:underline',
           Platform.select({ web: 'underline-offset-4 hover:underline group-hover:underline' })
