@@ -10,8 +10,10 @@ export { default as CalendarCheck } from "lucide-react-native/icons/calendar-che
 export { default as Check } from "lucide-react-native/icons/check";
 export { default as ChevronLeft } from "lucide-react-native/icons/chevron-left";
 export { default as ChevronRight } from "lucide-react-native/icons/chevron-right";
+export { default as CircleAlert } from "lucide-react-native/icons/circle-alert";
 export { default as CircleQuestionMark } from "lucide-react-native/icons/circle-question-mark";
 export { default as Clock } from "lucide-react-native/icons/clock";
+export { default as Download } from "lucide-react-native/icons/download";
 export { default as FileText } from "lucide-react-native/icons/file-text";
 export { default as Flower } from "lucide-react-native/icons/flower-2";
 export { default as FolderHeart } from "lucide-react-native/icons/folder-heart";
@@ -28,6 +30,7 @@ export { default as Mars } from "lucide-react-native/icons/mars";
 export { default as Navigation } from "lucide-react-native/icons/navigation";
 export { default as Network } from "lucide-react-native/icons/network";
 export { default as PawPrint } from "lucide-react-native/icons/paw-print";
+export { default as RotateCw } from "lucide-react-native/icons/rotate-cw";
 export { default as ScanFace } from "lucide-react-native/icons/scan-face";
 export { default as Photo } from "lucide-react-native/icons/image";
 export { default as Search } from "lucide-react-native/icons/search";
