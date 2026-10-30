@@ -40,7 +40,7 @@ function Input({ multiline, ...props }: TextInputProps) {
       textAlignVertical={multiline ? "top" : "center"}
       className={cn(
         "border-hairline border-input px-4 text-body text-foreground",
-        multiline ? "min-h-24 rounded-lg py-3" : "h-12 rounded-full",
+        multiline ? "min-h-24 rounded-control py-3" : "h-12 rounded-full",
       )}
       {...props}
     />

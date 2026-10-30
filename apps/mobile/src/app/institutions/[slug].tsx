@@ -27,7 +27,8 @@ import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { Scrim } from "@/components/scrim";
-import { CONTENT_ENTER, HeroToolbar, StretchyHero } from "@/components/stretchy-hero";
+import { HeroToolbar, StretchyHero } from "@/components/stretchy-hero";
+import { PAGE_ENTER } from "@/design/motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { semantic } from "@/design/tokens";
@@ -297,8 +298,8 @@ export default function InstitutionScreen() {
           <View className="gap-4" accessibilityLabel="正在加载">
             <Skeleton className="w-full rounded-none" style={{ height: HERO + insets.top }} />
             <View className="flex-row gap-3 px-4">
-              <Skeleton className="h-56 flex-1 rounded-2xl" />
-              <Skeleton className="h-56 flex-1 rounded-2xl" />
+              <Skeleton className="h-56 flex-1 rounded-tile" />
+              <Skeleton className="h-56 flex-1 rounded-tile" />
             </View>
           </View>
         )}
@@ -336,7 +337,7 @@ export default function InstitutionScreen() {
         ) : (
           <PlateHero institution={institution} pending={hero === undefined} />
         )}
-        <Animated.View entering={CONTENT_ENTER} className="gap-7 bg-background px-4 pt-5">
+        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-4 pt-5">
           {institution.summary ? <Text variant="body">{institution.summary}</Text> : null}
           {institution.residents.length > 0 ? <Residents pandas={institution.residents} /> : null}
           {guided.map((facility) => (

@@ -13,7 +13,7 @@ import { ScreenState } from "@/components/screen-state";
 import { SectionHeader } from "@/components/section-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { CONTENT_ENTER } from "@/design/motion";
+import { PAGE_ENTER } from "@/design/motion";
 import {
   articleHero,
   type CatalogArticle,
@@ -125,7 +125,7 @@ export default function LearnScreen() {
       contentContainerStyle={{ paddingBottom: insets.bottom + 48 }}
     >
       {bar}
-      <Animated.View entering={CONTENT_ENTER} className="gap-section pt-stack-tight">
+      <Animated.View entering={PAGE_ENTER} className="gap-section pt-stack-tight">
         <Masthead count={catalog.articles.length} />
 
         {featured ? (

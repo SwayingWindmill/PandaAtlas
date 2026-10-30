@@ -12,7 +12,7 @@ import { PressScale } from "@/components/press-scale";
 import { ScreenState } from "@/components/screen-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { CONTENT_ENTER } from "@/design/motion";
+import { PAGE_ENTER } from "@/design/motion";
 import {
   articleHero,
   entryBySlug,
@@ -106,7 +106,7 @@ export default function ArticleScreen() {
         }}
         contentContainerStyle={{ paddingBottom: insets.bottom + 48 }}
       >
-        <Animated.View entering={CONTENT_ENTER}>
+        <Animated.View entering={PAGE_ENTER}>
           {hero?.asset ? (
             <View className="gap-stack-tight">
               <Image

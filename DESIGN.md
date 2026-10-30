@@ -547,7 +547,7 @@ Follows `.agents/skills/animate-expo` and `make-interfaces-feel-better`. Duratio
 | Role | Duration | Curve | Where | Reduce Motion |
 |---|---|---|---|---|
 | press | 120ms | ease-out `(0.23, 1, 0.32, 1)` | Photo cards, tiles, stat blocks, chips scale to 0.97 (`PressScale`); rows keep the system highlight | Dims to 85% instead |
-| enter | 280ms | bamboo | Loaded content fades in and rises 8pt (`CONTENT_ENTER`), once per page; a list shows what was already there without animating it | Skipped (system setting) |
+| enter | 280ms | bamboo | Loaded content fades in and rises 8pt (`CONTENT_ENTER`), once per page; a page uses `PAGE_ENTER`, which is the same on iOS and Android and nothing on web, where an entering view overlaps its neighbours; a list shows what was already there without animating it | Skipped (system setting) |
 | exit | 200ms | ease-out | Something leaves; shorter than it came | Fade only |
 | move | 280ms | in-out `(0.77, 0, 0.175, 1)` | Something on screen changes place | Instant |
 | hero | 480ms / spring | bamboo | A card zooming into its page (`Link.AppleZoom` on iOS 18+, the stack push elsewhere) | System |
@@ -563,7 +563,7 @@ Follows `.agents/skills/animate-expo` and `make-interfaces-feel-better`. Duratio
 
 ## Governance
 
-- **Lint (warn only):** `apps/mobile/eslint.config.js` warns on hex and `rgba()/hsl()` literals, numeric `fontSize`, and arbitrary Tailwind values in `apps/mobile/src` (tokens and theme excluded). Warnings never fail CI. Older screens are migrated when the four tabs are redesigned, not in bulk.
+- **Lint (error):** `apps/mobile/eslint.config.js` fails `npm run lint` (and CI) on hex and `rgba()/hsl()` literals, numeric `fontSize`, arbitrary Tailwind values, the deprecated `Text` variants, the deprecated type-size and numeric-radius classes in the table under Deprecated, and motion tokens imported from `stretchy-hero.tsx`, everywhere in `apps/mobile/src` (tokens and theme excluded; `components/ui/text.tsx` may define the old variants).
 - **Sync check:** `src/design/tokens.test.ts` runs in `npm test` and fails if `global.css` or this front matter is stale; it also checks contrast (AA for text roles and the accent) and the 4pt grid.
 - **Lint this file:** `npx -y -p @google/design.md designmd lint DESIGN.md`.
 - **Adding a token:** add it to `tokens.ts` (primitive first, then a role), run `npm run design:tokens -w @zhipanda/mobile`, document the role here, and show it on `/dev/design-system`.
@@ -571,7 +571,7 @@ Follows `.agents/skills/animate-expo` and `make-interfaces-feel-better`. Duratio
 
 ## Deprecated
 
-Kept so screens that predate v2 render. Do not use on a new or redesigned screen.
+No screen uses these since v2.8; the `Text` variants stay defined so nothing old breaks, and the lint rejects every row below.
 
 | Deprecated | Use instead |
 |---|---|
@@ -584,12 +584,13 @@ Kept so screens that predate v2 render. Do not use on a new or redesigned screen
 | `Text` `caption`, `small` (12), `text-xs` | `footnote` (13 is the floor) |
 | `Text` `h3` | `headline` |
 | `Text` `muted` | `footnote` + `text-muted-foreground` |
-| Classes `text-large-title`, `text-title1/2/3`, `text-callout`, `text-subhead`, `text-caption`, `text-base`, `text-sm`, `text-xl` | The style classes above |
-| `rounded-[10px]`, numeric radii | `rounded-group`, `rounded-tile`, … |
-| `EASE_OUT` / `CONTENT_ENTER` from `stretchy-hero.tsx` | `@/design/motion` (re-exported for now) |
+| Classes `text-large-title`, `text-title1/2/3`, `text-callout`, `text-subhead`, `text-caption`, `text-xs`, `text-sm`, `text-base`, `text-lg`, `text-xl` and up | The style classes above |
+| `rounded-[10px]`, `rounded-sm` … `rounded-3xl` | `rounded-group` (10), `rounded-control` (12), `rounded-tile` (16), `rounded-card` (24), `rounded-pill` |
+| `EASE_OUT` / `CONTENT_ENTER` from `stretchy-hero.tsx` | `@/design/motion` (`PAGE_ENTER` for a page); the re-export is gone |
 
 ## Changelog
 
+- **v2.8 (2026-10-30).** The last pre-v2 styles migrated: `title3` on 图鉴 and 合集, the 家谱 tree's `muted` / `small` / `text-xs` and `rounded-lg/xl`, the 到访 card's `text-subhead`, `rounded-*` on 纠错, 分享, the institution and `Skeleton`. Pages enter with `PAGE_ENTER` (no entrance on web) and the stretchy-hero motion re-export is removed. The design lint is now an error, with rules for deprecated variants, classes and imports.
 - **v2.7 (2026-10-30).** 每日打卡 at `/checkin`, a 我的 card with this week, and a row on 每日一猫 (The Daily Check-in Rule); glyphs `CalendarHeart`, `CalendarDays`.
 - **v2.6 (2026-10-30).** 认识大熊猫 per-shelf empty states (The Learn Shelves Rule); 比一比 picker at `/compare` and a 找熊猫 explore card; 猜熊猫 leaves out levels with no questions (The Guess Level Rule).
 - **v2.5 (2026-10-30).** 比一比 (The Compare Rule), reached from a panda's 比一比 rows and from a wrong 猜熊猫 answer; 猜熊猫 levels (The Guess Level Rule).

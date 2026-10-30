@@ -21,7 +21,7 @@ function Card({ profile, cardRef }: { profile: Profile; cardRef: RefObject<Compo
       ref={cardRef}
       collapsable={false}
       accessibilityLabel={`${profile.name}的分享卡片`}
-      className="overflow-hidden rounded-xl border-hairline border-border bg-card"
+      className="overflow-hidden rounded-tile border-hairline border-border bg-card"
     >
       {cover ? (
         <Image

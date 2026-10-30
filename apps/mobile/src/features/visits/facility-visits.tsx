@@ -75,7 +75,7 @@ export function FacilityVisits({ facilities }: { facilities: { id: string; name:
                 onPress={() => void record(facility.id)}
                 accessibilityLabel={day === today ? `今天已记下去过${facility.name}` : `记下今天去过${facility.name}`}
               >
-                <Text className="text-subhead font-semibold">{day === today ? "今天已记下" : "记下今天去过"}</Text>
+                <Text>{day === today ? "今天已记下" : "记下今天去过"}</Text>
               </Button>
             </View>
             {index === facilities.length - 1 ? null : <View className={cn(stacked && "ml-4", "bg-border")} style={[{ height: HAIRLINE }, stacked ? null : ICON_INSET]} />}

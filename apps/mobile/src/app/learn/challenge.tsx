@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { Icon } from "@/components/icon";
@@ -12,7 +12,7 @@ import { ScreenState } from "@/components/screen-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { CONTENT_ENTER } from "@/design/motion";
+import { PAGE_ENTER } from "@/design/motion";
 import { presentChallenge, resolveChallenge } from "@/features/learning/catalog";
 import { PandaPhoto } from "@/features/learning/panda-photo";
 import { ReadingPage, ReadingSkeletonGround } from "@/features/learning/reading-page";
@@ -25,9 +25,6 @@ import { useIOSColors } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const KICKER = "认脸挑战";
-
-/** The verdict mounts after the page has settled; on web an entering view would overlap the options. */
-const REVEAL = Platform.OS === "web" ? undefined : CONTENT_ENTER;
 
 function chunk<T>(items: readonly T[], size: number): T[][] {
   const rows: T[][] = [];
@@ -217,7 +214,7 @@ export default function FaceChallengeScreen() {
       </View>
 
       {answered ? (
-        <Animated.View entering={REVEAL} className="gap-row" accessibilityLiveRegion="polite">
+        <Animated.View entering={PAGE_ENTER} className="gap-row" accessibilityLiveRegion="polite">
           <Text variant="readingHeading">{correct ? "认对了" : "这次没认对"}</Text>
           <Text variant="readingBody">{round.tip}</Text>
           <View className="gap-stack-tight pt-stack-tight">

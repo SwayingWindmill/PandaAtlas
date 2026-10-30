@@ -24,7 +24,8 @@ import {
 import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
-import { CONTENT_ENTER, HeroToolbar, StretchyHero } from "@/components/stretchy-hero";
+import { HeroToolbar, StretchyHero } from "@/components/stretchy-hero";
+import { PAGE_ENTER } from "@/design/motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { CompareRows } from "@/features/compare/compare-rows";
@@ -387,7 +388,7 @@ export default function ProfileScreen() {
         ) : (
           <NoPhoto profile={profile} />
         )}
-        <Animated.View entering={CONTENT_ENTER} className="gap-7 bg-background px-4 pt-5">
+        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-4 pt-5">
           <View className="gap-3">
             <Text variant="display">{profile.name}</Text>
             {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
