@@ -24,14 +24,20 @@ function dateLine(now = new Date()) {
   return `${now.getMonth() + 1}月${now.getDate()}日 ${WEEKDAY[now.getDay()]}`;
 }
 
+/** Gap between the small cards in the scroller, and what each snap moves past. */
+const GAP = 12;
+
 export default function TodayScreen() {
   const insets = useSafeAreaInsets();
   const { width, fontScale } = useWindowDimensions();
   const photos = useStoryPhotos(localToday(), STORIES.length);
   const column = Math.min(width, 700) - 32;
-  // The top story is close to a 4:5 portrait; the rest are wide. Taller at big text sizes so titles fit.
+  // The featured story is close to a 4:5 portrait. The smaller cards show about one and a half
+  // at a time, so the next one peeks in and says the row scrolls; they grow at big text sizes.
   const lead = Math.round(column * 1.2);
-  const rest = Math.round(Math.max(column * 0.68, 200 * Math.min(fontScale, 1.6)));
+  const small = Math.round(Math.min(column * 0.72, 300));
+  const smallHeight = Math.round(Math.max(small * 1.22, 220 * Math.min(fontScale, 1.6)));
+  const [featured, ...rest] = STORIES;
 
   return (
     <ScrollView
@@ -41,23 +47,44 @@ export default function TodayScreen() {
       contentContainerStyle={{ paddingTop: insets.top + 12 }}
     >
       <Stack.Screen options={{ headerShown: false, title: "今天" }} />
-      <View className="gap-0.5">
-        <Text variant="largeTitle">今天</Text>
-        <Text variant="title3" className="font-bold text-muted-foreground">
+      <View>
+        <Text variant="display">今天</Text>
+        <Text variant="body" className="text-muted-foreground">
           {dateLine()}
         </Text>
       </View>
-      {STORIES.map((story, index) => (
-        <StoryCard
-          key={story.id}
-          id={story.id}
-          title={story.title}
-          feature={story.feature}
-          href={story.href}
-          photo={photos[index]}
-          height={index === 0 ? lead : rest}
-        />
-      ))}
+      <StoryCard
+        featured
+        id={featured.id}
+        title={featured.title}
+        feature={featured.feature}
+        href={featured.href}
+        photo={photos[0]}
+        height={lead}
+      />
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className="-mx-4"
+        contentContainerClassName="px-4"
+        contentContainerStyle={{ gap: GAP }}
+        snapToInterval={small + GAP}
+        snapToAlignment="start"
+        decelerationRate="fast"
+      >
+        {rest.map((story, index) => (
+          <StoryCard
+            key={story.id}
+            id={story.id}
+            title={story.title}
+            feature={story.feature}
+            href={story.href}
+            photo={photos[index + 1]}
+            width={small}
+            height={smallHeight}
+          />
+        ))}
+      </ScrollView>
       <FollowedStrip />
       <TodayBirthdays />
       <FollowedChanges />

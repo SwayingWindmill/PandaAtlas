@@ -2,152 +2,179 @@ import { Image } from "expo-image";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useCallback, useEffect, useState } from "react";
-import { Platform, Pressable, View } from "react-native";
-import Animated, {
-  Extrapolation,
-  interpolate,
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from "react-native-reanimated";
+import { ScrollView, View } from "react-native";
+import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useCSSVariable } from "uniwind";
 
-import { GlassButton } from "@/components/glass-button";
-import { ListCell, ListSection } from "@/components/grouped-list";
+import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
 import {
   Cake,
-  ChevronLeft,
   CircleQuestionMark,
   Flower,
   Hourglass,
   House,
-  Landmark,
   type LucideIcon,
-  MapPin,
   Mars,
   Network,
-  Share,
   Users,
   Venus,
   Waypoints,
 } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
+import { PhotoOutline } from "@/components/photo-outline";
+import { PressScale } from "@/components/press-scale";
+import { CONTENT_ENTER, HeroToolbar, StretchyHero } from "@/components/stretchy-hero";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PandaActions } from "@/features/engagement/panda-actions";
-import { relativesOf } from "@/features/family/family";
+import { type FamilyMember, relativesOf } from "@/features/family/family";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type Profile, loadProfile, longDate } from "@/features/pandas/profile";
-import { UNKNOWN } from "@/features/pandas/profile-facts";
+import { type Stat, UNKNOWN } from "@/features/pandas/profile-facts";
+import { RADIUS } from "@/lib/surface";
 
 /** Hero height below the status bar. The photo runs under the status bar too. */
 const HERO = 340;
-
-function goBack() {
-  if (router.canGoBack()) router.back();
-  else router.replace("/");
-}
 
 function correct(slug: string) {
   router.push({ pathname: "/pandas/[slug]/correct", params: { slug } });
 }
 
-/** The top bar over the photo: Liquid Glass back and share, fixed while the page scrolls. */
-function Toolbar({ slug }: { slug?: string }) {
-  const insets = useSafeAreaInsets();
+/** A section's footnote header, aligned with the text inside the group below it. */
+function SectionHeader({ children }: { children: string }) {
   return (
+    <Text variant="footnote" role="heading" className="px-4 text-muted-foreground">
+      {children}
+    </Text>
+  );
+}
+
+/** The glyph beside each stat's label. 性别 shows the sex itself, so it reads at a glance. */
+function statIcon(stat: Stat, deceased: boolean): LucideIcon {
+  if (stat.key === "sex") return stat.value === "雄" ? Mars : stat.value === "雌" ? Venus : CircleQuestionMark;
+  if (stat.key === "age") return deceased ? Hourglass : Cake;
+  return deceased ? Flower : House;
+}
+
+/** How much of the row each block takes: the place needs room for a zoo's name. */
+const STAT_FLEX: Record<Stat["key"], number> = { sex: 1, age: 1.25, place: 1.9 };
+
+function StatBlock({ stat, deceased, onPress, stacked }: { stat: Stat; deceased: boolean; onPress?: () => void; stacked: boolean }) {
+  const body = (
     <View
-      pointerEvents="box-none"
-      className="absolute right-0 left-0 flex-row justify-between px-4"
-      style={{ top: insets.top + 6 }}
+      className="gap-1 bg-card p-3"
+      style={{ flex: 1, borderRadius: RADIUS.tile, borderCurve: "continuous", minHeight: 96 }}
     >
-      <GlassButton icon={ChevronLeft} label="返回" onPress={goBack} />
-      {slug ? (
-        <GlassButton
-          icon={Share}
-          label="分享"
-          onPress={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug } })}
+      <View className="flex-row items-center gap-1">
+        <Icon icon={statIcon(stat, deceased)} size="footnote" tone="secondary" />
+        <Text variant="footnote" className="flex-1 text-muted-foreground" numberOfLines={1}>
+          {stat.label}
+        </Text>
+        {onPress ? <Chevron /> : null}
+      </View>
+      <Text variant="stat" numberOfLines={stacked ? undefined : 2}>
+        {stat.value}
+      </Text>
+      {stat.detail ? (
+        <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
+          {stat.detail}
+        </Text>
+      ) : null}
+    </View>
+  );
+  const style = stacked ? undefined : { flex: STAT_FLEX[stat.key] };
+  if (!onPress) {
+    return (
+      <View style={style} accessible accessibilityLabel={`${stat.label}，${stat.value}${stat.detail ? `，${stat.detail}` : ""}`}>
+        {body}
+      </View>
+    );
+  }
+  return (
+    <PressScale
+      onPress={onPress}
+      role="link"
+      accessibilityLabel={`${stat.label}，${stat.value}，参观指南`}
+      containerStyle={style}
+      style={{ flex: 1 }}
+    >
+      {body}
+    </PressScale>
+  );
+}
+
+/** Sex, age and where it lives as three tiles, the way Health leads with its summary. */
+function Stats({ profile }: { profile: Profile }) {
+  const stacked = useStacked();
+  const visit = profile.visit;
+  const fact = (label: string) => profile.facts.find((item) => item.label === label)?.value;
+  const born = fact("出生");
+  const birthPlace = fact("出生地");
+  const birthLine =
+    born && born !== UNKNOWN
+      ? `${born}出生${birthPlace && birthPlace !== UNKNOWN ? `于${birthPlace}` : ""}`
+      : null;
+  return (
+    <View className="gap-2">
+    <View className={stacked ? "gap-2" : "flex-row gap-2"}>
+      {profile.stats.map((stat) => (
+        <StatBlock
+          key={stat.key}
+          stat={stat}
+          deceased={profile.deceased}
+          stacked={stacked}
+          onPress={
+            stat.key === "place" && visit
+              ? () => router.push({ pathname: "/institutions/[slug]", params: { slug: visit.institutionSlug } })
+              : undefined
+          }
         />
+      ))}
+    </View>
+      {birthLine ? (
+        <Text variant="footnote" className="px-1 text-muted-foreground">
+          {birthLine}
+        </Text>
       ) : null}
     </View>
   );
 }
 
-/** "雄　史密森尼国家动物园": sex and where it lives now, or that it has died. */
-function subtitleOf(profile: Profile): string {
-  const fact = (label: string) => profile.facts.find((item) => item.label === label)?.value;
-  const sex = fact("性别");
-  const where = profile.deceased ? "已离世" : (profile.visit?.place ?? fact("所在地"));
-  return [sex, where].filter((part) => part && part !== UNKNOWN).join("　");
-}
+/** Avatar 44 inside a 52pt capsule with 4pt padding: the circles share a centre. */
+const AVATAR = 44;
+const CHIP_PAD = 4;
 
-function Hero({ profile, scrollY }: { profile: Profile; scrollY: { value: number } }) {
-  const insets = useSafeAreaInsets();
-  const muted = String(useCSSVariable("--color-muted"));
-  const height = HERO + insets.top;
-  const cover = profile.photos[0];
-  // Pulling down stretches the photo from its bottom edge; scrolling up lets it drift a little slower.
-  const stretch = useAnimatedStyle(() => ({
-    transform: [
-      { translateY: interpolate(scrollY.value, [-height, 0, height], [-height / 2, 0, height * 0.35], Extrapolation.CLAMP) },
-      { scale: interpolate(scrollY.value, [-height, 0], [2, 1], Extrapolation.CLAMP) },
-    ],
-  }));
-
-  if (!cover) {
-    return (
-      <View style={{ paddingTop: insets.top + 64 }} className="px-4">
-        <ListSection>
-          <ListCell label="暂无照片" />
-          <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
-        </ListSection>
-      </View>
-    );
-  }
+function FamilyChip({ member }: { member: FamilyMember }) {
   return (
-    <View style={{ height, overflow: Platform.OS === "web" ? "hidden" : "visible" }}>
-      <Animated.View style={[{ height, backgroundColor: muted }, stretch]}>
-        <Pressable
-          onPress={() => router.push({ pathname: "/pandas/[slug]/photos", params: { slug: profile.slug } })}
-          role="button"
-          accessibilityLabel={`查看${profile.name}的照片，共 ${profile.photos.length} 张`}
-          style={{ flex: 1 }}
+    <PressScale onPress={() => openPanda(member.slug)} role="link" accessibilityLabel={`${member.name}，${member.relation}`}>
+      <View
+        className="flex-row items-center gap-2.5 bg-card"
+        style={{ padding: CHIP_PAD, paddingRight: 16, borderRadius: (AVATAR + CHIP_PAD * 2) / 2, borderCurve: "continuous" }}
+      >
+        <View
+          className="items-center justify-center overflow-hidden bg-muted"
+          style={{ width: AVATAR, height: AVATAR, borderRadius: AVATAR / 2 }}
         >
-          <Image source={cover.url} style={{ flex: 1 }} contentFit="cover" accessible={false} transition={200} />
-        </Pressable>
-      </Animated.View>
-    </View>
-  );
-}
-
-/** The glyph for each 基本信息 fact. 性别 shows the sex itself, so the row reads at a glance. */
-function factIcon(label: string, value: string): LucideIcon {
-  if (label === "性别") return value === "雄" ? Mars : value === "雌" ? Venus : CircleQuestionMark;
-  const icons: Record<string, LucideIcon> = {
-    出生: Cake,
-    出生地: MapPin,
-    离世: Flower,
-    享年: Hourglass,
-    所在地: House,
-  };
-  return icons[label] ?? CircleQuestionMark;
-}
-
-function Basics({ profile }: { profile: Profile }) {
-  const rows = profile.facts.filter((fact) => fact.label !== "父母");
-  return (
-    <ListSection title="基本信息">
-      {rows.map((fact, index) => (
-        <ListCell
-          key={fact.label}
-          icon={factIcon(fact.label, fact.value)}
-          label={fact.label}
-          meta={fact.value}
-          last={index === rows.length - 1}
-        />
-      ))}
-    </ListSection>
+          {member.photoUrl ? (
+            <Image source={member.photoUrl} style={{ width: AVATAR, height: AVATAR }} contentFit="cover" accessible={false} />
+          ) : (
+            <Text variant="body" className="font-semibold text-muted-foreground">
+              {member.name.slice(0, 1)}
+            </Text>
+          )}
+          <PhotoOutline radius={AVATAR / 2} />
+        </View>
+        <View>
+          <Text variant="body" className="font-semibold" numberOfLines={1}>
+            {member.name}
+          </Text>
+          <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
+            {member.relation}
+          </Text>
+        </View>
+      </View>
+    </PressScale>
   );
 }
 
@@ -162,36 +189,32 @@ function Family({ profile }: { profile: Profile }) {
     );
   }
   return (
-    <ListSection title="家族">
-      {relatives.map((member) => (
-        <ListCell
-          key={member.id}
-          label={member.name}
-          meta={member.relation}
-          accessibilityLabel={`${member.name}，${member.relation}`}
-          onPress={() => openPanda(member.slug)}
-        />
-      ))}
-      <ListCell icon={Network} label="看家谱" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} />
-      <ListCell icon={Waypoints} label="查关系" href={{ pathname: "/relationship", params: { from: profile.slug } }} last />
-    </ListSection>
+    <View className="gap-1.5">
+      <SectionHeader>家族</SectionHeader>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className="-mx-4"
+        contentContainerClassName="gap-2 px-4 pb-1.5"
+      >
+        {relatives.map((member) => (
+          <FamilyChip key={member.id} member={member} />
+        ))}
+      </ScrollView>
+      <ListSection>
+        <ListCell icon={Network} label="看家谱" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} />
+        <ListCell icon={Waypoints} label="查关系" href={{ pathname: "/relationship", params: { from: profile.slug } }} last />
+      </ListSection>
+    </View>
   );
 }
 
-function Institution({ profile }: { profile: Profile }) {
+/** Where it lived before. Where it lives now is the 所在地 tile, which opens the institution. */
+function PlacesLived({ profile }: { profile: Profile }) {
   const past = profile.placesLived.filter((place) => !place.current);
-  if (!profile.visit && past.length === 0) return null;
+  if (past.length === 0) return null;
   return (
-    <ListSection title={profile.deceased ? "生活过的地方" : "所在机构"}>
-      {profile.visit ? (
-        <ListCell
-          icon={Landmark}
-          label={profile.visit.place}
-          detail={profile.visit.address ?? "参观指南"}
-          href={{ pathname: "/institutions/[slug]", params: { slug: profile.visit.institutionSlug } }}
-          last={past.length === 0}
-        />
-      ) : null}
+    <ListSection title={profile.deceased ? "生活过的地方" : "以前住过"}>
       {past.map((place, index) => (
         <ListCell
           key={`${place.place}-${place.years}`}
@@ -249,13 +272,25 @@ function Sources({ sources }: { sources: Profile["sources"] }) {
   );
 }
 
+function NoPhoto({ profile }: { profile: Profile }) {
+  const insets = useSafeAreaInsets();
+  return (
+    <View style={{ paddingTop: insets.top + 64 }} className="px-4">
+      <ListSection>
+        <ListCell label="暂无照片" />
+        <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
+      </ListSection>
+    </View>
+  );
+}
+
 export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [failed, setFailed] = useState(false);
   const scrollY = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler((event) => {
-    scrollY.value = event.contentOffset.y;
+    scrollY.set(event.contentOffset.y);
   });
 
   const load = useCallback(() => {
@@ -283,16 +318,20 @@ export default function ProfileScreen() {
             <Skeleton className="h-96 w-full rounded-none" />
             <View className="gap-3 px-4">
               <Skeleton className="h-10 w-32" />
-              <Skeleton className="h-5 w-48" />
+              <View className="flex-row gap-2">
+                <Skeleton className="h-24 flex-1 rounded-2xl" />
+                <Skeleton className="h-24 flex-1 rounded-2xl" />
+                <Skeleton className="h-24 flex-[1.9] rounded-2xl" />
+              </View>
             </View>
           </View>
         )}
-        <Toolbar />
+        <HeroToolbar />
       </View>
     );
   }
 
-  const subtitle = subtitleOf(profile);
+  const cover = profile.photos[0];
   return (
     <View className="flex-1 bg-background">
       <Stack.Screen options={{ headerShown: false, title: profile.name }} />
@@ -303,22 +342,25 @@ export default function ProfileScreen() {
         onScroll={onScroll}
         scrollEventThrottle={16}
       >
-        <Hero profile={profile} scrollY={scrollY} />
-        <View className="gap-7 bg-background px-4 pt-5">
+        {cover ? (
+          <StretchyHero
+            url={cover.url}
+            height={HERO}
+            scrollY={scrollY}
+            label={`查看${profile.name}的照片，共 ${profile.photos.length} 张`}
+            onPress={() => router.push({ pathname: "/pandas/[slug]/photos", params: { slug: profile.slug } })}
+          />
+        ) : (
+          <NoPhoto profile={profile} />
+        )}
+        <Animated.View entering={CONTENT_ENTER} className="gap-7 bg-background px-4 pt-5">
           <View className="gap-3">
-            <View className="gap-0.5">
-              <Text variant="largeTitle">{profile.name}</Text>
-              {subtitle ? (
-                <Text variant="subhead" className="text-muted-foreground">
-                  {subtitle}
-                </Text>
-              ) : null}
-            </View>
+            <Text variant="display">{profile.name}</Text>
             {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
           </View>
-          <Basics profile={profile} />
+          <Stats profile={profile} />
           <Family profile={profile} />
-          <Institution profile={profile} />
+          <PlacesLived profile={profile} />
           <Events profile={profile} />
           {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
           <ListSection>
@@ -329,14 +371,14 @@ export default function ProfileScreen() {
             />
             <ListCell label="资料有误？纠错" tone="tint" onPress={() => correct(profile.slug)} last />
           </ListSection>
-          {profile.photos[0]?.credit ? (
+          {cover?.credit ? (
             <Text variant="footnote" className="px-4 text-muted-foreground">
-              {`封面照片：${profile.photos[0].credit}`}
+              {`封面照片：${cover.credit}`}
             </Text>
           ) : null}
-        </View>
+        </Animated.View>
       </Animated.ScrollView>
-      <Toolbar slug={profile.slug} />
+      <HeroToolbar onShare={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })} />
     </View>
   );
 }

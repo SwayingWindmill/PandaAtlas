@@ -51,3 +51,15 @@ export function pickStoryPhotos(
   }
   return picks;
 }
+
+/**
+ * Sources whose pictures carry a burned-in mark: 新华网 in a corner, or Pandapia's logo along the
+ * bottom of its small square crops. A full-bleed card or hero puts its title over the whole photo,
+ * so a cover credited to one of them is left out of 今天's cards and institution heroes. The credit
+ * is the only signal the API gives; the photo stays on the panda's own page and in lists.
+ */
+const WATERMARKED_CREDIT = /xinhua|新华|pandapia/i;
+
+export function hasBurnedInMark(cover: { creator?: string | null; attributionText?: string | null }): boolean {
+  return WATERMARKED_CREDIT.test(`${cover.creator ?? ""} ${cover.attributionText ?? ""}`);
+}

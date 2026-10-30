@@ -1,9 +1,10 @@
 import type { components } from "@zhipanda/api-client";
 
+import { localToday } from "@/features/engagement/seen";
 import { type Family, familyOf } from "@/features/family/family";
 import { loadInstitutionList } from "@/features/institutions/institutions";
 import { currentPlaceId, loadPlaces, placeName } from "@/features/pandas/pandas";
-import { type PlaceLived, infobox, placesLived } from "@/features/pandas/profile-facts";
+import { type PlaceLived, type Stat, headlineStats, infobox, placesLived } from "@/features/pandas/profile-facts";
 import { api, publicMediaUrl } from "@/lib/api";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
 
@@ -19,6 +20,8 @@ export interface Profile {
   /** Cover first; empty when no photo is published. */
   photos: Photo[];
   facts: { label: string; value: string }[];
+  /** Sex, age and where it lives (or when it died): the stat blocks under the name. */
+  stats: Stat[];
   events: { id: string; date: string; text: string }[];
   /** Null when the lineage could not be loaded; the rest of the profile still shows. */
   family: Family | null;
@@ -139,6 +142,14 @@ export async function loadProfile(slug: string): Promise<Profile> {
     deceased,
     photos: photosOf(media),
     facts,
+    stats: headlineStats({
+      sex,
+      birthDate,
+      deceased,
+      deathDate: typeof deathDate === "string" ? deathDate : null,
+      currentPlace,
+      today: localToday(),
+    }),
     // Only what happened: an announced plan is not part of the panda's life yet.
     events: events
       .filter((event): event is DatedEvent => event.eventStatus === "completed" && Boolean(event.occurredOn))

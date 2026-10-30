@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 
 import { loadPandaIndex } from "@/features/pandas/pandas";
-import { type StoryPhoto, pickStoryPhotos, storyCandidates } from "@/features/today/story-order";
+import { type StoryPhoto, hasBurnedInMark, pickStoryPhotos, storyCandidates } from "@/features/today/story-order";
 import { api, publicMediaUrl } from "@/lib/api";
 
 export type { StoryPhoto };
 
-const LOOKAHEAD = 40;
+// The endpoint takes up to 50 ids; about half the covers are filtered out above, so ask for all 50.
+const LOOKAHEAD = 50;
 
 /** Photos for 今天's story cards, one different panda per card. Empty while loading or offline. */
 export function useStoryPhotos(day: string, count: number): StoryPhoto[] {
@@ -19,7 +20,11 @@ export function useStoryPhotos(day: string, count: number): StoryPhoto[] {
         const { data } = await api.GET("/api/v2/panda-covers", {
           params: { query: { ids: candidates.map((panda) => panda.id).join(",") } },
         });
-        const covers = new Map((data?.items ?? []).map((cover) => [cover.pandaId, publicMediaUrl(cover.objectKey)]));
+        const covers = new Map(
+          (data?.items ?? [])
+            .filter((cover) => !hasBurnedInMark(cover))
+            .map((cover) => [cover.pandaId, publicMediaUrl(cover.objectKey)]),
+        );
         if (active) setPhotos(pickStoryPhotos(candidates, covers, count));
       })
       .catch(() => undefined);

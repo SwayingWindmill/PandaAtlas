@@ -2,6 +2,7 @@ import * as WebBrowser from "expo-web-browser";
 import { Pressable, View } from "react-native";
 
 import { Text } from "@/components/ui/text";
+import { HAIRLINE } from "@/lib/surface";
 
 import { type LearningSource, learningText } from "./catalog";
 
@@ -34,7 +35,7 @@ export function LearningSources({ sources }: { sources: readonly LearningSource[
           return (
             <View key={`${title}-${index}`}>
               {body}
-              {last ? null : <View className="ml-4 h-hairline bg-border" />}
+              {last ? null : <View className="ml-4 bg-border" style={{ height: HAIRLINE }} />}
             </View>
           );
         })}

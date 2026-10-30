@@ -7,6 +7,7 @@ import { Text } from "@/components/ui/text";
 import { setFollowing, useFollowed } from "@/features/engagement/favorites";
 import { type Seen, loadSeen, localToday, markSeen, shortDay, unmarkSeen } from "@/features/engagement/seen";
 import { useSession } from "@/features/session/session";
+import { selectionHaptic, successHaptic, tapHaptic } from "@/lib/haptics";
 
 /**
  * 关注 and 见过 under a living panda's name, as iOS pairs a primary and a secondary action:
@@ -38,8 +39,13 @@ export function PandaActions({ pandaId, name }: { pandaId: string; name: string 
     setBusy(true);
     const day = localToday();
     if (seen) {
-      if (await unmarkSeen(pandaId)) setSeen(null);
+      if (await unmarkSeen(pandaId)) {
+        selectionHaptic();
+        setSeen(null);
+      }
     } else if (await markSeen(pandaId, day)) {
+      // The success tap lands with the label change, once the server has kept the day.
+      successHaptic();
       setSeen({ seenOn: day });
     }
     setBusy(false);
@@ -66,7 +72,10 @@ export function PandaActions({ pandaId, name }: { pandaId: string; name: string 
         className="min-w-24 px-5"
         disabled={followed === null}
         accessibilityLabel={following ? `已关注${name}，点按取消` : `关注${name}`}
-        onPress={() => void setFollowing(pandaId, !following)}
+        onPress={() => {
+          tapHaptic();
+          void setFollowing(pandaId, !following);
+        }}
       >
         <Text className="text-body font-semibold">{following ? "已关注" : "关注"}</Text>
       </Button>

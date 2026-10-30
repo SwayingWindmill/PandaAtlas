@@ -5,6 +5,14 @@ import * as React from 'react';
 import { Platform, Text as RNText, type Role } from 'react-native';
 
 // iOS text styles. Line heights are opened up so Chinese doesn't clip.
+//
+// The type tokens. A redesigned screen (今天, a panda, an institution) uses only these four sizes:
+//   display  34/41 bold      the one title on a screen, and the featured 今天 card
+//   title    22/28 bold      a section, a card title, a stat value (`stat`, no heading role)
+//   body     17/26           names, sentences, buttons
+//   footnote 13/18           labels, captions, credits, the date
+// Hierarchy inside a size comes from weight and color, not from a size in between.
+// The full iOS scale below stays for screens that have not moved over yet.
 const textVariants = cva(
   cn(
     'text-body text-foreground',
@@ -16,6 +24,9 @@ const textVariants = cva(
     variants: {
       variant: {
         default: '',
+        display: cn('text-large-title font-bold', Platform.select({ web: 'text-balance' })),
+        title: cn('text-title2 font-bold', Platform.select({ web: 'text-balance' })),
+        stat: 'text-title2 font-bold tabular-nums',
         largeTitle: cn('text-large-title font-bold', Platform.select({ web: 'text-balance' })),
         title1: cn('text-title1 font-bold', Platform.select({ web: 'text-balance' })),
         title2: cn('text-title2 font-bold', Platform.select({ web: 'text-balance' })),
@@ -46,6 +57,8 @@ type TextVariantProps = VariantProps<typeof textVariants>;
 type TextVariant = NonNullable<TextVariantProps['variant']>;
 
 const ROLE: Partial<Record<TextVariant, Role>> = {
+  display: 'heading',
+  title: 'heading',
   largeTitle: 'heading',
   title1: 'heading',
   title2: 'heading',
@@ -56,6 +69,8 @@ const ROLE: Partial<Record<TextVariant, Role>> = {
 };
 
 const ARIA_LEVEL: Partial<Record<TextVariant, string>> = {
+  display: '1',
+  title: '2',
   largeTitle: '1',
   title1: '2',
   h1: '1',
