@@ -28,6 +28,7 @@ import { Scrim } from "@/components/scrim";
 import { CONTENT_ENTER, HeroToolbar, StretchyHero } from "@/components/stretchy-hero";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { semantic } from "@/design/tokens";
 import { useInstitutionHero } from "@/features/institutions/institution-hero";
 import { type Facility, type InstitutionDetail, hostname, loadInstitution } from "@/features/institutions/institutions";
 import { openPanda } from "@/features/pandas/panda-row";
@@ -38,9 +39,9 @@ import { usePandaCover } from "@/lib/covers";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
 
 /** Under a resident's photo while it loads, dark enough that the white name already reads. */
-const PLACEHOLDER = "#3A3A3C";
-const GUTTER = 16;
-const GAP = 12;
+const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
+const GUTTER = semantic.spacing.inset.value;
+const GAP = semantic.spacing.row.value;
 
 function openMaps(name: string, { latitude, longitude }: NonNullable<Facility["coordinates"]>) {
   const label = encodeURIComponent(name);

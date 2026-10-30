@@ -5,6 +5,7 @@ import { Pressable, useWindowDimensions, View } from "react-native";
 import { Icon } from "@/components/icon";
 import { ChevronRight, type LucideIcon } from "@/components/icons";
 import { Text } from "@/components/ui/text";
+import { component } from "@/design/tokens";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +18,7 @@ export function useStacked() {
 
 /** The disclosure chevron in tertiary label, as Settings draws it. */
 export function Chevron() {
-  return <Icon icon={ChevronRight} size={17} tone="tertiary" strokeWidth={2.25} />;
+  return <Icon icon={ChevronRight} size={component.icon.chevron} tone="tertiary" strokeWidth={2.25} />;
 }
 
 /** Where a row's separator starts when it has a leading icon: under the label, as in Settings. */
@@ -32,7 +33,7 @@ export function ListSection({ title, footer, children }: { title?: string; foote
           {title}
         </Text>
       ) : null}
-      <View className="overflow-hidden rounded-[10px] bg-card">{children}</View>
+      <View className="overflow-hidden rounded-group bg-card">{children}</View>
       {footer ? <Text variant="footnote" className="px-4 text-muted-foreground">{footer}</Text> : null}
     </View>
   );

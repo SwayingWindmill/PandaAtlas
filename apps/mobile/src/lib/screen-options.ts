@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 
+import { semantic } from "@/design/tokens";
 import { IOS, type AppearanceScheme } from "@/lib/theme";
 
 /**
@@ -23,7 +24,7 @@ export function stackScreenOptions(scheme: AppearanceScheme) {
     headerBackTitle: "返回",
     headerBackButtonDisplayMode: "minimal" as const,
     headerTitleStyle: { color: colors.label, fontWeight: "600" as const },
-    headerLargeTitleStyle: { color: colors.label, fontWeight: "700" as const, fontSize: 34 },
+    headerLargeTitleStyle: { color: colors.label, fontWeight: "700" as const, fontSize: semantic.text.display.size },
     contentStyle: { backgroundColor: colors.groupedBackground },
     ...(opaque
       ? {

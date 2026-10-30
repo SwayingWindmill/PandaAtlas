@@ -6,11 +6,12 @@ import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { Scrim } from "@/components/scrim";
 import { Text } from "@/components/ui/text";
+import { semantic } from "@/design/tokens";
 import type { StoryPhoto } from "@/features/today/story-photos";
 import { RADIUS } from "@/lib/surface";
 
 /** Under the photo while it loads, dark enough that the white title already reads. */
-const PLACEHOLDER = "#3A3A3C";
+const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
 
 /**
  * An App Store Today-style story card: one photograph with continuous corners, the title in white

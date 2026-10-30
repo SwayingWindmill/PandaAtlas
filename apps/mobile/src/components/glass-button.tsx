@@ -3,9 +3,10 @@ import { Platform, Pressable, View } from "react-native";
 
 import { Icon } from "@/components/icon";
 import type { LucideIcon } from "@/components/icons";
+import { component } from "@/design/tokens";
 import { useIOSColors } from "@/lib/theme";
 
-const SIZE = 44;
+const SIZE = component.glassButton.size;
 
 /**
  * A circular toolbar button that floats over a photo: Liquid Glass on iOS 26, and a dark
@@ -21,7 +22,7 @@ export function GlassButton({
   label: string;
   onPress: () => void;
 }) {
-  const { scheme } = useIOSColors();
+  const { scheme, glassFallback } = useIOSColors();
   const glass = Platform.OS === "ios" && isLiquidGlassAvailable();
   const glyph = <Icon icon={icon} size="body" tone={glass ? "label" : "onMedia"} strokeWidth={2} />;
   return (
@@ -45,7 +46,7 @@ export function GlassButton({
       ) : (
         <View
           style={[
-            { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.38)" },
+            { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: glassFallback },
             Platform.OS === "web" ? ({ backdropFilter: "blur(20px) saturate(1.6)" } as object) : null,
           ]}
         >

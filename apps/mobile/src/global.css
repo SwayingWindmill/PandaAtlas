@@ -3,48 +3,11 @@
 @import "tw-animate-css";
 
 /*
- * App tokens. iOS system colors, with the panda green as tint.
- * Values match src/lib/theme.ts. The website keeps its own Radix tokens.
+ * App tokens: iOS system colors with the bamboo-jade tint, the shoot-gold accent, purpose-named
+ * text styles, the 4pt spacing roles, radii and motion. The block between the @generated markers
+ * is written from src/design/tokens.ts; edit that file and run `npm run design:tokens`.
+ * The website keeps its own Radix tokens.
  */
-@theme {
-  --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-
-  --text-large-title: 34px;
-  --text-large-title--line-height: 41px;
-  --text-title1: 28px;
-  --text-title1--line-height: 36px;
-  --text-title2: 22px;
-  --text-title2--line-height: 28px;
-  --text-title3: 20px;
-  --text-title3--line-height: 26px;
-  --text-headline: 17px;
-  --text-headline--line-height: 24px;
-  --text-body: 17px;
-  --text-body--line-height: 26px;
-  --text-callout: 16px;
-  --text-callout--line-height: 24px;
-  --text-subhead: 15px;
-  --text-subhead--line-height: 22px;
-  --text-footnote: 13px;
-  --text-footnote--line-height: 18px;
-  --text-caption: 12px;
-  --text-caption--line-height: 16px;
-
-  /* Existing class names follow the iOS body and caption sizes. */
-  --text-base: 17px;
-  --text-base--line-height: 26px;
-  --text-xs: 12px;
-  --text-xs--line-height: 16px;
-  --text-sm: 15px;
-  --text-sm--line-height: 22px;
-  --text-xl: 22px;
-  --text-xl--line-height: 28px;
-  --text-display: 34px;
-  --text-display--line-height: 41px;
-}
 
 /* Separators are a hairline. Text does not use them as structure. */
 @utility border-hairline {
@@ -67,6 +30,90 @@
   width: 0.5px;
 }
 
+/* @generated design-tokens:start (edit src/design/tokens.ts, then npm run design:tokens) */
+@theme {
+  /* Radius. sm–xl are the React Native Reusables scale; the named roles are for screens. */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-card: 24px;
+  --radius-tile: 16px;
+  --radius-control: 12px;
+  --radius-group: 10px;
+  --radius-pill: 999px;
+
+  /* Spacing roles on the 4pt scale (numbers like p-4 still work: 4 × 4px). */
+  --spacing-hair-gap: 4px;
+  --spacing-stack-tight: 8px;
+  --spacing-row: 12px;
+  --spacing-inset: 16px;
+  --spacing-stack: 20px;
+  --spacing-section-tight: 24px;
+  --spacing-section: 32px;
+  --spacing-page: 40px;
+
+  /* Text styles. Weight comes from the <Text> variant, not the size class. */
+  --text-display: 34px;
+  --text-display--line-height: 41px;
+  --text-title: 22px;
+  --text-title--line-height: 28px;
+  --text-headline: 17px;
+  --text-headline--line-height: 24px;
+  --text-body: 17px;
+  --text-body--line-height: 26px;
+  --text-subheadline: 15px;
+  --text-subheadline--line-height: 22px;
+  --text-footnote: 13px;
+  --text-footnote--line-height: 18px;
+
+  /* 科普 reading column. */
+  --text-reading-title: 28px;
+  --text-reading-title--line-height: 36px;
+  --text-reading-heading: 22px;
+  --text-reading-heading--line-height: 30px;
+  --text-reading-lead: 17px;
+  --text-reading-lead--line-height: 28px;
+  --text-reading-body: 17px;
+  --text-reading-body--line-height: 28px;
+  --text-reading-caption: 13px;
+  --text-reading-caption--line-height: 20px;
+
+  /* Deprecated sizes: kept for screens not yet redesigned. See DESIGN.md › Deprecated. */
+  --text-large-title: 34px;
+  --text-large-title--line-height: 41px;
+  --text-title1: 28px;
+  --text-title1--line-height: 36px;
+  --text-title2: 22px;
+  --text-title2--line-height: 28px;
+  --text-title3: 20px;
+  --text-title3--line-height: 26px;
+  --text-callout: 16px;
+  --text-callout--line-height: 24px;
+  --text-subhead: 15px;
+  --text-subhead--line-height: 22px;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-base: 17px;
+  --text-base--line-height: 26px;
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 15px;
+  --text-sm--line-height: 22px;
+  --text-xl: 22px;
+  --text-xl--line-height: 28px;
+
+  /* Motion. */
+  --duration-instant: 100ms;
+  --duration-press: 120ms;
+  --duration-quick: 200ms;
+  --duration-base: 280ms;
+  --duration-slow: 480ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-bamboo: cubic-bezier(0.3, 1.15, 0.5, 1);
+}
+
 @layer theme {
   :root {
     @variant light {
@@ -76,13 +123,13 @@
       --color-card-foreground: #000000;
       --color-popover: #ffffff;
       --color-popover-foreground: #000000;
-      --color-primary: #165c3c; /* tint: deep bamboo green, 8:1 on white */
+      --color-primary: #165c3c; /* tint */
       --color-primary-foreground: #ffffff;
       --color-secondary: #e5e5ea; /* system fill */
       --color-secondary-foreground: #000000;
       --color-muted: #e5e5ea;
-      --color-muted-foreground: #636366; /* secondary label, AA on white and grouped */
-      --color-accent: #d1d1d6; /* pressed */
+      --color-muted-foreground: #636366; /* secondary label */
+      --color-accent: #d1d1d6; /* pressed (shadcn name; the brand accent is `warm`) */
       --color-accent-foreground: #000000;
       --color-destructive: #ce2c31;
       --color-border: #c6c6c8; /* opaqueSeparator */
@@ -90,33 +137,52 @@
       --color-ring: #165c3c;
       --color-highlight: #165c3c;
       --color-highlight-foreground: #165c3c;
-      --color-highlight-soft: #e3ebe8; /* tint at 12%, the tinted-button fill */
+      --color-highlight-soft: #e3ebe8; /* tinted-button fill */
       --color-warning: #b25000;
+      --color-paper: #ffffff; /* systemBackground, the reading column */
+      --color-tertiary-foreground: #c4c4c7; /* tertiary label: chevrons, not text */
+      --color-warm: #846018; /* 笋金: markers only, never actions */
+      --color-warm-soft: #f5eddb; /* warm badge fill */
+      --color-on-media: #ffffff; /* over a scrim */
+      --color-media-placeholder: #3a3a3c;
+      --color-photo-stroke: rgba(0,0,0,0.1);
+      --color-glass-fallback: rgba(0,0,0,0.38);
+      --color-bar-material: rgba(255,255,255,0.86);
     }
 
     @variant dark {
       --color-background: #000000; /* systemGroupedBackground */
-      --color-foreground: #ffffff;
+      --color-foreground: #ffffff; /* label */
       --color-card: #1c1c1e; /* secondarySystemGroupedBackground */
       --color-card-foreground: #ffffff;
       --color-popover: #1c1c1e;
       --color-popover-foreground: #ffffff;
-      --color-primary: #7dcaa4; /* tint: pale jade, 11:1 on black */
+      --color-primary: #7dcaa4; /* tint */
       --color-primary-foreground: #000000;
-      --color-secondary: #2c2c2e;
+      --color-secondary: #2c2c2e; /* system fill */
       --color-secondary-foreground: #ffffff;
       --color-muted: #2c2c2e;
-      --color-muted-foreground: #aeaeb2;
-      --color-accent: #3a3a3c;
+      --color-muted-foreground: #aeaeb2; /* secondary label */
+      --color-accent: #3a3a3c; /* pressed (shadcn name; the brand accent is `warm`) */
       --color-accent-foreground: #ffffff;
       --color-destructive: #ff6961;
-      --color-border: #38383a;
+      --color-border: #38383a; /* opaqueSeparator */
       --color-input: #2c2c2e;
       --color-ring: #7dcaa4;
       --color-highlight: #7dcaa4;
       --color-highlight-foreground: #7dcaa4;
-      --color-highlight-soft: #16241e; /* tint at 18% */
+      --color-highlight-soft: #16241e; /* tinted-button fill */
       --color-warning: #ff9f0a;
+      --color-paper: #000000; /* systemBackground, the reading column */
+      --color-tertiary-foreground: #5b5b60; /* tertiary label: chevrons, not text */
+      --color-warm: #e3bd6e; /* 笋金: markers only, never actions */
+      --color-warm-soft: #2b2312; /* warm badge fill */
+      --color-on-media: #ffffff; /* over a scrim */
+      --color-media-placeholder: #3a3a3c;
+      --color-photo-stroke: rgba(255,255,255,0.1);
+      --color-glass-fallback: rgba(0,0,0,0.38);
+      --color-bar-material: rgba(28,28,30,0.86);
     }
   }
 }
+/* @generated design-tokens:end */

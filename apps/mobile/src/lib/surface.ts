@@ -1,6 +1,9 @@
 import { Platform, StyleSheet } from "react-native";
 
+import { semantic } from "@/design/tokens";
 import { type AppearanceScheme } from "@/lib/theme";
+
+export { concentric } from "@/design/tokens";
 
 /**
  * One device pixel. Native draws `StyleSheet.hairlineWidth`; react-native-web reports 1 there,
@@ -15,7 +18,12 @@ export const HAIRLINE = Platform.OS === "web" ? 0.5 : StyleSheet.hairlineWidth;
  *   tile 16, padding 12 → inner 4       a stat block, a resident tile, a small 今天 card
  *   chip = height / 2, padding 4 → avatar = chip − 4
  */
-export const RADIUS = { card: 24, tile: 16, group: 10 } as const;
+export const RADIUS = {
+  card: semantic.radius.card.value,
+  tile: semantic.radius.tile.value,
+  control: semantic.radius.control.value,
+  group: semantic.radius.group.value,
+} as const;
 
 /**
  * The edge on a photograph: 1px of pure black at 10% in light mode, pure white at 10% in dark,
@@ -23,5 +31,5 @@ export const RADIUS = { card: 24, tile: 16, group: 10 } as const;
  * Never a tinted or neutral grey: on a photo that reads as dirt.
  */
 export function photoOutline(scheme: AppearanceScheme) {
-  return scheme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)";
+  return semantic.color[scheme].photoStroke;
 }

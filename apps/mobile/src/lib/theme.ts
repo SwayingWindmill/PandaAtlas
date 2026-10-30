@@ -1,48 +1,16 @@
 import { DarkTheme, DefaultTheme, type Theme } from "expo-router/react-navigation";
 import { useUniwind } from "uniwind";
 
+import { semantic } from "@/design/tokens";
+
 /**
- * iOS system colors. Grouped backgrounds, labels and separators are the system values.
- * Tint is a deep bamboo green (#165C3C, 8:1 on white) in light mode and a pale jade
- * (#7DCAA4, 11:1 on black) in dark mode, where filled buttons take black labels.
- * highlightSoft is the tint at about 12% (light) and 18% (dark): the iOS "tinted" button fill.
+ * The color roles for both appearances, straight from the design tokens (src/design/tokens.ts),
+ * so code, global.css and DESIGN.md can't drift. Grouped backgrounds, labels and separators are the
+ * iOS system values. Tint is a deep bamboo jade (#165C3C, 8:1 on white) in light mode and a pale
+ * jade (#7DCAA4, 11:1 on black) in dark, where filled buttons take black labels. `warm` is the
+ * 笋金 accent: markers only (today, new, a milestone), never an action.
  */
-export const IOS = {
-  light: {
-    groupedBackground: "#F2F2F7",
-    background: "#FFFFFF",
-    card: "#FFFFFF",
-    label: "#000000",
-    secondaryLabel: "#636366",
-    separator: "#C6C6C8",
-    tertiaryLabel: "#C4C4C7",
-    tint: "#165C3C",
-    button: "#165C3C",
-    buttonLabel: "#FFFFFF",
-    destructive: "#CE2C31",
-    warning: "#B25000",
-    fill: "#E5E5EA",
-    pressed: "#D1D1D6",
-    highlightSoft: "#E3EBE8",
-  },
-  dark: {
-    groupedBackground: "#000000",
-    background: "#000000",
-    card: "#1C1C1E",
-    label: "#FFFFFF",
-    secondaryLabel: "#AEAEB2",
-    separator: "#38383A",
-    tertiaryLabel: "#5B5B60",
-    tint: "#7DCAA4",
-    button: "#7DCAA4",
-    buttonLabel: "#000000",
-    destructive: "#FF6961",
-    warning: "#FF9F0A",
-    fill: "#2C2C2E",
-    pressed: "#3A3A3C",
-    highlightSoft: "#16241E",
-  },
-} as const;
+export const IOS = semantic.color;
 
 export type AppearanceScheme = keyof typeof IOS;
 
