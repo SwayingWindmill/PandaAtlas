@@ -194,7 +194,7 @@ Inset groups are 10px. Quiz photos and featured articles are 12–16px. Buttons 
 - **Focus:** the system caret. A tint ring when the control is a button.
 
 ### Navigation
-- **Tabs:** four sections, 今天, 找熊猫, 图鉴, 我的, with Lucide `sun`, `search`, `layout-grid`, `user-round`. iOS uses the system Liquid Glass bar (`expo-router/native-tabs`, SDK 58), which minimizes on scroll down. Android uses the Material bar. Both take the glyphs as template PNGs in `assets/tab-icons/` (25pt, stroke 1.9, made by `scripts/tab-icons.mjs`), and the bar tints them. Web uses a blurred bottom bar, which is not Liquid Glass, and draws the same glyphs as components.
+- **Tabs:** four sections, 今天, 找熊猫, 图鉴, 我的, with Lucide `sun`, `search`, `layout-grid`, `user-round`. iOS uses the system Liquid Glass bar (`expo-router/native-tabs`, SDK 58), which minimizes on scroll down. Android uses the Material bar. Both take the glyphs as template PNGs in `assets/tab-icons/` (25pt, stroke 1.9, made by `apps/mobile/scripts/tab-icons.mjs`), and the bar tints them. Web uses a blurred bottom bar, which is not Liquid Glass, and draws the same glyphs as components.
 - **Stack:** large title on a tab root, inline title on a pushed screen. 科普 home, articles, terms, face guides and the challenge keep the large title in the column and leave the bar as a back button. Back is the system chevron, labeled 返回, and the edge-swipe stays on.
 - **Selected tab:** the tint. Unselected tabs are the secondary label.
 

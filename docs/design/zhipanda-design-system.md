@@ -207,7 +207,7 @@ App 用 iOS 26 的系统界面，不跟网站的橄榄纸和四档字号。品�
 - **空和失败：** `ScreenState` / `LoadFailed`：一句说明，需要时一个「重试」。不要再套一块灰色圆角卡片。
 - **照片：** 科普文章以照片开头，说明放在照片下面，不叠字。熊猫资料页的头图通栏铺到状态栏下，下拉时拉伸；名字是图下的大标题，下面一行是性别和所在机构，再下面是「关注」（tinted 胶囊）和「见过」（plain）。返回和分享是悬在图上的圆形 Liquid Glass 按钮（`components/glass-button.tsx`），非 iOS 用半透明深色圆片。之后是内嵌分组：基本信息、家族、所在机构、动态。
 - **今天：** 34pt 粗体大标题「今天」加日期，下面是 App Store Today 式故事卡：20pt 连续圆角，每张一张不同熊猫的照片，底部黑色渐变压暗，白色标题，标题下一行脚注写功能名和照片里的熊猫。卡片上不放标题之上的小字。
-- **图标：** 只用 Lucide（`lucide-react-native`，画在 `react-native-svg` 上），iOS、Android、Web 一套。用到的每个图标都从 `components/icons.ts` 按文件单独导入，通过 `components/icon.tsx` 画。标签栏是 `sun`、`search`、`layout-grid`、`user-round`，原生标签栏只收图片，所以转成 `assets/tab-icons/` 里的模板 PNG（25pt，描边 1.9，`scripts/tab-icons.mjs` 生成），由系统着色；Web 直接画组件。工具栏是 `chevron-left`、`share`。
+- **图标：** 只用 Lucide（`lucide-react-native`，画在 `react-native-svg` 上），iOS、Android、Web 一套。用到的每个图标都从 `components/icons.ts` 按文件单独导入，通过 `components/icon.tsx` 画。标签栏是 `sun`、`search`、`layout-grid`、`user-round`，原生标签栏只收图片，所以转成 `assets/tab-icons/` 里的模板 PNG（25pt，描边 1.9，`apps/mobile/scripts/tab-icons.mjs` 生成），由系统着色；Web 直接画组件。工具栏是 `chevron-left`、`share`。
   - **大小跟字走：** 正文旁 22，subhead 旁 18，脚注旁 15；行尾箭头 17。描边 1.75，箭头和工具栏 2–2.25。
   - **颜色：** 默认次要文字色。只有动作行（官网、看官方直播、导航过去）和选中的标签用 tint。行尾箭头用 tertiary label。图上的工具栏图标是白色，Liquid Glass 里用 label 色。
   - **该用：** 像设置、健康、地图那样，放在分组行的最前面，标出这一行是哪类信息或去哪里：基本信息各行（性别直接显示 ♂/♀、出生、出生地、所在地、离世、享年）、父母、看家谱、查关系、当前所在机构、去之前各项（开放时间、门票、熊猫馆、地址、什么时候去、怎么去……）、到访、直播、官网、导航过去。
