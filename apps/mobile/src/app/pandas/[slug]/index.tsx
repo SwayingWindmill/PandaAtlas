@@ -27,6 +27,7 @@ import { PressScale } from "@/components/press-scale";
 import { CONTENT_ENTER, HeroToolbar, StretchyHero } from "@/components/stretchy-hero";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { CompareRows } from "@/features/compare/compare-rows";
 import { PandaActions } from "@/features/engagement/panda-actions";
 import { type FamilyMember, relativesOf } from "@/features/family/family";
 import { openPanda } from "@/features/pandas/panda-row";
@@ -394,6 +395,7 @@ export default function ProfileScreen() {
           <Stats profile={profile} />
           <Family profile={profile} />
           <PlacesLived profile={profile} />
+          <CompareRows slug={profile.slug} />
           <Events profile={profile} />
           {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
           <ListSection>

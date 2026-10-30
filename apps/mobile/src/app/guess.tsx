@@ -1,4 +1,5 @@
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import Animated from "react-native-reanimated";
@@ -10,15 +11,19 @@ import { Page } from "@/components/page";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { ScreenState } from "@/components/screen-state";
+import { Segmented } from "@/components/segmented";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { CONTENT_ENTER } from "@/design/motion";
 import {
+  DIFFICULTIES,
+  type GuessDifficulty,
   type GuessOutcome,
   type GuessQuestion,
   NoQuestionError,
   answerQuestion,
+  difficultyOf,
   loadQuestion,
 } from "@/features/guess/guess";
 import { openPanda } from "@/features/pandas/panda-row";
@@ -32,6 +37,17 @@ type Load =
   { status: "loading" } | { status: "ready"; question: GuessQuestion } | { status: "empty" } | { status: "failed" };
 
 const TITLE = "这是哪只熊猫？";
+
+type Level = "any" | GuessDifficulty;
+
+const LEVELS: readonly { value: Level; label: string }[] = [
+  { value: "any", label: "随机" },
+  ...DIFFICULTIES.map(({ value, label }) => ({ value, label })),
+];
+
+function LevelPicker({ value, onChange }: { value: Level; onChange: (level: Level) => void }) {
+  return <Segmented value={value} options={LEVELS} onChange={onChange} accessibilityLabel="难度" />;
+}
 
 /** The verdict mounts after the page has settled; on web an entering view would overlap the options. */
 const REVEAL = Platform.OS === "web" ? undefined : CONTENT_ENTER;
@@ -50,17 +66,28 @@ export default function GuessScreen() {
   const [chosen, setChosen] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<GuessOutcome | null>(null);
   const [answerFailed, setAnswerFailed] = useState(false);
+  const [level, setLevel] = useState<Level>("any");
 
   const next = useCallback(() => {
-    loadQuestion()
+    loadQuestion(level === "any" ? undefined : level)
       .then((question) => {
         setChosen(null);
         setOutcome(null);
         setLoad({ status: "ready", question });
       })
       .catch((error: unknown) => setLoad({ status: error instanceof NoQuestionError ? "empty" : "failed" }));
-  }, []);
+  }, [level]);
   useEffect(next, [next]);
+
+  function changeLevel(value: Level) {
+    if (value === level) return;
+    selectionHaptic();
+    setChosen(null);
+    setOutcome(null);
+    setAnswerFailed(false);
+    setLoad({ status: "loading" });
+    setLevel(value);
+  }
 
   function choose(question: GuessQuestion, pandaId: string) {
     if (chosen) return;
@@ -81,13 +108,24 @@ export default function GuessScreen() {
   if (load.status !== "ready") {
     return (
       <Page label="猜熊猫" title={TITLE}>
+        <LevelPicker value={level} onChange={changeLevel} />
         {load.status === "loading" ? (
           <View className="gap-inset" accessibilityLabel="正在出题">
             <Skeleton className="w-full rounded-card" style={{ aspectRatio: 4 / 3 }} />
             <Skeleton className="h-28 w-full rounded-control" />
           </View>
         ) : null}
-        {load.status === "empty" ? <ScreenState message="现在还没有可以猜的题目。" /> : null}
+        {load.status === "empty" ? (
+          level === "any" ? (
+            <ScreenState message="现在还没有可以猜的题目。" />
+          ) : (
+            <ScreenState
+              message={`${difficultyOf(level).label}这一档暂时没有题目。`}
+              actionLabel="换成随机"
+              onAction={() => changeLevel("any")}
+            />
+          )
+        ) : null}
         {load.status === "failed" ? <LoadFailed message="题目暂时打不开。" onRetry={next} /> : null}
       </Page>
     );
@@ -95,8 +133,11 @@ export default function GuessScreen() {
 
   const { question } = load;
   const answer = outcome ? question.options.find((option) => option.pandaId === outcome.answerPandaId) : undefined;
+  const picked = outcome && !outcome.correct ? question.options.find((option) => option.pandaId === chosen) : undefined;
+  const shown = difficultyOf(question.difficulty);
   return (
     <Page label={`猜熊猫　第 ${round} 题`} title={TITLE}>
+      <LevelPicker value={level} onChange={changeLevel} />
       <View className="overflow-hidden rounded-card bg-media-placeholder" style={{ borderCurve: "continuous" }}>
         <Image
           source={question.photoUrl}
@@ -106,6 +147,10 @@ export default function GuessScreen() {
         />
         <PhotoOutline radius={RADIUS.card} />
       </View>
+
+      <Text variant="footnote" className="text-muted-foreground">
+        {`${shown.label}　${shown.meaning}`}
+      </Text>
 
       <View role="group" accessibilityLabel="选项" className="gap-row">
         {pairs(question.options).map((row) => (
@@ -177,9 +222,19 @@ export default function GuessScreen() {
             >
               <Text>下一题</Text>
             </Button>
+            {answer?.slug && picked?.slug ? (
+              <Button
+                variant="tinted"
+                onPress={() =>
+                  router.push({ pathname: "/compare", params: { a: answer.slug as string, b: picked.slug as string } })
+                }
+              >
+                <Text className="text-center">{`比一比${answer.name}和${picked.name}`}</Text>
+              </Button>
+            ) : null}
             {answer?.slug ? (
-              <Button variant="tinted" onPress={() => openPanda(answer.slug as string)}>
-                <Text>{`看${answer.name}的资料`}</Text>
+              <Button variant={picked?.slug ? "secondary" : "tinted"} onPress={() => openPanda(answer.slug as string)}>
+                <Text className="text-center">{`看${answer.name}的资料`}</Text>
               </Button>
             ) : null}
           </View>
