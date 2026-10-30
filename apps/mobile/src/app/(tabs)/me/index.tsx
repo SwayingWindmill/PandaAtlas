@@ -6,12 +6,13 @@ import { useCSSVariable } from "uniwind";
 
 import { ListCell, ListSection } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Bell, FolderHeart, LayoutGrid, MapPin, PawPrint, Settings } from "@/components/icons";
+import { Bell, CalendarHeart, FolderHeart, LayoutGrid, MapPin, PawPrint, Settings } from "@/components/icons";
 import { Page } from "@/components/page";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { CheckinCard } from "@/features/checkin/checkin-card";
 import { statusLabel } from "@/features/corrections/correction";
 import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
 import { useFollowed } from "@/features/engagement/favorites";
@@ -118,6 +119,7 @@ function SignedOut() {
         <ListCell icon={LayoutGrid} label="点亮图鉴" detail="猜中每日一猫、去现场见过，都记进你的图鉴" />
         <ListCell icon={FolderHeart} label="收进合集" detail="把喜欢的熊猫按自己的方式分组" />
         <ListCell icon={MapPin} label="记下去过的地点" detail="去过的基地和动物园，一处不落" />
+        <ListCell icon={CalendarHeart} label="每日打卡" detail="每天打开每日一猫就记一天，累计不清零" />
         <ListCell icon={Bell} label="收到通知" detail="关注的熊猫资料更新时告诉你" last />
       </ListSection>
       {strip.length > 0 ? (
@@ -359,6 +361,7 @@ export default function MeScreen() {
         <View className="gap-section">
           <Profile email={state.email} />
           <Following />
+          <CheckinCard />
           <Destinations />
           <Contributions />
         </View>

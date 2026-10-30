@@ -419,6 +419,8 @@ More space sits above a section heading than between the heading and the group. 
 
 **The Guess Level Rule.** 猜熊猫 has a `Segmented` 随机 / 简单 / 中等 / 困难. A level is described by how the choices are drawn (其他选项都不和它住在一起, 有的选项和它住在一起, 四个选项住在同一个地方), not by a promise about faces. On open each level is asked for a question once (the answers are kept for the first round); a level the server has no question for is left out of the control rather than shown disabled, the current level always stays, and a level whose probe failed stays. The control holds its height with a skeleton while asking. An empty level reached anyway says so and offers 换成随机. After a wrong answer the first action under 下一题 is 比一比 {answer} 和 {picked}.
 
+**The Daily Check-in Rule.** 每日打卡 counts a day when a signed-in member opens 每日一猫 (no answer needed); nothing else records a visit. The page and the 我的 card show 累计来过 and 本月来过 in days, never a streak, never a reset, and no praise or reproach (no 连续, 断签, 加油, 别忘了). A missed day is plain; days without a mark are a neutral `secondary` track on the week strip and an unfilled number on the month grid. Marks: a visit is a filled tint circle, leave (请假) a `highlight-soft` circle, a day that can still be covered (补请) a dashed tint ring, today a `warm` ring until it is marked. Leave is taken by tapping today or a coming day on the month grid (tap again, or 取消 in the 请假 group, to give it back); 补请 is one tinted row while its 48-hour window is open. After a change one muted footnote says what happened (11月3日 周二请好假了。), nothing more. The quotas (2 leave days a calendar month, one 补请 within 48 hours, leave up to 31 days ahead) come from the API's `DAILY_CHECKIN_RULES`; copy reads them from the summary, never from constants in the app. All of it is free. Glyphs: `CalendarHeart` means 每日打卡 days (累计来过, the 每日一猫 row, the signed-out 登录后可以 row), `CalendarDays` means this month; `CalendarCheck` stays a place visit.
+
 **The Stat Block Rule.** A panda page leads its facts with three tiles: 性别 (♂/♀), 年龄 or 享年 (birth year under it), 所在地 (tappable) or 离世. The full birth date and birthplace follow as one footnote line, then family, places lived, updates and sources.
 
 **The Family Chip Rule.** Relatives are a horizontal row of capsules: a 44pt round photo inside a 52pt capsule with 4pt padding, the name in headline and the relation in a footnote. 看家谱 and 查关系 stay grouped rows under the chips.
@@ -588,6 +590,7 @@ Kept so screens that predate v2 render. Do not use on a new or redesigned screen
 
 ## Changelog
 
+- **v2.7 (2026-10-30).** 每日打卡 at `/checkin`, a 我的 card with this week, and a row on 每日一猫 (The Daily Check-in Rule); glyphs `CalendarHeart`, `CalendarDays`.
 - **v2.6 (2026-10-30).** 认识大熊猫 per-shelf empty states (The Learn Shelves Rule); 比一比 picker at `/compare` and a 找熊猫 explore card; 猜熊猫 leaves out levels with no questions (The Guess Level Rule).
 - **v2.5 (2026-10-30).** 比一比 (The Compare Rule), reached from a panda's 比一比 rows and from a wrong 猜熊猫 answer; 猜熊猫 levels (The Guess Level Rule).
 - **v2.4 (2026-10-30).** A panda's 时间线 (The Timeline Rule), linked from the last row of its 动态; event wording shared through `describeEvent` (a mother in a birth event now reads 迎来幼崽出生). 本周新鲜事 on 今天 and `/week` (The Weekly Digest Rule).
