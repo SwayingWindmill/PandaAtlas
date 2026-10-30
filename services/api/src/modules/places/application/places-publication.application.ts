@@ -26,6 +26,8 @@ export interface PlacePublicationSource {
   longitude?: number;
   latitude?: number;
   visitGuide?: FacilityVisitGuide;
+  /** Slugs of duplicate places merged into this one. */
+  legacySlugs?: string[];
   sourceRevision: string;
   sourceVersion: string;
   sourceSha256: string;

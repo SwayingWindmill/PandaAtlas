@@ -170,6 +170,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
                 longitude: item.longitude,
                 latitude: item.latitude,
                 visitGuide: item.visitGuide,
+                legacySlugs: item.legacySlugs,
               };
               memberships.push(this.membership("place", item.placeId, item, projection));
               return {
@@ -185,6 +186,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
                 longitude: item.longitude ?? null,
                 latitude: item.latitude ?? null,
                 visit_guide: item.visitGuide === undefined ? null : sql<PublicReadJson>`${JSON.stringify(item.visitGuide)}::jsonb`,
+                legacy_slugs: item.legacySlugs ?? [],
               };
             }),
             (chunk) => transaction.insertInto("public_read.places").values(chunk).execute(),

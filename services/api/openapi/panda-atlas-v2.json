@@ -5278,6 +5278,13 @@
                 "$ref": "#/components/schemas/FacilityVisitGuideDto"
               }
             ]
+          },
+          "legacySlugs": {
+            "description": "Slugs of duplicate places merged into this one; a request for one of them returns this place.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [

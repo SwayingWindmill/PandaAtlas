@@ -22,6 +22,7 @@ interface PlacePublicationRow {
   longitude: number | null;
   latitude: number | null;
   visit_guide: FacilityVisitGuide | null;
+  legacy_slugs: string[];
   updated_at: Date;
 }
 
@@ -46,6 +47,7 @@ export class PostgresPlacesPublicationQuery implements PlacesPublicationPort {
         case when center is null then null else ST_X(center) end as longitude,
         case when center is null then null else ST_Y(center) end as latitude,
         visit_guide,
+        legacy_slugs,
         updated_at
       from place.places
       order by place_id
@@ -84,6 +86,8 @@ export class PostgresPlacesPublicationQuery implements PlacesPublicationPort {
           ? {}
           : { longitude: row.longitude, latitude: row.latitude }),
         ...(row.visit_guide === null ? {} : { visitGuide: row.visit_guide }),
+        // Only merged places carry the key, so every other place keeps its digest.
+        ...(row.legacy_slugs.length === 0 ? {} : { legacySlugs: row.legacy_slugs }),
       };
       const revision = row.updated_at.toISOString();
       return {

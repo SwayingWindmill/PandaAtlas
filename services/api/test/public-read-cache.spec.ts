@@ -162,6 +162,7 @@ describe("PostgresPublicReadRepository snapshot", () => {
           longitude: null,
           latitude: null,
           visit_guide: null,
+          legacy_slugs: [],
         }];
       }
       return many ? [] : undefined;

@@ -5,20 +5,30 @@ latest ``*_institution_content.sql`` migration must match the data file: ``--che
 does not, and ``--write`` adds the next numbered migration with the current content. Each migration
 is idempotent: it upserts institutions by slug and updates existing facility places by slug, so a
 slug that is not in the database yet is skipped rather than created.
+
+A place may list ``legacySlugs``: duplicate places that are the same real place. The migration merges
+each into it first (place.merge_place moves residencies, life events and check-ins, keeps the old slug
+and deletes the duplicate). Validation refuses two places at the same map point, a former slug that is
+still a place here, and panda tags that still use a former slug. ``--live`` also compares the places
+the public API serves, by name and map point, to catch duplicates that never had a map point here.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import re
 import sys
+import unicodedata
 from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA_PATH = ROOT / "data" / "curation" / "institutions" / "institutions.json"
+PANDAS_PATH = ROOT / "data" / "curation" / "pandas" / "pandas.csv"
 MIGRATIONS_DIR = ROOT / "infra" / "supabase" / "migrations"
 MIGRATION_SUFFIX = "_institution_content.sql"
 
@@ -30,6 +40,9 @@ MAX_TEXT = 600
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 COUNTRY = re.compile(r"^[A-Z]{2}$")
 ISO_DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+# Two map points closer than this (about 100 m) are one place.
+SAME_POINT_DEGREES = 0.001
+LIVE_PLACES_URL = "https://api.zhipanda.com/api/v2/places?limit=500"
 
 
 def validate_text(value: object, label: str, errors: list[str]) -> None:
@@ -149,7 +162,99 @@ def validate_content(content: object) -> list[str]:
                     errors.append(f"{place_label}.latitude: must be between -90 and 90")
             if "visitGuide" in place:
                 validate_guide(place["visitGuide"], f"{place_label}.visitGuide", errors)
+    errors += validate_merges(institutions, place_slugs)
     return errors
+
+
+def listed_places(institutions: list) -> list[dict]:
+    return [place for institution in institutions for place in institution.get("places") or []]
+
+
+def validate_merges(institutions: list, place_slugs: set[str]) -> list[str]:
+    """Each real place is listed once; its duplicates are named in legacySlugs, never as places."""
+    errors: list[str] = []
+    former_owner: dict[str, str] = {}
+    places = listed_places(institutions)
+    for place in places:
+        slug = place.get("slug")
+        former = place.get("legacySlugs", [])
+        if not isinstance(former, list):
+            errors.append(f"place {slug}.legacySlugs: must be a list of slugs")
+            continue
+        for old in former:
+            if not isinstance(old, str) or not SLUG.match(old):
+                errors.append(f"place {slug}.legacySlugs: {old!r} is not a lowercase kebab-case slug")
+            elif old in place_slugs:
+                errors.append(f"place {slug}.legacySlugs: {old} is still listed as a place; remove it")
+            elif old in former_owner:
+                errors.append(f"place {slug}.legacySlugs: {old} is already merged into {former_owner[old]}")
+            else:
+                former_owner[old] = slug
+    pointed = [place for place in places if "longitude" in place and "latitude" in place]
+    for index, first in enumerate(pointed):
+        for second in pointed[index + 1 :]:
+            if same_point(first, second):
+                errors.append(
+                    f"places {first.get('slug')} and {second.get('slug')} share a map point; if they are one place, "
+                    "keep one and list the other in its legacySlugs"
+                )
+    return errors
+
+
+def same_point(first: dict, second: dict) -> bool:
+    try:
+        return (
+            abs(first["longitude"] - second["longitude"]) < SAME_POINT_DEGREES
+            and abs(first["latitude"] - second["latitude"]) < SAME_POINT_DEGREES
+        )
+    except (KeyError, TypeError):
+        return False
+
+
+def validate_panda_tags(content: dict, pandas_path: Path = PANDAS_PATH) -> list[str]:
+    """Panda tags name places by slug; a merged slug must be replaced by the surviving one."""
+    former = {
+        old: place["slug"]
+        for place in listed_places(content["institutions"])
+        for old in place.get("legacySlugs", [])
+    }
+    errors: list[str] = []
+    with pandas_path.open("r", encoding="utf-8-sig", newline="") as handle:
+        for row in csv.DictReader(handle):
+            for tag in (tag.strip() for tag in (row.get("tags") or "").split(";")):
+                if tag in former:
+                    errors.append(f"pandas.csv[{row.get('slug')}]: tag {tag} was merged; use {former[tag]}")
+    return errors
+
+
+def normalized_name(value: object) -> str:
+    text = unicodedata.normalize("NFKC", value if isinstance(value, str) else "").casefold()
+    return re.sub(r"[^\w]+", " ", text).strip()
+
+
+def find_duplicate_places(places: list[dict]) -> list[str]:
+    """Pairs of served places that look like one place: the same name, one name inside the other, or one point."""
+    findings: list[str] = []
+    for index, first in enumerate(places):
+        for second in places[index + 1 :]:
+            reason = None
+            for key in ("nameZh", "nameEn"):
+                a, b = normalized_name(first.get(key)), normalized_name(second.get(key))
+                if a and b and (a == b or (len(min(a, b, key=len)) >= 8 and (a in b or b in a))):
+                    reason = f"{key} {first.get(key)!r} / {second.get(key)!r}"
+                    break
+            if reason is None and same_point(first, second):
+                reason = "same map point"
+            if reason is not None:
+                findings.append(f"{first.get('slug')} and {second.get('slug')} look like one place ({reason})")
+    return findings
+
+
+def live_places(url: str = LIVE_PLACES_URL) -> list[dict]:
+    # The API's edge refuses Python's default user agent.
+    request = Request(url, headers={"User-Agent": "panda-atlas-curation/1", "Accept": "application/json"})
+    with urlopen(request, timeout=30) as response:  # noqa: S310 - fixed https URL
+        return json.load(response)["items"]
 
 
 def sql_text(value: str | None) -> str:
@@ -164,11 +269,17 @@ def render_migration(content: dict) -> str:
     lines = [
         "-- Generated by scripts/curation/build_institution_content_migration.py from",
         "-- data/curation/institutions/institutions.json. Do not edit: change the data file and run the script.",
-        "-- Upserts institutions by slug and updates existing facility places by slug; unknown places are skipped.",
+        "-- Merges each place's legacySlugs into it, upserts institutions by slug and updates existing facility",
+        "-- places by slug; unknown places are skipped.",
         "",
         "begin;",
         "",
     ]
+    for place in listed_places(content["institutions"]):
+        for old in place.get("legacySlugs", []):
+            lines.append(f"select place.merge_place({sql_text(old)}, {sql_text(place['slug'])});")
+    if lines[-1] != "":
+        lines.append("")
     for institution in content["institutions"]:
         slug = institution["slug"]
         lines += [
@@ -218,14 +329,28 @@ def main(argv: list[str] | None = None) -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--check", action="store_true", help="fail when the latest content migration is stale")
     mode.add_argument("--write", action="store_true", help="add a new content migration when the data changed")
+    mode.add_argument("--live", action="store_true", help="report places the public API serves twice")
     args = parser.parse_args(argv)
 
     content = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     errors = validate_content(content)
+    if not errors:
+        errors = validate_panda_tags(content)
     if errors:
         for error in errors:
             print(f"error: {error}", file=sys.stderr)
         return 1
+
+    if args.live:
+        merged = {old for place in listed_places(content["institutions"]) for old in place.get("legacySlugs", [])}
+        served = [place for place in live_places() if place.get("slug") not in merged]
+        findings = find_duplicate_places(served)
+        for finding in findings:
+            print(f"error: {finding}", file=sys.stderr)
+        if findings:
+            return 1
+        print(f"No duplicate among the {len(served)} places the public API serves, after the merges listed here.")
+        return 0
 
     rendered = render_migration(content)
     latest = latest_content_migration()

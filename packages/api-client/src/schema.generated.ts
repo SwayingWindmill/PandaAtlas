@@ -1862,6 +1862,8 @@ export interface components {
             latitude?: number;
             /** @description How to see the pandas here; facilities only. */
             visitGuide?: components["schemas"]["FacilityVisitGuideDto"];
+            /** @description Slugs of duplicate places merged into this one; a request for one of them returns this place. */
+            legacySlugs?: string[];
         };
         PublicPlaceListDto: {
             release: components["schemas"]["PublicReadReleaseDto"];

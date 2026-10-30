@@ -251,7 +251,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       .selectFrom("public_read.places")
       .selectAll()
       .where("release_id", "=", release.releaseId)
-      .where("slug", "=", slug)
+      // A merged duplicate's slug still finds the place it was merged into.
+      .where((eb) => eb.or([eb("slug", "=", slug), sql<boolean>`${slug} = any(legacy_slugs)`]))
+      .orderBy(sql`slug = ${slug}`, "desc")
       .executeTakeFirst();
     if (row === undefined || controls.place.has(row.place_id)) return { kind: "not_found" };
     return { kind: "ok", value: { release, place: this.mapPlace(row) } };
@@ -551,6 +553,7 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     longitude: number | null;
     latitude: number | null;
     visit_guide: unknown;
+    legacy_slugs: string[];
   }): PublicPlaceSummary {
     return {
       placeId: row.place_id,
@@ -564,6 +567,7 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       ...(row.longitude === null ? {} : { longitude: row.longitude }),
       ...(row.latitude === null ? {} : { latitude: row.latitude }),
       ...(row.visit_guide === null ? {} : { visitGuide: row.visit_guide as FacilityVisitGuide }),
+      ...(row.legacy_slugs.length === 0 ? {} : { legacySlugs: row.legacy_slugs }),
     };
   }
 

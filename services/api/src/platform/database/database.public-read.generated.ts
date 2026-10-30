@@ -101,6 +101,7 @@ export interface PublicReadPandas {
 
 export interface PublicReadPlaces {
   country_code: string | null;
+  legacy_slugs: Generated<string[]>;
   institution_id: string | null;
   latitude: number | null;
   longitude: number | null;
