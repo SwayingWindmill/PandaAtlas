@@ -6,6 +6,7 @@ import { loadInstitutionList } from "@/features/institutions/institutions";
 import { currentPlaceId, loadPlaces, placeName } from "@/features/pandas/pandas";
 import { type PlaceLived, type Stat, headlineStats, infobox, placesLived } from "@/features/pandas/profile-facts";
 import { api, publicMediaUrl } from "@/lib/api";
+import { describeEvent } from "@/features/timeline/timeline";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
 
 type Schemas = components["schemas"];
@@ -69,28 +70,6 @@ function shortDate(event: DatedEvent): string {
   return event.occurredPrecision === "year" || !month ? year : `${year}.${Number(month)}`;
 }
 
-function eventText(event: LifeEvent, place: (id: string | undefined) => string | null): string | null {
-  const to = place(event.toPlaceId);
-  switch (event.eventType) {
-    case "birth":
-      return to ? `在${to}出生` : "出生";
-    case "arrival":
-      return to ? `抵达${to}` : "抵达";
-    case "transfer":
-      return to ? `搬到${to}` : "迁居";
-    case "return":
-      return to ? `回国，住进${to}` : "回国";
-    case "public_debut":
-      return to ? `在${to}首次亮相` : "首次亮相";
-    case "naming":
-      return "命名";
-    case "death":
-      return "离世";
-    default:
-      return null;
-  }
-}
-
 /** The panda's photos for viewing: cover first, then display order; evidence images are not photos of it. */
 export function photosOf(media: Schemas["PublicMediaSummaryDto"][]): Photo[] {
   const seen = new Set<string>();
@@ -123,7 +102,10 @@ export async function loadProfile(slug: string): Promise<Profile> {
   const currentPlaceRecord = deceased ? undefined : places.get(currentPlaceId(residencies) ?? "");
   const currentPlace = placeName(currentPlaceRecord);
   const family = await familyOf(detail.data).catch(() => null);
-  const birth = events.find((event) => event.eventType === "birth" && event.eventStatus === "completed");
+  // A birth event also names the mother; hers is not where she was born.
+  const birth = events.find(
+    (event) => event.eventStatus === "completed" && describeEvent(event, place, birthDate)?.kind === "birth",
+  );
   const facts = infobox({
     sex,
     birthDate,
@@ -155,8 +137,8 @@ export async function loadProfile(slug: string): Promise<Profile> {
       .filter((event): event is DatedEvent => event.eventStatus === "completed" && Boolean(event.occurredOn))
       .sort((a, b) => a.occurredOn.localeCompare(b.occurredOn))
       .flatMap((event) => {
-        const text = eventText(event, place);
-        return text ? [{ id: event.eventId, date: shortDate(event), text }] : [];
+        const told = describeEvent(event, place, birthDate);
+        return told ? [{ id: event.eventId, date: shortDate(event), text: told.text }] : [];
       }),
     family,
     placesLived: placesLived(residencies, (id) => place(id)),

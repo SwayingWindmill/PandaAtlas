@@ -9,6 +9,7 @@ import { FollowedStrip } from "@/features/today/followed-strip";
 import { StoryCard } from "@/features/today/story-card";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { TodayBirthdays } from "@/features/today/today-birthdays";
+import { WeekCard } from "@/features/today/week-card";
 
 const STORIES = [
   { id: "daily", title: "今天是哪只熊猫？", feature: "每日一猫", href: "/daily" },
@@ -88,6 +89,7 @@ export default function TodayScreen() {
           ))}
         </ScrollView>
       </View>
+      <WeekCard />
       <FollowedStrip />
       <TodayBirthdays />
       <FollowedChanges />
