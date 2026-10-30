@@ -91,9 +91,9 @@
             "sourceUrls": ["https://en.wikipedia.org/wiki/Bifengxia_Panda_Base"]
           }
         },
-        { "slug": "ccrcgp-yaan-base" },
-        { "slug": "ccrcgp-wolong-shenshuping-base" },
-        { "slug": "ccrcgp-wolong-gengda-base" }
+        { "slug": "ccrcgp-yaan-base", "longitude": 102.9762, "latitude": 30.0720 },
+        { "slug": "ccrcgp-wolong-shenshuping-base", "longitude": 103.3182, "latitude": 31.1032 },
+        { "slug": "ccrcgp-wolong-gengda-base", "longitude": 103.3182, "latitude": 31.1032 }
       ]
     },
     {

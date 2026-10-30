@@ -13,6 +13,7 @@ BUILDER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(BUILDER)
 
 PANDAS = {"bao-li", "lun-lun", "lei-lei", "yang-yang", "ya-lun"}
+PUBLISHED = {"bao-li", "lun-lun", "lei-lei", "yang-yang-atlanta", "xi-lun"}
 
 
 def source(status: str = "draft") -> dict:
@@ -87,7 +88,7 @@ def document(status: str = "draft") -> dict:
                 "slug": "bao-li-round",
                 "status": status,
                 "answerPandaSlug": "bao-li",
-                "decoyPandaSlugs": ["lun-lun", "lei-lei", "yang-yang"],
+                "decoyPandaSlugs": ["lun-lun", "lei-lei", "yang-yang-atlanta"],
                 "prompt": text(status, "选出这只", "Which one"),
                 "tip": text(status, "提示", "Tip"),
                 "sources": [source(status)],
@@ -98,8 +99,8 @@ def document(status: str = "draft") -> dict:
 
 class ValidateLearningContentTests(unittest.TestCase):
     def test_valid_draft_and_published_documents(self) -> None:
-        self.assertEqual(BUILDER.validate_content(document(), PANDAS), [])
-        self.assertEqual(BUILDER.validate_content(document("published"), PANDAS), [])
+        self.assertEqual(BUILDER.validate_content(document(), PANDAS, PUBLISHED), [])
+        self.assertEqual(BUILDER.validate_content(document("published"), PANDAS, PUBLISHED), [])
 
     def test_repository_file_matches_its_migration(self) -> None:
         content = json.loads(BUILDER.DATA_PATH.read_text(encoding="utf-8"))
@@ -111,13 +112,13 @@ class ValidateLearningContentTests(unittest.TestCase):
     def assert_error(self, mutate, fragment: str, status: str = "draft") -> None:
         content = copy.deepcopy(document(status))
         mutate(content)
-        errors = BUILDER.validate_content(content, PANDAS)
+        errors = BUILDER.validate_content(content, PANDAS, PUBLISHED)
         self.assertTrue(any(fragment in error for error in errors), errors)
 
     def test_unmarked_drafts_are_allowed_and_published_text_must_not_look_like_a_draft(self) -> None:
         content = document()
         content["cards"][0]["title"] = {"zh": "黑眼圈", "en": "Eye patches"}
-        self.assertEqual(BUILDER.validate_content(content, PANDAS), [])
+        self.assertEqual(BUILDER.validate_content(content, PANDAS, PUBLISHED), [])
         self.assert_error(lambda c: c["cards"][0]["body"].update(en="[draft] A real fact."), "draft mark", "published")
 
     def test_published_sources_need_an_https_citation(self) -> None:
@@ -127,7 +128,7 @@ class ValidateLearningContentTests(unittest.TestCase):
     def test_a_face_tip_body_may_be_empty(self) -> None:
         content = document()
         content["faceGuides"][0]["tips"][1]["body"] = {"zh": "", "en": ""}
-        self.assertEqual(BUILDER.validate_content(content, PANDAS), [])
+        self.assertEqual(BUILDER.validate_content(content, PANDAS, PUBLISHED), [])
 
     def test_face_tips_and_real_pandas(self) -> None:
         self.assert_error(lambda c: c["faceGuides"][0]["tips"].pop(), "tips")
@@ -137,3 +138,54 @@ class ValidateLearningContentTests(unittest.TestCase):
     def test_rejects_unknown_fields_and_self_links(self) -> None:
         self.assert_error(lambda c: c["cards"][0].update(extra=True), "unexpected fields")
         self.assert_error(lambda c: c["terms"][0]["relatedSlugs"].append("eye-patch"), "itself")
+
+    def test_challenge_options_must_be_published_pandas(self) -> None:
+        self.assert_error(lambda c: c["challenges"][0].update(answerPandaSlug="ya-lun"), "answerPandaSlug: ya-lun is not a published panda")
+        self.assert_error(
+            lambda c: c["challenges"][0].update(decoyPandaSlugs=["lun-lun", "lei-lei", "yang-yang"]),
+            "decoyPandaSlugs: yang-yang is not a published panda",
+        )
+
+    def test_the_repository_challenges_use_published_pandas(self) -> None:
+        content = json.loads(BUILDER.DATA_PATH.read_text(encoding="utf-8"))
+        published = BUILDER.published_panda_slugs()
+        for challenge in content["challenges"]:
+            for slug in [challenge["answerPandaSlug"], *challenge["decoyPandaSlugs"]]:
+                self.assertIn(slug, published, challenge["slug"])
+
+
+def commons_figure(**changes: object) -> dict:
+    figure = {
+        "role": "hero",
+        "type": "existing",
+        "pandaSlug": None,
+        "asset": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Chengdu-pandas-d18.jpg",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Chengdu-pandas-d18.jpg",
+        "credit": "Colegota / Wikimedia Commons",
+        "rights": "CC BY-SA 2.5 es",
+        "caption": {"zh": "新生幼仔"},
+        "captionRefs": ["ref"],
+    }
+    figure.update(changes)
+    return figure
+
+
+class ArticleImageTests(unittest.TestCase):
+    def errors(self, figure: dict) -> list[str]:
+        errors: list[str] = []
+        BUILDER.validate_article_images([figure], "articles[0]", "draft", PANDAS, {}, {"ref"}, errors)
+        return errors
+
+    def test_a_figure_without_a_panda_may_use_a_free_commons_file(self) -> None:
+        self.assertEqual(self.errors(commons_figure()), [])
+        self.assertEqual(self.errors(commons_figure(rights="CC0 1.0")), [])
+        self.assertEqual(self.errors(commons_figure(rights="CC BY-SA 4.0")), [])
+
+    def test_a_figure_without_a_panda_needs_a_commons_page_and_a_free_license(self) -> None:
+        self.assertIn("sourcePage", " ".join(self.errors(commons_figure(sourcePage="https://example.test/photo"))))
+        self.assertIn("asset", " ".join(self.errors(commons_figure(asset="https://example.test/photo.jpg"))))
+        self.assertIn("rights", " ".join(self.errors(commons_figure(rights="All rights reserved"))))
+        self.assertIn("rights", " ".join(self.errors(commons_figure(rights="CC BY-NC 4.0"))))
+
+    def test_a_figure_of_a_panda_still_needs_an_approved_photo(self) -> None:
+        self.assertIn("approved photo", " ".join(self.errors(commons_figure(pandaSlug="bao-li"))))
