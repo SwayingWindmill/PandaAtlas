@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { components } from "@zhipanda/api-client";
 
 import { api, authedApi, publicMediaUrl } from "@/lib/api";
-import { chineseName, englishName } from "@/lib/panda";
+import { displayChineseName, englishName } from "@/lib/panda";
 
 type Schemas = components["schemas"];
 export type DailyPandaGuessFeedback = Schemas["DailyPandaGuessFeedbackDto"];
@@ -119,7 +119,7 @@ export async function loadPandaChoices(): Promise<PandaChoice[]> {
   const { data, error } = await api.GET("/api/v2/pandas");
   if (!data) throw new Error(`Panda list unavailable: ${JSON.stringify(error)}`);
   return data.items.map((panda) => {
-    const zh = chineseName(panda);
+    const zh = displayChineseName(panda);
     const en = englishName(panda);
     return { id: panda.pandaId, slug: panda.canonicalSlug, name: zh ?? en ?? panda.canonicalSlug, alternateName: zh ? en : null };
   });
