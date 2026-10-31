@@ -238,3 +238,48 @@ describe("pickForCard", () => {
     expect(pickForCard(all.slice(0, 2), 3).map((item) => item.key)).toEqual(["s1", "s2"]);
   });
 });
+
+describe("里程碑 on 那年今天", () => {
+  it("tells a living cub's 满月 and 满百天 with the birth's sources, and not a deceased cub's", () => {
+    const events = [event({ eventId: "b", eventType: "birth", occurredOn: "2026-06-03", participantIds: ["cub"] })];
+    const pandas = [panda("cub", "2026-06-03"), panda("gone", "2026-06-03", true)];
+    const month = memoriesOn(base({ today: "2026-07-03", pandas, events }));
+    expect(month.map((memory) => [memory.kind, memory.subject.key, memory.text, memory.years])).toEqual([
+      ["month", "panda:cub", "今天满月", 0],
+    ]);
+    expect(month[0]!.sourceIds).toEqual(["src-1"]);
+    const hundred = memoriesOn(base({ today: "2026-09-11", pandas, events: [] }));
+    expect(hundred.map((memory) => memory.kind)).toEqual(["hundred"]);
+    expect(ownRecord(hundred[0]!)).toBe("按资料卡的出生日期推算");
+  });
+
+  it("goes with the 里程碑 switch: off drops 满月 and the note", () => {
+    const memories = memoriesOn(base({ today: "2026-07-03", pandas: [panda("cub", "2026-06-03")] }));
+    expect(visibleMemories(memories, { off: false, less: [] }, true)).toHaveLength(1);
+    expect(visibleMemories(memories, { off: false, less: [] }, false)).toHaveLength(0);
+  });
+
+  it("says when a record was the fan's 1st panda or first time back, using the 图鉴's numbering", () => {
+    const memories = memoriesOn(
+      base({
+        today: "2026-07-20",
+        pandas: [panda("a", null), panda("b", null)],
+        personal: {
+          seen: [{ pandaId: "b", seenOn: "2025-07-20", placeId: "ueno", firstSeenAt: "2025-07-20T09:00:00Z" }],
+          recognized: [{ pandaId: "a", firstGame: "daily_panda", firstMetAt: "2024-07-20T12:00:00" }],
+          visits: [
+            { checkinId: "v1", placeId: "yaan", visitedOn: "2024-01-01" },
+            { checkinId: "v2", placeId: "yaan", visitedOn: "2025-07-20" },
+          ],
+        },
+      }),
+    );
+    const on = visibleMemories(memories, { off: false, less: [] }, true).map((memory) => memory.text);
+    expect(on).toContain("2 年前的今天，你在每日一猫第一次认出它，是你的第一只熊猫");
+    expect(on).toContain("1 年前的今天，你去过这里，是你第一次回来");
+    // The 2nd panda is no milestone.
+    expect(on).toContain("1 年前的今天，你在上野动物园见过它");
+    const off = visibleMemories(memories, { off: false, less: [] }, false).map((memory) => memory.text);
+    expect(off).toContain("2 年前的今天，你在每日一猫第一次认出它");
+  });
+});

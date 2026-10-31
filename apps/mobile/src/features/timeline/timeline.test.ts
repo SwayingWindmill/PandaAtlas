@@ -98,7 +98,7 @@ describe("buildTimeline", () => {
     expect(move).toHaveLength(1);
     expect(move[0]!.text).toBe("从上野动物园搬到卧龙神树坪基地");
     expect(move[0]!.sources.map((s) => s.id).sort()).toEqual(["s2", "s3", "s4"]);
-    expect(timeline.summary).toBe("3 个里程碑 · 2005–2024 · 住过 2 个地方");
+    expect(timeline.summary).toBe("3 条记录 · 2005–2024 · 住过 2 个地方");
   });
 
   it("joins two back-to-back stays into one move when no event tells it", () => {
@@ -195,7 +195,7 @@ describe("buildTimeline", () => {
     });
     expect(timeline.years).toEqual([]);
     expect(timeline.undated.map((m) => [m.text, m.note])).toEqual([["住在中国", "只知道所在国家，具体机构暂无记录"]]);
-    expect(timeline.summary).toBe("1 个里程碑 · 住过 1 个地方");
+    expect(timeline.summary).toBe("1 条记录 · 住过 1 个地方");
   });
 
   it("tells a mother's entry in her cub's birth as the cub's arrival, not her own birth", () => {
@@ -234,4 +234,59 @@ describe("dayLabel", () => {
     expect(dayLabel("2024-10")).toBe("10月");
     expect(dayLabel("2024")).toBe("");
   });
+});
+
+describe("buildTimeline with 里程碑", () => {
+  it("tells counted days as milestones of their own, left out of the count", () => {
+    const timeline = buildTimeline({
+      ...base,
+      birthDate: "2020-07-20",
+      events: [],
+      residencies: [],
+      counted: [
+        { id: "month:2020-08-20", kind: "month", date: "2020-08-20", text: "满月", sourceIds: ["s1"], note: "按出生日期推算" },
+      ],
+    });
+    expect(timeline.count).toBe(1);
+    const [birth, month] = timeline.years[0]!.milestones;
+    expect(birth!.kind).toBe("birth");
+    expect(month).toMatchObject({ kind: "month", text: "满月", counted: true, note: "按出生日期推算" });
+    expect(month!.sources.map((item) => item.id)).toEqual(["s1"]);
+  });
+
+  it("says a recorded cub birth the parent way, as one milestone with both sources", () => {
+    // No birth date of the mother's own: the cub's birth event would read as hers without the parent link.
+    const timeline = buildTimeline({
+      ...base,
+      events: [
+        event({ eventId: "b", eventType: "birth", occurredOn: "2005-07-09", participantIds: [PANDA, "cub"], sourceIds: ["s1"] }),
+      ],
+      residencies: [],
+      counted: [{ id: "parent:2005-07-09", kind: "parent", date: "2005-07-09", text: "当妈妈了，泰山出生", sourceIds: ["s2"] }],
+    });
+    expect(timeline.count).toBe(1);
+    const milestones = timeline.years.flatMap((year) => year.milestones);
+    expect(milestones).toHaveLength(1);
+    expect(milestones[0]).toMatchObject({ kind: "cub", text: "当妈妈了，泰山出生" });
+    expect(milestones[0]!.counted).toBeUndefined();
+    // With 里程碑 off the row goes back to what the record says.
+    expect(milestones[0]!.recordedText).toBeTruthy();
+    expect(milestones[0]!.recordedText).not.toBe("当妈妈了，泰山出生");
+    expect(milestones[0]!.sources.map((item) => item.id)).toEqual(["s1", "s2"]);
+  });
+});
+
+it("keeps the mother's own birth when merging the parent milestone", () => {
+  const timeline = buildTimeline({
+    ...base,
+    birthDate: "1998-07-22",
+    events: [event({ eventId: "b", eventType: "birth", occurredOn: "2005-07-09", participantIds: [PANDA, "cub"], sourceIds: ["s1"] })],
+    residencies: [],
+    counted: [{ id: "parent:2005-07-09", kind: "parent", date: "2005-07-09", text: "当妈妈了，泰山出生", sourceIds: ["s2"] }],
+  });
+  const milestones = timeline.years.flatMap((year) => year.milestones);
+  expect(milestones.map((m) => [m.kind, m.text])).toEqual([
+    ["birth", "出生"],
+    ["cub", "当妈妈了，泰山出生"],
+  ]);
 });

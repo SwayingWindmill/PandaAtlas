@@ -6,7 +6,7 @@ import { useCSSVariable } from "uniwind";
 
 import { ListCell, ListSection } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Bell, CalendarHeart, FolderHeart, LayoutGrid, MapPin, PawPrint, Settings } from "@/components/icons";
+import { Bell, CalendarHeart, Flag, FolderHeart, LayoutGrid, MapPin, PawPrint, Settings } from "@/components/icons";
 import { Page } from "@/components/page";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,8 @@ import { statusLabel } from "@/features/corrections/correction";
 import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
 import { useFollowed } from "@/features/engagement/favorites";
 import { localToday, shortDay } from "@/features/engagement/seen";
+import { loadMilestones } from "@/features/milestones/load";
+import { useMilestonesOn } from "@/features/milestones/prefs";
 import { loadInbox } from "@/features/notifications/inbox";
 import { unreadCount } from "@/features/notifications/notifications";
 import { openPanda } from "@/features/pandas/panda-row";
@@ -256,6 +258,9 @@ function Following() {
 
 function Destinations() {
   const [unread, setUnread] = useState(0);
+  const milestonesOn = useMilestonesOn();
+  // The latest 里程碑, said beside the row as 通知 says its unread count; nothing while there is none.
+  const [latest, setLatest] = useState<string | undefined>(undefined);
   useFocusEffect(
     useCallback(() => {
       loadInbox()
@@ -263,10 +268,19 @@ function Destinations() {
         .catch(() => setUnread(0));
     }, []),
   );
+  useFocusEffect(
+    useCallback(() => {
+      if (!milestonesOn) return;
+      loadMilestones()
+        .then((items) => setLatest(items[0]?.title))
+        .catch(() => setLatest(undefined));
+    }, [milestonesOn]),
+  );
   return (
     <ListSection>
       <ListCell label="我的合集" icon={FolderHeart} href="/collections" />
       <ListCell label="去过的地点" icon={MapPin} href="/visits" />
+      {milestonesOn ? <ListCell label="里程碑" icon={Flag} meta={latest} href="/milestones" /> : null}
       <ListCell
         label="通知"
         icon={Bell}

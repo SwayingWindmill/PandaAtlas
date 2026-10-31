@@ -28,6 +28,9 @@ import {
   monthDay,
 } from "@/features/book/book";
 import { localToday } from "@/features/engagement/seen";
+import { MilestoneBadge } from "@/features/milestones/badge";
+import { MILESTONE_CONFIG } from "@/features/milestones/milestones";
+import { useMilestonesOn } from "@/features/milestones/prefs";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex, loadPlaces, placeName } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
@@ -123,8 +126,23 @@ function WaysIn({ title, footer }: { title: string; footer?: string }) {
   );
 }
 
-/** One panda in the list, as Music lists songs in an album: the photo, the name, the story, its number. */
-function LifeRow({ entry, panda, detail, last }: { entry: LifeEntry; panda: PandaListItem | undefined; detail: string; last: boolean }) {
+/**
+ * One panda in the list, as Music lists songs in an album: the photo, the name, the story, its number. A
+ * number that is a 里程碑 (the 1st, 10th, 50th…) is a 笋金 chip, while 里程碑 is on.
+ */
+function LifeRow({
+  entry,
+  panda,
+  detail,
+  milestone,
+  last,
+}: {
+  entry: LifeEntry;
+  panda: PandaListItem | undefined;
+  detail: string;
+  milestone: boolean;
+  last: boolean;
+}) {
   const stacked = useStacked();
   const name = panda?.name ?? "熊猫";
   const number = `No.${entry.number}`;
@@ -134,7 +152,7 @@ function LifeRow({ entry, panda, detail, last }: { entry: LifeEntry; panda: Pand
         onPress={() => panda && openPanda(panda.slug)}
         disabled={!panda}
         role="button"
-        accessibilityLabel={`${number}，${name}，${detail}`}
+        accessibilityLabel={[number, milestone ? "里程碑" : null, name, detail].filter(Boolean).join("，")}
         className={cn("min-h-11 gap-row px-inset py-stack-tight active:bg-accent", stacked ? "items-start" : "flex-row items-center")}
       >
         <PandaThumb pandaId={entry.pandaId} name={name} size={PHOTO} />
@@ -143,9 +161,13 @@ function LifeRow({ entry, panda, detail, last }: { entry: LifeEntry; panda: Pand
             <Text variant="headline" className="min-w-0 flex-1" numberOfLines={stacked ? undefined : 1}>
               {name}
             </Text>
-            <Text variant="footnote" className="text-muted-foreground tabular-nums">
-              {number}
-            </Text>
+            {milestone ? (
+              <MilestoneBadge label={number} />
+            ) : (
+              <Text variant="footnote" className="text-muted-foreground tabular-nums">
+                {number}
+              </Text>
+            )}
           </View>
           <View className="flex-row items-start gap-hair-gap">
             <View className="flex-row gap-hair-gap pt-0.5" accessible={false}>
@@ -291,6 +313,8 @@ function List({ book }: { book: Book }) {
   const [all, setAll] = useState(false);
   const entries = all ? book.list.entries : book.list.entries.slice(0, FIRST_ROWS);
   const name = (placeId: string) => book.placeNames.get(placeId) ?? null;
+  const milestonesOn = useMilestonesOn();
+  const nodes = new Set<number>(MILESTONE_CONFIG.pandas);
   return (
     <View className="gap-section">
       <View className="gap-row">
@@ -301,6 +325,7 @@ function List({ book }: { book: Book }) {
               entry={entry}
               panda={book.pandas.get(entry.pandaId)}
               detail={entryDetail(entry, name)}
+              milestone={milestonesOn && nodes.has(entry.number)}
               last={index === entries.length - 1}
             />
           ))}

@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { SectionHeader } from "@/components/section-header";
 import { MemoryGroup, UndoLine } from "@/features/on-this-day/memory-group";
 import { type Memory, type MemoryPrefs, pickForCard, visibleMemories } from "@/features/on-this-day/on-this-day";
+import { useMilestonePrefs } from "@/features/milestones/prefs";
 import { setMemoryPrefs, showLess, useMemoryPrefs } from "@/features/on-this-day/prefs";
 import { useMemories } from "@/features/on-this-day/use-memories";
 import { tapHaptic } from "@/lib/haptics";
@@ -23,10 +24,11 @@ interface Undo {
  */
 export function OnThisDayCard() {
   const prefs = useMemoryPrefs();
+  const milestones = useMilestonePrefs();
   const { memories, sources } = useMemories();
   const [undo, setUndo] = useState<Undo | null>(null);
 
-  if (!prefs || !memories) return null;
+  if (!prefs || !milestones || !memories) return null;
 
   function change(next: MemoryPrefs, message: string) {
     if (!prefs) return;
@@ -46,7 +48,7 @@ export function OnThisDayCard() {
   ) : null;
 
   if (prefs.off) return undoLine;
-  const shown = visibleMemories(memories, prefs);
+  const shown = visibleMemories(memories, prefs, !milestones.off);
   if (shown.length === 0) return undoLine;
   const more = shown.length > SHOWN;
 
