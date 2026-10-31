@@ -342,9 +342,9 @@ function List({ book }: { book: Book }) {
 }
 
 function Stats({ book }: { book: Book }) {
-  const { fontScale } = useWindowDimensions();
+  const stacked = useStacked();
   return (
-    <View className={fontScale > 1.35 ? "gap-row" : "flex-row gap-row"}>
+    <View className={stacked ? "gap-row" : "flex-row gap-row"}>
       <StatTile icon={Binoculars} label="见过" value={`${book.list.seenCount} 只`} />
       <StatTile icon={ScanFace} label="认出" value={`${book.list.recognizedCount} 只`} />
       <StatTile icon={MapPin} label="去过" value={`${book.visitedPlaces} 处`} />
@@ -422,10 +422,10 @@ function SignedIn() {
   );
 }
 
-/** Three portrait tiles a row, as Photos lays out an album; two past a font scale of 1.35. */
+/** Three portrait tiles a row, as Photos lays out an album; two when rows stack. */
 function useGrid() {
-  const { width, fontScale } = useWindowDimensions();
-  const columns = fontScale > 1.35 ? 2 : 3;
+  const { width } = useWindowDimensions();
+  const columns = useStacked() ? 2 : 3;
   const column = Math.min(width, 700) - 32;
   return { columns, tile: Math.floor((column - GAP * (columns - 1)) / columns) };
 }

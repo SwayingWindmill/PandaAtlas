@@ -113,7 +113,7 @@ function NewestClue({ state }: { state: DailyPandaState }) {
 function Plate({ id }: { id: string }) {
   const [tint, ground] = useCSSVariable(["--color-highlight-soft", "--color-card"]);
   return (
-    <Svg style={StyleSheet.absoluteFill} width="100%" height="100%" preserveAspectRatio="none">
+    <Svg aria-hidden style={StyleSheet.absoluteFill} width="100%" height="100%" preserveAspectRatio="none">
       <Defs>
         <LinearGradient id={id} x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor={String(tint)} stopOpacity={1} />

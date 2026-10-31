@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
-import { ICON_INSET, ListCell, ListSection } from "@/components/grouped-list";
+import { ICON_INSET, ListCell, ListSection, useSingleColumn } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import {
   Binoculars,
@@ -55,11 +55,6 @@ function openMaps(name: string, { latitude, longitude }: NonNullable<Facility["c
   void Linking.openURL(url);
 }
 
-/** Two large tiles a row, one at the accessibility sizes, where the name needs the width. */
-function columnsFor(fontScale: number) {
-  return fontScale >= 2 ? 1 : 2;
-}
-
 /** A resident as a portrait photograph with its name in white over the scrim, as Music lays out artists. */
 function ResidentTile({ panda, width }: { panda: PandaListItem; width: number }) {
   const photo = usePandaCover(panda.id);
@@ -96,8 +91,9 @@ function ResidentTile({ panda, width }: { panda: PandaListItem; width: number })
 }
 
 function Residents({ pandas }: { pandas: PandaListItem[] }) {
-  const { width, fontScale } = useWindowDimensions();
-  const columns = columnsFor(fontScale);
+  const { width } = useWindowDimensions();
+  // Two large tiles a row, one at the largest sizes or in a narrow window, where the name needs the width.
+  const columns = useSingleColumn() ? 1 : 2;
   const tile = Math.floor((Math.min(width, 700) - GUTTER * 2 - GAP * (columns - 1)) / columns);
   return (
     <View className="gap-1.5">
@@ -237,7 +233,7 @@ function PlateHero({ institution, pending }: { institution: InstitutionDetail; p
   const [tint, ground] = useCSSVariable(["--color-highlight-soft", "--color-background"]);
   return (
     <View style={{ height: HERO + insets.top }}>
-      <Svg style={StyleSheet.absoluteFill} width="100%" height="100%" preserveAspectRatio="none">
+      <Svg aria-hidden style={StyleSheet.absoluteFill} width="100%" height="100%" preserveAspectRatio="none">
         <Defs>
           <LinearGradient id="institution-plate" x1="0" y1="0" x2="0" y2="1">
             <Stop offset="0" stopColor={String(tint)} stopOpacity={1} />
@@ -314,6 +310,7 @@ export default function InstitutionScreen() {
   return (
     <View className="flex-1 bg-background">
       <Stack.Screen options={{ headerShown: false, title: institution.name }} />
+      <HeroToolbar />
       <Animated.ScrollView
         className="flex-1"
         contentInsetAdjustmentBehavior="never"
@@ -380,7 +377,6 @@ export default function InstitutionScreen() {
           ) : null}
         </Animated.View>
       </Animated.ScrollView>
-      <HeroToolbar />
     </View>
   );
 }

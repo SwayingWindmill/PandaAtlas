@@ -9,6 +9,7 @@ import { semantic } from "@/design/tokens";
 export function Scrim({ id, height = "62%" }: { id: string; height?: `${number}%` }) {
   return (
     <Svg
+      aria-hidden
       pointerEvents="none"
       style={{ position: "absolute", left: 0, right: 0, bottom: 0, height }}
       width="100%"

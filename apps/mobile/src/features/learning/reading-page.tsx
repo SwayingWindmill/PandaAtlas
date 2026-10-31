@@ -4,6 +4,7 @@ import { ScrollView, View, type ScrollViewProps } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { NO_WEB_BAR_TITLE } from "@/components/page";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { HAIRLINE } from "@/lib/surface";
@@ -21,6 +22,7 @@ function ReadingHeader() {
         headerLargeTitleEnabled: false,
         headerShadowVisible: false,
         headerStyle: { backgroundColor: theme.paper },
+        ...NO_WEB_BAR_TITLE,
       }}
     />
   );

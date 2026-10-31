@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 const { height, padding } = component.segmented;
 const TRACK_RADIUS = semantic.radius.control.value;
 const THUMB_RADIUS = concentric(TRACK_RADIUS, padding);
+/** A segment's label padding inside the thumb (6pt, as before the hit area grew). */
+const SEGMENT_PAD_Y = 6;
 
 /**
  * The iOS segmented control: a filled track with the selected segment raised on the elevated
@@ -75,7 +77,9 @@ export function Segmented<T extends string>({
               selectionHaptic();
               onChange(option.value);
             }}
-            className="flex-1 items-center justify-center px-1 py-1.5"
+            className="flex-1 items-center justify-center px-1"
+            // Each segment's hit area spans the whole 44pt track, past the 2pt inset the thumb sits in.
+            style={{ marginVertical: -padding, paddingVertical: SEGMENT_PAD_Y + padding }}
           >
             <Text
               variant="subheadline"

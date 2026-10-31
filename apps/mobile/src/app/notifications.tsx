@@ -9,7 +9,7 @@ import { Page } from "@/components/page";
 import { PandaThumb } from "@/components/panda-thumb";
 import { ScreenState } from "@/components/screen-state";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
+import { SwitchRow } from "@/components/grouped-list";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { loadInbox, loadPreferences, markAllRead, markRead, savePreference } from "@/features/notifications/inbox";
@@ -128,17 +128,12 @@ function Preferences({
           <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
             {items.map((row, index) => (
               <View key={`${row.category}:${row.channel}`}>
-                <View className="min-h-11 flex-row items-center gap-row px-inset py-stack-tight">
-                  <Text variant="body" className="min-w-0 flex-1">
-                    {split(row.label)[1]}
-                  </Text>
-                  <Switch
-                    checked={row.enabled}
-                    onCheckedChange={(enabled) => onChange(row, enabled)}
-                    accessibilityLabel={row.label}
-                    hitSlop={12}
-                  />
-                </View>
+                <SwitchRow
+                  label={split(row.label)[1]}
+                  accessibilityLabel={row.label}
+                  value={row.enabled}
+                  onChange={(enabled) => onChange(row, enabled)}
+                />
                 {index === items.length - 1 ? null : <View className="ml-4 bg-border" style={{ height: HAIRLINE }} />}
               </View>
             ))}

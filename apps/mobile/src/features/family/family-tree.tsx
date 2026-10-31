@@ -106,7 +106,7 @@ export function FamilyTree({ family }: { family: Family }) {
       {layout ? (
         <ScrollView ref={scroll} horizontal showsHorizontalScrollIndicator={false} onContentSizeChange={centreOnFocus}>
           <View style={{ width: layout.width, height: layout.height }}>
-            <Svg width={layout.width} height={layout.height} style={{ position: "absolute" }}>
+            <Svg aria-hidden width={layout.width} height={layout.height} style={{ position: "absolute" }}>
               {layout.lines.map((line) => (
                 <Path key={line} d={line} stroke={String(lineColor)} strokeWidth={0.5} fill="none" />
               ))}

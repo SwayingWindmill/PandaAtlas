@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { ListCell, ListSection } from "@/components/grouped-list";
+import { ListCell, ListSection, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import { ChevronLeft, ChevronRight } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
@@ -171,6 +171,7 @@ export default function CalendarScreen() {
   );
   const followed = useFollowed();
   const [scope, setScope] = useState<Scope>("all");
+  const stacked = useStacked();
   // 我关注的 keeps only the entries of followed pandas; days left empty drop out.
   const scoped =
     scope === "followed" && followed
@@ -205,8 +206,11 @@ export default function CalendarScreen() {
         />
       ) : null}
       <View className="gap-stack rounded-card bg-card px-row pt-inset pb-row" style={{ borderCurve: "continuous" }}>
-        <View className="flex-row items-center gap-row px-hair-gap">
-          <Text variant="title" className="min-w-0 flex-1 tabular-nums">{`${year}年${month}月`}</Text>
+        {/* At large sizes the month takes its own line and the arrows go under it, rather than squeezing it. */}
+        <View className={cn("flex-row items-center gap-row px-hair-gap", stacked && "flex-wrap")}>
+          <Text variant="title" className={cn("tabular-nums", stacked ? "w-full" : "min-w-0 flex-1")}>
+            {`${year}年${month}月`}
+          </Text>
           <MonthButton to={shiftMonth(year, month, -1).month} direction="back" onPress={() => go(-1)} />
           <MonthButton to={shiftMonth(year, month, 1).month} direction="forward" onPress={() => go(1)} />
         </View>

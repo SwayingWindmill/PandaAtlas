@@ -127,7 +127,9 @@ function Text({
     <Component
       className={cn(textVariants({ variant }), textClass, className)}
       role={variant ? ROLE[variant] : undefined}
-      aria-level={variant ? ARIA_LEVEL[variant] : undefined}
+      // A small-text heading (a grouped section's footnote title, a card's headline) gets a level too, so
+      // the web does not read it as a page's h1: 2 for a section, 3 for a card's own title.
+      aria-level={(variant ? ARIA_LEVEL[variant] : undefined) ?? (props.role === 'heading' ? (variant === 'headline' ? '3' : '2') : undefined)}
       // Dynamic Type: every text style follows the system text size. Layouts that would
       // clip at accessibility sizes read useWindowDimensions().fontScale and restack.
       allowFontScaling

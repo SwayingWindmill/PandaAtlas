@@ -7,6 +7,7 @@ import Animated, {
   type SharedValue,
   interpolate,
   useAnimatedStyle,
+  useReducedMotion,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
@@ -26,7 +27,8 @@ export function HeroToolbar({ onShare }: { onShare?: () => void }) {
     <View
       pointerEvents="box-none"
       className="absolute right-0 left-0 flex-row justify-between px-4"
-      style={{ top: insets.top + 6 }}
+      // Rendered before the page so VoiceOver reads 返回 first; zIndex keeps it over the scrolling content.
+      style={{ top: insets.top + 6, zIndex: 1 }}
     >
       <GlassButton icon={ChevronLeft} label="返回" onPress={goBack} />
       {onShare ? <GlassButton icon={Share} label="分享" onPress={onShare} /> : null}
@@ -57,11 +59,15 @@ export function StretchyHero({
   const insets = useSafeAreaInsets();
   const muted = String(useCSSVariable("--color-muted"));
   const height = base + insets.top;
+  // With Reduce Motion the photo scrolls with the page instead of drifting behind it; the pull-down stretch,
+  // which follows the finger, stays.
+  const reduced = useReducedMotion();
+  const drift = reduced ? 0 : 0.35;
   const stretch = useAnimatedStyle(() => {
     const y = scrollY.get();
     return {
       transform: [
-        { translateY: interpolate(y, [-height, 0, height], [-height / 2, 0, height * 0.35], Extrapolation.CLAMP) },
+        { translateY: interpolate(y, [-height, 0, height], [-height / 2, 0, height * drift], Extrapolation.CLAMP) },
         { scale: interpolate(y, [-height, 0], [2, 1], Extrapolation.CLAMP) },
       ],
     };
