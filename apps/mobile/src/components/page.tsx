@@ -17,6 +17,12 @@ function contentOwnsTitle(prominent: boolean) {
   return prominent && Platform.OS === "ios";
 }
 
+/**
+ * On the web an empty bar title is still an empty h1 that a screen reader stops on.
+ * Spread into the options of any screen whose column draws the title.
+ */
+export const NO_WEB_BAR_TITLE = Platform.OS === "web" ? { headerTitle: () => null } : {};
+
 /** Air above the title on a barless web root: about the height of the bar it stands in for. */
 const BARLESS_TOP = 24;
 
@@ -47,8 +53,7 @@ export function Page({
       headerLargeTitleEnabled: Platform.OS === "ios" && !prominent && !back,
       headerBackVisible: back,
       headerShown: !barless,
-      // On the web an empty bar title is still an empty h1 that VoiceOver stops on; the column draws the title.
-      ...(Platform.OS === "web" && inContent ? { headerTitle: () => null } : {}),
+      ...(inContent ? NO_WEB_BAR_TITLE : {}),
     });
   }, [navigation, title, back, prominent, inContent, barless]);
 

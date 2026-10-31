@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ListCell, ListSection } from "@/components/grouped-list";
 import { BookA, type LucideIcon, Newspaper, ScanFace } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
+import { NO_WEB_BAR_TITLE } from "@/components/page";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { ScreenState } from "@/components/screen-state";
@@ -76,7 +77,7 @@ export default function LearnScreen() {
   const insets = useSafeAreaInsets();
   const { state, reload } = useLearningCatalog();
   const { pandas } = useLearningPandas();
-  const bar = <Stack.Screen options={{ title: "", headerLargeTitleEnabled: false }} />;
+  const bar = <Stack.Screen options={{ title: "", headerLargeTitleEnabled: false, ...NO_WEB_BAR_TITLE }} />;
 
   if (state.status !== "ready") {
     return (
