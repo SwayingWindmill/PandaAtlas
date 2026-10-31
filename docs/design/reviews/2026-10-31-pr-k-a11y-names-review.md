@@ -6,7 +6,7 @@ A pre-merge review of PR K (page plan N7, batch 1), run with the skills in `.age
 - `components/grouped-list.tsx`: `NARROW_WIDTH` (280), `useStacked()` and `useSingleColumn()` used by every restack; new `SwitchRow`, where the whole row is one `switch` and the 51×31 track (`component.switchTrack`, new in `design/tokens.ts`) is drawn and hidden.
 - `components/segmented.tsx`: each segment's hit area spans the 44pt track.
 - `components/ui/text.tsx`: `role="heading"` without a level gets 2 (footnote) or 3 (headline).
-- `components/page.tsx`: no empty bar title on web.
+- `components/page.tsx` (`NO_WEB_BAR_TITLE`), also used by `app/learn/index.tsx` and `features/learning/reading-page.tsx`: no empty bar title on web.
 - `components/stretchy-hero.tsx`, `app/pandas/[slug]/index.tsx`, `app/institutions/[slug].tsx`: the hero toolbar comes first in reading order; no drift under Reduce Motion.
 - `components/scrim.tsx`, `app/daily.tsx`, `app/institutions/[slug].tsx`, `features/family/family-tree.tsx`: decorative SVGs hidden.
 - Restacks: `app/(tabs)/book/index.tsx`, `app/collections/index.tsx`, `app/places/[slug].tsx`, `app/institutions/[slug].tsx`, `app/calendar.tsx`, `features/on-this-day/memory-group.tsx`.
