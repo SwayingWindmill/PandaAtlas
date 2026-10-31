@@ -155,7 +155,7 @@ function SourceLink({ source }: { source: MilestoneSource }) {
       accessibilityHint="在浏览器中打开"
       onPress={() => void WebBrowser.openBrowserAsync(source.url)}
       hitSlop={{ top: 6, bottom: 6 }}
-      className="self-stretch active:opacity-60"
+      className="min-h-11 justify-center self-stretch active:opacity-60"
     >
       <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : 2}>
         {"出处 "}

@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { Fragment, useState } from "react";
-import { AccessibilityInfo, ActionSheetIOS, Platform, Pressable, useWindowDimensions, View } from "react-native";
+import { AccessibilityInfo, ActionSheetIOS, Platform, Pressable, View } from "react-native";
 
 import { useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
@@ -19,8 +19,6 @@ import { type Memory, ownRecord } from "./on-this-day";
 const PHOTO = 56;
 const SEPARATOR_INSET = { marginLeft: 16 + PHOTO + 12 } as const;
 const STACKED_INSET = { marginLeft: 16 } as const;
-/** Below this window width the photo, the words and ••• no longer fit side by side. */
-const NARROW = 280;
 
 /** "出处 上野动物园" for a published source, or where the fan's own record comes from. */
 export function sourceLine(memory: Memory, source: Pick<Evidence, "publisher"> | undefined): string | null {
@@ -71,8 +69,7 @@ export function MemoryGroup({
   const [menu, setMenu] = useState<string | null>(null);
   // At accessibility sizes, or in a window as narrow as 200% browser zoom, the photo goes above the words,
   // which then take the row's whole width.
-  const narrow = useWindowDimensions().width < NARROW;
-  const stacked = useStacked() || narrow;
+  const stacked = useStacked();
   const inset = stacked ? STACKED_INSET : SEPARATOR_INSET;
 
   function more(memory: Memory) {

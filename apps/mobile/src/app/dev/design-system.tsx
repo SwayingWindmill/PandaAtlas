@@ -4,6 +4,7 @@ import { Pressable, View } from "react-native";
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import { Uniwind } from "uniwind";
 
+import { SwitchRow } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import { ChevronRight, Sun } from "@/components/icons";
 import { Page } from "@/components/page";
@@ -48,6 +49,20 @@ function Card({ children, className }: { children: React.ReactNode; className?: 
   return (
     <View className={`gap-row rounded-tile bg-card p-inset ${className ?? ""}`} style={{ borderCurve: "continuous" }}>
       {children}
+    </View>
+  );
+}
+
+/** SwitchRow: the whole row is the switch; the track is component.switchTrack. */
+function SwitchRowDemo() {
+  const [on, setOn] = useState(true);
+  return (
+    <View className="overflow-hidden rounded-group bg-background">
+      <SwitchRow
+        label={`开关行 ${component.switchTrack.width}×${component.switchTrack.height}`}
+        value={on}
+        onChange={setOn}
+      />
     </View>
   );
 }
@@ -299,6 +314,7 @@ function Sizes() {
           {component.listRow.minHeight}
         </Text>
       </View>
+      <SwitchRowDemo />
     </Card>
   );
 }

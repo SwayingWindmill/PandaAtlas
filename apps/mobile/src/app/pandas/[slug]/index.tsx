@@ -398,6 +398,7 @@ export default function ProfileScreen() {
   return (
     <View className="flex-1 bg-background">
       <Stack.Screen options={{ headerShown: false, title: profile.name }} />
+      <HeroToolbar onShare={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })} />
       <Animated.ScrollView
         className="flex-1"
         contentInsetAdjustmentBehavior="never"
@@ -443,7 +444,6 @@ export default function ProfileScreen() {
           ) : null}
         </Animated.View>
       </Animated.ScrollView>
-      <HeroToolbar onShare={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })} />
     </View>
   );
 }

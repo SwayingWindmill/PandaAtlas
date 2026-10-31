@@ -1,9 +1,10 @@
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Pressable, TextInput, useWindowDimensions, View } from "react-native";
+import { Pressable, TextInput, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useCSSVariable } from "uniwind";
 
+import { useSingleColumn } from "@/components/grouped-list";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PressScale } from "@/components/press-scale";
@@ -104,9 +105,8 @@ function Album({ collection, width }: { collection: Collection; width: number })
 }
 
 function Albums({ collections }: { collections: Collection[] }) {
-  const { fontScale } = useWindowDimensions();
   const [width, setWidth] = useState(0);
-  const columns = fontScale >= 2 ? 1 : 2;
+  const columns = useSingleColumn() ? 1 : 2;
   const tile = width > 0 ? Math.floor((width - GAP * (columns - 1)) / columns) : 0;
   return (
     <View

@@ -1,19 +1,34 @@
 import { type Href, router } from "expo-router";
 import type { ReactNode } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
+import Animated, { useReducedMotion } from "react-native-reanimated";
 
 import { Icon } from "@/components/icon";
 import { ChevronRight, type LucideIcon } from "@/components/icons";
 import { Text } from "@/components/ui/text";
-import { component } from "@/design/tokens";
+import { component, cubicBezierCss, semantic } from "@/design/tokens";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
 /** At accessibility text sizes a value no longer fits beside its label, so it moves under it. */
 export const STACK_AT_FONT_SCALE = 1.35;
+/**
+ * Below this window width (a phone at 200% browser zoom, or a split-screen sliver) rows stack as they
+ * do at accessibility sizes, and grids drop to one column. On the web the text size reaches the layout
+ * only as zoom, so width is the signal there.
+ */
+export const NARROW_WIDTH = 280;
 
+/** True when rows should stack: an accessibility text size, or a narrow window. */
 export function useStacked() {
-  return useWindowDimensions().fontScale >= STACK_AT_FONT_SCALE;
+  const { fontScale, width } = useWindowDimensions();
+  return fontScale >= STACK_AT_FONT_SCALE || width < NARROW_WIDTH;
+}
+
+/** True at the largest text sizes or in a narrow window: a grid goes to one column. */
+export function useSingleColumn() {
+  const { fontScale, width } = useWindowDimensions();
+  return fontScale >= 2 || width < NARROW_WIDTH;
 }
 
 /** The disclosure chevron in tertiary label, as Settings draws it. */
@@ -151,5 +166,81 @@ export function ListCell({
         />
       )}
     </View>
+  );
+}
+
+/**
+ * A row with a switch, as Settings draws one: the whole row is the control, so it is a 44pt target and
+ * VoiceOver reads "名字，开关，开" once. The track is drawn, not a second control. At large sizes it stacks.
+ */
+export function SwitchRow({
+  label,
+  value,
+  onChange,
+  glyph,
+  accessibilityLabel,
+}: {
+  label: string;
+  value: boolean;
+  onChange: (value: boolean) => void;
+  glyph?: LucideIcon;
+  accessibilityLabel?: string;
+}) {
+  // At accessibility sizes or in a narrow window the switch moves under its label, as a value does.
+  const stacked = useStacked();
+  return (
+    <Pressable
+      role="switch"
+      aria-checked={value}
+      accessibilityState={{ checked: value }}
+      accessibilityLabel={accessibilityLabel ?? label}
+      onPress={() => onChange(!value)}
+      className={cn(
+        "min-h-11 gap-row px-inset py-stack-tight active:bg-accent",
+        stacked ? "items-start" : "flex-row items-center",
+      )}
+    >
+      <View className={cn("flex-row items-center gap-row", stacked ? "self-stretch" : "min-w-0 flex-1")}>
+        {glyph ? <GlyphSquare icon={glyph} /> : null}
+        <Text variant="body" className="min-w-0 flex-1">
+          {label}
+        </Text>
+      </View>
+      <SwitchTrack on={value} />
+    </Pressable>
+  );
+}
+
+/** The iOS switch's look: a 51×31 pill with a 27pt knob, in the tint when on. Decoration for SwitchRow. */
+function SwitchTrack({ on }: { on: boolean }) {
+  const reduced = useReducedMotion();
+  const { width, height, knob } = component.switchTrack;
+  const inset = (height - knob) / 2;
+  const transition = {
+    transitionDuration: reduced ? 0 : semantic.motion.move.duration,
+    transitionTimingFunction: cubicBezierCss("inOut"),
+  } as const;
+  return (
+    <Animated.View
+      aria-hidden
+      accessible={false}
+      importantForAccessibility="no-hide-descendants"
+      className={on ? "bg-primary" : "bg-input"}
+      style={{ width, height, borderRadius: height / 2, transitionProperty: "backgroundColor", ...transition }}
+    >
+      <Animated.View
+        className="absolute bg-white shadow-sm"
+        style={{
+          top: inset,
+          left: inset,
+          width: knob,
+          height: knob,
+          borderRadius: knob / 2,
+          transform: [{ translateX: on ? width - knob - inset * 2 : 0 }],
+          transitionProperty: "transform",
+          ...transition,
+        }}
+      />
+    </Animated.View>
   );
 }

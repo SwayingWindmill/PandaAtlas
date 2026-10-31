@@ -345,6 +345,8 @@ export const component = {
   settingsGlyph: { size: 30, icon: 18, inset: space[4] + 30 + space[3] },
   /** A segmented control: a 44pt track with the selected segment inset 2pt (concentric radius). */
   segmented: { height: 44, padding: 2 },
+  /** The switch drawn in a SwitchRow: the iOS 51×31 track and 27pt knob. The whole row is the control. */
+  switchTrack: { width: 51, height: 31, knob: 27 },
   /** Icons follow the text they sit beside, like SF Symbols. */
   icon: { footnote: 15, subhead: 18, body: 22, title3: 24, chevron: 17 },
   /** The web tab bar (native tabs draw their own). */

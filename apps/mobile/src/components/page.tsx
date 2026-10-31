@@ -47,6 +47,8 @@ export function Page({
       headerLargeTitleEnabled: Platform.OS === "ios" && !prominent && !back,
       headerBackVisible: back,
       headerShown: !barless,
+      // On the web an empty bar title is still an empty h1 that VoiceOver stops on; the column draws the title.
+      ...(Platform.OS === "web" && inContent ? { headerTitle: () => null } : {}),
     });
   }, [navigation, title, back, prominent, inContent, barless]);
 

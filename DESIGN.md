@@ -459,24 +459,27 @@ The plate photograph has square corners. Buttons are pills, 48 tall, never under
 
 ## Components
 
-Every component has a contract: purpose, when not to use it, variants, states, accessibility and Dynamic Type. All tappable things are at least 44×44 (`component.hitTarget`). `Text` keeps `allowFontScaling`; past a font scale of 1.35 layouts restack (rows put the value under the label, stat blocks stack, photo grids drop a column; resident tiles go to one a row at 2.0).
+Every component has a contract: purpose, when not to use it, variants, states, accessibility and Dynamic Type. All tappable things are at least 44×44 (`component.hitTarget`). `Text` keeps `allowFontScaling`; past a font scale of 1.35 layouts restack (rows put the value under the label, stat blocks stack, photo grids drop a column; resident tiles go to one a row at 2.0). A window under 280pt wide (`NARROW_WIDTH`: a phone at 200% browser zoom, a split-screen sliver) counts as both, because on the web text size reaches the layout only as zoom: use `useStacked()` and `useSingleColumn()` from `grouped-list.tsx`, never a local threshold.
+
+**The Accessibility Rule.** Every control has a name and a 44pt hit area, measured on the element that takes the tap (a segment spans the whole track, a switch row is the whole row). Glyphs, scrims, gradient plates and connector lines are hidden (`aria-hidden`); a photo is either labelled by its holder or hidden. One `h1` per screen: a grouped section's footnote header is level 2, a card's headline level 3. A hero's 返回 and 分享 come first in reading order. Reduce Motion stops anything that moves on its own or against the scroll (hero drift, thumb slides); motion that follows the finger stays. Text roles pass AA in light and dark; the tertiary label is for chevrons and placeholders only.
 
 ### Inventory
 | Component | File | Purpose | Don't use for | Variants / states | A11y |
 |---|---|---|---|---|---|
-| `Text` | `ui/text.tsx` | Every string | Sizing by className | The six styles, `stat`, reading set; deprecated variants | `display`/`title` get heading role and level |
+| `Text` | `ui/text.tsx` | Every string | Sizing by className | The six styles, `stat`, reading set; deprecated variants | `display`/`title` get heading role and level; `role="heading"` on a footnote gets level 2, on a headline level 3 |
 | `Button` | `ui/button.tsx` | One decision | Navigation (use a row) | primary, tinted, plain, secondary; pressed, disabled, focus ring | label is the action verb, ≥44 tall |
 | `ListSection` / `ListCell` / `NavRow` | `grouped-list.tsx`, `nav-row.tsx` | Facts and destinations | A photo grid | label, detail, meta, icon, chevron, tint (action), destructive; pressed | row is the button; hint for destinations |
 | `PressScale` | `press-scale.tsx` | Press feedback on photo cards, tiles, stat blocks, chips | Grouped rows (system highlight) | pressed; reduced motion dims | inherits Pressable role |
 | `StoryCard` | `features/today/story-card.tsx` | 今天 cards | Lists | featured (card radius, display), small (tile radius, title) | one label: title and panda |
-| `StretchyHero` + `HeroToolbar` | `stretchy-hero.tsx` | The plate on a detail page | Cards inside a page | with or without overlay; zoom target | photo labelled, glass buttons labelled 返回/分享 |
+| `StretchyHero` + `HeroToolbar` | `stretchy-hero.tsx` | The plate on a detail page | Cards inside a page | with or without overlay; zoom target; no scroll drift under Reduce Motion | photo labelled, glass buttons labelled 返回/分享; the toolbar is rendered before the scroll view so it is read first |
 | `GlassButton` | `glass-button.tsx` | Back/share over a photo | Anything not over media | Liquid Glass, fallback disc | 44 circle, label required |
 | `Scrim` | `scrim.tsx` | Make on-media text legible | Darkening a photo for mood | height | decorative |
 | `PhotoOutline` | `photo-outline.tsx` | Edge on rounded photos | Square plates | radius | decorative |
 | `Icon` | `icon.tsx`, `icons.ts` | A category or destination glyph | Buttons, titles, running text | sizes footnote 15, subhead 18, body 22, title3 24, chevron 17; tones secondary, tint, tertiary, label, onMedia | always hidden; the holder carries the name |
 | `ScreenState` / `LoadFailed` | `screen-state.tsx`, `load-failed.tsx` | Empty, failed, offline | Inline errors in a row | empty, error + retry | sentence is announced |
 | `SectionHeader` | `section-header.tsx` | A titled section on a tab root, with count and link | A grouped list's footnote header | title, count, action | title is a heading; action is a link ≥44 |
-| `Segmented` | `segmented.tsx` | Two to four mutually exclusive choices (外观) | Navigation, filters with many options (chips) | track, sliding thumb (`move`; none under Reduce Motion); selection haptic | radiogroup of radios with checked state |
+| `Segmented` | `segmented.tsx` | Two to four mutually exclusive choices (外观) | Navigation, filters with many options (chips) | track, sliding thumb (`move`; none under Reduce Motion); selection haptic | radiogroup of radios with checked state; each segment's hit area is the full 44pt track |
+| `SwitchRow` | `grouped-list.tsx` | An on/off setting in a grouped list (那年今天, 里程碑, 通知) | An action, or a choice of more than two (use `Segmented`) | label, glyph; on/off; stacks at large sizes | the row is one `switch` with its checked state; the 51×31 track (`component.switchTrack`) is drawn and hidden; no animation under Reduce Motion |
 | `PandaTile` | `panda-tile.tsx` | One panda as a photo tile (birthday scroller, place residents) | Rows of facts | name, caption, width, aspect; press scale | one label: name and caption |
 | `Skeleton` | `ui/skeleton.tsx` | Loading placeholder in the final layout | Spinners on a page | — | hidden from VoiceOver |
 | `OfflineBanner` | `offline-banner.tsx` | No network | Errors from the API | — | announced once |
@@ -594,6 +597,7 @@ No screen uses these since v2.8; the `Text` variants stay defined so nothing old
 
 ## Changelog
 
+- **v2.11 (2026-10-31).** The Accessibility Rule: `NARROW_WIDTH` (280) with `useStacked` / `useSingleColumn` for every restack (图鉴 stats and grid, 合集, place and institution residents, 那年今天, 熊猫日历 month header); `SwitchRow` with `component.switchTrack` (51×31) replaces the 32×20 switch in 设置 and 通知; segments hit the full 44pt track; 时间线 source links 44pt; decorative SVGs hidden; heading levels for footnote and headline headings; no empty web bar title; hero toolbar read first; hero drift off under Reduce Motion.
 - **v2.10 (2026-10-30).** 里程碑 (The Milestones Rule): `/milestones` from 我的, 笋金 number chips in 图鉴, milestone notes and 满月 / 满百天 on 那年今天, counted rows on the 时间线 (its summary now counts N 条记录), and a 设置 switch; numbers in `MILESTONE_CONFIG`; glyph `Flag`.
 - **v2.9 (2026-10-30).** 那年今天 on 今天, `/on-this-day`, a 设置 switch and a 纪念 / 那年今天 group on a panda page (The On This Day Rule); 今天生日 yields to it while it is on; glyphs `Ellipsis` (more actions on a row) and `History` (那年今天 in 设置).
 - **v2.8 (2026-10-30).** The last pre-v2 styles migrated: `title3` on 图鉴 and 合集, the 家谱 tree's `muted` / `small` / `text-xs` and `rounded-lg/xl`, the 到访 card's `text-subhead`, `rounded-*` on 纠错, 分享, the institution and `Skeleton`. Pages enter with `PAGE_ENTER` (no entrance on web) and the stretchy-hero motion re-export is removed. The design lint is now an error, with rules for deprecated variants, classes and imports.
