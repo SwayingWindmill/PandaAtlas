@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { type Appearance, useAppearance } from "@/features/appearance/appearance";
 import { LegalRow } from "@/features/legal/legal-links";
+import { OnThisDaySettings } from "@/features/on-this-day/settings-section";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
@@ -87,6 +88,7 @@ export default function SettingsScreen() {
         </Text>
       ) : null}
       <AppearanceSection />
+      <OnThisDaySettings />
       <ListSection>
         {signedIn ? <ListCell label="账号与数据" glyph={ShieldCheck} href="/account" /> : null}
         <ListCell label="内容和照片从哪来" glyph={Info} href="/about" last />

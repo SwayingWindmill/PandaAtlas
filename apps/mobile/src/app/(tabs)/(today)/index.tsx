@@ -6,6 +6,7 @@ import { Text } from "@/components/ui/text";
 import { localToday } from "@/features/engagement/seen";
 import { FollowedChanges } from "@/features/today/followed-changes";
 import { FollowedStrip } from "@/features/today/followed-strip";
+import { OnThisDayCard } from "@/features/today/on-this-day-card";
 import { StoryCard } from "@/features/today/story-card";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { TodayBirthdays } from "@/features/today/today-birthdays";
@@ -89,6 +90,7 @@ export default function TodayScreen() {
           ))}
         </ScrollView>
       </View>
+      <OnThisDayCard />
       <WeekCard />
       <FollowedStrip />
       <TodayBirthdays />

@@ -31,6 +31,8 @@ import { Text } from "@/components/ui/text";
 import { CompareRows } from "@/features/compare/compare-rows";
 import { PandaActions } from "@/features/engagement/panda-actions";
 import { type FamilyMember, relativesOf } from "@/features/family/family";
+import { sourceLine } from "@/features/on-this-day/memory-group";
+import { DECEASED_POLICY } from "@/features/on-this-day/on-this-day";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type Profile, loadProfile, longDate } from "@/features/pandas/profile";
 import { type Stat, UNKNOWN } from "@/features/pandas/profile-facts";
@@ -249,6 +251,27 @@ function PlacesLived({ profile }: { profile: Profile }) {
   );
 }
 
+/**
+ * 那年今天 on the panda's own page; for a panda that has died it is 纪念, and quiet: no countdown, no
+ * celebration, just what happened on this day, with where it is written down.
+ */
+function Memories({ profile }: { profile: Profile }) {
+  const sources = new Map(profile.sources.map((source) => [source.id, source]));
+  return (
+    <ListSection title={profile.deceased ? DECEASED_POLICY.heading : "那年今天"}>
+      {profile.memories.map((memory, index) => (
+        <ListCell
+          key={memory.key}
+          label={memory.text}
+          detail={sourceLine(memory, memory.sourceIds.map((id) => sources.get(id)).find(Boolean)) ?? undefined}
+          lines={3}
+          last={index === profile.memories.length - 1}
+        />
+      ))}
+    </ListSection>
+  );
+}
+
 function Events({ profile }: { profile: Profile }) {
   // Newest first, the way a feed reads.
   const events = [...profile.events].reverse();
@@ -397,6 +420,7 @@ export default function ProfileScreen() {
           <Family profile={profile} />
           <PlacesLived profile={profile} />
           <CompareRows slug={profile.slug} />
+          {profile.memories.length > 0 ? <Memories profile={profile} /> : null}
           <Events profile={profile} />
           {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
           <ListSection>
