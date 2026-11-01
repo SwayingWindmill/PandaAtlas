@@ -507,7 +507,7 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 - **Search:** 44 tall, `control` radius, elevated fill, secondary-label placeholder. No outline. The system caret for focus.
 
 ### Navigation
-- **Tabs:** 今天, 找熊猫, 图鉴, 我的, with Lucide `sun`, `search`, `layout-grid`, `user-round`. iOS uses the system Liquid Glass bar (`expo-router/native-tabs`, SDK 58), which minimizes on scroll. Android uses the Material bar. Both take the glyphs as template PNGs in `assets/tab-icons/` (25pt, stroke 1.9, `apps/mobile/scripts/tab-icons.mjs`). Web uses `(tabs)/_layout.web.tsx`: a bar-material bar with a blur, same glyphs as components.
+- **Tabs:** 今天, 找熊猫, 图鉴, 我的, with Lucide `sun`, `search`, `layout-grid`, `user-round`. iOS uses the system Liquid Glass bar (`expo-router/native-tabs`, SDK 58), which minimizes on scroll. Android uses the Material bar. In a native build both take the glyphs as custom SF Symbols and VectorDrawables (`react-native-nano-icons`, from the SVGs in `assets/symbols/`), so they scale with the bar; Expo Go takes them as template PNGs in `assets/tab-icons/` (25pt). Both come from Lucide at stroke 1.9 (`apps/mobile/scripts/tab-icons.mjs`); the detail toolbar's `share` and back glyphs follow the same split. Web uses `(tabs)/_layout.web.tsx`: a bar-material bar with a blur, same glyphs as components.
 - **Stack:** the root is a native stack; each tab wraps its own. Large title on a tab root, inline title on a pushed screen. 科普 keeps the large title in the column. Back is the system chevron labelled 返回, edge-swipe on. Do not set a bar background on iOS.
 - **Selected tab:** the tint. Unselected tabs are the secondary label.
 

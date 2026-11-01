@@ -36,7 +36,13 @@
       "expo-secure-store",
       "expo-web-browser",
       "expo-image",
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "react-native-nano-icons",
+        {
+          "symbolSets": [{ "inputDir": "./assets/symbols" }]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

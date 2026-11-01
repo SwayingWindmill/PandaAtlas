@@ -46,3 +46,9 @@ example
 test-results/
 playwright-report/
 e2e/.state.json
+
+# Continuous Native Generation: `expo prebuild` (or EAS Build) writes these from app.json.
+/ios
+/android
+# react-native-nano-icons output, regenerated from assets/symbols/ at prebuild.
+assets/nanoicons/
