@@ -1,5 +1,6 @@
 import type { components } from "@zhipanda/api-client";
 
+import { sourcedLinks } from "@/features/family/lineage";
 import { api, publicMediaUrl } from "@/lib/api";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
 
@@ -134,9 +135,11 @@ export function buildFamily(
 
 async function withCovers(detail: Schemas["PublicPandaDetailDto"], lineage: Lineage[]): Promise<Family> {
   const ids = [detail.panda, ...detail.relatives].map((panda) => panda.pandaId).slice(0, 50);
+  // The 家谱 draws a relation only when a published source backs it.
+  const links = sourcedLinks(lineage);
   // Photos are a nicety: the tree still renders with initials when covers fail.
   const covers = await api.GET("/api/v2/panda-covers", { params: { query: { ids: ids.join(",") } } }).catch(() => null);
-  return buildFamily(detail, lineage, covers?.data?.items ?? []);
+  return buildFamily(detail, links, covers?.data?.items ?? []);
 }
 
 /** The family of a panda whose detail the caller already has. */

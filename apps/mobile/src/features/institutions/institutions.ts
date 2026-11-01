@@ -36,6 +36,9 @@ export interface Facility {
   /** Opening hours, tickets, panda area and address, in the order a visitor checks them. */
   guide: { label: string; value: string }[];
   tips: { label: string; text: string }[];
+  /** The day the guide's hours and prices were last checked, and where they came from. */
+  verifiedOn: string | null;
+  sourceUrls: string[];
   coordinates: { latitude: number; longitude: number } | null;
 }
 
@@ -101,6 +104,8 @@ function facilityOf(place: Place): Facility {
     name: place.nameZh ?? place.nameEn ?? place.slug,
     guide: rows.flatMap(([label, text]) => (text?.zh ? [{ label, value: text.zh }] : [])),
     tips: (guide?.tips ?? []).flatMap((tip) => (tip.text.zh ? [{ label: TIP[tip.topic], text: tip.text.zh }] : [])),
+    verifiedOn: guide?.verifiedOn ?? null,
+    sourceUrls: guide?.sourceUrls ?? [],
     coordinates:
       place.latitude !== undefined && place.longitude !== undefined ? { latitude: place.latitude, longitude: place.longitude } : null,
   };
@@ -142,4 +147,20 @@ export async function loadInstitution(slug: string): Promise<InstitutionDetail> 
 /** "https://www.panda.org.cn/about" → "panda.org.cn", for naming a source in one line. */
 export function hostname(url: string): string {
   return url.replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0] ?? url;
+}
+
+/** A facility worth a 参观攻略 entry: it has at least one published guide line, or somewhere to navigate to. */
+export function hasGuide(facility: Facility): boolean {
+  return facility.guide.length + facility.tips.length > 0 || facility.coordinates !== null;
+}
+
+/** The most recent day any of these guides was checked, so the section can say how fresh it is. */
+export function guideVerifiedOn(facilities: Facility[]): string | null {
+  const days = facilities.flatMap((facility) => facility.verifiedOn ?? []).sort();
+  return days.at(-1) ?? null;
+}
+
+/** Residents the signed-in fan has not marked 见过 yet, in the page's order. */
+export function unseenResidents(residents: PandaListItem[], seen: ReadonlySet<string>): PandaListItem[] {
+  return residents.filter((panda) => !seen.has(panda.id));
 }

@@ -33,7 +33,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { semantic } from "@/design/tokens";
 import { useInstitutionHero } from "@/features/institutions/institution-hero";
-import { type Facility, type InstitutionDetail, hostname, loadInstitution } from "@/features/institutions/institutions";
+import {
+  type Facility,
+  type InstitutionDetail,
+  guideVerifiedOn,
+  hasGuide,
+  hostname,
+  loadInstitution,
+  unseenResidents,
+} from "@/features/institutions/institutions";
+import { loadSeenIds } from "@/features/engagement/seen";
+import { useSession } from "@/features/session/session";
 import { openPanda } from "@/features/pandas/panda-row";
 import type { PandaListItem } from "@/features/pandas/pandas";
 import { longDate } from "@/features/pandas/profile";
@@ -119,7 +129,7 @@ function Former({ pandas }: { pandas: PandaListItem[] }) {
   );
 }
 
-/** The glyph for each 去之前 fact, the way Maps marks hours, address and transit on a place card. */
+/** The glyph for each 参观攻略 fact, the way Maps marks hours, address and transit on a place card. */
 const GUIDE_ICON: Record<string, LucideIcon> = {
   开放时间: Clock,
   门票: Ticket,
@@ -132,7 +142,7 @@ const GUIDE_ICON: Record<string, LucideIcon> = {
 };
 
 /**
- * One 去之前 fact, the way Maps lays out a place card: a footnote label over the value, in a
+ * One 参观攻略 fact, the way Maps lays out a place card: a footnote label over the value, in a
  * grouped card with inset separators. The value wraps freely, so it reads at every text size.
  * The icon sits on the label's line, not centred on a long value.
  */
@@ -153,7 +163,7 @@ function GuideRow({ label, value, last }: { label: string; value: string; last: 
   );
 }
 
-function FacilityGuide({ facility, title }: { facility: Facility; title: string }) {
+function FacilityGuide({ facility, title }: { facility: Facility; title?: string }) {
   const rows = [
     ...facility.guide,
     ...facility.tips.map((tip) => ({ label: tip.label, value: tip.text })),
@@ -180,6 +190,76 @@ function FacilityGuide({ facility, title }: { facility: Facility; title: string 
         />
       ) : null}
     </ListSection>
+  );
+}
+
+/**
+ * 参观攻略: what a visitor checks before going, folded into the base's own page rather than a page
+ * of its own. Only published guide lines appear; hours and prices change, so the section says when
+ * they were checked and sends the visitor to the official site. With no guide and no site it is left out.
+ */
+function VisitGuide({ institution, unseen }: { institution: InstitutionDetail; unseen: PandaListItem[] | null }) {
+  const guided = institution.facilities.filter(hasGuide);
+  const several = institution.facilities.length > 1;
+  const verifiedOn = guideVerifiedOn(guided);
+  const sources = [...new Set(guided.flatMap((facility) => facility.sourceUrls))];
+  if (guided.length === 0 && !institution.websiteUrl) return null;
+  return (
+    <View className="gap-4">
+      <View className="gap-hair-gap px-4">
+        <Text variant="title" role="heading">
+          参观攻略
+        </Text>
+        <Text variant="footnote" className="text-muted-foreground">
+          {guided.length === 0
+            ? "这里还没有收录参观信息，出发前请看官网。"
+            : verifiedOn
+              ? `开放时间和门票会调整，以官方公布为准。核实于 ${longDate(verifiedOn)}。`
+              : "开放时间和门票会调整，以官方公布为准。"}
+        </Text>
+      </View>
+      {unseen && institution.residents.length > 0 ? (
+        <ListSection title="这次去">
+          <ListCell
+            label={unseen.length === 0 ? "住在这里的你都见过了" : "还没见过"}
+            detail={unseen.length === 0 ? undefined : unseen.map((panda) => panda.name).join("、")}
+            meta={unseen.length === 0 ? undefined : `${unseen.length} 只`}
+            last
+          />
+        </ListSection>
+      ) : null}
+      {guided.map((facility) => (
+        <FacilityGuide key={facility.id} facility={facility} title={several ? facility.name : undefined} />
+      ))}
+      {institution.websiteUrl ? (
+        <ListSection>
+          <ListCell
+            icon={Globe}
+            label="出发前看官网"
+            meta={hostname(institution.websiteUrl)}
+            tone="tint"
+            role="link"
+            accessibilityHint="在浏览器中打开"
+            onPress={() => void Linking.openURL(institution.websiteUrl!)}
+            last
+          />
+        </ListSection>
+      ) : null}
+      {sources.length > 0 ? (
+        <View className="flex-row flex-wrap gap-x-3 gap-y-1 px-4">
+          <Text variant="footnote" className="text-muted-foreground">
+            攻略出处
+          </Text>
+          {sources.map((url) => (
+            <Pressable key={url} onPress={() => void Linking.openURL(url)} role="link" accessibilityLabel={`攻略出处 ${hostname(url)}`}>
+              <Text variant="footnote" className="text-muted-foreground underline">
+                {hostname(url)}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
+    </View>
   );
 }
 
@@ -264,6 +344,20 @@ export default function InstitutionScreen() {
   const [institution, setInstitution] = useState<InstitutionDetail | null>(null);
   const [failed, setFailed] = useState(false);
   const hero = useInstitutionHero(institution?.residents ?? null);
+  const { state } = useSession();
+  const signedIn = state.status === "signedIn";
+  const [seen, setSeen] = useState<ReadonlySet<string> | null>(null);
+  useEffect(() => {
+    if (!signedIn) return;
+    // 见过 is a nicety on the 攻略: signed out, or if it fails, the row is simply left out.
+    let live = true;
+    loadSeenIds()
+      .then((ids) => live && setSeen(ids))
+      .catch(() => live && setSeen(null));
+    return () => {
+      live = false;
+    };
+  }, [signedIn]);
   const insets = useSafeAreaInsets();
   const scrollY = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler((event) => {
@@ -304,8 +398,7 @@ export default function InstitutionScreen() {
     );
   }
 
-  const guided = institution.facilities.filter((facility) => facility.guide.length + facility.tips.length > 0 || facility.coordinates);
-  const several = institution.facilities.length > 1;
+  const unseen = signedIn && seen ? unseenResidents(institution.residents, seen) : null;
 
   return (
     <View className="flex-1 bg-background">
@@ -337,36 +430,20 @@ export default function InstitutionScreen() {
         <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-4 pt-5">
           {institution.summary ? <Text variant="body">{institution.summary}</Text> : null}
           {institution.residents.length > 0 ? <Residents pandas={institution.residents} /> : null}
-          {guided.map((facility) => (
-            <FacilityGuide key={facility.id} facility={facility} title={several ? `去之前　${facility.name}` : "去之前"} />
-          ))}
+          <VisitGuide institution={institution} unseen={unseen} />
           {institution.facilities.length > 0 ? <FacilityVisits facilities={institution.facilities} /> : null}
           {institution.former.length > 0 ? <Former pandas={institution.former} /> : null}
-          {institution.liveCamUrl || institution.websiteUrl ? (
+          {institution.liveCamUrl ? (
             <ListSection>
-              {institution.liveCamUrl ? (
-                <ListCell
-                  icon={Video}
-                  label="看官方直播"
-                  tone="tint"
-                  role="link"
-                  accessibilityHint="在浏览器中打开"
-                  onPress={() => void Linking.openURL(institution.liveCamUrl!)}
-                  last={!institution.websiteUrl}
-                />
-              ) : null}
-              {institution.websiteUrl ? (
-                <ListCell
-                  icon={Globe}
-                  label="官网"
-                  meta={hostname(institution.websiteUrl)}
-                  tone="tint"
-                  role="link"
-                  accessibilityHint="在浏览器中打开"
-                  onPress={() => void Linking.openURL(institution.websiteUrl!)}
-                  last
-                />
-              ) : null}
+              <ListCell
+                icon={Video}
+                label="看官方直播"
+                tone="tint"
+                role="link"
+                accessibilityHint="在浏览器中打开"
+                onPress={() => void Linking.openURL(institution.liveCamUrl!)}
+                last
+              />
             </ListSection>
           ) : null}
           <Sources institution={institution} />

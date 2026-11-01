@@ -19,6 +19,13 @@ export function localToday(now = new Date()): string {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
+/** Every panda the signed-in fan has marked 见过, by ID. */
+export async function loadSeenIds(): Promise<Set<string>> {
+  const { data } = await authedApi.GET("/api/v2/me/seen-pandas");
+  if (!data) throw new Error("Seen pandas unavailable");
+  return new Set(data.items.map((item) => item.pandaId));
+}
+
 export async function markSeen(pandaId: string, seenOn: string): Promise<boolean> {
   const { response } = await authedApi.PUT("/api/v2/me/seen-pandas/{pandaId}", { params: { path: { pandaId } }, body: { seenOn } });
   return response.ok;
