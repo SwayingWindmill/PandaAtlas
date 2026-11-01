@@ -1,6 +1,6 @@
 {
-  "$comment": "科普文章、知识卡、专题、名词解释、认脸指南和认脸挑战。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, then run python scripts/curation/build_learning_content_migration.py --write. Draft entries stay in the database and are left out of GET /api/v2/learning.",
-  "version": "2026.11.01.1",
+  "$comment": "科普文章、知识卡、专题、名词解释、认脸指南和认脸挑战。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, then run python scripts/curation/build_learning_content_migration.py --write. Every entry is published as of 2026.11.01 (PR #765). An entry set back to draft stays in the database and is left out of GET /api/v2/learning.",
+  "version": "2026.11.01.2",
   "articles": [
     {
       "slug": "black-eye-patches",
@@ -93,6 +93,15 @@
               },
               {
                 "text": {
+                  "zh": "这个“墨镜说”在网上流传很广。绵阳中华大熊猫苑的官方账号在小红书上也把黑眼圈称作“天然墨镜”，说它能减少眩光、吸收紫外线，冬天还能减少雪地反光。不过它目前只是几种假说之一，下面这项研究给出的是另一种解释。"
+                },
+                "refs": [
+                  "xhs-mianyang-sunglasses",
+                  "nfga-appearance"
+                ]
+              },
+              {
+                "text": {
                   "zh": "第二种思路来自加州大学戴维斯分校等团队2017年发表在《行为生态学》上的研究。研究者把大熊猫身体的各个部位分开分析，并与195种其他食肉动物和39个熊类亚种的毛色作比较。结论是：脸、颈、腹部和臀部的白色有助于在雪地里隐蔽，黑色的四肢有助于在阴影中隐蔽；而头部的斑纹更可能用于交流——深色的耳朵或许能传达凶猛的警告，深色的眼斑则可能帮助个体互相识别，或向竞争者表达攻击性。研究者还认为，以竹子为食让大熊猫无法储存足够的脂肪去冬季蛰伏，只能全年活动，这也和它需要兼顾雪地与森林两种环境的配色有关。"
                 },
                 "refs": [
@@ -134,10 +143,11 @@
               },
               {
                 "text": {
-                  "zh": "说到黑眼圈的用途，网上的说法往往比研究本身更笃定。福州市的官方账号 @FuzhouCity 在国际熊猫日发帖说，这对“烟熏妆”能帮助吓退捕食者，也能用来区分不同的熊猫。前面提到的2017年研究，在概述里确实写着眼周和耳朵的深色会向捕食者发出警告信号，但在具体解释时，把“警告捕食者”主要归于深色的耳朵，眼斑则更可能用于个体识别，或向竞争者示威；史密森尼更是认为目前还没有定论。倒是 @DailyPandaBites 在公布答案时特意加了一个“probably”（大概），更贴近科学的现状。"
+                  "zh": "说到黑眼圈的用途，网上的说法往往比研究本身更笃定。福州市的官方账号 @FuzhouCity 在国际熊猫日发帖说，这对“烟熏妆”能帮助吓退捕食者，也能用来区分不同的熊猫。福州熊猫世界的官方账号在小红书上发过晶亮、艾伦、科豆、启程、启航五只熊猫的眼斑挑战，也说眼斑的形状、弧度和大小因熊猫而异，像一张“身份证”，还能威慑天敌。前面提到的2017年研究，在概述里确实写着眼周和耳朵的深色会向捕食者发出警告信号，但在具体解释时，把“警告捕食者”主要归于深色的耳朵，眼斑则更可能用于个体识别，或向竞争者示威；史密森尼更是认为目前还没有定论。倒是 @DailyPandaBites 在公布答案时特意加了一个“probably”（大概），更贴近科学的现状。"
                 },
                 "refs": [
                   "x-fuzhou",
+                  "xhs-fzpw-eyepatch",
                   "ucd-color",
                   "si-panda",
                   "x-dpb-eyes"
@@ -152,10 +162,11 @@
             "paragraphs": [
               {
                 "text": {
-                  "zh": "亚特兰大动物园的饲养员在2020年的一篇更新里介绍过一项2008年的研究：研究者先让两只未成年大熊猫分辨差别明显的图形，再逐步加大难度，最后让它们分辨形状酷似大熊猫眼斑、只有细微差别的图案，两只熊猫都做到了，而且在6个月和12个月后再次测试时仍然记得。"
+                  "zh": "亚特兰大动物园的饲养员在2020年的一篇更新里介绍过一项2008年的研究：研究者先让两只未成年大熊猫分辨差别明显的图形，再逐步加大难度，最后让它们分辨形状酷似大熊猫眼斑、只有细微差别的图案，两只熊猫都做到了，而且在6个月和12个月后再次测试时仍然记得。小红书博主 MS.BIO 介绍这项研究时，把它概括为熊猫能识别并记住邻居的眼斑长达一年。"
                 },
                 "refs": [
-                  "za-2020-11-06"
+                  "za-2020-11-06",
+                  "xhs-msbio"
                 ]
               },
               {
@@ -302,6 +313,13 @@
           "citedOn": "2026-10-31"
         },
         {
+          "id": "xhs-mianyang-sunglasses",
+          "title": "小红书笔记：黑眼圈是“天然墨镜”的说法（2026-05-18 编辑）",
+          "publisher": "小红书 绵阳中华大熊猫苑（官方账号）",
+          "url": "https://www.xiaohongshu.com/explore/6a0ac567000000003502bc69",
+          "citedOn": "2026-11-01"
+        },
+        {
           "id": "ucd-color",
           "title": "Why Pandas Are Black and White（2017-03-03，介绍 Caro 等发表于 Behavioral Ecology 的研究）",
           "publisher": "University of California, Davis",
@@ -330,11 +348,25 @@
           "citedOn": "2026-10-31"
         },
         {
+          "id": "xhs-fzpw-eyepatch",
+          "title": "小红书笔记：福州熊猫世界五只大熊猫眼斑挑战（2026-08-01）",
+          "publisher": "小红书 福州熊猫世界（官方账号）",
+          "url": "https://www.xiaohongshu.com/explore/6a6d9e51000000000502a82c",
+          "citedOn": "2026-11-01"
+        },
+        {
           "id": "za-2020-11-06",
           "title": "Panda Updates – Friday, November 6（2020）",
           "publisher": "Zoo Atlanta",
           "url": "https://zooatlanta.org/panda-updates-friday-november-6/",
           "citedOn": "2026-10-31"
+        },
+        {
+          "id": "xhs-msbio",
+          "title": "小红书笔记：大熊猫眼斑与面部斑纹研究介绍（2026-07-12）",
+          "publisher": "小红书 MS.BIO",
+          "url": "https://www.xiaohongshu.com/explore/6a53433300000000220083f3",
+          "citedOn": "2026-11-01"
         }
       ],
       "relatedArticles": [
@@ -343,10 +375,10 @@
         "what-pandas-eat"
       ],
       "stats": {
-        "bodyChars": 1733,
-        "bodyCjkChars": 1476,
+        "bodyChars": 1954,
+        "bodyCjkChars": 1667,
         "sectionCount": 5,
-        "referenceCount": 9
+        "referenceCount": 12
       }
     },
     {
@@ -477,6 +509,14 @@
                 "refs": [
                   "x-ipanda-jili",
                   "cd-food"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "游客的镜头也能捕捉到吃法上的小窍门。有游客在小红书分享（账号“🥕胡萝卜”），在长隆野生动物园看到大熊猫酷酷先把长竹叶攒成一把，咬住中间往一侧翻折，一次吃两口，形容它是“用最小的力吃最多的饭”。"
+                },
+                "refs": [
+                  "xhs-carrot-kuku"
                 ]
               },
               {
@@ -661,6 +701,13 @@
           "citedOn": "2026-10-31"
         },
         {
+          "id": "xhs-carrot-kuku",
+          "title": "小红书笔记：长隆大熊猫酷酷折竹叶吃（2026-02-02）",
+          "publisher": "小红书 🥕胡萝卜",
+          "url": "https://www.xiaohongshu.com/explore/6980b7a1000000000e00d454",
+          "citedOn": "2026-11-01"
+        },
+        {
           "id": "x-zooatl-arrive",
           "title": "X 帖子：大熊猫 Ping Ping 和 Fu Shuang 抵达亚特兰大（2026-09-27）",
           "publisher": "X @ZooATL（Zoo Atlanta）",
@@ -695,10 +742,10 @@
         "black-eye-patches"
       ],
       "stats": {
-        "bodyChars": 1594,
-        "bodyCjkChars": 1342,
+        "bodyChars": 1690,
+        "bodyCjkChars": 1425,
         "sectionCount": 5,
-        "referenceCount": 12
+        "referenceCount": 13
       }
     },
     {
@@ -833,6 +880,15 @@
                   "op-meet",
                   "wwp-op-twins",
                   "cd-growth"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "新生命的消息也常常最先出现在社交平台上。2026年6月，iPanda熊猫频道在小红书发文称“福宝第三个妹妹”出生了（图源中国大熊猫保护研究中心），并称它是2026年首只“旅外新生幼崽”。按这条笔记的描述，小家伙浑身粉嫩，“出生自带微笑唇”，正是前面说的新生幼仔皮肤粉红的样子。"
+                },
+                "refs": [
+                  "xhs-ipanda-fubao-sister",
+                  "si-panda"
                 ]
               },
               {
@@ -1071,6 +1127,13 @@
           "citedOn": "2026-10-31"
         },
         {
+          "id": "xhs-ipanda-fubao-sister",
+          "title": "小红书笔记：福宝第三个妹妹出生（2026-06-09）",
+          "publisher": "小红书 iPanda熊猫频道（官方账号）",
+          "url": "https://www.xiaohongshu.com/explore/6a28ccbd000000000702b1cf",
+          "citedOn": "2026-11-01"
+        },
+        {
           "id": "x-ipanda-aili",
           "title": "X 帖子：妈妈吃东西时，Ai Li 的幼仔自己爬树玩（2026-10-16）",
           "publisher": "X @ipandacom（iPanda）",
@@ -1105,10 +1168,10 @@
         "telling-faces-apart"
       ],
       "stats": {
-        "bodyChars": 1680,
-        "bodyCjkChars": 1378,
+        "bodyChars": 1818,
+        "bodyCjkChars": 1485,
         "sectionCount": 5,
-        "referenceCount": 14
+        "referenceCount": 15
       }
     },
     {
@@ -1254,6 +1317,16 @@
                 "refs": [
                   "op-meet",
                   "wwp-op-twins"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "在小红书上，认脸也是一种热门玩法。动物园探索护照发过一组六张熊猫脸照片的认脸测试；博主 momolulu 认为“七仔一骑绝尘最好认”，花花姨精选则形容花花是“标准版卡通圆脸”。这些都是熊猫迷的个人观察；正如海洋公园提醒的，熊猫的样子会随成长变化，认脸时最好还是对照饲养员和官方的资料。"
+                },
+                "refs": [
+                  "xhs-passport-quiz",
+                  "xhs-momolulu",
+                  "xhs-huahua-face"
                 ]
               },
               {
@@ -1537,6 +1610,27 @@
           "citedOn": "2026-10-31"
         },
         {
+          "id": "xhs-passport-quiz",
+          "title": "小红书笔记：六张熊猫脸认脸测试（2025-08-28）",
+          "publisher": "小红书 动物园探索护照",
+          "url": "https://www.xiaohongshu.com/explore/68aea2f0000000001c009e55",
+          "citedOn": "2026-11-01"
+        },
+        {
+          "id": "xhs-momolulu",
+          "title": "小红书笔记：哪只熊猫最好认（2025-05-28 编辑）",
+          "publisher": "小红书 momolulu",
+          "url": "https://www.xiaohongshu.com/explore/68370e04000000002101818e",
+          "citedOn": "2026-11-01"
+        },
+        {
+          "id": "xhs-huahua-face",
+          "title": "小红书笔记：花花的“卡通圆脸”（2025-04-03 编辑）",
+          "publisher": "小红书 花花姨精选",
+          "url": "https://www.xiaohongshu.com/explore/67ee516f000000001e005d0c",
+          "citedOn": "2026-11-01"
+        },
+        {
           "id": "thepaper-fans",
           "title": "熊猫也有饭圈，你想不到吧（2019-05-24）",
           "publisher": "澎湃新闻",
@@ -1571,10 +1665,10 @@
         "what-pandas-eat"
       ],
       "stats": {
-        "bodyChars": 1783,
-        "bodyCjkChars": 1479,
+        "bodyChars": 1923,
+        "bodyCjkChars": 1598,
         "sectionCount": 5,
-        "referenceCount": 16
+        "referenceCount": 19
       }
     },
     {
@@ -2102,6 +2196,16 @@
             "zh": "香港海洋公园的办法是先看“小背心”，也就是肩背上的黑色背带：盈盈是深V，乐乐是圆领，安安像梯形，可可是蝴蝶型；再看眼圈，盈盈的像“8”字，乐乐的是圆形。幼仔的特征变化很快，海洋公园助理馆长胡绮琪提醒，大熊猫“每日都可能有变化”。另据人民日报客户端的科普，饲养员有时会在熊猫身上涂不同颜色的标记来区分。",
             "en": "Ocean Park Hong Kong suggests starting with the \"vest\", the black band across the shoulders and back: Ying Ying's is a deep V, Le Le's a round neck, An An's a trapezoid and Ke Ke's a butterfly. Then check the eye patches: Ying Ying's look like the number 8, Le Le's are round. Cubs change quickly; an Ocean Park assistant curator noted that a growing panda \"may change every day\". According to a People's Daily app explainer, keepers sometimes paint different coloured marks on pandas to tell them apart."
           }
+        },
+        {
+          "heading": {
+            "zh": "“小背心”和颜色标记",
+            "en": "\"Vests\" and colour marks"
+          },
+          "body": {
+            "zh": "香港海洋公园的办法是先看“小背心”，也就是肩背上的黑色背带：盈盈是深V，乐乐是圆领，安安像梯形，可可是蝴蝶型；再看眼圈，盈盈的像“8”字，乐乐的是圆形。幼仔的特征变化很快，海洋公园助理馆长胡绮琪提醒，大熊猫“每日都可能有变化”。另据人民日报客户端的科普，饲养员有时会在熊猫身上涂不同颜色的标记来区分。",
+            "en": "Ocean Park Hong Kong suggests starting with the \"vest\", the black band across the shoulders and back: Ying Ying's is a deep V, Le Le's a round neck, An An's a trapezoid and Ke Ke's a butterfly. Then check the eye patches: Ying Ying's look like the number 8, Le Le's are round. Cubs change quickly; an Ocean Park assistant curator noted that a growing panda \"may change every day\". According to a People's Daily app explainer, keepers sometimes paint different coloured marks on pandas to tell them apart."
+          }
         }
       ],
       "cardSlugs": [
@@ -2163,6 +2267,30 @@
           },
           "url": "https://www.peopleapp.com/column/30038828372-500003827733",
           "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "北京日报：香港海洋公园推出“熊猫辨认大法”",
+            "en": "Beijing Daily: Ocean Park Hong Kong's guide to telling its pandas apart"
+          },
+          "url": "https://xinwen.bjd.com.cn/content/s6728d460e4b0e1ace8a7ea0f.html",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "香港文汇报：熊猫姊弟两个月大",
+            "en": "Wen Wei Po: The panda twins at two months"
+          },
+          "url": "https://www.wenweipo.com/a/202410/15/AP670d7dc4e4b0ee6b0e8a7dca.html",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "人民日报客户端：技术帖！如何分辨大熊猫",
+            "en": "People's Daily app: How to tell giant pandas apart"
+          },
+          "url": "https://www.peopleapp.com/column/30038828372-500003827733",
+          "citedOn": "2026-10-31"
         }
       ]
     },
@@ -2197,6 +2325,16 @@
             "zh": "“熊猫很懒”：大熊猫每天要花10～16小时觅食。它休息得多，是因为竹子营养低，让它攒不下足够的脂肪去蛰伏，只能全年保持活动。“熊猫只吃竹子”：野外大熊猫约1%的食物是其他植物甚至肉类；动物园还会补充饼干、水果和蔬菜。",
             "en": "\"Pandas are lazy\": a giant panda spends 10 to 16 hours a day foraging. It rests a lot because bamboo is so low in nutrients that it cannot store enough fat to go dormant, so it has to stay active year-round. \"Pandas eat only bamboo\": about 1% of a wild panda's diet is other plants and even meat, and zoos add biscuits, fruit and vegetables."
           }
+        },
+        {
+          "heading": {
+            "zh": "两个常见误会",
+            "en": "Two common misconceptions"
+          },
+          "body": {
+            "zh": "“熊猫很懒”：大熊猫每天要花10～16小时觅食。它休息得多，是因为竹子营养低，让它攒不下足够的脂肪去蛰伏，只能全年保持活动。“熊猫只吃竹子”：野外大熊猫约1%的食物是其他植物甚至肉类；动物园还会补充饼干、水果和蔬菜。",
+            "en": "\"Pandas are lazy\": a giant panda spends 10 to 16 hours a day foraging. It rests a lot because bamboo is so low in nutrients that it cannot store enough fat to go dormant, so it has to stay active year-round. \"Pandas eat only bamboo\": about 1% of a wild panda's diet is other plants and even meat, and zoos add biscuits, fruit and vegetables."
+          }
         }
       ],
       "cardSlugs": [
@@ -2217,6 +2355,22 @@
             "en": "Smithsonian's National Zoo: Giant Panda FAQs"
           },
           "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "史密森尼国家动物园：大熊猫",
+            "en": "Smithsonian's National Zoo: Giant Panda"
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "加州大学戴维斯分校：大熊猫为什么是黑白的",
+            "en": "UC Davis: Why Pandas Are Black and White"
+          },
+          "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
           "citedOn": "2026-10-31"
         },
         {
@@ -2514,6 +2668,14 @@
             "en": "Zoo Atlanta: Lun Lun"
           },
           "url": "https://zooatlanta.org/animal-legend/lun-lun/",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "亚特兰大动物园：熊猫动态（12月27日）",
+            "en": "Zoo Atlanta: Panda Updates – Wednesday, December 27"
+          },
+          "url": "https://zooatlanta.org/panda-updates-wednesday-december-27/",
           "citedOn": "2026-10-31"
         },
         {
