@@ -1,10 +1,10 @@
 {
   "$comment": "科普文章、知识卡、专题、名词解释、认脸指南和认脸挑战。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, then run python scripts/curation/build_learning_content_migration.py --write. Draft entries stay in the database and are left out of GET /api/v2/learning.",
-  "version": "2026.10.30.1",
+  "version": "2026.11.01.1",
   "articles": [
     {
       "slug": "black-eye-patches",
-      "status": "draft",
+      "status": "published",
       "category": "外形与识别",
       "sourceCardSlug": "black-eye-patches",
       "title": {
@@ -111,6 +111,42 @@
           },
           {
             "heading": {
+              "zh": "“熬夜熬出来的”？网上的说法与科学的回答"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "在社交平台上，大熊猫的黑眼圈常被拿来开玩笑。有 X 用户 @bestyou666 写道：“什么动物天天熬夜？熊猫，黑眼圈严重。”熊猫科普账号 @DailyPandaBites 在一则问答的结尾也调侃，人熬夜之后同样会有“黑眼圈”，算是“有点熊猫”了。"
+                },
+                "refs": [
+                  "x-bestyou666",
+                  "x-dpb-eyes"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "玩笑归玩笑，大熊猫的黑眼圈和睡得多少没有关系。它是一片天生的黑毛，和耳朵、四肢、肩部的黑毛同属一套毛色图案；幼仔出生一周左右、眼睛还远没有睁开时，眼斑就已经开始显现。"
+                },
+                "refs": [
+                  "si-panda",
+                  "si-cub-day7"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "说到黑眼圈的用途，网上的说法往往比研究本身更笃定。福州市的官方账号 @FuzhouCity 在国际熊猫日发帖说，这对“烟熏妆”能帮助吓退捕食者，也能用来区分不同的熊猫。前面提到的2017年研究，在概述里确实写着眼周和耳朵的深色会向捕食者发出警告信号，但在具体解释时，把“警告捕食者”主要归于深色的耳朵，眼斑则更可能用于个体识别，或向竞争者示威；史密森尼更是认为目前还没有定论。倒是 @DailyPandaBites 在公布答案时特意加了一个“probably”（大概），更贴近科学的现状。"
+                },
+                "refs": [
+                  "x-fuzhou",
+                  "ucd-color",
+                  "si-panda",
+                  "x-dpb-eyes"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
               "zh": "熊猫自己认得出眼斑吗"
             },
             "paragraphs": [
@@ -149,7 +185,7 @@
         },
         {
           "text": {
-            "zh": "幼仔约一周大时眼斑开始显现，而眼睛要到6～8周才睁开。"
+            "zh": "眼斑是天生的黑毛图案，幼仔约一周大就开始显现，比6～8周才睁开的眼睛更早，和“熬夜”无关。"
           },
           "refs": [
             "si-cub-day7",
@@ -242,42 +278,63 @@
           "title": "Giant panda",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "nfga-appearance",
           "title": "大熊猫的外形特征（来源：中国大熊猫保护研究中心）",
           "publisher": "国家林业和草原局",
           "url": "https://www.forestry.gov.cn/c/www/zhzs/581527.jhtml",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "cd-growth",
           "title": "【熊猫知识】大熊猫生长发育",
           "publisher": "成都大熊猫繁育研究基地",
           "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/370.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-cub-day7",
           "title": "#PandaStory: Cub Day 7（2020-08-28）",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/news/pandastory-cub-day-7",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "ucd-color",
           "title": "Why Pandas Are Black and White（2017-03-03，介绍 Caro 等发表于 Behavioral Ecology 的研究）",
           "publisher": "University of California, Davis",
           "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-bestyou666",
+          "title": "X 帖子：“什么动物天天熬夜？熊猫，黑眼圈严重”（2026-10-26）",
+          "publisher": "X @bestyou666",
+          "url": "https://x.com/bestyou666/status/2114869532917633214",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-dpb-eyes",
+          "title": "X 帖子：熊猫为什么有黑眼圈？问答揭晓（2026-10-31）",
+          "publisher": "X @DailyPandaBites",
+          "url": "https://x.com/DailyPandaBites/status/2116526262374273510",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-fuzhou",
+          "title": "X 帖子：国际熊猫日，福州熊猫世界五只大熊猫“看眼斑认一认”（2026-10-27）",
+          "publisher": "X @FuzhouCity",
+          "url": "https://x.com/FuzhouCity/status/2114996866815578262",
+          "citedOn": "2026-10-31"
         },
         {
           "id": "za-2020-11-06",
           "title": "Panda Updates – Friday, November 6（2020）",
           "publisher": "Zoo Atlanta",
           "url": "https://zooatlanta.org/panda-updates-friday-november-6/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ],
       "relatedArticles": [
@@ -286,15 +343,15 @@
         "what-pandas-eat"
       ],
       "stats": {
-        "bodyChars": 1291,
-        "bodyCjkChars": 1147,
-        "sectionCount": 4,
-        "referenceCount": 6
+        "bodyChars": 1733,
+        "bodyCjkChars": 1476,
+        "sectionCount": 5,
+        "referenceCount": 9
       }
     },
     {
       "slug": "bamboo",
-      "status": "draft",
+      "status": "published",
       "category": "食性",
       "sourceCardSlug": "bamboo",
       "title": {
@@ -396,6 +453,39 @@
                 },
                 "refs": [
                   "si-faq"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "镜头里的“挑食”：从嗅一嗅到换新竹"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "大熊猫怎样挑竹子，在保护机构和动物园的日常记录里常能看到。中国大熊猫保护研究中心在微博上分享过神树坪基地的大熊猫“展望”：它吃竹子前会“先仔细嗅一嗅”，闻过了才准备开动。这段内容由熊猫爱好者账号 @mickeyminnie611 转发到了 X 上。"
+                },
+                "refs": [
+                  "x-mm-zhanwang"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "竹笋则是最抢手的部分。熊猫直播平台 iPanda 的官方账号 @ipandacom 发过一张成都大熊猫繁育研究基地幼仔的照片，配文说这只 Ji Li 的孩子花了好长时间才找到这根竹笋，所以“吃起来更香”。这和前面说的“竹笋、嫩竹、竹竿”的偏好顺序正好呼应。"
+                },
+                "refs": [
+                  "x-ipanda-jili",
+                  "cd-food"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "熊猫换了新家，竹子菜单也要跟着换。2026年9月下旬，两只大熊猫 Ping Ping 和 Fu Shuang 抵达亚特兰大动物园。动物园在10月初的帖子里说，两只熊猫适应得很好，正在吃“多种新的竹种和竹笋”。"
+                },
+                "refs": [
+                  "x-zooatl-arrive",
+                  "x-zooatl-bamboo"
                 ]
               }
             ]
@@ -519,56 +609,84 @@
           "title": "【熊猫知识】食物",
           "publisher": "成都大熊猫繁育研究基地",
           "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8784.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "nfga-plants",
           "title": "大熊猫的“伴生植物”（来源：成都大熊猫繁育研究基地）",
           "publisher": "国家林业和草原局",
           "url": "https://www.forestry.gov.cn/c/www/dzwzbh/576159.jhtml",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "cd-eating",
           "title": "【熊猫知识】进食",
           "publisher": "成都大熊猫繁育研究基地",
           "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8786.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "wwf-qa",
           "title": "Panda 100 Q&As – Answer Sheet（2008年11月）",
           "publisher": "WWF China Species Programme",
           "url": "https://wwfcn.awsassets.panda.org/downloads/panda_100_q_as_answer_sheet_en_final.pdf",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "cd-feeding",
           "title": "饲养动态",
           "publisher": "成都大熊猫繁育研究基地",
           "url": "https://www.panda.org.cn/cn/animal/feeding/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-faq",
           "title": "Giant Panda FAQs",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-mm-zhanwang",
+          "title": "X 帖子：“展望”吃竹子前先仔细嗅一嗅（转述中国大熊猫保护研究中心微博，2026-10-28）",
+          "publisher": "X @mickeyminnie611",
+          "url": "https://x.com/mickeyminnie611/status/2115420778149892469",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-ipanda-jili",
+          "title": "X 帖子：Ji Li 的幼仔找到竹笋（2026-10-28）",
+          "publisher": "X @ipandacom（iPanda）",
+          "url": "https://x.com/ipandacom/status/2115360423658520894",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-zooatl-arrive",
+          "title": "X 帖子：大熊猫 Ping Ping 和 Fu Shuang 抵达亚特兰大（2026-09-27）",
+          "publisher": "X @ZooATL（Zoo Atlanta）",
+          "url": "https://x.com/ZooATL/status/2104220718191742987",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-zooatl-bamboo",
+          "title": "X 帖子：Ping Ping 和 Fu Shuang 适应良好，正在吃多种新竹种和竹笋（2026-10-07）",
+          "publisher": "X @ZooATL（Zoo Atlanta）",
+          "url": "https://x.com/ZooATL/status/2107863620633899367",
+          "citedOn": "2026-10-31"
         },
         {
           "id": "wwf-eat",
           "title": "What do pandas eat?",
           "publisher": "WWF",
           "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-panda",
           "title": "Giant panda",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ],
       "relatedArticles": [
@@ -577,15 +695,15 @@
         "black-eye-patches"
       ],
       "stats": {
-        "bodyChars": 1255,
-        "bodyCjkChars": 1093,
-        "sectionCount": 4,
-        "referenceCount": 8
+        "bodyChars": 1594,
+        "bodyCjkChars": 1342,
+        "sectionCount": 5,
+        "referenceCount": 12
       }
     },
     {
       "slug": "cubs",
-      "status": "draft",
+      "status": "published",
       "category": "繁殖与成长",
       "sourceCardSlug": "cubs",
       "title": {
@@ -698,6 +816,42 @@
                 "refs": [
                   "cd-growth",
                   "si-panda"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "真实的成长记录：香港龙凤胎与爬树的幼仔"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "前面的平均数字，落到具体的幼仔身上是什么样？2024年8月15日，香港海洋公园的一对大熊猫龙凤胎加加和得得出生。据香港文汇报报道，两只幼仔出生时分别重122克和112克，正落在成都基地给出的范围里；两个月大时分别长到约2.7公斤和2.54公斤，并在10月初睁开了眼睛——大约是出生后第七周，和“6到8周睁眼”的说法相吻合。"
+                },
+                "refs": [
+                  "op-meet",
+                  "wwp-op-twins",
+                  "cd-growth"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "再大一些，幼仔就开始自己找乐子、学本领。iPanda 的官方账号 @ipandacom 分享过一张照片：妈妈 Ai Li 在吃东西，她的幼仔自己爬上树玩；另一条帖子里，一只刚长出小牙的幼仔已经抱着竹子啃，配文是“牙齿小小，胃口大大”。这些画面可以和前面说的学吃竹子、爱玩爱爬树的阶段对照着看。"
+                },
+                "refs": [
+                  "x-ipanda-aili",
+                  "x-ipanda-teeth",
+                  "cd-growth"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "繁殖季的信号也看得到。2026年3月下旬，史密森尼国家动物园在 X 上写道，宝力和青宝“开始对彼此感兴趣”，就像潮汐湖畔的樱花一样，是春天到来的标志。这和3到5月的发情期正好对得上；不过帖子并没有提到繁殖结果。"
+                },
+                "refs": [
+                  "x-nzoo-spring",
+                  "cd-breeding"
                 ]
               }
             ]
@@ -851,63 +1005,98 @@
           "title": "【熊猫知识】繁殖",
           "publisher": "成都大熊猫繁育研究基地",
           "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/361.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-panda",
           "title": "Giant panda",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "cd-rearing",
           "title": "【熊猫知识】育幼生长",
           "publisher": "成都大熊猫繁育研究基地",
           "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8782.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "cd-growth",
           "title": "【熊猫知识】大熊猫生长发育",
           "publisher": "成都大熊猫繁育研究基地",
           "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/370.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "wwf-qa",
           "title": "Panda 100 Q&As – Answer Sheet（2008年11月）",
           "publisher": "WWF China Species Programme",
           "url": "https://wwfcn.awsassets.panda.org/downloads/panda_100_q_as_answer_sheet_en_final.pdf",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "za-2021-12-13",
           "title": "Panda Updates – Monday, December 13（2021）",
           "publisher": "Zoo Atlanta",
           "url": "https://zooatlanta.org/panda-updates-monday-december-13/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-cub-day7",
           "title": "#PandaStory: Cub Day 7（2020-08-28）",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/news/pandastory-cub-day-7",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-cub-top5",
           "title": "Top 5 ‘Aww’-Inspiring Giant Panda Cub Moments",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/news/top-5-aww-inspiring-giant-panda-cub-moments",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "op-meet",
+          "title": "与大熊猫见面",
+          "publisher": "香港海洋公园",
+          "url": "https://www.oceanpark.com.hk/sc/a-day-at-the-park/panda-zone/meet-giant-pandas",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "wwp-op-twins",
+          "title": "熊貓姊弟兩個月大 有望變身做直播主（2024-10-15）",
+          "publisher": "香港文匯報",
+          "url": "https://www.wenweipo.com/a/202410/15/AP670d7dc4e4b0ee6b0e8a7dca.html",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-ipanda-aili",
+          "title": "X 帖子：妈妈吃东西时，Ai Li 的幼仔自己爬树玩（2026-10-16）",
+          "publisher": "X @ipandacom（iPanda）",
+          "url": "https://x.com/ipandacom/status/2111011767950139670",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-ipanda-teeth",
+          "title": "X 帖子：牙齿小小，胃口大大的小竹子吃货（2026-10-24）",
+          "publisher": "X @ipandacom（iPanda）",
+          "url": "https://x.com/ipandacom/status/2113978824098496718",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-nzoo-spring",
+          "title": "X 帖子：春天到了，宝力和青宝开始对彼此感兴趣（2026-03-27）",
+          "publisher": "X @NationalZoo（Smithsonian's National Zoo）",
+          "url": "https://x.com/NationalZoo/status/2037521916789924275",
+          "citedOn": "2026-10-31"
         },
         {
           "id": "za-lun-lun",
           "title": "Lun Lun",
           "publisher": "Zoo Atlanta",
           "url": "https://zooatlanta.org/animal-legend/lun-lun/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ],
       "relatedArticles": [
@@ -916,15 +1105,15 @@
         "telling-faces-apart"
       ],
       "stats": {
-        "bodyChars": 1276,
-        "bodyCjkChars": 1064,
-        "sectionCount": 4,
-        "referenceCount": 9
+        "bodyChars": 1680,
+        "bodyCjkChars": 1378,
+        "sectionCount": 5,
+        "referenceCount": 14
       }
     },
     {
       "slug": "telling-faces-apart",
-      "status": "draft",
+      "status": "published",
       "category": "外形与识别",
       "sourceTopicSlug": "telling-faces-apart",
       "title": {
@@ -1010,10 +1199,11 @@
             "paragraphs": [
               {
                 "text": {
-                  "zh": "伦伦和洋洋在亚特兰大动物园生活多年，伦伦一共生育了7只幼仔，其中包括2013年的双胞胎美轮、美奂，以及2016年的双胞胎雅伦、喜伦。伦伦以圆圆的、毛茸茸的脸颊著称。"
+                  "zh": "伦伦和洋洋在亚特兰大动物园生活了25年，2024年10月和双胞胎雅伦、喜伦一起启程回到成都大熊猫繁育研究基地。伦伦一共生育了7只幼仔，其中包括2013年的双胞胎美轮、美奂，以及2016年的双胞胎雅伦、喜伦。伦伦以圆圆的、毛茸茸的脸颊著称。"
                 },
                 "refs": [
-                  "za-lun-lun"
+                  "za-lun-lun",
+                  "x-zooatl-depart"
                 ]
               },
               {
@@ -1040,6 +1230,40 @@
                 "refs": [
                   "za-2017-12-27",
                   "za-2018-10-29"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "“小背心”、凤眼和颜色标记：更多认脸办法"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "香港海洋公园也公开过一套“熊猫辨认大法”：先看“小背心”，也就是肩背上的黑色[[saddle|背带]]——盈盈是深V，乐乐是圆领，安安像梯形，可可是蝴蝶型；再看眼圈，盈盈的像“8”字，乐乐的是圆形，安安像葫芦，可可的像一块肥皂。报道提到，网友普遍觉得看“小背心”最容易分辨。"
+                },
+                "refs": [
+                  "bjd-op-howto"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "幼仔的特征变得更快。海洋公园2024年出生的龙凤胎里，官网写姐姐加加的眼圈像画了凤眼般的眼线，弟弟得得的较像长方形；两个月大时的报道则说弟弟的眼斑更圆、毛色更深。助理馆长胡绮琪提醒，大熊猫长得快，“每日都可能有变化”。"
+                },
+                "refs": [
+                  "op-meet",
+                  "wwp-op-twins"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "熊猫迷有自己的办法。澎湃新闻2019年的报道里，粉丝们会对照眼圈、脸型、嘴巴、耳朵、“肩带”的形状乃至毛色和四肢；人民日报客户端的科普则提到，饲养员有时会在熊猫身上涂不同颜色的标记来区分。至于社交平台上的认脸提示，要多留个心眼：熊猫科普账号 @DailyPandaBites 给亚特兰大新来的 Ping Ping 和 Fu Shuang 写过“认法”——一只爱爬树、眼斑浓黑，一只圆滚滚、头顶有一撮蓬毛，但这些说法目前还没有动物园官方介绍可以印证。"
+                },
+                "refs": [
+                  "thepaper-fans",
+                  "people-howto",
+                  "x-dpb-atl"
                 ]
               }
             ]
@@ -1135,7 +1359,7 @@
         {
           "slug": "saddle",
           "label": "背带",
-          "inLearningJson": false
+          "inLearningJson": true
         }
       ],
       "images": [
@@ -1233,63 +1457,112 @@
           "title": "How Can You Tell the Giant Pandas Apart?",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/news/how-can-you-tell-giant-pandas-apart",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "za-2018-10-29",
           "title": "Panda Updates – Monday, October 29（2018）",
           "publisher": "Zoo Atlanta",
           "url": "https://zooatlanta.org/panda-updates-monday-october-29/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "za-2020-11-06",
           "title": "Panda Updates – Friday, November 6（2020）",
           "publisher": "Zoo Atlanta",
           "url": "https://zooatlanta.org/panda-updates-friday-november-6/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "za-2021-12-13",
           "title": "Panda Updates – Monday, December 13（2021）",
           "publisher": "Zoo Atlanta",
           "url": "https://zooatlanta.org/panda-updates-monday-december-13/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "za-2017-12-27",
           "title": "Panda Updates – Wednesday, December 27（2017）",
           "publisher": "Zoo Atlanta",
           "url": "https://zooatlanta.org/panda-updates-wednesday-december-27/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-panda",
           "title": "Giant panda",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-faq",
           "title": "Giant Panda FAQs",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "za-lun-lun",
           "title": "Lun Lun",
           "publisher": "Zoo Atlanta",
           "url": "https://zooatlanta.org/animal-legend/lun-lun/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-zooatl-depart",
+          "title": "X 帖子：伦伦、洋洋、雅伦、喜伦已启程返回中国（2024-10-12）",
+          "publisher": "X @ZooATL（Zoo Atlanta）",
+          "url": "https://x.com/ZooATL/status/1845122710566772869",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "bjd-op-howto",
+          "title": "“家里”熊猫太多认不全？香港海洋公园推出“熊猫辨认大法”（2024-11-04）",
+          "publisher": "北京日报·京报网（大湾区之声）",
+          "url": "https://xinwen.bjd.com.cn/content/s6728d460e4b0e1ace8a7ea0f.html",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "op-meet",
+          "title": "与大熊猫见面",
+          "publisher": "香港海洋公园",
+          "url": "https://www.oceanpark.com.hk/sc/a-day-at-the-park/panda-zone/meet-giant-pandas",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "wwp-op-twins",
+          "title": "熊貓姊弟兩個月大 有望變身做直播主（2024-10-15）",
+          "publisher": "香港文匯報",
+          "url": "https://www.wenweipo.com/a/202410/15/AP670d7dc4e4b0ee6b0e8a7dca.html",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "thepaper-fans",
+          "title": "熊猫也有饭圈，你想不到吧（2019-05-24）",
+          "publisher": "澎湃新闻",
+          "url": "https://www.thepaper.cn/newsDetail_forward_3429835",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "people-howto",
+          "title": "技术帖！如何分辨大熊猫",
+          "publisher": "人民日报客户端",
+          "url": "https://www.peopleapp.com/column/30038828372-500003827733",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-dpb-atl",
+          "title": "X 帖子：亚特兰大新来的 Ping Ping 和 Fu Shuang 怎么分（2026-10-21）",
+          "publisher": "X @DailyPandaBites",
+          "url": "https://x.com/DailyPandaBites/status/2112989855789601123",
+          "citedOn": "2026-10-31"
         },
         {
           "id": "pmc-recognition",
           "title": "A study on giant panda recognition based on images of a large proportion of captive pandas（Ecology and Evolution，2020）",
           "publisher": "PubMed Central / Ecology and Evolution",
           "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7141006/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ],
       "relatedArticles": [
@@ -1298,15 +1571,15 @@
         "what-pandas-eat"
       ],
       "stats": {
-        "bodyChars": 1295,
-        "bodyCjkChars": 1099,
-        "sectionCount": 4,
-        "referenceCount": 9
+        "bodyChars": 1783,
+        "bodyCjkChars": 1479,
+        "sectionCount": 5,
+        "referenceCount": 16
       }
     },
     {
       "slug": "what-pandas-eat",
-      "status": "draft",
+      "status": "published",
       "category": "食性",
       "sourceTopicSlug": "what-pandas-eat",
       "title": {
@@ -1444,6 +1717,43 @@
                 ]
               }
             ]
+          },
+          {
+            "heading": {
+              "zh": "“懒”和“只吃竹子”：两个常见误会"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "在 X 上，“熊猫很懒”是个常见印象，有用户随口写道“pandas are lazy and stuff I assume”（熊猫就是懒吧，我猜）。可从机构资料看，大熊猫每天要花10到16个小时觅食；作息里确实有大段休息，但那是吃低营养食物的代价——竹子让它攒不下足够的脂肪去蛰伏，只能全年保持活动。"
+                },
+                "refs": [
+                  "x-aerialliz",
+                  "si-panda",
+                  "wwf-qa",
+                  "ucd-color"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "另一个误会是“熊猫只吃竹子”。除了野外约1%的其他食物，动物园也常把竹子以外的食物做成“大餐”：2026年8月宝力5岁生日，史密森尼国家动物园营养科学部为它做了果冰“蛋糕”；10月，重庆的动物园为7岁的 Ai Lian 准备了竹笋、西瓜、冬瓜、南瓜和葡萄。"
+                },
+                "refs": [
+                  "wwf-eat",
+                  "x-nzoo-baoli5",
+                  "x-chinafocus-ailian"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "吃饭本身也有讲究。中国大熊猫保护研究中心在微博上记录过大熊猫“伟伟”的吃法：左右牙“轮番上阵”，先剥去坚硬的竹皮，再慢慢享用鲜嫩的部分。据 CGTN 欧洲台在 X 上的报道，维也纳动物园的饲养员说，给大熊猫准备的落叶堆是丰容的一部分，让它们在两餐和午睡之间保持好奇和活跃。"
+                },
+                "refs": [
+                  "x-mm-weiwei",
+                  "x-cgtn-vienna"
+                ]
+              }
+            ]
           }
         ]
       },
@@ -1507,7 +1817,7 @@
         {
           "slug": "pseudo-thumb",
           "label": "伪拇指",
-          "inLearningJson": false
+          "inLearningJson": true
         }
       ],
       "images": [
@@ -1546,56 +1856,91 @@
           "title": "Panda 100 Q&As – Answer Sheet（2008年11月）",
           "publisher": "WWF China Species Programme",
           "url": "https://wwfcn.awsassets.panda.org/downloads/panda_100_q_as_answer_sheet_en_final.pdf",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-panda",
           "title": "Giant panda",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "cd-eating",
           "title": "【熊猫知识】进食",
           "publisher": "成都大熊猫繁育研究基地",
           "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8786.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "wwf-eat",
           "title": "What do pandas eat?",
           "publisher": "WWF",
           "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-cam",
           "title": "Giant Panda Cam",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/webcams/panda-cam",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "ucd-color",
           "title": "Why Pandas Are Black and White（2017-03-03，介绍 Caro 等发表于 Behavioral Ecology 的研究）",
           "publisher": "University of California, Davis",
           "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "cd-food",
           "title": "【熊猫知识】食物",
           "publisher": "成都大熊猫繁育研究基地",
           "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8784.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "id": "si-faq",
           "title": "Giant Panda FAQs",
           "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
           "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-aerialliz",
+          "title": "X 回复：“pandas are lazy and stuff I assume”（2026-10-24）",
+          "publisher": "X @AerialLiz",
+          "url": "https://x.com/AerialLiz/status/2114065342456533317",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-nzoo-baoli5",
+          "title": "X 帖子：宝力五岁生日，营养科学部做的果冰“蛋糕”（2026-08-04）",
+          "publisher": "X @NationalZoo（Smithsonian's National Zoo）",
+          "url": "https://x.com/NationalZoo/status/2084718404242489584",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-chinafocus-ailian",
+          "title": "X 帖子：重庆动物园大熊猫 Ai Lian 7岁生日宴（2026-10-20）",
+          "publisher": "X @China__Focus（China Focus）",
+          "url": "https://x.com/China__Focus/status/2112795015604793499",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-mm-weiwei",
+          "title": "X 帖子：“伟伟”先剥竹皮再吃嫩的部分（转述中国大熊猫保护研究中心微博，2026-10-23）",
+          "publisher": "X @mickeyminnie611",
+          "url": "https://x.com/mickeyminnie611/status/2113598815945265295",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "id": "x-cgtn-vienna",
+          "title": "X 帖子：维也纳动物园大熊猫在落叶堆里打滚（2026-10-27）",
+          "publisher": "X @CGTNEurope（CGTN Europe）",
+          "url": "https://x.com/CGTNEurope/status/2115083679987040436",
+          "citedOn": "2026-10-31"
         }
       ],
       "relatedArticles": [
@@ -1604,17 +1949,17 @@
         "black-eye-patches"
       ],
       "stats": {
-        "bodyChars": 1250,
-        "bodyCjkChars": 1032,
-        "sectionCount": 4,
-        "referenceCount": 8
+        "bodyChars": 1649,
+        "bodyCjkChars": 1330,
+        "sectionCount": 5,
+        "referenceCount": 13
       }
     }
   ],
   "cards": [
     {
       "slug": "black-eye-patches",
-      "status": "draft",
+      "status": "published",
       "title": {
         "zh": "黑眼圈",
         "en": "Eye patches"
@@ -1634,7 +1979,7 @@
             "en": "UC Davis: Why Pandas Are Black and White"
           },
           "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
@@ -1642,7 +1987,7 @@
             "en": "Smithsonian's National Zoo: Giant Panda"
           },
           "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
@@ -1650,13 +1995,13 @@
             "en": "Zoo Atlanta: Panda Updates – Friday, November 6"
           },
           "url": "https://zooatlanta.org/panda-updates-friday-november-6/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     },
     {
       "slug": "bamboo",
-      "status": "draft",
+      "status": "published",
       "title": {
         "zh": "竹子",
         "en": "Bamboo"
@@ -1676,7 +2021,7 @@
             "en": "WWF: What do pandas eat?"
           },
           "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
@@ -1684,13 +2029,13 @@
             "en": "Smithsonian's National Zoo: Giant Panda"
           },
           "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     },
     {
       "slug": "cubs",
-      "status": "draft",
+      "status": "published",
       "title": {
         "zh": "幼仔",
         "en": "Cubs"
@@ -1710,7 +2055,7 @@
             "en": "Chengdu Panda Base: Giant panda growth and development"
           },
           "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/370.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     }
@@ -1718,7 +2063,7 @@
   "topics": [
     {
       "slug": "telling-faces-apart",
-      "status": "draft",
+      "status": "published",
       "title": {
         "zh": "怎么认脸",
         "en": "Telling faces apart"
@@ -1747,6 +2092,16 @@
             "zh": "看照片时可以逐处对照。眼斑：看宽窄和尖端朝向，例如宝力的眼斑较宽，尖端向外翘。口鼻：喜伦的口鼻上有一条横贯的线，雅伦的则更像一个点。耳朵：洋洋的耳朵被称为“雷达耳”，游客常凭它在远处区分洋洋和伦伦。照片拍到背部时，还可以看从前腿绕过背部的黑带粗细。",
             "en": "Compare one feature at a time. Eye patches: check their width and the direction of the tips; Bao Li's patches are wide, with pointy tips that flare out. Muzzle: Xi Lun has a line all the way across her snout, while Ya Lun's is more of a dot. Ears: Yang Yang's are known as \"radar ears\", and visitors often use them to tell him from Lun Lun at a distance. If the photo shows the back, check how thick the black band is that runs from the front legs across the back."
           }
+        },
+        {
+          "heading": {
+            "zh": "“小背心”和颜色标记",
+            "en": "\"Vests\" and colour marks"
+          },
+          "body": {
+            "zh": "香港海洋公园的办法是先看“小背心”，也就是肩背上的黑色背带：盈盈是深V，乐乐是圆领，安安像梯形，可可是蝴蝶型；再看眼圈，盈盈的像“8”字，乐乐的是圆形。幼仔的特征变化很快，海洋公园助理馆长胡绮琪提醒，大熊猫“每日都可能有变化”。另据人民日报客户端的科普，饲养员有时会在熊猫身上涂不同颜色的标记来区分。",
+            "en": "Ocean Park Hong Kong suggests starting with the \"vest\", the black band across the shoulders and back: Ying Ying's is a deep V, Le Le's a round neck, An An's a trapezoid and Ke Ke's a butterfly. Then check the eye patches: Ying Ying's look like the number 8, Le Le's are round. Cubs change quickly; an Ocean Park assistant curator noted that a growing panda \"may change every day\". According to a People's Daily app explainer, keepers sometimes paint different coloured marks on pandas to tell them apart."
+          }
         }
       ],
       "cardSlugs": [
@@ -1759,7 +2114,7 @@
             "en": "Smithsonian's National Zoo: How Can You Tell the Giant Pandas Apart?"
           },
           "url": "https://nationalzoo.si.edu/animals/news/how-can-you-tell-giant-pandas-apart",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
@@ -1767,7 +2122,7 @@
             "en": "Zoo Atlanta: Lun Lun"
           },
           "url": "https://zooatlanta.org/animal-legend/lun-lun/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
@@ -1775,7 +2130,7 @@
             "en": "Zoo Atlanta: Panda Updates – Monday, December 13"
           },
           "url": "https://zooatlanta.org/panda-updates-monday-december-13/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
@@ -1783,13 +2138,37 @@
             "en": "Zoo Atlanta: Panda Updates – Wednesday, December 27"
           },
           "url": "https://zooatlanta.org/panda-updates-wednesday-december-27/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "北京日报：香港海洋公园推出“熊猫辨认大法”",
+            "en": "Beijing Daily: Ocean Park Hong Kong's guide to telling its pandas apart"
+          },
+          "url": "https://xinwen.bjd.com.cn/content/s6728d460e4b0e1ace8a7ea0f.html",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "香港文汇报：熊猫姊弟两个月大",
+            "en": "Wen Wei Po: The panda twins at two months"
+          },
+          "url": "https://www.wenweipo.com/a/202410/15/AP670d7dc4e4b0ee6b0e8a7dca.html",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "人民日报客户端：技术帖！如何分辨大熊猫",
+            "en": "People's Daily app: How to tell giant pandas apart"
+          },
+          "url": "https://www.peopleapp.com/column/30038828372-500003827733",
+          "citedOn": "2026-10-31"
         }
       ]
     },
     {
       "slug": "what-pandas-eat",
-      "status": "draft",
+      "status": "published",
       "title": {
         "zh": "吃什么",
         "en": "What pandas eat"
@@ -1808,6 +2187,16 @@
             "zh": "大熊猫的主食是竹子，吃的是多种竹子的叶、茎和笋，每天12～38公斤。约1%的食物是其他植物甚至肉类，它偶尔会捕食鼠兔等小动物。在史密森尼国家动物园，大熊猫除竹子外还吃营养丰富的饼干、胡萝卜和苹果。",
             "en": "Bamboo is the giant panda's staple food: the leaves, stems and shoots of various bamboo species, 12–38 kg a day. About 1% of its diet is other plants and even meat, and it sometimes hunts pikas and other small animals. At Smithsonian's National Zoo, pandas are fed highly nutritious biscuits, carrots and apples as well as bamboo."
           }
+        },
+        {
+          "heading": {
+            "zh": "两个常见误会",
+            "en": "Two common misconceptions"
+          },
+          "body": {
+            "zh": "“熊猫很懒”：大熊猫每天要花10～16小时觅食。它休息得多，是因为竹子营养低，让它攒不下足够的脂肪去蛰伏，只能全年保持活动。“熊猫只吃竹子”：野外大熊猫约1%的食物是其他植物甚至肉类；动物园还会补充饼干、水果和蔬菜。",
+            "en": "\"Pandas are lazy\": a giant panda spends 10 to 16 hours a day foraging. It rests a lot because bamboo is so low in nutrients that it cannot store enough fat to go dormant, so it has to stay active year-round. \"Pandas eat only bamboo\": about 1% of a wild panda's diet is other plants and even meat, and zoos add biscuits, fruit and vegetables."
+          }
         }
       ],
       "cardSlugs": [
@@ -1820,7 +2209,7 @@
             "en": "WWF: What do pandas eat?"
           },
           "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
@@ -1828,7 +2217,23 @@
             "en": "Smithsonian's National Zoo: Giant Panda FAQs"
           },
           "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "史密森尼国家动物园：大熊猫",
+            "en": "Smithsonian's National Zoo: Giant Panda"
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "加州大学戴维斯分校：大熊猫为什么是黑白的",
+            "en": "UC Davis: Why Pandas Are Black and White"
+          },
+          "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
+          "citedOn": "2026-10-31"
         }
       ]
     }
@@ -1836,7 +2241,7 @@
   "terms": [
     {
       "slug": "eye-patch",
-      "status": "draft",
+      "status": "published",
       "term": {
         "zh": "黑眼圈",
         "en": "Eye patches"
@@ -1853,7 +2258,7 @@
             "en": "UC Davis: Why Pandas Are Black and White"
           },
           "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
@@ -1861,13 +2266,13 @@
             "en": "Zoo Atlanta: Panda Updates – Friday, November 6"
           },
           "url": "https://zooatlanta.org/panda-updates-friday-november-6/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     },
     {
       "slug": "bamboo-diet",
-      "status": "draft",
+      "status": "published",
       "term": {
         "zh": "食竹",
         "en": "Bamboo diet"
@@ -1884,13 +2289,13 @@
             "en": "WWF: What do pandas eat?"
           },
           "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     },
     {
       "slug": "subadult",
-      "status": "draft",
+      "status": "published",
       "term": {
         "zh": "亚成体",
         "en": "Subadult"
@@ -1907,7 +2312,7 @@
             "en": "Chengdu Panda Base: Giant panda growth and development"
           },
           "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/370.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
@@ -1915,69 +2320,69 @@
             "en": "Chengdu Panda Base: Reproduction"
           },
           "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/361.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     },
     {
       "slug": "pseudo-thumb",
-      "status": "draft",
+      "status": "published",
       "term": {
         "zh": "伪拇指",
-        "en": ""
+        "en": "Pseudo-thumb"
       },
       "definition": {
         "zh": "大熊猫前爪上由一块拉长、增大的腕骨外包肉垫形成的结构，能与五趾组成对握，方便抓握竹子。",
-        "en": ""
+        "en": "A structure on a giant panda's forepaw formed by an elongated, enlarged wrist bone covered by a fleshy pad. Working against the five digits, it lets the panda grip bamboo."
       },
       "relatedSlugs": [],
       "sources": [
         {
           "title": {
-            "zh": "Giant panda",
-            "en": ""
+            "zh": "史密森尼国家动物园：大熊猫",
+            "en": "Smithsonian's National Zoo: Giant Panda"
           },
           "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
-            "zh": "【熊猫知识】进食",
-            "en": ""
+            "zh": "成都大熊猫繁育研究基地：【熊猫知识】进食",
+            "en": "Chengdu Panda Base: Panda knowledge – Eating"
           },
           "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8786.html",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     },
     {
       "slug": "saddle",
-      "status": "draft",
+      "status": "published",
       "term": {
         "zh": "背带（鞍斑）",
-        "en": ""
+        "en": "Saddle (back band)"
       },
       "definition": {
         "zh": "大熊猫从前腿开始、绕过肩背部的黑色毛带。饲养员常用它的粗细和形状来区分个体。",
-        "en": ""
+        "en": "The black band of fur that starts at a giant panda's front legs and wraps across its shoulders and back. Keepers often use its thickness and shape to tell individuals apart."
       },
       "relatedSlugs": [],
       "sources": [
         {
           "title": {
-            "zh": "How Can You Tell the Giant Pandas Apart?",
-            "en": ""
+            "zh": "史密森尼国家动物园：怎样区分两只大熊猫",
+            "en": "Smithsonian's National Zoo: How Can You Tell the Giant Pandas Apart?"
           },
           "url": "https://nationalzoo.si.edu/animals/news/how-can-you-tell-giant-pandas-apart",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
-            "zh": "Panda Updates – Wednesday, December 27（2017）",
-            "en": ""
+            "zh": "亚特兰大动物园：熊猫动态（12月27日）",
+            "en": "Zoo Atlanta: Panda Updates – Wednesday, December 27"
           },
           "url": "https://zooatlanta.org/panda-updates-wednesday-december-27/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     }
@@ -1985,7 +2390,7 @@
   "faceGuides": [
     {
       "slug": "bao-li",
-      "status": "draft",
+      "status": "published",
       "pandaSlug": "bao-li",
       "title": {
         "zh": "宝力",
@@ -1999,8 +2404,8 @@
             "en": "Face shape"
           },
           "body": {
-            "zh": "两颊不如青宝蓬松。",
-            "en": "His cheeks are not as fluffy as Qing Bao's."
+            "zh": "体形比青宝大，两颊不如青宝蓬松。",
+            "en": "He is larger than Qing Bao, and his cheeks are not as fluffy as hers."
           }
         },
         {
@@ -2044,13 +2449,13 @@
             "en": "Smithsonian's National Zoo: How Can You Tell the Giant Pandas Apart?"
           },
           "url": "https://nationalzoo.si.edu/animals/news/how-can-you-tell-giant-pandas-apart",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     },
     {
       "slug": "lun-lun",
-      "status": "draft",
+      "status": "published",
       "pandaSlug": "lun-lun",
       "title": {
         "zh": "伦伦",
@@ -2097,8 +2502,8 @@
             "en": "Ears"
           },
           "body": {
-            "zh": "",
-            "en": ""
+            "zh": "在远处分不清伦伦和洋洋时，先看耳朵：游客常靠洋洋的“雷达耳”把他和伦伦区分开。",
+            "en": "If you can't tell Lun Lun from Yang Yang at a distance, check the ears: visitors often use Yang Yang's \"radar ears\" to tell him apart from Lun Lun."
           }
         }
       ],
@@ -2109,7 +2514,15 @@
             "en": "Zoo Atlanta: Lun Lun"
           },
           "url": "https://zooatlanta.org/animal-legend/lun-lun/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "亚特兰大动物园：熊猫动态（12月27日）",
+            "en": "Zoo Atlanta: Panda Updates – Wednesday, December 27"
+          },
+          "url": "https://zooatlanta.org/panda-updates-wednesday-december-27/",
+          "citedOn": "2026-10-31"
         }
       ]
     }
@@ -2117,7 +2530,7 @@
   "challenges": [
     {
       "slug": "bao-li-round",
-      "status": "draft",
+      "status": "published",
       "answerPandaSlug": "bao-li",
       "decoyPandaSlugs": [
         "lun-lun",
@@ -2139,13 +2552,13 @@
             "en": "Smithsonian's National Zoo: How Can You Tell the Giant Pandas Apart?"
           },
           "url": "https://nationalzoo.si.edu/animals/news/how-can-you-tell-giant-pandas-apart",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     },
     {
       "slug": "lun-lun-round",
-      "status": "draft",
+      "status": "published",
       "answerPandaSlug": "lun-lun",
       "decoyPandaSlugs": [
         "bao-li",
@@ -2167,7 +2580,7 @@
             "en": "Zoo Atlanta: Lun Lun"
           },
           "url": "https://zooatlanta.org/animal-legend/lun-lun/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         },
         {
           "title": {
@@ -2175,7 +2588,7 @@
             "en": "Zoo Atlanta: Panda Updates – Wednesday, December 27"
           },
           "url": "https://zooatlanta.org/panda-updates-wednesday-december-27/",
-          "citedOn": "2026-10-29"
+          "citedOn": "2026-10-31"
         }
       ]
     }
