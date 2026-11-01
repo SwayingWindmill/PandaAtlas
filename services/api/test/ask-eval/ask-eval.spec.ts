@@ -41,7 +41,7 @@ const documents: AskDocument[] = [
   }),
 ];
 
-const matches = (key: string, prefix: string) => key === prefix || key.startsWith(`${prefix}/`);
+const matches = (key: string, prefix: string) => key === `${prefix}.md` || key.startsWith(`${prefix}/`);
 const expectedDocuments = (item: EvalItem) =>
   documents.filter((document) => (item.sources ?? []).some((prefix) => matches(document.key, prefix)));
 
