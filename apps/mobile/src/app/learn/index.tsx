@@ -1,11 +1,12 @@
 import { Image } from "expo-image";
-import { router, Stack } from "expo-router";
+import { router, Stack, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { ScrollView, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ListCell, ListSection } from "@/components/grouped-list";
-import { BookA, type LucideIcon, Newspaper, ScanFace } from "@/components/icons";
+import { BookA, type LucideIcon, MessageCircleQuestion, Newspaper, ScanFace } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { NO_WEB_BAR_TITLE } from "@/components/page";
 import { PhotoOutline } from "@/components/photo-outline";
@@ -21,8 +22,10 @@ import {
   learningText,
   readingMinutes,
 } from "@/features/learning/catalog";
+import { loadAskStatus } from "@/features/ask/ask";
 import { PandaPhoto } from "@/features/learning/panda-photo";
 import { useLearningCatalog, useLearningPandas } from "@/features/learning/use-catalog";
+import { useSession } from "@/features/session/session";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
 
 const CATEGORY_ORDER = ["外形与识别", "食性", "繁殖与成长", "保护"];
@@ -64,6 +67,39 @@ function openArticle(slug: string) {
 }
 
 /** The large title kept in the column, as 科普 does on every platform. */
+/**
+ * 问问熊猫 shows only to a signed-in fan while the API has it switched on: signed out, the app cannot know
+ * whether it is open, and an entry that leads to "closed" is worse than none.
+ */
+function AskEntry() {
+  const { state } = useSession();
+  const signedIn = state.status === "signedIn";
+  const [enabled, setEnabled] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      if (!signedIn) {
+        setEnabled(false);
+        return;
+      }
+      let live = true;
+      loadAskStatus()
+        .then((status) => live && setEnabled(status.enabled))
+        .catch(() => live && setEnabled(false));
+      return () => {
+        live = false;
+      };
+    }, [signedIn]),
+  );
+  if (!enabled) return null;
+  return (
+    <View className="px-inset">
+      <ListSection>
+        <ListCell icon={MessageCircleQuestion} label="问问熊猫" detail="用已发布的科普回答，附上出处" href="/learn/ask" last />
+      </ListSection>
+    </View>
+  );
+}
+
 function Masthead({ count }: { count?: number }) {
   return (
     <View className="gap-hair-gap px-inset">
@@ -128,6 +164,7 @@ export default function LearnScreen() {
       {bar}
       <Animated.View entering={PAGE_ENTER} className="gap-section pt-stack-tight">
         <Masthead count={catalog.articles.length} />
+        <AskEntry />
 
         {featured ? (
           <View className="px-inset">

@@ -26,6 +26,8 @@ export interface EnvironmentConfig {
   LOG_LEVEL: LogLevel;
   RESEND_API_KEY: string | undefined;
   RESEND_FROM_EMAIL: string | undefined;
+  ASK_ENABLED: boolean;
+  ASK_GLOBAL_DAILY_CAP: number;
 }
 
 const APP_ENVIRONMENTS = new Set<AppEnvironment>([
@@ -62,6 +64,13 @@ function parseOrigins(value: unknown, appEnv: AppEnvironment): string[] {
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
+}
+
+function parseBoolean(value: unknown, fallback: boolean, name: string): boolean {
+  if (value === undefined || value === "") return fallback;
+  if (value === true || value === "true") return true;
+  if (value === false || value === "false") return false;
+  throw new Error(`${name} must be true or false`);
 }
 
 function optionalString(value: unknown): string | undefined {
@@ -170,6 +179,9 @@ export function validateEnvironment(
     LOG_LEVEL: rawLogLevel as LogLevel,
     RESEND_API_KEY: optionalString(input.RESEND_API_KEY),
     RESEND_FROM_EMAIL: optionalString(input.RESEND_FROM_EMAIL),
+    // 问问熊猫 stays off unless a deploy turns it on; the cap bounds paid model and search use.
+    ASK_ENABLED: parseBoolean(input.ASK_ENABLED, false, "ASK_ENABLED"),
+    ASK_GLOBAL_DAILY_CAP: parseInteger(input.ASK_GLOBAL_DAILY_CAP, 30, "ASK_GLOBAL_DAILY_CAP", 0, 10_000),
   };
 }
 
@@ -265,5 +277,13 @@ export class AppConfig {
 
   public get resendFromEmail(): string | undefined {
     return this.config.get("RESEND_FROM_EMAIL", { infer: true });
+  }
+
+  public get askEnabled(): boolean {
+    return this.config.get("ASK_ENABLED", { infer: true });
+  }
+
+  public get askGlobalDailyCap(): number {
+    return this.config.get("ASK_GLOBAL_DAILY_CAP", { infer: true });
   }
 }

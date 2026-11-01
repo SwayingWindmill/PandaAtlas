@@ -1,0 +1,49 @@
+{"id": "in-zh-01", "locale": "zh", "question": "大熊猫的黑眼圈是熬夜熬出来的吗？", "expect": "answer", "sources": ["article/black-eye-patches", "card/black-eye-patches", "term/eye-patch"], "mentions": []}
+{"id": "in-zh-02", "locale": "zh", "question": "幼仔多大开始出现眼斑？", "expect": "answer", "sources": ["article/black-eye-patches"], "mentions": ["一周"]}
+{"id": "in-zh-03", "locale": "zh", "question": "大熊猫身上哪些地方是黑色的？", "expect": "answer", "sources": ["article/black-eye-patches", "card/black-eye-patches"], "mentions": ["耳朵"]}
+{"id": "in-zh-04", "locale": "zh", "question": "大熊猫的黑眼圈有什么用？", "expect": "answer", "sources": ["article/black-eye-patches", "card/black-eye-patches", "term/eye-patch"], "mentions": []}
+{"id": "in-zh-05", "locale": "zh", "question": "2008年那项关于眼斑图案的实验发现了什么？", "expect": "answer", "sources": ["article/black-eye-patches", "card/black-eye-patches"], "mentions": []}
+{"id": "in-zh-06", "locale": "zh", "question": "大熊猫每天吃多少竹子？", "expect": "answer", "sources": ["card/bamboo", "term/bamboo-diet", "topic/what-pandas-eat", "article/what-pandas-eat"], "mentions": ["12"]}
+{"id": "in-zh-07", "locale": "zh", "question": "大熊猫的食物里竹子占多少？", "expect": "answer", "sources": ["article/bamboo", "topic/what-pandas-eat", "article/what-pandas-eat"], "mentions": ["99"]}
+{"id": "in-zh-08", "locale": "zh", "question": "大熊猫一年四季吃竹子的哪个部位？", "expect": "answer", "sources": ["article/bamboo"], "mentions": ["笋"]}
+{"id": "in-zh-09", "locale": "zh", "question": "成都基地给大熊猫吃哪些竹子？", "expect": "answer", "sources": ["article/bamboo"], "mentions": ["苦竹"]}
+{"id": "in-zh-10", "locale": "zh", "question": "大熊猫除了竹子还吃别的吗？", "expect": "answer", "sources": ["card/bamboo", "topic/what-pandas-eat", "article/what-pandas-eat"], "mentions": ["鼠兔"]}
+{"id": "in-zh-11", "locale": "zh", "question": "什么是伪拇指？", "expect": "answer", "sources": ["term/pseudo-thumb", "article/what-pandas-eat", "card/bamboo"], "mentions": ["腕骨"]}
+{"id": "in-zh-12", "locale": "zh", "question": "熊猫是不是很懒？", "expect": "answer", "sources": ["topic/what-pandas-eat", "card/bamboo"], "mentions": ["10"]}
+{"id": "in-zh-13", "locale": "zh", "question": "大熊猫每天花多少时间吃东西？", "expect": "answer", "sources": ["card/bamboo", "topic/what-pandas-eat"], "mentions": ["16"]}
+{"id": "in-zh-14", "locale": "zh", "question": "刚出生的大熊猫有多重？", "expect": "answer", "sources": ["card/cubs", "article/cubs"], "mentions": ["120"]}
+{"id": "in-zh-15", "locale": "zh", "question": "大熊猫幼仔什么时候睁眼？", "expect": "answer", "sources": ["card/cubs", "article/cubs"], "mentions": ["6"]}
+{"id": "in-zh-16", "locale": "zh", "question": "大熊猫幼仔几岁离开妈妈？", "expect": "answer", "sources": ["card/cubs"], "mentions": ["一岁半"]}
+{"id": "in-zh-17", "locale": "zh", "question": "雌性大熊猫多久发情一次？", "expect": "answer", "sources": ["article/cubs"], "mentions": ["每年"]}
+{"id": "in-zh-18", "locale": "zh", "question": "什么是亚成体？", "expect": "answer", "sources": ["term/subadult", "article/cubs"], "mentions": []}
+{"id": "in-zh-19", "locale": "zh", "question": "圈养大熊猫几岁性成熟？", "expect": "answer", "sources": ["term/subadult"], "mentions": ["5"]}
+{"id": "in-zh-20", "locale": "zh", "question": "大熊猫背上的黑带叫什么？", "expect": "answer", "sources": ["term/saddle", "topic/telling-faces-apart"], "mentions": []}
+{"id": "in-zh-21", "locale": "zh", "question": "香港海洋公园怎么区分盈盈和乐乐？", "expect": "answer", "sources": ["topic/telling-faces-apart"], "mentions": ["V"]}
+{"id": "in-zh-22", "locale": "zh", "question": "宝力和青宝有什么区别？", "expect": "answer", "sources": ["faceGuide/bao-li", "article/telling-faces-apart", "topic/telling-faces-apart", "challenge/bao-li-round"], "mentions": []}
+{"id": "in-zh-23", "locale": "zh", "question": "洋洋的耳朵有什么特点？", "expect": "answer", "sources": ["faceGuide/lun-lun", "topic/telling-faces-apart", "article/telling-faces-apart", "challenge/lun-lun-round"], "mentions": ["雷达耳"]}
+{"id": "in-zh-24", "locale": "zh", "question": "用算法识别大熊猫个体的准确率有多高？", "expect": "answer", "sources": ["article/telling-faces-apart"], "mentions": ["96.27"]}
+{"id": "in-zh-25", "locale": "zh", "question": "大熊猫面临的主要威胁是什么？", "expect": "answer", "sources": ["article/bamboo"], "mentions": ["栖息地"]}
+{"id": "in-zh-26", "locale": "zh", "question": "宝力是哪天出生的？", "expect": "answer", "sources": ["panda/bao-li"], "mentions": ["2021-08-04"]}
+{"id": "in-zh-27", "locale": "zh", "question": "宝力的妈妈是谁？", "expect": "answer", "sources": ["panda/bao-li"], "mentions": ["宝宝"]}
+{"id": "in-zh-28", "locale": "zh", "question": "伦伦现在在哪里？", "expect": "answer", "sources": ["panda/lun-lun"], "mentions": ["Chengdu"]}
+{"id": "in-zh-29", "locale": "zh", "question": "喜伦的爸爸妈妈是谁？", "expect": "answer", "sources": ["panda/xi-lun"], "mentions": ["伦伦"]}
+{"id": "in-zh-30", "locale": "zh", "question": "美香有哪些孩子？", "expect": "answer", "sources": ["panda/mei-xiang"], "mentions": ["宝宝"]}
+{"id": "in-zh-31", "locale": "zh", "question": "野外大约有多少只大熊猫？", "expect": "answer", "sources": ["article/bamboo"], "mentions": ["1864"]}
+{"id": "in-en-01", "locale": "en", "question": "Are a panda's dark eye patches caused by staying up late?", "expect": "answer", "sources": ["article/black-eye-patches", "card/black-eye-patches", "term/eye-patch"], "mentions": []}
+{"id": "in-en-02", "locale": "en", "question": "What are the black eye patches for?", "expect": "answer", "sources": ["article/black-eye-patches", "card/black-eye-patches", "term/eye-patch"], "mentions": []}
+{"id": "in-en-03", "locale": "en", "question": "How much bamboo does a giant panda eat each day?", "expect": "answer", "sources": ["card/bamboo", "term/bamboo-diet", "topic/what-pandas-eat", "article/what-pandas-eat"], "mentions": ["12"]}
+{"id": "in-en-04", "locale": "en", "question": "Do giant pandas eat anything besides bamboo?", "expect": "answer", "sources": ["card/bamboo", "topic/what-pandas-eat", "article/what-pandas-eat"], "mentions": []}
+{"id": "in-en-05", "locale": "en", "question": "What is a panda's pseudo-thumb?", "expect": "answer", "sources": ["term/pseudo-thumb", "article/what-pandas-eat", "card/bamboo"], "mentions": []}
+{"id": "in-en-06", "locale": "en", "question": "Why do pandas spend so long eating?", "expect": "answer", "sources": ["card/bamboo", "topic/what-pandas-eat", "term/bamboo-diet"], "mentions": []}
+{"id": "in-en-07", "locale": "en", "question": "How heavy is a newborn panda cub?", "expect": "answer", "sources": ["card/cubs", "article/cubs"], "mentions": ["120"]}
+{"id": "in-en-08", "locale": "en", "question": "When does a panda cub open its eyes?", "expect": "answer", "sources": ["card/cubs", "article/cubs"], "mentions": []}
+{"id": "in-en-09", "locale": "en", "question": "What is a subadult panda?", "expect": "answer", "sources": ["term/subadult", "article/cubs"], "mentions": []}
+{"id": "in-en-10", "locale": "en", "question": "What is the saddle on a giant panda?", "expect": "answer", "sources": ["term/saddle", "topic/telling-faces-apart"], "mentions": []}
+{"id": "in-en-11", "locale": "en", "question": "How do keepers tell Bao Li and Qing Bao apart?", "expect": "answer", "sources": ["faceGuide/bao-li", "article/telling-faces-apart", "topic/telling-faces-apart", "challenge/bao-li-round"], "mentions": []}
+{"id": "in-en-12", "locale": "en", "question": "How can visitors tell Yang Yang from Lun Lun?", "expect": "answer", "sources": ["faceGuide/lun-lun", "topic/telling-faces-apart", "article/telling-faces-apart", "challenge/lun-lun-round"], "mentions": []}
+{"id": "in-en-13", "locale": "en", "question": "When was Bao Li born?", "expect": "answer", "sources": ["panda/bao-li"], "mentions": ["2021"]}
+{"id": "in-en-14", "locale": "en", "question": "Who is Bao Li's mother?", "expect": "answer", "sources": ["panda/bao-li"], "mentions": ["Bao Bao"]}
+{"id": "in-en-15", "locale": "en", "question": "Where does Lun Lun live now?", "expect": "answer", "sources": ["panda/lun-lun"], "mentions": ["Chengdu"]}
+{"id": "in-en-16", "locale": "en", "question": "Who are Xi Lun's parents?", "expect": "answer", "sources": ["panda/xi-lun"], "mentions": ["Lun Lun"]}
+{"id": "in-en-17", "locale": "en", "question": "When was Mei Xiang born?", "expect": "answer", "sources": ["panda/mei-xiang"], "mentions": ["1998"]}
+{"id": "in-en-18", "locale": "en", "question": "About how many giant pandas live in the wild?", "expect": "answer", "sources": ["article/bamboo"], "mentions": ["1864"]}
