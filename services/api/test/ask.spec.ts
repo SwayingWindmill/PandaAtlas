@@ -96,12 +96,14 @@ describe("ask corpus", () => {
     expect(kinds).toEqual(new Set(["article", "card", "topic", "term", "faceGuide", "challenge"]));
     for (const document of documents) {
       expect(document.key.length).toBeLessThanOrEqual(128);
+      // AI Search rejects uploads whose name has no supported extension.
+      expect(document.key.endsWith(".md")).toBe(true);
       expect(document.appPath.startsWith("/learn")).toBe(true);
       expect(document.text).not.toMatch(/\[\[/u);
       for (const source of document.sources) expect(source.url).toMatch(/^https?:\/\//u);
     }
     expect(new Set(documents.map((document) => document.key)).size).toBe(documents.length);
-    expect(documents.find((document) => document.key === "faceGuide/bao-li")?.appPath).toBe("/learn/faces/bao-li");
+    expect(documents.find((document) => document.key === "faceGuide/bao-li.md")?.appPath).toBe("/learn/faces/bao-li");
   });
 
   it("writes panda facts with provisional markers and skips pandas without sources", () => {
@@ -127,7 +129,7 @@ describe("ask corpus", () => {
       sources: [{ title: "Giant panda", publisher: "Smithsonian", url: "https://nationalzoo.si.edu/animals/giant-panda" }],
     };
     const document = pandaDocument(facts);
-    expect(document).toMatchObject({ key: "panda/bao-li", kind: "panda", appPath: "/pandas/bao-li" });
+    expect(document).toMatchObject({ key: "panda/bao-li.md", kind: "panda", appPath: "/pandas/bao-li" });
     expect(document?.text).toContain("宝力");
     expect(document?.text.match(/宝宝 Bao Bao/gu)).toHaveLength(1);
     expect(document?.text).toContain("China");
@@ -267,7 +269,7 @@ function application(options: {
 }
 
 describe("ask application", () => {
-  const card = learningDocuments(catalog).find((document) => document.key === "card/black-eye-patches")!;
+  const card = learningDocuments(catalog).find((document) => document.key === "card/black-eye-patches.md")!;
   const chunk = { itemKey: card.key, text: card.text, score: 0.8 };
   const quote = card.text.replace(/\s+/gu, " ").slice(0, 20);
 

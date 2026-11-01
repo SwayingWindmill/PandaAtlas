@@ -56,12 +56,16 @@ function learningSources(sources: LearningSource[]): AskSourceLink[] {
   }));
 }
 
+// AI Search infers an uploaded item's type from its name and rejects names without a supported
+// extension (unsupported_file_type), so every key ends in ".md".
+const KEY_EXTENSION = ".md";
+
 function key(...parts: string[]): string {
   const joined = parts.join("/");
-  if (joined.length <= MAX_KEY_CHARS) return joined;
+  if (joined.length + KEY_EXTENSION.length <= MAX_KEY_CHARS) return `${joined}${KEY_EXTENSION}`;
   // Keys are item names in AI Search (128 characters at most); a long slug keeps a stable hash.
   const digest = createHash("sha256").update(joined).digest("hex").slice(0, 16);
-  return `${joined.slice(0, MAX_KEY_CHARS - 17)}~${digest}`;
+  return `${joined.slice(0, MAX_KEY_CHARS - 17 - KEY_EXTENSION.length)}~${digest}${KEY_EXTENSION}`;
 }
 
 function document(input: Omit<AskDocument, "titleEn" | "text"> & { titleEn: string; body: string[] }): AskDocument {
