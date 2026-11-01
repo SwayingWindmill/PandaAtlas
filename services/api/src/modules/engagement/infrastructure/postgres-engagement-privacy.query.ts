@@ -6,7 +6,7 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
     transaction: DatabaseTransaction,
     accountId: string,
   ): Promise<Record<string, unknown>> {
-    const [favorites, collections, checkins, seenPandas, dailyCheckins] = await Promise.all([
+    const [favorites, collections, checkins, seenPandas, dailyCheckins, askUsage] = await Promise.all([
       transaction
         .selectFrom("engagement.favorites")
         .select(["panda_id", "favorited_at"])
@@ -38,6 +38,13 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
         .select(["checkin_on", "kind", "retroactive", "created_at", "updated_at"])
         .where("account_id", "=", accountId)
         .orderBy("checkin_on")
+        .execute(),
+      // 问问熊猫 keeps only how many questions an account asked each day, never the questions.
+      transaction
+        .selectFrom("ask.account_daily_usage")
+        .select(["usage_on", "question_count"])
+        .where("account_id", "=", accountId)
+        .orderBy("usage_on")
         .execute(),
     ]);
 
@@ -80,6 +87,7 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
         createdAt: row.created_at.toISOString(),
         updatedAt: row.updated_at.toISOString(),
       })),
+      askQuestionCounts: askUsage.map((row) => ({ day: row.usage_on, questions: row.question_count })),
     };
   }
 
@@ -89,5 +97,6 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
     await transaction.deleteFrom("engagement.location_checkins").where("account_id", "=", accountId).execute();
     await transaction.deleteFrom("engagement.seen_pandas").where("account_id", "=", accountId).execute();
     await transaction.deleteFrom("engagement.daily_checkins").where("account_id", "=", accountId).execute();
+    await transaction.deleteFrom("ask.account_daily_usage").where("account_id", "=", accountId).execute();
   }
 }

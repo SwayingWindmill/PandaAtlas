@@ -3,15 +3,17 @@ import type { PublicLocale } from "@/foundation/content/locales";
 // Draft user agreement and privacy policy. Every sentence is limited to what the
 // website and app actually do. Bracketed fields are unfilled on purpose.
 
+export const LEGAL_CONTACT_EMAIL = "hello@zhipanda.com";
+
 export const LEGAL_PLACEHOLDERS = {
   zh: {
     operator: "[运营方名称]",
-    email: "[联系邮箱]",
+    email: LEGAL_CONTACT_EMAIL,
     effectiveDate: "[生效日期]",
   },
   en: {
     operator: "[Operator name]",
-    email: "[Contact email]",
+    email: LEGAL_CONTACT_EMAIL,
     effectiveDate: "[Effective date]",
   },
 } as const;
@@ -51,7 +53,7 @@ const terms: Record<PublicLocale, LegalDocument> = {
     description: "吱熊猫用户协议草稿。说明网站和 App 的账号、纠错，以及已发布的熊猫资料。",
     bannerTitle: "这是草稿，尚未生效",
     bannerBody:
-      "方括号中的运营方名称、联系邮箱和生效日期尚未填写。填上之前，这份文本还没有生效。",
+      "方括号中的运营方名称和生效日期尚未填写。填上之前，这份文本还没有生效。",
     effective: `生效日期：${LEGAL_PLACEHOLDERS.zh.effectiveDate}`,
     relatedLabel: "隐私政策",
     relatedPath: "/privacy",
@@ -124,7 +126,7 @@ const terms: Record<PublicLocale, LegalDocument> = {
     description: "Draft terms for ZhiPanda. They describe accounts, corrections, and the published panda information on the website and app.",
     bannerTitle: "This is a draft and is not in effect",
     bannerBody:
-      "The operator name, contact email, and effective date in brackets are not filled in. This text is not in effect until they are.",
+      "The operator name and effective date in brackets are not filled in. This text is not in effect until they are.",
     effective: `Effective date: ${LEGAL_PLACEHOLDERS.en.effectiveDate}`,
     relatedLabel: "Privacy",
     relatedPath: "/privacy",
@@ -200,7 +202,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
     description: "吱熊猫隐私政策草稿。说明账号、关注、见过、图鉴、纠错、通知、导出和注销实际如何处理。",
     bannerTitle: "这是草稿，尚未生效",
     bannerBody:
-      "方括号中的运营方名称、联系邮箱和生效日期尚未填写。填上之前，这份文本还没有生效。",
+      "方括号中的运营方名称和生效日期尚未填写。填上之前，这份文本还没有生效。",
     effective: `生效日期：${LEGAL_PLACEHOLDERS.zh.effectiveDate}`,
     relatedLabel: "用户协议",
     relatedPath: "/terms",
@@ -210,7 +212,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         heading: "这份政策说明什么",
         paragraphs: [
           `这是吱熊猫网站（www.zhipanda.com）和吱熊猫 App 的隐私政策草稿，由 ${LEGAL_PLACEHOLDERS.zh.operator} 提供。联系邮箱是 ${LEGAL_PLACEHOLDERS.zh.email}。生效日期是 ${LEGAL_PLACEHOLDERS.zh.effectiveDate}。`,
-          "网站和 App 没有接入广告，也没有接入单独的分析产品。我们不出售个人信息。",
+          "网站和 App 没有接入广告。我们不出售个人信息。网站用 Cloudflare Web Analytics 统计访问量，见下面「网站访问统计」；App 没有接入分析产品。",
           "不登录也可以阅读已发布的熊猫资料。下面的账号数据，只在你登录并使用相应功能时产生。",
         ],
       },
@@ -247,6 +249,24 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         ],
       },
       {
+        id: "ask-panda",
+        heading: "问问熊猫",
+        paragraphs: [
+          "「问问熊猫」在 App 里，登录后才能用。它只根据吱熊猫已发布的学习内容和熊猫资料回答，并在答案下面列出出处。",
+          "你输入的问题会发给 Cloudflare Workers AI，在 Cloudflare 上检索资料并生成回答。回答之后，问题和回答都不保存：资料库不写问题文字，接口日志和 AI 网关日志也不记录问题或回答，只记下结果类别、用时这类不含内容的信息。",
+          "为了限制用量，资料库按北京时间记下你当天问了几次（每天最多 20 次），以及全站当天的总次数。这个次数会出现在导出里，注销时删除。",
+          "问问熊猫不会根据照片或长相判断是哪只熊猫，遇到这类问题会改为给出认脸指南。",
+        ],
+      },
+      {
+        id: "web-analytics",
+        heading: "网站访问统计",
+        paragraphs: [
+          "网站 www.zhipanda.com 使用 Cloudflare Web Analytics 统计页面访问量和加载速度。它不使用 Cookie，也不把访问记录关联到你的账号。",
+          "App 没有接入 Cloudflare Web Analytics 或其他分析产品。",
+        ],
+      },
+      {
         id: "device",
         heading: "只留在设备上的内容",
         paragraphs: [
@@ -260,9 +280,10 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         id: "processors",
         heading: "谁在处理这些数据",
         paragraphs: [
-          "Cloudflare 托管网站和接口。网站是 www.zhipanda.com，接口是 api.zhipanda.com。",
+          "Cloudflare 托管网站和接口。网站是 www.zhipanda.com，接口是 api.zhipanda.com。Cloudflare 也提供网站访问统计（Web Analytics），以及问问熊猫用到的 Workers AI 和资料检索。",
           "Supabase 提供登录（邮箱验证码、会话、验证器）和存放账号与上述记录的数据库。",
           "Resend 在邮件通知已配置、且你打开了对应邮件开关时发送通知邮件。没有配置时，邮件不会发出。",
+          "你写给 hello@zhipanda.com 的邮件，由 Cloudflare Email Routing 转发到运营方的 Gmail 邮箱（Google 提供）；我们从这个地址的回信经 Resend 发出。邮件内容留在这两个邮箱服务里，不进吱熊猫的资料库。",
         ],
       },
       {
@@ -278,8 +299,8 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         heading: "导出和注销",
         paragraphs: [
           "在 App 的「账号与数据」里，完成验证器验证之后，可以申请导出或注销。",
-          "导出是一份 JSON。里面有账号标识、邮箱、账号状态、时间、显示名和简介，关注、合集、去过的地点、见过，猜熊猫作答、图鉴和每日熊猫结果，以及通知偏好和通知内容。导出文件可下载 24 小时，到期后这份副本失效。申请记录会留下。",
-          "注销完成时：关注、合集、去过的地点和见过会被删除。猜熊猫作答、图鉴和每日熊猫结果会被删除。通知偏好会被删除。通知正文会被换成一条已清除的标记，类别和时间可能还在，尚未发出的通知邮件不再发送。显示名和简介会被删除。账号上的邮箱会被清空，账号标记为已注销。账号的内部标识，以及一条记下这次注销的状态记录，会留下。你在申请里写的原因，会留在这条申请记录里。",
+          "导出是一份 JSON。里面有账号标识、邮箱、账号状态、时间、显示名和简介，关注、合集、去过的地点、见过，猜熊猫作答、图鉴和每日熊猫结果，问问熊猫每天的提问次数（不含问题），以及通知偏好和通知内容。导出文件可下载 24 小时，到期后这份副本失效。申请记录会留下。",
+          "注销完成时：关注、合集、去过的地点和见过会被删除。猜熊猫作答、图鉴、每日熊猫结果和问问熊猫的提问次数会被删除。通知偏好会被删除。通知正文会被换成一条已清除的标记，类别和时间可能还在，尚未发出的通知邮件不再发送。显示名和简介会被删除。账号上的邮箱会被清空，账号标记为已注销。账号的内部标识，以及一条记下这次注销的状态记录，会留下。你在申请里写的原因，会留在这条申请记录里。",
           "已提交的纠错会留在审核记录里。纠错的内容和审核过程都保留。提交人的账号关联，以及能把纠错认回这个人的标识，会被去掉。",
           "用来登录的邮箱、会话和验证器保存在 Supabase Auth。账号资料清除完成之后，这条登录记录会被删除。",
         ],
@@ -319,7 +340,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
     description: "Draft privacy policy for ZhiPanda. It describes accounts, follows, seen marks, the panda book, corrections, notices, export, and deletion as they work today.",
     bannerTitle: "This is a draft and is not in effect",
     bannerBody:
-      "The operator name, contact email, and effective date in brackets are not filled in. This text is not in effect until they are.",
+      "The operator name and effective date in brackets are not filled in. This text is not in effect until they are.",
     effective: `Effective date: ${LEGAL_PLACEHOLDERS.en.effectiveDate}`,
     relatedLabel: "Terms",
     relatedPath: "/terms",
@@ -329,7 +350,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         heading: "What this policy covers",
         paragraphs: [
           `This is the draft privacy policy for the ZhiPanda website (www.zhipanda.com) and the ZhiPanda app, provided by ${LEGAL_PLACEHOLDERS.en.operator}. The contact email is ${LEGAL_PLACEHOLDERS.en.email}. The effective date is ${LEGAL_PLACEHOLDERS.en.effectiveDate}.`,
-          "The website and the app do not include an advertising network or a separate analytics product. We do not sell personal information.",
+          "The website and the app do not include an advertising network. We do not sell personal information. The website counts visits with Cloudflare Web Analytics, described under Website visit statistics below. The app has no analytics product.",
           "Published panda pages can be read without an account. The account data below exists only after you sign in and use that feature.",
         ],
       },
@@ -366,6 +387,24 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         ],
       },
       {
+        id: "ask-panda",
+        heading: "Ask Panda",
+        paragraphs: [
+          "Ask Panda is in the app and needs you to be signed in. It answers only from ZhiPanda's published learning material and panda information, and lists its sources under each answer.",
+          "The question you type is sent to Cloudflare Workers AI, which searches that material and writes the answer on Cloudflare. Neither the question nor the answer is kept afterwards: the database does not store the question text, and neither the API logs nor the AI gateway logs record the question or the answer, only content-free details such as the kind of result and how long it took.",
+          "To limit use, the database counts how many questions you asked on each day, by Beijing time (at most 20 a day), and how many were asked app-wide that day. Your count is in the export and is deleted with the account.",
+          "Ask Panda does not tell you which panda is in a photo or matches a description. For those questions it shows the face guides instead.",
+        ],
+      },
+      {
+        id: "web-analytics",
+        heading: "Website visit statistics",
+        paragraphs: [
+          "The website www.zhipanda.com uses Cloudflare Web Analytics to count page visits and measure loading speed. It sets no cookie and does not link visits to your account.",
+          "The app does not include Cloudflare Web Analytics or any other analytics product.",
+        ],
+      },
+      {
         id: "device",
         heading: "What stays on your device",
         paragraphs: [
@@ -379,9 +418,10 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         id: "processors",
         heading: "Who processes this",
         paragraphs: [
-          "Cloudflare hosts the website and the API. The website is www.zhipanda.com. The API is api.zhipanda.com.",
+          "Cloudflare hosts the website and the API. The website is www.zhipanda.com. The API is api.zhipanda.com. Cloudflare also provides the website visit statistics (Web Analytics), and the Workers AI and search that Ask Panda uses.",
           "Supabase provides sign-in (email codes, sessions, and authenticators) and the database that stores accounts and the records above.",
           "Resend sends notification email when email delivery is configured and you have turned that email notice on. If it is not configured, the email is not sent.",
+          "Mail you send to hello@zhipanda.com is forwarded by Cloudflare Email Routing to the operator's Gmail mailbox (provided by Google); our replies from that address are sent through Resend. That mail stays with those email services and is not stored in ZhiPanda's database.",
         ],
       },
       {
@@ -397,8 +437,8 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         heading: "Export and deletion",
         paragraphs: [
           "In the app, under Account and data, you can request an export or deletion after you verify with your authenticator.",
-          "The export is a JSON file. It includes the account id, email, account state, times, display name and introduction, follows, collections, visits, seen marks, Guess Panda answers, panda-book entries, Daily Panda results, notification preferences, and notification content. The file can be downloaded for 24 hours. After that, this copy expires. The request record remains.",
-          "When deletion finishes: follows, collections, visits, and seen marks are deleted. Guess Panda answers, panda-book entries, and Daily Panda results are deleted. Notification preferences are deleted. Notification text is replaced with an erased marker. The category and time may remain, and notification email that has not been sent is not sent. The display name and introduction are deleted. The email on the panda account is cleared and the account is marked deleted. The internal account id remains, along with a state record of this deletion. A reason you wrote on the request stays on that request record.",
+          "The export is a JSON file. It includes the account id, email, account state, times, display name and introduction, follows, collections, visits, seen marks, Guess Panda answers, panda-book entries, Daily Panda results, Ask Panda daily question counts (without the questions), notification preferences, and notification content. The file can be downloaded for 24 hours. After that, this copy expires. The request record remains.",
+          "When deletion finishes: follows, collections, visits, and seen marks are deleted. Guess Panda answers, panda-book entries, Daily Panda results, and Ask Panda question counts are deleted. Notification preferences are deleted. Notification text is replaced with an erased marker. The category and time may remain, and notification email that has not been sent is not sent. The display name and introduction are deleted. The email on the panda account is cleared and the account is marked deleted. The internal account id remains, along with a state record of this deletion. A reason you wrote on the request stays on that request record.",
           "Submitted corrections stay in the review records. The correction and its review history are kept. The link to the account, and the identifiers that could tie the correction back to the person, are removed.",
           "The email, session, and authenticator used to sign in are stored by Supabase Auth. After the panda account data has been cleared, that sign-in record is deleted.",
         ],

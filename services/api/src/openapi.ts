@@ -1,5 +1,6 @@
 import type { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule, type OpenAPIObject } from "@nestjs/swagger";
+import { AskModule } from "./modules/ask/ask.module.js";
 import { AuditModule } from "./modules/audit/audit.module.js";
 import { ContributionModule } from "./modules/contribution/contribution.module.js";
 import { EngagementModule } from "./modules/engagement/engagement.module.js";
@@ -52,6 +53,7 @@ export function createV2OpenApiDocument(app: INestApplication): OpenAPIObject {
       EngagementModule,
       GameModule,
       LearningModule,
+      AskModule,
       PublicationModule,
       UpdatesModule,
       NotificationModule,

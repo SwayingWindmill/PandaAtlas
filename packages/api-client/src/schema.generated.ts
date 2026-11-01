@@ -1053,6 +1053,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/ask/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Whether Ask Panda is on and how many questions are left today */
+        get: operations["getAskStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/ask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Answer a panda question from Zhipanda's published material, with sources */
+        post: operations["askPanda"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/updates": {
         parameters: {
             query?: never;
@@ -2235,6 +2269,42 @@ export interface components {
             terms: components["schemas"]["LearningTermDto"][];
             faceGuides: components["schemas"]["LearningFaceGuideDto"][];
             challenges: components["schemas"]["LearningChallengeDto"][];
+        };
+        AskStatusDto: {
+            enabled: boolean;
+            dailyLimit: number;
+            remainingToday: number;
+        };
+        AskQuestionDto: {
+            /** @description The question. It is answered and then discarded; it is never stored. */
+            question: string;
+        };
+        AskReferenceDto: {
+            title: string;
+            publisher: string | null;
+            /** Format: uri */
+            url: string;
+        };
+        AskLinkDto: {
+            /** @enum {string} */
+            kind: "article" | "card" | "topic" | "term" | "faceGuide" | "challenge" | "panda" | "learn";
+            title: string;
+            /** @description A path inside the app, such as /learn/articles/bamboo. */
+            appPath: string;
+            references: components["schemas"]["AskReferenceDto"][];
+        };
+        AskAnswerDto: {
+            /** @enum {string} */
+            kind: "answer" | "refusal" | "identification";
+            /** @enum {string} */
+            locale: "zh" | "en";
+            /** @description The answer, or why there is none. */
+            text: string;
+            /** @enum {string} */
+            reason?: "noMatch" | "unsafe" | "unavailable";
+            /** @description Pages the answer came from, or where to read instead. */
+            links: components["schemas"]["AskLinkDto"][];
+            remainingToday: number;
         };
         UpdateTargetDto: {
             /** @enum {string} */
@@ -4205,6 +4275,48 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    getAskStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AskStatusDto"];
+                };
+            };
+        };
+    };
+    askPanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AskQuestionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AskAnswerDto"];
+                };
             };
         };
     };

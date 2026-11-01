@@ -1,0 +1,248 @@
+{
+ "capturedFrom": "https://api.zhipanda.com/api/v2/pandas/{slug} (release a0262ee3-578d-4e47-8711-3d5c1562c744, 2026-11-01)",
+ "pandas": [
+  {
+   "slug": "bao-li",
+   "nameZh": "宝力",
+   "nameEn": "Bao Li",
+   "sex": "male",
+   "birthDate": "2021-08-04",
+   "birthDatePrecision": null,
+   "birthplace": "China Conservation and Research Center for the Giant Panda, Sichuan",
+   "lifeStatus": "alive",
+   "deathDate": null,
+   "currentFacility": "David M. Rubenstein and Family Giant Panda Habitat, Smithsonian National Zoo",
+   "currentLocation": null,
+   "parents": [
+    {
+     "role": "mother",
+     "nameZh": "宝宝",
+     "nameEn": "Bao Bao"
+    }
+   ],
+   "children": [],
+   "residencies": [],
+   "provisional": [
+    "life_status"
+   ],
+   "sources": [
+    {
+     "title": "Giant Panda FAQs",
+     "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+     "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs"
+    },
+    {
+     "title": "Giant panda",
+     "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+     "url": "https://nationalzoo.si.edu/animals/giant-panda"
+    },
+    {
+     "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
+     "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+     "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo"
+    },
+    {
+     "title": "Happy 5th Birthday, Bao Li",
+     "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+     "url": "https://nationalzoo.si.edu/news/happy-5th-birthday-bao-li"
+    },
+    {
+     "title": "Bao Li's Birthday Celebration",
+     "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+     "url": "https://nationalzoo.si.edu/visit/events/bao-lis-birthday-celebration"
+    },
+    {
+     "title": "Giant Panda FAQs / Bao Li parentage",
+     "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+     "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs"
+    }
+   ]
+  },
+  {
+   "slug": "lun-lun",
+   "nameZh": "伦伦",
+   "nameEn": "Lun Lun",
+   "sex": "female",
+   "birthDate": "1997-08-25",
+   "birthDatePrecision": null,
+   "birthplace": null,
+   "lifeStatus": null,
+   "deathDate": null,
+   "currentFacility": "Chengdu Research Base of Giant Panda Breeding",
+   "currentLocation": null,
+   "parents": [],
+   "children": [
+    {
+     "nameZh": "喜伦",
+     "nameEn": "Xi Lun"
+    },
+    {
+     "nameZh": "雅伦",
+     "nameEn": "Ya Lun"
+    }
+   ],
+   "residencies": [],
+   "provisional": [],
+   "sources": [
+    {
+     "title": "Giant Pandas Have Arrived in China",
+     "publisher": "Zoo Atlanta",
+     "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/"
+    },
+    {
+     "title": "Lun Lun's Second Cub Has Been Born",
+     "publisher": "Zoo Atlanta",
+     "url": "https://zooatlanta.org/press-release/lun-luns-second-cub-has-been-born/"
+    },
+    {
+     "title": "Lun Lun",
+     "publisher": "Zoo Atlanta",
+     "url": "https://zooatlanta.org/animal-legend/lun-lun/"
+    },
+    {
+     "title": "Meet the Giant Panda Cub Twins",
+     "publisher": "Zoo Atlanta",
+     "url": "https://zooatlanta.org/meet-giant-panda-cub-twins-zoo-atlanta/"
+    },
+    {
+     "title": "Yang Yang",
+     "publisher": "Zoo Atlanta",
+     "url": "https://zooatlanta.org/animal-legend/yang-yang/"
+    },
+    {
+     "title": "Chengdu Research Base of Giant Panda Breeding - Current Giant Pandas",
+     "publisher": "Giant Panda Global",
+     "url": "https://www.giantpandaglobal.com/en/zoo/chengdu-research-base-of-giant-panda-breeding"
+    }
+   ]
+  },
+  {
+   "slug": "mei-xiang",
+   "nameZh": "美香",
+   "nameEn": "Mei Xiang",
+   "sex": "female",
+   "birthDate": "1998-07-22",
+   "birthDatePrecision": null,
+   "birthplace": null,
+   "lifeStatus": "alive",
+   "deathDate": null,
+   "currentFacility": null,
+   "currentLocation": "China",
+   "parents": [],
+   "children": [
+    {
+     "nameZh": "宝宝",
+     "nameEn": "Bao Bao"
+    },
+    {
+     "nameZh": "贝贝",
+     "nameEn": "Bei Bei"
+    },
+    {
+     "nameZh": "泰山",
+     "nameEn": "Tai Shan"
+    },
+    {
+     "nameZh": "小奇迹",
+     "nameEn": "Xiao Qi Ji"
+    }
+   ],
+   "residencies": [],
+   "provisional": [
+    "life_status"
+   ],
+   "sources": [
+    {
+     "title": "Smithsonian extends giant panda agreement",
+     "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+     "url": "https://nationalzoo.si.edu/news/smithsonians-national-zoo-and-conservation-biology-institute-extends-giant-panda-agreement"
+    },
+    {
+     "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
+     "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+     "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo"
+    },
+    {
+     "title": "小编随手拍：吃笋的海子等老伙计日常",
+     "publisher": "中国大熊猫保护研究中心（新浪新闻保留官方微博正文）",
+     "url": "https://www.sina.cn/news/detail/5288679933217417.html"
+    },
+    {
+     "title": "Smithsonian's National Zoological Park - current and previous giant pandas",
+     "publisher": "Giant Panda Global",
+     "url": "https://www.giantpandaglobal.com/en/zoo/smithsonians-national-zoo/?pagina=1&s=news"
+    },
+    {
+     "title": "Giant Pandas Depart Smithsonian's National Zoo and Conservation Biology Institute for China",
+     "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+     "url": "https://nationalzoo.si.edu/news/giant-pandas-depart-smithsonians-national-zoo-and-conservation-biology-institute-for-china"
+    },
+    {
+     "title": "50 Panda Facts to Celebrate 50 Years of Giant Pandas",
+     "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+     "url": "https://nationalzoo.si.edu/animals/news/50-panda-facts-celebrate-50-years-giant-pandas-smithsonians-national-zoo"
+    }
+   ]
+  },
+  {
+   "slug": "xi-lun",
+   "nameZh": "喜伦",
+   "nameEn": "Xi Lun",
+   "sex": "female",
+   "birthDate": "2016-09-03",
+   "birthDatePrecision": null,
+   "birthplace": null,
+   "lifeStatus": null,
+   "deathDate": null,
+   "currentFacility": "Chengdu Research Base of Giant Panda Breeding",
+   "currentLocation": null,
+   "parents": [
+    {
+     "role": "father",
+     "nameZh": "洋洋",
+     "nameEn": "Yang Yang"
+    },
+    {
+     "role": "mother",
+     "nameZh": "伦伦",
+     "nameEn": "Lun Lun"
+    }
+   ],
+   "children": [],
+   "residencies": [],
+   "provisional": [],
+   "sources": [
+    {
+     "title": "Zoo Atlanta closes 2016",
+     "publisher": "Zoo Atlanta",
+     "url": "https://zooatlanta.org/press-release/zoo-atlanta-closes-2016/"
+    },
+    {
+     "title": "Giant Pandas Have Arrived in China",
+     "publisher": "Zoo Atlanta",
+     "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/"
+    },
+    {
+     "title": "Lun Lun's Second Cub Has Been Born",
+     "publisher": "Zoo Atlanta",
+     "url": "https://zooatlanta.org/press-release/lun-luns-second-cub-has-been-born/"
+    },
+    {
+     "title": "Meet the Giant Panda Cub Twins",
+     "publisher": "Zoo Atlanta",
+     "url": "https://zooatlanta.org/meet-giant-panda-cub-twins-zoo-atlanta/"
+    },
+    {
+     "title": "Chengdu Research Base of Giant Panda Breeding - Current Giant Pandas, 2016-2017 cohort",
+     "publisher": "Giant Panda Global",
+     "url": "https://www.giantpandaglobal.com/en/zoo/chengdu-research-base-of-giant-panda-breeding/?pagina=5&s=current"
+    },
+    {
+     "title": "Wikimedia Commons panda media pages collected in local bounded batches",
+     "publisher": "Wikimedia Commons contributors",
+     "url": "https://commons.wikimedia.org/wiki/Category:Giant_pandas"
+    }
+   ]
+  }
+ ]
+}

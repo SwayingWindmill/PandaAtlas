@@ -2557,6 +2557,60 @@
         ]
       }
     },
+    "/api/v2/ask/status": {
+      "get": {
+        "operationId": "getAskStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AskStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Whether Ask Panda is on and how many questions are left today",
+        "tags": [
+          "Ask"
+        ]
+      }
+    },
+    "/api/v2/ask": {
+      "post": {
+        "operationId": "askPanda",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AskQuestionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AskAnswerDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Answer a panda question from Zhipanda's published material, with sources",
+        "tags": [
+          "Ask"
+        ]
+      }
+    },
     "/api/v2/updates": {
       "get": {
         "operationId": "listUpdates",
@@ -6747,6 +6801,151 @@
           "terms",
           "faceGuides",
           "challenges"
+        ]
+      },
+      "AskStatusDto": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "dailyLimit": {
+            "type": "number",
+            "minimum": 0
+          },
+          "remainingToday": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "enabled",
+          "dailyLimit",
+          "remainingToday"
+        ]
+      },
+      "AskQuestionDto": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "The question. It is answered and then discarded; it is never stored."
+          }
+        },
+        "required": [
+          "question"
+        ]
+      },
+      "AskReferenceDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "title",
+          "publisher",
+          "url"
+        ]
+      },
+      "AskLinkDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "article",
+              "card",
+              "topic",
+              "term",
+              "faceGuide",
+              "challenge",
+              "panda",
+              "learn"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "appPath": {
+            "type": "string",
+            "description": "A path inside the app, such as /learn/articles/bamboo."
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AskReferenceDto"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "title",
+          "appPath",
+          "references"
+        ]
+      },
+      "AskAnswerDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "answer",
+              "refusal",
+              "identification"
+            ]
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "zh",
+              "en"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "description": "The answer, or why there is none."
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "noMatch",
+              "unsafe",
+              "unavailable"
+            ]
+          },
+          "links": {
+            "description": "Pages the answer came from, or where to read instead.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AskLinkDto"
+            }
+          },
+          "remainingToday": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "kind",
+          "locale",
+          "text",
+          "links",
+          "remainingToday"
         ]
       },
       "UpdateTargetDto": {

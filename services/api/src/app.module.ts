@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { AsyncJobsModule } from "./jobs/async-jobs.module.js";
+import { AskModule } from "./modules/ask/ask.module.js";
 import { AuditModule } from "./modules/audit/audit.module.js";
 import { ContributionModule } from "./modules/contribution/contribution.module.js";
 import { EvidenceModule } from "./modules/evidence/evidence.module.js";
@@ -32,6 +33,7 @@ import { HttpPlatformModule } from "./platform/http/http-platform.module.js";
     EngagementModule,
     GameModule,
     LearningModule,
+    AskModule,
     EvidenceModule,
     PandaModule,
     PlacesModule,
