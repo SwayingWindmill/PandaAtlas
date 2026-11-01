@@ -55,7 +55,7 @@ Screenshots: `/workspace/lg-shots/pr-a/` (local to the review box, not committed
 | Before | After | Why |
 | --- | --- | --- |
 | App-drawn glass discs over a hidden bar | System bar items (iOS 26) | One back button language across the app; the system handles glass, contrast and edge effects |
-| Article swaps to a solid bar mid-scroll | Bar stays transparent; title fades in under the system edge effect | No flash of a different bar while reading |
+| Article swaps to a solid bar mid-scroll | Bar stays transparent; the system edge effect keeps the title legible | No flash of a different bar while reading |
 | JS `setState` checked on every scroll event | UI-thread handler, React told at the crossing only | No JS work per frame while scrolling |
 | `pb-28` (112pt) under every list | 40pt plus what the platform does not already add | The last row stops at a consistent distance above the tab bar |
 
