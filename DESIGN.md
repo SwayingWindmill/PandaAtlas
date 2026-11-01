@@ -330,7 +330,7 @@ Named so photo chrome stops being magic numbers:
 - **Scrim**: black, 0% → 32% at 45% → 72% at the bottom (`components/scrim.tsx`).
 - **Media placeholder** `#3A3A3C`: the dark ground under a story card or resident tile while the photo loads, so white text already reads.
 - **Photo stroke** `rgba(0,0,0,0.1)` / `rgba(255,255,255,0.1)`: the 1px inside edge on a rounded photo.
-- **Glass fallback** `rgba(0,0,0,0.38)`: the disc behind a toolbar glyph where Liquid Glass is unavailable.
+- **Glass fallback** `rgba(0,0,0,0.38)`: the disc behind a floating back/share glyph over a photo where Liquid Glass is unavailable.
 - **Bar material** `rgba(255,255,255,0.86)` / `rgba(28,28,30,0.86)`: the web tab bar under a 24px blur.
 
 ### Named Rules
@@ -394,7 +394,7 @@ More space sits above a section heading than between the heading and the group. 
 
 ### Page templates
 - **Tab root:** system large title (in the column on web), grouped-background page, sections separated by `section`. 今天 is a 34pt bold 今天 with the date in regular secondary label, then the featured card and the scroller.
-- **Hero detail** (a panda, an institution): a full-bleed stretchy hero under the status bar with floating glass back/share, then the content column at `inset`, entering with `enter`.
+- **Hero detail** (a panda, an institution): a full-bleed stretchy hero under the status bar with back/share in a transparent system bar on iOS 26+ (the page title moves into the bar once it scrolls under it) and floating glass-fallback buttons elsewhere, then the content column at `inset`, entering with `enter`.
 - **List / directory:** inset grouped `ListSection` + `ListCell` (or `NavRow`) at `inset`. A long result list (找熊猫) may run full-bleed.
 - **Reading column** (科普): `paper` ground, a lead photograph with its caption below (never text on it), the reading set, large title kept in the column.
 - **Photo card:** one photograph, continuous corners (`card` or `tile`), media placeholder, bottom scrim, on-media title, photo stroke, press scale.
@@ -438,7 +438,7 @@ Resting groups are a tone step, not a shadow. Every photograph with rounded corn
 On iOS the stack leaves the bar background unset so the system can draw Liquid Glass. A solid `headerStyle` background disables that, and a solid large-title bar hides the title on iOS 26 (`lib/screen-options.ts`).
 
 ### Named Rules
-**The System Material Rule.** Blur and glass belong to the tab bar, the navigation bar, and the floating circular back and share buttons over a full-bleed hero (`components/glass-button.tsx`: `GlassView` where `isLiquidGlassAvailable()`, the glass-fallback disc elsewhere). A card does not get its own glass.
+**The System Material Rule.** Blur and glass belong to the tab bar, the navigation bar, and the back and share buttons over a full-bleed hero. Where Liquid Glass is available (iOS 26+, `isLiquidGlassAvailable()`) those are system bar items (`components/hero-header.tsx`: a transparent native bar with `Stack.Toolbar`); on earlier iOS, Android and web they float as the glass-fallback disc (`components/glass-button.tsx`). A card does not get its own glass.
 
 ## Shapes
 
@@ -471,8 +471,8 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 | `ListSection` / `ListCell` / `NavRow` | `grouped-list.tsx`, `nav-row.tsx` | Facts and destinations | A photo grid | label, detail, meta, icon, chevron, tint (action), destructive; pressed | row is the button; hint for destinations |
 | `PressScale` | `press-scale.tsx` | Press feedback on photo cards, tiles, stat blocks, chips | Grouped rows (system highlight) | pressed; reduced motion dims | inherits Pressable role |
 | `StoryCard` | `features/today/story-card.tsx` | 今天 cards | Lists | featured (card radius, display), small (tile radius, title) | one label: title and panda |
-| `StretchyHero` + `HeroToolbar` | `stretchy-hero.tsx` | The plate on a detail page | Cards inside a page | with or without overlay; zoom target; no scroll drift under Reduce Motion | photo labelled, glass buttons labelled 返回/分享; the toolbar is rendered before the scroll view so it is read first |
-| `GlassButton` | `glass-button.tsx` | Back/share over a photo | Anything not over media | Liquid Glass, fallback disc | 44 circle, label required |
+| `StretchyHero` + `HeroHeader` | `stretchy-hero.tsx`, `hero-header.tsx` | The plate on a detail page | Cards inside a page | with or without overlay; zoom target; no scroll drift under Reduce Motion; the bar title appears once the page title has scrolled under the bar | photo labelled; back and share labelled 返回/分享 (system bar items on iOS 26+, floating buttons rendered before the scroll view elsewhere so they are read first) |
+| `GlassButton` | `glass-button.tsx` | Back/share over a photo without Liquid Glass (Android, web, iOS < 26) | Anything not over media; iOS 26+ (system bar items there) | fallback disc, blurred on web | 44 circle, label required |
 | `Scrim` | `scrim.tsx` | Make on-media text legible | Darkening a photo for mood | height | decorative |
 | `PhotoOutline` | `photo-outline.tsx` | Edge on rounded photos | Square plates | radius | decorative |
 | `Icon` | `icon.tsx`, `icons.ts` | A category or destination glyph | Buttons, titles, running text | sizes footnote 15, subhead 18, body 22, title3 24, chevron 17; tones secondary, tint, tertiary, label, onMedia | always hidden; the holder carries the name |
@@ -525,7 +525,7 @@ One set: Lucide (`lucide-react-native` on `react-native-svg`), same glyphs on ev
 - **Offline:** `OfflineBanner`; cached content stays on screen.
 
 ### Sourcing
-Navigation is Expo Router's `native-tabs` and native stack (the SDK 58 way to the system tabs and Liquid Glass). `expo-glass-effect`'s `GlassView` is a plain `View` off iOS, so it is only used for the floating buttons when `isLiquidGlassAvailable()`. Buttons, switches and skeletons are React Native Reusables in `src/components/ui/`, recolored to these roles. Grouped lists have no maintained component (RN has no UITableView), so `grouped-list.tsx` fills that one gap. See `docs/design/ui-component-sourcing-policy.md`.
+Navigation is Expo Router's `native-tabs` and native stack (the SDK 58 way to the system tabs and Liquid Glass). Liquid Glass comes from the system bars themselves; the app draws no `GlassView` of its own, and only asks `expo-glass-effect`'s `isLiquidGlassAvailable()` whether a hero's back and share can go in the system bar. Buttons, switches and skeletons are React Native Reusables in `src/components/ui/`, recolored to these roles. Grouped lists have no maintained component (RN has no UITableView), so `grouped-list.tsx` fills that one gap. See `docs/design/ui-component-sourcing-policy.md`.
 
 ## Do's and Don'ts
 

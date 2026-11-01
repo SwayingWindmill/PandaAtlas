@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import type { ReactNode } from "react";
 import { Platform, Pressable, View } from "react-native";
 import Animated, {
@@ -12,29 +12,6 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
-import { GlassButton } from "@/components/glass-button";
-import { ChevronLeft, Share } from "@/components/icons";
-
-export function goBack() {
-  if (router.canGoBack()) router.back();
-  else router.replace("/");
-}
-
-/** The top bar over a hero photo: Liquid Glass back and share, fixed while the page scrolls. */
-export function HeroToolbar({ onShare }: { onShare?: () => void }) {
-  const insets = useSafeAreaInsets();
-  return (
-    <View
-      pointerEvents="box-none"
-      className="absolute right-0 left-0 flex-row justify-between px-4"
-      // Rendered before the page so VoiceOver reads 返回 first; zIndex keeps it over the scrolling content.
-      style={{ top: insets.top + 6, zIndex: 1 }}
-    >
-      <GlassButton icon={ChevronLeft} label="返回" onPress={goBack} />
-      {onShare ? <GlassButton icon={Share} label="分享" onPress={onShare} /> : null}
-    </View>
-  );
-}
 
 /**
  * A full-bleed photograph under the status bar that stretches from its bottom edge on pull-down and

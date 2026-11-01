@@ -14,6 +14,7 @@ import { SearchField } from "@/features/pandas/search-field";
 import { localToday } from "@/features/engagement/seen";
 import { ExploreCard } from "@/features/pandas/explore-card";
 import { useStoryPhotos } from "@/features/today/story-photos";
+import { useBottomClearance } from "@/lib/bottom-clearance";
 
 const GAP = 12;
 /** 今天 takes the day's first four story photos; 找熊猫 takes the next ones, so no panda repeats. */
@@ -21,6 +22,7 @@ const TODAY_STORIES = 4;
 
 export default function FindScreen() {
   const { width } = useWindowDimensions();
+  const bottom = useBottomClearance();
   const photos = useStoryPhotos(localToday(), TODAY_STORIES + 4).slice(TODAY_STORIES);
   const card = Math.round(Math.min((Math.min(width, 700) - 32) * 0.78, 320));
   const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
@@ -63,87 +65,99 @@ export default function FindScreen() {
     { id: "compare", title: "比一比两只熊猫", href: "/compare" as const },
   ];
 
+  // The list is the screen's root scroll view, so the system bars track it directly: on iOS 26 the
+  // tab bar minimizes as it scrolls and the navigation bar's edge effect follows it.
+  if (pandas) {
+    return (
+      <FlatList
+        data={results}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item, index }) => (
+          <PandaRow item={item} first={index === 0} last={index === results.length - 1} />
+        )}
+        className="flex-1 bg-background"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerClassName="px-4"
+        contentContainerStyle={{ paddingBottom: bottom }}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        ListHeaderComponent={
+          <View className="gap-stack pb-row">
+            {Platform.OS === "web" ? <Text variant="display">找熊猫</Text> : null}
+            <SearchField value={query} onChange={setQuery} />
+            {chips.length > 0 ? (
+              <ToggleGroup
+                type="single"
+                variant="outline"
+                value={area}
+                onValueChange={(value) => setArea(value ?? "全部")}
+                accessibilityLabel="按地方看"
+              >
+                {["全部", ...chips].map((chip) => (
+                  <ToggleGroupItem key={chip} value={chip} accessibilityLabel={chip}>
+                    <Text>{chip}</Text>
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            ) : null}
+            {browsing ? (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                className="-mx-4"
+                contentContainerClassName="px-4"
+                contentContainerStyle={{ gap: GAP }}
+                snapToInterval={card + GAP}
+                snapToAlignment="start"
+                decelerationRate="fast"
+              >
+                {explore.map((entry, index) => (
+                  <ExploreCard
+                    key={entry.id}
+                    id={entry.id}
+                    title={entry.title}
+                    href={entry.href}
+                    photo={photos[index]}
+                    width={card}
+                  />
+                ))}
+              </ScrollView>
+            ) : null}
+            {results.length > 0 ? (
+              <SectionHeader
+                title={browsing ? "全部熊猫" : area !== "全部" && !deferredQuery.trim() ? area : "搜索结果"}
+                count={`${results.length} 只`}
+              />
+            ) : null}
+          </View>
+        }
+        ListEmptyComponent={
+          <View className="items-center gap-stack-tight py-page">
+            <Text variant="headline">
+              {deferredQuery.trim() ? `没有找到「${deferredQuery.trim()}」` : "这里还没有熊猫"}
+            </Text>
+            <Text variant="subheadline" className="text-center text-muted-foreground">
+              试试熊猫的名字，或换一个地方。
+            </Text>
+          </View>
+        }
+      />
+    );
+  }
+
+  // Before the list is there, the loading and failure states scroll the same way, with the web title of their own.
   return (
-    <View className="flex-1 bg-background">
-      {/* While loading or after a failure the list header isn't there, so the web title stands on its own. */}
-      {!pandas && Platform.OS === "web" ? (
+    <ScrollView
+      className="flex-1 bg-background"
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={{ paddingBottom: bottom }}
+    >
+      {Platform.OS === "web" ? (
         <Text variant="display" className="px-4">
           找熊猫
         </Text>
       ) : null}
-      {pandas ? (
-        <FlatList
-          data={results}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => (
-            <PandaRow item={item} first={index === 0} last={index === results.length - 1} />
-          )}
-          contentInsetAdjustmentBehavior="automatic"
-          contentContainerClassName="px-4 pb-28"
-          keyboardDismissMode="on-drag"
-          keyboardShouldPersistTaps="handled"
-          ListHeaderComponent={
-            <View className="gap-stack pb-row">
-              {Platform.OS === "web" ? <Text variant="display">找熊猫</Text> : null}
-              <SearchField value={query} onChange={setQuery} />
-              {chips.length > 0 ? (
-                <ToggleGroup
-                  type="single"
-                  variant="outline"
-                  value={area}
-                  onValueChange={(value) => setArea(value ?? "全部")}
-                  accessibilityLabel="按地方看"
-                >
-                  {["全部", ...chips].map((chip) => (
-                    <ToggleGroupItem key={chip} value={chip} accessibilityLabel={chip}>
-                      <Text>{chip}</Text>
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
-              ) : null}
-              {browsing ? (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  className="-mx-4"
-                  contentContainerClassName="px-4"
-                  contentContainerStyle={{ gap: GAP }}
-                  snapToInterval={card + GAP}
-                  snapToAlignment="start"
-                  decelerationRate="fast"
-                >
-                  {explore.map((entry, index) => (
-                    <ExploreCard
-                      key={entry.id}
-                      id={entry.id}
-                      title={entry.title}
-                      href={entry.href}
-                      photo={photos[index]}
-                      width={card}
-                    />
-                  ))}
-                </ScrollView>
-              ) : null}
-              {results.length > 0 ? (
-                <SectionHeader
-                  title={browsing ? "全部熊猫" : area !== "全部" && !deferredQuery.trim() ? area : "搜索结果"}
-                  count={`${results.length} 只`}
-                />
-              ) : null}
-            </View>
-          }
-          ListEmptyComponent={
-            <View className="items-center gap-stack-tight py-page">
-              <Text variant="headline">
-                {deferredQuery.trim() ? `没有找到「${deferredQuery.trim()}」` : "这里还没有熊猫"}
-              </Text>
-              <Text variant="subheadline" className="text-center text-muted-foreground">
-                试试熊猫的名字，或换一个地方。
-              </Text>
-            </View>
-          }
-        />
-      ) : failed ? (
+      {failed ? (
         <LoadFailed message="熊猫列表暂时打不开。" onRetry={retry} className="mx-4" />
       ) : (
         <View className="gap-row px-4 pt-row" accessibilityLabel="正在加载熊猫列表">
@@ -159,6 +173,6 @@ export default function FindScreen() {
           ))}
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 }

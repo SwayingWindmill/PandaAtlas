@@ -1,11 +1,11 @@
 import { Image } from "expo-image";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { useState } from "react";
-import { Platform, Pressable, ScrollView, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { SYSTEM_BAR, useHeroScroll } from "@/components/hero-header";
 import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
@@ -32,6 +32,9 @@ const TERM_MARK = /\[\[([a-z0-9]+(?:-[a-z0-9]+)*)\|([^\]]+)\]\]/g;
 /** The lead photograph's height: a News-style plate, about half the first screen. */
 const LEAD_HEIGHT = 420;
 
+/** How far the page scrolls before its title, now under the bar, is shown in the bar. */
+const TITLE_UNDER_BAR = 300;
+
 function slugParam(value: string | string[] | undefined): string {
   return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
 }
@@ -47,7 +50,7 @@ export default function ArticleScreen() {
   const insets = useSafeAreaInsets();
   const slug = slugParam(useLocalSearchParams<{ slug: string }>().slug);
   const { state, reload } = useLearningCatalog();
-  const [compact, setCompact] = useState(false);
+  const { onScroll, pastHero } = useHeroScroll(TITLE_UNDER_BAR);
 
   if (state.status !== "ready") {
     return (
@@ -90,20 +93,23 @@ export default function ArticleScreen() {
     <View className="flex-1 bg-paper">
       <Stack.Screen
         options={{
-          title: compact ? title : "",
+          title,
+          headerTitle: pastHero ? title : "",
           headerLargeTitleEnabled: false,
-          headerTransparent: Platform.OS === "ios" && !compact,
+          // iOS 26 keeps the system bar transparent over the lead photo and the page and adds its own
+          // scroll-edge effect under the title, so no solid bar is swapped in. Earlier iOS has no such
+          // effect, so the paper bar comes in once the title would sit on the text.
+          headerTransparent: SYSTEM_BAR || (Platform.OS === "ios" && !pastHero),
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: compact || Platform.OS !== "ios" ? theme.paper : "transparent" },
+          ...(SYSTEM_BAR
+            ? {}
+            : { headerStyle: { backgroundColor: pastHero || Platform.OS !== "ios" ? theme.paper : "transparent" } }),
         }}
       />
-      <ScrollView
+      <Animated.ScrollView
         contentInsetAdjustmentBehavior="never"
         scrollEventThrottle={16}
-        onScroll={(event) => {
-          const next = event.nativeEvent.contentOffset.y > 300;
-          if (next !== compact) setCompact(next);
-        }}
+        onScroll={onScroll}
         contentContainerStyle={{ paddingBottom: insets.bottom + 48 }}
       >
         <Animated.View entering={PAGE_ENTER}>
@@ -216,7 +222,7 @@ export default function ArticleScreen() {
             </View>
           ) : null}
         </Animated.View>
-      </ScrollView>
+      </Animated.ScrollView>
     </View>
   );
 }

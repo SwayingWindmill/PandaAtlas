@@ -1,8 +1,8 @@
 import { Image } from "expo-image";
-import { Link, Stack, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Linking, Platform, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
-import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
@@ -27,7 +27,8 @@ import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { Scrim } from "@/components/scrim";
-import { HeroToolbar, StretchyHero } from "@/components/stretchy-hero";
+import { HeroHeader, useHeroScroll } from "@/components/hero-header";
+import { StretchyHero } from "@/components/stretchy-hero";
 import { PAGE_ENTER } from "@/design/motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -359,10 +360,7 @@ export default function InstitutionScreen() {
     };
   }, [signedIn]);
   const insets = useSafeAreaInsets();
-  const scrollY = useSharedValue(0);
-  const onScroll = useAnimatedScrollHandler((event) => {
-    scrollY.set(event.contentOffset.y);
-  });
+  const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
 
   const load = useCallback(() => {
     loadInstitution(slug)
@@ -379,7 +377,7 @@ export default function InstitutionScreen() {
   if (!institution) {
     return (
       <View className="flex-1 bg-background">
-        <Stack.Screen options={{ headerShown: false }} />
+        <HeroHeader title="" pastHero={false} />
         {failed ? (
           <View className="px-4" style={{ paddingTop: insets.top + 64 }}>
             <LoadFailed message="这一页暂时打不开。" onRetry={retry} />
@@ -393,7 +391,6 @@ export default function InstitutionScreen() {
             </View>
           </View>
         )}
-        <HeroToolbar />
       </View>
     );
   }
@@ -402,8 +399,7 @@ export default function InstitutionScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <Stack.Screen options={{ headerShown: false, title: institution.name }} />
-      <HeroToolbar />
+      <HeroHeader title={institution.name} pastHero={pastHero} />
       <Animated.ScrollView
         className="flex-1"
         contentInsetAdjustmentBehavior="never"

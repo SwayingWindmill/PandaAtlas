@@ -1,9 +1,9 @@
 import { Image } from "expo-image";
-import { router, Stack, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
-import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
@@ -24,7 +24,8 @@ import {
 import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
-import { HeroToolbar, StretchyHero } from "@/components/stretchy-hero";
+import { HeroHeader, useHeroScroll } from "@/components/hero-header";
+import { StretchyHero } from "@/components/stretchy-hero";
 import { PAGE_ENTER } from "@/design/motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -351,10 +352,7 @@ export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [failed, setFailed] = useState(false);
-  const scrollY = useSharedValue(0);
-  const onScroll = useAnimatedScrollHandler((event) => {
-    scrollY.set(event.contentOffset.y);
-  });
+  const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
 
   const load = useCallback(() => {
     loadProfile(slug)
@@ -371,7 +369,7 @@ export default function ProfileScreen() {
   if (!profile) {
     return (
       <View className="flex-1 bg-background">
-        <Stack.Screen options={{ headerShown: false }} />
+        <HeroHeader title="" pastHero={false} />
         {failed ? (
           <View className="px-4 pt-28">
             <LoadFailed message="资料暂时打不开。" onRetry={retry} />
@@ -389,7 +387,6 @@ export default function ProfileScreen() {
             </View>
           </View>
         )}
-        <HeroToolbar />
       </View>
     );
   }
@@ -397,8 +394,11 @@ export default function ProfileScreen() {
   const cover = profile.photos[0];
   return (
     <View className="flex-1 bg-background">
-      <Stack.Screen options={{ headerShown: false, title: profile.name }} />
-      <HeroToolbar onShare={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })} />
+      <HeroHeader
+        title={profile.name}
+        pastHero={pastHero}
+        onShare={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })}
+      />
       <Animated.ScrollView
         className="flex-1"
         contentInsetAdjustmentBehavior="never"
