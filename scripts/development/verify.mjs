@@ -123,7 +123,9 @@ export function classifyDevelopmentScopes(paths) {
     if (
       changedPath === "scripts/development/check-api-contract.mjs" ||
       changedPath === "scripts/development/check-api-db-types.mjs" ||
-      changedPath === "scripts/development/generated-output-drift.mjs"
+      changedPath === "scripts/development/generated-output-drift.mjs" ||
+      // services/api's integration suite runs these administrator scripts and their tests.
+      /^scripts\/development\/(tests\/)?(first-admin-bootstrap|production-staff-admin)[.\w]*\.mjs$/u.test(changedPath)
     ) addScope(scopes, "api");
     if (changedPath.startsWith("tools/panda-data/") || changedPath.startsWith("contracts/panda-data/")) {
       addScope(scopes, "curation");
