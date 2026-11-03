@@ -248,4 +248,4 @@ This example writes only a local candidate bundle. It does not modify curation C
 - The reviewed registry and runner execute adapters through this contract.
 - Conservative identity reconciliation assigns matched identities, normalized values, current curation values, and comparison states.
 - The curator-decision ticket records accept/reject/defer decisions separately and exports accepted candidates as a curation-patch proposal.
-- The map-closing ticket owns schema validation tests, deduplication tests, cross-platform CI, Release Gate, and final immutable evidence.
+- Each change carries its own schema validation and deduplication tests.
