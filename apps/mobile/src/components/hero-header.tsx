@@ -56,6 +56,12 @@ export function useHeroScroll(heroHeight: number) {
   return { scrollY, onScroll, pastHero };
 }
 
+/** The custom SF Symbol for a toolbar button in a native build; nothing in Expo Go, which uses `icon`. */
+function nativeGlyph(name: "back" | "share") {
+  if (!NATIVE_SYMBOLS) return null;
+  return <Stack.Toolbar.Icon xcasset={nanoSymbol(name).xcasset} renderingMode="template" />;
+}
+
 /**
  * The bar over a hero photo.
  *
@@ -66,12 +72,6 @@ export function useHeroScroll(heroHeight: number) {
  *
  * Earlier iOS, Android and web: no bar; back and share float over the photo as translucent discs.
  */
-/** The custom SF Symbol for a toolbar button in a native build; nothing in Expo Go, which uses `icon`. */
-function nativeGlyph(name: "back" | "share") {
-  if (!NATIVE_SYMBOLS) return null;
-  return <Stack.Toolbar.Icon xcasset={nanoSymbol(name).xcasset} renderingMode="template" />;
-}
-
 export function HeroHeader({ title, pastHero, onShare }: { title: string; pastHero: boolean; onShare?: () => void }) {
   const { label } = useIOSColors();
   if (!SYSTEM_BAR) {
