@@ -320,16 +320,16 @@ const commands = [
   {
     id: "curation.learning-check",
     category: "verification",
-    description: "Validate learning content and check its migration is current.",
+    description: "Validate learning content.",
     command: "python",
-    args: ["scripts/curation/build_learning_content_migration.py", "--check"],
+    args: ["scripts/curation/validate_learning_content.py"],
     requires: ["python"],
     effect: "read-only",
   },
   {
     id: "curation.learning-test",
     category: "verification",
-    description: "Run learning content migration builder tests.",
+    description: "Run learning content validator tests.",
     command: "python",
     args: [
       "-m",
@@ -338,7 +338,7 @@ const commands = [
       "-s",
       "scripts/curation/tests",
       "-p",
-      "test_build_learning_content_migration.py",
+      "test_validate_learning_content.py",
     ],
     requires: ["python"],
     effect: "generated-output",

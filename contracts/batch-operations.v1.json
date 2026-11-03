@@ -58,6 +58,16 @@
       "artifact_paths": [".batch-work/guess-questions"]
     },
     {
+      "id": "curation.learning",
+      "status": "ready",
+      "effect": "production-write",
+      "approval_required": true,
+      "manifest_required": true,
+      "idempotency": "Writes data/curation/learning/learning.json into the one learning.catalog row; the same content is reported as already current, and changed content needs a new version.",
+      "command": ["node", "services/api/dist/learning-command.js"],
+      "artifact_paths": [".batch-work/learning"]
+    },
+    {
       "id": "media.process",
       "status": "ready",
       "effect": "generated-output",

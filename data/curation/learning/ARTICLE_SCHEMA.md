@@ -2,9 +2,7 @@
 
 科普首页读的是 `articles`。撰稿稿用这一套字段，程序按原样收，不改句子。正式版只返回 `status` 为 `published` 的文章。
 
-改 `data/curation/learning/learning.json`。不要改 SQL。改完后由维护者运行：
-
-`python scripts/curation/build_learning_content_migration.py --write`
+改 `data/curation/learning/learning.json`。改完后运行 `python scripts/curation/validate_learning_content.py`；合并后由维护者用 `curation.learning` 批处理写进数据库。
 
 ## 一条文章
 
