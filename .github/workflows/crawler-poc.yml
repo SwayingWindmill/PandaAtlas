@@ -1,23 +1,6 @@
 name: Crawler PoC
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - labeled
-      - unlabeled
-    paths:
-      - ".github/workflows/crawler-poc.yml"
-      - "data/acquisition-sources/**"
-      - "docs/data-acquisition/**"
-      - "tools/panda-data/src/panda_data/acquisition/**"
-      - "tools/panda-data/src/panda_data/cli.py"
-      - "tools/panda-data/tests/test_source_runtime.py"
-      - "tools/panda-data/pyproject.toml"
-      - "tools/panda-data/uv.lock"
-      - "package.json"
   workflow_dispatch:
 
 permissions:
@@ -30,10 +13,6 @@ env:
 jobs:
   crawler-poc:
     name: Controlled crawler PoC
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'pull_request' &&
-      contains(github.event.pull_request.labels.*.name, 'delivery:map-close'))
     runs-on: ubuntu-latest
     steps:
       - name: Check out clean repository

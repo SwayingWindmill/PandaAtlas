@@ -574,7 +574,7 @@ Follows `.agents/skills/animate-expo` and `make-interfaces-feel-better`. Duratio
 - **Sync check:** `src/design/tokens.test.ts` runs in `npm test` and fails if `global.css` or this front matter is stale; it also checks contrast (AA for text roles and the accent) and the 4pt grid.
 - **Lint this file:** `npx -y -p @google/design.md designmd lint DESIGN.md`.
 - **Adding a token:** add it to `tokens.ts` (primitive first, then a role), run `npm run design:tokens -w @zhipanda/mobile`, document the role here, and show it on `/dev/design-system`.
-- **Skill review (required for every frontend PR):** any PR that changes a screen, component, token or motion in `apps/mobile` (or the website UI) runs the skill checks in `.agents/skills` before it is merged: `impeccable` (critique + audit, craft floor), `review-animations` (when motion changes), `break-ui` (long names, large Dynamic Type, empty / error / loading, dark mode, small screens, Reduce Motion), `make-interfaces-feel-better`, and `apple-design` / `emil-design-eng` where relevant. Real findings are fixed in the same PR or listed as out of scope. The record goes in `docs/design/reviews/YYYY-MM-DD-pr<number>-skill-review.md` (for each skill: what was checked, findings, the fix or decision), and the PR description links it with a short summary. Example: `docs/design/reviews/2026-10-30-pr749-skill-review.md`.
+- **Skill review (visual changes):** a PR that changes how a screen looks or moves (a redesign, a new component, a token or motion change) in `apps/mobile` or the website UI runs `impeccable` (critique + audit) and `break-ui` (long names, large Dynamic Type, empty / error / loading, dark mode, small screens, Reduce Motion) from `.agents/skills`, plus `review-animations` when motion changes. Real findings are fixed in the same PR or listed as out of scope, summarised in the PR description. Logic, data and bug-fix PRs that keep the visuals rest on the lint and tests above.
 
 ## Deprecated
 
@@ -597,6 +597,7 @@ No screen uses these since v2.8; the `Text` variants stay defined so nothing old
 
 ## Changelog
 
+- **v2.12 (2026-11-03).** Governance: the skill review applies to PRs that change how a screen looks or moves; logic, data and bug-fix PRs rest on the lint and tests.
 - **v2.11 (2026-10-31).** The Accessibility Rule: `NARROW_WIDTH` (280) with `useStacked` / `useSingleColumn` for every restack (图鉴 stats and grid, 合集, place and institution residents, 那年今天, 熊猫日历 month header); `SwitchRow` with `component.switchTrack` (51×31) replaces the 32×20 switch in 设置 and 通知; segments hit the full 44pt track; 时间线 source links 44pt; decorative SVGs hidden; heading levels for footnote and headline headings; no empty web bar title; hero toolbar read first; hero drift off under Reduce Motion.
 - **v2.10 (2026-10-30).** 里程碑 (The Milestones Rule): `/milestones` from 我的, 笋金 number chips in 图鉴, milestone notes and 满月 / 满百天 on 那年今天, counted rows on the 时间线 (its summary now counts N 条记录), and a 设置 switch; numbers in `MILESTONE_CONFIG`; glyph `Flag`.
 - **v2.9 (2026-10-30).** 那年今天 on 今天, `/on-this-day`, a 设置 switch and a 纪念 / 那年今天 group on a panda page (The On This Day Rule); 今天生日 yields to it while it is on; glyphs `Ellipsis` (more actions on a row) and `History` (那年今天 in 设置).

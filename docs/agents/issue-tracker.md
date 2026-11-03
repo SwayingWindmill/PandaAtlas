@@ -10,7 +10,6 @@ Issues and PRDs for this repository live as GitHub issues in `SwayingWindmill/Pa
 - **Comment on an issue**: `gh issue comment <number> --body "..."`
 - **Apply or remove labels**: `gh issue edit <number> --add-label "..."` or `--remove-label "..."`
 - **Close an issue**: `gh issue close <number> --comment "..."`
-- **Stack at most one PR deep**: a PR may target `main` or one open parent PR that targets `main`; merge the parent before building further. The `Pull Request Stack Depth` check enforces this.
 
 Run commands inside this repository so `gh` resolves the repository from the configured Git remote.
 
@@ -57,15 +56,3 @@ The `wayfinder` skill represents a work map as one GitHub issue with child issue
 - Otherwise, record relationships using task lists, `Part of #<map>`, and `Blocked by: #<issue>` lines.
 - Claim work with `gh issue edit <number> --add-assignee @me`.
 - Resolve work by commenting with the result and closing the issue.
-
-## Map-closing delivery rule
-
-Implementation maps use one deferred-verification closing ticket:
-
-- Create one final child issue named `Close <map name>: integration and verification`.
-- Make it depend on every implementation child issue in the map.
-- Mark its PR with the `delivery:map-close` label.
-- Every earlier child issue and PR must state `Verification: deferred to the map-closing ticket`.
-- Earlier child tickets do not own broad tests, full-scope CI, browser or accessibility suites, publication evidence, immutable hashes, rollback/withdrawal drills, or cross-page frontend work.
-- The closing ticket performs those deferred activities once, fixes integration failures across the completed slices, and supplies the map's final acceptance evidence.
-- Do not close the parent map until the map-closing ticket has passed.
