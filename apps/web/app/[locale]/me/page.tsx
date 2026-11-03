@@ -42,7 +42,6 @@ export default async function LocalizedMyPandasPage({ params }: LocalizedMyPanda
   if (!locale) notFound();
 
   const envelope = await loadV2PublicAtlasDataset(locale);
-  if (!envelope) notFound();
   const view = buildMyPandasViewModel(envelope.data, locale);
   return <MyPandasPage locale={locale} view={view} envelope={envelope} />;
 }

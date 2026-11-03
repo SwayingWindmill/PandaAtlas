@@ -10,6 +10,7 @@ import {
 } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { readPublicMetadata } from "@/lib/server/public-read";
 import {
   localizedPublicDestination,
   type PublicSearchParams,
@@ -23,7 +24,7 @@ interface PlacePageProps {
 export async function generateMetadata({ params }: PlacePageProps): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const locale = parsePublicLocale(rawLocale);
-  const envelope = locale ? await loadV2PublicPlace(slug, locale) : null;
+  const envelope = locale ? await readPublicMetadata(() => loadV2PublicPlace(slug, locale)) : null;
   if (!locale || !envelope) return {};
   const entity = buildPlacePageViewModel(envelope, locale);
   return buildPublicMetadata({

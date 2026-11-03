@@ -18,7 +18,7 @@ export default async function RandomPandaPage({ params }: RandomPandaPageProps) 
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
   const envelope = await loadV2PublicAtlasDataset(locale);
-  const pandas = envelope?.data.pandas ?? [];
+  const pandas = envelope.data.pandas;
   if (!pandas.length) redirect(`/${locale}/pandas` as Route);
   const panda = pandas[Math.floor(Math.random() * pandas.length)];
   redirect(`/${locale}/pandas/${panda.slug}` as Route);

@@ -1,3 +1,4 @@
+import { withPublicReadRequest } from "../lib/server/public-read.ts";
 import { isPublicCachePurge, PUBLIC_CACHE_PURGE_HEADER, purgePublicCache, withEdgeCachePolicy } from "./edge-cache.mjs";
 import { isMediaRequest, serveMedia } from "./media.mjs";
 import { withSecurityHeaders } from "./security-headers.mjs";
@@ -11,7 +12,7 @@ export function createWorker(app) {
     }
     const response = isMediaRequest(new URL(request.url))
       ? await serveMedia(request, env)
-      : await app.fetch(request, env, context);
+      : await withPublicReadRequest(() => app.fetch(request, env, context));
     return withEdgeCachePolicy(request, response);
   }
 

@@ -65,7 +65,6 @@ export default async function LocalizedFeedPage({
   if (result.state === "disabled") notFound();
 
   const atlas = await loadV2PublicAtlasDataset(locale);
-  if (!atlas) notFound();
   return (
     <PersonalizedFeedPage
       locale={locale}

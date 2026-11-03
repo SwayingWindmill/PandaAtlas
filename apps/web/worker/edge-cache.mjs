@@ -68,6 +68,14 @@ function cacheDisposition(request, response) {
 }
 
 export function withEdgeCachePolicy(request, response) {
+  // A 5xx must not keep a public cache header. Workers Cache stores a response that
+  // explicitly opts in, including statuses it would otherwise skip.
+  if (response.status >= 500) {
+    const headers = new Headers(response.headers);
+    headers.set("Cache-Control", UNCACHEABLE);
+    headers.delete("Cloudflare-CDN-Cache-Control");
+    return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  }
   const disposition = cacheDisposition(request, response);
   if (disposition === "uncacheable" && response.headers.has("Cache-Control")) return response;
   const headers = new Headers(response.headers);

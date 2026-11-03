@@ -10,6 +10,7 @@ import {
 } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { readPublicMetadata } from "@/lib/server/public-read";
 
 interface InstitutionRouteProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -18,7 +19,7 @@ interface InstitutionRouteProps {
 export async function generateMetadata({ params }: InstitutionRouteProps): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const locale = parsePublicLocale(rawLocale);
-  const envelope = locale ? await loadV2PublicInstitution(slug, locale) : null;
+  const envelope = locale ? await readPublicMetadata(() => loadV2PublicInstitution(slug, locale)) : null;
   if (!locale || !envelope) return {};
   const view = buildInstitutionPageViewModel(envelope.data, locale);
   const fallback = locale === "zh"

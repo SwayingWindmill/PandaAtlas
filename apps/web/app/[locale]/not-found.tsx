@@ -1,7 +1,16 @@
 import type { Route } from "next";
 import Link from "next/link";
 
+import { PublicUnavailableMessage } from "@/features/public-content/public-unavailable-message";
+import { publicReadUnavailableDuringRequest } from "@/lib/server/public-read";
+
 export default function PublicNotFoundState() {
+  // A failed public read throws a 503 fallback, which vinext renders with this file.
+  // The status stays 503; this only chooses the copy.
+  if (publicReadUnavailableDuringRequest()) {
+    return <PublicUnavailableMessage action={<a href="">重新尝试 / Try again</a>} />;
+  }
+
   return (
     <main id="main-content" className="pa-public-register">
       <section className="pa-state-card">

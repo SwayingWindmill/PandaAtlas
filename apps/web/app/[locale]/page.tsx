@@ -36,8 +36,6 @@ export default async function LocalizedHomePage({ params }: LocalizedHomePagePro
   if (!locale) notFound();
 
   const envelope = await loadV2PublicAtlasDataset(locale);
-  if (!envelope) notFound();
-
   const baseModel = buildHomeV09ViewModel(envelope.data, locale);
   const model = withHomeV09Media(baseModel, await loadV2PandaCovers(homeV09PandaIds(baseModel)), locale);
 

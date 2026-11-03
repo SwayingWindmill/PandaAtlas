@@ -45,7 +45,6 @@ export default async function DailyPandaPage({ params }: DailyPandaPageProps) {
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
   const envelope = await loadV2PublicAtlasDataset(locale);
-  if (!envelope) notFound();
   const pandas = buildGamePandas(envelope.data.pandas, locale).map(({ id, slug, name, alternateName }) => ({
     id,
     slug,
