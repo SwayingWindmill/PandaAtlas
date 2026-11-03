@@ -11,4 +11,4 @@ Important tracked areas include:
 
 The ignored `local-panda-research/` workspace may hold original responses, intermediate imports, caches, temporary query output, audit scratch files, and media binaries. Promote only reviewed, bounded material into a governed tracked area; do not force-add the local workspace wholesale. It is backed up to private R2 instead ([runbook](../docs/runbooks/research-backup.md)).
 
-A committed data file is not automatically authoritative or publishable. Publication and runtime responsibility remain governed by contracts, release checks, and the [deployment status page](../docs/deployment/runtime-status.md).
+The production database is the source of truth for published data; files here are inputs to it, and the [release export](../docs/runbooks/production-release.md#back-up-the-published-data) is the readable copy of what it publishes. A committed data file is not automatically authoritative or publishable. Publication and runtime responsibility remain governed by contracts, release checks, and the [deployment status page](../docs/deployment/runtime-status.md).
