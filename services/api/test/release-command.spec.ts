@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { PublicationInspectionPort, PublicationReleaseInspection } from "../src/modules/publication/application/publication-inspection.port.js";
 import type { PublicRelease, PublicationPort, PublicationReleaseResult } from "../src/modules/publication/application/publication.application.js";
-import { buildRelease, publishRelease, renderReleaseReport } from "../src/modules/publication/application/release-command.js";
+import { publishRelease, renderReleaseReport } from "../src/modules/publication/application/release-command.js";
 import {
   RELEASE_ACTIONS,
   RELEASE_REASON_LENGTH,
@@ -65,8 +65,9 @@ function fakePorts(state: { releaseId?: string; lifecycleState?: PublicRelease["
         counts: { panda: 925, institution: 5, place: 12, lineage: 15, residency: 23, lifeEvent: 26, media: 900, evidence: 40 },
         blockers: [],
       },
-      changes: [{ resourceKind: "institution", added: 5, changed: 0, removed: 0 }],
-      changeTotal: 5,
+      // Like the real query: no changes once the release is itself the current one.
+      changes: state.current ? [] : [{ resourceKind: "institution", added: 5, changed: 0, removed: 0 }],
+      changeTotal: state.current ? 0 : 5,
       changeOffset: 0,
       changeItems: [],
       transitions: [],
@@ -116,21 +117,17 @@ describe("release manifest", () => {
 });
 
 describe("release command", () => {
-  it("builds a new release once and reports the existing one on a repeated run", async () => {
+  it("builds, seals and activates a new release in one run, then reports it as done on a repeated run", async () => {
     const { ports, calls } = fakePorts({});
-    const first = await buildRelease(ports, manifest, context);
-    const second = await buildRelease(ports, manifest, context);
-    expect([first.steps, second.steps]).toEqual([["built"], ["already built"]]);
+    const first = await publishRelease(ports, manifest, context, "reason");
+    const second = await publishRelease(ports, manifest, context, "reason");
+    expect(first.steps).toEqual(["built", "sealed", "activated"]);
+    expect(second.steps).toEqual(["already sealed", "already current"]);
     expect(second.releaseId).toBe(first.releaseId);
-    expect(calls).toEqual(["build"]);
+    expect(calls).toEqual(["build", "seal", "activate", "activate"]);
   });
 
-  it("does not build for a rollback manifest", async () => {
-    const { ports } = fakePorts({});
-    await expect(buildRelease(ports, { ...manifest, action: "rollback" }, context)).rejects.toThrow(/nothing to build/);
-  });
-
-  it("seals and activates the built release, then reports both as done on a repeated run", async () => {
+  it("seals and activates a release that was built earlier", async () => {
     const { ports, calls } = fakePorts({ releaseId: "built", lifecycleState: "building" });
     const first = await publishRelease(ports, manifest, context, "reason");
     const second = await publishRelease(ports, manifest, context, "reason");
@@ -140,9 +137,10 @@ describe("release command", () => {
     expect(calls).toEqual(["seal", "activate", "activate"]);
   });
 
-  it("refuses to publish a release that was never built", async () => {
-    const { ports } = fakePorts({});
-    await expect(publishRelease(ports, manifest, context, "reason")).rejects.toThrow(/Run release\.build with this manifest/);
+  it("refuses to roll back to a release that was never built", async () => {
+    const { ports, calls } = fakePorts({});
+    await expect(publishRelease(ports, { ...manifest, action: "rollback" }, context, "reason")).rejects.toThrow(/nothing to roll back to/);
+    expect(calls).toEqual([]);
   });
 
   it("sends an older release to rollback instead of activating it", async () => {
@@ -159,8 +157,8 @@ describe("release command", () => {
 
   it("summarizes counts and changes per resource for the job summary", async () => {
     const { ports } = fakePorts({});
-    const markdown = renderReleaseReport(await buildRelease(ports, manifest, context));
-    expect(markdown).toContain("## Release 2026.10.26.1: built");
+    const markdown = renderReleaseReport(await publishRelease(ports, manifest, context, "reason"));
+    expect(markdown).toContain("## Release 2026.10.26.1: built, sealed, activated");
     expect(markdown).toContain("| institution | 5 | 5 | 0 | 0 |");
     expect(markdown).toContain("| panda | 925 | 0 | 0 | 0 |");
   });

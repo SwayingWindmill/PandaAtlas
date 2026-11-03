@@ -5,7 +5,7 @@ import { createApplication } from "../../src/bootstrap.js";
 import { EVIDENCE_PORT, type EvidencePort } from "../../src/modules/evidence/application/evidence.application.js";
 import { PANDA_PORT, type PandaPort } from "../../src/modules/panda/application/panda.application.js";
 import { PLACES_PORT, type PlacesPort } from "../../src/modules/places/application/places.application.js";
-import { buildRelease, publishRelease } from "../../src/modules/publication/application/release-command.js";
+import { publishRelease } from "../../src/modules/publication/application/release-command.js";
 import type { ReleaseManifest } from "../../src/modules/publication/application/release-manifest.js";
 import { createReleaseCommandContext } from "../../src/modules/publication/release-command.module.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
@@ -31,8 +31,8 @@ afterAll(async () => {
   await app.close();
 });
 
-describe("release.build and release.publish batch adapters", () => {
-  it("build once, publish once, and roll back by moving the pointer, recording the system actor", async () => {
+describe("release.publish batch adapter", () => {
+  it("builds and publishes in one run, repeats as a no-op, and rolls back by moving the pointer", async () => {
     const suffix = randomUUID();
     const evidence = app.get<EvidencePort>(EVIDENCE_PORT);
     const pandas = app.get<PandaPort>(PANDA_PORT);
@@ -77,21 +77,14 @@ describe("release.build and release.publish batch adapters", () => {
     const first: ReleaseManifest = { version: `2099.12.30.${day}`, action: "publish", reason: "First release from the batch adapter test." };
     const second: ReleaseManifest = { ...first, version: `2099.12.31.${day}`, reason: "Second release from the batch adapter test." };
 
-    const built = await buildRelease(ports, first, context);
-    expect(built.steps).toEqual(["built"]);
-    expect(built.inspection.release.lifecycleState).toBe("building");
-    expect(built.inspection.release.counts.institution).toBeGreaterThan(0);
-    const rebuilt = await buildRelease(ports, first, context);
-    expect(rebuilt).toMatchObject({ releaseId: built.releaseId, steps: ["already built"] });
-
     const published = await publishRelease(ports, first, context, "First release from the batch adapter test. Run: test.");
-    expect(published.steps).toEqual(["sealed", "activated"]);
+    expect(published.steps).toEqual(["built", "sealed", "activated"]);
     expect(published.inspection.release.isCurrent).toBe(true);
+    expect(published.inspection.release.counts.institution).toBeGreaterThan(0);
     const republished = await publishRelease(ports, first, context, "First release from the batch adapter test. Run: test.");
     expect(republished.steps).toEqual(["already sealed", "already current"]);
 
-    await buildRelease(ports, second, context);
-    expect((await publishRelease(ports, second, context, "Second release from the batch adapter test.")).steps).toEqual(["sealed", "activated"]);
+    expect((await publishRelease(ports, second, context, "Second release from the batch adapter test.")).steps).toEqual(["built", "sealed", "activated"]);
 
     const rolledBack = await publishRelease(
       ports,
@@ -99,13 +92,13 @@ describe("release.build and release.publish batch adapters", () => {
       context,
       "Roll back to the first release in the batch adapter test.",
     );
-    expect(rolledBack).toMatchObject({ releaseId: built.releaseId, steps: ["rolled back"] });
+    expect(rolledBack).toMatchObject({ releaseId: published.releaseId, steps: ["rolled back"] });
     expect(rolledBack.inspection.release.isCurrent).toBe(true);
 
     const transitions = await app.get(DatabaseService).db
       .selectFrom("publication.release_transitions")
       .select(["transition_type", "actor_account_id", "actor_system_key"])
-      .where("release_id", "=", built.releaseId)
+      .where("release_id", "=", published.releaseId)
       .orderBy("occurred_at")
       .execute();
     expect(transitions.map((row) => row.transition_type)).toEqual(["built", "sealed", "activated", "rolled_back"]);

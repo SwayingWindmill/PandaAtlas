@@ -5,7 +5,6 @@ import path from "node:path";
 import type { PublicationCommandContext } from "./modules/publication/application/publication.application.js";
 import {
   type ReleaseReport,
-  buildRelease,
   publishRelease,
   renderReleaseReport,
 } from "./modules/publication/application/release-command.js";
@@ -13,8 +12,8 @@ import { assertVerifiedDatabase } from "./batch-database.js";
 import { parseReleaseManifest } from "./modules/publication/application/release-manifest.js";
 import { createReleaseCommandContext } from "./modules/publication/release-command.module.js";
 
-// Entry point of the release.build and release.publish batch adapters (contracts/batch-operations.v1.json):
-//   node services/api/dist/release-command.js build|publish
+// Entry point of the release.publish batch adapter (contracts/batch-operations.v1.json):
+//   node services/api/dist/release-command.js publish
 // The batch runner supplies BATCH_MANIFEST_PATH and BATCH_CHANGE_REFERENCE; the protected workflow job
 // supplies DATABASE_URL and DATABASE_SSL_CA_CERT after production-batch approval.
 
@@ -60,7 +59,7 @@ async function writeReport(report: ReleaseReport): Promise<void> {
 }
 
 async function main(action: string | undefined): Promise<void> {
-  if (action !== "build" && action !== "publish") throw new Error("Usage: release-command.js build|publish");
+  if (action !== "publish") throw new Error("Usage: release-command.js publish");
   const manifestPath = process.env.BATCH_MANIFEST_PATH;
   if (!manifestPath) throw new Error("BATCH_MANIFEST_PATH is required.");
   const manifest = parseReleaseManifest(JSON.parse(await readFile(manifestPath, "utf8")), path.basename(manifestPath));
@@ -69,11 +68,8 @@ async function main(action: string | undefined): Promise<void> {
   const { app, ports } = await createReleaseCommandContext();
   try {
     const context: PublicationCommandContext = { actor: { kind: "system", systemKey: SYSTEM_KEY }, correlationId: randomUUID() };
-    const report = action === "build"
-      ? await buildRelease(ports, manifest, context)
-      : await publishRelease(ports, manifest, context, provenance(manifest.reason));
-    await writeReport(report);
-    if (action === "publish") await waitForPublicRelease(manifest.version);
+    await writeReport(await publishRelease(ports, manifest, context, provenance(manifest.reason)));
+    await waitForPublicRelease(manifest.version);
   } finally {
     await app.close();
   }

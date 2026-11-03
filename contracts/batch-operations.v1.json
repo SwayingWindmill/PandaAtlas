@@ -92,22 +92,12 @@
       "blocked_reason": "Current upload scripts are source-specific and require explicit remote verification."
     },
     {
-      "id": "release.build",
-      "status": "ready",
-      "effect": "production-write",
-      "approval_required": true,
-      "manifest_required": true,
-      "idempotency": "Builds the not-yet-public release a data/release-manifests manifest names, once: versions are unique, so a repeated run finds that release and reports it again.",
-      "command": ["node", "services/api/dist/release-command.js", "build"],
-      "artifact_paths": [".batch-work/release"]
-    },
-    {
       "id": "release.publish",
       "status": "ready",
       "effect": "production-write",
       "approval_required": true,
       "manifest_required": true,
-      "idempotency": "Seals and activates the one built release a manifest names, or moves the pointer back to an older sealed release; a step that already happened is reported, not repeated.",
+      "idempotency": "Builds, seals and activates the release a data/release-manifests manifest names, or moves the pointer back to an older sealed release; versions are unique and a step that already happened is reported, not repeated.",
       "command": ["node", "services/api/dist/release-command.js", "publish"],
       "artifact_paths": [".batch-work/release"]
     },
