@@ -1,57 +1,58 @@
-import { useEffect, useSyncExternalStore } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import { useSession } from "@/features/session/session";
 import { authedApi } from "@/lib/api";
+import { queryClient } from "@/lib/query-client";
 
-// The followed pandas of the signed-in fan, shared by every screen that shows a follow button or the list.
-// A toggle shows at once and is undone if the API refuses it.
+const favoritesKey = (accountId: string) => ["private", accountId, "favorites"] as const;
 
-let ids: ReadonlySet<string> | null = null;
-let loadedFor: string | null = null;
-const listeners = new Set<() => void>();
-
-function publish(next: ReadonlySet<string> | null) {
-  ids = next;
-  for (const listener of listeners) listener();
-}
-
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  return () => {
-    listeners.delete(listener);
-  };
-}
-
-async function load(accountId: string) {
-  loadedFor = accountId;
+async function loadFavorites(): Promise<string[]> {
   const { data } = await authedApi.GET("/api/v2/me/favorites");
-  if (loadedFor === accountId && data) publish(new Set(data.items.map((item) => item.pandaId)));
+  if (!data) throw new Error("Favorites unavailable");
+  return data.items.map((item) => item.pandaId);
 }
 
-export async function setFollowing(pandaId: string, following: boolean): Promise<boolean> {
-  const before = ids ?? new Set<string>();
-  const next = new Set(before);
-  if (following) next.add(pandaId);
-  else next.delete(pandaId);
-  publish(next);
-  const { response } = following
-    ? await authedApi.POST("/api/v2/me/favorites/{pandaId}", { params: { path: { pandaId } } })
-    : await authedApi.DELETE("/api/v2/me/favorites/{pandaId}", { params: { path: { pandaId } } });
-  if (!response.ok) publish(before);
-  return response.ok;
+/** Optimistically update only this panda, so concurrent follow actions do not undo each other. */
+export async function setFollowing(accountId: string, pandaId: string, following: boolean): Promise<boolean> {
+  const key = favoritesKey(accountId);
+  await queryClient.cancelQueries({ queryKey: key });
+  const before = queryClient.getQueryData<string[]>(key);
+  if (before) {
+    queryClient.setQueryData<string[]>(key, (current) => {
+      if (!current) return current;
+      return following ? [...new Set([...current, pandaId])] : current.filter((id) => id !== pandaId);
+    });
+  }
+  try {
+    const { response } = following
+      ? await authedApi.POST("/api/v2/me/favorites/{pandaId}", { params: { path: { pandaId } } })
+      : await authedApi.DELETE("/api/v2/me/favorites/{pandaId}", { params: { path: { pandaId } } });
+    if (!response.ok) throw new Error("Favorite update failed");
+    return true;
+  } catch {
+    if (before) {
+      const wasFollowing = before.includes(pandaId);
+      queryClient.setQueryData<string[]>(key, (current) => {
+        if (!current) return current;
+        return wasFollowing ? [...new Set([...current, pandaId])] : current.filter((id) => id !== pandaId);
+      });
+    }
+    return false;
+  } finally {
+    // Onboarding may follow before the first favorites query has finished.
+    if (!before) void queryClient.invalidateQueries({ queryKey: key });
+  }
 }
 
 /** Followed panda IDs, or null while loading and when signed out. */
 export function useFollowed(): ReadonlySet<string> | null {
   const { state } = useSession();
   const accountId = state.status === "signedIn" ? state.accountId : null;
-  useEffect(() => {
-    if (accountId === null) {
-      loadedFor = null;
-      publish(null);
-    } else if (loadedFor !== accountId) {
-      void load(accountId);
-    }
-  }, [accountId]);
-  return useSyncExternalStore(subscribe, () => ids);
+  const { data } = useQuery({
+    queryKey: favoritesKey(accountId ?? ""),
+    queryFn: loadFavorites,
+    enabled: accountId !== null,
+  });
+  return useMemo(() => accountId !== null && data ? new Set(data) : null, [accountId, data]);
 }

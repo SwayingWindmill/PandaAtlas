@@ -1,9 +1,11 @@
 import type { components } from "@zhipanda/api-client";
+import { queryOptions } from "@tanstack/react-query";
 
 import { areaOf } from "@/features/pandas/areas";
 import { api } from "@/lib/api";
 import { loadResidencies } from "@/lib/public-data";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
+import { queryClient } from "@/lib/query-client";
 
 type Schemas = components["schemas"];
 type Place = Schemas["PublicPlaceSummaryDto"];
@@ -49,20 +51,17 @@ export function currentPlaceId(residencies: Residency[]): string | null {
   return (open.find((residency) => residency.residencyType === "primary") ?? open[0])?.placeId ?? null;
 }
 
-let places: Promise<Map<string, Place>> | null = null;
-
 export function loadPlaces(): Promise<Map<string, Place>> {
-  places ??= api
-    .GET("/api/v2/places")
-    .then(({ data }) => {
+  return queryClient.fetchQuery({
+    queryKey: ["public", "places"],
+    networkMode: "always",
+    staleTime: 300_000,
+    queryFn: async () => {
+      const { data } = await api.GET("/api/v2/places");
       if (!data) throw new Error("Places unavailable");
       return new Map(data.items.map((place) => [place.placeId, place]));
-    })
-    .catch((error: unknown) => {
-      places = null;
-      throw error;
-    });
-  return places;
+    },
+  });
 }
 
 async function buildIndex(): Promise<PandaListItem[]> {
@@ -95,15 +94,13 @@ async function buildIndex(): Promise<PandaListItem[]> {
   return items.sort((a, b) => Number(a.deceased) - Number(b.deceased) || collator.compare(a.name, b.name));
 }
 
-let index: Promise<PandaListItem[]> | null = null;
-
-/** Every published panda, loaded once per app session. */
+/** Every published panda, shared across screens while the result is fresh. */
 export function loadPandaIndex(): Promise<PandaListItem[]> {
-  index ??= buildIndex().catch((error: unknown) => {
-    index = null;
-    throw error;
-  });
-  return index;
+  return queryClient.fetchQuery(pandaIndexQueryOptions());
+}
+
+export function pandaIndexQueryOptions() {
+  return queryOptions({ queryKey: ["public", "panda-index"], queryFn: buildIndex, staleTime: 300_000, networkMode: "always" });
 }
 
 /** Exact matches first, then names starting with the query, then the rest, each in list order. */

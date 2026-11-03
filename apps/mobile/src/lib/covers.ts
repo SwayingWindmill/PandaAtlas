@@ -1,56 +1,46 @@
-import { useEffect, useSyncExternalStore } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { api, publicMediaUrl } from "@/lib/api";
 
-// Rows ask for their own cover; requests made in the same frame share one call of up to 50 ids,
-// the endpoint's limit. A failed call is forgotten, so the row asks again when it next mounts.
+// Queries started in the same frame share one API request, up to the endpoint's limit.
 const BATCH = 50;
-const photos = new Map<string, string | null>();
-const requested = new Set<string>();
-const queue = new Set<string>();
-const listeners = new Set<() => void>();
+const queue = new Map<string, { resolve: (value: string | null) => void; reject: (reason: Error) => void }>();
 let timer: ReturnType<typeof setTimeout> | null = null;
-
-function notify() {
-  for (const listener of listeners) listener();
-}
 
 function flush() {
   timer = null;
-  const ids = [...queue];
+  const entries = [...queue.entries()];
   queue.clear();
-  for (let start = 0; start < ids.length; start += BATCH) {
-    const chunk = ids.slice(start, start + BATCH);
-    api
-      .GET("/api/v2/panda-covers", { params: { query: { ids: chunk.join(",") } } })
+  for (let start = 0; start < entries.length; start += BATCH) {
+    const chunk = entries.slice(start, start + BATCH);
+    const ids = chunk.map(([id]) => id);
+    void api.GET("/api/v2/panda-covers", { params: { query: { ids: ids.join(",") } } })
       .then(({ data }) => {
         if (!data) throw new Error("Covers unavailable");
         const found = new Map(data.items.map((cover) => [cover.pandaId, publicMediaUrl(cover.objectKey)]));
-        for (const id of chunk) photos.set(id, found.get(id) ?? null);
-        notify();
+        for (const [id, pending] of chunk) pending.resolve(found.get(id) ?? null);
       })
-      .catch(() => {
-        for (const id of chunk) requested.delete(id);
+      .catch((error: unknown) => {
+        const failure = error instanceof Error ? error : new Error("Covers unavailable");
+        for (const [, pending] of chunk) pending.reject(failure);
       });
   }
 }
 
-function request(id: string) {
-  if (requested.has(id)) return;
-  requested.add(id);
-  queue.add(id);
-  timer ??= setTimeout(flush, 16);
-}
-
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  return () => {
-    listeners.delete(listener);
-  };
+function loadCover(id: string): Promise<string | null> {
+  return new Promise((resolve, reject) => {
+    queue.set(id, { resolve, reject });
+    timer ??= setTimeout(flush, 16);
+  });
 }
 
 /** The panda's cover photo URL, or null while loading and when it has none. */
 export function usePandaCover(pandaId: string): string | null {
-  useEffect(() => request(pandaId), [pandaId]);
-  return useSyncExternalStore(subscribe, () => photos.get(pandaId) ?? null);
+  const { data } = useQuery({
+    queryKey: ["public", "panda-cover", pandaId],
+    queryFn: () => loadCover(pandaId),
+    staleTime: 300_000,
+    networkMode: "always",
+  });
+  return data ?? null;
 }

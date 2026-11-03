@@ -3,6 +3,7 @@ import { createContext, type ReactNode, useContext, useEffect, useMemo, useState
 
 import { authedApi } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
+import { queryClient } from "@/lib/query-client";
 
 // One place owns sign-in for the whole app. Screens read the state and call these actions; tokens stay in
 // the Supabase client and the authenticated API client.
@@ -49,6 +50,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     const apply = (session: Session | null) => {
       const userId = session?.user.id ?? null;
       if (userId === current) return;
+      if (current !== undefined) queryClient.removeQueries({ queryKey: ["private"] });
       current = userId;
       if (!session) {
         setState({ status: "signedOut" });

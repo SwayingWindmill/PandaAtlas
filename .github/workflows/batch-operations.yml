@@ -15,7 +15,6 @@ on:
           - curation.guess-questions
           - media.process
           - media.publish
-          - release.build
           - release.publish
           - recovery.drill
       manifest_path:

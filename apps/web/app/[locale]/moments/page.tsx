@@ -155,7 +155,6 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
   const calendarYear = year ?? now.getUTCFullYear();
   const calendarMonth = month ?? now.getUTCMonth() + 1;
   const momentDataset = await loadV2PublicMomentDataset();
-  if (!momentDataset) notFound();
 
   const timelineItems = filterV2PublicMoments(momentDataset, { year, month, panda, eventType, location, includeAnniversaries, sort });
   const calendarItems = filterV2PublicMoments(momentDataset, {

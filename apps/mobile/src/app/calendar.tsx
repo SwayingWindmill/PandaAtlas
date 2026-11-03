@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -15,8 +16,6 @@ import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import {
   type CalendarDay,
-  type CalendarEvent,
-  type CalendarPanda,
   calendarMonth,
   dayHeading,
   monthGrid,
@@ -28,7 +27,6 @@ import { localToday } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
 import { cn } from "@/lib/utils";
 
-type Sources = { pandas: CalendarPanda[]; events: CalendarEvent[] };
 type Scope = "all" | "followed";
 
 const WEEK = ["一", "二", "三", "四", "五", "六", "日"];
@@ -155,15 +153,14 @@ export default function CalendarScreen() {
     month: Number(today.slice(5, 7)),
   });
   const [selected, setSelected] = useState<number | null>(null);
-  const [sources, setSources] = useState<Sources | null>(null);
-  const [failed, setFailed] = useState(false);
-
-  const load = useCallback(() => {
-    loadCalendarSources()
-      .then(setSources)
-      .catch(() => setFailed(true));
-  }, []);
-  useEffect(load, [load]);
+  const { data: sources, isError, refetch } = useQuery({
+    queryKey: ["public", "calendar-sources"],
+    queryFn: loadCalendarSources,
+    staleTime: 300_000,
+    networkMode: "always",
+  });
+  // A failed background refresh keeps the month already shown.
+  const failed = isError && !sources;
 
   const days = useMemo(
     () => (sources ? calendarMonth(sources.pandas, sources.events, year, month) : []),
@@ -185,11 +182,6 @@ export default function CalendarScreen() {
   function go(by: number) {
     setMonth(shiftMonth(year, month, by));
     setSelected(null);
-  }
-
-  function retry() {
-    setFailed(false);
-    load();
   }
 
   return (
@@ -215,8 +207,8 @@ export default function CalendarScreen() {
           <MonthButton to={shiftMonth(year, month, 1).month} direction="forward" onPress={() => go(1)} />
         </View>
         {failed ? (
-          <LoadFailed message="日历暂时打不开。" onRetry={retry} />
-        ) : sources === null ? (
+          <LoadFailed message="日历暂时打不开。" onRetry={() => void refetch()} />
+        ) : !sources ? (
           <Skeleton className="h-72 w-full rounded-tile" accessibilityLabel="正在加载日历" />
         ) : (
           <MonthGrid year={year} month={month} days={scoped} today={today} selected={selected} onSelect={setSelected} />

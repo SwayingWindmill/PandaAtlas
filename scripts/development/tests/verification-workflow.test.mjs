@@ -42,10 +42,7 @@ test("crawler PoC workflow targets the active panda-data runtime", async () => {
     "utf8",
   );
 
-  assert.match(workflow, /tools\/panda-data\/src\/panda_data\/acquisition\/\*\*/u);
-  assert.match(workflow, /tools\/panda-data\/tests\/test_source_runtime\.py/u);
-  assert.match(workflow, /tools\/panda-data\/pyproject\.toml/u);
-  assert.match(workflow, /tools\/panda-data\/uv\.lock/u);
+  assert.match(workflow, /on:\s*\r?\n\s*workflow_dispatch:/u);
   assert.match(workflow, /npm run lint:crawler-poc/u);
   assert.match(workflow, /npm run test:crawler-poc/u);
   assert.match(workflow, /npm run source:xi-lun/u);

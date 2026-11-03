@@ -1,7 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -19,7 +20,6 @@ import {
   Network,
   Users,
   Venus,
-  Waypoints,
 } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
@@ -36,7 +36,7 @@ import { sourceLine } from "@/features/on-this-day/memory-group";
 import { useMilestonesOn } from "@/features/milestones/prefs";
 import { DECEASED_POLICY, isCubDay } from "@/features/on-this-day/on-this-day";
 import { openPanda } from "@/features/pandas/panda-row";
-import { type Profile, loadProfile, longDate } from "@/features/pandas/profile";
+import { type Profile, longDate, profileQueryOptions } from "@/features/pandas/profile";
 import { type Stat, UNKNOWN } from "@/features/pandas/profile-facts";
 import { RADIUS } from "@/lib/surface";
 
@@ -228,8 +228,8 @@ function Family({ profile }: { profile: Profile }) {
         ))}
       </ScrollView>
       <ListSection>
-        <ListCell icon={Network} label="看家谱" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} />
-        <ListCell icon={Waypoints} label="查关系" href={{ pathname: "/relationship", params: { from: profile.slug } }} last />
+        {/* 查关系 now opens from the family, where the tree it starts from is on screen. */}
+        <ListCell icon={Network} label="查看家族" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} last />
       </ListSection>
     </View>
   );
@@ -350,21 +350,8 @@ function NoPhoto({ profile }: { profile: Profile }) {
 
 export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [failed, setFailed] = useState(false);
+  const { data: profile, isError: failed, refetch } = useQuery(profileQueryOptions(slug));
   const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
-
-  const load = useCallback(() => {
-    loadProfile(slug)
-      .then(setProfile)
-      .catch(() => setFailed(true));
-  }, [slug]);
-  useEffect(load, [load]);
-
-  function retry() {
-    setFailed(false);
-    load();
-  }
 
   if (!profile) {
     return (
@@ -372,7 +359,7 @@ export default function ProfileScreen() {
         <HeroHeader title="" pastHero={false} />
         {failed ? (
           <View className="px-4 pt-28">
-            <LoadFailed message="资料暂时打不开。" onRetry={retry} />
+            <LoadFailed message="资料暂时打不开。" onRetry={() => void refetch()} />
           </View>
         ) : (
           <View className="gap-4" accessibilityLabel="正在加载资料">
