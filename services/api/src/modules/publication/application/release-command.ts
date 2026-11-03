@@ -7,9 +7,9 @@ import type { PublicationMemberKind } from "./publication-change.port.js";
 import type { PublicationInspectionPort, PublicationReleaseInspection } from "./publication-inspection.port.js";
 import type { ReleaseManifest } from "./release-manifest.js";
 
-// The release.build and release.publish batch operations. Build makes the release a manifest names and
-// reports what it would change; publish seals and activates exactly that release, or rolls back to an
-// older sealed one. Both are safe to repeat: a step that already happened is reported, not redone.
+// The release.publish batch operation. A publish manifest builds, seals and activates its release in one
+// run and reports what changed against the previous one; a rollback manifest moves the pointer back to an
+// older sealed release. A repeated run reports a step that already happened instead of redoing it.
 
 export interface ReleaseCommandPorts {
   publication: PublicationPort;
@@ -17,10 +17,10 @@ export interface ReleaseCommandPorts {
 }
 
 export interface ReleaseReport {
-  operation: "build" | "publish" | "rollback";
+  operation: "publish" | "rollback";
   version: string;
   releaseId: string;
-  /** What this run did, in order, e.g. ["built"] or ["already sealed", "activated"]. */
+  /** What this run did, in order, e.g. ["built", "sealed", "activated"] or ["already sealed", "already current"]. */
   steps: string[];
   previousReleaseId?: string;
   inspection: PublicationReleaseInspection;
@@ -66,40 +66,23 @@ function settled(
   return result.previousReleaseId;
 }
 
-export async function buildRelease(
-  ports: ReleaseCommandPorts,
-  manifest: ReleaseManifest,
-  context: PublicationCommandContext,
-): Promise<ReleaseReport> {
-  if (manifest.action !== "publish") {
-    throw new ReleaseCommandError(`${manifest.version} is a rollback manifest: it reuses a sealed release, so there is nothing to build.`);
-  }
-  const existing = await ports.inspection.findReleaseId(manifest.version);
-  const releaseId = existing ?? (await ports.publication.build(manifest.version, context)).releaseId;
-  return {
-    operation: "build",
-    version: manifest.version,
-    releaseId,
-    steps: [existing === undefined ? "built" : "already built"],
-    inspection: await inspect(ports, releaseId),
-  };
-}
-
 export async function publishRelease(
   ports: ReleaseCommandPorts,
   manifest: ReleaseManifest,
   context: PublicationCommandContext,
   reason: string,
 ): Promise<ReleaseReport> {
-  const releaseId = await ports.inspection.findReleaseId(manifest.version);
-  if (releaseId === undefined) {
-    throw new ReleaseCommandError(
-      manifest.action === "publish"
-        ? `Release ${manifest.version} does not exist. Run release.build with this manifest and review its report first.`
-        : `Release ${manifest.version} does not exist, so there is nothing to roll back to.`,
-    );
-  }
   const steps: string[] = [];
+  let releaseId = await ports.inspection.findReleaseId(manifest.version);
+  if (releaseId === undefined) {
+    if (manifest.action === "rollback") {
+      throw new ReleaseCommandError(`Release ${manifest.version} does not exist, so there is nothing to roll back to.`);
+    }
+    releaseId = (await ports.publication.build(manifest.version, context)).releaseId;
+    steps.push("built");
+  }
+  // Changes are measured against the current release, so they are read before this release replaces it.
+  const before = await inspect(ports, releaseId);
   let previousReleaseId: string | undefined;
   if (manifest.action === "publish") {
     const release = await ports.publication.getRelease(releaseId);
@@ -116,8 +99,8 @@ export async function publishRelease(
     previousReleaseId = settled(rolledBack, manifest.version, { verb: "roll back to", done: "rolled back" }, steps);
   }
 
-  const inspection = await inspect(ports, releaseId);
-  if (!inspection.release.isCurrent) {
+  const after = await inspect(ports, releaseId);
+  if (!after.release.isCurrent) {
     throw new ReleaseCommandError(`${manifest.version} is not the current release after the run; another change may have raced it.`);
   }
   return {
@@ -126,7 +109,7 @@ export async function publishRelease(
     releaseId,
     steps,
     ...(previousReleaseId === undefined ? {} : { previousReleaseId }),
-    inspection,
+    inspection: { ...before, release: after.release },
   };
 }
 
@@ -149,8 +132,8 @@ export function renderReleaseReport(report: ReleaseReport): string {
     "",
     `- Release ID: \`${report.releaseId}\``,
     `- State: \`${release.lifecycleState}\`${release.isCurrent ? ", current" : ""}`,
-    `- Compared with the current release: ${
-      currentReleaseId === undefined ? "none" : currentReleaseId === report.releaseId ? "this release is current" : `\`${currentReleaseId}\``
+    `- Compared with the release current before this run: ${
+      currentReleaseId === undefined ? "none" : currentReleaseId === report.releaseId ? "this release, already current" : `\`${currentReleaseId}\``
     }`,
     ...(report.previousReleaseId === undefined ? [] : [`- Replaced: \`${report.previousReleaseId}\` (roll back to it with a rollback manifest)`]),
     "",
