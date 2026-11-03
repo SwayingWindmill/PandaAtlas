@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
-import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 import { FlatList, Platform, ScrollView, View, useWindowDimensions } from "react-native";
 
 import { LoadFailed } from "@/components/load-failed";
@@ -7,10 +8,10 @@ import { SectionHeader } from "@/components/section-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { loadInstitutionList } from "@/features/institutions/institutions";
+import { institutionListQueryOptions } from "@/features/institutions/institutions";
 import { areaChips } from "@/features/pandas/areas";
 import { PandaRow } from "@/features/pandas/panda-row";
-import { type PandaListItem, loadPandaIndex, searchPandas } from "@/features/pandas/pandas";
+import { pandaIndexQueryOptions, searchPandas } from "@/features/pandas/pandas";
 import { SearchField } from "@/features/pandas/search-field";
 import { localToday } from "@/features/engagement/seen";
 import { ExploreCard } from "@/features/pandas/explore-card";
@@ -31,30 +32,13 @@ export default function FindScreen() {
   const bottom = useBottomClearance();
   const photos = useStoryPhotos(localToday(), TODAY_STORIES + 4).slice(TODAY_STORIES);
   const card = Math.round(Math.min((Math.min(width, 700) - 32) * 0.78, 320));
-  const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
-  const [failed, setFailed] = useState(false);
+  const { data: pandas, isError: failed, refetch } = useQuery(pandaIndexQueryOptions());
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
 
-  const load = useCallback(() => {
-    loadPandaIndex()
-      .then(setPandas)
-      .catch(() => setFailed(true));
-  }, []);
-  useEffect(load, [load]);
-
-  function retry() {
-    setFailed(false);
-    load();
-  }
-
   // The entry appears once a release publishes institutions; until then there is nothing behind it.
-  const [hasInstitutions, setHasInstitutions] = useState(false);
-  useEffect(() => {
-    loadInstitutionList()
-      .then((institutions) => setHasInstitutions(institutions.length > 0))
-      .catch(() => setHasInstitutions(false));
-  }, []);
+  const { data: institutions } = useQuery(institutionListQueryOptions());
+  const hasInstitutions = (institutions?.length ?? 0) > 0;
 
   const [area, setArea] = useState("全部");
   const chips = useMemo(() => (pandas ? areaChips(pandas) : []), [pandas]);
@@ -181,7 +165,7 @@ export default function FindScreen() {
           </Text>
         ) : null}
         {failed ? (
-          <LoadFailed message="熊猫列表暂时打不开。" onRetry={retry} className="mx-4" />
+          <LoadFailed message="熊猫列表暂时打不开。" onRetry={() => void refetch()} className="mx-4" />
         ) : (
           <View className="gap-row px-4 pt-row" accessibilityLabel="正在加载熊猫列表">
             {SYSTEM_SEARCH ? null : <Skeleton className="h-11 rounded-control" />}

@@ -1,5 +1,5 @@
-import { api } from "@/lib/api";
 import { displayName, pandaBirthDate, pandaIsDeceased } from "@/lib/panda";
+import { loadPandaDetail } from "@/lib/public-panda";
 import { localToday } from "@/features/engagement/seen";
 import { pandaMilestones } from "@/features/milestones/milestones";
 import { loadPlaces, placeName } from "@/features/pandas/pandas";
@@ -13,12 +13,8 @@ export interface PandaTimeline extends Timeline {
 }
 
 export async function loadTimeline(slug: string): Promise<PandaTimeline> {
-  const [detail, places] = await Promise.all([
-    api.GET("/api/v2/pandas/{slug}", { params: { path: { slug } } }),
-    loadPlaces(),
-  ]);
-  if (!detail.data) throw new Error(`Panda ${slug} unavailable`);
-  const { panda, relatives, lineage, residencies, events, evidence } = detail.data;
+  const [detail, places] = await Promise.all([loadPandaDetail(slug), loadPlaces()]);
+  const { panda, relatives, lineage, residencies, events, evidence } = detail;
   const deathDate = panda.facts.find((fact) => fact.fieldKey === "death_date")?.value;
   const birthDate = pandaBirthDate(panda);
   const relative = new Map(relatives.map((item) => [item.pandaId, item]));

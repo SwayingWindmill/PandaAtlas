@@ -1,20 +1,11 @@
 import type { components } from "@zhipanda/api-client";
 
 import { api } from "@/lib/api";
+import { queryClient } from "@/lib/query-client";
 
-// Public lists of the active release that several screens read. The `load*` loaders fetch once per app session
-// (and again after a failure); the `fetch*` functions always read the current release.
+// Shared public lists use a bounded cache; fetch* remains available for explicit refreshes.
 
 type Schemas = components["schemas"];
-
-function once<T>(fetch: () => Promise<T>): () => Promise<T> {
-  let pending: Promise<T> | null = null;
-  return () =>
-    (pending ??= fetch().catch((error: unknown) => {
-      pending = null;
-      throw error;
-    }));
-}
 
 export async function fetchLifeEvents(): Promise<Schemas["PublicLifeEventSummaryDto"][]> {
   const { data } = await api.GET("/api/v2/life-events");
@@ -34,6 +25,6 @@ export async function fetchResidencies(): Promise<Schemas["PublicResidencySummar
   return data.items;
 }
 
-export const loadLifeEvents = once(fetchLifeEvents);
-export const loadLineage = once(fetchLineage);
-export const loadResidencies = once(fetchResidencies);
+export const loadLifeEvents = () => queryClient.fetchQuery({ queryKey: ["public", "life-events"], queryFn: fetchLifeEvents, staleTime: 300_000, networkMode: "always" });
+export const loadLineage = () => queryClient.fetchQuery({ queryKey: ["public", "lineage"], queryFn: fetchLineage, staleTime: 300_000, networkMode: "always" });
+export const loadResidencies = () => queryClient.fetchQuery({ queryKey: ["public", "residencies"], queryFn: fetchResidencies, staleTime: 300_000, networkMode: "always" });
