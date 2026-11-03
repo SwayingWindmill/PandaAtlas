@@ -3,9 +3,9 @@ import type { Family, FamilyMember } from "@/features/family/family";
 // One generation up and one down around the focus panda, like FamilySearch's family view.
 // Tapping any relative re-centres the tree on it, so the layout never needs more rows.
 
-export const PARENT_CARD = { width: 144, height: 72 };
+export const PARENT_CARD = { width: 112, height: 124 };
 export const MEMBER_CARD = { width: 96, height: 124 };
-export const FOCUS_CARD = { width: 120, height: 152 };
+export const FOCUS_CARD = { width: 120, height: 140 };
 
 const PAD = 16;
 const ROW_GAP = 52;
@@ -14,8 +14,9 @@ const CARD_GAP = 8;
 const COUPLE_GAP = 24;
 const GROUP_PAD = 8;
 const GROUP_LABEL = 26;
-const BUS_OFFSET = 22;
-const CORNER = 12;
+// Matches the tree cards' top padding and 48px parent/relative portraits.
+const PORTRAIT_TOP = 8;
+const PORTRAIT_RADIUS = 24;
 
 export type CardKind = "parent" | "focus" | "member";
 
@@ -36,13 +37,18 @@ export interface PlacedGroup {
   height: number;
 }
 
+export interface PlacedLine {
+  id: string;
+  path: string;
+}
+
 export interface FamilyLayout {
   width: number;
   height: number;
   cards: PlacedCard[];
   groups: PlacedGroup[];
   /** SVG path data for the connectors. */
-  lines: string[];
+  lines: PlacedLine[];
   /** The dot joining the two parents, when both are known. */
   couple: { x: number; y: number } | null;
   /** Where the "no descendants" placeholder sits, when the focus panda has none. */
@@ -54,27 +60,25 @@ interface Point {
   y: number;
 }
 
-/** A trunk from `source` to a horizontal bus, then a drop to each target, with rounded outer corners. */
-function branch(source: Point, targets: Point[]): string[] {
-  const [only] = targets;
-  if (targets.length === 1 && only && only.x === source.x) return [`M${source.x} ${source.y}V${only.y}`];
-  const busY = Math.min(...targets.map((target) => target.y)) - BUS_OFFSET;
-  const xs = targets.map((target) => target.x);
-  const left = Math.min(...xs, source.x);
-  const right = Math.max(...xs, source.x);
-  const paths = [`M${source.x} ${source.y}V${busY}`];
+/** A shared sibling rail with rounded ends and a drop to each portrait. */
+function branch(source: Point, targets: (Point & { id: string })[], familyId: string): PlacedLine[] {
+  if (targets.length === 0) return [];
+  const railY = (source.y + Math.min(...targets.map((target) => target.y))) / 2;
+  const left = Math.min(source.x, ...targets.map((target) => target.x));
+  const right = Math.max(source.x, ...targets.map((target) => target.x));
+  if (left === right) return [{ id: `${familyId}:single:${targets[0]!.id}`, path: `M${source.x} ${source.y}V${targets[0]!.y}` }];
+  const radius = Math.min(8, (right - left) / 2);
   const leftTarget = targets.find((target) => target.x === left);
   const rightTarget = targets.find((target) => target.x === right);
-  paths.push(
-    [
-      leftTarget ? `M${left} ${leftTarget.y}V${busY + CORNER}Q${left} ${busY} ${left + CORNER} ${busY}` : `M${left} ${busY}`,
-      rightTarget ? `H${right - CORNER}Q${right} ${busY} ${right} ${busY + CORNER}V${rightTarget.y}` : `H${right}`,
-    ].join(""),
-  );
-  for (const target of targets) {
-    if (target !== leftTarget && target !== rightTarget) paths.push(`M${target.x} ${busY}V${target.y}`);
-  }
-  return paths;
+  const rail = [
+    leftTarget ? `M${left} ${leftTarget.y}V${railY + radius}Q${left} ${railY} ${left + radius} ${railY}` : `M${left} ${railY}`,
+    rightTarget ? `H${right - radius}Q${right} ${railY} ${right} ${railY + radius}V${rightTarget.y}` : `H${right}`,
+  ].join("");
+  return [
+    { id: `${familyId}:trunk`, path: `M${source.x} ${source.y}V${railY}` },
+    { id: `${familyId}:rail:${targets.map((target) => target.id).sort().join(":")}`, path: rail },
+    ...targets.filter((target) => target !== leftTarget && target !== rightTarget).map((target) => ({ id: `${familyId}:drop:${target.id}`, path: `M${target.x} ${railY}V${target.y}` })),
+  ];
 }
 
 export function layoutFamily(family: Family, availableWidth: number): FamilyLayout {
@@ -90,7 +94,7 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
 
   // The focus panda's generation: one unit per sibling group.
   let cursor = 0;
-  const drops: Point[] = [];
+  const drops: (Point & { id: string })[] = [];
   let focusCard: PlacedCard | null = null;
   for (const group of family.generation) {
     const start = cursor + (group.twins ? GROUP_PAD : 0);
@@ -100,6 +104,10 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
       const size = member.id === family.focus.id ? FOCUS_CARD : MEMBER_CARD;
       const card: PlacedCard = { member, kind: member.id === family.focus.id ? "focus" : "member", x, y: cardTop, ...size };
       cards.push(card);
+      // A half-sibling must not be connected to both of the focus panda's parents.
+      if (parents.length < 2 || !member.relation.startsWith("同")) {
+        drops.push({ id: member.id, x: card.x + card.width / 2, y: card.y + PORTRAIT_TOP });
+      }
       if (card.kind === "focus") focusCard = card;
       x += size.width + CARD_GAP;
       tallest = Math.max(tallest, size.height);
@@ -116,7 +124,6 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
         height: GROUP_LABEL + tallest + GROUP_PAD,
       });
     }
-    drops.push({ x: cursor + unitWidth / 2, y: group.twins ? generationTop : cardTop });
     cursor += unitWidth + UNIT_GAP;
   }
   const generationWidth = cursor - UNIT_GAP;
@@ -124,19 +131,25 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
 
   // Parents, centred over their children.
   const centre = generationWidth / 2;
-  const lines: string[] = [];
+  const lines: PlacedLine[] = [];
+  const parentsId = `parents:${parents.map((parent) => parent.id).sort().join(":")}`;
   let couple: FamilyLayout["couple"] = null;
   const [father, mother] = parents;
   if (father && mother) {
     cards.push({ member: father, kind: "parent", x: centre - COUPLE_GAP / 2 - PARENT_CARD.width, y: parentsTop, ...PARENT_CARD });
     cards.push({ member: mother, kind: "parent", x: centre + COUPLE_GAP / 2, y: parentsTop, ...PARENT_CARD });
-    const coupleY = parentsTop + PARENT_CARD.height / 2;
+    const coupleY = parentsTop + PORTRAIT_TOP + PORTRAIT_RADIUS;
     couple = { x: centre, y: coupleY };
-    lines.push(`M${centre - COUPLE_GAP / 2} ${coupleY}H${centre + COUPLE_GAP / 2}`);
-    lines.push(...branch({ x: centre, y: coupleY }, drops));
+    const portraitEdge = COUPLE_GAP / 2 + PARENT_CARD.width / 2 - PORTRAIT_RADIUS;
+    lines.push({ id: `${parentsId}:couple`, path: `M${centre - portraitEdge} ${coupleY}H${centre + portraitEdge}` });
+    // Keep the branches below the parents' labels, so curves never cross their text.
+    const branchY = parentsTop + PARENT_CARD.height + 4;
+    lines.push({ id: `${parentsId}:stem`, path: `M${centre} ${coupleY}V${branchY}` });
+    lines.push(...branch({ x: centre, y: branchY }, drops, parentsId));
   } else if (father) {
-    cards.push({ member: father, kind: "parent", x: centre - PARENT_CARD.width / 2, y: parentsTop, ...PARENT_CARD });
-    lines.push(...branch({ x: centre, y: parentsTop + PARENT_CARD.height }, drops));
+    const parent: PlacedCard = { member: father, kind: "parent", x: centre - PARENT_CARD.width / 2, y: parentsTop, ...PARENT_CARD };
+    cards.push(parent);
+    lines.push(...branch({ x: centre, y: parentsTop + PARENT_CARD.height }, drops, parentsId));
   }
 
   // Children, centred under the focus panda.
@@ -150,9 +163,9 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
     const childTargets = family.children.map((member, index) => {
       const x = focusCentre - rowWidth / 2 + index * (MEMBER_CARD.width + CARD_GAP);
       cards.push({ member, kind: "member", x, y: childrenTop, ...MEMBER_CARD });
-      return { x: x + MEMBER_CARD.width / 2, y: childrenTop };
+      return { id: member.id, x: x + MEMBER_CARD.width / 2, y: childrenTop + PORTRAIT_TOP };
     });
-    lines.push(...branch({ x: focusCentre, y: focusBottom }, childTargets));
+    lines.push(...branch({ x: focusCentre, y: focusBottom }, childTargets, `children:${family.focus.id}`));
   } else {
     noChildren = { x: focusCentre - 56, y: childrenTop, width: 112, height: 36 };
   }
@@ -183,7 +196,7 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
     height: bottom + PAD * 2,
     cards: cards.map(shift),
     groups: groups.map(shift),
-    lines: lines.map(shiftPath),
+    lines: lines.map((line) => ({ ...line, path: shiftPath(line.path) })),
     couple: couple ? shift(couple) : null,
     noChildren: noChildren ? shift(noChildren) : null,
   };

@@ -1,6 +1,8 @@
-import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { Linking, View } from "react-native";
+import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
+import { router, useFocusEffect, useLocalSearchParams, useNavigation, usePreventRemove } from "expo-router";
+import { HeaderBackButton } from "expo-router/react-navigation";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { BackHandler, Linking, Modal, Platform, ScrollView, View } from "react-native";
 
 import { ListCell, ListSection, useSingleColumn } from "@/components/grouped-list";
 import { FileText, MapPin, Network, Users } from "@/components/icons";
@@ -8,13 +10,17 @@ import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PandaThumb } from "@/components/panda-thumb";
 import { StatTile } from "@/components/stat-tile";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { type Family, loadFamily } from "@/features/family/family";
+import { Text } from "@/components/ui/text";
+import { type Family, type FamilyMember, loadFamily } from "@/features/family/family";
 import { FamilyTree } from "@/features/family/family-tree";
 import type { GenerationGroup, Kin, Lineage } from "@/features/family/lineage";
 import { type LineageSource, loadLineageFor, loadLineageSources } from "@/features/family/lineage-load";
 import { hostname } from "@/features/institutions/institutions";
+import { openPanda } from "@/features/pandas/panda-row";
 import { longDate } from "@/features/pandas/profile";
+import { RelationshipContent } from "@/features/relationship/relationship-content";
 import { cn } from "@/lib/utils";
 
 /** One relative as the linear 家谱 lists it; the list is the tree's reading order for VoiceOver and at large text. */
@@ -43,8 +49,17 @@ function rowDetail(row: Row, hosts: ReadonlyMap<string, string>): string {
     .join("　");
 }
 
-function openFamilyOf(slug: string) {
-  router.push({ pathname: "/pandas/[slug]/family", params: { slug } });
+/** The tree and the 家谱 lists of one panda, kept while fresh so stepping back to a family needs no request. */
+function familyPageQuery(slug: string) {
+  return queryOptions({
+    queryKey: ["public", "family-page", slug],
+    queryFn: async () => {
+      const family = await loadFamily(slug);
+      return { family, lineage: await loadLineageFor(family.focus.id) };
+    },
+    staleTime: 300_000,
+    networkMode: "always",
+  });
 }
 
 function GenerationSection({ title, rows, missing, hosts }: { title: string; rows: Row[]; missing: number; hosts: ReadonlyMap<string, string> }) {
@@ -60,8 +75,8 @@ function GenerationSection({ title, rows, missing, hosts }: { title: string; row
             label={row.name}
             detail={rowDetail(row, hosts)}
             leading={<PandaThumb pandaId={row.id} name={row.name} size={40} shape="round" />}
-            onPress={() => openFamilyOf(row.slug)}
-            accessibilityHint="打开它的家谱"
+            onPress={() => openPanda(row.slug)}
+            accessibilityHint="打开它的资料"
             last={index === rows.length - 1}
           />
         ))
@@ -108,35 +123,138 @@ function Sources({ sources }: { sources: LineageSource[] }) {
 
 export default function FamilyScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
-  const [loaded, setLoaded] = useState<{ family: Family; lineage: Lineage } | null>(null);
-  const [sources, setSources] = useState<LineageSource[]>([]);
-  const [failed, setFailed] = useState(false);
+  const navigation = useNavigation();
+  const queryClient = useQueryClient();
+  const { data: loaded, isError, refetch } = useQuery(familyPageQuery(slug));
+  const family = loaded?.family;
+  const lineage = loaded?.lineage;
+  const sourceIds =
+    family && lineage
+      ? [
+          ...new Set(
+            lineage.sourceIds.concat(
+              family.generation.flatMap((group) => group.members.flatMap((member) => lineage.sourcesOfChild.get(member.id) ?? [])),
+            ),
+          ),
+        ]
+      : [];
+  // Sources name each link; the page reads without them while they load.
+  const { data: sources = [] } = useQuery({
+    queryKey: ["public", "lineage-sources", sourceIds],
+    queryFn: () => loadLineageSources(sourceIds),
+    enabled: sourceIds.length > 0,
+    staleTime: 300_000,
+    networkMode: "always",
+  });
 
-  const load = useCallback(() => {
-    loadFamily(slug)
-      .then(async (family) => {
-        const lineage = await loadLineageFor(family.focus.id);
-        setLoaded({ family, lineage });
-        // Sources name each link; the page reads without them while they load.
-        const lineageSources = lineage.sourceIds.concat(
-          family.generation.flatMap((group) => group.members.flatMap((member) => lineage.sourcesOfChild.get(member.id) ?? [])),
-        );
-        setSources(await loadLineageSources([...new Set(lineageSources)]));
-      })
-      .catch(() => setFailed(true));
-  }, [slug]);
-  useEffect(load, [load]);
+  // Tapping a portrait re-centres the tree here instead of pushing a new screen, so the tree can move
+  // from one family to the next. `history` is the families walked through; back steps through them first.
+  const [history, setHistory] = useState<string[]>([]);
+  const [pending, setPending] = useState<string | null>(null);
+  const [switchFailed, setSwitchFailed] = useState(false);
+  const [transition, setTransition] = useState<{ from: Family; to: string } | null>(null);
+  const [relating, setRelating] = useState(false);
+  // Only the latest switch may land; leaving the screen drops the one in flight.
+  const request = useRef(0);
 
-  function retry() {
-    setFailed(false);
-    load();
-  }
+  useFocusEffect(
+    useCallback(
+      () => () => {
+        request.current += 1;
+        setPending(null);
+      },
+      [],
+    ),
+  );
 
-  if (!loaded) {
+  // The nearest relatives are the likely next taps; their families load two at a time while the tree is read.
+  useEffect(() => {
+    if (!family) return;
+    let cancelled = false;
+    const next = [
+      family.father,
+      family.mother,
+      ...family.generation.flatMap((group) => group.members).filter((member) => member.id !== family.focus.id),
+      ...family.children,
+    ]
+      .filter((member): member is FamilyMember => member !== null)
+      .slice(0, 4);
+    void (async () => {
+      for (let index = 0; index < next.length && !cancelled; index += 2) {
+        await Promise.all(next.slice(index, index + 2).map((member) => queryClient.prefetchQuery(familyPageQuery(member.slug))));
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [family, queryClient]);
+
+  useEffect(() => {
+    if (!transition || transition.to !== slug) return;
+    const timer = setTimeout(() => setTransition(null), 300);
+    return () => clearTimeout(timer);
+  }, [slug, transition]);
+
+  const switchTo = useCallback(
+    async (to: string, nextHistory: string[]) => {
+      const current = ++request.current;
+      setPending(to);
+      setSwitchFailed(false);
+      try {
+        await queryClient.ensureQueryData(familyPageQuery(to));
+        if (current !== request.current) return;
+        if (family) setTransition({ from: family, to });
+        setHistory(nextHistory);
+        router.setParams({ slug: to });
+      } catch {
+        if (current === request.current) setSwitchFailed(true);
+      } finally {
+        if (current === request.current) setPending(null);
+      }
+    },
+    [family, queryClient],
+  );
+
+  const select = useCallback(
+    (to: string) => {
+      if (pending || to === slug) return;
+      void switchTo(to, [...history, slug]);
+    },
+    [history, pending, slug, switchTo],
+  );
+
+  const goBack = useCallback(() => {
+    const previous = history.at(-1);
+    if (previous) void switchTo(previous, history.slice(0, -1));
+  }, [history, switchTo]);
+
+  // Back (the bar, the edge swipe, Android's back key) steps through the families walked through first.
+  usePreventRemove(history.length > 0, goBack);
+  useFocusEffect(
+    useCallback(() => {
+      if (Platform.OS !== "android" || history.length === 0) return;
+      const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+        goBack();
+        return true;
+      });
+      return () => subscription.remove();
+    }, [goBack, history.length]),
+  );
+  // A 家谱 opened from a link has no screen beneath it, so the bar has no back button of its own.
+  useLayoutEffect(() => {
+    const needsBack = history.length > 0 && !navigation.canGoBack();
+    navigation.setOptions({
+      headerLeft: needsBack
+        ? (props: { tintColor?: string }) => <HeaderBackButton {...props} label="返回" accessibilityLabel="返回" onPress={goBack} />
+        : undefined,
+    });
+  }, [goBack, history.length, navigation]);
+
+  if (!family || !lineage) {
     return (
       <Page label="家谱" title="家族">
-        {failed ? (
-          <LoadFailed message="家谱暂时打不开。" onRetry={retry} />
+        {isError ? (
+          <LoadFailed message="家谱暂时打不开。" onRetry={() => void refetch()} />
         ) : (
           <Skeleton className="h-96 w-full rounded-tile" accessibilityLabel="正在加载家谱" />
         )}
@@ -144,7 +262,6 @@ export default function FamilyScreen() {
     );
   }
 
-  const { family, lineage } = loaded;
   const hosts = new Map(sources.map((source) => [source.sourceId, hostname(source.url)]));
   const siblings: Row[] = family.generation
     .flatMap((group) => group.members)
@@ -159,7 +276,22 @@ export default function FamilyScreen() {
 
   return (
     <Page label="家谱" title={`${family.focus.name}的家族`}>
-      <FamilyTree family={family} />
+      <View className="gap-stack-tight">
+        <FamilyTree
+          family={family}
+          previousFamily={transition?.to === slug ? transition.from : undefined}
+          onSelect={(member) => select(member.slug)}
+          pending={pending}
+        />
+        {switchFailed ? (
+          <Text variant="footnote" accessibilityRole="alert" className="text-muted-foreground">
+            这个家谱暂时打不开，再点一次头像试试。
+          </Text>
+        ) : null}
+        <Button variant="secondary" className="self-start" onPress={() => setRelating(true)}>
+          <Text>查关系</Text>
+        </Button>
+      </View>
       {known ? <Summary lineage={lineage} /> : null}
       {lineage.descendantPlaces.length > 0 ? (
         <ListSection
@@ -176,6 +308,35 @@ export default function FamilyScreen() {
       {siblings.length > 0 ? <GenerationSection title="同辈" rows={siblings} missing={0} hosts={hosts} /> : null}
       {descendants.map(section)}
       <Sources sources={sources} />
+
+      {/* 查关系 from the family: the system sheet, starting on the panda whose tree is open. */}
+      <Modal visible={relating} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setRelating(false)}>
+        <View className="flex-1 bg-background">
+          <View className="flex-row items-center justify-between px-4 pt-4">
+            <Text variant="title" role="heading">
+              查关系
+            </Text>
+            <Button variant="plain" onPress={() => setRelating(false)}>
+              <Text>完成</Text>
+            </Button>
+          </View>
+          <ScrollView contentContainerClassName="gap-6 px-4 pt-4 pb-12" keyboardShouldPersistTaps="handled">
+            {relating ? (
+              <RelationshipContent
+                from={slug}
+                onOpen={(pandaSlug) => {
+                  setRelating(false);
+                  openPanda(pandaSlug);
+                }}
+                onFamily={(panda) => {
+                  setRelating(false);
+                  select(panda.slug);
+                }}
+              />
+            ) : null}
+          </ScrollView>
+        </View>
+      </Modal>
     </Page>
   );
 }

@@ -20,7 +20,6 @@ import {
   Network,
   Users,
   Venus,
-  Waypoints,
 } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
@@ -229,8 +228,8 @@ function Family({ profile }: { profile: Profile }) {
         ))}
       </ScrollView>
       <ListSection>
-        <ListCell icon={Network} label="看家谱" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} />
-        <ListCell icon={Waypoints} label="查关系" href={{ pathname: "/relationship", params: { from: profile.slug } }} last />
+        {/* 查关系 now opens from the family, where the tree it starts from is on screen. */}
+        <ListCell icon={Network} label="查看家族" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} last />
       </ListSection>
     </View>
   );
