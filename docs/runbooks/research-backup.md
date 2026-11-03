@@ -4,6 +4,7 @@
 
 - `current/` mirrors the vault.
 - `history/<UTC timestamp>/` keeps every file a later backup replaced or deleted, so nothing is lost by syncing a mistake.
+- `production-releases/<version>/` holds the exported public data of each published release ([how](production-release.md#back-up-the-published-data)).
 - `SHA256SUMS` at the vault root lists the SHA-256 of every file. It travels with the backup, and a restore is checked against it.
 
 The bucket has no public access and is separate from the media bucket the Worker serves. Its token can read and write that bucket only.

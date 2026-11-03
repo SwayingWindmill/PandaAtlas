@@ -24,6 +24,18 @@ Public pages and the API read the **active content release**, an immutable snaps
 
 **Roll back** with a manifest whose `version` is the earlier sealed release and `"action": "rollback"`, published through `release.publish`; it only moves the active-release pointer. Every lifecycle step records the system actor `release-batch-workflow` with the manifest reason, change reference and run URL in `publication.release_transitions`.
 
+### Back up the published data
+
+The production database is the only full copy of the published data, so each published release is also exported from the public API and kept in the private R2 backup bucket ([research vault backup](research-backup.md) sets up the `r2` remote). After a publish or a rollback:
+
+```bash
+npm run export:public-release
+rclone copy .release-export/<version> r2:pandaatlas-research-backup/production-releases/<version> --checksum
+rclone check .release-export/<version> r2:pandaatlas-research-backup/production-releases/<version> --one-way
+```
+
+The export reads every public list and every panda, place and institution page of the active release, fails if the release changes while it runs, and writes `manifest.json` (version, release ID, each file's SHA-256, bytes and count) and `SHA256SUMS`. It holds only public data: accounts, contributions, drafts and audit records stay in the database and its Supabase backups. To check a downloaded copy, run `sha256sum -c SHA256SUMS` in its folder.
+
 ### Add 猜熊猫 questions
 
 猜熊猫 serves published rows of `game.questions` whose photo is public in the active release. The `curation.guess-questions` operation draws them from that release: one question per living panda with a public cover photo, the other three options preferring pandas at the same place (difficulty `hard`, `medium` or `easy` by how many it found), and tips from confirmed birth dates and current homes.

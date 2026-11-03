@@ -17,6 +17,7 @@ services/api/.cloudflare/
 *.wrangler-dev.*.log
 .release-gate/
 .batch-work/
+.release-export/
 /.acquisition/
 
 # Python

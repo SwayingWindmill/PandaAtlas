@@ -434,6 +434,7 @@ const commands = [
       "scripts/release/tests/batch-workflow-interface.test.mjs",
       "scripts/release/tests/cloudflare-production-surface.test.mjs",
       "scripts/release/tests/doc-references.test.mjs",
+        "scripts/release/tests/export-public-release.test.mjs",
       "scripts/release/tests/gate-core.test.mjs",
       "scripts/release/tests/repository-hygiene.test.mjs",
       "scripts/release/tests/research-script-policy.test.mjs",
