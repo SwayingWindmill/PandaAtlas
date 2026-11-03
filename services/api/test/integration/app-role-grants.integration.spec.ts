@@ -20,9 +20,13 @@ const ACCESS_PATTERNS: Array<[RegExp, Privilege]> = [
   [/\b([a-z_]+\.[a-z_]+)\(/gu, "execute"],
 ];
 
+// Batch entry points (src/*-command.ts) run only in the protected batch job, which connects as the
+// schema owner rather than the application role.
+const BATCH_ENTRY = /[\\/]src[\\/][a-z-]+-command\.ts$/u;
+
 function requiredAccess(): string[] {
   const access = new Set<string>();
-  for (const file of apiSourceFiles()) {
+  for (const file of apiSourceFiles().filter((file) => !BATCH_ENTRY.test(file))) {
     const source = readFileSync(file, "utf8");
     for (const [pattern, privilege] of ACCESS_PATTERNS) {
       for (const match of source.matchAll(pattern)) access.add(`${privilege} ${match[1]!.toLowerCase()}`);
