@@ -1,5 +1,7 @@
 // Rasterizes Lucide glyphs to template PNGs (@1x/@2x/@3x) for the native bars, which take images,
 // not components: the four tab glyphs (25pt, stroke 1.9) and the header toolbar glyphs (22pt, stroke 2).
+// It also writes each glyph as an SVG to assets/symbols/, which react-native-nano-icons turns into a
+// custom SF Symbol (iOS) and a VectorDrawable (Android) at prebuild; Expo Go keeps the PNGs.
 // Run from apps/mobile: node scripts/tab-icons.mjs
 import { chromium } from "@playwright/test";
 import fs from "node:fs";
@@ -23,6 +25,8 @@ const sets = [
     icons: { share: "share", back: "chevron-left" },
   },
 ];
+const symbols = new URL("../assets/symbols/", import.meta.url).pathname;
+fs.mkdirSync(symbols, { recursive: true });
 const browser = await chromium.launch();
 for (const { out: dir, size, stroke, icons } of sets) {
   const out = new URL(dir, import.meta.url).pathname;
@@ -38,6 +42,10 @@ for (const { out: dir, size, stroke, icons } of sets) {
             .join(" ")}/>`,
       )
       .join("");
+    fs.writeFileSync(
+      `${symbols}${name}.svg`,
+      `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">${body}</svg>\n`,
+    );
     for (const scale of [1, 2, 3]) {
       const page = await browser.newPage({
         viewport: { width: size, height: size },

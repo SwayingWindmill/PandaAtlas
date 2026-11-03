@@ -8,11 +8,13 @@ import { scheduleOnRN } from "react-native-worklets";
 
 import { GlassButton } from "@/components/glass-button";
 import { ChevronLeft, Share } from "@/components/icons";
+import { NATIVE_SYMBOLS, nanoSymbol } from "@/lib/native-symbols";
 import { useIOSColors } from "@/lib/theme";
 
 /**
- * Lucide `share` and `chevron-left` as template PNGs, because the system bar takes images, not
- * components. Regenerate with `node scripts/tab-icons.mjs`.
+ * Lucide `share` and `chevron-left`, because the system bar takes images, not components: custom SF
+ * Symbols in a native build (`lib/native-symbols.ts`), template PNGs in Expo Go. Regenerate both with
+ * `node scripts/tab-icons.mjs`.
  */
 const TOOLBAR_ICON = {
   share: require("../../assets/toolbar-icons/share.png"),
@@ -54,6 +56,12 @@ export function useHeroScroll(heroHeight: number) {
   return { scrollY, onScroll, pastHero };
 }
 
+/** The custom SF Symbol for a toolbar button in a native build; nothing in Expo Go, which uses `icon`. */
+function nativeGlyph(name: "back" | "share") {
+  if (!NATIVE_SYMBOLS) return null;
+  return <Stack.Toolbar.Icon xcasset={nanoSymbol(name).xcasset} renderingMode="template" />;
+}
+
 /**
  * The bar over a hero photo.
  *
@@ -90,21 +98,25 @@ export function HeroHeader({ title, pastHero, onShare }: { title: string; pastHe
       {router.canGoBack() ? null : (
         <Stack.Toolbar placement="left">
           <Stack.Toolbar.Button
-            icon={TOOLBAR_ICON.back}
+            icon={NATIVE_SYMBOLS ? undefined : TOOLBAR_ICON.back}
             iconRenderingMode="template"
             accessibilityLabel="返回"
             onPress={goBack}
-          />
+          >
+            {nativeGlyph("back")}
+          </Stack.Toolbar.Button>
         </Stack.Toolbar>
       )}
       {onShare ? (
         <Stack.Toolbar placement="right">
           <Stack.Toolbar.Button
-            icon={TOOLBAR_ICON.share}
+            icon={NATIVE_SYMBOLS ? undefined : TOOLBAR_ICON.share}
             iconRenderingMode="template"
             accessibilityLabel="分享"
             onPress={onShare}
-          />
+          >
+            {nativeGlyph("share")}
+          </Stack.Toolbar.Button>
         </Stack.Toolbar>
       ) : null}
     </>
