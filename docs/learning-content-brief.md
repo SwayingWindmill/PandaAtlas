@@ -10,11 +10,7 @@
 
 `data/curation/learning/learning.json`
 
-不要改 `infra/supabase/migrations/` 里的 SQL。文件改完后，由维护者运行：
-
-`python scripts/curation/build_learning_content_migration.py --write`
-
-那条命令会生成新的数据库迁移。迁移进生产之后，状态为 `published` 的条目才会出现在正式版里。
+文件改完后，由维护者运行 `python scripts/curation/validate_learning_content.py` 检查，合并后再用 `curation.learning` 批处理写进数据库（[发布手册](runbooks/production-release.md#update-科普-content)）。写进生产之后，状态为 `published` 的条目才会出现在正式版里。
 
 `version` 由维护者在发布时改成当天的版本号，形如 `2026.10.29.1`。撰稿人不用改它。
 

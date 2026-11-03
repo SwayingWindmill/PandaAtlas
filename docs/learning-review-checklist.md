@@ -50,6 +50,6 @@
 
 1. 审过的条目把 `status` 改成 `published`。
 2. 把 `version` 改成当天的版本号，例如 `2026.10.30.1`。
-3. 运行 `python3 scripts/curation/build_learning_content_migration.py --write`，再运行 `--check`。
-4. 运行 `python3 -m unittest discover -s scripts/curation/tests -p test_build_learning_content_migration.py`。
-5. 提交生成的迁移，随正式发布上线。上线后在正式版里打开每篇文章和认脸挑战看一遍。
+3. 运行 `python3 scripts/curation/validate_learning_content.py`。
+4. 运行 `python3 -m unittest discover -s scripts/curation/tests -p test_validate_learning_content.py`。
+5. 合并后在 `main` 上运行 `curation.learning` 批处理，清单填 `data/curation/learning/learning.json`（[发布手册](runbooks/production-release.md#update-科普-content)）。上线后在正式版里打开每篇文章和认脸挑战看一遍。

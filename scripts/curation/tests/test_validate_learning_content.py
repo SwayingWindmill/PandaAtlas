@@ -6,8 +6,8 @@ import json
 import unittest
 from pathlib import Path
 
-MODULE_PATH = Path(__file__).resolve().parents[1] / "build_learning_content_migration.py"
-SPEC = importlib.util.spec_from_file_location("build_learning_content_migration", MODULE_PATH)
+MODULE_PATH = Path(__file__).resolve().parents[1] / "validate_learning_content.py"
+SPEC = importlib.util.spec_from_file_location("validate_learning_content", MODULE_PATH)
 assert SPEC and SPEC.loader
 BUILDER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(BUILDER)
@@ -102,12 +102,9 @@ class ValidateLearningContentTests(unittest.TestCase):
         self.assertEqual(BUILDER.validate_content(document(), PANDAS, PUBLISHED), [])
         self.assertEqual(BUILDER.validate_content(document("published"), PANDAS, PUBLISHED), [])
 
-    def test_repository_file_matches_its_migration(self) -> None:
+    def test_the_repository_file_is_valid(self) -> None:
         content = json.loads(BUILDER.DATA_PATH.read_text(encoding="utf-8"))
         self.assertEqual(BUILDER.validate_content(content), [])
-        latest = BUILDER.latest_content_migration()
-        self.assertIsNotNone(latest)
-        self.assertEqual(latest.read_text(encoding="utf-8"), BUILDER.render_migration(content))
 
     def assert_error(self, mutate, fragment: str, status: str = "draft") -> None:
         content = copy.deepcopy(document(status))

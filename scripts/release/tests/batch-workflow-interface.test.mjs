@@ -24,10 +24,10 @@ const workflowPath = path.join(repoRoot, ".github", "workflows", "batch-operatio
 test("batch catalog exposes the standard operations", () => {
   const catalog = loadBatchCatalog();
   assert.deepEqual(validateBatchCatalog(catalog), []);
-  assert.equal(catalog.operations.length, 9);
+  assert.equal(catalog.operations.length, 10);
   assert.deepEqual(
     catalog.operations.filter((item) => item.status === "ready").map((item) => item.id),
-    ["research.validate", "curation.validate", "curation.guess-questions", "media.process", "release.publish"],
+    ["research.validate", "curation.validate", "curation.guess-questions", "curation.learning", "media.process", "release.publish"],
   );
 });
 
@@ -36,6 +36,7 @@ test("database adapters are approval-gated production writes that need the built
   for (const [operationId, manifestPath] of [
     ["release.publish", "data/release-manifests/2026.10.26.1.json"],
     ["curation.guess-questions", "data/curation/guess-questions/2026.10.27.1.json"],
+    ["curation.learning", "data/curation/learning/learning.json"],
   ]) {
     const operation = catalog.operations.find((item) => item.id === operationId);
     assert.equal(operation.effect, "production-write");
@@ -167,8 +168,8 @@ test("approval execution requires change reference and protected environment", a
 
 test("tracked workflow passes and unsafe mutations fail", async () => {
   assert.deepEqual(checkBatchWorkflowInterface({ repositoryRoot: repoRoot, quiet: true }), {
-    operations: 9,
-    ready: 5,
+    operations: 10,
+    ready: 6,
   });
   const catalog = loadBatchCatalog();
   const workflowText = await readFile(workflowPath, "utf8");
