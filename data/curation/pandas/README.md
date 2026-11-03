@@ -1,6 +1,12 @@
 # Panda Profile Curation
 
-This folder is the working intake layer for Panda Atlas profile data. It is intentionally separate from `infra/supabase/seed/` so facts can be collected, sourced, reviewed, and normalized before they become importable database records.
+This folder is the intake layer for Panda Atlas profile data: facts collected, sourced and reviewed before they reach the database. **The production database is the source of truth**, not these files. Production holds 942 pandas, most under slugs these CSVs never had (`a-jie-ningbo-2015`, not `a-jie`), so a row here describes a candidate, not what the site shows. To read what is published, use the [release export](../../../docs/runbooks/production-release.md#back-up-the-published-data) or the public API.
+
+## Changing published data
+
+A correction to something the site already shows is a reviewed migration in `infra/supabase/migrations/` that updates the database by stable ID and matches the old value, so a second run changes nothing (for example `0082_curation_fix_yong_ba_source_lun_hui_name.sql`). It reaches the public site with the next content release. Do not also edit the matching CSV row to keep the two in step: the CSVs are not compared with the database, and a copy there only drifts.
+
+New pandas and facts start here, are validated, and are then written to the database the same way.
 
 ## Workflow
 
@@ -52,12 +58,10 @@ Remote HTTPS assets remain disabled unless the operator explicitly adds `--allow
 
 ## Promotion Path
 
-Curated records should move through these layers:
-
-1. `data/curation/pandas/*.csv` for source-backed working data.
-2. Reviewed PostgreSQL records and publication workflow.
-3. Immutable Public Release projection and media processing.
-4. The public API, CSV/JSON snapshots, and the public frontend.
+1. `data/curation/pandas/*.csv`: source-backed candidates.
+2. A reviewed migration writes them into PostgreSQL, the source of truth.
+3. A content release snapshots the database, and its export is kept in R2.
+4. The public API and the apps read that release.
 
 ## Source Priority
 
