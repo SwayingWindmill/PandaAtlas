@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ClipboardCheck, LayoutDashboard, LogOut, ScrollText,
-  Send, ShieldCheck, Sprout, UsersRound, ChevronsUpDown,
+  Send, ShieldCheck, Sprout, ChevronsUpDown,
 } from "lucide-react";
 
 import {
@@ -26,7 +26,7 @@ import {
 const icons = {
   "layout-dashboard": LayoutDashboard, "clipboard-check": ClipboardCheck,
   send: Send,
-  "scroll-text": ScrollText, "shield-check": ShieldCheck, "users-round": UsersRound,
+  "scroll-text": ScrollText, "shield-check": ShieldCheck,
 } as const;
 
 export function AppSidebar({ session, onSignOut }: { session: AdminSession; onSignOut: () => void }) {
