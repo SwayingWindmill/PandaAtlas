@@ -4,6 +4,7 @@ import { Platform, ScrollView, type ScrollViewProps, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Text } from "@/components/ui/text";
+import { useBottomClearance } from "@/lib/bottom-clearance";
 
 /**
  * Where the screen title is drawn.
@@ -43,6 +44,7 @@ export function Page({
 } & Omit<ScrollViewProps, "children">) {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const bottom = useBottomClearance();
   const inContent = contentOwnsTitle(prominent);
   // On web a root screen (no back) has no bar at all, so the column clears the status area itself
   // and keeps a bar's worth of air above the large title instead of starting at the window's edge.
@@ -61,9 +63,9 @@ export function Page({
     <ScrollView
       className="flex-1 bg-background"
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerClassName="gap-6 px-4 pb-28"
+      contentContainerClassName="gap-6 px-4"
       {...scroll}
-      contentContainerStyle={[barless && { paddingTop: insets.top + BARLESS_TOP }, scroll.contentContainerStyle]}
+      contentContainerStyle={[{ paddingBottom: bottom }, barless && { paddingTop: insets.top + BARLESS_TOP }, scroll.contentContainerStyle]}
     >
       {inContent ? (
         <View className="gap-1">
