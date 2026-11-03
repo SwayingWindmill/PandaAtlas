@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import test from "node:test";
 import pg from "pg";
-import { runProductionAdminCeremony } from "../production-staff-admin.mjs";
+import { grantProductionAdministrator } from "../production-staff-admin.mjs";
 
 const connectionString = "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 const observer = new pg.Client({ connectionString });
@@ -31,10 +31,6 @@ async function fixture(work, { verified = true } = {}) {
   }
 }
 
-function approval(accountId, operation, approvalId = randomUUID()) {
-  return { version: 1, accountId, operation, approvalId, approvedBy: "verified-deployment-owner", expiresAt: new Date(Date.now() + 3_600_000).toISOString() };
-}
-
 async function auditCounts(client, accountId) {
   const grants = await client.query(
     "select role_key,source from identity.role_assignments where account_id=$1 order by role_key", [accountId],
@@ -48,23 +44,20 @@ async function auditCounts(client, accountId) {
   return { grants: grants.rows, audits: audits.rows, outbox: outbox.rows };
 }
 
-fresh("owner-approved first administrator is minimal, atomic, idempotent and permanently one-time", async () => {
+fresh("the first administrator is minimal, atomic and permanently one-time", async () => {
   await fixture(async (client, accountId) => {
-    const intent = approval(accountId, "bootstrap");
-    const first = await runProductionAdminCeremony(client, intent);
-    assert.deepEqual(first, { status: "approved", accountId, roles: ["administrator", "member"] });
-    const retry = await runProductionAdminCeremony(client, intent);
-    assert.equal(retry.status, "already_applied");
+    const first = await grantProductionAdministrator(client, { accountId, operation: "bootstrap" });
+    assert.deepEqual(first, { accountId, roles: ["administrator", "member"] });
     const persisted = await auditCounts(client, accountId);
     assert.deepEqual(persisted.grants.map((r) => r.role_key), ["administrator", "member"]);
     assert.ok(persisted.grants.every((r) => r.source === "production_first_admin"));
     assert.deepEqual(persisted.audits.map((r) => r.role_key), ["administrator", "member"]);
     assert.equal(persisted.outbox.length, 2);
-    await assert.rejects(() => runProductionAdminCeremony(client, approval(accountId, "bootstrap")), /permanently closed/);
+    await assert.rejects(() => grantProductionAdministrator(client, { accountId, operation: "bootstrap" }), /permanently closed/);
   });
 });
 
-fresh("approved recovery grants a new assignment, never resurrecting a revoked administrator", async () => {
+fresh("recovery grants a new assignment, never resurrecting a revoked administrator", async () => {
   await fixture(async (client, accountId) => {
     await client.query("insert into identity.accounts(account_id,email) values ($1,null)", [accountId]);
     const old = await client.query(
@@ -76,29 +69,20 @@ fresh("approved recovery grants a new assignment, never resurrecting a revoked a
       `insert into identity.role_assignment_revocations(assignment_id,reason,correlation_id,idempotency_key)
        values($1,'revoked by owner',$2,$3)`, [old.rows[0].assignment_id, randomUUID(), `prior-revoke:${accountId}`],
     );
-    const intent = approval(accountId, "recover");
-    const recovered = await runProductionAdminCeremony(client, intent);
+    const recovered = await grantProductionAdministrator(client, { accountId, operation: "recover" });
     assert.deepEqual(recovered.roles, ["administrator", "member"]);
-    const repeated = await runProductionAdminCeremony(client, intent);
-    assert.equal(repeated.status, "already_applied");
+    await assert.rejects(() => grantProductionAdministrator(client, { accountId, operation: "recover" }), /active administrator/);
     const persisted = await auditCounts(client, accountId);
     assert.equal(persisted.grants.filter((r) => r.role_key === "administrator").length, 2);
     assert.equal(persisted.grants.filter((r) => r.source === "production_admin_recovery").length, 2);
     assert.equal(persisted.audits.length, 2);
     assert.equal(persisted.outbox.length, 2);
-    await client.query(
-      `insert into identity.role_assignment_revocations(assignment_id,reason,correlation_id,idempotency_key)
-       select assignment_id,'revoked again',$2,$3 from identity.role_assignments
-       where account_id=$1 and source='production_admin_recovery' and role_key='administrator'`,
-      [accountId, randomUUID(), `after-recovery:${accountId}`],
-    );
-    await assert.rejects(() => runProductionAdminCeremony(client, intent), /revoked administrator grant/);
   });
 });
 
 test("production procedure rejects unverified Auth subjects before touching authority", async () => {
   await fixture(async (client, accountId) => {
-    await assert.rejects(() => runProductionAdminCeremony(client, approval(accountId, "bootstrap")), /verified/);
+    await assert.rejects(() => grantProductionAdministrator(client, { accountId, operation: "bootstrap" }), /verified/);
     const writes = await auditCounts(client, accountId);
     assert.equal(writes.grants.length, 0);
     assert.equal(writes.audits.length, 0);
@@ -108,7 +92,7 @@ test("production procedure rejects unverified Auth subjects before touching auth
 
 test("recovery never grants a competing administrator while a real administrator is active", async () => {
   await fixture(async (client, accountId) => {
-    await assert.rejects(() => runProductionAdminCeremony(client, approval(accountId, "recover")), /administrator|recovery/i);
+    await assert.rejects(() => grantProductionAdministrator(client, { accountId, operation: "recover" }), /administrator|recovery/i);
     const writes = await auditCounts(client, accountId);
     assert.equal(writes.grants.length, 0);
   });
