@@ -127,7 +127,7 @@ export default function WelcomeScreen() {
       return;
     }
     setStatus("following");
-    const results = await Promise.all(selected.map((panda) => setFollowing(panda.id, true)));
+    const results = await Promise.all(selected.map((panda) => setFollowing(session.accountId, panda.id, true)));
     if (results.every(Boolean)) await finish();
     else setStatus("failed");
   }

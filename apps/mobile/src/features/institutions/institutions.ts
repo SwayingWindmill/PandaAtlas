@@ -1,7 +1,9 @@
 import type { components } from "@zhipanda/api-client";
+import { queryOptions } from "@tanstack/react-query";
 
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { api } from "@/lib/api";
+import { queryClient } from "@/lib/query-client";
 
 type Schemas = components["schemas"];
 type Institution = Schemas["PublicInstitutionSummaryDto"];
@@ -64,21 +66,22 @@ function metaOf(institution: Institution): string {
   return [kind, country].filter(Boolean).join("　");
 }
 
-let list: Promise<Institution[]> | null = null;
-
-/** Every published institution, loaded once per app session. Empty until a release carries them. */
+/** Every published institution, shared while the result is fresh. */
 export function loadInstitutionList(): Promise<Institution[]> {
-  list ??= api
-    .GET("/api/v2/institutions")
-    .then(({ data }) => {
+  return queryClient.fetchQuery(institutionListQueryOptions());
+}
+
+export function institutionListQueryOptions() {
+  return queryOptions({
+    queryKey: ["public", "institutions"],
+    staleTime: 300_000,
+    networkMode: "always",
+    queryFn: async () => {
+      const { data } = await api.GET("/api/v2/institutions");
       if (!data) throw new Error("Institutions unavailable");
       return data.items;
-    })
-    .catch((error: unknown) => {
-      list = null;
-      throw error;
-    });
-  return list;
+    },
+  });
 }
 
 export async function loadInstitutions(): Promise<InstitutionListItem[]> {

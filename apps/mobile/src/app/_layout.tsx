@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { OfflineBanner } from "@/components/offline-banner";
 import { applyStoredAppearance } from "@/features/appearance/appearance";
 import { SessionProvider } from "@/features/session/session";
+import { QueryProvider } from "@/lib/query-provider";
 import { stackScreenOptions } from "@/lib/screen-options";
 import { NAV_THEME, useIOSColors } from "@/lib/theme";
 
@@ -19,16 +20,18 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <SessionProvider>
-      <ThemeProvider value={NAV_THEME[scheme]}>
-        <StatusBar style={scheme === "dark" ? "light" : "dark"} />
-        <Stack screenOptions={{ ...stackScreenOptions(scheme), headerLargeTitleEnabled: false }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="pandas/[slug]/photos" options={{ presentation: "fullScreenModal", title: "照片" }} />
-        </Stack>
-        <OfflineBanner />
-        <PortalHost />
-      </ThemeProvider>
-    </SessionProvider>
+    <QueryProvider>
+      <SessionProvider>
+        <ThemeProvider value={NAV_THEME[scheme]}>
+          <StatusBar style={scheme === "dark" ? "light" : "dark"} />
+          <Stack screenOptions={{ ...stackScreenOptions(scheme), headerLargeTitleEnabled: false }}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="pandas/[slug]/photos" options={{ presentation: "fullScreenModal", title: "照片" }} />
+          </Stack>
+          <OfflineBanner />
+          <PortalHost />
+        </ThemeProvider>
+      </SessionProvider>
+    </QueryProvider>
   );
 }

@@ -1,7 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -36,7 +37,7 @@ import { sourceLine } from "@/features/on-this-day/memory-group";
 import { useMilestonesOn } from "@/features/milestones/prefs";
 import { DECEASED_POLICY, isCubDay } from "@/features/on-this-day/on-this-day";
 import { openPanda } from "@/features/pandas/panda-row";
-import { type Profile, loadProfile, longDate } from "@/features/pandas/profile";
+import { type Profile, longDate, profileQueryOptions } from "@/features/pandas/profile";
 import { type Stat, UNKNOWN } from "@/features/pandas/profile-facts";
 import { RADIUS } from "@/lib/surface";
 
@@ -350,21 +351,8 @@ function NoPhoto({ profile }: { profile: Profile }) {
 
 export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [failed, setFailed] = useState(false);
+  const { data: profile, isError: failed, refetch } = useQuery(profileQueryOptions(slug));
   const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
-
-  const load = useCallback(() => {
-    loadProfile(slug)
-      .then(setProfile)
-      .catch(() => setFailed(true));
-  }, [slug]);
-  useEffect(load, [load]);
-
-  function retry() {
-    setFailed(false);
-    load();
-  }
 
   if (!profile) {
     return (
@@ -372,7 +360,7 @@ export default function ProfileScreen() {
         <HeroHeader title="" pastHero={false} />
         {failed ? (
           <View className="px-4 pt-28">
-            <LoadFailed message="资料暂时打不开。" onRetry={retry} />
+            <LoadFailed message="资料暂时打不开。" onRetry={() => void refetch()} />
           </View>
         ) : (
           <View className="gap-4" accessibilityLabel="正在加载资料">

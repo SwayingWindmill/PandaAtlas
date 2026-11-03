@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useRef, useState } from "react";
 import { FlatList, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -8,7 +9,7 @@ import { LoadFailed } from "@/components/load-failed";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { type Photo, loadPhotos } from "@/features/pandas/profile";
+import { type Photo, photosQueryOptions } from "@/features/pandas/profile";
 
 // Swiping pages through the photos (FlatList paging works on iOS, Android and web); the buttons do the same
 // for keyboards and screen readers.
@@ -17,18 +18,10 @@ export default function PhotosScreen() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const list = useRef<FlatList<Photo>>(null);
-  const [photos, setPhotos] = useState<Photo[] | null>(null);
-  const [failed, setFailed] = useState(false);
+  const { data: photos, isError: failed, refetch } = useQuery(photosQueryOptions(slug));
   const [index, setIndex] = useState(0);
   // The pager's own height: a percentage height inside a horizontal list resolves to 0 on web.
   const [pageHeight, setPageHeight] = useState(0);
-
-  const load = useCallback(() => {
-    loadPhotos(slug)
-      .then(setPhotos)
-      .catch(() => setFailed(true));
-  }, [slug]);
-  useEffect(load, [load]);
 
   function go(to: number) {
     list.current?.scrollToIndex({ index: to, animated: true });
@@ -51,9 +44,9 @@ export default function PhotosScreen() {
           {index + 1} / {photos.length}
         </Text>
       ) : null}
-      {photos === null ? (
+      {!photos ? (
         failed ? (
-          <LoadFailed message="照片暂时打不开。" onRetry={() => { setFailed(false); load(); }} className="mx-5 mt-6" />
+          <LoadFailed message="照片暂时打不开。" onRetry={() => void refetch()} className="mx-5 mt-6" />
         ) : (
           <Skeleton className="mx-5 mt-6 h-96" accessibilityLabel="正在加载照片" />
         )
