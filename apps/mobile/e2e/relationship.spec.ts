@@ -5,9 +5,10 @@ import { fixture } from "./fixture";
 // e2e/global-setup.ts publishes a family: 选项丙 is the mother of the fixture panda and of 选项乙.
 const run = () => fixture().panda.name.replace("测试熊猫", "");
 
-test("from a profile, 查关系 names a half-sibling and walks the chain through their mother", async ({ page }) => {
+test("from a family, 查关系 names a half-sibling and walks the chain through their mother", async ({ page }) => {
   const { panda, notice } = fixture();
   await page.goto(`/pandas/${panda.slug}`);
+  await page.getByRole("button", { name: "查看家族" }).click();
   await page.getByRole("button", { name: "查关系" }).click();
   await expect(page.getByRole("button", { name: `第一只，${panda.name}` })).toBeVisible();
 
@@ -29,6 +30,10 @@ test("from 找熊猫, two picked pandas show as parent and child", async ({ page
   await page.getByLabel("搜索要选的熊猫").fill(`选项丁${run()}`);
   await page.getByRole("button", { name: `选选项丁${run()}` }).click();
   await expect(page.getByRole("heading", { name: `选项丁${run()}是${panda.name}的爸爸` })).toBeVisible();
+
+  await page.getByRole("button", { name: "交换熊猫" }).click();
+  await expect(page.getByRole("heading", { name: `${panda.name}是选项丁${run()}的女儿` })).toBeVisible();
+  await page.getByRole("button", { name: "交换熊猫" }).click();
 
   // 选项乙 and 选项丁 share no ancestor; they are linked through the fixture panda and its mother.
   await page.getByRole("button", { name: `第一只，${panda.name}` }).click();
