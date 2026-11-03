@@ -1,5 +1,5 @@
-// Generated from Public Release 2026.08.12.1.
-// Run npm run generate:public-experiences after changing the release projection.
+// Curated family stories and the profile cohort, taken from the file-based Public Release 2026.08.12.1.
+// Edit this file directly: the stories reference V2 pandas, events and evidence by ID, resolved through the V2 API.
 
 import type { PublicFamilyStoryRecord, PublicProfileCohortRecord } from "@/lib/types";
 

@@ -1,6 +1,0 @@
-{
-  "exclude": [
-    "apps/web/lib/generated/**",
-    "data/public-releases/**"
-  ]
-}

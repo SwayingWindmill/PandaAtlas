@@ -2,7 +2,7 @@ import {
   PUBLIC_EXPERIENCE_RELEASE,
   TRUSTED_FAMILY_STORIES,
   TRUSTED_PROFILE_COHORT,
-} from "@/lib/generated/public-experiences";
+} from "@/features/public-experiences/curated-stories";
 import type {
   LocalizedEditorialContent,
   PublicFamilyStoryRecord,
