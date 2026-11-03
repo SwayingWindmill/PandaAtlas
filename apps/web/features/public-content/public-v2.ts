@@ -14,6 +14,7 @@ import type {
   PublicPlaceRecord,
   PublicProfileRecord,
 } from "@/features/public-content/public-release";
+import { findPlaceByReference } from "@/features/public-content/place-reference";
 import type { MomentQuery, PublicMomentOccurrence } from "@/features/public-experiences/moments";
 import type { PublicLocale } from "@/foundation/content/locales";
 import { publicMediaUrl } from "@/lib/media/public-media";
@@ -604,8 +605,8 @@ export const loadV2PublicPandaProfile = cache(async (
 
 export const resolveV2PublicPlaceReference = cache(async (input: string): Promise<{ id: string; slug: string } | null> => {
   const places = requirePublicCollection(await settlePublicRead(createServerV2Client().GET("/api/v2/places")));
-  const normalized = input.trim();
-  const place = places.items.find((item) => item.placeId === normalized || item.slug === normalized);
+  // A merged duplicate's old slug finds the place it was merged into; the page then redirects.
+  const place = findPlaceByReference(places.items, input);
   return place ? { id: place.placeId, slug: place.slug } : null;
 });
 
@@ -614,7 +615,7 @@ export const loadV2PublicPlace = cache(async (
   locale: PublicLocale,
 ): Promise<PublicContentEnvelope<PublicPlaceRecord> | null> => {
   const core = await loadCore();
-  const place = core.places.find((item) => item.placeId === input || item.slug === input);
+  const place = findPlaceByReference(core.places, input);
   if (!place) return null;
   const pandas = buildCorePandas(core).filter((panda) =>
     panda.residencies.some((residency) => residency.facility_id === place.placeId)

@@ -26,7 +26,8 @@ export function WorldMap({
   onOpen: (item: MapItem) => void;
   onSelect: (id: string | null) => void;
 }) {
-  const [land, canvas] = useCSSVariable(["--color-border", "--color-background"]);
+  // Land in the elevated surface on the secondary fill, as Maps mutes its base map under pins.
+  const [land, canvas] = useCSSVariable(["--color-card", "--color-secondary"]);
   const scrollRef = useRef<ScrollViewInstance>(null);
   const [viewport, setViewport] = useState(0);
   const mapWidth = viewport > 0 ? Math.max(viewport * 1.85, 640) : 0;
@@ -41,7 +42,8 @@ export function WorldMap({
   return (
     <View
       testID="panda-world-map"
-      className="w-full overflow-hidden rounded-xl border-hairline border-border bg-muted"
+      className="w-full overflow-hidden rounded-card bg-secondary"
+      style={{ borderCurve: "continuous" }}
       onLayout={(event) => setViewport(event.nativeEvent.layout.width)}
     >
       {mapWidth > 0 ? (
@@ -55,7 +57,7 @@ export function WorldMap({
               accessibilityLabel="大熊猫所在地世界地图"
               pointerEvents="none"
             >
-              <Path d={WORLD_LAND_PATH} fill={String(land)} stroke={String(canvas)} strokeWidth={0.5} />
+              <Path d={WORLD_LAND_PATH} fill={String(land)} stroke={String(canvas)} strokeWidth={0.6} />
             </Svg>
             {clusters.map((cluster) => {
               const size = dotSize(cluster.residentCount);
@@ -84,17 +86,22 @@ export function WorldMap({
                 >
                   <View
                     className={cn(
-                      "items-center justify-center overflow-hidden rounded-full",
+                      "items-center justify-center overflow-hidden rounded-full border-2",
                       selected
-                        ? "border-hairline border-foreground bg-accent"
+                        ? "border-primary bg-foreground"
                         : cluster.residentCount > 0
-                          ? "bg-primary"
-                          : "bg-input",
+                          ? "border-card bg-primary"
+                          : "border-card bg-muted-foreground",
                     )}
                     style={{ width: size, height: size }}
                   >
                     {cluster.residentCount > 1 && size >= 24 ? (
-                      <Text className={cn("text-xs font-bold", selected ? "text-foreground" : "text-primary-foreground")}>
+                      // A map label, like a pin's: it keeps its size so the count stays inside the dot.
+                      <Text
+                        variant="footnote"
+                        allowFontScaling={false}
+                        className={cn("font-semibold tabular-nums", selected ? "text-background" : "text-primary-foreground")}
+                      >
                         {cluster.residentCount}
                       </Text>
                     ) : null}

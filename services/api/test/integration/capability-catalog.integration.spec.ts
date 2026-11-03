@@ -6,6 +6,8 @@ import { apiSourceFiles, DATABASE_URL } from "./api-source.js";
 
 // The admin shell gate lives in the Web app (features/admin/shell), not in an API route.
 const WEB_ENFORCED_CAPABILITIES = new Set(["admin.shell.access"]);
+// Staff management left the console with #786; the rows stay until a migration retires them.
+const RETIRED_CAPABILITIES = new Set(["identity.account.manage", "identity.role.manage", "identity.staff.read"]);
 // Every staff role grants this; it does not make a role a duty.
 const SESSION_CAPABILITIES = new Set(["account.session.read"]);
 
@@ -39,7 +41,7 @@ describe("staff capability catalog", () => {
     const catalog = await database.selectFrom("identity.capabilities").select("capability_key").execute();
     const unenforced = catalog
       .map((row) => row.capability_key)
-      .filter((key) => !named.has(key) && !WEB_ENFORCED_CAPABILITIES.has(key))
+      .filter((key) => !named.has(key) && !WEB_ENFORCED_CAPABILITIES.has(key) && !RETIRED_CAPABILITIES.has(key))
       .sort();
     expect(unenforced).toEqual([]);
   });

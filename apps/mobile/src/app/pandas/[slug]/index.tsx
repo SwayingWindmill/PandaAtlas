@@ -1,338 +1,436 @@
+import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { useCallback, useEffect, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { useState } from "react";
+import { ScrollView, View, useWindowDimensions } from "react-native";
+import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, { Path } from "react-native-svg";
-import { useCSSVariable } from "uniwind";
 
+import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
+import {
+  Cake,
+  CircleQuestionMark,
+  Flower,
+  Hourglass,
+  House,
+  type LucideIcon,
+  Mars,
+  Network,
+  Users,
+  Venus,
+} from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
-import { BackButton } from "@/components/page";
-import { Button } from "@/components/ui/button";
+import { PhotoOutline } from "@/components/photo-outline";
+import { PressScale } from "@/components/press-scale";
+import { HeroHeader, useHeroScroll } from "@/components/hero-header";
+import { StretchyHero } from "@/components/stretchy-hero";
+import { PAGE_ENTER } from "@/design/motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { CompareRows } from "@/features/compare/compare-rows";
 import { PandaActions } from "@/features/engagement/panda-actions";
-import { relativesOf } from "@/features/family/family";
+import { type FamilyMember, relativesOf } from "@/features/family/family";
+import { sourceLine } from "@/features/on-this-day/memory-group";
+import { useMilestonesOn } from "@/features/milestones/prefs";
+import { DECEASED_POLICY, isCubDay } from "@/features/on-this-day/on-this-day";
 import { openPanda } from "@/features/pandas/panda-row";
-import { type Profile, loadProfile, longDate } from "@/features/pandas/profile";
-import { cn } from "@/lib/utils";
+import { type Profile, longDate, profileQueryOptions } from "@/features/pandas/profile";
+import { type Stat, UNKNOWN } from "@/features/pandas/profile-facts";
+import { RADIUS } from "@/lib/surface";
 
-function ShareButton({ profile, className }: { profile: Profile; className?: string }) {
-  const ink = String(useCSSVariable("--color-foreground"));
+/** Hero height below the status bar. The photo runs under the status bar too. */
+const HERO = 340;
+
+function correct(slug: string) {
+  router.push({ pathname: "/pandas/[slug]/correct", params: { slug } });
+}
+
+/** A section's footnote header, aligned with the text inside the group below it. */
+function SectionHeader({ children }: { children: string }) {
   return (
-    <Button
-      variant="secondary"
-      size="icon"
-      className={className}
-      accessibilityLabel="分享"
-      onPress={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })}
-    >
-      <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={ink} strokeWidth={2} strokeLinecap="round">
-        <Path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6" />
-      </Svg>
-    </Button>
+    <Text variant="footnote" role="heading" className="px-4 text-muted-foreground">
+      {children}
+    </Text>
   );
 }
 
-function Facts({ facts }: { facts: Profile["facts"] }) {
-  // Two facts per row, the way an infobox reads.
-  const rows: Profile["facts"][] = [];
-  for (let index = 0; index < facts.length; index += 2) rows.push(facts.slice(index, index + 2));
-  return (
-    <View>
-      {rows.map((row, rowIndex) => (
-        <View key={row.map((fact) => fact.label).join("/")} className="flex-row gap-5">
-          {[0, 1].map((column) => {
-            const fact = row[column];
-            return (
-              <View
-                key={column}
-                className={cn(
-                  "flex-1 py-2.5",
-                  fact && "border-t-hairline border-border",
-                  fact && rowIndex === rows.length - 1 && "border-b-hairline",
-                )}
-              >
-                {fact ? (
-                  <>
-                    <Text variant="muted">{fact.label}</Text>
-                    <Text className="font-bold">{fact.value}</Text>
-                  </>
-                ) : null}
-              </View>
-            );
-          })}
-        </View>
-      ))}
+/** The glyph beside each stat's label. 性别 shows the sex itself, so it reads at a glance. */
+function statIcon(stat: Stat, deceased: boolean): LucideIcon {
+  if (stat.key === "sex") return stat.value === "雄" ? Mars : stat.value === "雌" ? Venus : CircleQuestionMark;
+  if (stat.key === "age") return deceased ? Hourglass : Cake;
+  return deceased ? Flower : House;
+}
+
+/** How much of the row each block takes: the place needs room for a zoo's name. */
+const STAT_FLEX: Record<Stat["key"], number> = { sex: 1, age: 1.25, place: 1.9 };
+/** Below this width three tiles leave the sex tile too narrow for its label, so the place takes its own row. */
+const STAT_ROW_MIN_WIDTH = 360;
+
+function StatBlock({
+  stat,
+  deceased,
+  onPress,
+  stacked,
+  wrapped,
+}: {
+  stat: Stat;
+  deceased: boolean;
+  onPress?: () => void;
+  stacked: boolean;
+  wrapped: boolean;
+}) {
+  const body = (
+    <View
+      className="gap-1 bg-card p-3"
+      style={{ flex: 1, borderRadius: RADIUS.tile, borderCurve: "continuous", minHeight: 96 }}
+    >
+      <View className="flex-row items-center gap-1">
+        <Icon icon={statIcon(stat, deceased)} size="footnote" tone="secondary" />
+        <Text variant="footnote" className="flex-1 text-muted-foreground" numberOfLines={1}>
+          {stat.label}
+        </Text>
+        {onPress ? <Chevron /> : null}
+      </View>
+      <Text variant="stat" numberOfLines={stacked ? undefined : 2}>
+        {stat.value}
+      </Text>
+      {stat.detail ? (
+        <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
+          {stat.detail}
+        </Text>
+      ) : null}
     </View>
   );
+  const style = stacked
+    ? undefined
+    : wrapped && stat.key === "place"
+      ? { flexBasis: "100%" as const }
+      : { flex: STAT_FLEX[stat.key] };
+  if (!onPress) {
+    return (
+      <View style={style} accessible accessibilityLabel={`${stat.label}，${stat.value}${stat.detail ? `，${stat.detail}` : ""}`}>
+        {body}
+      </View>
+    );
+  }
+  return (
+    <PressScale
+      onPress={onPress}
+      role="link"
+      accessibilityLabel={`${stat.label}，${stat.value}，参观指南`}
+      containerStyle={style}
+      style={{ flex: 1 }}
+    >
+      {body}
+    </PressScale>
+  );
 }
 
-/** A section with nothing published yet: says so, and offers 纠错 for the panda. */
-function Unknown({ slug, ask }: { slug: string; ask?: string }) {
+/** Sex, age and where it lives as three tiles, the way Health leads with its summary. */
+function Stats({ profile }: { profile: Profile }) {
+  const stacked = useStacked();
+  const wrapped = useWindowDimensions().width < STAT_ROW_MIN_WIDTH;
+  const visit = profile.visit;
+  const fact = (label: string) => profile.facts.find((item) => item.label === label)?.value;
+  const born = fact("出生");
+  const birthPlace = fact("出生地");
+  const birthLine =
+    born && born !== UNKNOWN
+      ? `${born}出生${birthPlace && birthPlace !== UNKNOWN ? `于${birthPlace}` : ""}`
+      : null;
   return (
-    <View className="items-start gap-2">
-      <Text className="text-muted-foreground">暂无记录</Text>
-      {ask ? (
-        <Button variant="secondary" onPress={() => router.push({ pathname: "/pandas/[slug]/correct", params: { slug } })}>
-          <Text>{ask}</Text>
-        </Button>
+    <View className="gap-2">
+    <View className={stacked ? "gap-2" : wrapped ? "flex-row flex-wrap gap-2" : "flex-row gap-2"}>
+      {profile.stats.map((stat) => (
+        <StatBlock
+          key={stat.key}
+          stat={stat}
+          deceased={profile.deceased}
+          stacked={stacked}
+          wrapped={wrapped}
+          onPress={
+            stat.key === "place" && visit
+              ? () => router.push({ pathname: "/institutions/[slug]", params: { slug: visit.institutionSlug } })
+              : undefined
+          }
+        />
+      ))}
+    </View>
+      {birthLine ? (
+        <Text variant="footnote" className="px-1 text-muted-foreground">
+          {birthLine}
+        </Text>
       ) : null}
     </View>
   );
 }
 
-function Events({ events, slug }: { events: Profile["events"]; slug: string }) {
-  if (events.length === 0) {
-    return (
-      <View className="gap-3">
-        <Text variant="h2">经历</Text>
-        <Unknown slug={slug} ask="知道它的经历？告诉我们" />
-      </View>
-    );
-  }
+/** Avatar 44 inside a 52pt capsule with 4pt padding: the circles share a centre. */
+const AVATAR = 44;
+const CHIP_PAD = 4;
+
+function FamilyChip({ member }: { member: FamilyMember }) {
   return (
-    <View className="gap-3">
-      <Text variant="h2">经历</Text>
-      <View className="gap-2.5">
-        {events.map((event) => (
-          <View key={event.id} className="flex-row">
-            <Text className="w-18 font-bold">{event.date}</Text>
-            <Text className="flex-1">{event.text}</Text>
-          </View>
-        ))}
+    <PressScale onPress={() => openPanda(member.slug)} role="link" accessibilityLabel={`${member.name}，${member.relation}`}>
+      <View
+        className="flex-row items-center gap-2.5 bg-card"
+        style={{ padding: CHIP_PAD, paddingRight: 16, borderRadius: (AVATAR + CHIP_PAD * 2) / 2, borderCurve: "continuous" }}
+      >
+        <View
+          className="items-center justify-center overflow-hidden bg-muted"
+          style={{ width: AVATAR, height: AVATAR, borderRadius: AVATAR / 2 }}
+        >
+          {member.photoUrl ? (
+            <Image source={member.photoUrl} style={{ width: AVATAR, height: AVATAR }} contentFit="cover" accessible={false} />
+          ) : (
+            <Text variant="body" className="font-semibold text-muted-foreground">
+              {member.name.slice(0, 1)}
+            </Text>
+          )}
+          <PhotoOutline radius={AVATAR / 2} />
+        </View>
+        <View>
+          <Text variant="body" className="font-semibold" numberOfLines={1}>
+            {member.name}
+          </Text>
+          <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
+            {member.relation}
+          </Text>
+        </View>
       </View>
-    </View>
+    </PressScale>
   );
 }
 
-function Relatives({ profile }: { profile: Profile }) {
+function Family({ profile }: { profile: Profile }) {
   const relatives = profile.family ? relativesOf(profile.family) : [];
+  const parents = profile.facts.find((fact) => fact.label === "父母");
   if (relatives.length === 0) {
     return (
-      <View className="gap-3">
-        <Text variant="h2">家人</Text>
-        <Unknown slug={profile.slug} />
-      </View>
+      <ListSection title="家族">
+        <ListCell icon={Users} label="父母" meta={parents?.value ?? UNKNOWN} last />
+      </ListSection>
     );
   }
   return (
-    <View className="gap-3">
-      <Text variant="h2">家人</Text>
-      <View className="flex-row flex-wrap gap-2">
-        {relatives.map((member) => (
-          <Pressable
-            key={member.id}
-            onPress={() => openPanda(member.slug)}
-            role="button"
-            accessibilityLabel={`${member.name}，${member.relation}`}
-            className="h-11 flex-row items-center gap-2 rounded-full bg-secondary px-4 active:bg-accent"
-          >
-            <Text className="font-bold">{member.name}</Text>
-            <Text variant="muted">{member.relation}</Text>
-          </Pressable>
-        ))}
-      </View>
-      <View className="flex-row flex-wrap gap-2">
-        <Button
-          variant="outline"
-          onPress={() => router.push({ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } })}
-        >
-          <Text>看家谱</Text>
-        </Button>
-        <Button variant="outline" onPress={() => router.push({ pathname: "/relationship", params: { from: profile.slug } })}>
-          <Text>查关系</Text>
-        </Button>
-      </View>
-    </View>
-  );
-}
-
-function PlacesLived({ places }: { places: Profile["placesLived"] }) {
-  return (
-    <View className="gap-3">
-      <Text variant="h2">生活过的地方</Text>
-      <View>
-        {places.map((place, index) => (
-          <View
-            key={`${place.place}-${place.years}`}
-            className={cn(
-              "flex-row items-center justify-between gap-3 border-t-hairline border-border py-2.5",
-              index === places.length - 1 && "border-b-hairline",
-            )}
-          >
-            <Text className={cn("min-w-0 flex-1", place.current && "font-bold")} numberOfLines={1}>
-              {place.place}
-            </Text>
-            {place.years ? <Text variant="muted">{place.years}</Text> : null}
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
-
-function Visit({ visit }: { visit: NonNullable<Profile["visit"]> }) {
-  return (
-    <View className="gap-3 rounded-lg border-hairline border-border p-4">
-      <Text variant="h2">去看它</Text>
-      <View>
-        <Text className="font-bold">{visit.place}</Text>
-        {visit.address ? <Text variant="muted">{visit.address}</Text> : null}
-      </View>
-      <Button
-        variant="secondary"
-        className="self-start"
-        onPress={() => router.push({ pathname: "/institutions/[slug]", params: { slug: visit.institutionSlug } })}
+    <View className="gap-1.5">
+      <SectionHeader>家族</SectionHeader>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className="-mx-4"
+        contentContainerClassName="gap-2 px-4 pb-1.5"
       >
-        <Text>参观指南</Text>
-      </Button>
+        {relatives.map((member) => (
+          <FamilyChip key={member.id} member={member} />
+        ))}
+      </ScrollView>
+      <ListSection>
+        {/* 查关系 now opens from the family, where the tree it starts from is on screen. */}
+        <ListCell icon={Network} label="查看家族" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} last />
+      </ListSection>
     </View>
   );
 }
+
+/** Where it lived before. Where it lives now is the 所在地 tile, which opens the institution. */
+function PlacesLived({ profile }: { profile: Profile }) {
+  const past = profile.placesLived.filter((place) => !place.current);
+  if (past.length === 0) return null;
+  return (
+    <ListSection title={profile.deceased ? "生活过的地方" : "以前住过"}>
+      {past.map((place, index) => (
+        <ListCell
+          key={`${place.place}-${place.years}`}
+          label={place.place}
+          meta={place.years || undefined}
+          last={index === past.length - 1}
+        />
+      ))}
+    </ListSection>
+  );
+}
+
+/**
+ * 那年今天 on the panda's own page; for a panda that has died it is 纪念, and quiet: no countdown, no
+ * celebration, just what happened on this day, with where it is written down.
+ */
+function Memories({ profile }: { profile: Profile }) {
+  const sources = new Map(profile.sources.map((source) => [source.id, source]));
+  // 满月 and 满百天 are 里程碑, and go with its switch.
+  const milestonesOn = useMilestonesOn();
+  const memories = profile.memories.filter((memory) => milestonesOn || !isCubDay(memory));
+  if (memories.length === 0) return null;
+  return (
+    <ListSection title={profile.deceased ? DECEASED_POLICY.heading : "那年今天"}>
+      {memories.map((memory, index) => (
+        <ListCell
+          key={memory.key}
+          label={memory.text}
+          detail={sourceLine(memory, memory.sourceIds.map((id) => sources.get(id)).find(Boolean)) ?? undefined}
+          lines={3}
+          last={index === memories.length - 1}
+        />
+      ))}
+    </ListSection>
+  );
+}
+
+function Events({ profile }: { profile: Profile }) {
+  // Newest first, the way a feed reads.
+  const events = [...profile.events].reverse();
+  // The whole life, oldest first and with a source on each line, is one tap away under the latest news.
+  const timeline = (
+    <ListCell
+      label="看时间线"
+      detail="一生的大事按年排好，附上出处"
+      href={{ pathname: "/pandas/[slug]/timeline", params: { slug: profile.slug } }}
+      last={events.length > 0}
+    />
+  );
+  return (
+    <ListSection title="动态">
+      {events.length === 0 ? (
+        <>
+          <ListCell label={UNKNOWN} />
+          {timeline}
+          <ListCell label="知道它的经历？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
+        </>
+      ) : (
+        <>
+          {events.map((event) => (
+            <ListCell key={event.id} label={event.text} meta={event.date} lines={3} />
+          ))}
+          {timeline}
+        </>
+      )}
+    </ListSection>
+  );
+}
+
+/** Sources a fan sees before asking for the rest; a long list would bury the actions below it. */
+const SOURCES_SHOWN = 5;
 
 function Sources({ sources }: { sources: Profile["sources"] }) {
+  const [all, setAll] = useState(false);
+  const shown = all ? sources : sources.slice(0, SOURCES_SHOWN);
+  const hidden = sources.length - shown.length;
   return (
-    <View className="gap-3">
-      <Text variant="h2">资料来源</Text>
-      <View>
-        {sources.map((source, index) => (
-          <Pressable
-            key={source.id}
-            onPress={() => void WebBrowser.openBrowserAsync(source.url)}
-            role="link"
-            accessibilityLabel={`${source.publisher}，${source.title}`}
-            accessibilityHint="在浏览器中打开"
-            className={cn(
-              "gap-0.5 border-t-hairline border-border py-3 active:bg-accent",
-              index === sources.length - 1 && "border-b-hairline",
-            )}
-          >
-            <Text className="font-bold" numberOfLines={2}>
-              {source.title}
-            </Text>
-            <Text variant="muted" numberOfLines={1}>
-              {source.publisher}　核实于 {longDate(source.lastVerifiedOn)}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
+    <ListSection title="资料来源">
+      {shown.map((source, index) => (
+        <ListCell
+          key={source.id}
+          role="link"
+          label={source.title}
+          detail={`${source.publisher}　核实于 ${longDate(source.lastVerifiedOn)}`}
+          accessibilityLabel={`${source.publisher}，${source.title}`}
+          accessibilityHint="在浏览器中打开"
+          onPress={() => void WebBrowser.openBrowserAsync(source.url)}
+          last={hidden === 0 && index === shown.length - 1}
+        />
+      ))}
+      {hidden > 0 ? <ListCell tone="tint" label={`显示全部 ${sources.length} 条`} onPress={() => setAll(true)} last /> : null}
+    </ListSection>
+  );
+}
+
+function NoPhoto({ profile }: { profile: Profile }) {
+  const insets = useSafeAreaInsets();
+  return (
+    <View style={{ paddingTop: insets.top + 64 }} className="px-4">
+      <ListSection>
+        <ListCell label="暂无照片" />
+        <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
+      </ListSection>
     </View>
   );
 }
 
 export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
-  const insets = useSafeAreaInsets();
-  const muted = useCSSVariable("--color-muted");
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [failed, setFailed] = useState(false);
-
-  const load = useCallback(() => {
-    loadProfile(slug)
-      .then(setProfile)
-      .catch(() => setFailed(true));
-  }, [slug]);
-  useEffect(load, [load]);
-
-  function retry() {
-    setFailed(false);
-    load();
-  }
-
-  const top = { top: insets.top + 8 };
-  const cover = profile?.photos[0];
+  const { data: profile, isError: failed, refetch } = useQuery(profileQueryOptions(slug));
+  const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
 
   if (!profile) {
     return (
-      <View className="flex-1 bg-background px-5" style={{ paddingTop: insets.top + 12 }}>
-        <BackButton />
+      <View className="flex-1 bg-background">
+        <HeroHeader title="" pastHero={false} />
         {failed ? (
-          <LoadFailed message="资料暂时打不开。" onRetry={retry} className="mt-6" />
+          <View className="px-4 pt-28">
+            <LoadFailed message="资料暂时打不开。" onRetry={() => void refetch()} />
+          </View>
         ) : (
-          <View className="mt-6 gap-4" accessibilityLabel="正在加载资料">
-            <Skeleton className="h-72 w-full" />
-            <Skeleton className="h-8 w-32 rounded-full" />
+          <View className="gap-4" accessibilityLabel="正在加载资料">
+            <Skeleton className="h-96 w-full rounded-none" />
+            <View className="gap-3 px-4">
+              <Skeleton className="h-10 w-32" />
+              <View className="flex-row gap-2">
+                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.sex }} />
+                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.age }} />
+                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.place }} />
+              </View>
+            </View>
           </View>
         )}
       </View>
     );
   }
 
+  const cover = profile.photos[0];
   return (
-    <ScrollView className="flex-1 bg-background" contentContainerClassName="pb-12">
-      {cover ? (
-        <View>
-          <Pressable
+    <View className="flex-1 bg-background">
+      <HeroHeader
+        title={profile.name}
+        pastHero={pastHero}
+        onShare={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })}
+      />
+      <Animated.ScrollView
+        className="flex-1"
+        contentInsetAdjustmentBehavior="never"
+        contentContainerClassName="pb-16"
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+      >
+        {cover ? (
+          <StretchyHero
+            url={cover.url}
+            height={HERO}
+            scrollY={scrollY}
+            label={`查看${profile.name}的照片，共 ${profile.photos.length} 张`}
             onPress={() => router.push({ pathname: "/pandas/[slug]/photos", params: { slug: profile.slug } })}
-            role="button"
-            accessibilityLabel={`查看${profile.name}的照片，共 ${profile.photos.length} 张`}
-          >
-            <Image
-              source={cover.url}
-              style={{ width: "100%", height: 380, backgroundColor: String(muted) }}
-              contentFit="cover"
-              accessible={false}
-            />
-            {profile.photos.length > 1 ? (
-              <View className="absolute right-4 bottom-4 rounded-full bg-background px-3 py-1">
-                <Text variant="small">共 {profile.photos.length} 张</Text>
-              </View>
-            ) : null}
-          </Pressable>
-          <View className="absolute inset-x-4 flex-row justify-between" style={top}>
-            <BackButton className="bg-background" />
-            <ShareButton profile={profile} className="bg-background" />
+          />
+        ) : (
+          <NoPhoto profile={profile} />
+        )}
+        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-4 pt-5">
+          <View className="gap-3">
+            <Text variant="display">{profile.name}</Text>
+            {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
           </View>
-          {cover.credit ? (
-            <Text variant="muted" className="px-5 pt-2" numberOfLines={1}>
-              {cover.credit}
+          <Stats profile={profile} />
+          <Family profile={profile} />
+          <PlacesLived profile={profile} />
+          <CompareRows slug={profile.slug} />
+          {profile.memories.length > 0 ? <Memories profile={profile} /> : null}
+          <Events profile={profile} />
+          {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
+          <ListSection>
+            <ListCell
+              label="加入合集"
+              tone="tint"
+              onPress={() => router.push({ pathname: "/pandas/[slug]/collect", params: { slug: profile.slug } })}
+            />
+            <ListCell label="资料有误？纠错" tone="tint" onPress={() => correct(profile.slug)} last />
+          </ListSection>
+          {cover?.credit ? (
+            <Text variant="footnote" className="px-4 text-muted-foreground">
+              {`封面照片：${cover.credit}`}
             </Text>
           ) : null}
-        </View>
-      ) : (
-        <View className="gap-4 px-5" style={{ paddingTop: insets.top + 12 }}>
-          <View className="flex-row justify-between">
-            <BackButton />
-            <ShareButton profile={profile} />
-          </View>
-          <View className="items-start gap-2 rounded-lg bg-muted p-5">
-            <Text className="text-muted-foreground">暂无照片</Text>
-            <Button
-              variant="outline"
-              onPress={() => router.push({ pathname: "/pandas/[slug]/correct", params: { slug: profile.slug } })}
-            >
-              <Text>有它的照片？告诉我们</Text>
-            </Button>
-          </View>
-        </View>
-      )}
-
-      <View className="gap-7 px-5 pt-6">
-        <Text variant="h1">{profile.name}</Text>
-        {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
-        <Button
-          variant="secondary"
-          className="self-start"
-          onPress={() => router.push({ pathname: "/pandas/[slug]/collect", params: { slug: profile.slug } })}
-        >
-          <Text>加入合集</Text>
-        </Button>
-        {profile.facts.length > 0 ? <Facts facts={profile.facts} /> : null}
-        <Events events={profile.events} slug={profile.slug} />
-        <Relatives profile={profile} />
-        {profile.placesLived.length > 0 ? <PlacesLived places={profile.placesLived} /> : null}
-        {profile.visit ? <Visit visit={profile.visit} /> : null}
-        {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
-        <Button
-          variant="outline"
-          className="self-start"
-          onPress={() => router.push({ pathname: "/pandas/[slug]/correct", params: { slug: profile.slug } })}
-        >
-          <Text>资料有误？纠错</Text>
-        </Button>
-      </View>
-    </ScrollView>
+        </Animated.View>
+      </Animated.ScrollView>
+    </View>
   );
 }

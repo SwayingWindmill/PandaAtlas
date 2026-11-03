@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TextInput, View } from "react-native";
-import { useCSSVariable } from "uniwind";
+import { View } from "react-native";
+import Animated from "react-native-reanimated";
 
+import { ListCell, ListSection } from "@/components/grouped-list";
+import { Check, CircleAlert, Download, FileText, Hourglass, RotateCw } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
+import { TextField } from "@/components/text-field";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { PAGE_ENTER } from "@/design/motion";
 import {
   type PrivacyKind,
   type PrivacyRequest,
@@ -27,12 +31,33 @@ import { shortDay } from "@/features/engagement/seen";
 import { loadAssurance } from "@/features/session/mfa";
 import { Verification } from "@/features/session/verification";
 
-function Status({ request }: { request: PrivacyRequest }) {
+function StatusCell({ request, last }: { request: PrivacyRequest; last?: boolean }) {
+  const done = request.state === "completed";
   return (
-    <Text variant="muted" accessibilityLiveRegion="polite">
-      {`${shortDay(request.requestedAt.slice(0, 10))}申请　${requestStatus(request)}`}
-    </Text>
+    <ListCell
+      icon={done ? Check : request.state === "failed" ? CircleAlert : Hourglass}
+      label={requestStatus(request)}
+      detail={`${shortDay(request.requestedAt.slice(0, 10))}申请`}
+      last={last}
+    />
   );
+}
+
+type Work = "idle" | "working" | "failed";
+
+function useWork() {
+  const [status, setStatus] = useState<Work>("idle");
+  async function run(action: () => Promise<void>) {
+    if (status === "working") return;
+    setStatus("working");
+    try {
+      await action();
+      setStatus("idle");
+    } catch {
+      setStatus("failed");
+    }
+  }
+  return [status, run] as const;
 }
 
 function ExportSection({
@@ -44,38 +69,31 @@ function ExportSection({
   onRequest: () => Promise<void>;
   onDownload: (requestId: string) => Promise<void>;
 }) {
-  const [status, setStatus] = useState<"idle" | "working" | "failed">("idle");
-  async function run(action: () => Promise<void>) {
-    setStatus("working");
-    try {
-      await action();
-      setStatus("idle");
-    } catch {
-      setStatus("failed");
-    }
-  }
+  const [status, run] = useWork();
   const ready = request?.kind === "access_export" && request.state === "completed";
+  const again = canRequest(request);
   return (
-    <View className="items-start gap-3">
-      <Text variant="h2">导出我的数据</Text>
-      {request ? <Status request={request} /> : null}
-      <View className="flex-row flex-wrap gap-2">
+    <View className="gap-1.5">
+      <ListSection title="导出我的数据" footer="导出的是一个 JSON 文件，准备好后 24 小时内可下载。">
+        {request ? <StatusCell request={request} last={!ready && !again} /> : null}
         {ready ? (
-          <Button onPress={() => void run(() => onDownload(request.requestId))} disabled={status === "working"}>
-            <Text>下载导出文件</Text>
-          </Button>
+          <ListCell
+            tone="tint"
+            icon={Download}
+            label="下载导出文件"
+            onPress={() => void run(() => onDownload(request.requestId))}
+            last={!again}
+          />
         ) : null}
-        {canRequest(request) ? (
-          <Button
-            variant={ready ? "secondary" : "default"}
-            onPress={() => void run(onRequest)}
-            disabled={status === "working"}
-          >
-            <Text>{ready ? "重新导出" : "申请导出"}</Text>
-          </Button>
+        {again ? (
+          <ListCell tone="tint" icon={ready ? RotateCw : FileText} label={ready ? "重新导出" : "申请导出"} onPress={() => void run(onRequest)} last />
         ) : null}
-      </View>
-      {status === "failed" ? <Text className="text-destructive">没能完成，请稍后再试。</Text> : null}
+      </ListSection>
+      {status === "failed" ? (
+        <Text variant="footnote" className="px-inset text-destructive" accessibilityLiveRegion="polite">
+          没能完成，请稍后再试。
+        </Text>
+      ) : null}
     </View>
   );
 }
@@ -87,55 +105,63 @@ function DeletionSection({
   request: PrivacyRequest | null;
   onRequest: (reason: string) => Promise<void>;
 }) {
-  const muted = String(useCSSVariable("--color-muted-foreground"));
   const [confirming, setConfirming] = useState(false);
   const [reason, setReason] = useState("");
-  const [status, setStatus] = useState<"idle" | "working" | "failed">("idle");
-
-  async function confirm() {
-    setStatus("working");
-    try {
-      await onRequest(reason);
-      setConfirming(false);
-      setStatus("idle");
-    } catch {
-      setStatus("failed");
-    }
-  }
+  const [status, run] = useWork();
+  const open = canRequest(request) && !confirming;
 
   return (
-    <View className="items-start gap-3 border-t-hairline border-border pt-6">
-      <Text variant="h2">注销账号</Text>
-      <Text className="text-muted-foreground">{DELETION_NOTICE}</Text>
-      {request ? <Status request={request} /> : null}
-      {canRequest(request) && !confirming ? (
-        <Button variant="outline" onPress={() => setConfirming(true)}>
-          <Text>申请注销账号</Text>
-        </Button>
+    <View className="gap-row">
+      {request || open ? (
+        <ListSection title="注销账号" footer={DELETION_NOTICE}>
+          {request ? <StatusCell request={request} last={!open} /> : null}
+          {open ? <ListCell tone="destructive" label="申请注销账号" onPress={() => setConfirming(true)} last /> : null}
+        </ListSection>
       ) : null}
       {confirming ? (
-        <View className="w-full gap-3 rounded-lg border-hairline border-destructive p-4">
-          <Text className="font-bold">确定要注销吗？</Text>
-          <TextInput
+        <Animated.View
+          entering={PAGE_ENTER}
+          className="gap-row rounded-card bg-card p-stack"
+          style={{ borderCurve: "continuous" }}
+        >
+          <View className="gap-hair-gap">
+            <Text variant="headline" role="heading">
+              确定要注销吗？
+            </Text>
+            <Text variant="subheadline" className="text-muted-foreground">
+              {DELETION_NOTICE}
+            </Text>
+          </View>
+          <TextField
             value={reason}
             onChangeText={(value) => setReason(value.slice(0, 1000))}
             placeholder="原因（可不填）"
-            placeholderTextColor={muted}
             accessibilityLabel="注销原因"
             multiline
             textAlignVertical="top"
-            className="min-h-20 rounded-lg border-hairline border-input px-4 py-3 text-base text-foreground"
+            className="min-h-24 bg-secondary"
           />
-          <View className="flex-row flex-wrap gap-2">
-            <Button variant="destructive" onPress={() => void confirm()} disabled={status === "working"}>
-              <Text>确认注销</Text>
-            </Button>
-            <Button variant="secondary" onPress={() => setConfirming(false)}>
-              <Text>取消</Text>
-            </Button>
-          </View>
-          {status === "failed" ? <Text className="text-destructive">没能提交，请稍后再试。</Text> : null}
-        </View>
+          <Button
+            variant="destructive"
+            onPress={() =>
+              void run(async () => {
+                await onRequest(reason);
+                setConfirming(false);
+              })
+            }
+            disabled={status === "working"}
+          >
+            <Text>确认注销</Text>
+          </Button>
+          <Button variant="plain" onPress={() => setConfirming(false)}>
+            <Text>取消</Text>
+          </Button>
+          {status === "failed" ? (
+            <Text variant="footnote" className="text-center text-destructive" accessibilityLiveRegion="polite">
+              没能提交，请稍后再试。
+            </Text>
+          ) : null}
+        </Animated.View>
       ) : null}
     </View>
   );
@@ -204,10 +230,12 @@ export default function AccountScreen() {
       {gate.status === "failed" ? (
         <LoadFailed message="暂时打不开。" onRetry={reload} />
       ) : null}
-      {gate.status === "checking" ? <Skeleton className="h-48 w-full" accessibilityLabel="正在加载" /> : null}
+      {gate.status === "checking" ? (
+        <Skeleton className="h-48 w-full rounded-card" accessibilityLabel="正在加载" />
+      ) : null}
       {gate.status === "verify" ? <Verification factorId={gate.factorId} onVerified={reload} /> : null}
       {gate.status === "open" && requests ? (
-        <>
+        <Animated.View entering={PAGE_ENTER} className="gap-section">
           <ExportSection
             request={latestRequest(requests, "access_export")}
             onRequest={() => request("access_export")}
@@ -217,7 +245,7 @@ export default function AccountScreen() {
             request={latestRequest(requests, "account_deletion")}
             onRequest={(reason) => request("account_deletion", reason)}
           />
-        </>
+        </Animated.View>
       ) : null}
     </Page>
   );

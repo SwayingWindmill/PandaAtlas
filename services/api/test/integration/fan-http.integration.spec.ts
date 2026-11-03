@@ -277,6 +277,84 @@ describe("V2 fan identity, engagement, and games", () => {
     expect(typeof pandaBookBody.knownCount).toBe("number");
   });
 
+  it("records daily check-ins, leave and 补请 per account with the configured quotas", async () => {
+    const headers = { authorization: `Bearer ${token}` };
+    const provision = await injectHttp(app, { method: "POST", url: "/api/v2/me/account", headers });
+    expect([200, 201]).toContain(provision.statusCode);
+    await app.get(DatabaseService).db.deleteFrom("engagement.daily_checkins").where("account_id", "=", ACCOUNT_ID).execute();
+
+    const shift = (day: string, amount: number) =>
+      new Date(Date.parse(`${day}T00:00:00Z`) + amount * 86_400_000).toISOString().slice(0, 10);
+    const today = new Date().toISOString().slice(0, 10);
+    const twoDaysAgo = shift(today, -2);
+
+    // Seed an earlier visit so a missed day exists inside the 补请 window.
+    await app
+      .get(DatabaseService)
+      .db.insertInto("engagement.daily_checkins")
+      .values({ account_id: ACCOUNT_ID, checkin_on: shift(today, -3), kind: "visit" })
+      .execute();
+
+    const visit = await injectHttp(app, { method: "POST", url: "/api/v2/me/daily-checkins", headers, payload: { today } });
+    expect(visit.statusCode).toBe(201);
+    expect(visit.json()).toMatchObject({
+      today,
+      visitedToday: true,
+      totalVisitDays: 2,
+      rules: { leaveDaysPerMonth: 2, retroLeavesPerMonth: 1, retroWindowHours: 48 },
+      retroDay: shift(today, -1),
+    });
+
+    const retro = await injectHttp(app, {
+      method: "PUT",
+      url: `/api/v2/me/daily-checkins/leave/${twoDaysAgo}`,
+      headers,
+      payload: { today },
+    });
+    expect(retro.statusCode).toBe(200);
+    expect(responseBody<{ days: Array<{ day: string; kind: string; retroactive: boolean }> }>(retro).days).toContainEqual({
+      day: twoDaysAgo,
+      kind: "leave",
+      retroactive: true,
+    });
+
+    const secondRetro = await injectHttp(app, {
+      method: "PUT",
+      url: `/api/v2/me/daily-checkins/leave/${shift(today, -1)}`,
+      headers,
+      payload: { today },
+    });
+    // 补请 is counted per month of the missed day; both days share a month except on the 1st/2nd.
+    const sameMonth = twoDaysAgo.slice(0, 7) === shift(today, -1).slice(0, 7);
+    expect(secondRetro.statusCode).toBe(sameMonth ? 409 : 200);
+    if (sameMonth) expect(secondRetro.json()).toMatchObject({ code: "engagement.leaveQuotaUsed" });
+
+    const overVisit = await injectHttp(app, {
+      method: "PUT",
+      url: `/api/v2/me/daily-checkins/leave/${today}`,
+      headers,
+      payload: { today },
+    });
+    expect(overVisit.statusCode).toBe(409);
+    expect(overVisit.json()).toMatchObject({ code: "engagement.leaveDayClosed" });
+
+    const farAway = await injectHttp(app, {
+      method: "GET",
+      url: `/api/v2/me/daily-checkins?today=${shift(today, 5)}`,
+      headers,
+    });
+    expect(farAway.statusCode).toBe(422);
+
+    const summary = await injectHttp(app, { method: "GET", url: `/api/v2/me/daily-checkins?today=${today}`, headers });
+    expect(summary.statusCode).toBe(200);
+    expect(summary.json()).toMatchObject({ totalVisitDays: 2, visitedToday: true, retroDay: null });
+    const stored = await app.get(DatabaseService).db.selectFrom("engagement.daily_checkins").select("kind").where("account_id", "=", ACCOUNT_ID).execute();
+    expect(stored.length).toBeGreaterThanOrEqual(3);
+
+    const anonymous = await injectHttp(app, { method: "GET", url: `/api/v2/me/daily-checkins?today=${today}` });
+    expect(anonymous.statusCode).toBe(401);
+  });
+
   it("serves anonymous Random Panda and Guess without persisting an attempt", async () => {
     const database = app.get(DatabaseService);
     const before = await database.db

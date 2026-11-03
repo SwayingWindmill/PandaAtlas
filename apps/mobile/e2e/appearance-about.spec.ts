@@ -4,8 +4,8 @@ import { expect, test } from "@playwright/test";
 test.use({ colorScheme: "light" });
 
 test("外观 switches the app to dark, stays dark after a restart, and follows the system again", async ({ page }) => {
-  await page.goto("/me");
-  const heading = page.getByRole("heading", { name: "我的", exact: true });
+  await page.goto("/settings");
+  const heading = page.getByRole("heading", { name: "设置", exact: true });
   const ink = () => heading.evaluate((element) => getComputedStyle(element).color);
   const light = await ink();
 
@@ -22,7 +22,7 @@ test("外观 switches the app to dark, stays dark after a restart, and follows t
 });
 
 test("关于 shows what the published release holds", async ({ page }) => {
-  await page.goto("/me");
+  await page.goto("/settings");
   await page.getByRole("button", { name: "内容和照片从哪来" }).click();
   await expect(page.getByRole("heading", { name: "内容和照片从哪来" })).toBeVisible();
   await expect(page.getByText(/^[\d,]+ 只$/)).toBeVisible();

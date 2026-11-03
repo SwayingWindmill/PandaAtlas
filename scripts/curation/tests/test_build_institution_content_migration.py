@@ -85,8 +85,69 @@ class ValidateContentTests(unittest.TestCase):
             "listed twice",
         )
 
+    def test_rejects_two_places_at_one_map_point(self) -> None:
+        self.assert_error(
+            lambda c: c["institutions"][0]["places"].append(
+                {"slug": "sample-zoo-copy", "longitude": -77.0503, "latitude": 38.9302}
+            ),
+            "share a map point",
+        )
+
+    def test_rejects_legacy_slugs_that_are_still_places_or_merged_twice(self) -> None:
+        places = lambda c: c["institutions"][0]["places"]
+        self.assert_error(lambda c: places(c)[0].update(legacySlugs=["sample-zoo-annex"]), "still listed as a place")
+        self.assert_error(lambda c: places(c)[0].update(legacySlugs=["Old Slug"]), "kebab-case")
+        self.assert_error(lambda c: places(c)[0].update(legacySlugs="old-zoo"), "must be a list")
+
+        def merged_twice(content: dict) -> None:
+            places(content)[0]["legacySlugs"] = ["old-zoo"]
+            places(content)[1]["legacySlugs"] = ["old-zoo"]
+
+        self.assert_error(merged_twice, "already merged into sample-zoo")
+
+
+class MergeTests(unittest.TestCase):
+    def test_panda_tags_must_use_the_surviving_slug(self) -> None:
+        content = copy.deepcopy(VALID)
+        content["institutions"][0]["places"][0]["legacySlugs"] = ["old-zoo"]
+        with tempfile.TemporaryDirectory() as tmp:
+            pandas = Path(tmp) / "pandas.csv"
+            pandas.write_text("slug,tags\nmei-mei,sample-zoo\nlan-lan,giant-panda;old-zoo\n", encoding="utf-8")
+            self.assertEqual(
+                BUILDER.validate_panda_tags(content, pandas),
+                ["pandas.csv[lan-lan]: tag old-zoo was merged; use sample-zoo"],
+            )
+
+    def test_repository_panda_tags_use_no_merged_slug(self) -> None:
+        content = json.loads(BUILDER.DATA_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(BUILDER.validate_panda_tags(content), [])
+
+    def test_finds_served_places_that_look_like_one_place(self) -> None:
+        places = [
+            {"slug": "chengdu-base", "nameEn": "Chengdu Research Base of Giant Panda Breeding"},
+            {"slug": "coarse-1", "nameEn": "Xinghan Hall, Chengdu Research Base of Giant Panda Breeding"},
+            {"slug": "zoo-a", "nameZh": "动物园", "longitude": 1.0, "latitude": 2.0},
+            {"slug": "zoo-b", "nameZh": "另一个", "longitude": 1.0002, "latitude": 2.0},
+            {"slug": "china", "nameEn": "China"},
+            {"slug": "china-zoo", "nameEn": "China Zoo"},
+        ]
+        findings = BUILDER.find_duplicate_places(places)
+        self.assertEqual(len(findings), 2, findings)
+        self.assertIn("chengdu-base and coarse-1", findings[0])
+        self.assertIn("zoo-a and zoo-b look like one place (same map point)", findings[1])
+
 
 class RenderMigrationTests(unittest.TestCase):
+    def test_merges_legacy_slugs_before_updating_places(self) -> None:
+        content = copy.deepcopy(VALID)
+        content["institutions"][0]["places"][0]["legacySlugs"] = ["old-zoo", "older-zoo"]
+        sql = BUILDER.render_migration(content)
+        merge = "select place.merge_place('old-zoo', 'sample-zoo');"
+        self.assertIn(merge, sql)
+        self.assertIn("select place.merge_place('older-zoo', 'sample-zoo');", sql)
+        self.assertLess(sql.index(merge), sql.index("insert into place.institutions"))
+        self.assertNotIn("merge_place", BUILDER.render_migration(VALID))
+
     def test_upserts_institutions_and_updates_only_facility_places(self) -> None:
         sql = BUILDER.render_migration(VALID)
         self.assertIn("on conflict (slug) do update", sql)

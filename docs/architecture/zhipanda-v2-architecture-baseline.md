@@ -582,7 +582,7 @@ Two Workers are deployed units: the Web Worker (`apps/web`) and the API Worker (
 
 `GET /ready` performs a bounded DB readiness probe through the real request connection path and returns 503 when the DB dependency is unavailable.
 
-`GET /health/async` reads the async downstream heartbeat and returns 503 once no Cron Trigger cycle has completed every stage for more than 20 minutes, or while a dead-lettered message waits for an operator. It is separate from `/ready` because a stalled background cycle does not stop the API serving requests; it exists for the external production probe.
+`GET /health/async` reads the async downstream heartbeat and returns 503 once no Cron Trigger cycle has completed every stage for more than 60 minutes (four missed fifteen-minute cycles), or while a dead-lettered message waits for an operator. It is separate from `/ready` because a stalled background cycle does not stop the API serving requests; it exists for the external production probe.
 
 Publication suspension is not infrastructure un-readiness.
 

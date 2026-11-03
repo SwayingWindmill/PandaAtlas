@@ -126,7 +126,7 @@ export default function CollectScreen() {
               placeholder="新合集的名字"
               placeholderTextColor={muted}
               accessibilityLabel="新合集的名字"
-              className="h-12 rounded-full border-hairline border-input px-5 text-base text-foreground"
+              className="h-12 rounded-full border-hairline border-input px-5 text-body text-foreground"
             />
             <Button className="self-start" onPress={() => void createWithPanda()} disabled={!collectionName(name)}>
               <Text>新建并加入</Text>

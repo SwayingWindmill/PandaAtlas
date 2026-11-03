@@ -10,6 +10,7 @@ const panda = (id: string, birthDate: string | null, place: string | null, decea
   birthDate,
   deceased,
   place,
+  placeId: null,
   area: null,
   terms: [],
 });

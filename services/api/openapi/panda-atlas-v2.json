@@ -97,295 +97,6 @@
         ]
       }
     },
-    "/api/v2/staff/invitations": {
-      "get": {
-        "operationId": "listStaffInvitations",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StaffInvitationDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Staff IAM"
-        ]
-      },
-      "post": {
-        "operationId": "inviteStaffReviewer",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InviteReviewerDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IssuedStaffInvitationDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Staff IAM"
-        ]
-      }
-    },
-    "/api/v2/me/staff-invitation/accept": {
-      "post": {
-        "operationId": "acceptStaffReviewerInvitation",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AcceptedInvitationDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Staff IAM"
-        ]
-      }
-    },
-    "/api/v2/staff/accounts": {
-      "get": {
-        "operationId": "listStaffAccounts",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StaffAccountSummaryDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Staff IAM"
-        ]
-      }
-    },
-    "/api/v2/staff/accounts/catalog": {
-      "get": {
-        "operationId": "listDelegableStaffRoles",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StaffRoleCatalogDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Staff IAM"
-        ]
-      }
-    },
-    "/api/v2/staff/accounts/{accountId}": {
-      "get": {
-        "operationId": "getStaffAccountRoles",
-        "parameters": [
-          {
-            "name": "accountId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StaffAccountDetailDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Staff IAM"
-        ]
-      }
-    },
-    "/api/v2/staff/accounts/{accountId}/state": {
-      "post": {
-        "operationId": "changeStaffAccountState",
-        "parameters": [
-          {
-            "name": "accountId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StaffStateChangeDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StaffStateChangeResultDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Staff IAM"
-        ]
-      }
-    },
-    "/api/v2/staff/accounts/{accountId}/roles": {
-      "post": {
-        "operationId": "grantStaffRole",
-        "parameters": [
-          {
-            "name": "accountId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GrantStaffRoleDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StaffRoleChangeResultDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Staff IAM"
-        ]
-      }
-    },
-    "/api/v2/staff/accounts/{accountId}/roles/{assignmentId}/revoke": {
-      "post": {
-        "operationId": "revokeStaffRole",
-        "parameters": [
-          {
-            "name": "accountId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "assignmentId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RevokeStaffRoleDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StaffRoleChangeResultDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Staff IAM"
-        ]
-      }
-    },
     "/api/v2/contributions": {
       "post": {
         "operationId": "submitContribution",
@@ -1247,6 +958,149 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DeletedSeenPandaDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/daily-checkins": {
+      "get": {
+        "operationId": "getDailyCheckins",
+        "parameters": [
+          {
+            "name": "today",
+            "required": true,
+            "in": "query",
+            "description": "The member's local calendar date.",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyCheckinSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "post": {
+        "operationId": "recordDailyCheckin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DailyCheckinTodayDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyCheckinSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/daily-checkins/leave/{day}": {
+      "put": {
+        "operationId": "takeDailyLeave",
+        "parameters": [
+          {
+            "name": "day",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DailyCheckinTodayDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyCheckinSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "delete": {
+        "operationId": "cancelDailyLeave",
+        "parameters": [
+          {
+            "name": "day",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "today",
+            "required": true,
+            "in": "query",
+            "description": "The member's local calendar date.",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyCheckinSummaryDto"
                 }
               }
             }
@@ -2389,6 +2243,85 @@
         ]
       }
     },
+    "/api/v2/learning": {
+      "get": {
+        "operationId": "getLearningCatalog",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LearningCatalogDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The stored learning catalog is missing or invalid."
+          }
+        },
+        "summary": "Published 科普 cards, topics, terms, face guides and face challenges",
+        "tags": [
+          "Learning"
+        ]
+      }
+    },
+    "/api/v2/ask/status": {
+      "get": {
+        "operationId": "getAskStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AskStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Whether Ask Panda is on and how many questions are left today",
+        "tags": [
+          "Ask"
+        ]
+      }
+    },
+    "/api/v2/ask": {
+      "post": {
+        "operationId": "askPanda",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AskQuestionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AskAnswerDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Answer a panda question from Zhipanda's published material, with sources",
+        "tags": [
+          "Ask"
+        ]
+      }
+    },
     "/api/v2/updates": {
       "get": {
         "operationId": "listUpdates",
@@ -2875,387 +2808,6 @@
         "required": [
           "nickname",
           "bio"
-        ]
-      },
-      "StaffInvitationDto": {
-        "type": "object",
-        "properties": {
-          "invitationId": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "invitationId",
-          "email",
-          "status",
-          "createdAt"
-        ]
-      },
-      "InviteReviewerDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "example": "reviewer@example.com"
-          }
-        },
-        "required": [
-          "email"
-        ]
-      },
-      "IssuedStaffInvitationDto": {
-        "type": "object",
-        "properties": {
-          "invitationId": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "invitationId",
-          "email",
-          "status"
-        ]
-      },
-      "AcceptedInvitationDto": {
-        "type": "object",
-        "properties": {
-          "accountId": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "accountId",
-          "status"
-        ]
-      },
-      "StaffAccountSummaryDto": {
-        "type": "object",
-        "properties": {
-          "accountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "email": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "state": {
-            "type": "string"
-          },
-          "roles": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "accountId",
-          "email",
-          "state",
-          "roles"
-        ]
-      },
-      "StaffRoleCatalogDto": {
-        "type": "object",
-        "properties": {
-          "roleKey": {
-            "type": "string"
-          },
-          "displayName": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "roleKey",
-          "displayName",
-          "description"
-        ]
-      },
-      "StaffAssignmentDto": {
-        "type": "object",
-        "properties": {
-          "assignmentId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "roleKey": {
-            "type": "string"
-          },
-          "roleName": {
-            "type": "string"
-          },
-          "assignedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "assignedBy": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "reason": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "active",
-              "revoked",
-              "expired"
-            ]
-          },
-          "revokedAt": {
-            "format": "date-time",
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "revokedBy": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "revocationReason": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
-        },
-        "required": [
-          "assignmentId",
-          "roleKey",
-          "roleName",
-          "assignedAt",
-          "assignedBy",
-          "reason",
-          "status",
-          "revokedAt",
-          "revokedBy",
-          "revocationReason"
-        ]
-      },
-      "StaffAccountStateHistoryDto": {
-        "type": "object",
-        "properties": {
-          "eventId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "previousState": {
-            "type": "string"
-          },
-          "nextState": {
-            "type": "string"
-          },
-          "actorId": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "reason": {
-            "type": "string"
-          },
-          "occurredAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "eventId",
-          "previousState",
-          "nextState",
-          "actorId",
-          "reason",
-          "occurredAt"
-        ]
-      },
-      "StaffAccountDetailDto": {
-        "type": "object",
-        "properties": {
-          "accountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "email": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "state": {
-            "type": "string"
-          },
-          "stateReason": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "assignments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/StaffAssignmentDto"
-            }
-          },
-          "capabilities": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "stateHistory": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/StaffAccountStateHistoryDto"
-            }
-          }
-        },
-        "required": [
-          "accountId",
-          "email",
-          "state",
-          "stateReason",
-          "assignments",
-          "capabilities",
-          "stateHistory"
-        ]
-      },
-      "StaffStateChangeDto": {
-        "type": "object",
-        "properties": {
-          "reason": {
-            "type": "string",
-            "example": "Reviewed the staff responsibility change with the archive lead"
-          },
-          "idempotencyKey": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "action": {
-            "type": "string",
-            "enum": [
-              "suspend",
-              "reinstate"
-            ]
-          }
-        },
-        "required": [
-          "reason",
-          "idempotencyKey",
-          "action"
-        ]
-      },
-      "StaffStateChangeResultDto": {
-        "type": "object",
-        "properties": {
-          "accountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "state": {
-            "type": "string",
-            "enum": [
-              "active",
-              "suspended"
-            ]
-          }
-        },
-        "required": [
-          "accountId",
-          "state"
-        ]
-      },
-      "GrantStaffRoleDto": {
-        "type": "object",
-        "properties": {
-          "reason": {
-            "type": "string",
-            "example": "Reviewed the staff responsibility change with the archive lead"
-          },
-          "idempotencyKey": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "roleKey": {
-            "type": "string",
-            "example": "reviewer"
-          }
-        },
-        "required": [
-          "reason",
-          "idempotencyKey",
-          "roleKey"
-        ]
-      },
-      "StaffRoleChangeResultDto": {
-        "type": "object",
-        "properties": {
-          "assignmentId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "roleKey": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "active",
-              "revoked"
-            ]
-          }
-        },
-        "required": [
-          "assignmentId",
-          "roleKey",
-          "status"
-        ]
-      },
-      "RevokeStaffRoleDto": {
-        "type": "object",
-        "properties": {
-          "reason": {
-            "type": "string",
-            "example": "Reviewed the staff responsibility change with the archive lead"
-          },
-          "idempotencyKey": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "required": [
-          "reason",
-          "idempotencyKey"
         ]
       },
       "ContributionAssertionDto": {
@@ -4269,6 +3821,151 @@
           "deleted"
         ]
       },
+      "DailyCheckinRulesDto": {
+        "type": "object",
+        "properties": {
+          "leaveDaysPerMonth": {
+            "type": "number",
+            "description": "Leave days (请假) per calendar month, retroactive leave included."
+          },
+          "retroLeavesPerMonth": {
+            "type": "number",
+            "description": "Retroactive leaves (补请) per calendar month."
+          },
+          "retroWindowHours": {
+            "type": "number",
+            "description": "Hours after a missed day during which 补请 stays open."
+          },
+          "leaveAheadDays": {
+            "type": "number",
+            "description": "How many days ahead a leave can be planned."
+          }
+        },
+        "required": [
+          "leaveDaysPerMonth",
+          "retroLeavesPerMonth",
+          "retroWindowHours",
+          "leaveAheadDays"
+        ]
+      },
+      "DailyCheckinMonthDto": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "example": "2026-10"
+          },
+          "visitDays": {
+            "type": "number"
+          },
+          "leaveDays": {
+            "type": "number"
+          },
+          "leaveLeft": {
+            "type": "number"
+          },
+          "retroLeft": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "month",
+          "visitDays",
+          "leaveDays",
+          "leaveLeft",
+          "retroLeft"
+        ]
+      },
+      "DailyCheckinDayDto": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string",
+            "format": "date"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "visit",
+              "leave"
+            ]
+          },
+          "retroactive": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "day",
+          "kind",
+          "retroactive"
+        ]
+      },
+      "DailyCheckinSummaryDto": {
+        "type": "object",
+        "properties": {
+          "today": {
+            "type": "string",
+            "format": "date"
+          },
+          "rules": {
+            "$ref": "#/components/schemas/DailyCheckinRulesDto"
+          },
+          "visitedToday": {
+            "type": "boolean"
+          },
+          "totalVisitDays": {
+            "type": "number",
+            "description": "All visit days ever. Never resets."
+          },
+          "firstDay": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "thisMonth": {
+            "$ref": "#/components/schemas/DailyCheckinMonthDto"
+          },
+          "retroDay": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "The missed day 补请 can still cover."
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyCheckinDayDto"
+            }
+          }
+        },
+        "required": [
+          "today",
+          "rules",
+          "visitedToday",
+          "totalVisitDays",
+          "firstDay",
+          "thisMonth",
+          "retroDay",
+          "days"
+        ]
+      },
+      "DailyCheckinTodayDto": {
+        "type": "object",
+        "properties": {
+          "today": {
+            "type": "string",
+            "format": "date",
+            "description": "The member's local calendar date."
+          }
+        },
+        "required": [
+          "today"
+        ]
+      },
       "RandomPandaDto": {
         "type": "object",
         "properties": {
@@ -5253,6 +4950,13 @@
                 "$ref": "#/components/schemas/FacilityVisitGuideDto"
               }
             ]
+          },
+          "legacySlugs": {
+            "description": "Slugs of duplicate places merged into this one; a request for one of them returns this place.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -5917,6 +5621,661 @@
           "reason",
           "resourceKind",
           "resourceId"
+        ]
+      },
+      "LearningTextDto": {
+        "type": "object",
+        "properties": {
+          "zh": {
+            "type": "string"
+          },
+          "en": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "zh",
+          "en"
+        ]
+      },
+      "LearningArticleParagraphDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "text",
+          "refs"
+        ]
+      },
+      "LearningArticleSectionDto": {
+        "type": "object",
+        "properties": {
+          "heading": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "paragraphs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleParagraphDto"
+            }
+          }
+        },
+        "required": [
+          "heading",
+          "paragraphs"
+        ]
+      },
+      "LearningArticleBodyDto": {
+        "type": "object",
+        "properties": {
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleSectionDto"
+            }
+          }
+        },
+        "required": [
+          "sections"
+        ]
+      },
+      "LearningArticleFactDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "text",
+          "refs"
+        ]
+      },
+      "LearningArticleImageDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "hero",
+              "inline",
+              "compare"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "existing",
+              "wanted"
+            ]
+          },
+          "pandaSlug": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "asset": {
+            "type": "string"
+          },
+          "credit": {
+            "type": "string"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "shot": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          }
+        },
+        "required": [
+          "role",
+          "type",
+          "pandaSlug",
+          "caption"
+        ]
+      },
+      "LearningArticleReferenceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "citedOn": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "publisher",
+          "url",
+          "citedOn"
+        ]
+      },
+      "LearningArticleDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "外形与识别",
+              "食性",
+              "繁殖与成长",
+              "保护"
+            ]
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "dek": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "pullQuote": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "body": {
+            "$ref": "#/components/schemas/LearningArticleBodyDto"
+          },
+          "keyFacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleFactDto"
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleImageDto"
+            }
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleReferenceDto"
+            }
+          },
+          "relatedArticles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "category",
+          "title",
+          "dek",
+          "pullQuote",
+          "body",
+          "keyFacts",
+          "images",
+          "references",
+          "relatedArticles"
+        ]
+      },
+      "LearningSourceDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "citedOn": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "title",
+          "url",
+          "citedOn"
+        ]
+      },
+      "LearningCardDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "body": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningSourceDto"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "summary",
+          "body",
+          "sources"
+        ]
+      },
+      "LearningTopicSectionDto": {
+        "type": "object",
+        "properties": {
+          "heading": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "body": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          }
+        },
+        "required": [
+          "heading",
+          "body"
+        ]
+      },
+      "LearningTopicDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningTopicSectionDto"
+            }
+          },
+          "cardSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningSourceDto"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "summary",
+          "sections",
+          "cardSlugs",
+          "sources"
+        ]
+      },
+      "LearningTermDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "term": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "definition": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "relatedSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningSourceDto"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "term",
+          "definition",
+          "relatedSlugs",
+          "sources"
+        ]
+      },
+      "LearningFaceTipDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "shape",
+              "leftRight",
+              "eyePatches",
+              "ears"
+            ]
+          },
+          "label": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "body": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "body"
+        ]
+      },
+      "LearningFaceGuideDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "pandaSlug": {
+            "type": "string",
+            "description": "Canonical slug of a published panda. The photo comes from that panda's media."
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "tips": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningFaceTipDto"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningSourceDto"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "pandaSlug",
+          "title",
+          "tips",
+          "sources"
+        ]
+      },
+      "LearningChallengeDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "answerPandaSlug": {
+            "type": "string"
+          },
+          "decoyPandaSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "prompt": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "tip": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningSourceDto"
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "answerPandaSlug",
+          "decoyPandaSlugs",
+          "prompt",
+          "tip",
+          "sources"
+        ]
+      },
+      "LearningCatalogDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "example": "2026.10.29.2"
+          },
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningArticleDto"
+            }
+          },
+          "cards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningCardDto"
+            }
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningTopicDto"
+            }
+          },
+          "terms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningTermDto"
+            }
+          },
+          "faceGuides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningFaceGuideDto"
+            }
+          },
+          "challenges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningChallengeDto"
+            }
+          }
+        },
+        "required": [
+          "version",
+          "articles",
+          "cards",
+          "topics",
+          "terms",
+          "faceGuides",
+          "challenges"
+        ]
+      },
+      "AskStatusDto": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "dailyLimit": {
+            "type": "number",
+            "minimum": 0
+          },
+          "remainingToday": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "enabled",
+          "dailyLimit",
+          "remainingToday"
+        ]
+      },
+      "AskQuestionDto": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "The question. It is answered and then discarded; it is never stored."
+          }
+        },
+        "required": [
+          "question"
+        ]
+      },
+      "AskReferenceDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "title",
+          "publisher",
+          "url"
+        ]
+      },
+      "AskLinkDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "article",
+              "card",
+              "topic",
+              "term",
+              "faceGuide",
+              "challenge",
+              "panda",
+              "learn"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "appPath": {
+            "type": "string",
+            "description": "A path inside the app, such as /learn/articles/bamboo."
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AskReferenceDto"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "title",
+          "appPath",
+          "references"
+        ]
+      },
+      "AskAnswerDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "answer",
+              "refusal",
+              "identification"
+            ]
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "zh",
+              "en"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "description": "The answer, or why there is none."
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "noMatch",
+              "unsafe",
+              "unavailable"
+            ]
+          },
+          "links": {
+            "description": "Pages the answer came from, or where to read instead.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AskLinkDto"
+            }
+          },
+          "remainingToday": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "kind",
+          "locale",
+          "text",
+          "links",
+          "remainingToday"
         ]
       },
       "UpdateTargetDto": {

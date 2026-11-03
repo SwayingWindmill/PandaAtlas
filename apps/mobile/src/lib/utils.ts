@@ -7,7 +7,30 @@ import { extendTailwindMerge } from "tailwind-merge";
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
-      "font-size": [{ text: ["display"] }],
+      "font-size": [
+        {
+          text: [
+            "display",
+            "title",
+            "subheadline",
+            "reading-title",
+            "reading-heading",
+            "reading-lead",
+            "reading-body",
+            "reading-caption",
+            "large-title",
+            "title1",
+            "title2",
+            "title3",
+            "headline",
+            "body",
+            "callout",
+            "subhead",
+            "footnote",
+            "caption",
+          ],
+        },
+      ],
       "border-w": [{ border: ["hairline"] }],
       "border-w-t": [{ "border-t": ["hairline"] }],
       "border-w-b": [{ "border-b": ["hairline"] }],

@@ -1,11 +1,17 @@
+import { queryOptions } from "@tanstack/react-query";
 import type { components } from "@zhipanda/api-client";
 
+import { localToday } from "@/features/engagement/seen";
 import { type Family, familyOf } from "@/features/family/family";
 import { loadInstitutionList } from "@/features/institutions/institutions";
+import { memoryPlaces } from "@/features/on-this-day/load";
+import { type Memory, memoriesOn } from "@/features/on-this-day/on-this-day";
 import { currentPlaceId, loadPlaces, placeName } from "@/features/pandas/pandas";
-import { type PlaceLived, infobox, placesLived } from "@/features/pandas/profile-facts";
-import { api, publicMediaUrl } from "@/lib/api";
+import { type PlaceLived, type Stat, headlineStats, infobox, placesLived } from "@/features/pandas/profile-facts";
+import { publicMediaUrl } from "@/lib/api";
+import { describeEvent } from "@/features/timeline/timeline";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
+import { loadPandaDetail } from "@/lib/public-panda";
 
 type Schemas = components["schemas"];
 type LifeEvent = Schemas["PublicLifeEventSummaryDto"];
@@ -19,7 +25,14 @@ export interface Profile {
   /** Cover first; empty when no photo is published. */
   photos: Photo[];
   facts: { label: string; value: string }[];
+  /** Sex, age and where it lives (or when it died): the stat blocks under the name. */
+  stats: Stat[];
   events: { id: string; date: string; text: string }[];
+  /**
+   * What happened on this day in an earlier year, from its own dated and sourced records. Shown here even
+   * for a panda that has died, as 纪念 (DECEASED_POLICY); 少显示 on 今天 does not reach its own page.
+   */
+  memories: Memory[];
   /** Null when the lineage could not be loaded; the rest of the profile still shows. */
   family: Family | null;
   /** Every place it has lived, newest first. */
@@ -66,28 +79,6 @@ function shortDate(event: DatedEvent): string {
   return event.occurredPrecision === "year" || !month ? year : `${year}.${Number(month)}`;
 }
 
-function eventText(event: LifeEvent, place: (id: string | undefined) => string | null): string | null {
-  const to = place(event.toPlaceId);
-  switch (event.eventType) {
-    case "birth":
-      return to ? `在${to}出生` : "出生";
-    case "arrival":
-      return to ? `抵达${to}` : "抵达";
-    case "transfer":
-      return to ? `搬到${to}` : "迁居";
-    case "return":
-      return to ? `回国，住进${to}` : "回国";
-    case "public_debut":
-      return to ? `在${to}首次亮相` : "首次亮相";
-    case "naming":
-      return "命名";
-    case "death":
-      return "离世";
-    default:
-      return null;
-  }
-}
-
 /** The panda's photos for viewing: cover first, then display order; evidence images are not photos of it. */
 export function photosOf(media: Schemas["PublicMediaSummaryDto"][]): Photo[] {
   const seen = new Set<string>();
@@ -102,15 +93,29 @@ export function photosOf(media: Schemas["PublicMediaSummaryDto"][]): Photo[] {
 }
 
 export async function loadPhotos(slug: string): Promise<Photo[]> {
-  const detail = await api.GET("/api/v2/pandas/{slug}", { params: { path: { slug } } });
-  if (!detail.data) throw new Error(`Panda ${slug} unavailable`);
-  return photosOf(detail.data.media);
+  const detail = await loadPandaDetail(slug);
+  return photosOf(detail.media);
 }
 
+export const photosQueryOptions = (slug: string) =>
+  queryOptions({
+    queryKey: ["public", "photos", slug],
+    queryFn: () => loadPhotos(slug),
+    staleTime: 300_000,
+    networkMode: "always",
+  });
+
+export const profileQueryOptions = (slug: string) =>
+  queryOptions({
+    queryKey: ["public", "profile", slug],
+    queryFn: () => loadProfile(slug),
+    staleTime: 60_000,
+    networkMode: "always",
+  });
+
 export async function loadProfile(slug: string): Promise<Profile> {
-  const [detail, places] = await Promise.all([api.GET("/api/v2/pandas/{slug}", { params: { path: { slug } } }), loadPlaces()]);
-  if (!detail.data) throw new Error(`Panda ${slug} unavailable`);
-  const { panda, residencies, events, media, evidence } = detail.data;
+  const [detail, places] = await Promise.all([loadPandaDetail(slug), loadPlaces()]);
+  const { panda, residencies, events, media, evidence } = detail;
   const place = (id: string | undefined) => placeName(id ? places.get(id) : undefined);
 
   const sex = pandaSex(panda);
@@ -119,8 +124,11 @@ export async function loadProfile(slug: string): Promise<Profile> {
   const deathDate = panda.facts.find((fact) => fact.fieldKey === "death_date")?.value;
   const currentPlaceRecord = deceased ? undefined : places.get(currentPlaceId(residencies) ?? "");
   const currentPlace = placeName(currentPlaceRecord);
-  const family = await familyOf(detail.data).catch(() => null);
-  const birth = events.find((event) => event.eventType === "birth" && event.eventStatus === "completed");
+  const family = await familyOf(detail).catch(() => null);
+  // A birth event also names the mother; hers is not where she was born.
+  const birth = events.find(
+    (event) => event.eventStatus === "completed" && describeEvent(event, place, birthDate)?.kind === "birth",
+  );
   const facts = infobox({
     sex,
     birthDate,
@@ -139,14 +147,31 @@ export async function loadProfile(slug: string): Promise<Profile> {
     deceased,
     photos: photosOf(media),
     facts,
+    stats: headlineStats({
+      sex,
+      birthDate,
+      deceased,
+      deathDate: typeof deathDate === "string" ? deathDate : null,
+      currentPlace,
+      today: localToday(),
+    }),
     // Only what happened: an announced plan is not part of the panda's life yet.
     events: events
       .filter((event): event is DatedEvent => event.eventStatus === "completed" && Boolean(event.occurredOn))
       .sort((a, b) => a.occurredOn.localeCompare(b.occurredOn))
       .flatMap((event) => {
-        const text = eventText(event, place);
-        return text ? [{ id: event.eventId, date: shortDate(event), text }] : [];
+        const told = describeEvent(event, place, birthDate);
+        return told ? [{ id: event.eventId, date: shortDate(event), text: told.text }] : [];
       }),
+    memories: memoriesOn({
+      today: localToday(),
+      pandas: [{ id: panda.pandaId, slug: panda.canonicalSlug, name: displayName(panda), birthDate, deceased }],
+      events,
+      residencies,
+      places: memoryPlaces(places),
+      pandaId: panda.pandaId,
+      includeDeceased: true,
+    }),
     family,
     placesLived: placesLived(residencies, (id) => place(id)),
     visit: await visitOf(currentPlaceRecord),

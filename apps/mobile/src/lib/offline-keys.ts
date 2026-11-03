@@ -9,6 +9,7 @@ const LISTS = new Set([
   "/api/v2/life-events",
   "/api/v2/institutions",
   "/api/v2/updates",
+  "/api/v2/learning",
 ]);
 const PAGE = /^\/api\/v2\/(pandas|institutions)\/[^/]+$/;
 

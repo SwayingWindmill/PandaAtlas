@@ -6,7 +6,7 @@ export default defineConfig(() => ({
       name: "zhipanda-v2-api",
       entrypoint: "./worker/index.mjs",
       domains: ["api.zhipanda.com"],
-      triggers: [triggers.scheduled({ schedule: "*/5 * * * *" })],
+      triggers: [triggers.scheduled({ schedule: "*/15 * * * *" })],
       workersDev: false,
       // Run next to the only back end: Supabase Postgres in AWS ap-northeast-1 (Tokyo).
       placement: { region: "aws:ap-northeast-1" },
@@ -22,6 +22,18 @@ export default defineConfig(() => ({
         // ctx.props on this binding is what authorizes the Web Worker to purge its public page cache.
         PUBLIC_WEB: bindings.worker({ worker: "zhipanda-v2-web", props: { publicCachePurge: true } }),
         HYPERDRIVE: bindings.hyperdrive({ id: "988de17966ba42dd81bca021c134925a" }),
+        // 问问熊猫 (POST /api/v2/ask). Off in production until it is reviewed; flip to "true" to open it,
+        // back to "false" to close it again (the kill switch).
+        ASK_ENABLED: bindings.text("false"),
+        // The most questions the whole app answers in one Beijing day. AI Search includes 1,000
+        // semantic queries a month, so 30 a day keeps the instance inside its included allowance.
+        ASK_GLOBAL_DAILY_CAP: bindings.text("30"),
+        // Workers AI, called through the AI Gateway zhipanda-ask (spend limit, rate limit, retries).
+        AI: bindings.ai(),
+        // The AI Search instance holding published learning and sourced panda facts.
+        AI_SEARCH: bindings.aiSearch({ name: "zhipanda-knowledge" }),
+        // Five questions a minute per client address; the per-account daily quota lives in Postgres.
+        ASK_RATE_LIMIT: bindings.rateLimit({ namespace: "1001", simple: { limit: 5, period: 60 } }),
       },
     },
   }));

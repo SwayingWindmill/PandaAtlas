@@ -56,8 +56,8 @@ test("production API CORS allows only the custom-domain Web origins", () => {
   assert.deepEqual(binding.value.split(","), ["https://zhipanda.com", "https://www.zhipanda.com"]);
 });
 
-test("the production API runs async downstream from a five-minute Cron Trigger", () => {
-  assert.deepEqual(workers.api.triggers, [{ type: "scheduled", schedule: "*/5 * * * *" }]);
+test("the production API runs async downstream from a fifteen-minute Cron Trigger", () => {
+  assert.deepEqual(workers.api.triggers, [{ type: "scheduled", schedule: "*/15 * * * *" }]);
   assert.equal("CRON_SECRET" in workers.api.env, false);
 });
 

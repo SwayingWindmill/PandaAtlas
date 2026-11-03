@@ -324,6 +324,12 @@ export class PublicPlaceSummaryDto {
 
   @ApiPropertyOptional({ type: () => FacilityVisitGuideDto, description: "How to see the pandas here; facilities only." })
   public declare visitGuide?: FacilityVisitGuideDto;
+
+  @ApiPropertyOptional({
+    type: [String],
+    description: "Slugs of duplicate places merged into this one; a request for one of them returns this place.",
+  })
+  public declare legacySlugs?: string[];
 }
 
 export class PublicInstitutionSummaryDto {

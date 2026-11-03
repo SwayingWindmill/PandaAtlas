@@ -25,6 +25,15 @@ export interface EngagementCollections {
   updated_at: Generated<Timestamp>;
 }
 
+export interface EngagementDailyCheckins {
+  account_id: string;
+  checkin_on: string;
+  created_at: Generated<Timestamp>;
+  kind: string;
+  retroactive: Generated<boolean>;
+  updated_at: Generated<Timestamp>;
+}
+
 export interface EngagementFavorites {
   account_id: string;
   favorited_at: Generated<Timestamp>;
@@ -54,6 +63,7 @@ export interface EngagementSeenPandas {
 export interface DB {
   "engagement.collection_pandas": EngagementCollectionPandas;
   "engagement.collections": EngagementCollections;
+  "engagement.daily_checkins": EngagementDailyCheckins;
   "engagement.favorites": EngagementFavorites;
   "engagement.location_checkins": EngagementLocationCheckins;
   "engagement.seen_pandas": EngagementSeenPandas;

@@ -11,8 +11,8 @@ import { AsyncDownstreamHeartbeat } from "../integration/async-downstream-heartb
 import { IntegrationDeadLetters } from "../integration/integration-dead-letters.js";
 import { READINESS_PROBE, type ReadinessProbe } from "./readiness.js";
 
-// The Cron Trigger runs every five minutes, so four missed cycles mean async downstream has stalled.
-const ASYNC_DOWNSTREAM_STALL_SECONDS = 20 * 60;
+// The Cron Trigger runs every fifteen minutes, so four missed cycles mean async downstream has stalled.
+const ASYNC_DOWNSTREAM_STALL_SECONDS = 60 * 60;
 
 @Public()
 @Controller()

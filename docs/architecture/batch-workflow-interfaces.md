@@ -22,7 +22,6 @@ The workflow is manual-only. Its default behavior is to validate the catalog and
 | `curation.apply` | Planned | Authoritative write | `production-batch` |
 | `media.process` | Ready | Generated output | No |
 | `media.publish` | Planned | External write | `production-batch` |
-| `release.build` | Ready | Production write | `production-batch` |
 | `release.publish` | Ready | Production write | `production-batch` |
 | `recovery.drill` | Planned | Isolated state | No |
 
@@ -54,7 +53,7 @@ The ready adapters:
 - `research.validate` runs the research-script policy checker;
 - `curation.validate` validates reviewed curation records;
 - `media.process` creates isolated local media derivatives with network access disabled by default;
-- `release.build` and `release.publish` run `services/api/dist/release-command.js` against the production database with a manifest from `data/release-manifests/` ([contract](../../contracts/release-manifest.v1.json)). Build creates the not-yet-public release and reports its counts and every change against the current release; publish seals and activates exactly that release, or moves the pointer back to an older sealed one, then waits until `api.zhipanda.com` serves it. Both reuse the API's publication module, record the system actor `release-batch-workflow` with the manifest reason, change reference and run URL, and report rather than repeat a step that already happened. The procedure is in the [production release runbook](../runbooks/production-release.md#publish-a-content-release).
+- `release.publish` runs `services/api/dist/release-command.js` against the production database with a manifest from `data/release-manifests/` ([contract](../../contracts/release-manifest.v1.json)). A publish manifest builds, seals and activates the release in one run and reports its counts and every change against the release it replaced; a rollback manifest moves the pointer back to an older sealed one. It then waits until `api.zhipanda.com` serves the version. It reuses the API's publication module, records the system actor `release-batch-workflow` with the manifest reason, change reference and run URL, and reports rather than repeats a step that already happened. The procedure is in the [production release runbook](../runbooks/production-release.md#publish-a-content-release).
 
 The interface does not expose cohort-specific curation apply scripts, source-specific media upload scripts, or environment-specific recovery commands as generic operations.
 

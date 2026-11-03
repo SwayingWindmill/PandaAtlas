@@ -146,6 +146,18 @@ describe("buildPlacePage", () => {
     });
   });
 
+  it("opens the surviving place for a merged duplicate's old slug", () => {
+    const page = buildPlacePage(
+      "ccrcgp-yaan-base",
+      [place({ slug: "ccrcgp-bifengxia-base", nameZh: "碧峰峡基地", legacySlugs: ["ccrcgp-yaan-base"] })],
+      [institution()],
+      [residency("bao", "place-1", "2020-01-01")],
+      [panda("bao", "宝")],
+    );
+    expect(page?.name).toBe("碧峰峡基地");
+    expect(page?.residents).toEqual([panda("bao", "宝")]);
+  });
+
   it("returns nothing for an unknown slug", () => {
     expect(buildPlacePage("missing", [], [], [], [])).toBeNull();
   });

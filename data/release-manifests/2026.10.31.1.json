@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "version": "2026.10.31.1",
+  "action": "publish",
+  "reason": "Replaces the unpublished 2026.10.30.1 build with two owner-approved curation fixes: Yong Ba's 404 source now points to its Wayback Machine copy, and Lun Hui's English name is Lun Hui, without the unsourced Wu Wu. Same content otherwise: the merged places (#754), institution profiles and visit guides (#668, #678), and the 17 pandas with their family links, life events and residencies from 2026.07.31.1-v2-recovery that the photo-only release dropped."
+}

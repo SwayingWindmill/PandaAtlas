@@ -1,10 +1,6 @@
-import { View } from "react-native";
+import { ScreenState } from "@/components/screen-state";
 
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
-
-/** The empty-state block a screen shows when its data could not load: one short line and 重试. */
+/** A load failure: the sentence, and 重试. */
 export function LoadFailed({
   message,
   onRetry,
@@ -14,12 +10,5 @@ export function LoadFailed({
   onRetry: () => void;
   className?: string;
 }) {
-  return (
-    <View className={cn("items-start gap-3 rounded-lg bg-muted p-5", className)}>
-      <Text>{message}</Text>
-      <Button onPress={onRetry}>
-        <Text>重试</Text>
-      </Button>
-    </View>
-  );
+  return <ScreenState message={message} actionLabel="重试" onAction={onRetry} className={className} />;
 }

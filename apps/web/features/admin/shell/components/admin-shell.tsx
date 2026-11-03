@@ -39,11 +39,9 @@ function AdminShellState({ children, tone }: { children: React.ReactNode; tone: 
 
 function AdminHeader({ pathname, session }: { pathname: string; session: AdminSession }) {
   const item = adminNavigationItemForPath(pathname);
-  const parent = pathname === "/admin/staff/invitations"
-    ? { href: "/admin/staff/roles", label: "人员管理" }
-    : pathname === "/admin/security/mfa"
-      ? { href: "/admin/capabilities", label: "我的账号" }
-      : null;
+  const parent = pathname === "/admin/security/mfa"
+    ? { href: "/admin/capabilities", label: "我的账号" }
+    : null;
   return (
     <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between gap-4 border-b border-slate-200/80 bg-white/95 px-5 backdrop-blur-md md:px-7">
       <div className="flex min-w-0 items-center gap-4">

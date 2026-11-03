@@ -237,7 +237,8 @@ describe("NestJS V2 platform against local Supabase PostgreSQL", () => {
 
     expect((await injectHttp(app, { method: "GET", url: "/health/async" })).statusCode).toBe(200);
 
-    await sql`update integration.async_downstream_heartbeat set last_succeeded_at = now() - interval '30 minutes'`.execute(database.db);
+    // Past four missed fifteen-minute cycles; the stall threshold is 60 minutes.
+    await sql`update integration.async_downstream_heartbeat set last_succeeded_at = now() - interval '75 minutes'`.execute(database.db);
     const stalled = await injectHttp(app, { method: "GET", url: "/health/async" });
     expect(stalled.statusCode).toBe(503);
     expect(stalled.json()).toMatchObject({ status: 503, code: "system.dependencyUnavailable" });

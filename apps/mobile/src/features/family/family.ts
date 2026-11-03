@@ -1,7 +1,10 @@
 import type { components } from "@zhipanda/api-client";
 
+import { sourcedLinks } from "@/features/family/lineage";
 import { api, publicMediaUrl } from "@/lib/api";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
+import { loadLineage } from "@/lib/public-data";
+import { loadPandaDetail } from "@/lib/public-panda";
 
 type Schemas = components["schemas"];
 type Lineage = Schemas["PublicLineageSummaryDto"];
@@ -134,25 +137,21 @@ export function buildFamily(
 
 async function withCovers(detail: Schemas["PublicPandaDetailDto"], lineage: Lineage[]): Promise<Family> {
   const ids = [detail.panda, ...detail.relatives].map((panda) => panda.pandaId).slice(0, 50);
+  // The 家谱 draws a relation only when a published source backs it.
+  const links = sourcedLinks(lineage);
   // Photos are a nicety: the tree still renders with initials when covers fail.
   const covers = await api.GET("/api/v2/panda-covers", { params: { query: { ids: ids.join(",") } } }).catch(() => null);
-  return buildFamily(detail, lineage, covers?.data?.items ?? []);
+  return buildFamily(detail, links, covers?.data?.items ?? []);
 }
 
 /** The family of a panda whose detail the caller already has. */
 export async function familyOf(detail: Schemas["PublicPandaDetailDto"]): Promise<Family> {
-  const lineage = await api.GET("/api/v2/lineage");
-  if (!lineage.data) throw new Error(`Family of ${detail.panda.canonicalSlug} unavailable`);
-  return withCovers(detail, lineage.data.items);
+  return withCovers(detail, await loadLineage());
 }
 
 export async function loadFamily(slug: string): Promise<Family> {
-  const [detail, lineage] = await Promise.all([
-    api.GET("/api/v2/pandas/{slug}", { params: { path: { slug } } }),
-    api.GET("/api/v2/lineage"),
-  ]);
-  if (!detail.data || !lineage.data) throw new Error(`Family of ${slug} unavailable`);
-  return withCovers(detail.data, lineage.data.items);
+  const [detail, lineage] = await Promise.all([loadPandaDetail(slug), loadLineage()]);
+  return withCovers(detail, lineage);
 }
 
 /** Everyone in the family except the focus panda: parents, siblings in birth order, children. */

@@ -1,15 +1,15 @@
 import { Image } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
+import { useRef, useState } from "react";
 import { FlatList, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LoadFailed } from "@/components/load-failed";
-import { BackButton } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { type Photo, loadPhotos } from "@/features/pandas/profile";
+import { type Photo, photosQueryOptions } from "@/features/pandas/profile";
 
 // Swiping pages through the photos (FlatList paging works on iOS, Android and web); the buttons do the same
 // for keyboards and screen readers.
@@ -18,16 +18,10 @@ export default function PhotosScreen() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const list = useRef<FlatList<Photo>>(null);
-  const [photos, setPhotos] = useState<Photo[] | null>(null);
-  const [failed, setFailed] = useState(false);
+  const { data: photos, isError: failed, refetch } = useQuery(photosQueryOptions(slug));
   const [index, setIndex] = useState(0);
-
-  const load = useCallback(() => {
-    loadPhotos(slug)
-      .then(setPhotos)
-      .catch(() => setFailed(true));
-  }, [slug]);
-  useEffect(load, [load]);
+  // The pager's own height: a percentage height inside a horizontal list resolves to 0 on web.
+  const [pageHeight, setPageHeight] = useState(0);
 
   function go(to: number) {
     list.current?.scrollToIndex({ index: to, animated: true });
@@ -41,19 +35,18 @@ export default function PhotosScreen() {
       aria-modal
       accessibilityLabel="照片"
       className="flex-1 bg-background"
-      style={{ paddingTop: insets.top + 12, paddingBottom: insets.bottom + 12 }}
+      style={{ paddingBottom: insets.bottom + 12 }}
     >
-      <View className="flex-row items-center justify-between px-5">
-        <BackButton />
-        {photos && photos.length > 0 ? (
-          <Text className="font-bold" accessibilityLiveRegion="polite">
-            {index + 1} / {photos.length}
-          </Text>
-        ) : null}
-      </View>
-      {photos === null ? (
+      {/* The counter lives once, under the bar, where VoiceOver hears it change. */}
+      <Stack.Screen options={{ title: "照片" }} />
+      {photos && photos.length > 0 ? (
+        <Text variant="footnote" className="py-2 text-center text-muted-foreground" accessibilityLiveRegion="polite">
+          {index + 1} / {photos.length}
+        </Text>
+      ) : null}
+      {!photos ? (
         failed ? (
-          <LoadFailed message="照片暂时打不开。" onRetry={() => { setFailed(false); load(); }} className="mx-5 mt-6" />
+          <LoadFailed message="照片暂时打不开。" onRetry={() => void refetch()} className="mx-5 mt-6" />
         ) : (
           <Skeleton className="mx-5 mt-6 h-96" accessibilityLabel="正在加载照片" />
         )
@@ -73,17 +66,22 @@ export default function PhotosScreen() {
             }}
             scrollEventThrottle={16}
             className="mt-4 flex-1"
+            onLayout={(event) => setPageHeight(event.nativeEvent.layout.height)}
             renderItem={({ item, index: position }) => (
               <Image
                 source={item.url}
-                style={{ width, height: "100%" }}
+                style={{ width, height: pageHeight }}
                 contentFit="contain"
                 accessibilityLabel={`第 ${position + 1} 张照片`}
               />
             )}
           />
           <View className="gap-3 px-5 pt-4">
-            {current?.credit ? <Text variant="muted">{current.credit}</Text> : null}
+            {current?.credit ? (
+              <Text variant="footnote" className="text-muted-foreground">
+                {current.credit}
+              </Text>
+            ) : null}
             {photos.length > 1 ? (
               <View className="flex-row justify-between">
                 <Button variant="secondary" disabled={index === 0} onPress={() => go(index - 1)}>

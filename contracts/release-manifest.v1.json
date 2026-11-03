@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "title": "PandaAtlas Public Release Manifest Contract",
-  "scope": "One reviewed intent to build, publish or roll back a database public release through the release.build and release.publish batch operations",
+  "scope": "One reviewed intent to publish or roll back a database public release through the release.publish batch operation",
   "manifest_directory": "data/release-manifests",
   "required_fields": [
     "schema_version",

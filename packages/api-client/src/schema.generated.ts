@@ -52,134 +52,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/staff/invitations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listStaffInvitations"];
-        put?: never;
-        post: operations["inviteStaffReviewer"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/me/staff-invitation/accept": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["acceptStaffReviewerInvitation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/staff/accounts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listStaffAccounts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/staff/accounts/catalog": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listDelegableStaffRoles"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/staff/accounts/{accountId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getStaffAccountRoles"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/staff/accounts/{accountId}/state": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["changeStaffAccountState"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/staff/accounts/{accountId}/roles": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["grantStaffRole"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/staff/accounts/{accountId}/roles/{assignmentId}/revoke": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["revokeStaffRole"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v2/contributions": {
         parameters: {
             query?: never;
@@ -479,6 +351,38 @@ export interface paths {
         put: operations["saveSeenPanda"];
         post?: never;
         delete: operations["deleteSeenPanda"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/daily-checkins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getDailyCheckins"];
+        put?: never;
+        post: operations["recordDailyCheckin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/daily-checkins/leave/{day}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["takeDailyLeave"];
+        post?: never;
+        delete: operations["cancelDailyLeave"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1004,6 +908,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/learning": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Published 科普 cards, topics, terms, face guides and face challenges */
+        get: operations["getLearningCatalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/ask/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Whether Ask Panda is on and how many questions are left today */
+        get: operations["getAskStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/ask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Answer a panda question from Zhipanda's published material, with sources */
+        post: operations["askPanda"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/updates": {
         parameters: {
             query?: never;
@@ -1186,109 +1141,6 @@ export interface components {
         ReplaceProfileDto: {
             nickname: string;
             bio: string;
-        };
-        StaffInvitationDto: {
-            invitationId: string;
-            email: string;
-            status: string;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        InviteReviewerDto: {
-            /** @example reviewer@example.com */
-            email: string;
-        };
-        IssuedStaffInvitationDto: {
-            invitationId: string;
-            email: string;
-            status: string;
-        };
-        AcceptedInvitationDto: {
-            accountId: string;
-            status: string;
-        };
-        StaffAccountSummaryDto: {
-            /** Format: uuid */
-            accountId: string;
-            email: string | null;
-            state: string;
-            roles: string[];
-        };
-        StaffRoleCatalogDto: {
-            roleKey: string;
-            displayName: string;
-            description: string;
-        };
-        StaffAssignmentDto: {
-            /** Format: uuid */
-            assignmentId: string;
-            roleKey: string;
-            roleName: string;
-            /** Format: date-time */
-            assignedAt: string;
-            assignedBy: string | null;
-            reason: string;
-            /** @enum {string} */
-            status: "active" | "revoked" | "expired";
-            /** Format: date-time */
-            revokedAt: string | null;
-            revokedBy: string | null;
-            revocationReason: string | null;
-        };
-        StaffAccountStateHistoryDto: {
-            /** Format: uuid */
-            eventId: string;
-            previousState: string;
-            nextState: string;
-            actorId: string | null;
-            reason: string;
-            /** Format: date-time */
-            occurredAt: string;
-        };
-        StaffAccountDetailDto: {
-            /** Format: uuid */
-            accountId: string;
-            email: string | null;
-            state: string;
-            stateReason: string | null;
-            assignments: components["schemas"]["StaffAssignmentDto"][];
-            capabilities: string[];
-            stateHistory: components["schemas"]["StaffAccountStateHistoryDto"][];
-        };
-        StaffStateChangeDto: {
-            /** @example Reviewed the staff responsibility change with the archive lead */
-            reason: string;
-            /** Format: uuid */
-            idempotencyKey: string;
-            /** @enum {string} */
-            action: "suspend" | "reinstate";
-        };
-        StaffStateChangeResultDto: {
-            /** Format: uuid */
-            accountId: string;
-            /** @enum {string} */
-            state: "active" | "suspended";
-        };
-        GrantStaffRoleDto: {
-            /** @example Reviewed the staff responsibility change with the archive lead */
-            reason: string;
-            /** Format: uuid */
-            idempotencyKey: string;
-            /** @example reviewer */
-            roleKey: string;
-        };
-        StaffRoleChangeResultDto: {
-            /** Format: uuid */
-            assignmentId: string;
-            roleKey: string;
-            /** @enum {string} */
-            status: "active" | "revoked";
-        };
-        RevokeStaffRoleDto: {
-            /** @example Reviewed the staff responsibility change with the archive lead */
-            reason: string;
-            /** Format: uuid */
-            idempotencyKey: string;
         };
         ContributionAssertionDto: {
             assertionKey: string;
@@ -1563,6 +1415,55 @@ export interface components {
             pandaId: string;
             /** @enum {boolean} */
             deleted: true;
+        };
+        DailyCheckinRulesDto: {
+            /** @description Leave days (请假) per calendar month, retroactive leave included. */
+            leaveDaysPerMonth: number;
+            /** @description Retroactive leaves (补请) per calendar month. */
+            retroLeavesPerMonth: number;
+            /** @description Hours after a missed day during which 补请 stays open. */
+            retroWindowHours: number;
+            /** @description How many days ahead a leave can be planned. */
+            leaveAheadDays: number;
+        };
+        DailyCheckinMonthDto: {
+            /** @example 2026-10 */
+            month: string;
+            visitDays: number;
+            leaveDays: number;
+            leaveLeft: number;
+            retroLeft: number;
+        };
+        DailyCheckinDayDto: {
+            /** Format: date */
+            day: string;
+            /** @enum {string} */
+            kind: "visit" | "leave";
+            retroactive: boolean;
+        };
+        DailyCheckinSummaryDto: {
+            /** Format: date */
+            today: string;
+            rules: components["schemas"]["DailyCheckinRulesDto"];
+            visitedToday: boolean;
+            /** @description All visit days ever. Never resets. */
+            totalVisitDays: number;
+            /** Format: date */
+            firstDay: string | null;
+            thisMonth: components["schemas"]["DailyCheckinMonthDto"];
+            /**
+             * Format: date
+             * @description The missed day 补请 can still cover.
+             */
+            retroDay: string | null;
+            days: components["schemas"]["DailyCheckinDayDto"][];
+        };
+        DailyCheckinTodayDto: {
+            /**
+             * Format: date
+             * @description The member's local calendar date.
+             */
+            today: string;
         };
         RandomPandaDto: {
             /** Format: uuid */
@@ -1845,6 +1746,8 @@ export interface components {
             latitude?: number;
             /** @description How to see the pandas here; facilities only. */
             visitGuide?: components["schemas"]["FacilityVisitGuideDto"];
+            /** @description Slugs of duplicate places merged into this one; a request for one of them returns this place. */
+            legacySlugs?: string[];
         };
         PublicPlaceListDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
@@ -2018,6 +1921,159 @@ export interface components {
             /** @enum {string} */
             resourceKind: "panda" | "place" | "media" | "evidence";
             resourceId: string;
+        };
+        LearningTextDto: {
+            zh: string;
+            en: string;
+        };
+        LearningArticleParagraphDto: {
+            text: components["schemas"]["LearningTextDto"];
+            refs: string[];
+        };
+        LearningArticleSectionDto: {
+            heading: components["schemas"]["LearningTextDto"];
+            paragraphs: components["schemas"]["LearningArticleParagraphDto"][];
+        };
+        LearningArticleBodyDto: {
+            sections: components["schemas"]["LearningArticleSectionDto"][];
+        };
+        LearningArticleFactDto: {
+            text: components["schemas"]["LearningTextDto"];
+            refs: string[];
+        };
+        LearningArticleImageDto: {
+            /** @enum {string} */
+            role: "hero" | "inline" | "compare";
+            /** @enum {string} */
+            type: "existing" | "wanted";
+            pandaSlug: string | null;
+            asset?: string;
+            credit?: string;
+            caption: components["schemas"]["LearningTextDto"];
+            shot?: components["schemas"]["LearningTextDto"];
+        };
+        LearningArticleReferenceDto: {
+            id: string;
+            title: string;
+            publisher: string;
+            /** Format: uri */
+            url: string;
+            /** Format: date */
+            citedOn: string;
+        };
+        LearningArticleDto: {
+            slug: string;
+            /** @enum {string} */
+            category: "外形与识别" | "食性" | "繁殖与成长" | "保护";
+            title: components["schemas"]["LearningTextDto"];
+            dek: components["schemas"]["LearningTextDto"];
+            pullQuote: components["schemas"]["LearningTextDto"];
+            body: components["schemas"]["LearningArticleBodyDto"];
+            keyFacts: components["schemas"]["LearningArticleFactDto"][];
+            images: components["schemas"]["LearningArticleImageDto"][];
+            references: components["schemas"]["LearningArticleReferenceDto"][];
+            relatedArticles: string[];
+        };
+        LearningSourceDto: {
+            title: components["schemas"]["LearningTextDto"];
+            /** Format: uri */
+            url: string;
+            /** Format: date */
+            citedOn: string;
+        };
+        LearningCardDto: {
+            slug: string;
+            title: components["schemas"]["LearningTextDto"];
+            summary: components["schemas"]["LearningTextDto"];
+            body: components["schemas"]["LearningTextDto"];
+            sources: components["schemas"]["LearningSourceDto"][];
+        };
+        LearningTopicSectionDto: {
+            heading: components["schemas"]["LearningTextDto"];
+            body: components["schemas"]["LearningTextDto"];
+        };
+        LearningTopicDto: {
+            slug: string;
+            title: components["schemas"]["LearningTextDto"];
+            summary: components["schemas"]["LearningTextDto"];
+            sections: components["schemas"]["LearningTopicSectionDto"][];
+            cardSlugs: string[];
+            sources: components["schemas"]["LearningSourceDto"][];
+        };
+        LearningTermDto: {
+            slug: string;
+            term: components["schemas"]["LearningTextDto"];
+            definition: components["schemas"]["LearningTextDto"];
+            relatedSlugs: string[];
+            sources: components["schemas"]["LearningSourceDto"][];
+        };
+        LearningFaceTipDto: {
+            /** @enum {string} */
+            key: "shape" | "leftRight" | "eyePatches" | "ears";
+            label: components["schemas"]["LearningTextDto"];
+            body: components["schemas"]["LearningTextDto"];
+        };
+        LearningFaceGuideDto: {
+            slug: string;
+            /** @description Canonical slug of a published panda. The photo comes from that panda's media. */
+            pandaSlug: string;
+            title: components["schemas"]["LearningTextDto"];
+            tips: components["schemas"]["LearningFaceTipDto"][];
+            sources: components["schemas"]["LearningSourceDto"][];
+        };
+        LearningChallengeDto: {
+            slug: string;
+            answerPandaSlug: string;
+            decoyPandaSlugs: string[];
+            prompt: components["schemas"]["LearningTextDto"];
+            tip: components["schemas"]["LearningTextDto"];
+            sources: components["schemas"]["LearningSourceDto"][];
+        };
+        LearningCatalogDto: {
+            /** @example 2026.10.29.2 */
+            version: string;
+            articles: components["schemas"]["LearningArticleDto"][];
+            cards: components["schemas"]["LearningCardDto"][];
+            topics: components["schemas"]["LearningTopicDto"][];
+            terms: components["schemas"]["LearningTermDto"][];
+            faceGuides: components["schemas"]["LearningFaceGuideDto"][];
+            challenges: components["schemas"]["LearningChallengeDto"][];
+        };
+        AskStatusDto: {
+            enabled: boolean;
+            dailyLimit: number;
+            remainingToday: number;
+        };
+        AskQuestionDto: {
+            /** @description The question. It is answered and then discarded; it is never stored. */
+            question: string;
+        };
+        AskReferenceDto: {
+            title: string;
+            publisher: string | null;
+            /** Format: uri */
+            url: string;
+        };
+        AskLinkDto: {
+            /** @enum {string} */
+            kind: "article" | "card" | "topic" | "term" | "faceGuide" | "challenge" | "panda" | "learn";
+            title: string;
+            /** @description A path inside the app, such as /learn/articles/bamboo. */
+            appPath: string;
+            references: components["schemas"]["AskReferenceDto"][];
+        };
+        AskAnswerDto: {
+            /** @enum {string} */
+            kind: "answer" | "refusal" | "identification";
+            /** @enum {string} */
+            locale: "zh" | "en";
+            /** @description The answer, or why there is none. */
+            text: string;
+            /** @enum {string} */
+            reason?: "noMatch" | "unsafe" | "unavailable";
+            /** @description Pages the answer came from, or where to read instead. */
+            links: components["schemas"]["AskLinkDto"][];
+            remainingToday: number;
         };
         UpdateTargetDto: {
             /** @enum {string} */
@@ -2216,202 +2272,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FanProfileDto"];
-                };
-            };
-        };
-    };
-    listStaffInvitations: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StaffInvitationDto"][];
-                };
-            };
-        };
-    };
-    inviteStaffReviewer: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InviteReviewerDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["IssuedStaffInvitationDto"];
-                };
-            };
-        };
-    };
-    acceptStaffReviewerInvitation: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AcceptedInvitationDto"];
-                };
-            };
-        };
-    };
-    listStaffAccounts: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StaffAccountSummaryDto"][];
-                };
-            };
-        };
-    };
-    listDelegableStaffRoles: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StaffRoleCatalogDto"][];
-                };
-            };
-        };
-    };
-    getStaffAccountRoles: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                accountId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StaffAccountDetailDto"];
-                };
-            };
-        };
-    };
-    changeStaffAccountState: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                accountId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["StaffStateChangeDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StaffStateChangeResultDto"];
-                };
-            };
-        };
-    };
-    grantStaffRole: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                accountId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GrantStaffRoleDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StaffRoleChangeResultDto"];
-                };
-            };
-        };
-    };
-    revokeStaffRole: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                accountId: string;
-                assignmentId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RevokeStaffRoleDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StaffRoleChangeResultDto"];
                 };
             };
         };
@@ -3001,6 +2861,100 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DeletedSeenPandaDto"];
+                };
+            };
+        };
+    };
+    getDailyCheckins: {
+        parameters: {
+            query: {
+                /** @description The member's local calendar date. */
+                today: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyCheckinSummaryDto"];
+                };
+            };
+        };
+    };
+    recordDailyCheckin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyCheckinTodayDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyCheckinSummaryDto"];
+                };
+            };
+        };
+    };
+    takeDailyLeave: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                day: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyCheckinTodayDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyCheckinSummaryDto"];
+                };
+            };
+        };
+    };
+    cancelDailyLeave: {
+        parameters: {
+            query: {
+                /** @description The member's local calendar date. */
+                today: string;
+            };
+            header?: never;
+            path: {
+                day: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyCheckinSummaryDto"];
                 };
             };
         };
@@ -3868,6 +3822,74 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    getLearningCatalog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LearningCatalogDto"];
+                };
+            };
+            /** @description The stored learning catalog is missing or invalid. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getAskStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AskStatusDto"];
+                };
+            };
+        };
+    };
+    askPanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AskQuestionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AskAnswerDto"];
+                };
             };
         };
     };

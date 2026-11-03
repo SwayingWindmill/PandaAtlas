@@ -1,51 +1,47 @@
 import { DarkTheme, DefaultTheme, type Theme } from "expo-router/react-navigation";
+import { useUniwind } from "uniwind";
 
-// The navigator's colors, matching the tokens in src/global.css. Screens use className tokens
-// instead; this is only for what React Navigation and native props paint themselves.
-export const THEME = {
-  light: {
-    background: "#fcfdfc",
-    foreground: "#1d211c",
-    card: "#fcfdfc",
-    primary: "#1d211c",
-    mutedForeground: "#60655f",
-    border: "#d7dad7",
-    input: "#b9bcb8",
-    destructive: "#ce2c31",
-  },
-  dark: {
-    background: "#111210",
-    foreground: "#eceeec",
-    card: "#181917",
-    primary: "#eceeec",
-    mutedForeground: "#afb5ad",
-    border: "#383a36",
-    input: "#5c625b",
-    destructive: "#ff9592",
-  },
-};
+import { semantic } from "@/design/tokens";
 
-export const NAV_THEME: Record<"light" | "dark", Theme> = {
+/**
+ * The color roles for both appearances, straight from the design tokens (src/design/tokens.ts),
+ * so code, global.css and DESIGN.md can't drift. Grouped backgrounds, labels and separators are the
+ * iOS system values. Tint is a deep bamboo jade (#165C3C, 8:1 on white) in light mode and a pale
+ * jade (#7DCAA4, 11:1 on black) in dark, where filled buttons take black labels. `warm` is the
+ * 笋金 accent: markers only (today, new, a milestone), never an action.
+ */
+export const IOS = semantic.color;
+
+export type AppearanceScheme = keyof typeof IOS;
+
+export function useIOSColors() {
+  const { theme } = useUniwind();
+  const scheme: AppearanceScheme = theme === "dark" ? "dark" : "light";
+  return { scheme, ...IOS[scheme] };
+}
+
+// The navigator's colors. Screens use class names; this is what the native stack and tabs paint.
+export const NAV_THEME: Record<AppearanceScheme, Theme> = {
   light: {
     ...DefaultTheme,
     colors: {
-      background: THEME.light.background,
-      border: THEME.light.border,
-      card: THEME.light.card,
-      notification: THEME.light.destructive,
-      primary: THEME.light.primary,
-      text: THEME.light.foreground,
+      background: IOS.light.groupedBackground,
+      border: IOS.light.separator,
+      card: IOS.light.card,
+      notification: IOS.light.destructive,
+      primary: IOS.light.tint,
+      text: IOS.light.label,
     },
   },
   dark: {
     ...DarkTheme,
     colors: {
-      background: THEME.dark.background,
-      border: THEME.dark.border,
-      card: THEME.dark.card,
-      notification: THEME.dark.destructive,
-      primary: THEME.dark.primary,
-      text: THEME.dark.foreground,
+      background: IOS.dark.groupedBackground,
+      border: IOS.dark.separator,
+      card: IOS.dark.card,
+      notification: IOS.dark.destructive,
+      primary: IOS.dark.tint,
+      text: IOS.dark.label,
     },
   },
 };

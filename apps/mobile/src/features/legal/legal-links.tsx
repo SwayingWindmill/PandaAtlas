@@ -1,8 +1,8 @@
 import * as WebBrowser from "expo-web-browser";
-import { Pressable, View } from "react-native";
 
+import { ListCell, ListSection } from "@/components/grouped-list";
+import type { LucideIcon } from "@/components/icons";
 import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
 
 import { type LegalDocumentId, legalDocuments, signInConsent } from "./legal";
 
@@ -10,32 +10,27 @@ function openDocument(url: string) {
   void WebBrowser.openBrowserAsync(url);
 }
 
-/** A divided row that opens a public legal page in the in-app browser. */
-export function LegalRow({ id, last }: { id: LegalDocumentId; last?: boolean }) {
+/** A grouped row that opens a public legal page in the in-app browser. */
+export function LegalRow({ id, last, glyph }: { id: LegalDocumentId; last?: boolean; glyph?: LucideIcon }) {
   const document = legalDocuments[id];
   return (
-    <Pressable
+    <ListCell
+      label={document.label}
+      last={last}
+      glyph={glyph}
       onPress={() => openDocument(document.url)}
       role="link"
       accessibilityLabel={document.label}
-      accessibilityHint="在浏览器中打开"
-      className={cn(
-        "flex-row items-center justify-between gap-3 border-t-hairline border-border py-3.5 active:bg-accent",
-        last && "border-b-hairline",
-      )}
-    >
-      <Text className="font-bold">{document.label}</Text>
-      <Text className="text-muted-foreground">›</Text>
-    </Pressable>
+    />
   );
 }
 
 export function LegalLinks() {
   return (
-    <View>
+    <ListSection>
       <LegalRow id="terms" />
       <LegalRow id="privacy" last />
-    </View>
+    </ListSection>
   );
 }
 
@@ -48,7 +43,7 @@ export function SignInConsent() {
         role="link"
         accessibilityRole="link"
         accessibilityLabel={signInConsent.terms.label}
-        className="font-bold text-foreground"
+        className="font-semibold text-primary"
         onPress={() => openDocument(signInConsent.terms.url)}
       >
         {signInConsent.terms.label}
@@ -58,7 +53,7 @@ export function SignInConsent() {
         role="link"
         accessibilityRole="link"
         accessibilityLabel={signInConsent.privacy.label}
-        className="font-bold text-foreground"
+        className="font-semibold text-primary"
         onPress={() => openDocument(signInConsent.privacy.url)}
       >
         {signInConsent.privacy.label}

@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-29T18:00:00Z",
+  "title": "Design System: 吱熊猫",
+  "extensions": {
+    "colorMeta": {
+      "grouped": { "role": "neutral", "displayName": "Grouped background", "canonical": "#F2F2F7", "tonalRamp": ["#000000", "#1C1C1E", "#2C2C2E", "#636366", "#C6C6C8", "#E5E5EA", "#F2F2F7", "#FFFFFF"] },
+      "grouped-dark": { "role": "neutral", "displayName": "Grouped background, dark", "canonical": "#000000", "tonalRamp": ["#000000", "#1C1C1E", "#2C2C2E", "#3A3A3C", "#636366", "#AEAEB2", "#FFFFFF", "#FFFFFF"] },
+      "surface": { "role": "neutral", "displayName": "Elevated group", "canonical": "#FFFFFF", "tonalRamp": ["#000000", "#1C1C1E", "#F2F2F7", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "surface-dark": { "role": "neutral", "displayName": "Elevated group, dark", "canonical": "#1C1C1E", "tonalRamp": ["#000000", "#1C1C1E", "#2C2C2E", "#3A3A3C", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "label": { "role": "neutral", "displayName": "Label", "canonical": "#000000", "tonalRamp": ["#000000", "#636366", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "label-dark": { "role": "neutral", "displayName": "Label, dark", "canonical": "#FFFFFF", "tonalRamp": ["#000000", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "secondary-label": { "role": "neutral", "displayName": "Secondary label", "canonical": "#636366", "tonalRamp": ["#000000", "#636366", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "secondary-label-dark": { "role": "neutral", "displayName": "Secondary label, dark", "canonical": "#AEAEB2", "tonalRamp": ["#000000", "#636366", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "separator": { "role": "neutral", "displayName": "Separator", "canonical": "#C6C6C8", "tonalRamp": ["#38383A", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8", "#C6C6C8"] },
+      "separator-dark": { "role": "neutral", "displayName": "Separator, dark", "canonical": "#38383A", "tonalRamp": ["#000000", "#1C1C1E", "#38383A", "#636366", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "tint": { "role": "primary", "displayName": "Jade", "canonical": "#165C3C", "tonalRamp": ["#0B2A1C", "#165C3C", "#7DCAA4", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8"] },
+      "tint-dark": { "role": "primary", "displayName": "Pale jade", "canonical": "#7DCAA4", "tonalRamp": ["#0B2A1C", "#165C3C", "#7DCAA4", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8", "#E3EBE8"] },
+      "button": { "role": "primary", "displayName": "Button fill", "canonical": "#165C3C", "tonalRamp": ["#0B2A1C", "#165C3C", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "button-label": { "role": "neutral", "displayName": "Button label", "canonical": "#FFFFFF", "tonalRamp": ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "fill": { "role": "neutral", "displayName": "System fill", "canonical": "#E5E5EA", "tonalRamp": ["#2C2C2E", "#D1D1D6", "#E5E5EA", "#F2F2F7", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "fill-dark": { "role": "neutral", "displayName": "System fill, dark", "canonical": "#2C2C2E", "tonalRamp": ["#000000", "#1C1C1E", "#2C2C2E", "#3A3A3C", "#AEAEB2", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "warning": { "role": "warning", "displayName": "Warning", "canonical": "#B25000", "tonalRamp": ["#B25000", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A"] },
+      "warning-dark": { "role": "warning", "displayName": "Warning, dark", "canonical": "#FF9F0A", "tonalRamp": ["#B25000", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A", "#FF9F0A"] },
+      "destructive": { "role": "danger", "displayName": "Destructive", "canonical": "#CE2C31", "tonalRamp": ["#CE2C31", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961"] },
+      "destructive-dark": { "role": "danger", "displayName": "Destructive, dark", "canonical": "#FF6961", "tonalRamp": ["#CE2C31", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961", "#FF6961"] }
+    },
+    "typographyMeta": {
+      "large-title": { "displayName": "Large Title", "purpose": "Tab roots and 科普 titles in the column." },
+      "title1": { "displayName": "Title 1", "purpose": "A featured title or the screen's main figure." },
+      "title2": { "displayName": "Title 2", "purpose": "A section in a reading column." },
+      "body": { "displayName": "Body", "purpose": "Names, sentences, and buttons." },
+      "footnote": { "displayName": "Footnote", "purpose": "Group headers, captions, the version line." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "system", "value": "system push, sheet, and tab transitions", "purpose": "Navigation uses the platform transition. The quiz answer fades in over 250ms." }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "390px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one filled action. Panda green, white label.",
+      "html": "<button class=\"ds-btn-primary\">看资料</button>",
+      "css": ".ds-btn-primary { background: #165C3C; color: #fff; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; font-size: 17px; font-weight: 600; } .ds-btn-primary:hover { background: #176b54; } .ds-btn-primary:focus-visible { outline: 2px solid #165C3C; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "The alternate action. System fill, no tint.",
+      "html": "<button class=\"ds-btn-secondary\">重试</button>",
+      "css": ".ds-btn-secondary { background: #E5E5EA; color: #000; height: 48px; padding: 0 24px; border: none; border-radius: 999px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; font-size: 17px; font-weight: 600; } .ds-btn-secondary:hover { background: #D1D1D6; } .ds-btn-secondary:focus-visible { outline: 2px solid #165C3C; outline-offset: 2px; }"
+    },
+    {
+      "name": "Grouped Cell",
+      "kind": "custom",
+      "refersTo": "grouped-cell",
+      "description": "One row in an inset group. The whole row is the control.",
+      "html": "<div class=\"ds-group\"><a class=\"ds-cell\" href=\"#\"><span><span class=\"ds-cell-name\">认识大熊猫</span><span class=\"ds-cell-detail\">科普</span></span><span class=\"ds-chevron\"></span></a></div>",
+      "css": ".ds-group { background: #fff; border-radius: 10px; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; } .ds-cell { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 12px 16px; text-decoration: none; color: #000; } .ds-cell-name { display: block; font-size: 17px; line-height: 26px; } .ds-cell-detail { display: block; margin-top: 2px; font-size: 13px; line-height: 18px; color: #636366; } .ds-chevron { width: 8px; height: 8px; border-right: 1.6px solid #636366; border-top: 1.6px solid #636366; transform: rotate(45deg); } .ds-cell:hover { background: #D1D1D6; } .ds-cell:focus-visible { outline: 2px solid #165C3C; outline-offset: -2px; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "grouped-cell",
+      "description": "The 找熊猫 search. Filled, 10px corners, no stroke.",
+      "html": "<label class=\"ds-search\"><span class=\"ds-search-icon\"></span><input placeholder=\"名字或基地\" aria-label=\"搜索熊猫\" /></label>",
+      "css": ".ds-search { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; background: #fff; border-radius: 10px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; } .ds-search input { flex: 1; border: none; background: transparent; font-size: 17px; outline: none; } .ds-search input::placeholder { color: #636366; } .ds-search-icon { width: 14px; height: 14px; border: 1.6px solid #636366; border-radius: 50%; position: relative; } .ds-search:focus-within { outline: 2px solid #165C3C; outline-offset: 2px; }"
+    },
+    {
+      "name": "Plate",
+      "kind": "custom",
+      "refersTo": "grouped-cell",
+      "description": "A published photograph, edge to edge, captioned underneath.",
+      "html": "<figure class=\"ds-plate\"><div class=\"ds-plate-photo\"></div><figcaption>宝力　两颊不如青宝蓬松。</figcaption></figure>",
+      "css": ".ds-plate { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; color: #000; } .ds-plate-photo { aspect-ratio: 4 / 5; background: #E5E5EA; } .ds-plate figcaption { padding: 8px 16px 0; font-size: 13px; line-height: 18px; color: #636366; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A photograph on the system shelf.",
+    "overview": "吱熊猫 is a phone atlas of named giant pandas. The shelf is the iOS 26 interface a fan already knows: a large title, a system back chevron, a Liquid Glass tab bar, and inset grouped lists. The thing on the shelf is a photograph of one animal. Green is the tint on the selected tab, a link, and the filled button. The website keeps its olive paper. The app does not.",
+    "keyCharacteristics": [
+      "Tab roots use a 34px large title that collapses into the bar on iOS.",
+      "Lists that navigate are inset groups with a 10px radius.",
+      "Body is 17px, with line height opened for Chinese.",
+      "One tint, the panda green. Photographs carry the rest of the color.",
+      "Dark mode is true black grouped background and elevated #1C1C1E groups."
+    ],
+    "rules": [
+      { "name": "The Tint Rule", "body": "Green marks what a fan can do: the selected tab, a link, the one filled button, a correct quiz pick. It does not fill a card or sit above a title.", "section": "colors" },
+      { "name": "The Shelf Rule", "body": "Page ground is the system grouped background. Do not bring the website's olive paper onto a screen.", "section": "colors" },
+      { "name": "The System Style Rule", "body": "Pick an iOS text style. Do not invent a size between them.", "section": "typography" },
+      { "name": "The Plate Rule", "body": "The first figure on a panda or a 科普 article is one published photograph. The caption sits under the picture. Text is not placed on the picture.", "section": "layout" },
+      { "name": "The System Material Rule", "body": "Blur and glass belong to the tab bar and the navigation bar, drawn by the system. A card does not get its own glass.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use a published photograph of the panda the sentence is about.",
+      "Do keep draft 科普 out of the public catalog.",
+      "Do use the system back button and the system tab bar.",
+      "Do test light and dark."
+    ],
+    "donts": [
+      "Don't put a kicker above the title.",
+      "Don't put an icon in a tinted square.",
+      "Don't paint a card, a progress track, or a hero with the green tint.",
+      "Don't hand-roll a glass panel. The system bar is the only glass.",
+      "Don't bring the website's olive ground or custom back button onto the app."
+    ]
+  }
+}

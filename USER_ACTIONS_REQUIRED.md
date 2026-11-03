@@ -6,7 +6,7 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 
 - **Two-step verification before export and deletion.** The API's `privacy.request.manage` policy requires AAL2 and a recent sign-in, so the app asks fans to set up an authenticator app (Supabase Auth TOTP) before their first data export or account deletion. Keep this, or decide on a lighter step (for example a fresh email code, which gives recent authentication but not AAL2) and change the policy in a migration.
 
-- **Publish content release `2026.10.26.1`.** `release.build` built it from `data/release-manifests/2026.10.26.1.json`; review the change list in the run summary, then run `release.publish` with the same manifest (runbook: `docs/runbooks/production-release.md#publish-a-content-release`). Institutions stay hidden on the website and in the app until then.
+- **Publish content release `2026.10.26.1`.** It is already built from `data/release-manifests/2026.10.26.1.json` (change list in the earlier `release.build` run summary); run `release.publish` with the same manifest to seal and activate it (runbook: `docs/runbooks/production-release.md#publish-a-content-release`). Institutions stay hidden on the website and in the app until then.
 
 ## Credentials and accounts
 
@@ -35,7 +35,7 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 
 - **Which pandas the welcome suggests.** First launch offers living pandas that can be visited, youngest first, plus search. A curated list (the pandas most fans arrive for) would serve newcomers better; name the list or the rule.
 
-- **Learning content (科普, 专题, 认脸指南, 认脸挑战).** No content model or text exists; the canvas uses placeholders such as `[形状和左右差别]`. Decide the content and who writes it before a schema is built for it.
+- **Publish the 科普 drafts.** The app reads articles, terms, face guides and the face challenge. Every entry in `data/curation/learning/learning.json` is `draft`, so production builds do not show it (the public API returns published entries only; a development build previews the file). A writer fills each slot listed in `docs/learning-content-brief.md`. Before publishing, go through `docs/learning-review-checklist.md`. Draft sentences do not need a `[草稿]` or `[draft]` mark. After you review the text, set `status` to `published`, add an https source and the day it was checked, then run `python scripts/curation/build_learning_content_migration.py --write` and ship that migration. Until then the production app says 科普还在写. Knowledge-card and topic records can stay in the file; the app no longer has screens for them.
 - **Official posts (官方动态, 官方最近说).** The API's updates feed lists release changes, not posts by bases. Quoting official social posts needs a source, its terms of use and an acquisition decision.
 - **On-site mode (我在基地) and wild areas (野外保护区).** Need zone maps, panda-area positions and wild-area places, which no data covers yet.
 - **iOS lock-screen widget.** Needs a native widget extension and a development build; out of scope for the Expo-managed app until decided.

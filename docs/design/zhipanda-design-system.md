@@ -1,9 +1,9 @@
 # 吱熊猫设计系统
 
-- **状态：** 当前生效。网站公开页面和 App 的视觉、排版、配色和组件写法以本文为准。
-- **生效日期：** 2026-10-23
-- **适用范围：** `apps/web` 的公开页面和共享组件，以及 `apps/mobile`（App，写法见第 10 节）；Admin 有自己的作用域样式，不受本文约束。
-- **取值来源：** 网站的数值在 `apps/web/styles/tokens.css`，App 的在 `apps/mobile/src/global.css`，两份必须是同一组 Radix 色阶、圆角和字号。本文只说明怎么用，不重复维护第三份数值；本文和 token 文件不一致时以 token 文件为准，并修正本文。
+- **状态：** 当前生效。网站公开页面以第 1–9 节为准。App 以根目录 `DESIGN.md` 为准（第 10 节只留链接）。
+- **生效日期：** 2026-10-29（App 改为 iOS 26 系统语义；网站仍用 Radix）
+- **适用范围：** `apps/web` 的公开页面和共享组件，以及 `apps/mobile`（App，写法见根目录 `DESIGN.md`）；Admin 有自己的作用域样式，不受本文约束。
+- **取值来源：** 网站的数值在 `apps/web/styles/tokens.css`。App 的数值在 `apps/mobile/src/design/tokens.ts`，由它生成 `apps/mobile/src/global.css` 和 `DESIGN.md` 的 front matter。两份不再共用色阶和字号。本文和对应 token 文件不一致时以 token 文件为准，并修正本文。
 - **样板页面：** 网站是首页 `features/home/`、熊猫列表 `app/[locale]/pandas/`、熊猫资料页 `features/profile/`；App 是家谱 `apps/mobile/src/app/pandas/[slug]/family.tsx`。新页面先照着样板的写法做。
 
 ## 1. 十条规则
@@ -183,7 +183,9 @@ Tailwind 对应：`text-xs`（12）、`text-base`（16）、`text-xl`（20）。
 
 参考网站只提炼成上面的规则，不照搬某一家的整体样式。
 
-## 9. 交付前自查
+## 9. 交付前自查（网站）
+
+App 的自查看根目录 `DESIGN.md`，不按下面的四档字号和 Radix 色阶。
 
 1. 对照第 1 节十条规则逐条检查；
 2. 页面里没有新增十六进制颜色、`rgba()`、Tailwind 自带色板、14px 或 18px 字号，边框都是 0.5px（键盘焦点框除外）；
@@ -193,14 +195,4 @@ Tailwind 对应：`text-xs`（12）、`text-base`（16）、`text-xl`（20）。
 
 ## 10. App（`apps/mobile`）
 
-App 遵守上面全部规则，只是写法不同。
-
-- **样式：** Uniwind（Tailwind 4）的类名，只用 `src/global.css` 里的语义 token：`bg-background`、`bg-muted`、`text-foreground`、`text-muted-foreground`、`text-highlight-foreground`、`border-border`、`border-input`。不写十六进制、不用 `StyleSheet`。React Navigation 和原生属性（占位符颜色、SVG 描边）要颜色时，用 `useCSSVariable` 读同一组 token。
-- **组件：** 来自 React Native Reusables，用它的 CLI 加进 `src/components/ui/`，再按本文改样式：按钮是胶囊，高 48，16px 粗体，没有阴影；骨架屏是静态灰块，不闪烁。
-- **字号：** `Text` 只有四档：`h1` 32（每屏唯一）、`h2` 20、正文和 `h3` 16、`muted` / `small` 12。Tailwind 写法对应 `text-display`、`text-xl`、`text-base`、`text-xs`。
-- **线条：** `border-hairline`、`border-t-hairline`、`border-b-hairline`、`h-hairline`，都是 0.5px；SVG 连线也是 0.5。
-- **圆角：** 与网站同一组：8、12、16（卡片）、24（大容器）、胶囊。嵌套时内圆角 = 外圆角 − 间距，例如 24 的容器内边距 8，里面的卡片用 16。
-- **页面框架：** 不用原生导航栏。每屏用 `components/page.tsx`（`Page`，或列表屏只用 `PageHeader`）：左上一个返回按钮，一行 12px jade 小标签，然后是唯一的 `h1`。底部导航的标签页根屏传 `back={false}`，不显示返回按钮。熊猫资料这类以照片开头的屏，返回和分享按钮浮在照片上，底色用 `bg-background`；照片来源放在照片下面，不叠字、不加文字阴影。
-- **底部导航：** `app/(tabs)`，标签 12px，选中加粗用 `foreground`，其余 `muted-foreground`，顶边 0.5px，没有投影和切换动画。只放已经能用的标签：需要登录的「图鉴」「我的」等登录做好再加。
-- **深色：** 跟随系统；`global.css` 的 `@variant dark` 是同一组 Radix 色阶的深色版。
-
+App 的设计系统已经合并到仓库根目录的 [`DESIGN.md`](../../DESIGN.md)，那里是唯一的来源：颜色、文字样式、间距、圆角、组件清单、页面模板、状态、动效与触感、文案和数字格式、弃用清单都在那里。数值来自 `apps/mobile/src/design/tokens.ts`，改完运行 `npm run design:tokens -w @zhipanda/mobile`。开发版可以打开 `/dev/design-system` 看全部 token。

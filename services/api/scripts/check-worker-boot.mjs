@@ -4,6 +4,7 @@
 // to log its cold-start marker (#637) and a failing /ready request to write its structured error
 // entry to the Worker's console, which is what Workers Logs ingests (#559).
 import { spawn, spawnSync } from "node:child_process";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -12,6 +13,25 @@ const apiRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const port = Number(process.env.WORKER_BOOT_PORT ?? 8799);
 const deadline = Date.now() + 90_000;
 const failurePattern = /unsettled|ERR_RUNTIME_FAILURE|Uncaught Error/u;
+
+// Workers AI and AI Search have no local simulator: vite preview would open a remote session and
+// need Cloudflare credentials. The boot check drops those two bindings from the built Worker's
+// config while it runs, then restores the file byte for byte so the deployed artifact keeps them.
+// The application reads them only when a question is asked, never at startup.
+const REMOTE_ONLY_BINDING_TYPES = new Set(["ai", "ai-search"]);
+const workerConfigPath = path.join(apiRoot, ".cloudflare/output/v0/workers/default/worker.config.json");
+const builtWorkerConfig = readFileSync(workerConfigPath, "utf8");
+{
+  const config = JSON.parse(builtWorkerConfig);
+  config.env = Object.fromEntries(
+    Object.entries(config.env ?? {}).filter(([, binding]) => !REMOTE_ONLY_BINDING_TYPES.has(binding?.type)),
+  );
+  writeFileSync(workerConfigPath, JSON.stringify(config));
+}
+function restoreWorkerConfig() {
+  writeFileSync(workerConfigPath, builtWorkerConfig);
+}
+process.on("exit", restoreWorkerConfig);
 
 const viteCli = path.join(path.dirname(fileURLToPath(import.meta.resolve("vite"))), "../../bin/vite.js");
 const preview = spawn(process.execPath, [viteCli, "preview", "--host", "127.0.0.1", "--port", String(port), "--strictPort"], {
@@ -90,4 +110,5 @@ try {
   process.exitCode = 1;
 } finally {
   stopPreview();
+  restoreWorkerConfig();
 }

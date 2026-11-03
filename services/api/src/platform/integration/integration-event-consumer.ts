@@ -6,7 +6,7 @@ import type { IntegrationOutboxService } from "./integration-outbox.service.js";
 import { queuedEventId, type IntegrationConsumerQueue, type PgmqMessage, type PgmqService } from "./pgmq.service.js";
 
 // A message that fails this many reads is dead-lettered instead of retried again. With one read per
-// five-minute cycle, that is about twenty minutes of retries.
+// fifteen-minute cycle, that is about sixty minutes of retries.
 export const MAX_DELIVERY_ATTEMPTS = 5;
 // Longer than one delivery, shorter than the cycle interval, so a failed message is retried next cycle.
 const VISIBILITY_TIMEOUT_SECONDS = 60;

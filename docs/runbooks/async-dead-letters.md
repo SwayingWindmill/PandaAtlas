@@ -27,7 +27,7 @@ delete from integration.dead_letters where dead_letter_id = '<dead_letter_id>';
 commit;
 ```
 
-The next cycle (at most five minutes later) delivers it. Consumers record a receipt per event, so replaying an event that was already delivered is archived as a duplicate.
+The next cycle (at most fifteen minutes later) delivers it. Consumers record a receipt per event, so replaying an event that was already delivered is archived as a duplicate.
 
 ## Discard
 

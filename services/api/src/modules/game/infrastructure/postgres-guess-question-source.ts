@@ -61,7 +61,7 @@ export class PostgresGuessQuestionSource {
       place_id: string | null;
       place_name: string | null;
     }>`
-      select panda.panda_id, panda.names, panda.facts,
+      select panda.panda_id, panda.names, panda.listing_facts as facts,
         (select media.asset_id from public_read.media media
           where media.release_id = panda.release_id and media.panda_id = panda.panda_id and media.usage_role = 'cover'
           order by media.display_order, media.asset_id limit 1) as cover_asset_id,
