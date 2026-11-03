@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Text } from "@/components/ui/text";
@@ -11,6 +11,7 @@ import { StoryCard } from "@/features/today/story-card";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { TodayBirthdays } from "@/features/today/today-birthdays";
 import { WeekCard } from "@/features/today/week-card";
+import { useBottomClearance } from "@/lib/bottom-clearance";
 
 const STORIES = [
   { id: "daily", title: "今天是哪只熊猫？", feature: "每日一猫", href: "/daily" },
@@ -26,11 +27,18 @@ function dateLine(now = new Date()) {
   return `${now.getMonth() + 1}月${now.getDate()}日 ${WEEKDAY[now.getDay()]}`;
 }
 
+/**
+ * iOS and Android draw 今天 in the system bar: on iOS the large title, which collapses into the bar
+ * as the page scrolls. The web has no bar on a tab root, so the column draws the title there.
+ */
+const TITLE_IN_COLUMN = Platform.OS === "web";
+
 /** Gap between the small cards in the scroller, and what each snap moves past. */
 const GAP = 12;
 
 export default function TodayScreen() {
   const insets = useSafeAreaInsets();
+  const bottom = useBottomClearance();
   const { width, fontScale } = useWindowDimensions();
   const photos = useStoryPhotos(localToday(), STORIES.length);
   const column = Math.min(width, 700) - 32;
@@ -44,15 +52,15 @@ export default function TodayScreen() {
   return (
     <ScrollView
       className="flex-1 bg-background"
-      contentInsetAdjustmentBehavior="never"
-      contentContainerClassName="gap-section px-4 pb-28"
-      contentContainerStyle={{ paddingTop: insets.top + 12 }}
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerClassName="gap-section px-4"
+      contentContainerStyle={{ paddingTop: TITLE_IN_COLUMN ? insets.top + 12 : 0, paddingBottom: bottom }}
     >
-      <Stack.Screen options={{ headerShown: false, title: "今天" }} />
+      <Stack.Screen options={{ title: "今天" }} />
       <View className="gap-stack">
         {/* The date is the screen's one 笋金 mark: it says when, under the title as News dates its issue. */}
         <View>
-          <Text variant="display">今天</Text>
+          {TITLE_IN_COLUMN ? <Text variant="display">今天</Text> : null}
           <Text variant="body" className="text-warm">
             {dateLine()}
           </Text>
