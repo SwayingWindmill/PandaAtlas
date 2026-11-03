@@ -10,19 +10,14 @@ import { IDENTITY_NOTIFICATION_CONTACT_PORT } from "./application/identity-notif
 import { IDENTITY_PRIVACY_PORT } from "./application/identity-privacy.port.js";
 import { IDENTITY_PORT } from "./application/identity.port.js";
 import { AUTH_USER_DELETION } from "./application/auth-user-deletion.js";
-import { StaffInvitationsService } from "./infrastructure/staff-invitations.service.js";
 import { SupabaseAuthUserDeletion } from "./infrastructure/supabase-auth-deletion.js";
-import { StaffRolesService } from "./infrastructure/staff-roles.service.js";
-import { StaffAccountLifecycleService } from "./infrastructure/staff-account-lifecycle.service.js";
 import { ApplicationAccessGuard } from "./http/application-access.guard.js";
 import { MeController } from "./http/me.controller.js";
-import { AcceptStaffInvitationController, StaffInvitationsController } from "./http/staff-invitations.controller.js";
-import { StaffRolesController } from "./http/staff-roles.controller.js";
 import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.repository.js";
 
 @Module({
   imports: [AuthModule, ConfigModule, DatabaseModule, RequestContextModule],
-  controllers: [MeController, StaffInvitationsController, AcceptStaffInvitationController, StaffRolesController],
+  controllers: [MeController],
   providers: [
     {
       provide: PostgresIdentityRepository,
@@ -42,11 +37,8 @@ import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.r
       useExisting: PostgresIdentityRepository,
     },
     ApplicationAccessGuard,
-    StaffInvitationsService,
     SupabaseAuthUserDeletion,
     { provide: AUTH_USER_DELETION, useExisting: SupabaseAuthUserDeletion },
-    StaffRolesService,
-    StaffAccountLifecycleService,
     {
       provide: APP_GUARD,
       useExisting: SupabaseAuthGuard,

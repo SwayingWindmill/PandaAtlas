@@ -5,7 +5,7 @@ export interface AdminNavigationItem {
   label: string;
   description: string;
   group: "总览" | "运营" | "治理";
-  icon: "layout-dashboard" | "clipboard-check" | "send" | "scroll-text" | "shield-check" | "users-round";
+  icon: "layout-dashboard" | "clipboard-check" | "send" | "scroll-text" | "shield-check";
   capabilities?: readonly string[];
   /** Retained as an authorized deep-link route without occupying the sidebar. */
   hiddenFromSidebar?: boolean;
@@ -29,23 +29,6 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
     capabilities: ["audit.read"],
   },
   { href: "/admin/capabilities", label: "我的账号", description: "查看个人权限与安全设置", group: "治理", icon: "shield-check", hiddenFromSidebar: true },
-  {
-    href: "/admin/staff/roles",
-    label: "人员管理",
-    description: "查找工作人员、管理角色和邀请",
-    group: "治理",
-    icon: "users-round",
-    capabilities: ["identity.staff.read", "identity.role.manage", "identity.account.manage"],
-  },
-  {
-    href: "/admin/staff/invitations",
-    label: "邀请记录",
-    description: "邀请工作人员并跟踪进度",
-    group: "治理",
-    icon: "shield-check",
-    capabilities: ["identity.staff.read", "identity.account.manage"],
-    hiddenFromSidebar: true,
-  },
   {
     href: "/admin/security/mfa",
     label: "账号安全",
@@ -73,6 +56,5 @@ export function adminNavigationItemForPath(pathname: string): AdminNavigationIte
 }
 
 export function isAdminNavigationItemActive(item: AdminNavigationItem, pathname: string): boolean {
-  if (item.href === "/admin/staff/roles" && pathname.startsWith("/admin/staff/")) return true;
   return adminNavigationItemForPath(pathname) === item;
 }

@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ApiRequestError, requestJson } from "@/lib/api/request";
+import { requestJson } from "@/lib/api/request";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 const SAFE_APP_PATH = /^\/(?:admin(?:\/.*)?|(zh|en)\/(?:(?:pandas|places)\/[a-z0-9-]+|contribute|games\/guess|me(?:\/(?:passport|feed|inbox|collections|memories|game-history|submissions(?:\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})?))?))$/;
@@ -93,16 +93,6 @@ async function destinationAfterStaffSignIn(destination: string): Promise<string>
   return destination;
 }
 
-async function acceptStaffInvitation(): Promise<boolean> {
-  try {
-    await requestJson("/api/admin/staff/invitations/accept", { method: "POST", body: "{}" });
-    return true;
-  } catch (error) {
-    // Existing staff members have no invitation. This is not an error.
-    return error instanceof ApiRequestError && error.status === 404;
-  }
-}
-
 export function EmailOtpLogin() {
   const searchParams = useSearchParams();
   const destination = useMemo(() => safeNextPath(searchParams.get("next")), [searchParams]);
@@ -163,11 +153,6 @@ export function EmailOtpLogin() {
       cleanedUrl.searchParams.delete("code");
       cleanedUrl.hash = "";
       history.replaceState(null, "", `${cleanedUrl.pathname}${cleanedUrl.search}`);
-      if (!(await acceptStaffInvitation())) {
-        setMessage("工作人员邀请尚未激活，请联系管理员。");
-        setMessageKind("error");
-        return;
-      }
       const adminSession = await requestJson("/api/admin/session").then(() => true, () => false);
       if (!adminSession) {
         adminAuthRestoreStartedRef.current = false;
@@ -213,12 +198,6 @@ export function EmailOtpLogin() {
       setMessage(t.invalidOtp);
       setMessageKind("error");
       setOtp("");
-      return;
-    }
-    if (destination.startsWith("/admin") && !(await acceptStaffInvitation())) {
-      setBusy(false);
-      setMessage("工作人员邀请尚未激活，请联系管理员。");
-      setMessageKind("error");
       return;
     }
     window.location.replace(await destinationAfterStaffSignIn(destination));
