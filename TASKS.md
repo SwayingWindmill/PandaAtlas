@@ -16,7 +16,7 @@ Working list for the App v2 build-out. Spec #682 and tickets #683–#694 live in
   - life_event added (17): births of 洋洋 1997-09-09, 雅伦 2016-09-03, 芝麻 and 芝士 2017-04-24, 大美 and 成兰 2017-06-27, 晶亮 2017-07-10, 珍喜 2017-07-15 (mother 奇珍), 妮可 and 妮娜 2017-07-20, 青青 2017-07-26 (mother 二巧), 宝新 2021-06-24 (mother 阿宝), 轮辉 2021-07-25, 雅颂 2021-07-31; 伦伦 and 洋洋 arrive at 亚特兰大动物园 1999-11-05; 雅伦 public debut 2016-12-27; 伦伦, 洋洋, 雅伦 and 喜伦 move to 成都大熊猫繁育研究基地 2024-10-12
   - media, evidence: unchanged
 - [x] 猜熊猫 question generation: the `curation.guess-questions` batch operation draws questions from the active release (433 today) and publishes them after `production-batch` approval; first manifest `data/curation/guess-questions/2026.10.27.1.json`. Run in production ([run 40374378674](https://github.com/SwayingWindmill/PandaAtlas/actions/runs/40374378674)): 433 questions published (424 easy, 9 medium); `/games/guess/question` serves them and an answer round trip passes.
-- [ ] `release.publish` for `2026.10.26.1`: owner decision (`USER_ACTIONS_REQUIRED.md`).
+- [x] Superseded: `2026.10.31.1` (institutions, merged places, the 17 recovered pandas and two curation fixes) was built and published on 2026-11-01 ([run 41270979591](https://github.com/SwayingWindmill/PandaAtlas/actions/runs/41270979591)); `api.zhipanda.com/api/v2/release` serves it.
 
 ## App v2 (apps/mobile)
 
