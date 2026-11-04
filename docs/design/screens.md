@@ -104,6 +104,8 @@ Each of these is built in its own PR. Each PR moves to palette C and the new com
 | 那年今天 | `14-on-this-day` | built in the second batch |
 | 归国熊猫 | `15-overseas-return` | #812 |
 
+月度挑战 (`11-monthly-challenge`) has 月度挑战 over 十一月挑战, then a card with a large `ProgressRing` (done over total) and the days left; 任务 as a stepper of discs on a rail, an ink check once done (the disc is the checkbox) and the number until then, each row opening the page that does it; and 往期, a trophy per earlier month joined, ink when complete. Joining is opt-in and kept on this device: before joining the page offers 参加十一月挑战, and 退出本月挑战 sits at the foot. Tasks are ticked by hand. The mockup's tasks that name a panda or read a record (认出晓晓和蕾蕾, 打卡 7 天) wait for a month's theme to be written.
+
 The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and the large title, then a `Segmented` control with 本周 and 本月, the week hero, the memories of the range, and the 那年今天 switch. The memories are one timeline card as in the mockup (`MemoryTimeline`), with 少显示 and 关闭 on a long press and as accessibility actions, and the sources as badges under the card. The hero is the page variant of the week hero: no tag, the day it happened, what happened, and N 周年 at the right.
 
 ## Open decisions

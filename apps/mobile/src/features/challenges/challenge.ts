@@ -45,8 +45,32 @@ export function themeFor(month: string): MonthlyTheme {
   return MONTHLY_THEMES[month] ?? { title: null, intro: null, tasks: DEFAULT_TASKS };
 }
 
+const MONTH_NAMES = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
+
+/** "十一月", as the challenge names its month. */
+export function monthName(month: string): string {
+  return MONTH_NAMES[Number(month.slice(5, 7)) - 1] ?? month;
+}
+
 export function fallbackTitle(month: string): string {
-  return `${Number(month.slice(5, 7))}月挑战`;
+  return `${monthName(month)}挑战`;
+}
+
+/** Days left in the month after today: 26 on 11月4日. */
+export function daysLeft(today: string): number {
+  const [year, month, day] = today.split("-").map(Number);
+  return new Date(Date.UTC(year!, month!, 0)).getUTCDate() - day!;
+}
+
+/** The months joined before this one, oldest first, each with whether every task was done. */
+export function pastMonths(state: ChallengeState, month: string): { month: string; complete: boolean }[] {
+  return [...new Set(state.joined)]
+    .filter((joined) => joined < month)
+    .sort()
+    .map((joined) => {
+      const { done, total } = progress(state, joined);
+      return { month: joined, complete: total > 0 && done === total };
+    });
 }
 
 export interface ChallengeState {
