@@ -13,6 +13,8 @@ The bucket has no public access and is separate from the media bucket the Worker
 
 Run `bash scripts/development/research-backup-wizard.sh` from the repository root in Git Bash. It installs nothing itself: it asks for rclone, walks through creating the bucket and a token scoped to it, saves the `r2` remote in rclone's own config (outside the repository), and runs the first backup.
 
+When the Cloudflare CLI (`cf`) is logged in and the bucket exists, `node scripts/development/r2-backup-remote.mjs` replaces the dashboard token steps: it creates the bucket-scoped token, saves the `r2` remote and prints no key. Run it yourself (`--dry-run` first), then back up as below.
+
 ## Back up
 
 From the repository root:
