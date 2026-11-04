@@ -112,12 +112,12 @@ export function WeekHero({ hero, height }: { hero: WeekMemory; height: number })
             </Text>
           </View>
           {stacked ? null : hero.daysLeft === 0 ? (
-            <Text variant="figure" className="text-on-media">
+            <Text variant="figure" className="shrink-0 text-on-media" numberOfLines={1}>
               今天
             </Text>
           ) : (
-            <View className="items-end">
-              <Text variant="figure" className="text-on-media">
+            <View className="shrink-0 items-end">
+              <Text variant="figure" className="text-on-media" numberOfLines={1}>
                 {shortDate(hero.date)}
               </Text>
               <Text variant="footnote" className="text-on-media/85">
