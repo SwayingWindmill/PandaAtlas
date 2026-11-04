@@ -18,6 +18,7 @@ import type { DB as PrivacyDatabase } from "./database.privacy.generated.js";
 import type { DB as AuditDatabase } from "./database.audit.generated.js";
 import type { DB as LearningDatabase } from "./database.learning.js";
 import type { DB as AskDatabase } from "./database.ask.js";
+import type { DB as VenueNewsDatabase } from "./database.venue-news.js";
 
 export type Database = IdentityDatabase &
   IntegrationDatabase &
@@ -38,4 +39,5 @@ export type Database = IdentityDatabase &
   PrivacyDatabase &
   AuditDatabase &
   LearningDatabase &
+  VenueNewsDatabase &
   AskDatabase;

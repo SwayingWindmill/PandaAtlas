@@ -2268,6 +2268,41 @@
         ]
       }
     },
+    "/api/v2/venue-news": {
+      "get": {
+        "operationId": "listVenueNews",
+        "parameters": [
+          {
+            "name": "institution",
+            "required": false,
+            "in": "query",
+            "description": "Institution slug",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VenueNewsDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The stored venue news catalog is invalid."
+          }
+        },
+        "summary": "Published 场馆动态: neutral facts from institutions' own announcements, each with its source",
+        "tags": [
+          "Venue news"
+        ]
+      }
+    },
     "/api/v2/ask/status": {
       "get": {
         "operationId": "getAskStatus",
@@ -6131,6 +6166,84 @@
           "terms",
           "faceGuides",
           "challenges"
+        ]
+      },
+      "VenueNewsItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "institutionSlug": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "enclosure",
+              "schedule",
+              "closure",
+              "arrival",
+              "departure",
+              "event",
+              "other"
+            ]
+          },
+          "headline": {
+            "type": "string",
+            "description": "The announcement's own headline, verbatim."
+          },
+          "pandaSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sourceUrl": {
+            "type": "string",
+            "description": "The institution's announcement (https)."
+          },
+          "sourcePublisher": {
+            "type": "string"
+          },
+          "publishedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this entry was last checked against the source."
+          }
+        },
+        "required": [
+          "id",
+          "institutionSlug",
+          "kind",
+          "headline",
+          "pandaSlugs",
+          "sourceUrl",
+          "sourcePublisher",
+          "publishedOn",
+          "updatedAt"
+        ]
+      },
+      "VenueNewsDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VenueNewsItemDto"
+            }
+          }
+        },
+        "required": [
+          "version",
+          "items"
         ]
       },
       "AskStatusDto": {
