@@ -9,7 +9,7 @@ import { Text } from "@/components/ui/text";
 export function MilestoneBadge({ label }: { label: string }) {
   return (
     <View className="self-start rounded-pill bg-warm-soft px-stack-tight py-hair-gap" style={{ borderCurve: "continuous" }}>
-      <Text variant="footnote" className="font-semibold text-warm tabular-nums">
+      <Text variant="footnote" className="font-rounded font-semibold text-warm tabular-nums">
         {label}
       </Text>
     </View>

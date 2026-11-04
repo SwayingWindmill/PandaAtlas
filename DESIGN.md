@@ -53,6 +53,18 @@ typography:
     fontWeight: 700
     lineHeight: 28px
     letterSpacing: 0px
+  stat:
+    fontFamily: "ui-rounded"
+    fontSize: 22px
+    fontWeight: 700
+    lineHeight: 28px
+    letterSpacing: 0px
+  figure:
+    fontFamily: "ui-rounded"
+    fontSize: 34px
+    fontWeight: 700
+    lineHeight: 41px
+    letterSpacing: 0px
   headline:
     fontFamily: "system-ui"
     fontSize: 17px
@@ -246,13 +258,13 @@ components:
   stat-block:
     backgroundColor: "{colors.card}"
     textColor: "{colors.label}"
-    typography: "{typography.title}"
+    typography: "{typography.stat}"
     rounded: "{rounded.tile}"
     padding: 16px
   stat-block-dark:
     backgroundColor: "{colors.card-dark}"
     textColor: "{colors.label-dark}"
-    typography: "{typography.title}"
+    typography: "{typography.stat}"
     rounded: "{rounded.tile}"
     padding: 16px
   story-card:
@@ -342,9 +354,11 @@ Named so photo chrome stops being magic numbers:
 
 ## Typography
 
-**UI font:** the system face. San Francisco for Latin, PingFang SC for Chinese on iOS. The web stack is `-apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif`. No separate display face.
+**UI font:** the system face. San Francisco for Latin, PingFang SC for Chinese on iOS. The web stack is `-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", system-ui, sans-serif`. No font files ship.
 
-**Character:** iOS text styles named by purpose. Each binds size, line height, weight and tracking, so a screen picks a style, never a size. Line heights are opened so Chinese does not clip. Tracking is 0 everywhere: Chinese is never letter-spaced.
+**Figures:** SF Pro Rounded (`font-rounded`, from `primitive.fontFamily.rounded`). iOS resolves `ui-rounded`, Safari takes the CSS keyword, Android and other browsers fall back to the text face. Chinese in a rounded run (岁, 天, 只) falls back to PingFang, so one figure style carries its unit.
+
+**Character:** iOS text styles named by purpose. Each binds size, line height, weight and tracking, so a screen picks a style, never a size. Line heights are opened so Chinese does not clip. Tracking is 0 everywhere: SF tracks itself by optical size, and Chinese is never letter-spaced. PingFang SC stops at Semibold, so Bold Chinese draws at 600 on iOS; the weight step shows in Latin and figures.
 
 ### Text styles
 `<Text variant="…">` in `components/ui/text.tsx`. Sizes and line heights are generated into `global.css` (`text-display`, `text-title`, …); the variant adds the weight.
@@ -352,7 +366,9 @@ Named so photo chrome stops being magic numbers:
 | Style | Size / line | Weight | Use | Not for |
 |---|---|---|---|---|
 | `display` | 34/41 | Bold | The one title on a screen: a tab root, a panda's or an institution's name, the featured story | A second title on the same screen |
-| `title` | 22/28 | Bold | A section, a card title, a resident's name on a tile. `stat` adds tabular figures for a stat block value | Body emphasis |
+| `title` | 22/28 | Bold | A section, a card title, a resident's name on a tile | Body emphasis |
+| `stat` | 22/28 | Bold, rounded | A value in a stat tile or a week card: a count, an age, a day number | Words |
+| `figure` | 34/41 | Bold, rounded | The one number a card is about: a countdown, an age, a total | A sentence; a second figure on the card |
 | `headline` | 17/24 | Semibold | A name or label that leads a row or chip; emphasis at body size | Whole paragraphs |
 | `body` | 17/26 | Regular | Sentences, row titles, buttons | Captions |
 | `subheadline` | 15/22 | Regular | A second line in a dense row, a chip's relation, where 13 is too small for Chinese | A size step between body and footnote for hierarchy |
@@ -373,6 +389,8 @@ The article column in 科普 (articles, terms, face guides, the challenge) is lo
 **The Purpose Rule.** Pick the style by what the text *is*, not how big it should look. Hierarchy past that comes from weight (400/600/700) and the secondary label. A date or a meta line is regular weight; only names and titles are bold.
 
 **The Tabular Rule.** Numbers that sit in a column or change in place (ages, counts, years in a stat block) use `tabular-nums`.
+
+**The Rounded Figure Rule.** A number that is the point (a stat, a day mark, a milestone chip, a map count, an age on a card) is a figure: `stat` or `figure`, or `font-rounded tabular-nums` on another style. Dates and counts inside a meta line stay in the text face. Never set `fontFamily` or letter spacing on a screen.
 
 ## Layout
 
@@ -596,6 +614,8 @@ No screen uses these since v2.8; the `Text` variants stay defined so nothing old
 | `EASE_OUT` / `CONTENT_ENTER` from `stretchy-hero.tsx` | `@/design/motion` (`PAGE_ENTER` for a page); the re-export is gone |
 
 ## Changelog
+
+- **v2.13 (2026-11-04).** Type: rounded figures (`font-rounded`, SF Pro Rounded via `ui-rounded` on iOS, fallback elsewhere) with the `stat` and `figure` styles and The Rounded Figure Rule; day marks, milestone chips, map counts, 到访 day numbers and week-card counts use them. Weight `heavy` (800) for a card's hero number. The web stack names the CJK fallbacks. Tracking stays 0, now with the reason.
 
 - **v2.12 (2026-11-03).** Governance: the skill review applies to PRs that change how a screen looks or moves; logic, data and bug-fix PRs rest on the lint and tests.
 - **v2.11 (2026-10-31).** The Accessibility Rule: `NARROW_WIDTH` (280) with `useStacked` / `useSingleColumn` for every restack (图鉴 stats and grid, 合集, place and institution residents, 那年今天, 熊猫日历 month header); `SwitchRow` with `component.switchTrack` (51×31) replaces the 32×20 switch in 设置 and 通知; segments hit the full 44pt track; 时间线 source links 44pt; decorative SVGs hidden; heading levels for footnote and headline headings; no empty web bar title; hero toolbar read first; hero drift off under Reduce Motion.

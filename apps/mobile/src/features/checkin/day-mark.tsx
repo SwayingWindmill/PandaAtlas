@@ -37,7 +37,7 @@ export function DayCircle({
         <Text
           variant={size < 32 ? "footnote" : "body"}
           className={cn(
-            "tabular-nums",
+            "font-rounded tabular-nums",
             mark === "visit"
               ? "font-semibold text-primary-foreground"
               : mark === "leave" || mark === "retro"

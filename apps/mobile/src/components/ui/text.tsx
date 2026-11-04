@@ -8,13 +8,16 @@ import { Platform, Text as RNText, type Role } from 'react-native';
 // tracking (0: Chinese is never tracked); sizes and line heights come from src/design/tokens.ts.
 // A new or redesigned screen uses only these:
 //   display      34/41 bold      the one title on a screen, and the featured 今天 card
-//   title        22/28 bold      a section, a card title; `stat` is title with tabular figures
+//   title        22/28 bold      a section, a card title
+//   stat         22/28 bold      a value in a stat tile; rounded tabular figures (SF Pro Rounded on iOS)
+//   figure       34/41 bold      the one number a card is about; rounded tabular figures
 //   headline     17/24 semibold  a name that leads a row or chip, emphasis at body size
 //   body         17/26           sentences, row titles, buttons
 //   subheadline  15/22           a second line in a dense row, when footnote is too small for Chinese
 //   footnote     13/18           group headers, captions, credits, the date (the floor)
 // The 科普 reading column has its own set (reading*), used only there.
-// Hierarchy inside a size comes from weight and color, not from a size in between.
+// Hierarchy inside a size comes from weight and color, not from a size in between. Other numbers
+// that should read as figures (a day mark, a badge count) add `font-rounded tabular-nums`.
 // Everything under "Deprecated" stays for screens that have not been redesigned yet; see DESIGN.md.
 const BALANCE = Platform.select({ web: 'text-balance' });
 
@@ -31,7 +34,8 @@ const textVariants = cva(
         default: '',
         display: cn('text-display font-bold', BALANCE),
         title: cn('text-title font-bold', BALANCE),
-        stat: 'text-title font-bold tabular-nums',
+        stat: 'text-stat font-rounded font-bold tabular-nums',
+        figure: 'text-figure font-rounded font-bold tabular-nums',
         headline: 'text-headline font-semibold',
         body: 'text-body',
         subheadline: 'text-subheadline',

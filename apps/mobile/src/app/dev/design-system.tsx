@@ -141,14 +141,16 @@ function WarmDemo() {
   );
 }
 
-function spec(style: Pick<TextStyle, "size" | "lineHeight" | "weight">) {
-  const weight = { "400": "Regular", "600": "Semibold", "700": "Bold" }[style.weight];
-  return `${style.size}/${style.lineHeight} ${weight}`;
+function spec(style: Pick<TextStyle, "size" | "lineHeight" | "weight" | "family">) {
+  const weight = { "400": "Regular", "600": "Semibold", "700": "Bold", "800": "Heavy" }[style.weight];
+  return `${style.size}/${style.lineHeight} ${weight}${style.family === "rounded" ? " Rounded" : ""}`;
 }
 
 const SAMPLE: Record<string, string> = {
   display: "和花",
   title: "成都大熊猫繁育研究基地",
+  stat: "1,864 只",
+  figure: "21 岁",
   headline: "福宝 · 雌",
   body: "大熊猫每天要花十多个小时进食，吃掉 12–38 公斤竹子。",
   subheadline: "和叶 的妹妹 · 2020 年出生",
@@ -166,10 +168,6 @@ function TypeScale() {
           <Text variant={name}>{SAMPLE[name]}</Text>
         </View>
       ))}
-      <View className="gap-hair-gap">
-        <Text variant="footnote" className="text-muted-foreground">stat · title + tabular-nums</Text>
-        <Text variant="stat">1,864 只</Text>
-      </View>
     </Card>
   );
 }

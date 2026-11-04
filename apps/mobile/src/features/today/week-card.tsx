@@ -88,7 +88,7 @@ export function WeekCard() {
               key={tally.label}
               className={cn("min-w-0", stacked ? "flex-row flex-wrap items-baseline gap-stack-tight" : "flex-1")}
             >
-              <Text variant={stacked ? "headline" : "stat"} style={{ fontVariant: ["tabular-nums"] }}>
+              <Text variant={stacked ? "headline" : "stat"} className="font-rounded" style={{ fontVariant: ["tabular-nums"] }}>
                 {tally.count.toLocaleString("zh-CN")}
               </Text>
               <Text

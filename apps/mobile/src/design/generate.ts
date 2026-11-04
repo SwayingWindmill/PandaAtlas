@@ -83,6 +83,12 @@ export function renderCssBlock(): string {
     lines.push(...textVars(name, style));
   }
 
+  lines.push(
+    "",
+    "  /* Rounded figures (`font-rounded`). This is the web stack; iOS and Android override it below. */",
+    `  --font-rounded: ${primitive.fontFamily.rounded.web};`,
+  );
+
   lines.push("", "  /* Motion. */");
   for (const [name, ms] of Object.entries(primitive.duration)) lines.push(`  --duration-${name}: ${ms}ms;`);
   for (const [name, points] of Object.entries(primitive.easing)) {
@@ -91,6 +97,11 @@ export function renderCssBlock(): string {
   lines.push("}", "");
 
   lines.push("@layer theme {", "  :root {");
+  lines.push("    /* Native Text takes one family name, no fallback list. */");
+  for (const platform of ["ios", "android"] as const) {
+    lines.push(`    @variant ${platform} {`, `      --font-rounded: ${primitive.fontFamily.rounded[platform]};`, "    }");
+  }
+  lines.push("");
   for (const scheme of ["light", "dark"] as const) {
     lines.push(`    @variant ${scheme} {`);
     for (const [cssName, role, note] of CSS_COLORS) {
@@ -130,9 +141,9 @@ function colorEntries() {
   return entries;
 }
 
-function typographyEntry(style: Pick<TextStyle, "size" | "lineHeight" | "weight" | "tracking">) {
+function typographyEntry(style: Pick<TextStyle, "size" | "lineHeight" | "weight" | "tracking" | "family">) {
   return [
-    `    fontFamily: ${yamlString("system-ui")}`,
+    `    fontFamily: ${yamlString(style.family === "rounded" ? "ui-rounded" : "system-ui")}`,
     `    fontSize: ${style.size}px`,
     `    fontWeight: ${Number(style.weight)}`,
     `    lineHeight: ${style.lineHeight}px`,
@@ -254,7 +265,7 @@ function componentEntries(): [string, Record<string, string>][] {
       (s) => ({
         backgroundColor: `{colors.card${s}}`,
         textColor: `{colors.label${s}}`,
-        typography: "{typography.title}",
+        typography: "{typography.stat}",
         rounded: "{rounded.tile}",
         padding: `${semantic.spacing.inset.value}px`,
       }),
