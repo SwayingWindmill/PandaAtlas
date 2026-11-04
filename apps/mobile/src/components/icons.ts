@@ -57,7 +57,6 @@ export { default as ScanFace } from "lucide-react-native/icons/scan-face";
 export { default as Search } from "lucide-react-native/icons/search";
 export { default as Settings } from "lucide-react-native/icons/settings";
 export { default as Share } from "lucide-react-native/icons/share";
-export { default as Plane } from "lucide-react-native/icons/plane";
 export { default as ShieldCheck } from "lucide-react-native/icons/shield-check";
 export { default as Sparkles } from "lucide-react-native/icons/sparkles";
 export { default as Star } from "lucide-react-native/icons/star";

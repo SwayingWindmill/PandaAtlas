@@ -104,6 +104,8 @@ Each of these is built in its own PR. Each PR moves to palette C and the new com
 | 那年今天 | `14-on-this-day` | built in the second batch |
 | 归国熊猫 | `15-overseas-return` | #812 |
 
+归国熊猫 (`15-overseas-return`) has country chips (全部, then each country with an entry), then 即将归国 (检疫中, 归国途中, 已宣布归国 with its expected date), each year's returns newest first, and 旅居海外. Pandas that came home together on one day from one institution share a row: two overlapping faces, the names, a `Plane` with "上野 → 中国", and the day (01.28) at the right. The catalog records where they left, not the base they went to, so the arrow ends at 中国 until it does. The announcements follow as official `SourceBadge`s. 找熊猫 opens it from the first explore card; the 归国 filter chip is still to come.
+
 The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and the large title, then a `Segmented` control with 本周 and 本月, the week hero, the memories of the range, and the 那年今天 switch. The memories are one timeline card as in the mockup (`MemoryTimeline`), with 少显示 and 关闭 on a long press and as accessibility actions, and the sources as badges under the card. The hero is the page variant of the week hero: no tag, the day it happened, what happened, and N 周年 at the right.
 
 ## Open decisions

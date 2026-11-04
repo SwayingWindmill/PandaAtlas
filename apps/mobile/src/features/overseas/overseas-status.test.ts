@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { byStage, partialDate, statusDetail, updatedDay } from "./format";
+import { partialDate, returnMeta, returnSections, updatedDay } from "./format";
 import type { OverseasStatusItem } from "./overseas-status";
 
 const item = (overrides: Partial<OverseasStatusItem> = {}): OverseasStatusItem => ({
@@ -24,15 +24,27 @@ describe("overseas status format", () => {
     expect(updatedDay("2026-10-01T20:00:00Z")).toBe("2026-10-02");
   });
 
-  it("writes place, return and source", () => {
-    expect(statusDetail(item({ expectedReturn: { on: "2027-02", precision: "month" } }), "某动物园")).toBe(
-      "某动物园 · 预计2027年2月\nexample.org · 更新于 2026年10月2日",
-    );
-    expect(statusDetail(item({ stage: "returned", returnedOn: "2026-01-05" }), "基地").split("\n")[0]).toBe("基地 · 2026年1月5日归国");
+  it("puts returns coming first, then each year newest first, then the pandas abroad", () => {
+    const sections = returnSections([
+      item({ pandaSlug: "a" }),
+      item({ pandaSlug: "b", stage: "returned", returnedOn: "2026-01-28", institutionSlug: "ueno" }),
+      item({ pandaSlug: "c", stage: "returned", returnedOn: "2026-01-28", institutionSlug: "ueno" }),
+      item({ pandaSlug: "d", stage: "returned", returnedOn: "2024-10-12" }),
+      item({ pandaSlug: "e", stage: "returned", returnedOn: "2026-03-01" }),
+      item({ pandaSlug: "f", stage: "in_transit" }),
+      item({ pandaSlug: "g", stage: "quarantine" }),
+    ]);
+    expect(sections.map((section) => section.title)).toEqual(["即将归国", "2026", "2024", "旅居海外"]);
+    expect(sections[0]!.groups.map((group) => group.stage)).toEqual(["quarantine", "in_transit"]);
+    expect(sections[1]!.groups.map((group) => group.items.map((i) => i.pandaSlug).join())).toEqual(["e", "b,c"]);
   });
 
-  it("groups nearest to home first and drops empty stages", () => {
-    const groups = byStage([item(), item({ pandaSlug: "b", stage: "quarantine" })]);
-    expect(groups.map((g) => g.label)).toEqual(["检疫中", "旅居海外"]);
+  it("says the day home, the stage, or the expected date", () => {
+    const [returned] = returnSections([item({ stage: "returned", returnedOn: "2026-01-28" })])[0]!.groups;
+    expect(returnMeta(returned!)).toBe("01.28");
+    const [coming] = returnSections([item({ stage: "quarantine" })])[0]!.groups;
+    expect(returnMeta(coming!)).toBe("检疫中");
+    const [announced] = returnSections([item({ stage: "return_announced", expectedReturn: { on: "2027-02", precision: "month" } })])[0]!.groups;
+    expect(returnMeta(announced!)).toBe("预计2027年2月");
   });
 });

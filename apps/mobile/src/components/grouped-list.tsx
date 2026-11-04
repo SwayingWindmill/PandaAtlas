@@ -111,7 +111,6 @@ export function ListCell({
   role = "button",
   tone = "label",
   lines,
-  detailLines = 2,
   chevron = true,
   checked,
   trailing,
@@ -133,8 +132,6 @@ export function ListCell({
   tone?: "label" | "tint" | "destructive";
   /** Lines the label may wrap to. Defaults to 1, or 2 with a detail line. */
   lines?: number;
-  /** Lines the detail may wrap to. Defaults to 2. */
-  detailLines?: number;
   /** The disclosure chevron on a tappable row. Off for a row that chooses rather than opens (a picker). */
   chevron?: boolean;
   /** A picker row: a trailing checkmark on the chosen one, read as selected. */
@@ -176,7 +173,7 @@ export function ListCell({
             {label}
           </Text>
           {detail ? (
-            <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : detailLines}>
+            <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : 2}>
               {detail}
             </Text>
           ) : null}

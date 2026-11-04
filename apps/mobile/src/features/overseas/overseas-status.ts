@@ -15,7 +15,6 @@ export type OverseasStatusItem = {
   updatedAt: string;
 };
 
-
 /** Published 海外大熊猫状态. Every entry carries its source and the time it was last checked. */
 export async function loadOverseasStatus(): Promise<OverseasStatusItem[]> {
   const { data, error } = await api.GET("/api/v2/overseas-status");
@@ -23,4 +22,4 @@ export async function loadOverseasStatus(): Promise<OverseasStatusItem[]> {
   return (data.items as OverseasStatusItem[]).filter((item) => item.sourceUrl.startsWith("https://"));
 }
 
-export { STAGES, byStage, partialDate, sourceHost, statusDetail, updatedDay } from "./format";
+export { type ReturnGroup, STAGES, partialDate, returnMeta, returnSections, sourceHost, updatedDay } from "./format";

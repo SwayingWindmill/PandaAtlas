@@ -32,20 +32,63 @@ export function updatedDay(instant: string): string {
   return new Date(t + 8 * 3600_000).toISOString().slice(0, 10);
 }
 
-const day = (on: string) => partialDate({ on, precision: "day" });
 
-/** Two short lines: where it is and when it comes home, then the source and when it was checked. */
-export function statusDetail(item: OverseasStatusItem, place: string): string {
-  const when = item.returnedOn
-    ? `${day(item.returnedOn)}归国`
-    : item.expectedReturn
-      ? `预计${partialDate(item.expectedReturn)}`
-      : null;
-  const first = [place, when].filter(Boolean).join(" · ");
-  return `${first}\n${sourceHost(item.sourceUrl)} · 更新于 ${day(updatedDay(item.updatedAt))}`;
+/** Pandas that come home together: one stage, one institution, one day (or one announced date). */
+export interface ReturnGroup {
+  key: string;
+  stage: OverseasStage;
+  institutionSlug: string;
+  /** The day they came home, YYYY-MM-DD, once they have. */
+  returnedOn: string | null;
+  expectedReturn: PartialDate | null;
+  items: OverseasStatusItem[];
 }
 
-/** Non-empty stages in page order, each with its pandas. */
-export function byStage(items: OverseasStatusItem[]): { stage: OverseasStage; label: string; items: OverseasStatusItem[] }[] {
-  return STAGES.map((s) => ({ ...s, items: items.filter((item) => item.stage === s.stage) })).filter((s) => s.items.length > 0);
+const COMING: OverseasStage[] = ["quarantine", "in_transit", "return_announced"];
+
+function groupsOf(items: OverseasStatusItem[]): ReturnGroup[] {
+  const groups = new Map<string, ReturnGroup>();
+  for (const item of items) {
+    const when = item.returnedOn ?? item.expectedReturn?.on ?? "";
+    const key = `${item.stage}|${item.institutionSlug}|${when}`;
+    const group = groups.get(key) ?? {
+      key,
+      stage: item.stage,
+      institutionSlug: item.institutionSlug,
+      returnedOn: item.returnedOn ?? null,
+      expectedReturn: item.expectedReturn ?? null,
+      items: [],
+    };
+    group.items.push(item);
+    groups.set(key, group);
+  }
+  return [...groups.values()];
+}
+
+/**
+ * The page in sections (v4 `15-overseas-return`): 即将归国 first (nearest to home first), then each year's
+ * returns, newest first, then the pandas still abroad. Pandas that came home together share a row.
+ */
+export function returnSections(items: OverseasStatusItem[]): { title: string; groups: ReturnGroup[] }[] {
+  const coming = groupsOf(items.filter((item) => COMING.includes(item.stage))).sort(
+    (a, b) => COMING.indexOf(a.stage) - COMING.indexOf(b.stage) || (a.expectedReturn?.on ?? "").localeCompare(b.expectedReturn?.on ?? ""),
+  );
+  const returned = groupsOf(items.filter((item) => item.stage === "returned" && item.returnedOn)).sort((a, b) =>
+    (b.returnedOn ?? "").localeCompare(a.returnedOn ?? ""),
+  );
+  const years = [...new Set(returned.map((group) => group.returnedOn!.slice(0, 4)))];
+  const abroad = groupsOf(items.filter((item) => item.stage === "abroad"));
+  return [
+    ...(coming.length > 0 ? [{ title: "即将归国", groups: coming }] : []),
+    ...years.map((year) => ({ title: year, groups: returned.filter((group) => group.returnedOn!.startsWith(year)) })),
+    ...(abroad.length > 0 ? [{ title: "旅居海外", groups: abroad }] : []),
+  ];
+}
+
+/** What the row says at the right: the day it came home, its stage, or when it is expected. */
+export function returnMeta(group: ReturnGroup): string | null {
+  if (group.returnedOn) return `${group.returnedOn.slice(5, 7)}.${group.returnedOn.slice(8, 10)}`;
+  if (group.stage === "abroad") return group.expectedReturn ? `预计${partialDate(group.expectedReturn)}` : null;
+  const label = STAGES.find((stage) => stage.stage === group.stage)?.label ?? null;
+  return group.expectedReturn && group.stage === "return_announced" ? `预计${partialDate(group.expectedReturn)}` : label;
 }
