@@ -10,6 +10,7 @@ export { default as BellRing } from "lucide-react-native/icons/bell-ring";
 export { default as Binoculars } from "lucide-react-native/icons/binoculars";
 export { default as BookA } from "lucide-react-native/icons/book-a";
 export { default as BookOpen } from "lucide-react-native/icons/book-open";
+export { default as Camera } from "lucide-react-native/icons/camera";
 export { default as Cake } from "lucide-react-native/icons/cake";
 export { default as CalendarCheck } from "lucide-react-native/icons/calendar-check";
 export { default as CalendarDays } from "lucide-react-native/icons/calendar-days";
