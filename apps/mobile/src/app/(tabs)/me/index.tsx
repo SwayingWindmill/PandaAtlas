@@ -1,41 +1,51 @@
 import { Image } from "expo-image";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
-import { ListCell, ListSection } from "@/components/grouped-list";
+import { ListCell, ListSection, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Bell, CalendarHeart, Flag, FolderHeart, LayoutGrid, MapPin, PawPrint, Settings, Sun } from "@/components/icons";
+import {
+  Bell,
+  CalendarHeart,
+  FilePen,
+  Flag,
+  FolderHeart,
+  Heart,
+  LayoutGrid,
+  MapPin,
+  PawPrint,
+  Pencil,
+  Settings,
+  Sun,
+} from "@/components/icons";
 import { Page } from "@/components/page";
 import { SectionHeader } from "@/components/section-header";
-import { Badge } from "@/components/ui/badge";
+import { StatTile } from "@/components/stat-tile";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { CheckinCard } from "@/features/checkin/checkin-card";
-import { statusLabel } from "@/features/corrections/correction";
-import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
+import { loadCheckins } from "@/features/checkin/checkin";
+import { loadCollections } from "@/features/collections/collections";
+import { loadMyContributions } from "@/features/corrections/submissions";
 import { useFollowed } from "@/features/engagement/favorites";
-import { localToday, shortDay } from "@/features/engagement/seen";
+import { localToday } from "@/features/engagement/seen";
 import { loadMilestones } from "@/features/milestones/load";
 import { useMilestonesOn } from "@/features/milestones/prefs";
 import { loadInbox } from "@/features/notifications/inbox";
 import { unreadCount } from "@/features/notifications/notifications";
-import { openPanda } from "@/features/pandas/panda-row";
-import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { NICKNAME_MAX, displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
-import { PandaAvatar } from "@/features/today/followed-strip";
 import { StoryPhotoTile } from "@/features/today/story-photo-tile";
 import { type StoryPhoto, useStoryPhotos } from "@/features/today/story-photos";
+import { loadVisits } from "@/features/visits/visits";
 import { successHaptic } from "@/lib/haptics";
-import { HAIRLINE } from "@/lib/surface";
 
-const AVATAR = 72;
+const AVATAR = 64;
 
-/** The round 设置 button in the corner of the profile card, as Music and the App Store put the account. */
+/** The round 设置 button in the corner of the signed-out card, as Music and the App Store put the account. */
 function SettingsButton() {
   return (
     <Pressable
@@ -140,6 +150,7 @@ function SignedOut() {
   );
 }
 
+/** The fan's monogram and name in one row, with a tint pencil that opens the rename field under it. */
 function Profile({ email }: { email: string | null }) {
   const muted = String(useCSSVariable("--color-muted-foreground"));
   const { profile, rename } = useProfile();
@@ -158,21 +169,29 @@ function Profile({ email }: { email: string | null }) {
     setStatus("idle");
   }
 
-  if (!profile) return <Skeleton className="h-44 w-full rounded-card" accessibilityLabel="正在加载" />;
+  if (!profile) return <Skeleton className="h-16 w-full rounded-card" accessibilityLabel="正在加载" />;
   const name = displayName(profile, email);
 
   return (
-    <ProfileCard>
-      <ProfileAvatar name={name} size={AVATAR} />
-      <View className="gap-hair-gap">
-        <Text variant="title" numberOfLines={1}>
+    <View className="gap-stack">
+      <View className="flex-row items-center gap-stack">
+        <ProfileAvatar name={name} size={AVATAR} quiet />
+        <Text variant="title" className="min-w-0 flex-1" numberOfLines={1}>
           {name}
         </Text>
-        {email && email !== name ? (
-          <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
-            {email}
-          </Text>
-        ) : null}
+        {editing ? null : (
+          <Pressable
+            onPress={() => {
+              setDraft(profile.nickname);
+              setEditing(true);
+            }}
+            role="button"
+            accessibilityLabel="改名字"
+            className="size-11 items-center justify-center active:opacity-70"
+          >
+            <Icon icon={Pencil} tone="tint" />
+          </Pressable>
+        )}
       </View>
       {editing ? (
         <View className="gap-stack-tight">
@@ -201,149 +220,89 @@ function Profile({ email }: { email: string | null }) {
             </Text>
           ) : null}
         </View>
-      ) : (
-        <Button
-          variant="tinted"
-          size="sm"
-          className="self-start"
-          onPress={() => {
-            setDraft(profile.nickname);
-            setEditing(true);
-          }}
-        >
-          <Text>改名字</Text>
-        </Button>
-      )}
-    </ProfileCard>
-  );
-}
-
-function Following() {
-  const followed = useFollowed();
-  const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
-  useEffect(() => {
-    void loadPandaIndex().then(setPandas);
-  }, []);
-  if (followed === null || pandas === null) return null;
-  const items = pandas.filter((panda) => followed.has(panda.id));
-  return (
-    <View className="gap-row">
-      <SectionHeader
-        title="关注的熊猫"
-        icon={PawPrint}
-        count={String(items.length)}
-        action={items.length === 0 ? { label: "找熊猫", href: "/find" } : undefined}
-      />
-      {items.length === 0 ? (
-        <Text variant="subheadline" className="text-muted-foreground">
-          在熊猫资料页点「关注」，它们会排在这里。
-        </Text>
-      ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="-mx-inset"
-          contentContainerClassName="gap-row px-inset"
-        >
-          {items.map((panda) => (
-            <PandaAvatar key={panda.id} panda={panda} />
-          ))}
-        </ScrollView>
-      )}
+      ) : null}
     </View>
   );
 }
 
-function Destinations() {
-  const [unread, setUnread] = useState(0);
-  const milestonesOn = useMilestonesOn();
-  // The latest 里程碑, said beside the row as 通知 says its unread count; nothing while there is none.
-  const [latest, setLatest] = useState<string | undefined>(undefined);
-  useFocusEffect(
-    useCallback(() => {
-      loadInbox()
-        .then((messages) => setUnread(unreadCount(messages)))
-        .catch(() => setUnread(0));
-    }, []),
-  );
-  useFocusEffect(
-    useCallback(() => {
-      if (!milestonesOn) return;
-      loadMilestones()
-        .then((items) => setLatest(items[0]?.title))
-        .catch(() => setLatest(undefined));
-    }, [milestonesOn]),
-  );
-  return (
-    <ListSection>
-      <ListCell label="我的合集" icon={FolderHeart} href="/collections" />
-      <ListCell label="去过的地点" icon={MapPin} href="/visits" />
-      {milestonesOn ? <ListCell label="里程碑" icon={Flag} meta={latest} href="/milestones" /> : null}
-      <ListCell
-        label="通知"
-        icon={Bell}
-        meta={unread > 0 ? `${unread} 条未读` : undefined}
-        href="/notifications"
-        last
-      />
-    </ListSection>
-  );
+/** What 我的 counts. A count that fails to load is left out rather than shown as 0. */
+interface Counts {
+  checkinDays?: number;
+  places?: number;
+  collections?: number;
+  milestones?: number;
+  unread?: number;
+  contributions?: number;
 }
 
-function Contributions() {
-  const [items, setItems] = useState<ContributionRecord[] | null>(null);
-  const [pandas, setPandas] = useState<Map<string, PandaListItem>>(new Map());
-  // Read again whenever 我的 shows, so a report sent from a profile appears on return.
+/** Read again each time the tab shows, so a change made elsewhere is counted on return. */
+function useCounts(milestonesOn: boolean): Counts {
+  const [counts, setCounts] = useState<Counts>({});
   useFocusEffect(
     useCallback(() => {
-      loadMyContributions()
-        .then(setItems)
-        .catch(() => setItems(null));
-      loadPandaIndex()
-        .then((list) => setPandas(new Map(list.map((panda) => [panda.id, panda]))))
+      const set = (patch: Counts) => setCounts((current) => ({ ...current, ...patch }));
+      loadCheckins()
+        .then((summary) => set({ checkinDays: summary.totalVisitDays }))
         .catch(() => undefined);
-    }, []),
+      loadVisits()
+        .then((visits) => set({ places: new Set(visits.map((visit) => visit.placeId)).size }))
+        .catch(() => undefined);
+      loadCollections()
+        .then((items) => set({ collections: items.length }))
+        .catch(() => undefined);
+      loadInbox()
+        .then((messages) => set({ unread: unreadCount(messages) }))
+        .catch(() => undefined);
+      loadMyContributions()
+        .then((items) => set({ contributions: items.length }))
+        .catch(() => undefined);
+      if (milestonesOn) {
+        loadMilestones()
+          .then((items) => set({ milestones: items.length }))
+          .catch(() => undefined);
+      }
+    }, [milestonesOn]),
   );
-  if (!items || items.length === 0) return null;
+  return counts;
+}
+
+function count(value: number | undefined) {
+  return value === undefined ? undefined : value.toLocaleString("zh-CN");
+}
+
+function amount(value: number | undefined, unit: string) {
+  return value === undefined ? "—" : `${count(value)} ${unit}`;
+}
+
+function SignedIn({ email }: { email: string | null }) {
+  const stacked = useStacked();
+  const followed = useFollowed();
+  const milestonesOn = useMilestonesOn();
+  const counts = useCounts(milestonesOn);
   return (
-    <View className="gap-row">
-      <SectionHeader title="我的纠错" icon={Flag} count={String(items.length)} />
-      <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
-        {items.map((item, index) => {
-          const panda = pandas.get(item.targetPandaId);
-          const name = panda?.name ?? "熊猫";
-          const status = statusLabel(item.status);
-          return (
-            <View key={item.submissionId}>
-              <Pressable
-                disabled={!panda}
-                onPress={() => panda && openPanda(panda.slug)}
-                role="button"
-                accessibilityLabel={`${name}，${status}`}
-                className="min-h-11 gap-hair-gap px-inset py-row active:bg-accent"
-              >
-                <View className="flex-row items-center justify-between gap-row">
-                  <Text variant="headline" className="min-w-0 flex-1" numberOfLines={1}>
-                    {name}
-                  </Text>
-                  <Badge variant={item.status === "accepted" ? "tint" : "neutral"}>
-                    <Text>{status}</Text>
-                  </Badge>
-                </View>
-                <Text variant="footnote" className="text-muted-foreground tabular-nums">
-                  {`${shortDay(item.submittedAt.slice(0, 10))}提交`}
-                </Text>
-                {item.statusExplanation ? (
-                  <Text variant="subheadline" className="text-muted-foreground">
-                    {item.statusExplanation}
-                  </Text>
-                ) : null}
-              </Pressable>
-              {index < items.length - 1 ? <View className="ml-inset bg-border" style={{ height: HAIRLINE }} /> : null}
-            </View>
-          );
-        })}
+    <View className="gap-section">
+      <Profile email={email} />
+      <View className={stacked ? "gap-row" : "flex-row gap-row"}>
+        <StatTile icon={Heart} label="关注" value={amount(followed?.size, "只")} href="/following" />
+        <StatTile icon={CalendarHeart} label="打卡" value={amount(counts.checkinDays, "天")} href="/checkin" />
+        <StatTile icon={MapPin} label="去过" value={amount(counts.places, "处")} href="/visits" />
       </View>
+      <ListSection>
+        <ListCell label="关注的熊猫" icon={Heart} meta={count(followed?.size)} href="/following" />
+        <ListCell label="我的合集" icon={FolderHeart} meta={count(counts.collections)} href="/collections" />
+        <ListCell label="去过的地点" icon={MapPin} meta={count(counts.places)} href="/visits" last={!milestonesOn} />
+        {milestonesOn ? <ListCell label="里程碑" icon={Flag} meta={count(counts.milestones)} href="/milestones" last /> : null}
+      </ListSection>
+      <ListSection>
+        <ListCell label="通知" icon={Bell} meta={counts.unread ? `${counts.unread} 条未读` : undefined} href="/notifications" />
+        <ListCell
+          label="我的纠错"
+          icon={FilePen}
+          meta={counts.contributions ? count(counts.contributions) : undefined}
+          href="/contributions"
+        />
+        <ListCell label="设置" icon={Settings} href="/settings" last />
+      </ListSection>
     </View>
   );
 }
@@ -364,15 +323,7 @@ export default function MeScreen() {
           </Text>
         </ProfileCard>
       ) : null}
-      {state.status === "signedIn" ? (
-        <View className="gap-section">
-          <Profile email={state.email} />
-          <Following />
-          <CheckinCard />
-          <Destinations />
-          <Contributions />
-        </View>
-      ) : null}
+      {state.status === "signedIn" ? <SignedIn email={state.email} /> : null}
     </Page>
   );
 }

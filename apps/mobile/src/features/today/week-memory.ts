@@ -30,10 +30,11 @@ function title(kind: WeekMemory["kind"], years: number): string {
 /**
  * The nearest public anniversary of the week: each entry is one day's memories, today first. On a day the
  * pandas with the same kind and years are told together; coming home beats coming to a place beats a
- * birthday. A deceased panda and the fan's own records never take the head. Null when the week has none.
+ * birthday. A deceased panda and the fan's own records never take the head. Null when the first `within`
+ * days have none.
  */
-export function weekMemory(days: { date: string; memories: Memory[] }[]): WeekMemory | null {
-  for (const [daysLeft, day] of days.slice(0, WEEK_DAYS).entries()) {
+export function weekMemory(days: { date: string; memories: Memory[] }[], within = WEEK_DAYS): WeekMemory | null {
+  for (const [daysLeft, day] of days.slice(0, within).entries()) {
     const wanted = day.memories.filter((memory) => KINDS.includes(memory.kind) && !memory.personal && !memory.deceased);
     for (const kind of KINDS) {
       const ofKind = wanted.filter((memory) => memory.kind === kind);

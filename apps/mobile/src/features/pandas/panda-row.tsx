@@ -3,16 +3,20 @@ import { router } from "expo-router";
 import { memo } from "react";
 import { Pressable, View } from "react-native";
 
+import { Icon } from "@/components/icon";
+import { Mars, Venus } from "@/components/icons";
 import { PhotoOutline } from "@/components/photo-outline";
 import { Text } from "@/components/ui/text";
 import { type PandaListItem, listMeta } from "@/features/pandas/pandas";
 import { usePandaCover } from "@/lib/covers";
-import { HAIRLINE, RADIUS } from "@/lib/surface";
+import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
 export function openPanda(slug: string) {
   router.push({ pathname: "/pandas/[slug]", params: { slug } });
 }
+
+const SEX: Record<string, string> = { male: "雄性", female: "雌性" };
 
 /** The row's photo, and where the separator under it starts: under the name, past the photo. */
 const PHOTO = 56;
@@ -42,11 +46,11 @@ export const PandaRow = memo(function PandaRow({
       <Pressable
         onPress={() => openPanda(item.slug)}
         role="button"
-        accessibilityLabel={meta ? `${item.name}，${meta}` : item.name}
+        accessibilityLabel={[item.name, SEX[item.sex ?? ""], meta].filter(Boolean).join("，")}
         className="min-h-11 flex-row items-center gap-row px-inset py-stack-tight active:bg-accent"
       >
         <View
-          className="items-center justify-center overflow-hidden rounded-control bg-secondary"
+          className="items-center justify-center overflow-hidden rounded-full bg-secondary"
           style={{ width: PHOTO, height: PHOTO, borderCurve: "continuous" }}
         >
           {photo ? (
@@ -56,12 +60,15 @@ export const PandaRow = memo(function PandaRow({
               {item.name.slice(0, 1)}
             </Text>
           )}
-          {photo ? <PhotoOutline radius={RADIUS.control} /> : null}
+          {photo ? <PhotoOutline radius={PHOTO / 2} /> : null}
         </View>
         <View className="min-w-0 flex-1 gap-hair-gap">
-          <Text variant="headline" numberOfLines={1}>
-            {item.name}
-          </Text>
+          <View className="flex-row items-center gap-hair-gap">
+            <Text variant="headline" className="shrink" numberOfLines={1}>
+              {item.name}
+            </Text>
+            {item.sex ? <Icon icon={item.sex === "female" ? Venus : Mars} size="footnote" /> : null}
+          </View>
           {meta ? (
             <Text variant="subheadline" className="text-muted-foreground" numberOfLines={1}>
               {meta}

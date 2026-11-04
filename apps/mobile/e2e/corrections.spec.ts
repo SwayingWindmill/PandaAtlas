@@ -29,6 +29,6 @@ test("a signed-in fan reports a mistake with a source and follows it in 我的",
   await page.getByRole("button", { name: "提交" }).click();
   await expect(page.getByRole("heading", { name: "已收到" })).toBeVisible();
 
-  await page.goto("/me");
+  await page.goto("/contributions");
   await expect(page.getByRole("button", { name: `${panda.name}，等待审核` })).toBeVisible();
 });

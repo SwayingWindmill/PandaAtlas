@@ -18,8 +18,9 @@ test("a signed-in fan follows a panda and marks it seen, and both survive a relo
   await expect(page.getByText(`见过　${todayLabel()}`)).toBeVisible();
 
   await page.goto("/me");
-  await expect(page.getByText("关注的熊猫　1")).toBeVisible();
-  await expect(page.getByText(panda.name)).toBeVisible();
+  await expect(page.getByLabel("关注 1 只")).toBeVisible();
+  await page.goto("/following");
+  await expect(page.getByRole("button", { name: new RegExp(`^${panda.name}`) })).toBeVisible();
 
   await page.goto(`/pandas/${panda.slug}`);
   await page.getByRole("button", { name: `已关注${panda.name}，点按取消` }).click();
@@ -28,7 +29,7 @@ test("a signed-in fan follows a panda and marks it seen, and both survive a relo
   await expect(page.getByRole("button", { name: `记下见过${panda.name}` })).toBeVisible();
 
   await page.goto("/me");
-  await expect(page.getByText("关注的熊猫　0")).toBeVisible();
+  await expect(page.getByLabel("关注 0 只")).toBeVisible();
 });
 
 test("a signed-out fan is sent to sign in from the follow button", async ({ page }) => {

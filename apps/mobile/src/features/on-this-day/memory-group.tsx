@@ -57,11 +57,17 @@ export function MemoryGroup({
   sources,
   onLess,
   onOff,
+  when,
+  sentence = (memory) => memory.text,
 }: {
   memories: Memory[];
   sources: Map<string, Evidence>;
   onLess: (memory: Memory) => void;
   onOff: () => void;
+  /** A line over the name saying which day of a range it falls on (本周, 本月). */
+  when?: (memory: Memory) => string;
+  /** The sentence, when the page words it for another day than today. */
+  sentence?: (memory: Memory) => string;
 }) {
   const [menu, setMenu] = useState<string | null>(null);
   // At accessibility sizes, or in a window as narrow as 200% browser zoom, the photo goes above the words,
@@ -92,13 +98,15 @@ export function MemoryGroup({
         const from = sourceLine(memory, sources.get(memory.key));
         const opened = menu === memory.key;
         const name = memory.subject.name;
+        const day = when?.(memory);
+        const text = sentence(memory);
         return (
           <Fragment key={memory.key}>
             <View className={cn("flex-row", stacked ? "items-start" : "items-center")}>
               <Pressable
                 onPress={() => open(memory)}
                 role="link"
-                accessibilityLabel={[name, memory.text, from].filter(Boolean).join("，")}
+                accessibilityLabel={[day, name, text, from].filter(Boolean).join("，")}
                 className={cn(
                   "min-h-11 min-w-0 flex-1 gap-row py-stack-tight pl-inset active:bg-accent",
                   stacked ? "items-start" : "flex-row items-center",
@@ -107,10 +115,15 @@ export function MemoryGroup({
               >
                 <Thumb memory={memory} />
                 <View className="min-w-0 flex-1 gap-hair-gap">
+                  {day ? (
+                    <Text variant="footnote" className="font-semibold text-muted-foreground tabular-nums">
+                      {day}
+                    </Text>
+                  ) : null}
                   <Text variant="headline" numberOfLines={stacked ? undefined : 1}>
                     {name}
                   </Text>
-                  <Text variant="subheadline">{memory.text}</Text>
+                  <Text variant="subheadline">{text}</Text>
                   {from ? (
                     <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : 2}>
                       {from}
