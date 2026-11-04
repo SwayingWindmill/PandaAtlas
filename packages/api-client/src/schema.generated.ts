@@ -1718,12 +1718,30 @@ export interface components {
             topic: "best_time" | "finding_pandas" | "getting_there" | "good_to_know";
             text: components["schemas"]["LocalizedTextDto"];
         };
+        TimeWindowDto: {
+            /** @description Local time, HH:MM. */
+            start: string;
+            /** @description Local time, HH:MM. */
+            end: string;
+        };
+        ViewingTimingDto: {
+            /** @description When the pandas are usually active, as the facility publishes. */
+            activeWindows: components["schemas"]["TimeWindowDto"][];
+            /** @description The usual midday rest. */
+            napWindow?: components["schemas"]["TimeWindowDto"];
+        };
+        PhotoSpotDto: {
+            name: components["schemas"]["LocalizedTextDto"];
+            window?: components["schemas"]["TimeWindowDto"];
+        };
         FacilityVisitGuideDto: {
             address?: components["schemas"]["LocalizedTextDto"];
             openingHours?: components["schemas"]["LocalizedTextDto"];
             admission?: components["schemas"]["LocalizedTextDto"];
             pandaArea?: components["schemas"]["LocalizedTextDto"];
             tips: components["schemas"]["FacilityVisitTipDto"][];
+            viewing?: components["schemas"]["ViewingTimingDto"];
+            photoSpots?: components["schemas"]["PhotoSpotDto"][];
             /**
              * Format: date
              * @description Opening hours and prices change; this is the day they were last checked.
