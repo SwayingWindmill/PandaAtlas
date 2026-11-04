@@ -1,27 +1,31 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 
+import { localToday } from "@/features/engagement/seen";
 import { useSession } from "@/features/session/session";
 import type { Evidence } from "@/features/timeline/timeline";
 
-import { loadFirstSources, loadMemories } from "./load";
+import { type MemoryDay, loadFirstSources, loadMemoryDays } from "./load";
 import type { Memory } from "./on-this-day";
 
 export interface MemoriesState {
   /** Null while loading. */
   memories: Memory[] | null;
+  /** The same memories by day, in the order the days were asked for. Null while loading. */
+  days: MemoryDay[] | null;
   sources: Map<string, Evidence>;
   failed: boolean;
   reload: () => void;
 }
 
 /**
- * Today's memories, read again each time the screen comes into focus (the day may have turned), with the
- * fan's own records once the session says who they are, and each memory's first readable source.
+ * The memories of `days` (today when none are given), read again each time the screen comes into focus (the
+ * day may have turned), with the fan's own records once the session says who they are, and each memory's
+ * first readable source. `days` is a dependency: pass a stable key, such as the range it was made from.
  */
-export function useMemories(): MemoriesState {
+export function useMemories(days?: (today: string) => string[], key = "today"): MemoriesState {
   const { state } = useSession();
-  const [memories, setMemories] = useState<Memory[] | null>(null);
+  const [loaded, setLoaded] = useState<MemoryDay[] | null>(null);
   const [sources, setSources] = useState<Map<string, Evidence>>(new Map());
   const [failed, setFailed] = useState(false);
   const signedIn = state.status === "signedIn";
@@ -30,12 +34,13 @@ export function useMemories(): MemoriesState {
   const load = useCallback(() => {
     if (waiting) return undefined;
     let live = true;
-    loadMemories({ signedIn })
+    const today = localToday();
+    loadMemoryDays({ signedIn, days: days ? days(today) : [today] })
       .then((next) => {
         if (!live) return;
         setFailed(false);
-        setMemories(next);
-        void loadFirstSources(next).then((found) => live && setSources(found));
+        setLoaded(next);
+        void loadFirstSources(next.flatMap((day) => day.memories)).then((found) => live && setSources(found));
       })
       .catch(() => {
         if (live) setFailed(true);
@@ -43,7 +48,9 @@ export function useMemories(): MemoriesState {
     return () => {
       live = false;
     };
-  }, [signedIn, waiting]);
+    // `days` is a function made on each render; `key` says when it asks for other days.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signedIn, waiting, key]);
 
   useFocusEffect(load);
 
@@ -52,5 +59,5 @@ export function useMemories(): MemoriesState {
     load();
   }, [load]);
 
-  return { memories, sources, failed, reload };
+  return { memories: loaded ? loaded.flatMap((day) => day.memories) : null, days: loaded, sources, failed, reload };
 }

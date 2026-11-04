@@ -1,17 +1,19 @@
 import { Image } from "expo-image";
 import { Link, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Linking, Platform, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import { Linking, Platform, StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
-import { ICON_INSET, ListCell, ListSection, useSingleColumn } from "@/components/grouped-list";
+import { ICON_INSET, ListCell, ListSection, SectionTitle, useSingleColumn } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import {
   Binoculars,
+  CalendarCheck,
   Clock,
+  History,
   Globe,
   Info,
   type LucideIcon,
@@ -21,8 +23,12 @@ import {
   Sunrise,
   Ticket,
   TramFront,
+  Users,
   Video,
 } from "@/components/icons";
+import { IconRow } from "@/components/icon-row";
+import { SourceBadge } from "@/components/source-badge";
+import { TimeBand } from "@/components/time-band";
 import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
@@ -55,7 +61,7 @@ import { HAIRLINE, RADIUS } from "@/lib/surface";
 
 /** Under a resident's photo while it loads, dark enough that the white name already reads. */
 const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
-const GUTTER = semantic.spacing.inset.value;
+const GUTTER = semantic.spacing.gutter.value;
 const GAP = semantic.spacing.row.value;
 
 function openMaps(name: string, { latitude, longitude }: NonNullable<Facility["coordinates"]>) {
@@ -90,7 +96,7 @@ function ResidentTile({ panda, width }: { panda: PandaListItem; width: number })
             <Scrim id={`resident-${panda.id}`} height="45%" />
             {/* Padding on the wrapper: on web a padded, clamped Text shows a third line in its padding. */}
             <View className="absolute right-0 bottom-0 left-0 p-3">
-              <Text variant="title" role="none" className="text-white" numberOfLines={2}>
+              <Text variant="title" role="none" className="text-on-media" numberOfLines={2}>
                 {panda.name}
               </Text>
             </View>
@@ -109,9 +115,7 @@ function Residents({ pandas }: { pandas: PandaListItem[] }) {
   const tile = Math.floor((Math.min(width, 700) - GUTTER * 2 - GAP * (columns - 1)) / columns);
   return (
     <View className="gap-1.5">
-      <Text variant="footnote" role="heading" className="px-4 text-muted-foreground tabular-nums">
-        {`住在这里的熊猫　${pandas.length} 只`}
-      </Text>
+      <SectionTitle title={`住在这里的熊猫　${pandas.length} 只`} icon={PawPrint} />
       <View className="flex-row flex-wrap" style={{ gap: GAP }}>
         {pandas.map((panda) => (
           <ResidentTile key={panda.id} panda={panda} width={tile} />
@@ -123,7 +127,7 @@ function Residents({ pandas }: { pandas: PandaListItem[] }) {
 
 function Former({ pandas }: { pandas: PandaListItem[] }) {
   return (
-    <ListSection title="以前住过">
+    <ListSection title="以前住过" titleIcon={History}>
       {pandas.map((panda, index) => (
         <ListCell key={panda.id} label={panda.name} onPress={() => openPanda(panda.slug)} last={index === pandas.length - 1} />
       ))}
@@ -148,7 +152,18 @@ const GUIDE_ICON: Record<string, LucideIcon> = {
  * grouped card with inset separators. The value wraps freely, so it reads at every text size.
  * The icon sits on the label's line, not centred on a long value.
  */
+/** "09:00–17:00" as one span, or null when the hours are seasonal, several, or free text. */
+function singleSpan(value: string): { open: string; close: string } | null {
+  const spans = [...value.matchAll(/(\d{1,2}:\d{2})\s*[-–—~至到]\s*(\d{1,2}:\d{2})/g)];
+  if (spans.length !== 1) return null;
+  const pad = (time: string) => time.padStart(5, "0");
+  return { open: pad(spans[0]![1]!), close: pad(spans[0]![2]!) };
+}
+
 function GuideRow({ label, value, last }: { label: string; value: string; last: boolean }) {
+  // One plain span of opening hours also draws as a band of the day. No "now" marker: the
+  // venue's time zone is not in the guide, so the band says when, not whether it is open.
+  const span = label === "开放时间" ? singleSpan(value) : null;
   return (
     <View accessible accessibilityLabel={`${label}，${value}`}>
       <View className="flex-row gap-3 px-4 py-3">
@@ -158,6 +173,11 @@ function GuideRow({ label, value, last }: { label: string; value: string; last: 
             {label}
           </Text>
           <Text variant="body">{value}</Text>
+          {span ? (
+            <View className="pt-hair-gap" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+              <TimeBand open={span.open} close={span.close} />
+            </View>
+          ) : null}
         </View>
       </View>
       {last ? null : <View className="bg-border" style={[{ height: HAIRLINE }, ICON_INSET]} />}
@@ -208,20 +228,24 @@ function VisitGuide({ institution, unseen }: { institution: InstitutionDetail; u
   if (guided.length === 0 && !institution.websiteUrl) return null;
   return (
     <View className="gap-4">
-      <View className="gap-hair-gap px-4">
-        <Text variant="title" role="heading">
-          参观攻略
-        </Text>
-        <Text variant="footnote" className="text-muted-foreground">
-          {guided.length === 0
-            ? "这里还没有收录参观信息，出发前请看官网。"
-            : verifiedOn
-              ? `开放时间和门票会调整，以官方公布为准。核实于 ${longDate(verifiedOn)}。`
-              : "开放时间和门票会调整，以官方公布为准。"}
-        </Text>
+      <View className="gap-hair-gap">
+        <View className="flex-row items-center gap-stack-tight">
+          <Icon icon={Ticket} size="title3" />
+          <Text variant="title" role="heading">
+            参观攻略
+          </Text>
+        </View>
+        {/* The date is the caveat: hours and prices are as checked then; 出发前看官网 below says the rest. */}
+        {guided.length > 0 && verifiedOn ? (
+          <IconRow
+            icon={CalendarCheck}
+            text={longDate(verifiedOn)}
+            accessibilityLabel={`开放时间和门票会调整，以官方公布为准。核实于 ${longDate(verifiedOn)}`}
+          />
+        ) : null}
       </View>
       {unseen && institution.residents.length > 0 ? (
-        <ListSection title="这次去">
+        <ListSection title="这次去" titleIcon={Users}>
           <ListCell
             label={unseen.length === 0 ? "住在这里的你都见过了" : "还没见过"}
             detail={unseen.length === 0 ? undefined : unseen.map((panda) => panda.name).join("、")}
@@ -248,16 +272,15 @@ function VisitGuide({ institution, unseen }: { institution: InstitutionDetail; u
         </ListSection>
       ) : null}
       {sources.length > 0 ? (
-        <View className="flex-row flex-wrap gap-x-3 gap-y-1 px-4">
-          <Text variant="footnote" className="text-muted-foreground">
-            攻略出处
-          </Text>
+        <View className="flex-row flex-wrap gap-x-row gap-y-hair-gap px-4">
           {sources.map((url) => (
-            <Pressable key={url} onPress={() => void Linking.openURL(url)} role="link" accessibilityLabel={`攻略出处 ${hostname(url)}`}>
-              <Text variant="footnote" className="text-muted-foreground underline">
-                {hostname(url)}
-              </Text>
-            </Pressable>
+            <SourceBadge
+              key={url}
+              name={hostname(url)}
+              icon={Globe}
+              accessibilityLabel={`攻略出处 ${hostname(url)}`}
+              onPress={() => void Linking.openURL(url)}
+            />
           ))}
         </View>
       ) : null}
@@ -268,18 +291,22 @@ function VisitGuide({ institution, unseen }: { institution: InstitutionDetail; u
 function Sources({ institution }: { institution: InstitutionDetail }) {
   if (!institution.verifiedOn && institution.sources.length === 0) return null;
   return (
-    <View className="flex-row flex-wrap gap-x-3 gap-y-1 px-4">
+    <View className="flex-row flex-wrap items-center gap-x-row gap-y-hair-gap px-4">
       {institution.verifiedOn ? (
-        <Text variant="footnote" className="text-muted-foreground">
-          核实于 {longDate(institution.verifiedOn)}
-        </Text>
+        <IconRow
+          icon={CalendarCheck}
+          text={longDate(institution.verifiedOn)}
+          accessibilityLabel={`核实于 ${longDate(institution.verifiedOn)}`}
+        />
       ) : null}
       {institution.sources.map((url) => (
-        <Pressable key={url} onPress={() => void Linking.openURL(url)} role="link" accessibilityLabel={`来源 ${hostname(url)}`}>
-          <Text variant="footnote" className="text-muted-foreground underline">
-            {hostname(url)}
-          </Text>
-        </Pressable>
+        <SourceBadge
+          key={url}
+          name={hostname(url)}
+          icon={Globe}
+          accessibilityLabel={`来源 ${hostname(url)}`}
+          onPress={() => void Linking.openURL(url)}
+        />
       ))}
     </View>
   );
@@ -292,11 +319,11 @@ const HERO = 300;
 function HeroTitle({ institution }: { institution: InstitutionDetail }) {
   return (
     <View pointerEvents="none" className="absolute right-0 bottom-0 left-0 gap-1 px-4 pb-4">
-      <Text variant="display" className="text-white" numberOfLines={3}>
+      <Text variant="display" className="text-on-media" numberOfLines={3}>
         {institution.name}
       </Text>
       {institution.meta ? (
-        <Text variant="footnote" className="font-semibold text-white/85">
+        <Text variant="footnote" className="font-semibold text-on-media/85">
           {institution.meta}
         </Text>
       ) : null}
@@ -380,7 +407,7 @@ export default function InstitutionScreen() {
       <View className="flex-1 bg-background">
         <HeroHeader title="" pastHero={false} />
         {failed ? (
-          <View className="px-4" style={{ paddingTop: insets.top + 64 }}>
+          <View className="px-gutter" style={{ paddingTop: insets.top + 64 }}>
             <LoadFailed message="这一页暂时打不开。" onRetry={retry} />
           </View>
         ) : (
@@ -424,7 +451,7 @@ export default function InstitutionScreen() {
         ) : (
           <PlateHero institution={institution} pending={hero === undefined} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-4 pt-5">
+        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-gutter pt-5">
           {institution.summary ? <Text variant="body">{institution.summary}</Text> : null}
           {institution.residents.length > 0 ? <Residents pandas={institution.residents} /> : null}
           <VenueNewsSection institutionSlug={institution.slug} />

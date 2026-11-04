@@ -5662,10 +5662,12 @@
         "type": "object",
         "properties": {
           "zh": {
-            "type": "string"
+            "type": "string",
+            "description": "Chinese text."
           },
           "en": {
-            "type": "string"
+            "type": "string",
+            "description": "English text. An empty string means the item was published in Chinese only; clients that ask for English show zh instead of a blank line."
           }
         },
         "required": [

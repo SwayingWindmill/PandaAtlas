@@ -6,7 +6,8 @@ import { signIn, testEmail } from "./session";
 test("signed out, 纠错 asks the fan to sign in first", async ({ page }) => {
   const { panda } = fixture();
   await page.goto(`/pandas/${panda.slug}`);
-  await page.getByRole("button", { name: "资料有误？纠错" }).click();
+  await page.getByRole("button", { name: "更多" }).click();
+  await page.getByRole("menuitem", { name: "资料有误" }).click();
   await expect(page.getByText("登录后才能纠错")).toBeVisible();
 });
 
@@ -14,7 +15,8 @@ test("a signed-in fan reports a mistake with a source and follows it in 我的",
   const { panda } = fixture();
   await signIn(page, testEmail("correct"));
   await page.goto(`/pandas/${panda.slug}`);
-  await page.getByRole("button", { name: "资料有误？纠错" }).click();
+  await page.getByRole("button", { name: "更多" }).click();
+  await page.getByRole("menuitem", { name: "资料有误" }).click();
   await expect(page.getByText(`纠错　${panda.name}`)).toBeVisible();
 
   await page.getByRole("button", { name: "提交" }).click();
@@ -29,6 +31,6 @@ test("a signed-in fan reports a mistake with a source and follows it in 我的",
   await page.getByRole("button", { name: "提交" }).click();
   await expect(page.getByRole("heading", { name: "已收到" })).toBeVisible();
 
-  await page.goto("/me");
+  await page.goto("/contributions");
   await expect(page.getByRole("button", { name: `${panda.name}，等待审核` })).toBeVisible();
 });

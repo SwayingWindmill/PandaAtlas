@@ -10,11 +10,11 @@ import { initial } from "./profile";
  * The fan's avatar: the first character of their name on the tinted fill, as Contacts draws a
  * monogram. With no name (signed out) it is the person glyph on the plain fill.
  */
-export function ProfileAvatar({ name, size }: { name: string | null; size: number }) {
+export function ProfileAvatar({ name, size, quiet = false }: { name: string | null; size: number; quiet?: boolean }) {
   return (
     <View
       className={
-        name
+        name && !quiet
           ? "items-center justify-center rounded-full bg-highlight-soft"
           : "items-center justify-center rounded-full bg-secondary"
       }
@@ -22,7 +22,11 @@ export function ProfileAvatar({ name, size }: { name: string | null; size: numbe
       accessible={false}
     >
       {name ? (
-        <Text variant={size >= 64 ? "display" : "title"} className="text-primary" role="none">
+        <Text
+          variant={size >= 64 ? "display" : "title"}
+          className={quiet ? "text-muted-foreground" : "text-primary"}
+          role="none"
+        >
           {initial(name)}
         </Text>
       ) : (

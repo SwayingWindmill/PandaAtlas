@@ -2,32 +2,32 @@
 # Generated from apps/mobile/src/design/tokens.ts by `npm run design:tokens -w @zhipanda/mobile`. Do not edit by hand.
 version: alpha
 name: 吱熊猫
-description: "A calm iOS app about giant pandas: system colors with a bamboo-jade tint and a rare shoot-gold accent, purpose-named type, and photographs that do the talking."
+description: "A calm iOS app about giant pandas: panda black and white with one sky-blue tint, neutral grey cards, purpose-named type, and photographs that do the talking."
 colors:
-  grouped-background: "#F2F2F7"
+  grouped-background: "#FFFFFF"
   grouped-background-dark: "#000000"
   background: "#FFFFFF"
   background-dark: "#000000"
-  card: "#FFFFFF"
-  card-dark: "#1C1C1E"
-  label: "#000000"
+  card: "#F3F3F5"
+  card-dark: "#151517"
+  label: "#0A0A0A"
   label-dark: "#FFFFFF"
-  secondary-label: "#636366"
-  secondary-label-dark: "#AEAEB2"
-  tertiary-label: "#C4C4C7"
+  secondary-label: "#6B6B70"
+  secondary-label-dark: "#A1A1A6"
+  tertiary-label: "#AEAEB2"
   tertiary-label-dark: "#5B5B60"
-  separator: "#C6C6C8"
+  separator: "#D1D1D6"
   separator-dark: "#38383A"
-  primary: "#165C3C"
-  primary-dark: "#7DCAA4"
+  primary: "#0A6CDB"
+  primary-dark: "#5AB4FF"
+  graphic: "#1A8CFF"
+  graphic-dark: "#4DA8FF"
+  button: "#0A0A0A"
+  button-dark: "#FFFFFF"
   button-label: "#FFFFFF"
   button-label-dark: "#000000"
-  highlight-soft: "#E3EBE8"
-  highlight-soft-dark: "#16241E"
-  warm: "#846018"
-  warm-dark: "#E3BD6E"
-  warm-soft: "#F5EDDB"
-  warm-soft-dark: "#2B2312"
+  highlight-soft: "#EBF4FF"
+  highlight-soft-dark: "#0C2033"
   destructive: "#CE2C31"
   destructive-dark: "#FF6961"
   warning: "#B25000"
@@ -36,6 +36,8 @@ colors:
   fill-dark: "#2C2C2E"
   pressed: "#D1D1D6"
   pressed-dark: "#3A3A3C"
+  switch-knob: "#FFFFFF"
+  switch-knob-dark: "#FFFFFF"
   on-media: "#FFFFFF"
   on-media-dark: "#FFFFFF"
   media-placeholder: "#3A3A3C"
@@ -52,6 +54,18 @@ typography:
     fontSize: 22px
     fontWeight: 700
     lineHeight: 28px
+    letterSpacing: 0px
+  stat:
+    fontFamily: "ui-rounded"
+    fontSize: 22px
+    fontWeight: 700
+    lineHeight: 28px
+    letterSpacing: 0px
+  figure:
+    fontFamily: "ui-rounded"
+    fontSize: 34px
+    fontWeight: 700
+    lineHeight: 41px
     letterSpacing: 0px
   headline:
     fontFamily: "system-ui"
@@ -111,13 +125,13 @@ rounded:
   card: 24px
   tile: 16px
   control: 12px
-  group: 10px
+  group: 20px
   pill: 999px
-  glyph: 8px
 spacing:
   hair-gap: 4px
   stack-tight: 8px
   row: 12px
+  gutter: 20px
   inset: 16px
   stack: 20px
   section-tight: 24px
@@ -176,14 +190,14 @@ components:
     textColor: "{colors.tertiary-label-dark}"
     size: 17px
   button-primary:
-    backgroundColor: "{colors.primary}"
+    backgroundColor: "{colors.button}"
     textColor: "{colors.button-label}"
     typography: "{typography.headline}"
     rounded: "{rounded.pill}"
     height: 48px
     padding: 24px
   button-primary-dark:
-    backgroundColor: "{colors.primary-dark}"
+    backgroundColor: "{colors.button-dark}"
     textColor: "{colors.button-label-dark}"
     typography: "{typography.headline}"
     rounded: "{rounded.pill}"
@@ -201,6 +215,28 @@ components:
     typography: "{typography.headline}"
     rounded: "{rounded.pill}"
     height: 48px
+  chip-selected:
+    backgroundColor: "{colors.highlight-soft}"
+    textColor: "{colors.primary}"
+    typography: "{typography.subheadline}"
+    rounded: "{rounded.pill}"
+    height: 32px
+  chip-selected-dark:
+    backgroundColor: "{colors.highlight-soft-dark}"
+    textColor: "{colors.primary-dark}"
+    typography: "{typography.subheadline}"
+    rounded: "{rounded.pill}"
+    height: 32px
+  progress-ring:
+    backgroundColor: "{colors.fill}"
+    textColor: "{colors.graphic}"
+    rounded: "{rounded.pill}"
+    size: 64px
+  progress-ring-dark:
+    backgroundColor: "{colors.fill-dark}"
+    textColor: "{colors.graphic-dark}"
+    rounded: "{rounded.pill}"
+    size: 64px
   button-secondary:
     backgroundColor: "{colors.fill}"
     textColor: "{colors.label}"
@@ -231,28 +267,36 @@ components:
     backgroundColor: "{colors.card-dark}"
     textColor: "{colors.warning-dark}"
     typography: "{typography.footnote}"
-  warm-badge:
-    backgroundColor: "{colors.warm-soft}"
-    textColor: "{colors.warm}"
+  tint-badge:
+    backgroundColor: "{colors.highlight-soft}"
+    textColor: "{colors.primary}"
     typography: "{typography.footnote}"
     rounded: "{rounded.pill}"
     padding: 4px
-  warm-badge-dark:
-    backgroundColor: "{colors.warm-soft-dark}"
-    textColor: "{colors.warm-dark}"
+  tint-badge-dark:
+    backgroundColor: "{colors.highlight-soft-dark}"
+    textColor: "{colors.primary-dark}"
     typography: "{typography.footnote}"
     rounded: "{rounded.pill}"
     padding: 4px
+  figure:
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.label}"
+    typography: "{typography.figure}"
+  figure-dark:
+    backgroundColor: "{colors.card-dark}"
+    textColor: "{colors.label-dark}"
+    typography: "{typography.figure}"
   stat-block:
     backgroundColor: "{colors.card}"
     textColor: "{colors.label}"
-    typography: "{typography.title}"
+    typography: "{typography.stat}"
     rounded: "{rounded.tile}"
     padding: 16px
   stat-block-dark:
     backgroundColor: "{colors.card-dark}"
     textColor: "{colors.label-dark}"
-    typography: "{typography.title}"
+    typography: "{typography.stat}"
     rounded: "{rounded.tile}"
     padding: 16px
   story-card:
@@ -279,7 +323,7 @@ components:
 
 **Creative North Star: "A photograph on the system shelf."**
 
-吱熊猫 is a phone atlas of named giant pandas. The shelf is the iOS 26 interface a fan already knows: a large title, a system back chevron, a Liquid Glass tab bar, and inset grouped lists. The thing on the shelf is a photograph of one animal. Deep jade is the tint on the selected tab, a link, and the filled or tinted button. It does not paint cards. A second, rarer brand note, 笋金 (bamboo-shoot gold), marks what is new or happening today. One signature motion, 竹 *bamboo*, is how things arrive: they bend a little past their mark and settle.
+吱熊猫 is a phone atlas of named giant pandas. The shelf is the iOS 26 interface a fan already knows: a large title, a system back chevron, a Liquid Glass tab bar, and inset grouped lists. The thing on the shelf is a photograph of one animal. The palette is the panda's own: black and white, neutral grey cards, and one sky blue. Ink fills the main button; sky blue is the tint on the selected tab, a link, a tinted button and a selected state, and a brighter sky draws rings, rails and nodes. It does not paint cards, and there is no second accent. One signature motion, 竹 *bamboo*, is how things arrive: they bend a little past their mark and settle.
 
 The website keeps its olive paper. The app does not. Android uses the same colors and lists with the system Material tab bar and toolbar; the web export uses the same type with a blurred bottom bar, not Liquid Glass.
 
@@ -290,37 +334,36 @@ The website keeps its olive paper. The app does not. Android uses the same color
 - Photographs lead: a featured story card, a stretchy hero, large portrait tiles. Grouped lists hold the facts under them.
 - Cards press in, iOS 18 zooms a tapped photo into its page, content settles in on the bamboo curve, and 关注/见过 answer with one haptic.
 - Lists that navigate are inset groups with a 10px radius, not full-bleed hairlines.
-- One tint, a deep bamboo jade; one accent, shoot gold, used as a marker only. Photographs carry the rest of the color.
-- Dark mode follows the system (我的 › 外观 can pin light or dark): true black grouped background and elevated `#1C1C1E` groups.
+- Panda black and white with one sky-blue tint (v2.15). No gold, no pastel cards. Photographs carry the rest of the color.
+- Structure over sentences: a status is a glyph or a dot with its words in the accessibility label, not a line of copy.
+- Dark mode follows the system (我的 › 外观 can pin light or dark): true black ground and `#151517` cards.
+
+**Screens.** What each screen holds, in what order and when a block is hidden is in [`docs/design/screens.md`](docs/design/screens.md), with the approved v4 mockups in `docs/design/mockups/v4/`. This file is the visual system those screens are built from.
 
 **Reference screens.** 科普 (`learn/index.tsx`, `learn/articles/[slug].tsx`) for the reading column; 今天, a panda (`pandas/[slug]/index.tsx`) and an institution (`institutions/[slug].tsx`) for photo-led pages; 家谱 (`pandas/[slug]/family.tsx`) for lists.
 
 ## Colors
 
-Three layers in `tokens.ts`: **primitives** (`gray`, `jade`, `shoot`, `red`, `orange`: raw hex nobody uses directly), **semantic roles** (below: what a screen asks for), and **component tokens** (sizes). Screens read roles through class names (`bg-card`, `text-muted-foreground`, `text-warm`) or `useIOSColors()`. A hex or `rgba()` literal in a screen is a lint warning.
+Three layers in `tokens.ts`: **primitives** (`gray`, `ink`, `sky`, `red`, `orange`: raw hex nobody uses directly), **semantic roles** (below: what a screen asks for), and **component tokens** (sizes). Screens read roles through class names (`bg-card`, `text-muted-foreground`, `text-primary`) or `useIOSColors()`. A hex or `rgba()` literal in a screen is a lint warning.
 
-System semantics in both appearances: the iOS grouped background, secondary system grouped background, label, secondary label and separator. The tint is a deep jade in light mode and a pale jade in dark mode, so it reads as a tint rather than a highlighter.
+Direction C, 熊猫 (v2.15): a white page with neutral grey cards in light mode, true black with near-black cards in dark mode. The main button is ink on white and white on black. One sky blue is the tint; a brighter sky draws graphics. Numerals take the label color.
 
 ### Primary
-- **Jade** (`#165C3C`, light): filled buttons with a white label, the selected tab, links, tint rows, and focus. 7.98:1 on white.
-- **Pale jade** (`#7DCAA4`, dark): the same roles in dark mode. A filled button in dark mode takes a black label. 10.86:1 on black.
-- **Tinted fill** (`#E3EBE8` / `#16241E`): the ground of a tinted capsule button (关注), with the tint as its label, as iOS draws tinted controls.
-
-### Accent: 笋金 shoot gold
-- **Warm** (`#846018` light, 5.73:1 on white, 5.13:1 on `#F2F2F7`; `#E3BD6E` dark, 11.77:1 on black, 9.54:1 on `#1C1C1E`).
-- **Warm soft** (`#F5EDDB` / `#2B2312`): a badge's ground with warm text on it (4.91:1 light, 8.71:1 dark).
-- **Why:** a muted brass, the color of a new bamboo shoot's sheath. It sits across the wheel from the jade without competing, stays clear of the warning orange (`#B25000`, hue 27° vs 40°), and gives the brand a second, warmer note for moments that are about time: today, new, a birthday, a milestone.
-- **Where:** the 今天 date marker, a 新 / 今天 badge, a milestone or birthday chip, a small dot on a calendar day.
-- **Where not:** buttons, links, selected states, icons on action rows (all tint), card or page grounds, warnings (orange), large areas of any kind. At most one warm element per viewport.
+- **Button** (`#0A0A0A` light, white label, 19.8:1; `#FFFFFF` dark, black label): the one filled button per decision (关注, 打卡, 登录). CSS `button` / `button-foreground`; the `onButton` icon tone draws a glyph on it.
+- **Tint** (`#0A6CDB` light, 5.02:1 on white; `#5AB4FF` dark, 9.41:1 on black, 8.17:1 on `#151517`): links, the selected tab, tint rows, a tinted button's label, a selected chip, a confirmed `Check`, and focus. CSS `primary`.
+- **Graphic** (`#1A8CFF` / `#4DA8FF`): progress rings, timeline rails and nodes, bars. Never text (3.37:1 on white is enough for a non-text graphic, not for a label).
+- **Highlight soft** (`#EBF4FF` / `#0C2033`): the ground of a tinted capsule (见过), a selected chip, a tint badge. `#EBF4FF` is one step paler than the `sky` 50 primitive so the tint on it clears 4.5:1 (4.52:1; `#E7F2FF` gave 4.44:1).
+- **Why:** Things 3 (https://apps.apple.com/us/app/things-3/id904237743) and Flighty (https://apps.apple.com/us/app/flighty-live-flight-tracker/id1358823008) carry a calm, premium interface on white, grey and one blue; WWF's panda is black and white by brand rule (https://wwf-brand.azurewebsites.net/brand-guidelines/brand-elements/). The blue reads as sky over the bamboo without competing with photographs.
+- **Role split (v2.14, values v2.15).** `button`, `graphic` and `tint` are separate roles; a palette change edits `tokens.ts` only.
 
 ### Neutral
-- **Grouped background** (`#F2F2F7` / `#000000`): the page.
+- **Grouped background** (`#FFFFFF` / `#000000`): the page.
 - **System background** (`#FFFFFF` / `#000000`, CSS `paper`): an article column.
-- **Elevated group** (`#FFFFFF` / `#1C1C1E`): inset lists, cards, stat tiles.
-- **Label** (`#000000` / `#FFFFFF`): primary text.
-- **Secondary label** (`#636366` / `#AEAEB2`): the line under a row, footnotes, placeholders, row icons.
+- **Card** (`#F3F3F5` / `#151517`): inset lists, cards, stat tiles. Neutral grey, never a pastel or a second color.
+- **Label** (`#0A0A0A` / `#FFFFFF`): primary text and every numeral.
+- **Secondary label** (`#6B6B70` / `#A1A1A6`; 4.78:1 on a light card, 7.09:1 on a dark one): the line under a row, footnotes, placeholders, row icons.
 - **Tertiary label** (`#C4C4C7` / `#5B5B60`): the disclosure chevron. Never text.
-- **Separator** (`#C6C6C8` / `#38383A`): inset row dividers.
+- **Separator** (`#D1D1D6` / `#38383A`): inset row dividers.
 - **Fill** (`#E5E5EA` / `#2C2C2E`): secondary buttons, the search field, toggles. **Pressed** (`#D1D1D6` / `#3A3A3C`) is a pressed row (`accent` in the React Native Reusables names).
 - **Destructive** (`#CE2C31` / `#FF6961`) and **warning** (`#B25000` / `#FF9F0A`): delete, and a caution line.
 
@@ -334,17 +377,19 @@ Named so photo chrome stops being magic numbers:
 - **Bar material** `rgba(255,255,255,0.86)` / `rgba(28,28,30,0.86)`: the web tab bar under a 24px blur.
 
 ### Named Rules
-**The Tint Rule.** Jade marks what a fan can do: the selected tab, a link, a tint row, the one filled or tinted button, a correct quiz pick. It does not fill a card or sit above a title.
+**The Tint Rule.** Sky blue marks what a fan can do or has chosen: the selected tab, a link, a tint row, a tinted button, a selected chip, a correct quiz pick. Ink fills the one main button. Neither fills a card or sits above a title.
 
-**The Marker Rule.** Shoot gold marks *when*, never *what to do*. If it is tappable, it is jade.
+**The One Accent Rule.** There is no second accent. 今天, 新 and milestones are a tint badge or a neutral chip, never gold.
 
 **The Shelf Rule.** Page ground is the system grouped background. Do not bring the website's olive paper onto a screen.
 
 ## Typography
 
-**UI font:** the system face. San Francisco for Latin, PingFang SC for Chinese on iOS. The web stack is `-apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif`. No separate display face.
+**UI font:** the system face. San Francisco for Latin, PingFang SC for Chinese on iOS. The web stack is `-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", system-ui, sans-serif`. No font files ship.
 
-**Character:** iOS text styles named by purpose. Each binds size, line height, weight and tracking, so a screen picks a style, never a size. Line heights are opened so Chinese does not clip. Tracking is 0 everywhere: Chinese is never letter-spaced.
+**Figures:** SF Pro Rounded (`font-rounded`, from `primitive.fontFamily.rounded`). iOS resolves `ui-rounded`, Safari takes the CSS keyword, Android and other browsers fall back to the text face. Chinese in a rounded run (岁, 天, 只) falls back to PingFang, so one figure style carries its unit.
+
+**Character:** iOS text styles named by purpose. Each binds size, line height, weight and tracking, so a screen picks a style, never a size. Line heights are opened so Chinese does not clip. Tracking is 0 everywhere: SF tracks itself by optical size, and Chinese is never letter-spaced. PingFang SC stops at Semibold, so Bold Chinese draws at 600 on iOS; the weight step shows in Latin and figures.
 
 ### Text styles
 `<Text variant="…">` in `components/ui/text.tsx`. Sizes and line heights are generated into `global.css` (`text-display`, `text-title`, …); the variant adds the weight.
@@ -352,7 +397,9 @@ Named so photo chrome stops being magic numbers:
 | Style | Size / line | Weight | Use | Not for |
 |---|---|---|---|---|
 | `display` | 34/41 | Bold | The one title on a screen: a tab root, a panda's or an institution's name, the featured story | A second title on the same screen |
-| `title` | 22/28 | Bold | A section, a card title, a resident's name on a tile. `stat` adds tabular figures for a stat block value | Body emphasis |
+| `title` | 22/28 | Bold | A section, a card title, a resident's name on a tile | Body emphasis |
+| `stat` | 22/28 | Bold, rounded | A value in a stat tile or a week card: a count, an age, a day number | Words |
+| `figure` | 34/41 | Bold, rounded | The one number a card is about: a countdown, an age, a total | A sentence; a second figure on the card |
 | `headline` | 17/24 | Semibold | A name or label that leads a row or chip; emphasis at body size | Whole paragraphs |
 | `body` | 17/26 | Regular | Sentences, row titles, buttons | Captions |
 | `subheadline` | 15/22 | Regular | A second line in a dense row, a chip's relation, where 13 is too small for Chinese | A size step between body and footnote for hierarchy |
@@ -374,6 +421,8 @@ The article column in 科普 (articles, terms, face guides, the challenge) is lo
 
 **The Tabular Rule.** Numbers that sit in a column or change in place (ages, counts, years in a stat block) use `tabular-nums`.
 
+**The Rounded Figure Rule.** A number that is the point (a stat, a day mark, a milestone chip, a map count, an age on a card) is a figure: `stat` or `figure`, or `font-rounded tabular-nums` on another style. Dates and counts inside a meta line stay in the text face. Never set `fontFamily` or letter spacing on a screen.
+
 ## Layout
 
 ### Spacing
@@ -384,7 +433,8 @@ A 4pt scale (`4 8 12 16 20 24 32 40`, Tailwind numbers `1 2 3 4 5 6 8 10`) with 
 | `hair-gap` | 4 | Icon to its label, a value to its unit |
 | `stack-tight` | 8 | Lines that belong together (title and footnote) |
 | `row` | 12 | A row's vertical padding; between tiles in a grid or scroller |
-| `inset` | 16 | The page's side inset and a card's padding |
+| `gutter` | 20 | The page's side margin: every screen's column edge (`px-gutter`, `pageColumn()`; v4 mockups) |
+| `inset` | 16 | A card's and a grouped row's padding |
 | `stack` | 20 | Between blocks inside a section |
 | `section-tight` | 24 | Between sections on a dense screen |
 | `section` | 32 | Between sections on a page |
@@ -393,21 +443,23 @@ A 4pt scale (`4 8 12 16 20 24 32 40`, Tailwind numbers `1 2 3 4 5 6 8 10`) with 
 More space sits above a section heading than between the heading and the group. A photograph that is the subject runs to both edges and ignores the inset. Tab content clears the bottom bar.
 
 ### Page templates
-- **Tab root:** system large title (in the column on web), grouped-background page, sections separated by `section`. 今天's 今天 is the system large title on iOS (the bar's title on Android, in the column on web), with the date as the first line of content under it, then the featured card and the scroller.
+- **Tab root:** system large title (in the column on web), grouped-background page, sections separated by `section`. 今天 draws its own header in the column: the date as a semibold secondary footnote line over 今天 in display, with the monogram avatar at the right; then the week hero (or the featured card), the quick entries and the rest.
 - **Hero detail** (a panda, an institution): a full-bleed stretchy hero under the status bar with back/share in a transparent system bar on iOS 26+ (the page title moves into the bar once it scrolls under it) and floating glass-fallback buttons elsewhere, then the content column at `inset`, entering with `enter`.
 - **List / directory:** inset grouped `ListSection` + `ListCell` (or `NavRow`) at `inset`. A long result list (找熊猫) may run full-bleed.
 - **Reading column** (科普): `paper` ground, a lead photograph with its caption below (never text on it), the reading set, large title kept in the column.
 - **Photo card:** one photograph, continuous corners (`card` or `tile`), media placeholder, bottom scrim, on-media title, photo stroke, press scale.
-- **Stat block:** three elevated tiles in a row, `tile` radius, footnote label with glyph over a `stat` value; stacks past font scale 1.35.
-- **Tab roots.** 今天: title and date, story cards, then 那年今天 (only on a day that has one; see The On This Day Rule), 本周新鲜事 (only when the last 7 days have something; see The Weekly Digest Rule), 你关注的 avatars, a birthday tile scroller (快过生日了; 今天生日 only while 那年今天 is turned off, since the card already says it) and 关注的新资料 rows in one group. 找熊猫: search (the system search bar under the large title on iOS, kept visible while scrolling; an in-page field on Android and web), area chips, a scroller of explore cards (熊猫在哪里, 基地和动物园, 查两只熊猫的关系, 比一比两只熊猫) while browsing, then the list in one inset group with 56pt photos. 图鉴 is a personal life list: a stat block (见过, 认出, 去过), a `Segmented` 清单 / 按基地 / 按家族, then one inset group per view; signed out, a grid of two lit and four locked real covers, 登录 and 每日一猫, and the three ways in. Empty, the stats at zero, 从第一只开始, the three ways in, and every base at 0. 我的: a profile card (monogram avatar, name, 改名字, a 设置 gear), 关注的熊猫 avatars, then 我的合集 / 去过的地点 / 里程碑 (while it is on) / 通知 rows and 我的纠错. 设置 (pushed from the gear): a centered profile header, 外观 as a segmented control, glyph rows, the legal pages, 退出登录.
+- **Stat block:** three elevated tiles in a row, `tile` radius, footnote label with a tint glyph over a `stat` value; stacks past font scale 1.35. A tile that counts a list opens it (`StatTile href`).
+- **Tab roots.** The blocks of 今天, 找熊猫, 图鉴, 我的 and 设置, their order and their data are in [`docs/design/screens.md`](docs/design/screens.md). The rules below say how each kind of block looks and behaves wherever it appears.
 
-**The Plate Rule.** The first figure on a panda, an institution or a 科普 article is one published photograph. On a panda or institution page it runs full-bleed under the status bar and stretches on pull-down, as Music and App Store heroes do (`components/stretchy-hero.tsx`). A panda's name is a display title below the photo, then 关注 (tinted) and 见过 (plain); an institution's name sits on its photo over a bottom scrim with a footnote line for type and country. The institution hero is the first resident whose cover is on the reviewed list (`CURATED_COVERS`) and carries no agency watermark (`features/institutions/hero-pick.ts`). With none, the top is a plate in `highlight-soft` fading into the page, the name in display at its foot: no unreviewed photo stands in.
+**The Plate Rule.** The first figure on a panda, an institution or a 科普 article is one published photograph. On a panda or institution page it runs full-bleed under the status bar and stretches on pull-down, as Music and App Store heroes do (`components/stretchy-hero.tsx`). A panda's name is a display title below the photo, then 关注 (the filled ink button with a `Heart`) and 见过 (tinted, with an `Eye`); an institution's name sits on its photo over a bottom scrim with a footnote line for type and country. The institution hero is the first resident whose cover is on the reviewed list (`CURATED_COVERS`) and carries no agency watermark (`features/institutions/hero-pick.ts`). With none, the top is a plate in `highlight-soft` fading into the page, the name in display at its foot: no unreviewed photo stands in.
 
-**The Story Card Rule.** 今天 is one featured App Store Today-style card (24pt continuous corners, white display title) and, under it, a horizontal scroller of smaller cards (16pt corners, white title, snapping one card at a time, the next card peeking in). Each card is one photograph with a bottom scrim and a footnote under its title naming the feature and the panda in the photo. Each card uses a different panda. Nothing sits above the title on a card.
+**The Story Card Rule.** 今天 is one featured App Store Today-style card (24pt continuous corners, white display title) and, under it, a horizontal scroller of smaller cards (16pt corners, white title, snapping one card at a time, the next card peeking in). Each card is one photograph with a bottom scrim and a footnote under its title naming the feature and the panda in the photo. Each card uses a different panda. Nothing sits above the title on a card, except on the week hero (below).
+
+**The Week Hero Rule.** In a week with a 那年今天 or 生日周 anniversary, 今天 opens with one photo card for the nearest one instead of the featured story (`WeekHero`, `features/today/week-memory.ts`): the first panda's cover, one tag in the top-left corner (那年今天 or 生日周, footnote semibold on a white pill, the only tag allowed on a photo card), the title in display (回国 3 周年) with the pandas' names under it at the bottom-left, and the day as a `figure` (11.8 over 周日, or 今天) at the bottom-right. It opens the first panda. The same dates and the same 少显示 choices as The On This Day Rule apply; with nothing in the week the featured story comes back.
 
 **The Clean Photo Rule.** A photo under a title must not carry a burned-in mark. Covers credited to Xinhua/新华 or Pandapia are left out of story cards and institution heroes (`hasBurnedInMark` in `features/today/story-order.ts`; the API only gives the credit, so this goes by credit). They stay on the panda's own page and in lists.
 
-**The Life List Rule.** 图鉴 is the user's own record, as a birder's life list is. Every panda met gets a number in the order first met (No.1 is the first), a 56pt photo, and the first date and place for each way: 见过 (marked on the panda page, Binoculars), 认出 (每日一猫 or 猜熊猫, ScanFace). 去过 (MapPin) belongs to places. Progress is only shown against a finite goal the user can finish: the pandas living at one base now, or one family from the published lineage, each with a neutral track and a tinted Check when complete. No bar against the whole catalog, no ranking, no comparison with other people. Each of the three ways has a row that links to where it is recorded.
+**The Life List Rule.** 图鉴 is the user's own record, as a birder's life list is. Every panda met gets a number in the order first met (No.1 is the first), kept in the spoken label of its tile with the first date and place for each way: 见过 (marked on the panda page, `Eye`), 认出 (每日一猫 or 猜熊猫, `ScanFace`). 去过 (`MapPin`) belongs to places. Under the ring and the three stat tiles, a `Segmented` 全部 / 见过 / 认出 filters a four-column grid of square covers with the name under each (three columns when rows stack, 12 tiles before 显示全部); one row of empty `card` tiles with a tertiary `Eye` and 未见过 says more are left and opens 找熊猫. Signed in with nothing yet, the grid gives way to 从第一只开始 and the three ways in. 图鉴 shows one ring against the whole catalog (owner's decision, 2026-11-04, v4 mockup `03-book`): 点亮 N / total, where N is the pandas the user has met (见过 or 认出, each panda once) and the total is the published catalog count from the API, never a constant. The ring is a `ProgressRing` with a neutral track and the graphic color, the percentage rounded down (any panda met shows at least 1%). Per base, progress is met / living there now in the 各个基地 group (2 / 2; the spoken label adds 全部认识 when complete). No ranking and no comparison with other people. Each of the three ways has a row that links to where it is recorded.
 
 **The Timeline Rule.** A panda's 时间线 (`pandas/[slug]/timeline.tsx`) reads as a zoo biography: oldest first, one inset group per year titled "2024 · 3 岁", each milestone a row with its day in a 64pt tabular column (stacked above at large text), one plain sentence (在X出生, 从A搬到B, 首次与公众见面) and a footnote line per source, "出处 {title} · {publisher}" with the title tinted. Only events that happened count; plans and observations stay out. A stay and the transfer that began it are one row with both sources. A milestone from the profile alone says it has no source of its own rather than showing nothing. The page ends with a 纠错 row. No icons on the rows: the row is the data.
 
@@ -419,11 +471,11 @@ More space sits above a section heading than between the heading and the group. 
 
 **The Guess Level Rule.** 猜熊猫 has a `Segmented` 随机 / 简单 / 中等 / 困难. A level is described by how the choices are drawn (其他选项都不和它住在一起, 有的选项和它住在一起, 四个选项住在同一个地方), not by a promise about faces. On open each level is asked for a question once (the answers are kept for the first round); a level the server has no question for is left out of the control rather than shown disabled, the current level always stays, and a level whose probe failed stays. The control holds its height with a skeleton while asking. An empty level reached anyway says so and offers 换成随机. After a wrong answer the first action under 下一题 is 比一比 {answer} 和 {picked}.
 
-**The Daily Check-in Rule.** 每日打卡 counts a day when a signed-in member opens 每日一猫 (no answer needed); nothing else records a visit. The page and the 我的 card show 累计来过 and 本月来过 in days, never a streak, never a reset, and no praise or reproach (no 连续, 断签, 加油, 别忘了). A missed day is plain; days without a mark are a neutral `secondary` track on the week strip and an unfilled number on the month grid. Marks: a visit is a filled tint circle, leave (请假) a `highlight-soft` circle, a day that can still be covered (补请) a dashed tint ring, today a `warm` ring until it is marked. Leave is taken by tapping today or a coming day on the month grid (tap again, or 取消 in the 请假 group, to give it back); 补请 is one tinted row while its 48-hour window is open. After a change one muted footnote says what happened (11月3日 周二请好假了。), nothing more. The quotas (2 leave days a calendar month, one 补请 within 48 hours, leave up to 31 days ahead) come from the API's `DAILY_CHECKIN_RULES`; copy reads them from the summary, never from constants in the app. All of it is free. Glyphs: `CalendarHeart` means 每日打卡 days (累计来过, the 每日一猫 row, the signed-out 登录后可以 row), `CalendarDays` means this month; `CalendarCheck` stays a place visit.
+**The Daily Check-in Rule.** 每日打卡 counts a day when a signed-in member opens 每日一猫 (no answer needed); nothing else records a visit. The page shows 累计来过 and 本月来过 in days, and 我的 shows 累计来过 as its 打卡 tile, never a streak, never a reset, and no praise or reproach (no 连续, 断签, 加油, 别忘了). A missed day is plain; days without a mark are a neutral `secondary` track on the week strip and an unfilled number on the month grid. Marks: a visit is a filled tint circle, leave (请假) a `highlight-soft` circle, a day that can still be covered (补请) a dashed tint ring, today a tint ring until it is marked. Leave is taken by tapping today or a coming day on the month grid (tap again, or 取消 in the 请假 group, to give it back); 补请 is one tinted row while its 48-hour window is open. After a change one muted footnote says what happened (11月3日 周二请好假了。), nothing more. The quotas (2 leave days a calendar month, one 补请 within 48 hours, leave up to 31 days ahead) come from the API's `DAILY_CHECKIN_RULES`; copy reads them from the summary, never from constants in the app. All of it is free. Glyphs: `CalendarHeart` means 每日打卡 days (累计来过, the 每日一猫 row, the signed-out 登录后可以 row), `CalendarDays` means this month; `CalendarCheck` stays a place visit.
 
-**The On This Day Rule.** 那年今天 on 今天 is up to three memories of this calendar day in an earlier year, as Photos' Memories are, one inset group under a `SectionHeader` with 全部 when there are more (`/on-this-day`, grouped 你的记录 / 回国 / 来到新家 / 生日). The card picks one per kind in turn so one kind does not fill it. Kinds: a panda's birthday (N 岁生日), a move (N 年前的今天从A搬到B, or 住进X), returning to China (N 年前的今天回国，住进X), with a deceased panda's birth (N 年前的今天出生) and the day it died (the timeline's own sentence) on its own page only, and, signed in, the fan's own first 见过, 认出 and 去过 from a year or more ago. Only dates to the day from published events, residencies and the profile count; each row ends with its source line as on the timeline (出处 {publisher}, 来自你的图鉴, 来自你的到访记录, or 来自资料卡，这一条还没有单独的出处). Nothing is written for the day: no greeting, no countdown, no 祝. With nothing for today, or on an error, the card is not there. Each row has a trailing ••• (a 44pt `Ellipsis`; the action sheet on iOS, two choices under the row elsewhere): 少显示这只 / 少显示这里, and 关闭那年今天; both act at once, with one muted footnote and 撤销 under the heading. The choices live on this device (`onThisDay` in AsyncStorage), and 设置 has the 那年今天 switch and 恢复少显示的 N 项. A panda that has died is never on 今天 and never pushed; its own page shows its dates under 纪念 instead of 那年今天 (`DECEASED_POLICY` in `features/on-this-day/on-this-day.ts`). A panda page lists its own public memories (no 少显示 there). Rows wrap; at large text or in a narrow window the photo goes above the words. No warm accent: the date line under 今天 is the screen's one warm element. `History` (rotate-ccw-clock) is the 那年今天 glyph in 设置 only.
+**The On This Day Rule.** 那年今天 on 今天 is up to three memories of this calendar day in an earlier year, as Photos' Memories are, one inset group under a `SectionHeader` with 全部 when there are more. `/on-this-day` has a `Segmented` 本周 (today and the next six days) / 本月 (today to the month's end): the range's nearest public anniversary as the week hero (The Week Hero Rule), then every memory of the range in date order on one timeline card (`MemoryTimeline`): a rail with a dot per memory (the nearest tinted), the day and year, the kind's glyph and N 周年 (11.05 · 1999, a `House`, 27 周年) over a bold line that names who it is about and, on any day but today, drops N 年前的今天 (`features/on-this-day/range.ts`), and a 40pt photo at the end. The sources follow under the card as `SourceBadge`s. On that page 少显示 and 关闭 are a long press and an accessibility action, not a •••. The page's week hero has no tag: the day it happened over what happened, the years at the right (`WeekHero variant="page"`), and the date stands over the title (`Page dateline`). The card picks one per kind in turn so one kind does not fill it. Kinds: a panda's birthday (N 岁生日), a move (N 年前的今天从A搬到B, or 住进X), returning to China (N 年前的今天回国，住进X), with a deceased panda's birth (N 年前的今天出生) and the day it died (the timeline's own sentence) on its own page only, and, signed in, the fan's own first 见过, 认出 and 去过 from a year or more ago. Only dates to the day from published events, residencies and the profile count; each row ends with its source line as on the timeline (出处 {publisher}, 来自你的图鉴, 来自你的到访记录, or 来自资料卡，这一条还没有单独的出处). Nothing is written for the day: no greeting, no countdown, no 祝. With nothing for today, or on an error, the card is not there. Each row has a trailing ••• (a 44pt `Ellipsis`; the action sheet on iOS, two choices under the row elsewhere): 少显示这只 / 少显示这里, and 关闭那年今天; both act at once, with one muted footnote and 撤销 under the heading. The choices live on this device (`onThisDay` in AsyncStorage), and 设置 has the 那年今天 switch and 恢复少显示的 N 项. A panda that has died is never on 今天 and never pushed; its own page shows its dates under 纪念 instead of 那年今天 (`DECEASED_POLICY` in `features/on-this-day/on-this-day.ts`). A panda page lists its own public memories (no 少显示 there). Rows wrap; at large text or in a narrow window the photo goes above the words. `History` (rotate-ccw-clock) is the 那年今天 glyph in 设置 only.
 
-**The Milestones Rule.** 里程碑 marks round numbers in what already happened, as a birder keeps the day of a 100th species; it is never a goal. The fan's own: the 1st, 10th, 50th, 100th and 200th panda in the 图鉴's numbering (认出 or 见过, whichever came first), and the 2nd (第一次回到X), 5th, 10th and 20th visit to one place (a first visit is already 去过's); a panda's: 满月 (a month after the birth), 满百天 (100 days after), the 1st, 10th, 20th and 30th birthdays and becoming a parent (当妈妈了 / 当爸爸了，X出生, from a parent link with sources and the cub's dated birth). Every number lives in `MILESTONE_CONFIG` (`features/milestones/milestones.ts`); copy reads it from there. No yearly goal, no target, no 落后 or 还差, no streak, no ranking or comparison with anyone, no push; all of it is free. One switch in 设置 and at the foot of `/milestones` turns every mark off (`milestones` in AsyncStorage, this device only). Where it shows, without repeating what is already there: a 里程碑 row on 我的 (`Flag`, the latest as its meta) opening `/milestones` (熊猫 and 地方 groups, newest first); the 图鉴 number of a milestone panda as a 笋金 chip; 那年今天 adds 是你的第 10 只熊猫 / 是你第一次回来 after its own sentence and tells a living cub's 今天满月 / 今天满百天 in a 满月和百天 group (birthdays stay 那年今天's); a panda's 时间线 tells the cub days, birthdays and becoming a parent as rows with a 里程碑 chip and 按出生日期推算 (no source line of their own: the birth row above carries it; a parent row keeps the link's sources), and its summary counts only recorded events (N 条记录). A cub's birth already on the mother's timeline becomes the parent row, one row with both sources. A panda that has died follows `DECEASED_POLICY`: no 满月 or 满百天 on 今天, and its timeline stops at the death date. `Flag` means 里程碑 (the 我的 row and the 设置 glyph).
+**The Milestones Rule.** 里程碑 marks round numbers in what already happened, as a birder keeps the day of a 100th species; it is never a goal. The fan's own: the 1st, 10th, 50th, 100th and 200th panda in the 图鉴's numbering (认出 or 见过, whichever came first), and the 2nd (第一次回到X), 5th, 10th and 20th visit to one place (a first visit is already 去过's); a panda's: 满月 (a month after the birth), 满百天 (100 days after), the 1st, 10th, 20th and 30th birthdays and becoming a parent (当妈妈了 / 当爸爸了，X出生, from a parent link with sources and the cub's dated birth). Every number lives in `MILESTONE_CONFIG` (`features/milestones/milestones.ts`); copy reads it from there. No yearly goal, no target, no 落后 or 还差, no streak, no ranking or comparison with anyone, no push; all of it is free. One switch in 设置 and at the foot of `/milestones` turns every mark off (`milestones` in AsyncStorage, this device only). Where it shows, without repeating what is already there: a 里程碑 row on 我的 (`Flag`, the latest as its meta) opening `/milestones` (熊猫 and 地方 groups, newest first); the 图鉴 number of a milestone panda in its tile's spoken label; 那年今天 adds 是你的第 10 只熊猫 / 是你第一次回来 after its own sentence and tells a living cub's 今天满月 / 今天满百天 in a 满月和百天 group (birthdays stay 那年今天's); a panda's 时间线 tells the cub days, birthdays and becoming a parent as rows with a 里程碑 chip and 按出生日期推算 (no source line of their own: the birth row above carries it; a parent row keeps the link's sources), and its summary counts only recorded events (N 条记录). A cub's birth already on the mother's timeline becomes the parent row, one row with both sources. A panda that has died follows `DECEASED_POLICY`: no 满月 or 满百天 on 今天, and its timeline stops at the death date. `Flag` means 里程碑 (the 我的 row and the 设置 glyph).
 
 **The Stat Block Rule.** A panda page leads its facts with three tiles: 性别 (♂/♀), 年龄 or 享年 (birth year under it), 所在地 (tappable) or 离世. The full birth date and birthplace follow as one footnote line, then family, places lived, updates and sources.
 
@@ -446,12 +498,11 @@ Radius roles (`rounded-card` etc., `RADIUS` in `lib/surface.ts`), all with conti
 
 | Role | Radius | Use |
 |---|---|---|
-| `card` | 24 | The featured 今天 story card |
-| `tile` | 16 | Story cards in the scroller, resident tiles, stat blocks, quiz photos |
+| `card` | 24 | The featured 今天 story card and the week hero |
+| `tile` | 16 | Photos: story cards in the scroller, explore cards, resident tiles, 图鉴 grid tiles, quiz photos |
 | `control` | 12 | Search field, segmented control, a small photo in a row |
-| `group` | 10 | Inset grouped lists |
+| `group` | 20 | Grey surfaces: inset grouped lists, stat tiles, and cards on the page (the 点亮 card, a panda's fact cards) |
 | `pill` | 999 | Buttons, capsules and chips |
-| `glyph` | 8 | The 30pt square behind a 设置 row glyph, and only there |
 
 **The Concentric Rule.** A shape inside another shape takes the outer radius minus the padding between them (`concentric(outer, padding)`), so the curves share a centre: card 24 with padding 16 → 8; tile 16 with padding 12 → 4; a 44pt avatar in a 52pt capsule with 4pt padding is radius 22 inside 26. Never nest the same radius.
 
@@ -483,13 +534,13 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 | `PandaTile` | `panda-tile.tsx` | One panda as a photo tile (birthday scroller, place residents) | Rows of facts | name, caption, width, aspect; press scale | one label: name and caption |
 | `Skeleton` | `ui/skeleton.tsx` | Loading placeholder in the final layout | Spinners on a page | — | hidden from VoiceOver |
 | `OfflineBanner` | `offline-banner.tsx` | No network | Errors from the API | — | announced once |
-| Warm badge | (class recipe) `rounded-pill bg-warm-soft text-warm` footnote semibold | 今天 / 新 / milestone | Actions or status | — | the text says it; color is never the only signal |
+| Tint badge | (class recipe) `rounded-pill bg-highlight-soft text-primary` footnote semibold | 今天 / 新 | Actions or status | — | the text says it; color is never the only signal |
 
 ### Buttons
 - **Shape:** pill, height 48, at least 44.
-- **Primary:** jade fill, white label (black on pale jade in dark), headline weight. One per decision.
-- **Tinted:** tinted-fill capsule, tint label. A toggle that is the page's main action, like 关注.
-- **Plain:** tint text, no ground. A second action beside a tinted one, like 见过.
+- **Primary:** ink fill (`button`), white label (white fill, black label in dark), headline weight. One per decision. It may lead with one glyph in the `onButton` tone when the pair beside it has one too (关注 `Heart`, 见过 `Eye`).
+- **Tinted:** `highlight-soft` capsule, tint label. The second action beside a primary one, like 见过.
+- **Plain:** tint text, no ground. A tertiary action.
 - **Secondary:** system fill, label-colored text. The alternate action.
 - **Focus:** 2px tint ring.
 
@@ -499,9 +550,9 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 - **Row:** at least 44, body title, optional footnote under it, optional secondary value on the trailing side, a chevron when the row navigates.
 - **Header:** footnote in the secondary label above the group, not a tracked label above a title.
 - **Key–value rows** (去之前): a footnote label over a body value, as Maps' place card lists hours and address.
-- **Section header** (`components/section-header.tsx`): outside a grouped list, a section on a tab root is a `title` heading with an optional secondary count after an ideographic space (关注的熊猫　3) and an optional trailing tint link (看日历, 找熊猫). No icon, no kicker.
+- **Section header** (`components/section-header.tsx`): outside a grouped list, a section on a tab root is a `title` heading with an optional secondary count after an ideographic space (关注的熊猫　3) and an optional trailing tint link (看日历, 找熊猫). An optional leading secondary glyph at subhead size names the section's category (`SectionHeader icon`). No kicker.
 
-**The Settings Glyph Rule.** 设置 alone leads each row with an 18pt tint glyph in a 30pt square, `glyph` radius (8), highlight-soft fill, as the system Settings does (`GlyphSquare`, `ListCell glyph`). Its separators start after the square (`component.settingsGlyph.inset`, 58). 退出登录 is a centered destructive row in its own group. Every other list keeps plain secondary glyphs.
+**The Settings Glyph Rule.** 设置 leads each row with an 18pt bare glyph centred in a 30pt slot, label-colored, with no tile, fill or circle behind it (`GlyphSquare`, `ListCell glyph`; v2.15). Its separators start after the slot (`component.settingsGlyph.inset`, 58). 退出登录 is a centered destructive row in its own group. Every other list keeps plain secondary glyphs.
 
 ### Inputs
 - **Search:** 44 tall, `control` radius, elevated fill, secondary-label placeholder. No outline. The system caret for focus.
@@ -514,12 +565,17 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 ### Icons
 One set: Lucide (`lucide-react-native` on `react-native-svg`), same glyphs on every platform, each exported from `components/icons.ts` and drawn through `components/icon.tsx`.
 - **Size** follows the text beside it (sizes above). **Stroke** 1.75; chevrons and toolbar glyphs 2–2.25.
-- **Color:** secondary label. Tint only on an action row (官网, 看官方直播, 导航过去) or the selected tab. Tertiary label for the chevron. On media: white, or label inside Liquid Glass.
-- **Use one** where Settings, Health or Maps would: a leading glyph on a row naming a fixed category or destination (父母, 看家谱, 查关系, 所在机构, every 去之前 fact, 到访, 看官方直播, 官网, 导航过去), or a footnote-size glyph beside a stat label.
+- **Color:** secondary label. Tint only on an action row (官网, 看官方直播, 导航过去), a stat tile's label glyph, or the selected tab. Tertiary label for the chevron. On media: white, or label inside Liquid Glass.
+- **Bare glyphs only (v2.15).** An icon is never set inside a square, rounded tile or circle ground. A glyph-only control (返回, 分享, the 设置 gear, the 日历 and 打卡 toolbar buttons) is a control, not an icon tile, and keeps its 44 glass circle; selection marks (the welcome check, a Stepper's done disc) are marks, not icons.
+- **Use one** where Settings, Health or Maps would: a leading glyph on a section header, a stat tile, a settings row, or a row naming a fixed category or destination (父母, 看家谱, 查关系, 所在机构, every 去之前 fact, 到访, 看官方直播, 官网, 导航过去), or a footnote-size glyph beside a stat label.
 - **One meaning per glyph** (`MapPin` place, `Clock` hours, `CalendarCheck` visit, `Ellipsis` more actions on a row). **All or none in a group.** No icon on a data row (a relative, an event, a source).
-- **Don't** put an icon on a button with a text label, a card or section title, beside a large title, in running text, in a tinted square (设置 is the one exception, see The Settings Glyph Rule), or fill a glyph to fake selection. A glyph-only toolbar button (返回, 分享, the 设置 gear on 我的) is a 44 circle with an accessible name.
+- **Don't** put an icon on a button with a text label (the 关注 / 见过 pair is the one exception), a card title, beside a large title, in running text, in any square, tile or circle ground, or fill a glyph to fake selection. A glyph-only toolbar button (返回, 分享, the 设置 gear on 我的) is a 44 circle with an accessible name.
+
+**The Structure Rule.** A status the layout can show is not written out. A confirmed date gets a tint `Check` beside it; a fact still being verified gets a hollow secondary dot; an official source is its institution's name with a `BadgeCheck` (`SourceBadge`). The words (生日已确认, 在世待核实, 官方来源) live in the accessibilityLabel so VoiceOver reads them. Hints that repeat what a chevron, a glyph or the group header already says are removed. 科普 and editorial copy are not touched by this rule.
 
 ### Screen state
+**The Sample Rule.** A mockup block marked 示例 shows a layout, never data. It ships with real values or not at all: hidden when it is one block among others, the screen's empty state when it is the screen's reason to exist. No invented counts, rings, progress or popularity, and no 即将上线 or disabled stand-in for a feature that is not built.
+
 - **Loading:** `Skeleton` in the final layout; content arrives with `enter`.
 - **Empty / error:** one secondary sentence, centered, and a secondary 重试 button when the fan can retry. Not a filled card.
 - **Offline:** `OfflineBanner`; cached content stays on screen.
@@ -537,9 +593,9 @@ Navigation is Expo Router's `native-tabs` and native stack (the SDK 58 way to th
 - **Do** test light and dark, Reduce Motion, and a large Dynamic Type size.
 
 ### Don't
-- **Don't** put a kicker above the title.
-- **Don't** put an icon in a tinted square anywhere but 设置.
-- **Don't** paint a card, a progress track, or a hero with the tint, or use shoot gold for anything tappable.
+- **Don't** put a kicker above the title. A date line over 今天 or 那年今天 is content, not a kicker.
+- **Don't** put an icon in a square, tile or circle, anywhere.
+- **Don't** paint a card, a progress track, or a hero with the tint, add a second accent (no gold), or tint a card pastel.
 - **Don't** hand-roll a glass panel.
 - **Don't** bring the website's olive ground or a custom back button onto the app.
 - **Don't** write a hex, `rgba()`, a numeric `fontSize` or an arbitrary Tailwind value (`p-[13px]`) in a screen; add a token.
@@ -592,10 +648,18 @@ No screen uses these since v2.8; the `Text` variants stay defined so nothing old
 | `Text` `h3` | `headline` |
 | `Text` `muted` | `footnote` + `text-muted-foreground` |
 | Classes `text-large-title`, `text-title1/2/3`, `text-callout`, `text-subhead`, `text-caption`, `text-xs`, `text-sm`, `text-base`, `text-lg`, `text-xl` and up | The style classes above |
-| `rounded-[10px]`, `rounded-sm` … `rounded-3xl` | `rounded-group` (10), `rounded-control` (12), `rounded-tile` (16), `rounded-card` (24), `rounded-pill` |
+| `rounded-[10px]`, `rounded-sm` … `rounded-3xl` | `rounded-group` (20), `rounded-control` (12), `rounded-tile` (16), `rounded-card` (24), `rounded-pill` |
 | `EASE_OUT` / `CONTENT_ENTER` from `stretchy-hero.tsx` | `@/design/motion` (`PAGE_ENTER` for a page); the re-export is gone |
 
 ## Changelog
+
+- **v2.19 (2026-11-04).** Measured against the v4 mockups: the page margin is its own role, `gutter` 20 (`inset` stays 16 for padding); `group` is 20 and every grey surface takes it (stat tiles, the 点亮 card, a panda's fact cards); the search field is 14 (`radius.field`); 图鉴 grid photos take `tile`. Stat tiles show the unit at footnote size. Panda rows are 44pt round photos, the name in body and a chevron. 找熊猫's explore cards have short names (场馆, 查关系, 比一比) and read the full ones aloud. `/on-this-day` takes the mockup's timeline card and hero.
+- **v2.18 (2026-11-04).** The second v4 batch: 图鉴's grid and filters (The Life List Rule), 我的 as a profile row, three tiles (关注, 打卡, 去过) and two counted groups, with `/following` and `/contributions` for 关注的熊猫 and 我的纠错 (`FilePen`); 找熊猫's `Chip ink` filters (在中国, 在海外, then each area in China) and portrait explore cards with a glyph; panda rows take a round photo and a sex glyph; `/on-this-day` reads 本周 or 本月 (The On This Day Rule). Stat tile glyphs are tinted.
+- **v2.17 (2026-11-04).** 图鉴 follows the v4 mockup: a ring against the whole catalog (点亮 N / total), the 全部 / 见过 / 认出 views with a photo grid, and per-base progress in 各个基地; 按家族 is dropped. The Life List Rule is updated.
+- **v2.16 (2026-11-04).** The v4 mockups are the screen reference: `docs/design/screens.md` (blocks, order, data and hide conditions per screen, with open decisions) and `docs/design/mockups/v4/`. The per-tab composition moves out of Layout › Page templates into that file. New: The Week Hero Rule (the one photo card with a corner tag) and The Sample Rule (示例 never ships). 今天's header is the date over a display 今天 in the column.
+- **v2.15 (2026-11-04).** Palette direction C, 熊猫: white page and `#F3F3F5` cards (black and `#151517` in dark), an ink main button (white in dark), sky-blue tint `#0A6CDB` / `#5AB4FF` and graphic `#1A8CFF` / `#4DA8FF`; primitives `ink` and `sky` replace `jade` and `shoot`. The 笋金 accent and the `warm`, `warm-figure` and `warm-soft` roles are removed; milestone chips go neutral, the today ring and badges go tint. `highlight-soft` light is `#EBF4FF`, one step off the `sky` 50 primitive, for 4.52:1. Bare glyphs everywhere: `GlyphSquare` and the list thumbs lose their tiles, and the `glyph` radius is removed. Icon tone `onButton`. 关注 is the filled ink button with `Heart`, 见过 tinted with `Eye`. Compare rows hide a reason repeated on every row (it stays in the spoken label).
+- **v2.14 (2026-11-04).** New components: `Timeline`, `Chip`, `SourceBadge`, `ProgressRing`, `CompareTable`, `TimeBand`, `Stepper`, `Accordion` (RNR), `Badge` (RNR) and `IconRow`; `SectionHeader icon`. Color roles `button`, `graphic` and `warm-figure` split out with today's values, so the palette can change in `tokens.ts` alone. Status words become glyphs with spoken labels (The Structure Rule). Section headers, stat tiles and settings rows take glyphs.
+- **v2.13 (2026-11-04).** Type: rounded figures (`font-rounded`, SF Pro Rounded via `ui-rounded` on iOS, fallback elsewhere) with the `stat` and `figure` styles and The Rounded Figure Rule; day marks, milestone chips, map counts, 到访 day numbers and week-card counts use them. Weight `heavy` (800) for a card's hero number. The web stack names the CJK fallbacks. Tracking stays 0, now with the reason.
 
 - **v2.12 (2026-11-03).** Governance: the skill review applies to PRs that change how a screen looks or moves; logic, data and bug-fix PRs rest on the lint and tests.
 - **v2.11 (2026-10-31).** The Accessibility Rule: `NARROW_WIDTH` (280) with `useStacked` / `useSingleColumn` for every restack (图鉴 stats and grid, 合集, place and institution residents, 那年今天, 熊猫日历 month header); `SwitchRow` with `component.switchTrack` (51×31) replaces the 32×20 switch in 设置 and 通知; segments hit the full 44pt track; 时间线 source links 44pt; decorative SVGs hidden; heading levels for footnote and headline headings; no empty web bar title; hero toolbar read first; hero drift off under Reduce Motion.

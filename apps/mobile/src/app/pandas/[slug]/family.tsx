@@ -315,7 +315,7 @@ export default function FamilyScreen() {
       {/* 查关系 from the family: the system sheet, starting on the panda whose tree is open. */}
       <Modal visible={relating} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setRelating(false)}>
         <View className="flex-1 bg-background">
-          <View className="flex-row items-center justify-between px-4 pt-4">
+          <View className="flex-row items-center justify-between px-gutter pt-4">
             <Text variant="title" role="heading">
               查关系
             </Text>
@@ -323,7 +323,7 @@ export default function FamilyScreen() {
               <Text>完成</Text>
             </Button>
           </View>
-          <ScrollView contentContainerClassName="gap-6 px-4 pt-4 pb-12" keyboardShouldPersistTaps="handled">
+          <ScrollView contentContainerClassName="gap-6 px-gutter pt-4 pb-12" keyboardShouldPersistTaps="handled">
             {relating ? (
               <RelationshipContent
                 from={slug}

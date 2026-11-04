@@ -29,36 +29,39 @@ const palette = {
   /** iOS system neutrals (light and dark grouped backgrounds, labels, fills, separators). */
   gray: {
     white: "#FFFFFF",
+    25: "#F3F3F5", // card (light): the neutral grey group on a white page
     50: "#F2F2F7", // systemGroupedBackground
     100: "#E5E5EA", // systemFill (light), systemGray5
     150: "#D1D1D6", // systemGray4, pressed
     200: "#C6C6C8", // opaqueSeparator
     250: "#C4C4C7", // tertiaryLabel, opaque
-    300: "#AEAEB2", // secondaryLabel (dark)
+    300: "#AEAEB2", // tertiaryLabel (light, v2.15)
+    350: "#A1A1A6", // secondaryLabel (dark, v2.15)
     500: "#636366", // secondaryLabel (light), AA on white and grouped
+    550: "#6B6B70", // secondaryLabel (light, v2.15): AA on white and on the grey card
     600: "#5B5B60", // tertiaryLabel (dark), opaque
     700: "#3A3A3C", // systemGray4 dark, pressed (dark), photo placeholder
     750: "#38383A", // opaqueSeparator (dark)
     800: "#2C2C2E", // systemFill (dark)
     900: "#1C1C1E", // secondarySystemGroupedBackground (dark)
+    925: "#151517", // card (dark, v2.15)
     black: "#000000",
   },
-  /** The tint. Deep bamboo jade in light mode, pale jade in dark mode. */
-  jade: {
-    50: "#E3EBE8", // tint at ~12% on white
-    300: "#7DCAA4",
-    700: "#165C3C",
-    950: "#16241E", // tint at ~18% on black
-  },
+  /** 熊猫 ink: the near-black of a panda's fur. Filled buttons and body text in light mode. */
+  ink: { 950: "#0A0A0A" },
   /**
-   * The warm accent, 笋金 (bamboo-shoot gold): a muted brass that sits opposite the jade on the
-   * colour wheel without competing with it. Hue ~40°, kept apart from the warning orange (27°).
+   * Sky blue (v2.15, direction C 熊猫): the one color beside black and white. `600` is text-safe on
+   * white and the grey card; `500` is the brighter stroke for rings, rails and dots.
    */
-  shoot: {
-    50: "#F5EDDB",
-    300: "#E3BD6E",
-    700: "#846018",
-    950: "#2B2312",
+  sky: {
+    50: "#EBF4FF", // selected ground (light): gen.py has #E7F2FF, lifted a touch so the tint on it reaches 4.5:1
+    200: "#8CCBFF", // text on the selected ground (dark)
+    300: "#5AB4FF", // tint (dark)
+    400: "#4DA8FF", // graphic (dark)
+    500: "#1A8CFF", // graphic (light)
+    600: "#0A6CDB", // tint (light)
+    700: "#0A5CC2", // text on the selected ground (light)
+    950: "#0C2033", // selected ground (dark)
   },
   red: { light: "#CE2C31", dark: "#FF6961" },
   orange: { light: "#B25000", dark: "#FF9F0A" },
@@ -67,7 +70,8 @@ const palette = {
 /** The 4pt spacing scale. Keys follow Tailwind's numbering, so `p-4` is 16. */
 const space = { 0: 0, 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32, 10: 40 } as const;
 
-const radius = { xs: 4, sm: 8, md: 10, lg: 12, xl: 16, "2xl": 24, full: 999 } as const;
+/** sm–xl are the React Native Reusables scale; `field` and up are only reached through the roles below. */
+const radius = { xs: 4, sm: 8, md: 10, lg: 12, field: 14, xl: 16, "2xl": 20, "3xl": 24, full: 999 } as const;
 
 const duration = { instant: 100, press: 120, quick: 200, base: 280, slow: 480 } as const;
 
@@ -89,11 +93,25 @@ const spring = {
   snappy: { mass: 1, stiffness: 400, damping: 40 },
 } as const;
 
+/**
+ * System faces only; nothing is bundled. `system` is the platform default (SF Pro + PingFang SC on
+ * Apple, Roboto + Noto Sans CJK on Android) and is never set on native Text. `rounded` is SF Pro
+ * Rounded for figures: iOS resolves `ui-rounded` (React Native 0.78+), Safari takes the CSS keyword,
+ * and everything else falls back to the text face. Chinese inside a rounded run (岁, 天, 只) falls
+ * back to PingFang, so one figure style can carry its unit.
+ * No style sets letter spacing: SF applies its own optical tracking per size, and CJK is never tracked.
+ */
 const fontFamily = {
-  system: "-apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+  system: '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", system-ui, sans-serif',
+  rounded: {
+    ios: "ui-rounded",
+    android: "sans-serif",
+    web: 'ui-rounded, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", system-ui, sans-serif',
+  },
 } as const;
 
-const fontWeight = { regular: "400", semibold: "600", bold: "700" } as const;
+/** PingFang SC stops at Semibold, so on iOS 700 and 800 draw Chinese at 600; SF Rounded has them all. */
+const fontWeight = { regular: "400", semibold: "600", bold: "700", heavy: "800" } as const;
 
 export const primitive = { palette, space, radius, duration, easing, spring, fontFamily, fontWeight } as const;
 
@@ -106,55 +124,54 @@ export const primitive = { palette, space, radius, duration, easing, spring, fon
  * Every value is a primitive, or black/white at an alpha.
  */
 const colorLight = {
-  groupedBackground: palette.gray[50],
+  groupedBackground: palette.gray.white,
   background: palette.gray.white,
-  card: palette.gray.white,
-  label: palette.gray.black,
-  secondaryLabel: palette.gray[500],
-  tertiaryLabel: palette.gray[250],
-  separator: palette.gray[200],
-  tint: palette.jade[700],
-  button: palette.jade[700],
+  card: palette.gray[25],
+  label: palette.ink[950],
+  secondaryLabel: palette.gray[550],
+  tertiaryLabel: palette.gray[300],
+  separator: palette.gray[150],
+  tint: palette.sky[600],
+  graphic: palette.sky[500],
+  button: palette.ink[950],
   buttonLabel: palette.gray.white,
-  highlightSoft: palette.jade[50],
-  warm: palette.shoot[700],
-  warmSoft: palette.shoot[50],
+  highlightSoft: palette.sky[50],
   destructive: palette.red.light,
   warning: palette.orange.light,
   fill: palette.gray[100],
   pressed: palette.gray[150],
+  switchKnob: palette.gray.white,
   onMedia: palette.gray.white,
   mediaPlaceholder: palette.gray[700],
   photoStroke: alpha("black", 0.1),
   glassFallback: alpha("black", 0.38),
   barMaterial: alpha("white", 0.86),
 } as const;
-
 export type ColorRole = keyof typeof colorLight;
 
 const colorDark: Record<ColorRole, string> = {
   groupedBackground: palette.gray.black,
   background: palette.gray.black,
-  card: palette.gray[900],
+  card: palette.gray[925],
   label: palette.gray.white,
-  secondaryLabel: palette.gray[300],
+  secondaryLabel: palette.gray[350],
   tertiaryLabel: palette.gray[600],
   separator: palette.gray[750],
-  tint: palette.jade[300],
-  button: palette.jade[300],
+  tint: palette.sky[300],
+  graphic: palette.sky[400],
+  button: palette.gray.white,
   buttonLabel: palette.gray.black,
-  highlightSoft: palette.jade[950],
-  warm: palette.shoot[300],
-  warmSoft: palette.shoot[950],
+  highlightSoft: palette.sky[950],
   destructive: palette.red.dark,
   warning: palette.orange.dark,
   fill: palette.gray[800],
   pressed: palette.gray[700],
+  switchKnob: palette.gray.white,
   onMedia: palette.gray.white,
   mediaPlaceholder: palette.gray[700],
   photoStroke: alpha("white", 0.1),
   glassFallback: alpha("black", 0.38),
-  barMaterial: "rgba(28,28,30,0.86)", // gray[900] at 86%
+  barMaterial: "rgba(21,21,23,0.86)", // card (dark) at 86%
 };
 
 /** What each color role is for. Read by the generator (DESIGN.md) and the showcase. */
@@ -166,16 +183,16 @@ export const colorRoleNotes: Record<ColorRole, string> = {
   secondaryLabel: "Footnotes, the line under a row, icons, the date.",
   tertiaryLabel: "The disclosure chevron and placeholder glyphs. Not body text.",
   separator: "Inset hairline row dividers.",
-  tint: "What a fan can do: selected tab, link, action row, focus ring.",
-  button: "The ground of the one filled button.",
-  buttonLabel: "The label on a filled button.",
-  highlightSoft: "The ground of a tinted capsule button (关注).",
-  warm: "笋金. A marker, never an action: today, new, a milestone badge.",
-  warmSoft: "The ground of a warm badge, with `warm` text on it.",
+  tint: "Sky blue, text-safe: what a fan can do or has chosen (selected state, link, action row, focus ring, a confirmed mark, today).",
+  graphic: "Brighter sky blue for strokes and fills only (rings, timeline nodes, bars, dots): 3:1, never text.",
+  button: "The ground of the one filled button: panda ink in light mode, white in dark.",
+  buttonLabel: "The label on a filled button or on a graphic fill.",
+  highlightSoft: "The ground of a selected chip or a tinted capsule button (见过), with `tint` text on it.",
   destructive: "Delete and remove.",
   warning: "A caution line (closed today, unconfirmed).",
   fill: "Secondary buttons, search field, toggles.",
   pressed: "A pressed row or control.",
+  switchKnob: "The thumb of a switch: white in both appearances, as iOS draws it.",
   onMedia: "Text and glyphs over a photograph, always over a scrim.",
   mediaPlaceholder: "The dark ground a story card shows while its photo loads.",
   photoStroke: "The 1px inside edge on a rounded photograph.",
@@ -197,7 +214,9 @@ export interface TextStyle {
   size: number;
   lineHeight: number;
   weight: (typeof fontWeight)[keyof typeof fontWeight];
-  /** Letter spacing in px. 0 everywhere: CJK text is never tracked. */
+  /** `rounded` for figures (SF Pro Rounded, tabular). Default: the system text face. */
+  family?: "rounded";
+  /** Letter spacing in px. 0 everywhere: SF tracks itself by size, and CJK text is never tracked. */
   tracking: number;
   /** What the style is for, and where it must not go. */
   use: string;
@@ -215,6 +234,14 @@ const text = {
   title: {
     size: 22, lineHeight: 28, weight: fontWeight.bold, tracking: 0,
     use: "A section, a card title, a resident's name on a tile, a stat value (with tabular figures).",
+  },
+  stat: {
+    size: 22, lineHeight: 28, weight: fontWeight.bold, tracking: 0, family: "rounded",
+    use: "A value in a stat tile or a week card: a count, an age, a day number. Rounded tabular figures.",
+  },
+  figure: {
+    size: 34, lineHeight: 41, weight: fontWeight.bold, tracking: 0, family: "rounded",
+    use: "The one number a card is about: a countdown, an age, a total. Rounded tabular figures, never a sentence.",
   },
   headline: {
     size: 17, lineHeight: 24, weight: fontWeight.semibold, tracking: 0,
@@ -285,7 +312,8 @@ const spacing = {
   hairGap: { value: space[1], use: "Between an icon and its label, a value and its unit." },
   stackTight: { value: space[2], use: "Between lines that belong together (title and footnote)." },
   row: { value: space[3], use: "A row's vertical padding; the gap between tiles in a grid or scroller." },
-  inset: { value: space[4], use: "The page's side inset and a card's padding." },
+  gutter: { value: space[5], use: "The page's side margin: the column's edge on every screen (v4 mockups)." },
+  inset: { value: space[4], use: "A card's and a grouped row's padding." },
   stack: { value: space[5], use: "Between blocks inside a section." },
   sectionTight: { value: space[6], use: "Between a section header and the previous group on a dense screen." },
   section: { value: space[8], use: "Between sections on a page." },
@@ -294,12 +322,11 @@ const spacing = {
 
 /** Radius roles. Nested shapes are concentric: inner = outer − padding (see `concentric`). */
 const radii = {
-  card: { value: radius["2xl"], use: "The featured 今天 story card." },
-  tile: { value: radius.xl, use: "Story cards in the scroller, resident tiles, stat blocks, quiz photos." },
+  card: { value: radius["3xl"], use: "The featured 今天 story card and the week hero." },
+  tile: { value: radius.xl, use: "Photos: story cards in the scroller, explore cards, resident tiles, 图鉴 grid tiles, quiz photos." },
   control: { value: radius.lg, use: "Search field, segmented control, small photo in a row." },
-  group: { value: radius.md, use: "Inset grouped lists." },
+  group: { value: radius["2xl"], use: "Grey surfaces: inset grouped lists, stat tiles and cards on the page (v4 mockups)." },
   pill: { value: radius.full, use: "Buttons, capsules and chips. Height / 2 in practice." },
-  glyph: { value: radius.sm, use: "The 30pt rounded square behind a row glyph on 设置, and only there." },
 } as const;
 
 /** Motion roles. Each pairs a duration with a curve, so a screen asks for a role, not numbers. */
@@ -338,13 +365,13 @@ export const component = {
   hitTarget: 44,
   button: { height: 48, paddingX: space[6], radius: radius.full },
   listRow: { minHeight: 44, paddingX: space[4], paddingY: space[3], iconInset: 50 },
-  searchField: { height: 44, radius: radius.md },
+  searchField: { height: 44, radius: radius.field },
   glassButton: { size: 44 },
   familyChip: { height: 52, padding: space[1], avatar: 44 },
-  /** 设置 rows: a glyph in a tinted rounded square, as the system Settings app draws them. */
+  /** 设置 rows: the bare glyph centred in a slot, so labels line up. No tile behind it. */
   settingsGlyph: { size: 30, icon: 18, inset: space[4] + 30 + space[3] },
-  /** A segmented control: a 44pt track with the selected segment inset 2pt (concentric radius). */
-  segmented: { height: 44, padding: 2 },
+  /** A segmented control: a 36pt pill track with the selected pill inset 3pt; each segment's hit area is the full 44pt. */
+  segmented: { height: 36, padding: 3, hit: 44 },
   /** The switch drawn in a SwitchRow: the iOS 51×31 track and 27pt knob. The whole row is the control. */
   switchTrack: { width: 51, height: 31, knob: 27 },
   /** Icons follow the text they sit beside, like SF Symbols. */
@@ -354,6 +381,18 @@ export const component = {
   iconStroke: { regular: 1.75, bold: 2 },
   press: { scale: 0.97, reducedOpacity: 0.85 },
   enter: { rise: space[2] },
+  /** A filter or choice chip: 32pt tall, inside a 44pt hit area. */
+  chip: { height: 32, paddingX: space[3] },
+  /** A progress ring: the track and the arc share one stroke; the value sits in the middle. */
+  progressRing: { size: 64, stroke: 6, small: 44, smallStroke: 4 },
+  /** A timeline: a 2pt rail, 10pt dots, the newest one ringed in the tint. */
+  timeline: { rail: 2, dot: 10, column: 20 },
+  /** A stepper's numbered disc. */
+  stepper: { disc: 24 },
+  /** The hollow dot beside a fact still being verified. */
+  statusDot: 8,
+  /** A time band's track and its "now" marker. */
+  timeBand: { track: 8, marker: 14 },
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -370,3 +409,16 @@ export function cubicBezierCss(name: keyof typeof easing) {
 }
 
 export const tokens = { primitive, semantic, component } as const;
+
+/** WCAG 2 contrast ratio between two opaque hex colors. */
+export function contrastRatio(a: string, b: string) {
+  const lum = (hex: string) => {
+    const [r, g, bl] = [1, 3, 5].map((i) => {
+      const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+      return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    }) as [number, number, number];
+    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  };
+  const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x) as [number, number];
+  return (hi + 0.05) / (lo + 0.05);
+}

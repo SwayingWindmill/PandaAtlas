@@ -3,6 +3,10 @@
 CI runs this on every change to the file. The ``curation.learning`` batch operation then writes the
 merged file into ``learning.catalog`` (services/api/src/learning-command.ts). Draft entries stay in
 the document; ``GET /api/v2/learning`` returns published entries only.
+
+Chinese is required. English (``en``) is optional on every text field of every item type, including
+published entries. A missing or blank ``en`` is valid; a written English string still has its length
+limit, and published copy in either language must not carry a draft mark.
 """
 
 from __future__ import annotations
@@ -102,21 +106,25 @@ def validate_text(
     allow_empty: bool = False,
 ) -> None:
     zh_max, en_max = LIMITS[limit_key]
-    if not isinstance(value, dict) or set(value) != {"zh", "en"}:
-        errors.append(f"{label}: must be an object with zh and en")
+    if not isinstance(value, dict) or "zh" not in value or set(value) - {"zh", "en"}:
+        errors.append(f"{label}: must include zh; en is optional")
         return
-    for language, limit in (("zh", zh_max), ("en", en_max)):
+    # English may be omitted or blank on draft and published copy. A written string still has a limit.
+    languages = [("zh", zh_max)]
+    if "en" in value:
+        languages.append(("en", en_max))
+    for language, limit in languages:
         text = value.get(language)
         field = f"{label}.{language}"
         if not isinstance(text, str) or len(text) > limit:
             errors.append(f"{field}: must be at most {limit} characters")
             continue
         if not text.strip():
-            # Draft articles and terms may be Chinese-only until a translation exists.
-            if language == "en" and status == "draft":
+            # A blank Chinese string is only allowed where the screen omits an empty slot
+            # (face-guide tip bodies). A blank English string means "no translation".
+            if language == "en" or allow_empty:
                 continue
-            if not allow_empty:
-                errors.append(f"{field}: must be 1 to {limit} characters")
+            errors.append(f"{field}: must be 1 to {limit} characters")
             continue
         # Drafts may be unmarked while the owner reviews them. Published copy must not look like a draft.
         if status == "published" and ("[草稿]" in text or "[draft]" in text):

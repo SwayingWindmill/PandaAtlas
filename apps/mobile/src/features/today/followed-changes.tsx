@@ -3,6 +3,7 @@ import { router, useFocusEffect } from "expo-router";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 
+import { BellRing } from "@/components/icons";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -51,7 +52,7 @@ const SEPARATOR_INSET = { marginLeft: 16 + THUMB + 12 } as const;
 function Section({ children }: { children: ReactNode }) {
   return (
     <View className="gap-row">
-      <SectionHeader title="关注的新资料" />
+      <SectionHeader title="关注的新资料" icon={BellRing} />
       {children}
     </View>
   );

@@ -100,7 +100,7 @@ export function WorldMap({
                       <Text
                         variant="footnote"
                         allowFontScaling={false}
-                        className={cn("font-semibold tabular-nums", selected ? "text-background" : "text-primary-foreground")}
+                        className={cn("font-rounded font-semibold tabular-nums", selected ? "text-background" : "text-primary-foreground")}
                       >
                         {cluster.residentCount}
                       </Text>

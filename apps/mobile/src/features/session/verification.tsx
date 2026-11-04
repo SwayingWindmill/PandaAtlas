@@ -59,13 +59,11 @@ function CodeForm({ factorId, onVerified }: { factorId: string; onVerified: () =
   );
 }
 
-/** The shield over the title, as iOS opens a security sheet: one glyph, in the tinted fill. */
+/** The shield over the title, as iOS opens a security sheet: one bare glyph, no disc behind it. */
 function Header({ title, children }: { title: string; children: string }) {
   return (
     <View className="items-center gap-stack-tight">
-      <View className="size-14 items-center justify-center rounded-full bg-highlight-soft">
-        <Icon icon={ShieldCheck} size="title3" tone="tint" />
-      </View>
+      <Icon icon={ShieldCheck} size={40} tone="tint" strokeWidth={1.5} />
       <Text variant="title" className="text-center">
         {title}
       </Text>

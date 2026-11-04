@@ -201,11 +201,16 @@ export interface PresentedChallenge {
 
 export class CatalogUnavailable extends Error {}
 
-/** Chinese, then English. The app has no locale switch; the file keeps both. */
-export function learningText(value: LearningText | undefined): string {
-  const zh = value?.zh?.trim();
-  if (zh) return zh;
-  return value?.en?.trim() ?? "";
+/**
+ * Text for the requested language, then the other language.
+ * The app has no locale switch and asks for Chinese. A blank or missing English string is the
+ * same as no translation, so a Chinese-only item stays visible instead of an empty line.
+ */
+export function learningText(value: LearningText | undefined, locale: "zh" | "en" = "zh"): string {
+  const zh = value?.zh?.trim() ?? "";
+  const en = value?.en?.trim() ?? "";
+  if (locale === "en") return en || zh;
+  return zh || en;
 }
 
 /** A face-guide tip with no body is a slot the writer left blank, so the screen omits it. */

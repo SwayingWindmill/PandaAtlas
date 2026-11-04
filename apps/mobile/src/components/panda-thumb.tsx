@@ -21,10 +21,11 @@ export function PandaThumb({
   pandaId: string;
   name: string;
   size: number;
-  shape?: "round" | "square";
+  /** "tile" is a photo tile in a grid (the 图鉴), at the photo radius. */
+  shape?: "round" | "square" | "tile";
 }) {
   const photo = usePandaCover(pandaId);
-  const radius = shape === "round" ? size / 2 : RADIUS.control;
+  const radius = shape === "round" ? size / 2 : shape === "tile" ? RADIUS.tile : RADIUS.control;
   return (
     <View
       className="items-center justify-center overflow-hidden bg-secondary"

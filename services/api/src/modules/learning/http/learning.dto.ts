@@ -2,10 +2,13 @@ import { ApiProperty } from "@nestjs/swagger";
 import type { FaceTipKey } from "../application/learning-catalog.js";
 
 export class LearningTextDto {
-  @ApiProperty()
+  @ApiProperty({ description: "Chinese text." })
   public declare zh: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description:
+      "English text. An empty string means the item was published in Chinese only; clients that ask for English show zh instead of a blank line.",
+  })
   public declare en: string;
 }
 

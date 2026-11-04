@@ -19,6 +19,37 @@ describe("curation.learning batch adapter", () => {
     expect(() => storedDocument([])).toThrow();
   });
 
+  it("accepts a published Chinese-only card the public catalog can return", () => {
+    const zh = { zh: "只有中文" };
+    const { catalog } = storedDocument({
+      version: "2026.11.04.1",
+      articles: [],
+      cards: [
+        {
+          slug: "zh-only",
+          status: "published",
+          title: zh,
+          summary: zh,
+          body: zh,
+          sources: [{ title: { zh: "基地官网" }, url: "https://www.panda.org.cn/", citedOn: "2026-10-29" }],
+        },
+      ],
+      topics: [],
+      terms: [],
+      faceGuides: [],
+      challenges: [],
+    });
+    expect(catalog.cards).toEqual([
+      {
+        slug: "zh-only",
+        title: { zh: "只有中文", en: "" },
+        summary: { zh: "只有中文", en: "" },
+        body: { zh: "只有中文", en: "" },
+        sources: [{ title: { zh: "基地官网", en: "" }, url: "https://www.panda.org.cn/", citedOn: "2026-10-29" }],
+      },
+    ]);
+  });
+
   it("summarizes the published entries per collection", () => {
     const markdown = renderLearningReport({
       version: "2026.11.03.1",

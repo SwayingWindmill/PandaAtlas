@@ -3,11 +3,12 @@ import { Stack } from "expo-router";
 import { useDeferredValue, useMemo, useState } from "react";
 import { FlatList, Platform, ScrollView, View, useWindowDimensions } from "react-native";
 
+import { Chip } from "@/components/chip";
+import { Columns, House, MapPin, Network } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { SectionHeader } from "@/components/section-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { institutionListQueryOptions } from "@/features/institutions/institutions";
 import { areaChips } from "@/features/pandas/areas";
 import { PandaRow } from "@/features/pandas/panda-row";
@@ -17,8 +18,26 @@ import { localToday } from "@/features/engagement/seen";
 import { ExploreCard } from "@/features/pandas/explore-card";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { useBottomClearance } from "@/lib/bottom-clearance";
+import { pageColumn } from "@/lib/surface";
 
 const GAP = 12;
+
+/**
+ * 在中国 and 在海外 first, then each area in China that has a panda. Overseas cities stay under 在海外,
+ * so the row stays short.
+ */
+function findChips(pandas: { area: string | null }[]): string[] {
+  const areas = areaChips(pandas);
+  const china = areas.filter((area) => area !== "海外");
+  return [...(china.length > 0 ? ["在中国"] : []), ...(areas.includes("海外") ? ["在海外"] : []), ...china];
+}
+
+function inChip(area: string | null, chip: string): boolean {
+  if (chip === "全部") return true;
+  if (chip === "在海外") return area === "海外";
+  if (chip === "在中国") return area !== null && area !== "海外";
+  return area === chip;
+}
 /**
  * iOS searches from the system search bar under the large title, which the bar and its Liquid Glass
  * own; Android and the web keep the in-page field.
@@ -31,7 +50,7 @@ export default function FindScreen() {
   const { width } = useWindowDimensions();
   const bottom = useBottomClearance();
   const photos = useStoryPhotos(localToday(), TODAY_STORIES + 4).slice(TODAY_STORIES);
-  const card = Math.round(Math.min((Math.min(width, 700) - 32) * 0.78, 320));
+  const card = Math.round(Math.min(pageColumn(width) * 0.42, 200));
   const { data: pandas, isError: failed, refetch } = useQuery(pandaIndexQueryOptions());
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
@@ -41,18 +60,18 @@ export default function FindScreen() {
   const hasInstitutions = (institutions?.length ?? 0) > 0;
 
   const [area, setArea] = useState("全部");
-  const chips = useMemo(() => (pandas ? areaChips(pandas) : []), [pandas]);
+  const chips = useMemo(() => (pandas ? findChips(pandas) : []), [pandas]);
   const results = useMemo(() => {
     const found = pandas ? searchPandas(pandas, deferredQuery) : [];
-    return area === "全部" ? found : found.filter((panda) => panda.area === area);
+    return found.filter((panda) => inChip(panda.area, area));
   }, [pandas, deferredQuery, area]);
   const browsing = !deferredQuery.trim() && area === "全部";
   const explore = [
-    { id: "map", title: "熊猫在哪里", href: "/map" as const },
-    ...(hasInstitutions ? [{ id: "institutions", title: "基地和动物园", href: "/institutions" as const }] : []),
-    { id: "relationship", title: "查两只熊猫的关系", href: "/relationship" as const },
+    { id: "map", title: "熊猫在哪里", icon: MapPin, href: "/map" as const },
+    ...(hasInstitutions ? [{ id: "institutions", title: "场馆", spoken: "基地和动物园", icon: House, href: "/institutions" as const }] : []),
+    { id: "relationship", title: "查关系", spoken: "查两只熊猫的关系", icon: Network, href: "/relationship" as const },
     // The user picks both pandas on /compare; nothing here proposes a pair.
-    { id: "compare", title: "比一比两只熊猫", href: "/compare" as const },
+    { id: "compare", title: "比一比", spoken: "比一比两只熊猫", icon: Columns, href: "/compare" as const },
   ];
 
   const searchBar = SYSTEM_SEARCH ? (
@@ -60,7 +79,7 @@ export default function FindScreen() {
       placement="stacked"
       hideWhenScrolling={false}
       obscureBackground={false}
-      placeholder="名字或基地"
+      placeholder="名字、拼音或场馆"
       autoCapitalize="none"
       onChangeText={(event) => setQuery(event.nativeEvent.text)}
       onCancelButtonPress={() => setQuery("")}
@@ -81,35 +100,34 @@ export default function FindScreen() {
           )}
           className="flex-1 bg-background"
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerClassName="px-4"
+          contentContainerClassName="px-gutter"
           contentContainerStyle={{ paddingBottom: bottom }}
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={
             <View className="gap-stack pb-row">
               {Platform.OS === "web" ? <Text variant="display">找熊猫</Text> : null}
-              {SYSTEM_SEARCH ? null : <SearchField value={query} onChange={setQuery} />}
+              {SYSTEM_SEARCH ? null : <SearchField value={query} onChange={setQuery} placeholder="名字、拼音或场馆" />}
               {chips.length > 0 ? (
-                <ToggleGroup
-                  type="single"
-                  variant="outline"
-                  value={area}
-                  onValueChange={(value) => setArea(value ?? "全部")}
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  className="-mx-gutter"
+                  contentContainerClassName="gap-stack-tight px-gutter"
                   accessibilityLabel="按地方看"
                 >
                   {["全部", ...chips].map((chip) => (
-                    <ToggleGroupItem key={chip} value={chip} accessibilityLabel={chip}>
-                      <Text>{chip}</Text>
-                    </ToggleGroupItem>
+                    <Chip key={chip} label={chip} appearance="ink" selected={area === chip} onPress={() => setArea(chip)} />
                   ))}
-                </ToggleGroup>
+                </ScrollView>
               ) : null}
+              {browsing ? <SectionHeader title="探索" /> : null}
               {browsing ? (
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
-                  className="-mx-4"
-                  contentContainerClassName="px-4"
+                  className="-mx-gutter"
+                  contentContainerClassName="px-gutter"
                   contentContainerStyle={{ gap: GAP }}
                   snapToInterval={card + GAP}
                   snapToAlignment="start"
@@ -120,6 +138,8 @@ export default function FindScreen() {
                       key={entry.id}
                       id={entry.id}
                       title={entry.title}
+                      spoken={"spoken" in entry ? entry.spoken : undefined}
+                      icon={entry.icon}
                       href={entry.href}
                       photo={photos[index]}
                       width={card}
@@ -160,14 +180,14 @@ export default function FindScreen() {
         contentContainerStyle={{ paddingBottom: bottom }}
       >
         {Platform.OS === "web" ? (
-          <Text variant="display" className="px-4">
+          <Text variant="display" className="px-gutter">
             找熊猫
           </Text>
         ) : null}
         {failed ? (
-          <LoadFailed message="熊猫列表暂时打不开。" onRetry={() => void refetch()} className="mx-4" />
+          <LoadFailed message="熊猫列表暂时打不开。" onRetry={() => void refetch()} className="mx-gutter" />
         ) : (
-          <View className="gap-row px-4 pt-row" accessibilityLabel="正在加载熊猫列表">
+          <View className="gap-row px-gutter pt-row" accessibilityLabel="正在加载熊猫列表">
             {SYSTEM_SEARCH ? null : <Skeleton className="h-11 rounded-control" />}
             {[0, 1, 2, 3, 4, 5].map((key) => (
               <View key={key} className="flex-row items-center gap-row">

@@ -7,7 +7,8 @@ test("a fan puts a panda in a new collection, finds it in 我的, renames, empti
   const { panda } = fixture();
   await signIn(page, testEmail("collections"));
   await page.goto(`/pandas/${panda.slug}`);
-  await page.getByRole("button", { name: "加入合集" }).click();
+  await page.getByRole("button", { name: "更多" }).click();
+  await page.getByRole("menuitem", { name: "加入合集" }).click();
   await page.getByLabel("新合集的名字").fill("最喜欢");
   await page.getByRole("button", { name: "新建并加入" }).click();
   await expect(page.getByRole("button", { name: "最喜欢", pressed: true })).toBeVisible();
@@ -19,7 +20,7 @@ test("a fan puts a panda in a new collection, finds it in 我的, renames, empti
   await expect(page.getByRole("button", { name: new RegExp(`^${panda.name}`) })).toBeVisible();
 
   await page.getByRole("button", { name: "改名字" }).click();
-  await page.getByLabel("合集名字").fill("常去看的");
+  await page.getByRole("textbox", { name: "合集的名字" }).fill("常去看的");
   await page.getByRole("button", { name: "保存" }).click();
   await expect(page.getByRole("heading", { name: "常去看的" })).toBeVisible();
 

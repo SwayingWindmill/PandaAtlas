@@ -1940,7 +1940,9 @@ export interface components {
             resourceId: string;
         };
         LearningTextDto: {
+            /** @description Chinese text. */
             zh: string;
+            /** @description English text. An empty string means the item was published in Chinese only; clients that ask for English show zh instead of a blank line. */
             en: string;
         };
         LearningArticleParagraphDto: {

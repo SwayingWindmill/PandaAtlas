@@ -44,7 +44,7 @@ export function StoryPhotoTile({ photo, width, slot }: { photo: StoryPhoto | und
             <Text
               variant="headline"
               role="none"
-              className="absolute right-0 bottom-0 left-0 p-row text-white"
+              className="absolute right-0 bottom-0 left-0 p-row text-on-media"
               numberOfLines={1}
             >
               {photo.name}
@@ -78,9 +78,7 @@ export function LockedPhotoTile({ photo, width }: { photo: StoryPhoto | undefine
       ) : null}
       <View style={[FILL, { backgroundColor: semantic.scrim.color, opacity: 0.38 }]} />
       <View style={FILL} className="items-center justify-center">
-        <View className="size-11 items-center justify-center rounded-full bg-white/20">
-          <Icon icon={Lock} size="subhead" tone="onMedia" strokeWidth={2} />
-        </View>
+        <Icon icon={Lock} size="title3" tone="onMedia" strokeWidth={2} />
       </View>
       <PhotoOutline radius={RADIUS.tile} />
     </View>

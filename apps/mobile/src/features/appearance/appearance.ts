@@ -11,6 +11,14 @@ const CHOICES: readonly Appearance[] = ["system", "light", "dark"];
 let revision = 0;
 let pendingWrite = Promise.resolve();
 let selected: Appearance | undefined;
+/** Every mounted useAppearance, so 设置's 外观 row follows a choice made on the 外观 page. */
+const listeners = new Set<(next: Appearance) => void>();
+
+export const APPEARANCES: readonly { value: Appearance; label: string }[] = [
+  { value: "system", label: "跟随系统" },
+  { value: "light", label: "浅色" },
+  { value: "dark", label: "深色" },
+];
 
 function isAppearance(value: unknown): value is Appearance {
   return typeof value === "string" && (CHOICES as readonly string[]).includes(value);
@@ -29,6 +37,12 @@ export async function applyStoredAppearance(): Promise<void> {
 export function useAppearance(): [Appearance, (next: Appearance) => void] {
   const [appearance, setAppearanceState] = useState<Appearance>(selected ?? "system");
   useEffect(() => {
+    listeners.add(setAppearanceState);
+    return () => {
+      listeners.delete(setAppearanceState);
+    };
+  }, []);
+  useEffect(() => {
     if (selected !== undefined) return;
     const readRevision = revision;
     AsyncStorage.getItem(KEY)
@@ -40,7 +54,7 @@ export function useAppearance(): [Appearance, (next: Appearance) => void] {
   function set(next: Appearance) {
     revision += 1;
     selected = next;
-    setAppearanceState(next);
+    for (const listener of listeners) listener(next);
     Uniwind.setTheme(next);
     pendingWrite = pendingWrite.then(() => AsyncStorage.setItem(KEY, next)).catch(() => undefined);
   }

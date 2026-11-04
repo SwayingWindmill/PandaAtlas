@@ -10,6 +10,24 @@ import { setMemoryPrefs, useMemoryPrefs } from "./prefs";
  * 那年今天 in 设置 and at the foot of its page: the switch for the 今天 card, and a way back for everything
  * shown less. Both live on this device only, which the footer says.
  */
+export function OnThisDaySwitch({ separator }: { separator?: boolean }) {
+  const prefs = useMemoryPrefs();
+  if (!prefs) return null;
+  return (
+    <SwitchRow
+      glyph={History}
+      label="那年今天"
+      accessibilityLabel="在今天页显示那年今天"
+      value={!prefs.off}
+      separator={separator}
+      onChange={(on) => {
+        tapHaptic();
+        setMemoryPrefs({ ...prefs, off: !on });
+      }}
+    />
+  );
+}
+
 export function OnThisDaySettings() {
   const prefs = useMemoryPrefs();
   if (!prefs) return null;
@@ -17,16 +35,7 @@ export function OnThisDaySettings() {
   return (
     <View className="gap-section-tight">
       <ListSection footer="在今天页回看往年的今天：生日、来到新家、回国，和你自己的记录。这些选择只保存在这台设备上。">
-        <SwitchRow
-          glyph={History}
-          label="那年今天"
-          accessibilityLabel="在今天页显示那年今天"
-          value={!prefs.off}
-          onChange={(on) => {
-            tapHaptic();
-            setMemoryPrefs({ ...prefs, off: !on });
-          }}
-        />
+        <OnThisDaySwitch />
       </ListSection>
       {hidden > 0 ? (
         <ListSection>
