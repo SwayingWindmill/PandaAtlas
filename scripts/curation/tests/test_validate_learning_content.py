@@ -127,6 +127,28 @@ class ValidateLearningContentTests(unittest.TestCase):
         content["faceGuides"][0]["tips"][1]["body"] = {"zh": "", "en": ""}
         self.assertEqual(BUILDER.validate_content(content, PANDAS, PUBLISHED), [])
 
+    def test_published_items_may_be_chinese_only(self) -> None:
+        content = document("published")
+        content["articles"] = [minimal_article()]
+        omit_english(content)
+        self.assertEqual(BUILDER.validate_content(content, PANDAS, PUBLISHED), [])
+
+    def test_published_english_may_be_blank(self) -> None:
+        content = document("published")
+        for field in ("title", "summary", "body"):
+            content["cards"][0][field]["en"] = ""
+        content["cards"][0]["sources"][0]["title"]["en"] = "   "
+        content["faceGuides"][0]["tips"][0]["body"] = {"zh": "两颊圆润。"}
+        self.assertEqual(BUILDER.validate_content(content, PANDAS, PUBLISHED), [])
+
+    def test_a_written_english_string_still_has_a_length_limit(self) -> None:
+        self.assert_error(lambda c: c["cards"][0]["title"].update(en="x" * 49), "title.en", "published")
+        self.assert_error(lambda c: c["challenges"][0]["prompt"].update(en="x" * 81), "prompt.en", "published")
+
+    def test_chinese_is_still_required_when_english_is_omitted(self) -> None:
+        self.assert_error(lambda c: c["cards"][0]["title"].pop("zh"), "must include zh", "published")
+        self.assert_error(lambda c: c["terms"][0]["definition"].pop("zh"), "must include zh", "published")
+
     def test_face_tips_and_real_pandas(self) -> None:
         self.assert_error(lambda c: c["faceGuides"][0]["tips"].pop(), "tips")
         self.assert_error(lambda c: c["faceGuides"][0].update(pandaSlug="not-a-panda"), "pandaSlug")
@@ -149,6 +171,47 @@ class ValidateLearningContentTests(unittest.TestCase):
         for challenge in content["challenges"]:
             for slug in [challenge["answerPandaSlug"], *challenge["decoyPandaSlugs"]]:
                 self.assertIn(slug, published, challenge["slug"])
+
+
+def omit_english(value: object) -> None:
+    if isinstance(value, dict):
+        if "zh" in value and set(value) <= {"zh", "en", "drawnFromBody"}:
+            value.pop("en", None)
+        for child in value.values():
+            omit_english(child)
+    elif isinstance(value, list):
+        for child in value:
+            omit_english(child)
+
+
+def minimal_article() -> dict:
+    def copy(zh: str) -> dict:
+        return {"zh": zh}
+
+    return {
+        "slug": "zh-only-article",
+        "status": "published",
+        "category": "外形与识别",
+        "sourceCardSlug": "black-eye-patches",
+        "title": copy("只有中文"),
+        "dek": copy("导语"),
+        "pullQuote": copy("引语"),
+        "body": {"sections": [{"heading": copy("小节"), "paragraphs": [{"text": copy("段落"), "refs": ["ref"]}]}]},
+        "keyFacts": [{"text": copy("要点"), "refs": ["ref"]}],
+        "images": [commons_figure(caption=copy("图说"))],
+        "references": [
+            {
+                "id": "ref",
+                "title": "基地官网",
+                "publisher": "基地",
+                "url": "https://www.panda.org.cn/",
+                "citedOn": "2026-10-29",
+            }
+        ],
+        "relatedArticles": [],
+        "stats": {"bodyChars": 2, "bodyCjkChars": 2, "sectionCount": 1, "referenceCount": 1},
+        "glossaryTerms": [],
+    }
 
 
 def commons_figure(**changes: object) -> dict:
