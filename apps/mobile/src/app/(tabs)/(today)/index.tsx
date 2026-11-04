@@ -9,6 +9,7 @@ import { Text } from "@/components/ui/text";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
+import { BirthdayReminderCard } from "@/features/birthdays/reminder-card";
 import { localToday } from "@/features/engagement/seen";
 import { FollowedChanges } from "@/features/today/followed-changes";
 import { FollowedStrip } from "@/features/today/followed-strip";
@@ -161,6 +162,7 @@ export default function TodayScreen() {
           ))}
         </ScrollView>
       </View>
+      <BirthdayReminderCard />
       <OnThisDayCard />
       <WeekCard />
       <FollowedStrip />
