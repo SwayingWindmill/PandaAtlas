@@ -1,6 +1,6 @@
 {
-  "$comment": "科普文章、知识卡、专题、名词解释、认脸指南和认脸挑战。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, run python scripts/curation/validate_learning_content.py, and after merging write it to the database with the curation.learning batch operation (new version for changed content). Every entry is published as of 2026.11.01 (PR #765). An entry set back to draft stays in the database and is left out of GET /api/v2/learning.",
-  "version": "2026.11.01.2",
+  "$comment": "科普文章、知识卡、专题、名词解释、认脸指南和认脸挑战。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, run python scripts/curation/validate_learning_content.py, and after merging write it to the database with the curation.learning batch operation (new version for changed content). Every entry is published as of 2026.11.01 (PR #765). An entry set back to draft stays in the database and is left out of GET /api/v2/learning. 2026.11.04.2 adds published Chinese-only entries (articles endangered-to-vulnerable, back-to-the-wild, captive-breeding, qinling-pandas; cards conservation-status, reintroduction, captive-breeding, qinling-pandas; topic panda-conservation; 8 terms); English is deferred by owner decision. Conflicting figures now follow official sources (release count, brown-panda records, first captive birth, newborn weight, estrus window, daily bamboo) in new and existing entries.",
+  "version": "2026.11.04.2",
   "articles": [
     {
       "slug": "black-eye-patches",
@@ -449,10 +449,10 @@
               },
               {
                 "text": {
-                  "zh": "世界自然基金会（WWF）中国在2008年整理的问答资料里，对季节的划分略有不同：它把4月到6月算作春季，大熊猫每天吃30到60公斤竹笋，平均约40公斤，是一年中吃得最多的时候；夏季以竹茎为主，也吃一些老笋和新叶；秋季新叶最繁茂、营养更高，每天只需吃11到13公斤，活动范围也是一年中最小的。两份资料在“夏天主要吃什么”上说法不完全一致，这里一并列出，供读者对照。"
+                  "zh": "吃多少也跟着部位变。成都基地给出的每日采食量大致是：竹笋约23到40公斤，或竹叶约10到14公斤，或竹秆约17公斤。"
                 },
                 "refs": [
-                  "wwf-qa"
+                  "cd-eating"
                 ]
               }
             ]
@@ -666,13 +666,6 @@
           "citedOn": "2026-10-31"
         },
         {
-          "id": "wwf-qa",
-          "title": "Panda 100 Q&As – Answer Sheet（2008年11月）",
-          "publisher": "WWF China Species Programme",
-          "url": "https://wwfcn.awsassets.panda.org/downloads/panda_100_q_as_answer_sheet_en_final.pdf",
-          "citedOn": "2026-10-31"
-        },
-        {
           "id": "cd-feeding",
           "title": "饲养动态",
           "publisher": "成都大熊猫繁育研究基地",
@@ -742,10 +735,10 @@
         "black-eye-patches"
       ],
       "stats": {
-        "bodyChars": 1690,
-        "bodyCjkChars": 1425,
+        "bodyChars": 1567,
+        "bodyCjkChars": 1325,
         "sectionCount": 5,
-        "referenceCount": 13
+        "referenceCount": 12
       }
     },
     {
@@ -777,11 +770,12 @@
               },
               {
                 "text": {
-                  "zh": "更关键的是时间窗口。雌性大熊猫每年只发情一次，高峰期只有短短2到3天，通常在每年的3到5月。平时独居的大熊猫，靠气味标记和叫声在这几天里找到彼此。"
+                  "zh": "更关键的是时间窗口。成都基地介绍，雌性大熊猫每年发情一次，高峰期只有短短2到3天，通常在每年的3到5月；国家林草局刊发的《认识大熊猫》问答补充，最佳受孕时间通常只有1到2天，而野外雌性因为要育幼，发情周期通常是两年一次。平时独居的大熊猫，靠气味标记和叫声在这几天里找到彼此。"
                 },
                 "refs": [
                   "cd-breeding",
-                  "si-panda"
+                  "nfga-renshi-4",
+                  "nfga-estrus-2025"
                 ]
               },
               {
@@ -802,24 +796,21 @@
             "paragraphs": [
               {
                 "text": {
-                  "zh": "所有资料都同意：大熊猫幼仔小得惊人。但具体有多小，几家权威机构给出的数字并不完全一样，这里把它们并列出来。"
+                  "zh": "所有资料都同意：大熊猫幼仔小得惊人。"
                 },
                 "refs": [
                   "si-panda",
-                  "cd-growth",
-                  "cd-rearing",
-                  "wwf-qa"
+                  "nfga-renshi-5"
                 ]
               },
               {
                 "text": {
-                  "zh": "成都基地2023年的“生长发育”页面写的是：初生幼仔体重仅是母亲的千分之一，平均约120克，最轻51克，最重225克。同一基地2025年的“育幼生长”页面则写作母亲体重的1%，平均约120克，最轻42.8克，最重225克。史密森尼的说法是3到5盎司（约85到142克），大约一块黄油大小，是母亲的九百分之一，并指出除了袋鼠、负鼠等有袋类，大熊猫是相对母亲体型最小的哺乳动物新生儿。WWF中国2008年的问答资料则写作36到296克，同样是母亲的九百分之一。"
+                  "zh": "国家林草局刊发的《认识大熊猫》问答写道，新出生的大熊猫幼仔体重只有母亲的1/1000。成都基地给出的数字是：初生幼仔平均约120克，最轻51克，最重225克，同样约为母亲体重的千分之一。史密森尼国家动物园写作约九百分之一，并指出除了袋鼠、负鼠等有袋类，大熊猫是相对母亲体型最小的哺乳动物新生儿。"
                 },
                 "refs": [
+                  "nfga-renshi-5",
                   "cd-growth",
-                  "cd-rearing",
-                  "si-panda",
-                  "wwf-qa"
+                  "si-panda"
                 ]
               },
               {
@@ -884,11 +875,13 @@
               },
               {
                 "text": {
-                  "zh": "新生命的消息也常常最先出现在社交平台上。2026年6月，iPanda熊猫频道在小红书发文称“福宝第三个妹妹”出生了（图源中国大熊猫保护研究中心），并称它是2026年首只“旅外新生幼崽”。按这条笔记的描述，小家伙浑身粉嫩，“出生自带微笑唇”，正是前面说的新生幼仔皮肤粉红的样子。"
+                  "zh": "新生命的消息也常常最先出现在社交平台上。2026年6月，iPanda熊猫频道在小红书发文称“福宝第三个妹妹”出生了，按笔记的描述，小家伙浑身粉嫩，“出生自带微笑唇”，正是前面说的新生幼仔皮肤粉红的样子。据中国大熊猫保护研究中心发布的消息，这只雌性幼崽于当地时间6月3日在韩国爱宝乐园出生，妈妈是华妮（即爱宝），体重170多克，是中心旅居海外大熊猫当年产下的第一只幼崽；爱宝乐园的运营方三星物产记录的出生体重为171克。经过7、8月的公开征名，它得名曙宝，9月11日在百日派对上首次与公众见面。"
                 },
                 "refs": [
                   "xhs-ipanda-fubao-sister",
-                  "si-panda"
+                  "ccrcgp-shubao",
+                  "samsung-shubao",
+                  "cns-shubao-name"
                 ]
               },
               {
@@ -961,13 +954,11 @@
         },
         {
           "text": {
-            "zh": "新生幼仔体重：成都基地两页分别写作母亲的千分之一和1%，史密森尼和WWF中国写作九百分之一；平均约120克（成都基地）。"
+            "zh": "新生幼仔体重约为母亲的千分之一，平均约120克（国家林草局、成都基地）。"
           },
           "refs": [
-            "cd-growth",
-            "cd-rearing",
-            "si-panda",
-            "wwf-qa"
+            "nfga-renshi-5",
+            "cd-growth"
           ]
         },
         {
@@ -1085,13 +1076,6 @@
           "citedOn": "2026-10-31"
         },
         {
-          "id": "wwf-qa",
-          "title": "Panda 100 Q&As – Answer Sheet（2008年11月）",
-          "publisher": "WWF China Species Programme",
-          "url": "https://wwfcn.awsassets.panda.org/downloads/panda_100_q_as_answer_sheet_en_final.pdf",
-          "citedOn": "2026-10-31"
-        },
-        {
           "id": "za-2021-12-13",
           "title": "Panda Updates – Monday, December 13（2021）",
           "publisher": "Zoo Atlanta",
@@ -1134,6 +1118,27 @@
           "citedOn": "2026-11-01"
         },
         {
+          "id": "ccrcgp-shubao",
+          "title": "我国旅居韩国大熊猫“华妮”产下一只雌性幼崽（2026-06-10，来源中国大熊猫保护研究中心）",
+          "publisher": "央视网熊猫频道",
+          "url": "https://news.ipanda.com/2026/06/10/ARTI3pIlCjI3NpQLjoR1CBoM260610.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "samsung-shubao",
+          "title": "Everland Welcomes New Baby Panda as Panda Conservation Research Marks 10 Years（2026-06-10）",
+          "publisher": "Samsung C&T Newsroom（三星物产，爱宝乐园运营方）",
+          "url": "https://news.samsungcnt.com/en/features/resort/2026-06-everland-welcomes-new-baby-panda-as-panda-conservation-research-marks-10-years/",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cns-shubao-name",
+          "title": "韩国爱宝乐园新生大熊猫“曙宝”首次公开亮相（2026-09-11）",
+          "publisher": "中国新闻网",
+          "url": "https://www.chinanews.com.cn/gj/2026/09-11/10694997.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
           "id": "x-ipanda-aili",
           "title": "X 帖子：妈妈吃东西时，Ai Li 的幼仔自己爬树玩（2026-10-16）",
           "publisher": "X @ipandacom（iPanda）",
@@ -1160,6 +1165,27 @@
           "publisher": "Zoo Atlanta",
           "url": "https://zooatlanta.org/animal-legend/lun-lun/",
           "citedOn": "2026-10-31"
+        },
+        {
+          "id": "nfga-renshi-4",
+          "title": "认识大熊猫（四）（2023-06-28，来源中国绿色时报）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/dzw/508870.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-estrus-2025",
+          "title": "大熊猫一般在什么季节发情？（2025-03-12，来源中国野生动物保护协会）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/dzw/614375.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-renshi-5",
+          "title": "认识大熊猫（五）（2023-07-04，来源中国绿色时报）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/510103.jhtml",
+          "citedOn": "2026-11-04"
         }
       ],
       "relatedArticles": [
@@ -1168,10 +1194,10 @@
         "telling-faces-apart"
       ],
       "stats": {
-        "bodyChars": 1818,
-        "bodyCjkChars": 1485,
+        "bodyChars": 1874,
+        "bodyCjkChars": 1562,
         "sectionCount": 5,
-        "referenceCount": 15
+        "referenceCount": 20
       }
     },
     {
@@ -1740,23 +1766,20 @@
             "paragraphs": [
               {
                 "text": {
-                  "zh": "“大熊猫一天吃多少竹子”是被问得最多的问题之一，但不同机构的统计口径不同，数字也不一样。"
+                  "zh": "“大熊猫一天吃多少竹子”是被问得最多的问题之一，答案要看它吃的是竹子的哪个部位。"
                 },
                 "refs": [
-                  "si-panda",
-                  "wwf-eat",
-                  "cd-eating",
-                  "wwf-qa"
+                  "cd-eating"
                 ]
               },
               {
                 "text": {
-                  "zh": "史密森尼的说法是每天70到100磅（约32到45公斤），每天要花10到16个小时觅食。WWF的说法是每天12到38公斤。成都基地按季节和部位分开统计：如果吃竹笋，每天约23到40公斤；如果吃竹叶，约10到14公斤；如果吃竹秆，约17公斤；并说每天花10多个小时甚至更久、吃大约20公斤竹子并不稀奇。WWF中国2008年的问答资料则写道，野外大熊猫每天花10到14个小时吃竹子，并列出了一份作息：21点到次日2点休息，2点到7点觅食，7点到10点半休息，10点半到11点闲逛玩耍，11点到12点觅食，12点到14点半休息，14点半到21点再次觅食。"
+                  "zh": "成都大熊猫繁育研究基地按季节和部位分开统计：如果吃竹笋，每天约23到40公斤；如果吃竹叶，约10到14公斤；如果吃竹秆，约17公斤；并说每天花10多个小时甚至更久、吃大约20公斤竹子并不稀奇。国家林草局刊发的《认识大熊猫》问答则从饲养角度说，圈养大熊猫的食竹量大约是体重的6%到15%。其他机构的数字口径不同，比如WWF写作每天12到38公斤。WWF中国2008年的问答资料还列出了一份野外作息：21点到次日2点休息，2点到7点觅食，7点到10点半休息，10点半到11点闲逛玩耍，11点到12点觅食，12点到14点半休息，14点半到21点再次觅食。"
                 },
                 "refs": [
-                  "si-panda",
-                  "wwf-eat",
                   "cd-eating",
+                  "nfga-renshi-10",
+                  "wwf-eat",
                   "wwf-qa"
                 ]
               },
@@ -1877,11 +1900,9 @@
         },
         {
           "text": {
-            "zh": "每日食竹量：史密森尼说约70～100磅，WWF说12～38公斤，成都基地按部位分别为竹笋23～40、竹叶10～14、竹秆约17公斤。"
+            "zh": "每日食竹量（成都基地）：竹笋约23～40公斤，或竹叶约10～14公斤，或竹秆约17公斤。"
           },
           "refs": [
-            "si-panda",
-            "wwf-eat",
             "cd-eating"
           ]
         },
@@ -2035,6 +2056,13 @@
           "publisher": "X @CGTNEurope（CGTN Europe）",
           "url": "https://x.com/CGTNEurope/status/2115083679987040436",
           "citedOn": "2026-10-31"
+        },
+        {
+          "id": "nfga-renshi-10",
+          "title": "认识大熊猫（十）（2023-07-27，来源中国绿色时报）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/514552.jhtml",
+          "citedOn": "2026-11-04"
         }
       ],
       "relatedArticles": [
@@ -2043,10 +2071,1253 @@
         "black-eye-patches"
       ],
       "stats": {
-        "bodyChars": 1649,
-        "bodyCjkChars": 1330,
+        "bodyChars": 1646,
+        "bodyCjkChars": 1341,
+        "sectionCount": 5,
+        "referenceCount": 14
+      }
+    },
+    {
+      "slug": "endangered-to-vulnerable",
+      "status": "published",
+      "category": "保护",
+      "sourceCardSlug": "conservation-status",
+      "title": {
+        "zh": "从“濒危”到“易危”：大熊猫保护等级这十年"
+      },
+      "dek": {
+        "zh": "2016年IUCN把大熊猫调为“易危”，国内当时认为为时过早，2021年又按本国标准作出同样调整。数字从哪里来？国家公园又改变了什么？"
+      },
+      "body": {
+        "sections": [
+          {
+            "heading": {
+              "zh": "2016年，IUCN把它调成了“易危”"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "2016年9月4日，世界自然保护联盟（IUCN）在夏威夷檀香山发布红色名录更新：此前列为“濒危”的大熊猫，改列为[[vulnerable|易危]]。IUCN在新闻稿里给出的理由是，森林保护和植树造林让种群得以增长，这说明中国政府的保护努力是有效的。"
+                },
+                "refs": [
+                  "iucn-2016-press"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "打开红色名录的物种页，可以看到这次评估的细节：评估完成于2016年4月11日，种群趋势为“上升”，依据的标准是C2a(i)和D1，记录的成熟个体为500～1000只。中国标准化研究院的科普文章解释，“成熟个体”指能够繁殖的个体，所以这个数比调查公布的野外总数小得多，两者并不矛盾。"
+                },
+                "refs": [
+                  "iucn-redlist",
+                  "cnis-downgrade"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "同一份新闻稿也提醒，气候变化预计会在未来80年里让大熊猫35%以上的竹林栖息地消失，种群可能因此转为下降，抵消过去二十年的成果。"
+                },
+                "refs": [
+                  "iucn-2016-press"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "国内的另一种声音"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "消息传开后，国家林业局在9月5日发文回应：IUCN的报告是根据数据和技术指标“从理论上做出的判断”；从实际工作和保护形势看，大熊猫仍是濒危物种，降低保护等级“还为时过早”。理由包括：野外种群被分割成33个局域种群，其中22个不足30只、有灭绝风险，18个不足10只、灭绝风险很高；圈养个体之间基因交流不足；部分地区保护经费和一线人员能力也有待加强。"
+                },
+                "refs": [
+                  "cns-2016-nfga"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "五年后，口径变了。2021年7月7日，在国务院新闻办公室的发布会上，生态环境部自然生态保护司司长崔书红介绍，大熊猫野外种群达到1800多只，受威胁程度等级由“濒危”降为“易危”。中国标准化研究院的文章解释，中国在IUCN标准的基础上结合国内实际制定了评估标准，这次调整是经过几年实地调查、按中国标准判断的结果。"
+                },
+                "refs": [
+                  "cctv-2021",
+                  "cnis-downgrade"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "四次全国调查：数字从哪里来"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "野外大熊猫有多少只，靠的是全国调查。四川省野生动植物保护协会会长冉江洪2021年对川观新闻介绍，这类调查从20世纪70年代中期开始，大约每10年一次。第四次调查于2011至2014年进行，2015年2月28日公布：截至2013年底，全国野生大熊猫1864只，比第三次调查增加268只，增长16.8%；圈养种群375只。"
+                },
+                "refs": [
+                  "scol-survey5",
+                  "nfga-survey4"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "第四次调查还统计到栖息地258万公顷、潜在栖息地91万公顷，分布在四川、陕西、甘肃三省的49个县（市、区），其中四川1387只，占74.4%。这次调查首次引入DNA分析技术，获取野外个体的遗传信息。按国家林业局2016年的说法，第三次调查（截至2003年）的数字是1596只。"
+                },
+                "refs": [
+                  "nfga-survey4",
+                  "cns-2016-nfga"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "第五次调查的正式结果，我们在本文核对的资料里还没有找到。冉江洪2021年曾表示，第五次调查预计“明年”启动。2024年6月，国家林草局动植物司司长王维胜在发布会上说，野生大熊猫已从20世纪80年代的约1100只增加到近1900只。"
+                },
+                "refs": [
+                  "scol-survey5",
+                  "nfga-2024-briefing"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "一座国家公园，把碎片连起来"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "2021年10月12日，在《生物多样性公约》第十五次缔约方大会领导人峰会上，中国宣布设立第一批国家公园，大熊猫国家公园是其中之一。它跨四川、陕西、甘肃三省，总面积2.2万平方公里，庇护着全国七成以上的野生大熊猫。国家林草局局长刘国洪2025年11月介绍，原有的73个自然保护地被整合归并，13个局域栖息地被打通。"
+                },
+                "refs": [
+                  "nfga-park-5y",
+                  "nfga-captive-808"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "2026年10月，大熊猫国家公园四川管理局局长周古鹏在五周年发布会上给出一组监测数字：8个重点监测区域的野生大熊猫从178只增加到191只，增长7.3%；7条关键生态廊道累计拍到野生大熊猫活动影像150余次；人为干扰点位比试点阶段减少51.6%，退出矿业权200宗，281座小水电已退出270座，修复栖息地34万余亩。"
+                },
+                "refs": [
+                  "nfga-park-1012"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "伞护效应，以及还没结束的工作"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "国家公园五年述评里有一句话：“保护大熊猫，不等于只保护了大熊猫。”大熊猫是一种[[umbrella-species|伞护物种]]，公园里还守护着8000多种伴生动植物。四川片区推行“大熊猫+雪豹”双旗舰保护策略，按两者不同的海拔活动范围分层管理，卧龙片区记录到46只雪豹。"
+                },
+                "refs": [
+                  "nfga-park-5y"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "降级并不等于高枕无忧。把几份资料放在一起看：IUCN在2016年肯定保护成效，同时警告气候风险；国家林业局当年认为降级为时过早，担心的是栖息地碎片化和小种群；2021年，中国按本国标准同样调为易危；国家公园的最新监测则显示，重点区域数量和廊道使用都在改善。至于全国野外总数，目前能对上官方出处的仍是第四次调查的1864只，以及2024年“近1900只”的说法。"
+                },
+                "refs": [
+                  "iucn-2016-press",
+                  "cns-2016-nfga",
+                  "cctv-2021",
+                  "nfga-park-1012",
+                  "nfga-2024-briefing"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "pullQuote": {
+        "zh": "降级并不等于高枕无忧。",
+        "drawnFromBody": true
+      },
+      "keyFacts": [
+        {
+          "text": {
+            "zh": "2016年9月，IUCN将大熊猫从“濒危”调为“易危”；红色名录记录的成熟个体为500～1000只。"
+          },
+          "refs": [
+            "iucn-2016-press",
+            "iucn-redlist"
+          ]
+        },
+        {
+          "text": {
+            "zh": "国家林业局2016年认为降级为时过早；2021年7月，生态环境部宣布按国内评估降为“易危”。"
+          },
+          "refs": [
+            "cns-2016-nfga",
+            "cctv-2021"
+          ]
+        },
+        {
+          "text": {
+            "zh": "第四次全国调查：截至2013年底，野生大熊猫1864只，比第三次调查增长16.8%。"
+          },
+          "refs": [
+            "nfga-survey4"
+          ]
+        },
+        {
+          "text": {
+            "zh": "大熊猫国家公园2021年设立，跨三省2.2万平方公里，庇护全国七成以上的野生大熊猫。"
+          },
+          "refs": [
+            "nfga-park-5y"
+          ]
+        },
+        {
+          "text": {
+            "zh": "四川片区8个重点监测区域的野生大熊猫从178只增至191只。"
+          },
+          "refs": [
+            "nfga-park-1012"
+          ]
+        }
+      ],
+      "glossaryTerms": [
+        {
+          "slug": "vulnerable",
+          "label": "易危",
+          "inLearningJson": true
+        },
+        {
+          "slug": "umbrella-species",
+          "label": "伞护物种",
+          "inLearningJson": true
+        }
+      ],
+      "images": [
+        {
+          "role": "hero",
+          "type": "existing",
+          "pandaSlug": null,
+          "asset": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Rhododendrons,_Tangjiahe_Nature_Reserve,_Sichuan,_China.jpg?width=1600",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Rhododendrons,_Tangjiahe_Nature_Reserve,_Sichuan,_China.jpg",
+          "credit": "Jean-Marie Hullot / Wikimedia Commons",
+          "rights": "CC BY 2.0",
+          "caption": {
+            "zh": "四川唐家河自然保护区的杜鹃花林，摄于2015年春。"
+          },
+          "captionRefs": []
+        }
+      ],
+      "references": [
+        {
+          "id": "iucn-2016-press",
+          "title": "Four out of six great apes one step away from extinction – IUCN Red List（2016-09-04）",
+          "publisher": "IUCN（世界自然保护联盟）",
+          "url": "https://iucn.org/news/species/201609/four-out-six-great-apes-one-step-away-extinction-%E2%80%93-iucn-red-list",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "iucn-redlist",
+          "title": "Giant Panda – Ailuropoda melanoleuca（2016年评估）",
+          "publisher": "The IUCN Red List of Threatened Species",
+          "url": "https://www.iucnredlist.org/species/712/121745669",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cnis-downgrade",
+          "title": "大熊猫“降级”标准知多少（2023-05-24）",
+          "publisher": "中国标准化研究院",
+          "url": "https://www.cnis.ac.cn/zt/kjzy/kpwz/202305/t20230524_55346.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cns-2016-nfga",
+          "title": "国家林业局：大熊猫仍是濒危物种 降低保护等级为时过早（2016-09-05）",
+          "publisher": "中国新闻网",
+          "url": "https://www.chinanews.com/sh/2016/09-05/7994780.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cctv-2021",
+          "title": "由濒危降为易危！国宝大熊猫野外种群数量达到1800多只（2021-07-07）",
+          "publisher": "央视网（中央广播电视总台央视新闻）",
+          "url": "https://news.cctv.com/2021/07/07/ARTIwyRwXUkyxUXpdC8Bnpbl210707.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "scol-survey5",
+          "title": "第五次大熊猫野外调查将启动，专家呼吁用科技守护大熊猫栖息地（2021-10）",
+          "publisher": "川观新闻",
+          "url": "https://cbgc.scol.com.cn/news/2252384",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-survey4",
+          "title": "全国第四次大熊猫调查主要结果（2011-2014年）（2015-03-02）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/lczy/38173.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-2024-briefing",
+          "title": "四川和秦岭的大熊猫“打电话”方式不一样（2024-06-22，来源中国经营网）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/kp/572411.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-park-5y",
+          "title": "见证！大熊猫国家公园五年成长述评（2026-10-21，来源中国绿色时报）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/lyj/1/zrgjgy/20261021/693762.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-captive-808",
+          "title": "国家林草局：大熊猫圈养种群数量达808只（2025-11-21，来源新华社）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/dzwzbh/650741.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-park-1012",
+          "title": "野生大熊猫数量增长7.3% 栖息地修复34万余亩 背后做对了什么？（2026-10-12，来源人民网）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/lyj/1/dzwzbh/20261012/691599.html",
+          "citedOn": "2026-11-04"
+        }
+      ],
+      "relatedArticles": [
+        "back-to-the-wild",
+        "qinling-pandas",
+        "bamboo"
+      ],
+      "stats": {
+        "bodyChars": 1664,
+        "bodyCjkChars": 1258,
+        "sectionCount": 5,
+        "referenceCount": 11
+      }
+    },
+    {
+      "slug": "back-to-the-wild",
+      "status": "published",
+      "category": "保护",
+      "sourceCardSlug": "reintroduction",
+      "title": {
+        "zh": "回到山林：圈养大熊猫的野化放归"
+      },
+      "dek": {
+        "zh": "第一只放归的大熊猫没能活下来，后来研究人员换成让熊猫妈妈来教。二十多年里，放归个体终于融入了野外种群。"
+      },
+      "body": {
+        "sections": [
+          {
+            "heading": {
+              "zh": "为什么要把圈养大熊猫送回野外"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "圈养大熊猫越来越多：第四次全国调查时（截至2013年底）是375只，国家林草局2025年11月公布的数字是808只。野外种群却仍被切成小块。国家林业局2016年统计，33个局域种群里有18个不足10只，灭绝风险很高。"
+                },
+                "refs": [
+                  "nfga-survey4",
+                  "nfga-captive-808",
+                  "cns-2016-nfga"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "[[reintroduction|野化放归]]就是给这些小种群“补血”。据人民政协报的报道，栖息地破碎化让野生大熊猫容易形成孤立的小种群，基因交流不足、存续风险较高；1997年我国正式形成圈养大熊猫野化放归的科研共识，希望通过放归经过系统训练的人工繁育个体，改善小种群的遗传多样性。北京师范大学教授刘定震2024年在国家林草局发布会上解释，要放归的个体需在特定年龄接受训练、通过评估，再放到需要复壮的小种群里。"
+                },
+                "refs": [
+                  "cns-2026-release",
+                  "nfga-2024-briefing"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "第一次尝试：祥祥"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "2003年，中国大熊猫保护研究中心启动首只大熊猫的野化培训试验，对象是2001年8月出生于卧龙的雄性大熊猫祥祥。中新社2006年报道，它在近三年里先后住过两万多平方米和二十多万平方米的野化场，学会了自己筑巢、选择食物、标记地盘、驱逐入侵者。"
+                },
+                "refs": [
+                  "cns-2006-xiangxiang",
+                  "cns-2026-release"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "2006年4月28日，戴着GPS颈圈的祥祥在卧龙走进山林，中新社称它是全球首只经野化训练后放归大自然的圈养大熊猫。可它没能活下来：人民政协报的报道称，祥祥后来在与野生大熊猫打斗中摔下悬崖死亡，放归项目也因此一度暂停。"
+                },
+                "refs": [
+                  "cns-2006-xiangxiang",
+                  "cns-2026-release"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "换一种教法：让妈妈来带"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "复盘之后，研究团队在2010年重构训练方式，建立了[[mother-cub-training|母兽带仔]]野化培训体系（报道中也写作“母兽带崽”）。卧龙核桃坪基地主任吴代福介绍，做法是让有野外和育幼经验的母兽在培训圈的自然环境里产仔，幼仔跟着妈妈长大、学本领；满一周岁后，母子再转到面积更大、环境更复杂的野化圈。这套体系包括两阶段培训法和人与熊猫的隔离机制，尽量保住幼仔的野性。报道称，这样长大的幼崽能自己采食、自找居所，还能辨识威胁物种、躲避天敌。"
+                },
+                "refs": [
+                  "cns-2026-release"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "淘淘是这套方法的第一个“毕业生”。它2010年8月3日出生在核桃坪基地的野化培训圈，跟着妈妈草草一起受训，2012年10月11日被放归雅安石棉县栗子坪国家级自然保护区。2017年12月28日监测队员回捕到它时，它体重115公斤，没有外伤和体外寄生虫，健康程度堪比同龄圈养个体；同年9月回捕的张想也很健康。到2018年初，用这一方法培训放归的大熊猫共8只，7只在野外存活。中国大熊猫保护研究中心常务副主任张和民当时表示，两只大熊猫的体检结果表明，母兽带仔野化培训方法“行之有效”。据人民政协报2026年的报道，淘淘已在野外存活了14年，此后放归的张想、华娇（报道中也写作华姣）等个体也都健康生存。"
+                },
+                "refs": [
+                  "cns-2018-taotao",
+                  "cns-2026-release",
+                  "nfga-renshi-12"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "从“活下来”到融入野外种群"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "放归不是打开笼门那么简单。据人民政协报的报道，研究中心融合GPS颈圈定位、音频监测、红外相机、智能视频分析、DNA检测和野外样线调查等手段，全程掌握受训个体的活动规律、食物选择和健康状态；放归后还要追踪它们的领地扩散和种群交流，并在周边社区开展科普宣教。报道称，如今放归成活的9只大熊猫都在森林里拥有了自己的领地，也与野生种群有了交流。"
+                },
+                "refs": [
+                  "cns-2026-release"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "2024年3月，巡护人员在石棉县公益海拍到放归的华妍与淘淘的求偶行为。报道称，这是首次通过现场影像结合DNA证据，证实放归个体已融入当地种群并参与交配繁殖。2026年10月，四川片区五周年发布会又提到，雅安石棉记录到放归大熊猫参与自然繁殖，并发现了疑似后代个体。国家公园五年述评还提到，救护个体异地放归后也实现了野外产仔。"
+                },
+                "refs": [
+                  "cns-2026-release",
+                  "nfga-park-1012",
+                  "nfga-park-5y"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "放归了多少只"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "放归数量以中国大熊猫保护研究中心和国家林草局公布的数字为准。国家林草局刊发的《认识大熊猫》问答（节选自《大熊猫201问》）列出，我国从2006年开始实施大熊猫放归，到2018年底共实施8次，放归人工繁育大熊猫11只：2006年的祥祥，2012年的淘淘，2013年的张想，2014年的雪雪，2015年的华娇，2016年的华妍和张梦，2017年的八喜和映雪，2018年的琴心和小核桃。其中祥祥和雪雪没能存活，专家判定其余9只实现了在自然栖息地生存的阶段性目标。"
+                },
+                "refs": [
+                  "nfga-renshi-12"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "2026年6月，中国大熊猫保护研究中心对科技日报介绍的仍是这组数字：累计放归人工繁育大熊猫11只，存活9只，存活率81.82%；其中7只融入有灭绝风险的小相岭山系野生种群，2只融入岷山山系野生种群。另有报道写作10只，比如2024年国家林草局发布会上“2012年以来放归10只”的说法，正好不含2006年的祥祥。"
+                },
+                "refs": [
+                  "stdaily-ccrcgp-release",
+                  "nfga-2024-briefing"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "pullQuote": {
+        "zh": "放归不是打开笼门那么简单。",
+        "drawnFromBody": true
+      },
+      "keyFacts": [
+        {
+          "text": {
+            "zh": "1997年形成圈养大熊猫野化放归的科研共识，2003年启动首只大熊猫的野化培训试验。"
+          },
+          "refs": [
+            "cns-2026-release"
+          ]
+        },
+        {
+          "text": {
+            "zh": "2006年，祥祥成为首只经野化训练放归的圈养大熊猫，后在与野生大熊猫打斗中坠崖死亡。"
+          },
+          "refs": [
+            "cns-2006-xiangxiang",
+            "cns-2026-release"
+          ]
+        },
+        {
+          "text": {
+            "zh": "淘淘是首只经母兽带仔培训放归的大熊猫，2012年放归栗子坪保护区。"
+          },
+          "refs": [
+            "cns-2018-taotao"
+          ]
+        },
+        {
+          "text": {
+            "zh": "2024年3月，现场影像结合DNA证据首次证实放归个体参与了交配繁殖。"
+          },
+          "refs": [
+            "cns-2026-release"
+          ]
+        },
+        {
+          "text": {
+            "zh": "中国大熊猫保护研究中心累计放归人工繁育大熊猫11只，野外存活9只。"
+          },
+          "refs": [
+            "nfga-renshi-12",
+            "stdaily-ccrcgp-release"
+          ]
+        }
+      ],
+      "glossaryTerms": [
+        {
+          "slug": "reintroduction",
+          "label": "野化放归",
+          "inLearningJson": true
+        },
+        {
+          "slug": "mother-cub-training",
+          "label": "母兽带仔",
+          "inLearningJson": true
+        }
+      ],
+      "images": [
+        {
+          "role": "hero",
+          "type": "existing",
+          "pandaSlug": null,
+          "asset": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Panda_at_Wolong_nature_reserve_Sichuan_China.jpg?width=1600",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Panda_at_Wolong_nature_reserve_Sichuan_China.jpg",
+          "credit": "Whoisgalt / Wikimedia Commons",
+          "rights": "CC BY-SA 3.0",
+          "caption": {
+            "zh": "四川卧龙自然保护区的一只大熊猫，摄于2012年5月。"
+          },
+          "captionRefs": []
+        }
+      ],
+      "references": [
+        {
+          "id": "nfga-survey4",
+          "title": "全国第四次大熊猫调查主要结果（2011-2014年）（2015-03-02）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/lczy/38173.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-captive-808",
+          "title": "国家林草局：大熊猫圈养种群数量达808只（2025-11-21，来源新华社）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/dzwzbh/650741.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cns-2016-nfga",
+          "title": "国家林业局：大熊猫仍是濒危物种 降低保护等级为时过早（2016-09-05）",
+          "publisher": "中国新闻网",
+          "url": "https://www.chinanews.com/sh/2016/09-05/7994780.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cns-2026-release",
+          "title": "归野向山林！我国大熊猫野化放归研究不断突破（2026-06-08，来源人民政协报微信公众号）",
+          "publisher": "中国新闻网",
+          "url": "https://www.chinanews.com.cn/sh/2026/06-08/10636304.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-2024-briefing",
+          "title": "四川和秦岭的大熊猫“打电话”方式不一样（2024-06-22，来源中国经营网）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/kp/572411.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cns-2006-xiangxiang",
+          "title": "经过近三年野化训练 大熊猫“祥祥”今放归大自然（2006-04-28）",
+          "publisher": "中国新闻网",
+          "url": "https://www.chinanews.com.cn/news/2006/2006-04-28/8/724079.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cns-2018-taotao",
+          "title": "全球首只人工繁育放归大熊猫“淘淘”野外生存5年多状况良好（2018-01-03）",
+          "publisher": "中国新闻网",
+          "url": "https://www.chinanews.com.cn/sh/2018/01-03/8415623.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-renshi-12",
+          "title": "认识大熊猫（十二）（2023-08-08，来源中国绿色时报）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/515959.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-park-1012",
+          "title": "野生大熊猫数量增长7.3% 栖息地修复34万余亩 背后做对了什么？（2026-10-12，来源人民网）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/lyj/1/dzwzbh/20261012/691599.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-park-5y",
+          "title": "见证！大熊猫国家公园五年成长述评（2026-10-21，来源中国绿色时报）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/lyj/1/zrgjgy/20261021/693762.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "stdaily-ccrcgp-release",
+          "title": "美丽中国行丨9只野化放归成活大熊猫已有自己的领地（2026-06-06）",
+          "publisher": "科技日报",
+          "url": "https://www.stdaily.com/web/gdxw/2026-06/06/content_528646.html",
+          "citedOn": "2026-11-04"
+        }
+      ],
+      "relatedArticles": [
+        "endangered-to-vulnerable",
+        "captive-breeding"
+      ],
+      "stats": {
+        "bodyChars": 1733,
+        "bodyCjkChars": 1391,
+        "sectionCount": 5,
+        "referenceCount": 11
+      }
+    },
+    {
+      "slug": "captive-breeding",
+      "status": "published",
+      "category": "繁殖与成长",
+      "sourceCardSlug": "captive-breeding",
+      "title": {
+        "zh": "攻克“三难”：圈养大熊猫是怎么繁殖起来的"
+      },
+      "dek": {
+        "zh": "从1963年的第一只圈养繁殖幼仔，到读懂激素、分辨假孕、给每只熊猫排谱系，圈养种群花了几十年才稳定下来。"
+      },
+      "body": {
+        "sections": [
+          {
+            "heading": {
+              "zh": "从明明到元晶"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "1963年9月9日，大熊猫明明在北京动物园出生。国家林草局刊发的《认识大熊猫》问答称，它是圈养状态下繁殖的第一只大熊猫。据雅安日报／北纬网的回顾，明明的父亲皮皮、母亲莉莉分别于1959年和1958年在四川宝兴县被捕获，1963年4月自然交配；当时谁也没见过初生的大熊猫，专家们还错过了观察分娩的机会。"
+                },
+                "refs": [
+                  "nfga-renshi-10",
+                  "beiww-mingming"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "十五年后又有一个“第一”。科普中国转载的科普江苏文章记述，1978年，科研人员先后用来自四川宝兴的宝宝和甘肃文县的楼楼两只雄性的精液，为北京动物园的雌性大熊猫娟娟人工授精。9月8日娟娟产下双胞胎：人工哺育的一只出生64小时后夭折，由娟娟母乳喂养的另一只活了下来，出生时仅125克，取名元晶，是世界上第一只人工授精诞生的大熊猫。"
+                },
+                "refs": [
+                  "kepu-yuanjing"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "北京动物园自己的繁殖记录也写明，1963年第一次在人工饲养下自然繁殖成功明明，1978年第一次用人工授精繁殖成功元晶。个别文章把首次圈养繁殖写成1964年；吉尼斯世界纪录记载，1964年9月4日是莉莉产下第二只幼仔琳琳的日子。"
+                },
+                "refs": [
+                  "bjzoo-record",
+                  "kepu-yuanjing",
+                  "guinness-mingming"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "“三难”是什么"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "早期的成功很难复制。国家林草局刊发的《专治大熊猫不孕不育的“专科大夫”》一文回顾，20世纪80年代圈养大熊猫数量稀少，能发情配种的更少；由于没有完全掌握发情规律和受孕时间，受孕率不高，生下来的幼崽存活率也极低。这就是常说的“三难”：发情难、受孕难、存活难。难在哪里？成都大熊猫繁育研究基地介绍，雌性每年发情一次，高峰期只有短短2～3天；科普江苏的文章还提到，雄性的自然交配成功率不足20%。"
+                },
+                "refs": [
+                  "nfga-sannan",
+                  "cd-breeding",
+                  "kepu-yuanjing"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "1990年8月24日，成都动物园的庆庆产下双胞胎娅娅和祥祥（与后来放归野外的祥祥不是同一只），《认识大熊猫》称这是世界上第一对抚育成活的圈养大熊猫双胞胎。同一份问答也解释了“存活难”的一个原因：大熊猫一般一胎产1～2仔，极少数产3仔，但雌性通常只能哺育一只，有的甚至不会哺育；科研人员通过模仿熊猫妈妈的育幼环境、研制人工乳、交换育幼等方式，保证了大多数幼仔的存活。2024年国家林草局发布会上，刘定震概括说，我国20世纪60年代开始人工繁育，本世纪初突破了发情难、配种受孕难和育幼存活难三大难题。"
+                },
+                "refs": [
+                  "nfga-renshi-10",
+                  "nfga-2024-briefing"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "读懂激素"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "破解“发情难”“受孕难”，靠的是读懂激素。史密森尼国家动物园介绍，大熊猫的激素分析1986年在圣迭戈动物园起步，用的是加州大学戴维斯分校的检测方法。在中国大熊猫保护研究中心，从事繁殖生理研究的高级工程师周应敏说，他们一般不直接接触大熊猫，基本是和尿液、粪便打交道。她的团队建立了雌激素快速检测方法，原本要四五个小时的检测缩短到约一个半小时，还能在发情初期或中期预判雌激素何时到达峰值，为自然交配和人工辅助配种留出准备时间。"
+                },
+                "refs": [
+                  "si-hormones",
+                  "nfga-sannan"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "周应敏说，中心坚持“以自然交配为主、人工授精为辅”，自然交配受孕率在90%以上。对需要人工授精的个体，团队改进了精子冷冻：早期手工冷冻的批间差异可能高达30%以上，自动化程序把它控制在了15%以下。"
+                },
+                "refs": [
+                  "nfga-sannan"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "怀没怀上，要等好几个月"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "配上种之后，饲养员还要经历漫长的等待。大熊猫有[[delayed-implantation|延迟着床]]：史密森尼国家动物园解释，受精卵开始分裂后会暂停发育，在子宫里漂浮一段时间才着床，这段时间可能长达50～150天；袋鼠、臭鼬、水獭等数百种哺乳动物也有这种现象。"
+                },
+                "refs": [
+                  "si-hormones",
+                  "si-waiting"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "更麻烦的是[[pseudopregnancy|假孕]]。史密森尼的文章说，假孕的大熊猫会出现和真怀孕一样的行为和生理变化：食欲下降、筑巢、身体肿胀；孕酮也会出现持续40～50天的二次升高。所以饲养员还要借助超声检查，最终以有没有幼仔出生为准。"
+                },
+                "refs": [
+                  "si-waiting",
+                  "si-hormones"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "2026年韩国爱宝乐园的经历就是一例。三星物产新闻室介绍，爱宝（即华妮）当年2月自然交配，时机由血液和尿液激素检测确定；由于怀孕和假孕的激素变化几乎一样，团队一直按真怀孕照护，从5月中旬起在产房24小时监护，6月3日迎来了新幼崽。"
+                },
+                "refs": [
+                  "samsung-shubao"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "配对比“结婚审查”还严"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "种群变大以后，难题变成避免近亲繁殖。刘定震在2024年的发布会上介绍，我国建立了统一的大熊猫[[studbook|谱系]]，记录每只圈养大熊猫的个体信息；每年计算雌雄个体间的亲缘系数，制定全国优化繁育年度配对方案，并促进各繁育机构之间的种源交流；配对时排除3代以内有直系或旁系血缘关系的个体。他说：“对大熊猫的配对，比我们人的结婚审查还要严格。”"
+                },
+                "refs": [
+                  "nfga-2024-briefing"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "《认识大熊猫》把这类做法称为优生优育：严格的血缘和遗传管理、避免近亲繁殖，让年龄较大、身体素质较差的个体不再参与繁殖，并延长幼仔和妈妈在一起的时间。圈养种群也从第四次全国调查时的375只，增长到2025年的808只。"
+                },
+                "refs": [
+                  "nfga-renshi-10",
+                  "nfga-survey4",
+                  "nfga-captive-808"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "pullQuote": {
+        "zh": "配上种之后，饲养员还要经历漫长的等待。",
+        "drawnFromBody": true
+      },
+      "keyFacts": [
+        {
+          "text": {
+            "zh": "1963年9月9日，明明在北京动物园出生，是圈养状态下繁殖的第一只大熊猫。"
+          },
+          "refs": [
+            "nfga-renshi-10"
+          ]
+        },
+        {
+          "text": {
+            "zh": "1978年，元晶成为世界上第一只人工授精诞生的大熊猫。"
+          },
+          "refs": [
+            "kepu-yuanjing"
+          ]
+        },
+        {
+          "text": {
+            "zh": "“三难”指发情难、受孕难、存活难，本世纪初被突破。"
+          },
+          "refs": [
+            "nfga-sannan",
+            "nfga-2024-briefing"
+          ]
+        },
+        {
+          "text": {
+            "zh": "中国大熊猫保护研究中心以自然交配为主，自然交配受孕率在90%以上。"
+          },
+          "refs": [
+            "nfga-sannan"
+          ]
+        },
+        {
+          "text": {
+            "zh": "配对时排除3代以内有直系或旁系血缘关系的个体。"
+          },
+          "refs": [
+            "nfga-2024-briefing"
+          ]
+        }
+      ],
+      "glossaryTerms": [
+        {
+          "slug": "delayed-implantation",
+          "label": "延迟着床",
+          "inLearningJson": true
+        },
+        {
+          "slug": "pseudopregnancy",
+          "label": "假孕",
+          "inLearningJson": true
+        },
+        {
+          "slug": "studbook",
+          "label": "谱系",
+          "inLearningJson": true
+        }
+      ],
+      "images": [
+        {
+          "role": "hero",
+          "type": "existing",
+          "pandaSlug": "lun-lun",
+          "asset": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Lun_Lun_at_Zoo_Atlanta.jpg",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Lun_Lun_at_Zoo_Atlanta.jpg",
+          "credit": "O01326 / Wikimedia Commons",
+          "rights": "CC BY-SA 4.0",
+          "caption": {
+            "zh": "亚特兰大动物园的伦伦。"
+          },
+          "captionRefs": []
+        }
+      ],
+      "references": [
+        {
+          "id": "nfga-renshi-10",
+          "title": "认识大熊猫（十）（2023-07-27，来源中国绿色时报）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/514552.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "beiww-mingming",
+          "title": "首只人工繁育的大熊猫在北京诞生——宝兴籍大熊猫创造的世界纪录（2019-07-14）",
+          "publisher": "雅安日报／北纬网",
+          "url": "https://www.beiww.com/zh/lyxw/201907/t20190715_826472.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "kepu-yuanjing",
+          "title": "世界第一只人工授精繁殖的大熊猫在北京诞生（2025-09-08，来源科普江苏）",
+          "publisher": "科普中国",
+          "url": "https://www.kepuchina.cn/article/articleinfo?ar_id=632635&business_type=100&classify=0",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "bjzoo-record",
+          "title": "北京动物园大熊猫繁殖记录（1994）",
+          "publisher": "生物多样性（中国科学院生物多样性委员会等主办）",
+          "url": "https://www.biodiversity-science.net/CN/abstract/abstract7414.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "guinness-mingming",
+          "title": "First giant panda born in captivity",
+          "publisher": "Guinness World Records",
+          "url": "https://www.guinnessworldrecords.com/world-records/446242-first-giant-panda-born-in-captivity",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-sannan",
+          "title": "专治大熊猫不孕不育的“专科大夫”（2023-11-22，来源中国绿色时报）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/dzwzbh/533129.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cd-breeding",
+          "title": "【熊猫知识】繁殖",
+          "publisher": "成都大熊猫繁育研究基地",
+          "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/361.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-2024-briefing",
+          "title": "四川和秦岭的大熊猫“打电话”方式不一样（2024-06-22，来源中国经营网）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/kp/572411.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "si-hormones",
+          "title": "Reading the Hormones（2017-08-04）",
+          "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+          "url": "https://www.nationalzoo.si.edu/animals/news/reading-hormones",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "si-waiting",
+          "title": "How Panda Pregnancies Can Be a Months-Long Waiting Game（2017-08-18）",
+          "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+          "url": "https://www.nationalzoo.si.edu/animals/news/how-panda-pregnancies-can-be-months-long-waiting-game",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "samsung-shubao",
+          "title": "Everland Welcomes New Baby Panda as Panda Conservation Research Marks 10 Years（2026-06-10）",
+          "publisher": "Samsung C&T Newsroom（三星物产，爱宝乐园运营方）",
+          "url": "https://news.samsungcnt.com/en/features/resort/2026-06-everland-welcomes-new-baby-panda-as-panda-conservation-research-marks-10-years/",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-survey4",
+          "title": "全国第四次大熊猫调查主要结果（2011-2014年）（2015-03-02）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/lczy/38173.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-captive-808",
+          "title": "国家林草局：大熊猫圈养种群数量达808只（2025-11-21，来源新华社）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/dzwzbh/650741.jhtml",
+          "citedOn": "2026-11-04"
+        }
+      ],
+      "relatedArticles": [
+        "cubs",
+        "back-to-the-wild"
+      ],
+      "stats": {
+        "bodyChars": 1770,
+        "bodyCjkChars": 1485,
         "sectionCount": 5,
         "referenceCount": 13
+      }
+    },
+    {
+      "slug": "qinling-pandas",
+      "status": "published",
+      "category": "外形与识别",
+      "sourceCardSlug": "qinling-pandas",
+      "title": {
+        "zh": "秦岭的大熊猫：圆脸、棕胸，还有棕色的七仔"
+      },
+      "dek": {
+        "zh": "同样是大熊猫，秦岭的个体头更圆、胸口偏棕，还出过罕见的棕白色个体。它们为什么长得不一样？"
+      },
+      "body": {
+        "sections": [
+          {
+            "heading": {
+              "zh": "大熊猫有两个亚种"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "我们熟悉的大熊猫，其实不只一种“长相”。西安市秦岭生态环境保护管理局转载的中国环境网文章写道，从动物分类学看，大熊猫分为四川指名亚种和[[qinling-subspecies|秦岭亚种]]；基因研究表明，两者大约在一万年前因地理阻隔发生分化，此后野外几乎没有基因交流；文章还称，秦岭大熊猫保留了更为古老的遗传特征。新华社2021年的报道也把秦岭大熊猫称作大熊猫的另一亚种。"
+                },
+                "refs": [
+                  "xa-qinling",
+                  "xinhua-qinling"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "秦岭的野生大熊猫并不多。新华社引用第四次全国调查称，秦岭地区生活着345只野生大熊猫，种群密度居全国之首。上述文章介绍，它们主要分布在佛坪、洋县、周至、宁陕、太白等秦岭中段南坡，巴山木竹、箭竹都吃。"
+                },
+                "refs": [
+                  "xinhua-qinling",
+                  "xa-qinling"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "怎么看出是秦岭的"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "区别首先在头和牙。文章称，科研测量显示秦岭大熊猫头骨偏小、臼齿更大，头圆吻短、鼻骨更短，耳朵圆润小巧；四川大熊猫则头部狭长、吻部突出。新华社的描述是“头小、牙齿大”，头型像猫、老虎等猫科动物。"
+                },
+                "refs": [
+                  "xa-qinling",
+                  "xinhua-qinling"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "其次是毛色。四川大熊猫胸斑纯黑、腹部洁白；秦岭大熊猫胸斑多呈暗棕色，腹部毛发带棕黄色调。文章特意强调，这并非毛色脏污。新华社则写作“胸部及腹部毛色多为深棕色”。网上常说秦岭大熊猫“更像猫”，文章也说明，这只是形容面部神态和头骨形态的通俗说法，它们依旧属于熊科动物。"
+                },
+                "refs": [
+                  "xa-qinling",
+                  "xinhua-qinling"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "为什么会长成两种模样？文章把答案归于秦岭的地理屏障：高耸的山体阻隔了两大种群的迁徙交流，秦岭大熊猫在漫长岁月里演化出圆头短吻、大臼齿的特征，适配秦岭多样的竹林；四川大熊猫则演化出适配高海拔竹林的形态。文章也强调，两个亚种没有优劣之分。"
+                },
+                "refs": [
+                  "xa-qinling"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "差别还不只在外表。北京师范大学教授刘定震在2024年国家林草局发布会上说，他们研究大熊猫靠气味“通电话”，发现四川和秦岭的大熊猫都在做标记，但“说话方式不一样”。"
+                },
+                "refs": [
+                  "nfga-2024-briefing"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "棕色的丹丹和七仔"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "秦岭还生活着更罕见的棕白色大熊猫。中国科学院动物研究所介绍，1985年人们在陕西佛坪自然保护区首次发现并救护了一只雌性棕色大熊猫丹丹，它2000年患病去世；2009年，雄性棕色大熊猫七仔在幼年时于佛坪保护区被发现，后来被救护到陕西楼观台珍稀野生动物抢救饲养中心，在圈养环境下正常生活。西安市秦岭局的文章称七仔是全球现存唯一圈养的棕色秦岭大熊猫。"
+                },
+                "refs": [
+                  "ioz-brown",
+                  "xa-qinling"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "一共发现过多少次？据陕西省林业局2024年5月通报，2024年1月长青国家级自然保护区的红外相机拍到一只成年棕色大熊猫，这是秦岭地区第11次发现野生棕色大熊猫的踪迹；有科学记载的发现地点都在陕西佛坪、洋县、太白、周至四县。动物研究所统计的是另一种口径：有实体或照片的棕色大熊猫共7例。"
+                },
+                "refs": [
+                  "nfga-brown-11",
+                  "ioz-brown"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "棕色从哪里来"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "2024年3月，魏辅文、胡义波团队在《美国国家科学院院刊》（PNAS）发表研究，找到了棕色的遗传原因。这种毛色为何只在秦岭种群中出现，一直是个谜。据动物研究所介绍，团队利用在佛坪保护区长期收集的野生大熊猫生态学、遗传学数据和圈养繁育信息，建立了与七仔相关的两个家系，确定棕白毛色属于常染色体隐性遗传，最可能的遗传基础是Bace2基因第1外显子25个碱基对的缺失突变。"
+                },
+                "refs": [
+                  "ioz-brown"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "团队又检测了另外192只黑白大熊猫，加上35只做过全基因组重测序的个体，共227只，只有两只棕色大熊猫是这一突变的纯合子；另有4只秦岭黑白大熊猫和1只圈养黑白大熊猫携带一份突变，外表仍是黑白的。用CRISPR-Cas9敲除Bace2基因的小鼠毛色变浅，黑色素体数量变少、尺寸变小，进一步支持了这一结论。"
+                },
+                "refs": [
+                  "ioz-brown"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "小种群的保护难题"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "秦岭大熊猫的独特，也意味着脆弱。西安市秦岭局的文章提到，秦岭大熊猫种群基数有限，遗传多样性相对偏低，栖息地碎片化仍是现实挑战，科研人员正推进廊道建设，打通小种群之间的阻隔。文章也提到积极的一面：秦岭圈养大熊猫种群已实现四世同堂，陕西成为世界第三大大熊猫繁育基地。文中的代表个体里，珠珠是秦岭繁育基地多次产仔的“英雄母亲”，党生则是秦岭野化放归的代表个体，科研人员通过它的野外活动研究秦岭大熊猫的野外习性。"
+                },
+                "refs": [
+                  "xa-qinling"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "国家林草局刊发的国家公园五年述评介绍，陕西片区把大熊猫迁徙廊道保护放在重要位置，坚持低干预、近自然的修复方式，补植箭竹和巴山木竹，改造低效林地，疏通关键阻隔点位，把秦岭内部破碎的栖息地块串联起来。"
+                },
+                "refs": [
+                  "nfga-park-5y"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "pullQuote": {
+        "zh": "文章特意强调，这并非毛色脏污。",
+        "drawnFromBody": true
+      },
+      "keyFacts": [
+        {
+          "text": {
+            "zh": "大熊猫分为四川指名亚种和秦岭亚种，据报道两者约一万年前因地理阻隔分化。"
+          },
+          "refs": [
+            "xa-qinling"
+          ]
+        },
+        {
+          "text": {
+            "zh": "第四次全国调查显示秦岭有野生大熊猫345只，种群密度居全国之首。"
+          },
+          "refs": [
+            "xinhua-qinling"
+          ]
+        },
+        {
+          "text": {
+            "zh": "秦岭大熊猫头圆吻短、臼齿更大，胸斑多呈暗棕色。"
+          },
+          "refs": [
+            "xa-qinling"
+          ]
+        },
+        {
+          "text": {
+            "zh": "据陕西省林业局2024年通报，秦岭已第11次发现野生棕色大熊猫的踪迹。"
+          },
+          "refs": [
+            "nfga-brown-11"
+          ]
+        },
+        {
+          "text": {
+            "zh": "棕色源于Bace2基因的隐性突变，2024年发表于PNAS。"
+          },
+          "refs": [
+            "ioz-brown"
+          ]
+        }
+      ],
+      "glossaryTerms": [
+        {
+          "slug": "qinling-subspecies",
+          "label": "秦岭亚种",
+          "inLearningJson": true
+        }
+      ],
+      "images": [
+        {
+          "role": "hero",
+          "type": "existing",
+          "pandaSlug": null,
+          "asset": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Qinling_Giant_Panda,_Shaanxi,_China.jpg?width=1600",
+          "sourcePage": "https://commons.wikimedia.org/wiki/File:Qinling_Giant_Panda,_Shaanxi,_China.jpg",
+          "credit": "james_birdtourasia / Wikimedia Commons",
+          "rights": "CC0 1.0",
+          "caption": {
+            "zh": "2010年4月在陕西秦岭拍到的一只大熊猫。"
+          },
+          "captionRefs": []
+        }
+      ],
+      "references": [
+        {
+          "id": "xa-qinling",
+          "title": "陕西大熊猫，更像猫！（2026-09-20，来源中国环境网）",
+          "publisher": "西安市秦岭生态环境保护管理局（市林业局）",
+          "url": "https://xaqlbhj.xa.gov.cn/xwdt/gzdt/2101558327065481217.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "xinhua-qinling",
+          "title": "迄今已发现10次！“宝中之宝”秦岭棕色大熊猫的前世今生（2021-10-11）",
+          "publisher": "新华网",
+          "url": "https://www.news.cn/politics/2021-10/11/c_1127946984.htm",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-2024-briefing",
+          "title": "四川和秦岭的大熊猫“打电话”方式不一样（2024-06-22，来源中国经营网）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/kp/572411.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "ioz-brown",
+          "title": "魏辅文研究团队揭示棕色大熊猫毛色变异的遗传机制（2024-03-07）",
+          "publisher": "中国科学院动物研究所",
+          "url": "https://ioz.cas.cn/gb2018/xwdt/kyjz/202403/t20240307_7019225.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-brown-11",
+          "title": "秦岭再次发现棕色大熊猫（2024-05-15，来源新华社）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/562569.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-park-5y",
+          "title": "见证！大熊猫国家公园五年成长述评（2026-10-21，来源中国绿色时报）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/lyj/1/zrgjgy/20261021/693762.html",
+          "citedOn": "2026-11-04"
+        }
+      ],
+      "relatedArticles": [
+        "telling-faces-apart",
+        "black-eye-patches",
+        "endangered-to-vulnerable"
+      ],
+      "stats": {
+        "bodyChars": 1636,
+        "bodyCjkChars": 1413,
+        "sectionCount": 5,
+        "referenceCount": 6
       }
     }
   ],
@@ -2101,12 +3372,12 @@
         "en": "Bamboo"
       },
       "summary": {
-        "zh": "大熊猫的食物几乎全是竹子。竹子营养很少，所以它每天要吃12～38公斤。",
-        "en": "Giant pandas eat almost nothing but bamboo. Bamboo has little nutritional value, so a panda eats 12–38 kg of it a day."
+        "zh": "大熊猫的食物几乎全是竹子。竹子营养很少，它每天要吃竹叶约10～14公斤，或竹笋约23～40公斤。",
+        "en": "Giant pandas eat almost nothing but bamboo. Bamboo has little nutritional value, so a panda eats about 10–14 kg of leaves or 23–40 kg of shoots a day."
       },
       "body": {
-        "zh": "大熊猫每天的食物几乎全部是多种竹子的叶、茎和笋。竹子营养价值很低，大熊猫每天要吃12～38公斤才能满足能量需要。约1%的食物是其他植物甚至肉类，它偶尔会捕食鼠兔等小动物。大熊猫的消化系统更接近食肉动物，吃下的食物有很多未经消化就排出，因此每天要花10～16小时觅食和进食。它通常坐着吃，用腕骨延长形成的“伪拇指”握住竹竿，再用有力的颌和牙齿把竹子咬碎。",
-        "en": "A giant panda's daily diet consists almost entirely of the leaves, stems and shoots of various bamboo species. Bamboo has very little nutritional value, so a panda must eat 12–38 kg every day to meet its energy needs. About 1% of its diet is other plants and even meat; pandas sometimes hunt pikas and other small animals. Its digestive system is closer to a carnivore's, so much of what it eats passes through undigested, and it spends 10 to 16 hours a day foraging and eating. A panda usually eats sitting upright, grasping stems with a \"pseudo thumb\" formed by an elongated wrist bone, and crushes the bamboo with powerful jaws and teeth."
+        "zh": "大熊猫每天的食物几乎全部是多种竹子的叶、茎和笋。竹子营养价值很低，据成都大熊猫繁育研究基地，大熊猫每天要吃竹叶约10～14公斤，或竹秆约17公斤，或竹笋约23～40公斤，才能满足能量需要。约1%的食物是其他植物甚至肉类，它偶尔会捕食鼠兔等小动物。大熊猫的消化系统更接近食肉动物，吃下的食物有很多未经消化就排出，因此每天要花10～16小时觅食和进食。它通常坐着吃，用腕骨延长形成的“伪拇指”握住竹竿，再用有力的颌和牙齿把竹子咬碎。",
+        "en": "A giant panda's daily diet consists almost entirely of the leaves, stems and shoots of various bamboo species. Bamboo has very little nutritional value, so, according to the Chengdu Research Base of Giant Panda Breeding, a panda must eat about 10–14 kg of leaves, about 17 kg of culms or 23–40 kg of shoots every day to meet its energy needs. About 1% of its diet is other plants and even meat; pandas sometimes hunt pikas and other small animals. Its digestive system is closer to a carnivore's, so much of what it eats passes through undigested, and it spends 10 to 16 hours a day foraging and eating. A panda usually eats sitting upright, grasping stems with a \"pseudo thumb\" formed by an elongated wrist bone, and crushes the bamboo with powerful jaws and teeth."
       },
       "sources": [
         {
@@ -2124,6 +3395,14 @@
           },
           "url": "https://nationalzoo.si.edu/animals/giant-panda",
           "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "成都大熊猫繁育研究基地：【熊猫知识】进食",
+            "en": "Chengdu Research Base of Giant Panda Breeding: Panda Knowledge – Feeding"
+          },
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8786.html",
+          "citedOn": "2026-11-04"
         }
       ]
     },
@@ -2150,6 +3429,214 @@
           },
           "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/370.html",
           "citedOn": "2026-10-31"
+        }
+      ]
+    },
+    {
+      "slug": "conservation-status",
+      "status": "published",
+      "title": {
+        "zh": "保护等级",
+        "en": ""
+      },
+      "summary": {
+        "zh": "2016年IUCN把大熊猫从“濒危”调为“易危”；2021年中国按国内评估同样调为“易危”。",
+        "en": ""
+      },
+      "body": {
+        "zh": "2016年9月，世界自然保护联盟（IUCN）发布红色名录更新，把大熊猫从“濒危”改列为“易危”，理由是森林保护和植树造林让种群增长；红色名录记录的成熟个体为500～1000只。国家林业局当时回应，降低保护等级为时过早，因为野外种群被分割成33个局域种群，其中18个不足10只。2021年7月，生态环境部宣布野外种群达到1800多只，受威胁程度等级由“濒危”降为“易危”。",
+        "en": ""
+      },
+      "sources": [
+        {
+          "title": {
+            "zh": "Four out of six great apes one step away from extinction – IUCN Red List（2016-09-04）",
+            "en": ""
+          },
+          "url": "https://iucn.org/news/species/201609/four-out-six-great-apes-one-step-away-extinction-%E2%80%93-iucn-red-list",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Giant Panda – Ailuropoda melanoleuca（2016年评估）",
+            "en": ""
+          },
+          "url": "https://www.iucnredlist.org/species/712/121745669",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "国家林业局：大熊猫仍是濒危物种 降低保护等级为时过早（2016-09-05）",
+            "en": ""
+          },
+          "url": "https://www.chinanews.com/sh/2016/09-05/7994780.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "由濒危降为易危！国宝大熊猫野外种群数量达到1800多只（2021-07-07）",
+            "en": ""
+          },
+          "url": "https://news.cctv.com/2021/07/07/ARTIwyRwXUkyxUXpdC8Bnpbl210707.shtml",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "reintroduction",
+      "status": "published",
+      "title": {
+        "zh": "野化放归",
+        "en": ""
+      },
+      "summary": {
+        "zh": "把经过野化训练的圈养大熊猫放回野外，给孤立的小种群补充个体和基因。",
+        "en": ""
+      },
+      "body": {
+        "zh": "1997年我国形成圈养大熊猫野化放归的科研共识，2003年启动首只大熊猫的野化培训。2006年放归的祥祥后来在打斗中坠崖死亡；2010年起改用母兽带仔的方法，2012年放归的淘淘在野外存活至今。2024年3月，现场影像结合DNA证据首次证实放归个体参与了交配繁殖。截至2026年6月，中国大熊猫保护研究中心累计放归人工繁育大熊猫11只，存活9只，7只融入小相岭、2只融入岷山的野生种群。",
+        "en": ""
+      },
+      "sources": [
+        {
+          "title": {
+            "zh": "归野向山林！我国大熊猫野化放归研究不断突破（2026-06-08，来源人民政协报微信公众号）",
+            "en": ""
+          },
+          "url": "https://www.chinanews.com.cn/sh/2026/06-08/10636304.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "经过近三年野化训练 大熊猫“祥祥”今放归大自然（2006-04-28）",
+            "en": ""
+          },
+          "url": "https://www.chinanews.com.cn/news/2006/2006-04-28/8/724079.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "全球首只人工繁育放归大熊猫“淘淘”野外生存5年多状况良好（2018-01-03）",
+            "en": ""
+          },
+          "url": "https://www.chinanews.com.cn/sh/2018/01-03/8415623.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "美丽中国行丨9只野化放归成活大熊猫已有自己的领地（2026-06-06）",
+            "en": ""
+          },
+          "url": "https://www.stdaily.com/web/gdxw/2026-06/06/content_528646.html",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "captive-breeding",
+      "status": "published",
+      "title": {
+        "zh": "圈养繁育",
+        "en": ""
+      },
+      "summary": {
+        "zh": "1963年第一只圈养繁殖的大熊猫出生，本世纪初突破“三难”，圈养种群2025年达808只。",
+        "en": ""
+      },
+      "body": {
+        "zh": "1963年9月9日，明明在北京动物园出生，是圈养状态下繁殖的第一只大熊猫；1978年，元晶成为世界上第一只人工授精诞生的大熊猫。早期繁育面临发情难、受孕难、存活难的“三难”。如今，中国大熊猫保护研究中心以自然交配为主、人工授精为辅，借助激素监测判断配种时间，自然交配受孕率在90%以上。全国统一谱系、每年制定配对方案，排除3代以内有血缘关系的个体配对。",
+        "en": ""
+      },
+      "sources": [
+        {
+          "title": {
+            "zh": "认识大熊猫（十）（2023-07-27，来源中国绿色时报）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/514552.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "世界第一只人工授精繁殖的大熊猫在北京诞生（2025-09-08，来源科普江苏）",
+            "en": ""
+          },
+          "url": "https://www.kepuchina.cn/article/articleinfo?ar_id=632635&business_type=100&classify=0",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "专治大熊猫不孕不育的“专科大夫”（2023-11-22，来源中国绿色时报）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/dzwzbh/533129.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "四川和秦岭的大熊猫“打电话”方式不一样（2024-06-22，来源中国经营网）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/kp/572411.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "国家林草局：大熊猫圈养种群数量达808只（2025-11-21，来源新华社）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/dzwzbh/650741.jhtml",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "qinling-pandas",
+      "status": "published",
+      "title": {
+        "zh": "秦岭大熊猫",
+        "en": ""
+      },
+      "summary": {
+        "zh": "秦岭亚种头圆吻短、臼齿更大，胸斑多呈暗棕色；秦岭还出现过罕见的棕白色大熊猫。",
+        "en": ""
+      },
+      "body": {
+        "zh": "据报道，大熊猫分为四川指名亚种和秦岭亚种。秦岭大熊猫头骨偏小、臼齿更大，头圆吻短，胸斑多呈暗棕色，腹部带棕黄色调；四川大熊猫头部狭长，胸斑纯黑。第四次全国调查显示秦岭有野生大熊猫345只。秦岭还出现过棕白色大熊猫，据陕西省林业局2024年通报，已是第11次发现野生个体的踪迹；研究发现其毛色源于Bace2基因的隐性突变。",
+        "en": ""
+      },
+      "sources": [
+        {
+          "title": {
+            "zh": "陕西大熊猫，更像猫！（2026-09-20，来源中国环境网）",
+            "en": ""
+          },
+          "url": "https://xaqlbhj.xa.gov.cn/xwdt/gzdt/2101558327065481217.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "迄今已发现10次！“宝中之宝”秦岭棕色大熊猫的前世今生（2021-10-11）",
+            "en": ""
+          },
+          "url": "https://www.news.cn/politics/2021-10/11/c_1127946984.htm",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "秦岭再次发现棕色大熊猫（2024-05-15，来源新华社）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/562569.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "魏辅文研究团队揭示棕色大熊猫毛色变异的遗传机制（2024-03-07）",
+            "en": ""
+          },
+          "url": "https://ioz.cas.cn/gb2018/xwdt/kyjz/202403/t20240307_7019225.html",
+          "citedOn": "2026-11-04"
         }
       ]
     }
@@ -2312,18 +3799,8 @@
             "en": "Staple food"
           },
           "body": {
-            "zh": "大熊猫的主食是竹子，吃的是多种竹子的叶、茎和笋，每天12～38公斤。约1%的食物是其他植物甚至肉类，它偶尔会捕食鼠兔等小动物。在史密森尼国家动物园，大熊猫除竹子外还吃营养丰富的饼干、胡萝卜和苹果。",
-            "en": "Bamboo is the giant panda's staple food: the leaves, stems and shoots of various bamboo species, 12–38 kg a day. About 1% of its diet is other plants and even meat, and it sometimes hunts pikas and other small animals. At Smithsonian's National Zoo, pandas are fed highly nutritious biscuits, carrots and apples as well as bamboo."
-          }
-        },
-        {
-          "heading": {
-            "zh": "两个常见误会",
-            "en": "Two common misconceptions"
-          },
-          "body": {
-            "zh": "“熊猫很懒”：大熊猫每天要花10～16小时觅食。它休息得多，是因为竹子营养低，让它攒不下足够的脂肪去蛰伏，只能全年保持活动。“熊猫只吃竹子”：野外大熊猫约1%的食物是其他植物甚至肉类；动物园还会补充饼干、水果和蔬菜。",
-            "en": "\"Pandas are lazy\": a giant panda spends 10 to 16 hours a day foraging. It rests a lot because bamboo is so low in nutrients that it cannot store enough fat to go dormant, so it has to stay active year-round. \"Pandas eat only bamboo\": about 1% of a wild panda's diet is other plants and even meat, and zoos add biscuits, fruit and vegetables."
+            "zh": "大熊猫的主食是竹子，吃的是多种竹子的叶、茎和笋，每天要吃竹叶约10～14公斤，或竹笋约23～40公斤。约1%的食物是其他植物甚至肉类，它偶尔会捕食鼠兔等小动物。在史密森尼国家动物园，大熊猫除竹子外还吃营养丰富的饼干、胡萝卜和苹果。",
+            "en": "Bamboo is the giant panda's staple food: the leaves, stems and shoots of various bamboo species, about 10–14 kg of leaves or 23–40 kg of shoots a day. About 1% of its diet is other plants and even meat, and it sometimes hunts pikas and other small animals. At Smithsonian's National Zoo, pandas are fed highly nutritious biscuits, carrots and apples as well as bamboo."
           }
         },
         {
@@ -2375,19 +3852,141 @@
         },
         {
           "title": {
-            "zh": "史密森尼国家动物园：大熊猫",
-            "en": "Smithsonian's National Zoo: Giant Panda"
+            "zh": "成都大熊猫繁育研究基地：【熊猫知识】进食",
+            "en": "Chengdu Research Base of Giant Panda Breeding: Panda Knowledge – Feeding"
           },
-          "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-31"
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8786.html",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "panda-conservation",
+      "status": "published",
+      "title": {
+        "zh": "保护大熊猫",
+        "en": ""
+      },
+      "summary": {
+        "zh": "大熊猫的保护等级在2016年和2021年先后下调，但栖息地碎片化和小种群仍是难题。国家公园和野化放归是两项主要应对办法。",
+        "en": ""
+      },
+      "sections": [
+        {
+          "heading": {
+            "zh": "保护等级",
+            "en": ""
+          },
+          "body": {
+            "zh": "IUCN在2016年把大熊猫调为“易危”，国家林业局当时认为为时过早；2021年中国按本国标准也调为“易危”。第四次全国调查显示，截至2013年底野生大熊猫1864只；2024年国家林草局的说法是近1900只。",
+            "en": ""
+          }
+        },
+        {
+          "heading": {
+            "zh": "国家公园",
+            "en": ""
+          },
+          "body": {
+            "zh": "大熊猫国家公园2021年设立，跨四川、陕西、甘肃三省，总面积2.2万平方公里，庇护全国七成以上的野生大熊猫；原有73个自然保护地被整合，13个局域栖息地被打通。四川片区8个重点监测区域的野生大熊猫从178只增至191只。",
+            "en": ""
+          }
+        },
+        {
+          "heading": {
+            "zh": "野化放归",
+            "en": ""
+          },
+          "body": {
+            "zh": "野化放归把受过训练的圈养大熊猫送回野外，给小种群补充个体和基因。2010年起的母兽带仔培训让野化培训成效“实现质的飞跃”，2024年首次证实放归个体参与了野外交配繁殖。",
+            "en": ""
+          }
+        }
+      ],
+      "cardSlugs": [
+        "conservation-status",
+        "reintroduction"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "Four out of six great apes one step away from extinction – IUCN Red List（2016-09-04）",
+            "en": ""
+          },
+          "url": "https://iucn.org/news/species/201609/four-out-six-great-apes-one-step-away-extinction-%E2%80%93-iucn-red-list",
+          "citedOn": "2026-11-04"
         },
         {
           "title": {
-            "zh": "加州大学戴维斯分校：大熊猫为什么是黑白的",
-            "en": "UC Davis: Why Pandas Are Black and White"
+            "zh": "国家林业局：大熊猫仍是濒危物种 降低保护等级为时过早（2016-09-05）",
+            "en": ""
           },
-          "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
-          "citedOn": "2026-10-31"
+          "url": "https://www.chinanews.com/sh/2016/09-05/7994780.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "由濒危降为易危！国宝大熊猫野外种群数量达到1800多只（2021-07-07）",
+            "en": ""
+          },
+          "url": "https://news.cctv.com/2021/07/07/ARTIwyRwXUkyxUXpdC8Bnpbl210707.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "全国第四次大熊猫调查主要结果（2011-2014年）（2015-03-02）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/lczy/38173.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "四川和秦岭的大熊猫“打电话”方式不一样（2024-06-22，来源中国经营网）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/kp/572411.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "见证！大熊猫国家公园五年成长述评（2026-10-21，来源中国绿色时报）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/lyj/1/zrgjgy/20261021/693762.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "国家林草局：大熊猫圈养种群数量达808只（2025-11-21，来源新华社）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/dzwzbh/650741.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "野生大熊猫数量增长7.3% 栖息地修复34万余亩 背后做对了什么？（2026-10-12，来源人民网）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/lyj/1/dzwzbh/20261012/691599.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "归野向山林！我国大熊猫野化放归研究不断突破（2026-06-08，来源人民政协报微信公众号）",
+            "en": ""
+          },
+          "url": "https://www.chinanews.com.cn/sh/2026/06-08/10636304.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "全球首只人工繁育放归大熊猫“淘淘”野外生存5年多状况良好（2018-01-03）",
+            "en": ""
+          },
+          "url": "https://www.chinanews.com.cn/sh/2018/01-03/8415623.shtml",
+          "citedOn": "2026-11-04"
         }
       ]
     }
@@ -2432,8 +4031,8 @@
         "en": "Bamboo diet"
       },
       "definition": {
-        "zh": "大熊猫以竹子为主食的习性。它的食物几乎全是竹子的叶、茎和笋，每天要吃12～38公斤；它虽然有食肉动物的消化系统，却几乎只吃竹子。",
-        "en": "The giant panda's habit of living on bamboo. Its diet is almost entirely bamboo leaves, stems and shoots, 12–38 kg a day. It has the digestive system of a carnivore, yet depends almost entirely on bamboo."
+        "zh": "大熊猫以竹子为主食的习性。它的食物几乎全是竹子的叶、茎和笋，每天要吃竹叶约10～14公斤，或竹笋约23～40公斤；它虽然有食肉动物的消化系统，却几乎只吃竹子。",
+        "en": "The giant panda's habit of living on bamboo. Its diet is almost entirely bamboo leaves, stems and shoots, about 10–14 kg of leaves or 23–40 kg of shoots a day. It has the digestive system of a carnivore, yet depends almost entirely on bamboo."
       },
       "relatedSlugs": [],
       "sources": [
@@ -2444,6 +4043,14 @@
           },
           "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
           "citedOn": "2026-10-31"
+        },
+        {
+          "title": {
+            "zh": "成都大熊猫繁育研究基地：【熊猫知识】进食",
+            "en": "Chengdu Research Base of Giant Panda Breeding: Panda Knowledge – Feeding"
+          },
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8786.html",
+          "citedOn": "2026-11-04"
         }
       ]
     },
@@ -2537,6 +4144,258 @@
           },
           "url": "https://zooatlanta.org/panda-updates-wednesday-december-27/",
           "citedOn": "2026-10-31"
+        }
+      ]
+    },
+    {
+      "slug": "vulnerable",
+      "status": "published",
+      "term": {
+        "zh": "易危",
+        "en": ""
+      },
+      "definition": {
+        "zh": "IUCN红色名录中的受威胁等级之一，比“濒危”低一级。大熊猫2016年被IUCN从“濒危”调为“易危”，2021年中国按国内评估同样调为“易危”。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "umbrella-species"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "Four out of six great apes one step away from extinction – IUCN Red List（2016-09-04）",
+            "en": ""
+          },
+          "url": "https://iucn.org/news/species/201609/four-out-six-great-apes-one-step-away-extinction-%E2%80%93-iucn-red-list",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "大熊猫“降级”标准知多少（2023-05-24）",
+            "en": ""
+          },
+          "url": "https://www.cnis.ac.cn/zt/kjzy/kpwz/202305/t20230524_55346.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "由濒危降为易危！国宝大熊猫野外种群数量达到1800多只（2021-07-07）",
+            "en": ""
+          },
+          "url": "https://news.cctv.com/2021/07/07/ARTIwyRwXUkyxUXpdC8Bnpbl210707.shtml",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "umbrella-species",
+      "status": "published",
+      "term": {
+        "zh": "伞护物种",
+        "en": ""
+      },
+      "definition": {
+        "zh": "保护它的栖息地，就能顺带保护同一片区域里的许多其他物种。大熊猫国家公园里还守护着8000多种伴生动植物，四川片区还推行“大熊猫+雪豹”双旗舰保护。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "vulnerable"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "见证！大熊猫国家公园五年成长述评（2026-10-21，来源中国绿色时报）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/lyj/1/zrgjgy/20261021/693762.html",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "reintroduction",
+      "status": "published",
+      "term": {
+        "zh": "野化放归",
+        "en": ""
+      },
+      "definition": {
+        "zh": "让人工繁育的大熊猫接受野外生存训练，再放回野外，以复壮孤立的小种群、改善遗传多样性。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "mother-cub-training"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "归野向山林！我国大熊猫野化放归研究不断突破（2026-06-08，来源人民政协报微信公众号）",
+            "en": ""
+          },
+          "url": "https://www.chinanews.com.cn/sh/2026/06-08/10636304.shtml",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "mother-cub-training",
+      "status": "published",
+      "term": {
+        "zh": "母兽带仔",
+        "en": ""
+      },
+      "definition": {
+        "zh": "一种野化培训方法：有野外和育幼经验的母兽在培训圈里产仔，幼仔跟着母亲学习野外生存，并尽量与人隔离。报道中也写作“母兽带崽”。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "reintroduction"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "归野向山林！我国大熊猫野化放归研究不断突破（2026-06-08，来源人民政协报微信公众号）",
+            "en": ""
+          },
+          "url": "https://www.chinanews.com.cn/sh/2026/06-08/10636304.shtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "全球首只人工繁育放归大熊猫“淘淘”野外生存5年多状况良好（2018-01-03）",
+            "en": ""
+          },
+          "url": "https://www.chinanews.com.cn/sh/2018/01-03/8415623.shtml",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "delayed-implantation",
+      "status": "published",
+      "term": {
+        "zh": "延迟着床",
+        "en": ""
+      },
+      "definition": {
+        "zh": "受精卵开始分裂后暂停发育，在子宫中漂浮一段时间才着床。大熊猫的这段时间可能长达50～150天，袋鼠、臭鼬、水獭等数百种哺乳动物也有这种现象。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "pseudopregnancy"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "Reading the Hormones（2017-08-04）",
+            "en": ""
+          },
+          "url": "https://www.nationalzoo.si.edu/animals/news/reading-hormones",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "How Panda Pregnancies Can Be a Months-Long Waiting Game（2017-08-18）",
+            "en": ""
+          },
+          "url": "https://www.nationalzoo.si.edu/animals/news/how-panda-pregnancies-can-be-months-long-waiting-game",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "pseudopregnancy",
+      "status": "published",
+      "term": {
+        "zh": "假孕",
+        "en": ""
+      },
+      "definition": {
+        "zh": "未怀孕的雌性出现和怀孕一样的行为和生理变化，如食欲下降、筑巢，孕酮也会二次升高，因此很难仅凭激素判断是否真的怀孕。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "delayed-implantation"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "How Panda Pregnancies Can Be a Months-Long Waiting Game（2017-08-18）",
+            "en": ""
+          },
+          "url": "https://www.nationalzoo.si.edu/animals/news/how-panda-pregnancies-can-be-months-long-waiting-game",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Reading the Hormones（2017-08-04）",
+            "en": ""
+          },
+          "url": "https://www.nationalzoo.si.edu/animals/news/reading-hormones",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Everland Welcomes New Baby Panda as Panda Conservation Research Marks 10 Years（2026-06-10）",
+            "en": ""
+          },
+          "url": "https://news.samsungcnt.com/en/features/resort/2026-06-everland-welcomes-new-baby-panda-as-panda-conservation-research-marks-10-years/",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "studbook",
+      "status": "published",
+      "term": {
+        "zh": "谱系",
+        "en": ""
+      },
+      "definition": {
+        "zh": "记录每只圈养大熊猫个体信息和血缘关系的统一档案。专家据此每年计算亲缘系数、制定配对方案，排除3代以内有血缘关系的个体配对。",
+        "en": ""
+      },
+      "relatedSlugs": [],
+      "sources": [
+        {
+          "title": {
+            "zh": "四川和秦岭的大熊猫“打电话”方式不一样（2024-06-22，来源中国经营网）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/kp/572411.jhtml",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "qinling-subspecies",
+      "status": "published",
+      "term": {
+        "zh": "秦岭亚种",
+        "en": ""
+      },
+      "definition": {
+        "zh": "生活在陕西秦岭的大熊猫，被报道为与四川指名亚种并列的亚种。它们头圆吻短、臼齿更大，胸斑多呈暗棕色。",
+        "en": ""
+      },
+      "relatedSlugs": [],
+      "sources": [
+        {
+          "title": {
+            "zh": "陕西大熊猫，更像猫！（2026-09-20，来源中国环境网）",
+            "en": ""
+          },
+          "url": "https://xaqlbhj.xa.gov.cn/xwdt/gzdt/2101558327065481217.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "迄今已发现10次！“宝中之宝”秦岭棕色大熊猫的前世今生（2021-10-11）",
+            "en": ""
+          },
+          "url": "https://www.news.cn/politics/2021-10/11/c_1127946984.htm",
+          "citedOn": "2026-11-04"
         }
       ]
     }
