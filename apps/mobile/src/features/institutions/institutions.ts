@@ -42,6 +42,15 @@ export interface Facility {
   verifiedOn: string | null;
   sourceUrls: string[];
   coordinates: { latitude: number; longitude: number } | null;
+  /** When the pandas are usually up and resting, as the facility publishes it. */
+  viewing: { active: TimeWindow[]; nap: TimeWindow | null } | null;
+  photoSpots: { name: string; window: TimeWindow | null }[];
+}
+
+/** A same-day local span, "HH:MM". */
+export interface TimeWindow {
+  start: string;
+  end: string;
 }
 
 export interface InstitutionDetail {
@@ -109,6 +118,13 @@ function facilityOf(place: Place): Facility {
     tips: (guide?.tips ?? []).flatMap((tip) => (tip.text.zh ? [{ label: TIP[tip.topic], text: tip.text.zh }] : [])),
     verifiedOn: guide?.verifiedOn ?? null,
     sourceUrls: guide?.sourceUrls ?? [],
+    viewing: guide?.viewing
+      ? {
+          active: [...guide.viewing.activeWindows].sort((a, b) => a.start.localeCompare(b.start)),
+          nap: guide.viewing.napWindow ?? null,
+        }
+      : null,
+    photoSpots: (guide?.photoSpots ?? []).flatMap((spot) => (spot.name.zh ? [{ name: spot.name.zh, window: spot.window ?? null }] : [])),
     coordinates:
       place.latitude !== undefined && place.longitude !== undefined ? { latitude: place.latitude, longitude: place.longitude } : null,
   };
@@ -154,7 +170,11 @@ export function hostname(url: string): string {
 
 /** A facility worth a 参观攻略 entry: it has at least one published guide line, or somewhere to navigate to. */
 export function hasGuide(facility: Facility): boolean {
-  return facility.guide.length + facility.tips.length > 0 || facility.coordinates !== null;
+  return (
+    facility.guide.length + facility.tips.length + facility.photoSpots.length > 0 ||
+    facility.viewing !== null ||
+    facility.coordinates !== null
+  );
 }
 
 /** The most recent day any of these guides was checked, so the section can say how fresh it is. */
