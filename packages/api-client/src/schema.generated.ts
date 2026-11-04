@@ -925,6 +925,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/overseas-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Published 海外大熊猫状态: location, announced return and quarantine stage, each with its source */
+        get: operations["listOverseasStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/ask/status": {
         parameters: {
             query?: never;
@@ -2040,6 +2057,35 @@ export interface components {
             terms: components["schemas"]["LearningTermDto"][];
             faceGuides: components["schemas"]["LearningFaceGuideDto"][];
             challenges: components["schemas"]["LearningChallengeDto"][];
+        };
+        PartialDateDto: {
+            /** @description YYYY-MM-DD, YYYY-MM or YYYY, matching precision. */
+            on: string;
+            /** @enum {string} */
+            precision: "day" | "month" | "year";
+        };
+        OverseasStatusItemDto: {
+            pandaSlug: string;
+            /** @enum {string} */
+            stage: "abroad" | "return_announced" | "in_transit" | "quarantine" | "returned";
+            /** @description Where the panda is now: the overseas home, or the quarantine base once back. */
+            institutionSlug: string;
+            /** @description The return as announced. */
+            expectedReturn?: components["schemas"]["PartialDateDto"];
+            /** Format: date */
+            returnedOn?: string;
+            /** @description The announcement this entry rests on (https). */
+            sourceUrl: string;
+            sourcePublisher: string;
+            /**
+             * Format: date-time
+             * @description When this entry was last checked against the source.
+             */
+            updatedAt: string;
+        };
+        OverseasStatusDto: {
+            version: string;
+            items: components["schemas"]["OverseasStatusItemDto"][];
         };
         AskStatusDto: {
             enabled: boolean;
@@ -3845,6 +3891,32 @@ export interface operations {
                 };
             };
             /** @description The stored learning catalog is missing or invalid. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listOverseasStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverseasStatusDto"];
+                };
+            };
+            /** @description The stored overseas status catalog is invalid. */
             503: {
                 headers: {
                     [name: string]: unknown;

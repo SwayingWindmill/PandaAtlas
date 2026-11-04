@@ -2268,6 +2268,31 @@
         ]
       }
     },
+    "/api/v2/overseas-status": {
+      "get": {
+        "operationId": "listOverseasStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverseasStatusDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The stored overseas status catalog is invalid."
+          }
+        },
+        "summary": "Published 海外大熊猫状态: location, announced return and quarantine stage, each with its source",
+        "tags": [
+          "Overseas status"
+        ]
+      }
+    },
     "/api/v2/ask/status": {
       "get": {
         "operationId": "getAskStatus",
@@ -6133,6 +6158,99 @@
           "terms",
           "faceGuides",
           "challenges"
+        ]
+      },
+      "PartialDateDto": {
+        "type": "object",
+        "properties": {
+          "on": {
+            "type": "string",
+            "description": "YYYY-MM-DD, YYYY-MM or YYYY, matching precision."
+          },
+          "precision": {
+            "type": "string",
+            "enum": [
+              "day",
+              "month",
+              "year"
+            ]
+          }
+        },
+        "required": [
+          "on",
+          "precision"
+        ]
+      },
+      "OverseasStatusItemDto": {
+        "type": "object",
+        "properties": {
+          "pandaSlug": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "abroad",
+              "return_announced",
+              "in_transit",
+              "quarantine",
+              "returned"
+            ]
+          },
+          "institutionSlug": {
+            "type": "string",
+            "description": "Where the panda is now: the overseas home, or the quarantine base once back."
+          },
+          "expectedReturn": {
+            "description": "The return as announced.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PartialDateDto"
+              }
+            ]
+          },
+          "returnedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "sourceUrl": {
+            "type": "string",
+            "description": "The announcement this entry rests on (https)."
+          },
+          "sourcePublisher": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this entry was last checked against the source."
+          }
+        },
+        "required": [
+          "pandaSlug",
+          "stage",
+          "institutionSlug",
+          "sourceUrl",
+          "sourcePublisher",
+          "updatedAt"
+        ]
+      },
+      "OverseasStatusDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OverseasStatusItemDto"
+            }
+          }
+        },
+        "required": [
+          "version",
+          "items"
         ]
       },
       "AskStatusDto": {

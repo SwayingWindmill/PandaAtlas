@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { Landmark } from "@/components/icons";
+import { ListCell, ListSection } from "@/components/grouped-list";
+import { Landmark, Plane } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { ScreenState } from "@/components/screen-state";
@@ -76,6 +77,9 @@ export default function InstitutionsScreen() {
           <Animated.View entering={PAGE_ENTER} className="gap-section-tight">
             <Group title="国内" items={loaded.items.filter((item) => item.domestic)} residents={loaded.residents} />
             <Group title="海外" items={loaded.items.filter((item) => !item.domestic)} residents={loaded.residents} />
+            <ListSection>
+              <ListCell icon={Plane} label="归国熊猫" href="/returning" last />
+            </ListSection>
           </Animated.View>
         ) : (
           <ScreenState message="基地和动物园的资料还在整理中。" />
