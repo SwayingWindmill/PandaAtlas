@@ -135,3 +135,31 @@ describe("family portrait connectors", () => {
     expect(paths.matched.map((line) => line.id)).toContain("parents:father:mother:couple");
   });
 });
+
+describe("family tree at larger text and for VoiceOver", () => {
+  const focus = member("focus");
+  const family: Family = {
+    focus,
+    father: member("father"),
+    mother: member("mother"),
+    generation: [{ members: [member("elder"), focus], twins: false }],
+    children: [member("child")],
+  };
+
+  it("grows every card with the text size, up to the tree's limit", () => {
+    const base = layoutFamily(family, 390);
+    const larger = layoutFamily(family, 390, 1.5);
+    const largest = layoutFamily(family, 390, 3);
+    const height = (layout: typeof base, id: string) => layout.cards.find((card) => card.member.id === id)!.height;
+    for (const id of ["father", "focus", "elder", "child"]) {
+      expect(height(larger, id)).toBe(height(base, id) + 21);
+      expect(height(largest, id)).toBe(height(base, id) + 42);
+    }
+    const child = larger.cards.find((card) => card.member.id === "child")!;
+    expect(larger.height).toBe(child.y + child.height + 16);
+  });
+
+  it("lists cards top to bottom, left to right", () => {
+    expect(layoutFamily(family, 390).cards.map((card) => card.member.id)).toEqual(["father", "mother", "elder", "focus", "child"]);
+  });
+});
