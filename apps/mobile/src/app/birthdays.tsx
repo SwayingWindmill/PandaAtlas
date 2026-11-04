@@ -52,7 +52,7 @@ export default function BirthdayWeekScreen() {
                   <ListCell
                     key={entry.pandaId}
                     label={entry.name}
-                    detail={`${entry.age} 岁生日`}
+                    detail={`${entry.age} 岁`}
                     leading={<PandaThumb pandaId={entry.pandaId} name={entry.name} size={44} shape="round" />}
                     onPress={() =>
                       router.push({ pathname: "/pandas/[slug]/share", params: { slug: entry.slug, birthday: String(entry.age) } })

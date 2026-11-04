@@ -60,3 +60,13 @@ export function whenLabel(inDays: number): string {
 export function followedInWeek(week: WeekBirthday[], followed: ReadonlySet<string>): WeekBirthday[] {
   return week.filter((entry) => followed.has(entry.pandaId));
 }
+
+/** The next birthday from `today` (today included), how far off it is and the age it turns; null without a full date. */
+export function nextBirthday(birthDate: string | null, today: string): { date: string; inDays: number; age: number } | null {
+  if (!birthDate || !DAY.test(birthDate) || !DAY.test(today)) return null;
+  const year = Number(today.slice(0, 4));
+  const date = [year, year + 1].map((y) => birthdayIn(birthDate, y)).find((day): day is string => Boolean(day && day >= today));
+  if (!date) return null;
+  const inDays = Math.round((Date.parse(`${date}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 86_400_000);
+  return { date, inDays, age: Number(date.slice(0, 4)) - Number(birthDate.slice(0, 4)) };
+}

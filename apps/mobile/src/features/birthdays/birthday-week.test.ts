@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { birthdayWeek, followedInWeek, whenLabel } from "./birthday-week";
+import { birthdayWeek, followedInWeek, nextBirthday, whenLabel } from "./birthday-week";
 
 import { eventsFor } from "./events";
 
@@ -49,5 +49,19 @@ describe("eventsFor", () => {
   it("keeps only https entries for the panda", () => {
     const ev = { pandaSlug: "a", title: "t", source: "s", date: "2026-08-23", checkedOn: "2026-08-01" };
     expect(eventsFor("a", [{ ...ev, url: "https://x" }, { ...ev, url: "http://x" }, { ...ev, pandaSlug: "b", url: "https://y" }])).toHaveLength(1);
+  });
+});
+
+describe("nextBirthday", () => {
+  it("counts the days to this year's birthday, or next year's once it has passed", () => {
+    expect(nextBirthday("2005-08-23", "2026-08-20")).toEqual({ date: "2026-08-23", inDays: 3, age: 21 });
+    expect(nextBirthday("2005-08-23", "2026-08-23")).toEqual({ date: "2026-08-23", inDays: 0, age: 21 });
+    expect(nextBirthday("2005-08-23", "2026-08-24")).toEqual({ date: "2027-08-23", inDays: 364, age: 22 });
+    expect(nextBirthday("2020-12-31", "2026-12-30")).toEqual({ date: "2026-12-31", inDays: 1, age: 6 });
+  });
+
+  it("needs a full birth date", () => {
+    expect(nextBirthday("2005-08", "2026-08-20")).toBeNull();
+    expect(nextBirthday(null, "2026-08-20")).toBeNull();
   });
 });
