@@ -104,6 +104,10 @@ Each of these is built in its own PR. Each PR moves to palette C and the new com
 | 那年今天 | `14-on-this-day` | built in the second batch |
 | 归国熊猫 | `15-overseas-return` | #812 |
 
+生日周 (`08-birthday-week`) has 接下来 7 天 over the title, a strip of the seven days (weekday over date, today on an ink tile, a dot under each day with a birthday), then one group per day (今天 · 11月4日 周三) of 44pt round photos with the age at the right; a row opens the 生日卡. 生日提醒 sits at the foot as a switch, and also in 设置's 提醒 group. The mockup's bell is left out: the reminder lives on 今天, not in a push. 官方生日活动 shows only when an institution's own announcement is curated in `events.ts`.
+
+生日卡 (`09-birthday-card`) has 封面, 奖章 and 海报 in a `Segmented` above the card, the card itself on a 360×480 artboard in palette C (ink ground, white type, sky accent, a silver medal), then 分享 and 分享链接 as glyph actions and 看看{名字} as the filled button. 存到相册 and 复制链接 wait for the media-library and clipboard modules; the page dots wait for a swipeable card.
+
 The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and the large title, then a `Segmented` control with 本周 and 本月, the week hero, the memories of the range, and the 那年今天 switch. The memories are one timeline card as in the mockup (`MemoryTimeline`), with 少显示 and 关闭 on a long press and as accessibility actions, and the sources as badges under the card. The hero is the page variant of the week hero: no tag, the day it happened, what happened, and N 周年 at the right.
 
 ## Open decisions

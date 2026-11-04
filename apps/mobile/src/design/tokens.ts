@@ -395,20 +395,19 @@ export const component = {
   timeBand: { track: 8, marker: 14 },
   /**
    * 生日卡: a saved image, so it keeps one look in light and dark. Drawn on a 360×480 artboard and scaled
-   * to its width; the jade and 笋金 come from the palette, these are the few extra stops it needs.
+   * to its width; ink, white and sky come from the palette, these are the few extra stops it needs.
    */
   birthdayCard: {
     artboard: { width: 360, height: 480 },
     radius: 28,
-    pill: alpha("white", 0.22),
     rule: alpha("white", 0.25),
-    /** B 奖章's radial background: lit centre to deep edge around jade 950. */
-    medalLight: "#1F3B2F",
-    medalDeep: "#0E1713",
-    /** The shaded side of the age medal. */
-    badgeShade: "#A87E2A",
-    /** C 园区海报's second stripe, between shoot 50 and shoot 300. */
-    stripe: "#EFE2C4",
+    /** B 奖章's radial background: lit centre to deep edge around ink 950. */
+    medalLight: "#26262A",
+    medalDeep: "#000000",
+    /** The shaded side of the silver age medal. */
+    badgeShade: "#8E8E93",
+    /** C 园区海报's second stripe, between sky 50 and sky 200. */
+    stripe: "#D3E8FF",
   },
 } as const;
 

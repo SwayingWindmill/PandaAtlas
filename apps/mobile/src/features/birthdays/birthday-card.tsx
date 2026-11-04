@@ -25,6 +25,8 @@ export interface BirthdayCardData {
   /** The age it turns. */
   age: number;
   birthDate: string;
+  /** Where it lives now, for the cover's birth line. */
+  place: string | null;
   /** The birthday this card is for, YYYY-MM-DD. */
   date: string;
   inDays: number;
@@ -32,7 +34,9 @@ export interface BirthdayCardData {
   photo: { url: string; credit: string | null } | null;
 }
 
-const { jade, shoot, gray } = primitive.palette;
+const { ink, sky, gray } = primitive.palette;
+/** Palette C on the card: the ink ground, white type, sky as the one accent. */
+const DEEP = ink[950];
 /**
  * The card is an image: drawn on a 360×480 artboard and scaled to the width it gets, so the saved PNG
  * looks the same at every text size. VoiceOver reads the whole card from its label instead.
@@ -115,44 +119,41 @@ function Photo({ url, style }: { url: string; style?: object }) {
   );
 }
 
-/** A 回忆封面: the photo full bleed, the age large in 笋金, the name and the credit on a jade scrim. */
+/** A 回忆封面 (v4 `09-birthday-card`): the photo full bleed, the age large in white, the name and the credit on an ink scrim. */
 function Cover({ card, u }: { card: BirthdayCardData; u: number }) {
   const id = useId().replaceAll(":", "");
-  const pill = { backgroundColor: BC.pill, paddingHorizontal: 11 * u, paddingVertical: 6 * u } as const;
   return (
-    <View className="absolute inset-0" style={{ backgroundColor: jade[950] }}>
+    <View className="absolute inset-0" style={{ backgroundColor: DEEP }}>
       {card.photo ? <Photo url={card.photo.url} /> : null}
       <Svg style={{ position: "absolute", inset: 0 }} width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 1 1">
         <Defs>
           <LinearGradient id={`scrim${id}`} x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor={jade[950]} stopOpacity={0.35} />
-            <Stop offset="0.22" stopColor={jade[950]} stopOpacity={0} />
-            <Stop offset="0.45" stopColor={jade[950]} stopOpacity={0} />
-            <Stop offset="0.82" stopColor={jade[950]} stopOpacity={0.88} />
-            <Stop offset="1" stopColor={jade[950]} stopOpacity={1} />
+            <Stop offset="0" stopColor={DEEP} stopOpacity={0.35} />
+            <Stop offset="0.22" stopColor={DEEP} stopOpacity={0} />
+            <Stop offset="0.45" stopColor={DEEP} stopOpacity={0} />
+            <Stop offset="0.82" stopColor={DEEP} stopOpacity={0.88} />
+            <Stop offset="1" stopColor={DEEP} stopOpacity={1} />
           </LinearGradient>
         </Defs>
         <Rect x="0" y="0" width="1" height="1" fill={`url(#scrim${id})`} />
       </Svg>
       <View className="absolute flex-row justify-between" style={{ top: 20 * u, left: 20 * u, right: 20 * u }}>
-        <View className="flex-row items-center rounded-full" style={[pill, { gap: 4 * u }]}>
+        <View className="flex-row items-center" style={{ gap: 5 * u }}>
           <Icon icon={Cake} size={14 * u} color={WHITE} strokeWidth={2.2} />
           <T u={u} size={13} className="font-semibold" style={{ color: WHITE }}>
             {when(card)}
           </T>
         </View>
-        <View className="rounded-full" style={pill}>
-          <T u={u} size={13} className="font-semibold" style={{ color: WHITE }}>
-            {dayHeading(card.date).split(" ")[0]}
-          </T>
-        </View>
+        <T u={u} size={13} className="font-semibold" style={{ color: WHITE }}>
+          {dayHeading(card.date).split(" ")[0]}
+        </T>
       </View>
       <View className="absolute" style={{ left: 22 * u, right: 22 * u, bottom: 20 * u }}>
         <View className="flex-row items-baseline" style={{ gap: 6 * u }}>
-          <T u={u} size={112} className="font-rounded font-extrabold tabular-nums" style={{ color: shoot[300], lineHeight: 100 * u }}>
+          <T u={u} size={112} className="font-rounded font-extrabold tabular-nums" style={{ color: WHITE, lineHeight: 100 * u }}>
             {card.age}
           </T>
-          <T u={u} size={22} className="font-semibold" style={{ color: shoot[300] }}>
+          <T u={u} size={22} className="font-semibold" style={{ color: WHITE }}>
             岁
           </T>
         </View>
@@ -166,8 +167,8 @@ function Cover({ card, u }: { card: BirthdayCardData; u: number }) {
             </T>
           ) : null}
         </View>
-        <T u={u} size={13} style={{ color: WHITE, opacity: 0.75, marginTop: 6 * u }}>
-          {birthLine(card)}
+        <T u={u} size={13} lines={1} style={{ color: WHITE, opacity: 0.75, marginTop: 6 * u }}>
+          {[dotted(card.birthDate), card.place].filter(Boolean).join(" · ")}
         </T>
         <View
           className="flex-row items-center justify-between"
@@ -187,7 +188,7 @@ function Cover({ card, u }: { card: BirthdayCardData; u: number }) {
   );
 }
 
-/** B 奖章: the photo in a brass ring, the age on a medal under it, the dates between birth and this birthday. */
+/** B 奖章: the photo in a silver ring, the age on a medal under it, the dates between birth and this birthday. */
 function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
   const id = useId().replaceAll(":", "");
   const ring = 212 * u;
@@ -198,7 +199,7 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
         <Defs>
           <RadialGradient id={`bg${id}`} cx="0.5" cy="0.3" rx="0.6" ry="0.8">
             <Stop offset="0" stopColor={BC.medalLight} />
-            <Stop offset="0.6" stopColor={jade[950]} />
+            <Stop offset="0.6" stopColor={DEEP} />
             <Stop offset="1" stopColor={BC.medalDeep} />
           </RadialGradient>
         </Defs>
@@ -208,16 +209,16 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
         <Svg style={{ position: "absolute", inset: 0 }} width="100%" height="100%" viewBox="0 0 1 1">
           <Defs>
             <LinearGradient id={`ring${id}`} x1="0" y1="0" x2="1" y2="1">
-              <Stop offset="0" stopColor={shoot[50]} />
-              <Stop offset="0.35" stopColor={shoot[300]} />
-              <Stop offset="0.6" stopColor={shoot[700]} />
-              <Stop offset="0.8" stopColor={shoot[300]} />
-              <Stop offset="1" stopColor={shoot[50]} />
+              <Stop offset="0" stopColor={WHITE} />
+              <Stop offset="0.35" stopColor={gray[150]} />
+              <Stop offset="0.6" stopColor={gray[350]} />
+              <Stop offset="0.8" stopColor={gray[150]} />
+              <Stop offset="1" stopColor={WHITE} />
             </LinearGradient>
           </Defs>
           <Rect x="0" y="0" width="1" height="1" fill={`url(#ring${id})`} />
         </Svg>
-        <View className="flex-1 overflow-hidden rounded-full" style={{ backgroundColor: jade[950], padding: 5 * u }}>
+        <View className="flex-1 overflow-hidden rounded-full" style={{ backgroundColor: DEEP, padding: 5 * u }}>
           <View className="flex-1 overflow-hidden rounded-full">{card.photo ? <Photo url={card.photo.url} /> : null}</View>
         </View>
       </View>
@@ -227,21 +228,21 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
           width: badge + 10 * u,
           height: badge + 10 * u,
           marginTop: -(badge / 2 + 5 * u) - 4 * u,
-          backgroundColor: jade[950],
+          backgroundColor: DEEP,
         }}
       >
         <View className="items-center justify-center overflow-hidden rounded-full" style={{ width: badge, height: badge }}>
           <Svg style={{ position: "absolute", inset: 0 }} width="100%" height="100%" viewBox="0 0 1 1">
             <Defs>
               <LinearGradient id={`badge${id}`} x1="0.2" y1="0" x2="0.8" y2="1">
-                <Stop offset="0" stopColor={shoot[50]} />
-                <Stop offset="0.55" stopColor={shoot[300]} />
+                <Stop offset="0" stopColor={WHITE} />
+                <Stop offset="0.55" stopColor={gray[150]} />
                 <Stop offset="1" stopColor={BC.badgeShade} />
               </LinearGradient>
             </Defs>
             <Rect x="0" y="0" width="1" height="1" fill={`url(#badge${id})`} />
           </Svg>
-          <T u={u} size={40} className="font-rounded font-extrabold tabular-nums" style={{ color: shoot[950] }}>
+          <T u={u} size={40} className="font-rounded font-extrabold tabular-nums" style={{ color: DEEP }}>
             {card.age}
           </T>
         </View>
@@ -253,7 +254,7 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
         <T u={u} size={14} lines={1} className="text-center" style={{ color: WHITE, opacity: 0.7, marginTop: 6 * u }}>
           {card.nameEn ? `生日快乐，${card.nameEn}` : "生日快乐"}
         </T>
-        <T u={u} size={12} className="font-rounded font-semibold tabular-nums" style={{ color: shoot[300], marginTop: 14 * u }}>
+        <T u={u} size={12} className="font-rounded font-semibold tabular-nums" style={{ color: sky[300], marginTop: 14 * u }}>
           {`${dotted(card.birthDate)} — ${dotted(card.date)}`}
         </T>
       </View>
@@ -274,7 +275,7 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
   );
 }
 
-/** C 园区海报: a striped 笋金 frame, the photo inset, a tab with the name and age, the days left in jade. */
+/** C 园区海报: a striped sky frame, the photo inset, a tab with the name and age, the days left in sky. */
 function Poster({ card, u }: { card: BirthdayCardData; u: number }) {
   const id = useId().replaceAll(":", "");
   const count = 74 * u;
@@ -285,7 +286,7 @@ function Poster({ card, u }: { card: BirthdayCardData; u: number }) {
       <Svg style={{ position: "absolute", inset: 0 }} width="100%" height="100%">
         <Defs>
           <Pattern id={`stripe${id}`} width={28 * u} height={28 * u} patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <Rect x="0" y="0" width={14 * u} height={28 * u} fill={shoot[50]} />
+            <Rect x="0" y="0" width={14 * u} height={28 * u} fill={sky[50]} />
             <Rect x={14 * u} y="0" width={14 * u} height={28 * u} fill={BC.stripe} />
           </Pattern>
         </Defs>
@@ -296,9 +297,9 @@ function Poster({ card, u }: { card: BirthdayCardData; u: number }) {
       </View>
       <View
         className="absolute items-center justify-center rounded-full"
-        style={{ top: 26 * u, right: 26 * u, width: count + 8 * u, height: count + 8 * u, backgroundColor: shoot[50] }}
+        style={{ top: 26 * u, right: 26 * u, width: count + 8 * u, height: count + 8 * u, backgroundColor: sky[50] }}
       >
-        <View className="items-center justify-center rounded-full" style={{ width: count, height: count, backgroundColor: jade[700] }}>
+        <View className="items-center justify-center rounded-full" style={{ width: count, height: count, backgroundColor: sky[600] }}>
           {card.inDays === 0 ? (
             <T u={u} size={20} className="font-bold" style={{ color: WHITE }}>
               今天
@@ -323,7 +324,7 @@ function Poster({ card, u }: { card: BirthdayCardData; u: number }) {
           className="self-start justify-center"
           style={{ backgroundColor: WHITE, height: 31 * u, marginBottom: -1, paddingHorizontal: 18 * u, borderTopLeftRadius: 18 * u, borderTopRightRadius: 18 * u }}
         >
-          <T u={u} size={13} lines={1} className="font-rounded font-extrabold" style={{ color: jade[700] }}>
+          <T u={u} size={13} lines={1} className="font-rounded font-extrabold" style={{ color: sky[600] }}>
             {`${(card.nameEn ?? card.name).toUpperCase()} ${ordinal(card.age)}`}
           </T>
         </View>
@@ -340,7 +341,7 @@ function Poster({ card, u }: { card: BirthdayCardData; u: number }) {
         >
           <T u={u} size={30} lines={1} className="font-bold" style={{ color: gray.black }}>
             {`${card.name} `}
-            <Text allowFontScaling={false} className="font-rounded tabular-nums" style={{ color: shoot[700] }}>
+            <Text allowFontScaling={false} className="font-rounded tabular-nums" style={{ color: sky[600] }}>
               {card.age}
             </Text>
             {" 岁"}
@@ -351,10 +352,10 @@ function Poster({ card, u }: { card: BirthdayCardData; u: number }) {
         </View>
       </View>
       <View className="absolute items-end" style={{ right: 16 * u, bottom: 22 * u }}>
-        <T u={u} size={20} className="font-rounded font-bold tabular-nums" style={{ color: jade[700] }}>
+        <T u={u} size={20} className="font-rounded font-bold tabular-nums" style={{ color: sky[600] }}>
           {`${Number(m)}.${Number(d)}`}
         </T>
-        <T u={u} size={11} style={{ color: shoot[950] }}>
+        <T u={u} size={11} style={{ color: DEEP }}>
           {weekday}
         </T>
       </View>
@@ -383,7 +384,7 @@ export function BirthdayCard({
       accessibilityLabel={birthdayCardLabel(card)}
       onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}
       className="w-full self-center overflow-hidden"
-      style={{ maxWidth: ARTBOARD, aspectRatio: BC.artboard.width / BC.artboard.height, borderRadius: BC.radius * (u || 1), borderCurve: "continuous", backgroundColor: jade[950] }}
+      style={{ maxWidth: ARTBOARD, aspectRatio: BC.artboard.width / BC.artboard.height, borderRadius: BC.radius * (u || 1), borderCurve: "continuous", backgroundColor: DEEP }}
     >
       {width > 0 ? (
         look === "medal" ? <Medal card={card} u={u} /> : look === "poster" ? <Poster card={card} u={u} /> : <Cover card={card} u={u} />
