@@ -4,6 +4,8 @@ Production Identity uses **Supabase Auth UUIDs** and the private PostgreSQL `ide
 
 The project owner grants the first administrator once, from their own machine, with `scripts/development/production-staff-admin.mjs`. Nothing here runs in the Cloudflare Worker or adds a runtime endpoint.
 
+**Not needed today.** Production does not serve the staff console: `ADMIN_SHELL_ENABLED` is fixed to `false`, and `/admin` answers 404 for everyone, signed in or not ([runtime status](../deployment/runtime-status.md)). Content is published through batch operations instead. Grant the first administrator only when the console is enabled in production; until then the role has nothing to open.
+
 ## 1. Find the account
 
 Sign up the intended administrator through the normal Supabase email flow. In the Supabase dashboard (Authentication → Users), copy that user's UUID and check the email is confirmed. Select by UUID, never by email string.
@@ -30,7 +32,7 @@ The script refuses when the Auth user is unconfirmed, deleted, banned or anonymo
 ## 3. Check
 
 - `identity.role_assignments` has one live `administrator` row for the UUID, with source `production_first_admin`.
-- The administrator signs in with email OTP, opens `/admin`, enrolls Supabase TOTP and reaches AAL2 before sensitive commands.
+- Once the console is served, the administrator signs in with email OTP, opens `/admin`, enrolls Supabase TOTP and reaches AAL2 before sensitive commands.
 
 ## 4. Recovery
 
