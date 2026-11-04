@@ -36,8 +36,8 @@ test("a followed panda's review hold and return reach the inbox, and messages re
   await expect(page.getByRole("button", { name: `${notice.name}的资料暂时下线核对` })).toBeVisible();
   await expect(page.getByRole("button", { name: "全部已读" })).toHaveCount(0);
 
-  // 我的 refreshes its count when it is shown again.
-  await page.getByRole("button", { name: "返回" }).click();
+  // 我的 refreshes its count when it is shown again. 通知 has the stack's own back link, not the photo pages' button.
+  await page.getByRole("link", { name: /^返回/ }).click();
   await expect(page.getByRole("button", { name: "通知", exact: true })).toBeVisible();
 });
 

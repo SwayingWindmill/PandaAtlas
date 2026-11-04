@@ -21,14 +21,17 @@ test("a fan puts a panda in a new collection, finds it in 我的, renames, empti
 
   await page.getByRole("button", { name: "改名字" }).click();
   await page.getByRole("textbox", { name: "合集的名字" }).fill("常去看的");
-  await page.getByRole("button", { name: "保存" }).click();
+  await page.getByRole("button", { name: "完成", exact: true }).click();
   await expect(page.getByRole("heading", { name: "常去看的" })).toBeVisible();
 
+  // Removing is behind 编辑, as a playlist's edit mode.
+  await page.getByRole("button", { name: "编辑合集里的熊猫" }).click();
   await page.getByRole("button", { name: `把${panda.name}移出合集` }).click();
-  await expect(page.getByText("还是空的。")).toBeVisible();
+  await expect(page.getByText("在熊猫的资料页点「加入合集」，它就会放进来。")).toBeVisible();
 
   await page.getByRole("button", { name: "删除合集" }).click();
-  await page.getByRole("button", { name: "删除", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "删除「常去看的」？" })).toBeVisible();
+  await page.getByRole("button", { name: "删除合集" }).click();
   await expect(page.getByRole("heading", { name: "我的合集" })).toBeVisible();
   await expect(page.getByRole("button", { name: /^常去看的，/ })).toHaveCount(0);
 });

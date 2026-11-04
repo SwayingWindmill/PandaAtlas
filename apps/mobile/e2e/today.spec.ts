@@ -33,9 +33,12 @@ test("today shows the pandas whose birthday it is, and the followed ones on top"
   const { panda } = fixture();
   const optionD = panda.name.replace("测试熊猫", "选项丁");
   // e2e/global-setup.ts gives 选项丁 a birthday today.
+  // A birthday today takes the head of 今天 as 生日周. The card names three pandas at most, and every run's
+  // 选项丁 shares today's birthday, so this run's one is looked for on 那年今天, which lists them all.
   await page.goto("/");
-  await expect(page.getByText("今天生日")).toBeVisible();
-  await expect(page.getByRole("button", { name: new RegExp(`^${optionD}，[0-9]+ 岁生日$`) })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^生日周，[0-9]+ 岁生日，.+，今天$/ })).toBeVisible();
+  await page.goto("/on-this-day");
+  await expect(page.getByRole("link", { name: new RegExp(`^[0-9.]+ · [0-9]+，${optionD} [0-9]+ 岁生日，`) })).toBeVisible();
 
   await signIn(page, testEmail("strip"));
   await page.goto(`/pandas/${panda.slug}`);
