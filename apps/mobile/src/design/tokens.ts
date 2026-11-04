@@ -368,8 +368,8 @@ export const component = {
   familyChip: { height: 52, padding: space[1], avatar: 44 },
   /** 设置 rows: the bare glyph centred in a slot, so labels line up. No tile behind it. */
   settingsGlyph: { size: 30, icon: 18, inset: space[4] + 30 + space[3] },
-  /** A segmented control: a 44pt track with the selected segment inset 2pt (concentric radius). */
-  segmented: { height: 44, padding: 2 },
+  /** A segmented control: a 36pt pill track with the selected pill inset 3pt; each segment's hit area is the full 44pt. */
+  segmented: { height: 36, padding: 3, hit: 44 },
   /** The switch drawn in a SwitchRow: the iOS 51×31 track and 27pt knob. The whole row is the control. */
   switchTrack: { width: 51, height: 31, knob: 27 },
   /** Icons follow the text they sit beside, like SF Symbols. */

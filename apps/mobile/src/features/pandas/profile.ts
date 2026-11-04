@@ -41,7 +41,7 @@ export interface Profile {
   /** The last move between two places it lived, said short: 华盛顿 → 卧龙, 2023. */
   move: { from: string; to: string; year: string } | null;
   /** Oldest first. */
-  events: { id: string; kind: MilestoneKind; date: string; text: string }[];
+  events: { id: string; kind: MilestoneKind; date: string; text: string; sourceIds: string[] }[];
   /**
    * What happened on this day in an earlier year, from its own dated and sourced records. Shown here even
    * for a panda that has died, as 纪念 (DECEASED_POLICY); 少显示 on 今天 does not reach its own page.
@@ -61,6 +61,10 @@ export interface Photo {
   url: string;
   /** "照片 王小明 / CC BY 4.0，CC-BY-4.0". */
   credit: string | null;
+  /** Who took it, without the archive: "Amaury Laporte". */
+  creator: string | null;
+  /** Where it was published, said short: the source's publisher, or the archive the credit names. */
+  source: string | null;
 }
 
 export interface Source {
@@ -88,10 +92,26 @@ export function longDate(value: string): string {
 
 type DatedEvent = LifeEvent & { occurredOn: string };
 
-function shortDate(event: DatedEvent): string {
-  const [year = event.occurredOn, month] = event.occurredOn.split("-");
-  return event.occurredPrecision === "year" || !month ? year : `${year}.${Number(month)}`;
+/** 2023.11.08, or 2023.11 and 2023 when the record is only that precise. */
+function eventDate(event: DatedEvent): string {
+  const [year = event.occurredOn, month, day] = event.occurredOn.slice(0, 10).split("-");
+  if (event.occurredPrecision === "year" || !month) return year;
+  if (event.occurredPrecision === "month" || !day) return `${year}.${month}`;
+  return `${year}.${month}.${day}`;
 }
+
+/**
+ * A publisher as a seal or chip says it: the name before its long tail.
+ * "Smithsonian National Zoo and Conservation Biology Institute" → "史密森",
+ * "Wikimedia Commons contributors" → "Wikimedia", "China.org.cn / Xinhua" → "China.org.cn".
+ */
+export function shortPublisher(publisher: string): string {
+  const short = publisher.split(/\s*\/|['’]s\b|\s+(?:National|Commons|and)\b/)[0]?.trim() || publisher;
+  return CHINESE_NAMES[short] ?? short;
+}
+
+/** Publishers with a settled Chinese short name. */
+const CHINESE_NAMES: Record<string, string> = { Smithsonian: "史密森" };
 
 const MOVES = new Set(["transfer", "return", "arrival"]);
 
@@ -114,7 +134,11 @@ function lastMove(
 }
 
 /** The panda's photos for viewing: cover first, then display order; evidence images are not photos of it. */
-export function photosOf(media: Schemas["PublicMediaSummaryDto"][]): Photo[] {
+export function photosOf(
+  media: Schemas["PublicMediaSummaryDto"][],
+  evidence: Schemas["PublicEvidenceSummaryDto"][] = [],
+): Photo[] {
+  const publishers = new Map(evidence.map((source) => [source.sourceId, source.publisher]));
   const seen = new Set<string>();
   return [...media]
     .filter((item) => item.usageRole !== "evidence" && item.mediaType.startsWith("image/"))
@@ -122,13 +146,22 @@ export function photosOf(media: Schemas["PublicMediaSummaryDto"][]): Photo[] {
     .filter((item) => !seen.has(item.assetId) && Boolean(seen.add(item.assetId)))
     .map((item) => {
       const credit = [item.attributionText ?? item.creator, item.license].filter(Boolean).join("，");
-      return { id: item.assetId, url: publicMediaUrl(item.objectKey), credit: credit ? `照片 ${credit}` : null };
+      // "Amaury Laporte / Wikimedia Commons": the person, then the archive that published it.
+      const [person, archive] = (item.creator ?? item.attributionText ?? "").split(/\s+\/\s+/);
+      const publisher = (item.sourceId && publishers.get(item.sourceId)) || archive;
+      return {
+        id: item.assetId,
+        url: publicMediaUrl(item.objectKey),
+        credit: credit ? `照片 ${credit}` : null,
+        creator: person?.trim() || null,
+        source: publisher ? shortPublisher(publisher) : null,
+      };
     });
 }
 
 export async function loadPhotos(slug: string): Promise<Photo[]> {
   const detail = await loadPandaDetail(slug);
-  return photosOf(detail.media);
+  return photosOf(detail.media, detail.evidence);
 }
 
 export const photosQueryOptions = (slug: string) =>
@@ -186,7 +219,7 @@ export async function loadProfile(slug: string): Promise<Profile> {
     sex,
     deceased,
     certainty: { birth: birthDate ? pandaFactStatus(panda, "birth_date") : null, life: pandaFactStatus(panda, "life_status") },
-    photos: photosOf(media),
+    photos: photosOf(media, evidence),
     facts,
     stats: headlineStats({
       birthDate,
@@ -199,7 +232,9 @@ export async function loadProfile(slug: string): Promise<Profile> {
     // Only what happened: an announced plan is not part of the panda's life yet.
     events: completed.flatMap((event) => {
       const told = describeEvent(event, place, birthDate);
-      return told ? [{ id: event.eventId, kind: told.kind, date: shortDate(event), text: told.text }] : [];
+      return told
+        ? [{ id: event.eventId, kind: told.kind, date: eventDate(event), text: told.text, sourceIds: event.sourceIds }]
+        : [];
     }),
     memories: memoriesOn({
       today: localToday(),

@@ -6,7 +6,6 @@ import { useAnimatedReaction, useAnimatedScrollHandler, useSharedValue } from "r
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
 
-import { GlassButton } from "@/components/glass-button";
 import { Icon } from "@/components/icon";
 import { ChevronLeft, Ellipsis, type LucideIcon, Share } from "@/components/icons";
 import { Text } from "@/components/ui/text";
@@ -74,7 +73,7 @@ function nativeGlyph(name: "back" | "share") {
  * scrolled under it, and the system scroll-edge effect keeps it legible over the page.
  * A page opened straight from a link has no back button, so it gets one that goes to 今天.
  *
- * Earlier iOS, Android and web: no bar; back and share float over the photo as translucent discs.
+ * Earlier iOS, Android and web: no bar; back, share and 更多 sit on the photo as bare white glyphs.
  */
 export interface HeroMenuItem {
   label: string;
@@ -91,7 +90,7 @@ export function HeroHeader({
   title: string;
   pastHero: boolean;
   onShare?: () => void;
-  /** The page's less frequent actions behind a 更多 button, top right, in place of share. */
+  /** The page's less frequent actions behind a 更多 button, top right, after share. */
   menu?: HeroMenuItem[];
 }) {
   const { label } = useIOSColors();
@@ -128,6 +127,18 @@ export function HeroHeader({
           </Stack.Toolbar.Button>
         </Stack.Toolbar>
       )}
+      {menu?.length && onShare ? (
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Button
+            icon={NATIVE_SYMBOLS ? undefined : TOOLBAR_ICON.share}
+            iconRenderingMode="template"
+            accessibilityLabel="分享"
+            onPress={onShare}
+          >
+            {nativeGlyph("share")}
+          </Stack.Toolbar.Button>
+        </Stack.Toolbar>
+      ) : null}
       {menu?.length ? (
         <Stack.Toolbar placement="right">
           <Stack.Toolbar.Menu icon="ellipsis" accessibilityLabel="更多">
@@ -155,8 +166,28 @@ export function HeroHeader({
 }
 
 const SIZE = component.glassButton.size;
+/** A bare glyph over a photo keeps its edge with a soft shadow instead of a disc. */
+const GLYPH_SHADOW = { filter: "drop-shadow(0px 1px 3px rgba(0,0,0,0.45))" } as const;
 
-/** Back and share (or 更多) over the photo where there is no system bar, fixed while the page scrolls. */
+/** A white glyph straight on the photo, with a 44pt hit area. */
+function BareButton({ icon, label, onPress, size = 25 }: { icon: LucideIcon; label: string; onPress: () => void; size?: number }) {
+  return (
+    <Pressable
+      role="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      hitSlop={6}
+      className="items-center justify-center active:opacity-60"
+      style={{ width: SIZE, height: SIZE }}
+    >
+      <View style={GLYPH_SHADOW}>
+        <Icon icon={icon} size={size} tone="onMedia" strokeWidth={2.4} />
+      </View>
+    </Pressable>
+  );
+}
+
+/** Back, share and 更多 over the photo where there is no system bar, fixed while the page scrolls. */
 function FloatingToolbar({ onShare, menu }: { onShare?: () => void; menu?: HeroMenuItem[] }) {
   const insets = useSafeAreaInsets();
   const [open, setOpen] = useState(false);
@@ -180,12 +211,11 @@ function FloatingToolbar({ onShare, menu }: { onShare?: () => void; menu?: HeroM
       // Rendered before the page so a screen reader reads 返回 first; zIndex keeps it over the scrolling content.
       style={{ top, zIndex: 1 }}
     >
-      <GlassButton icon={ChevronLeft} label="返回" onPress={goBack} />
-      {menu?.length ? (
-        <GlassButton icon={Ellipsis} label="更多" onPress={more} />
-      ) : onShare ? (
-        <GlassButton icon={Share} label="分享" onPress={onShare} />
-      ) : null}
+      <BareButton icon={ChevronLeft} label="返回" onPress={goBack} size={28} />
+      <View className="flex-row items-center">
+        {onShare ? <BareButton icon={Share} label="分享" onPress={onShare} size={23} /> : null}
+        {menu?.length ? <BareButton icon={Ellipsis} label="更多" onPress={more} /> : null}
+      </View>
       {menu?.length ? (
         <Modal transparent visible={open} animationType="fade" onRequestClose={() => setOpen(false)}>
           <Pressable className="flex-1" accessibilityLabel="关闭" onPress={() => setOpen(false)}>

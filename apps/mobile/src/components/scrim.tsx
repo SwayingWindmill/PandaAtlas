@@ -44,10 +44,10 @@ export function HeroFade({ id, page }: { id: string; page: string }) {
     >
       <Defs>
         <LinearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0" stopColor={semantic.scrim.color} stopOpacity={0.38} />
-          <Stop offset="0.26" stopColor={semantic.scrim.color} stopOpacity={0} />
-          <Stop offset="0.58" stopColor={page} stopOpacity={0} />
-          <Stop offset="1" stopColor={page} stopOpacity={1} />
+          <Stop offset="0" stopColor={semantic.scrim.color} stopOpacity={0.4} />
+          <Stop offset="0.28" stopColor={semantic.scrim.color} stopOpacity={0} />
+          <Stop offset="0.56" stopColor={page} stopOpacity={0} />
+          <Stop offset="0.99" stopColor={page} stopOpacity={1} />
         </LinearGradient>
       </Defs>
       <Rect x="0" y="0" width="100%" height="100%" fill={`url(#${id})`} />

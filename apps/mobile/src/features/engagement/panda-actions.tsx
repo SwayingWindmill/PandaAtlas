@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { View } from "react-native";
 
 import { Icon } from "@/components/icon";
-import { Eye, Heart, Share } from "@/components/icons";
+import { Eye, Heart } from "@/components/icons";
 import { useStacked } from "@/components/grouped-list";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -16,30 +16,18 @@ import { selectionHaptic, successHaptic, tapHaptic } from "@/lib/haptics";
 const FOLLOW_FLEX = { flex: 1.3 } as const;
 const SEEN_FLEX = { flex: 1 } as const;
 
-/** Share as a round tinted button at the end of the row. */
-function ShareButton({ name, onPress }: { name: string; onPress: () => void }) {
-  return (
-    <Button variant="tinted" className="w-12 px-0" accessibilityLabel={`分享${name}`} onPress={onPress}>
-      <Icon icon={Share} size="body" tone="tint" strokeWidth={2} />
-    </Button>
-  );
-}
-
 /**
- * 关注, 见过 and share under a panda's name, as iOS pairs a primary and a secondary action:
- * 关注 is the filled ink capsule (a grey capsule once followed), 见过 is a tinted capsule, share a tinted
- * circle. Each carries its bare glyph. Signed-out fans are sent to sign in first. A panda that has died
- * has only share.
+ * 关注 and 见过 under a panda's name, as iOS pairs a primary and a secondary action:
+ * 关注 is the filled ink capsule (grey once followed), 见过 the grey tonal capsule. Each carries its bare
+ * glyph. Signed-out fans are sent to sign in first. A panda that has died has neither; share is in the bar.
  */
 export function PandaActions({
   pandaId,
   name,
-  onShare,
   deceased = false,
 }: {
   pandaId: string;
   name: string;
-  onShare?: () => void;
   deceased?: boolean;
 }) {
   const stacked = useStacked();
@@ -72,8 +60,7 @@ export function PandaActions({
 
   const following = followed?.has(pandaId) ?? false;
 
-  const share = onShare ? <ShareButton name={name} onPress={onShare} /> : null;
-  if (deceased) return share ? <View className={row}>{share}</View> : null;
+  if (deceased) return null;
 
   if (!signedIn) {
     return (
@@ -82,11 +69,10 @@ export function PandaActions({
           <Icon icon={Heart} size="subhead" tone="onButton" strokeWidth={2} />
           <Text className="text-body font-semibold">关注</Text>
         </Button>
-        <Button variant="tinted" className="px-4" style={half} accessibilityLabel={`记下见过${name}`} onPress={() => router.push("/sign-in")}>
-          <Icon icon={Eye} size="subhead" tone="tint" strokeWidth={2} />
+        <Button variant="secondary" className="bg-card px-4" style={half} accessibilityLabel={`记下见过${name}`} onPress={() => router.push("/sign-in")}>
+          <Icon icon={Eye} size="subhead" tone="label" strokeWidth={2} />
           <Text className="text-body font-semibold">见过</Text>
         </Button>
-        {share}
       </View>
     );
   }
@@ -108,19 +94,18 @@ export function PandaActions({
         <Text className="text-body font-semibold">{following ? "已关注" : "关注"}</Text>
       </Button>
       <Button
-        variant="tinted"
-        className="px-4"
+        variant="secondary"
+        className="bg-card px-4"
         style={half}
         disabled={toggleSeen.isPending || seen === undefined}
         accessibilityLabel={seen ? `${seen.seenOn ? shortDay(seen.seenOn) : ""}见过${name}，点按取消` : `记下见过${name}`}
         onPress={() => toggleSeen.mutate()}
       >
-        <Icon icon={Eye} size="subhead" tone="tint" strokeWidth={2} />
+        <Icon icon={Eye} size="subhead" tone="label" strokeWidth={2} />
         <Text className="text-body font-semibold" numberOfLines={1}>
           {seen ? `见过${seen.seenOn ? `　${shortDay(seen.seenOn)}` : ""}` : "见过"}
         </Text>
       </Button>
-      {share}
     </View>
   );
 }

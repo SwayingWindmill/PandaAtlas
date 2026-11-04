@@ -12,6 +12,7 @@ const HIT_SLOP = (component.hitTarget - component.chip.height) / 2;
  * A filter or choice chip, as Maps and Photos draw them: a 32pt capsule inside a 44pt hit area.
  * Selected is the tinted fill with a check, so the state reads without color too. Built on the
  * RNR Badge's capsule; interactive chips are buttons with `selected` state for VoiceOver.
+ * `ink` is the quieter filter bar: grey capsules, the chosen one filled in ink, no check.
  */
 export function Chip({
   label,
@@ -19,8 +20,10 @@ export function Chip({
   icon,
   onPress,
   accessibilityLabel,
+  appearance = "tint",
 }: {
   label: string;
+  appearance?: "tint" | "ink";
   selected?: boolean;
   icon?: LucideIcon;
   onPress?: () => void;
@@ -30,16 +33,19 @@ export function Chip({
     <View
       className={cn(
         "flex-row items-center gap-hair-gap rounded-pill",
-        selected ? "bg-highlight-soft" : "bg-secondary",
+        appearance === "ink" ? (selected ? "bg-foreground" : "bg-card") : selected ? "bg-highlight-soft" : "bg-secondary",
       )}
       style={{ height: component.chip.height, paddingHorizontal: component.chip.paddingX, borderCurve: "continuous" }}
     >
-      {selected ? (
+      {selected && appearance === "tint" ? (
         <Icon icon={Check} size="footnote" tone="tint" strokeWidth={component.iconStroke.bold} />
       ) : icon ? (
         <Icon icon={icon} size="footnote" />
       ) : null}
-      <Text variant="subheadline" className={cn("font-semibold", selected ? "text-primary" : "text-foreground")} numberOfLines={1}>
+      <Text variant="subheadline" className={cn(
+          "font-semibold",
+          !selected ? "text-foreground" : appearance === "ink" ? "text-background" : "text-primary",
+        )} numberOfLines={1}>
         {label}
       </Text>
     </View>
