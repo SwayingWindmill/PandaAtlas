@@ -1,8 +1,15 @@
-import { Stack } from "expo-router";
-import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
+import { type Href, Stack, router } from "expo-router";
+import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useStacked } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
+import { CalendarDays, Landmark, type LucideIcon, ScanFace, Trophy } from "@/components/icons";
 import { Text } from "@/components/ui/text";
+import { ProfileAvatar } from "@/features/profile/avatar";
+import { displayName, useProfile } from "@/features/profile/profile";
+import { useSession } from "@/features/session/session";
+import { BirthdayHero, useBirthdayWeek } from "@/features/today/birthday-hero";
 import { localToday } from "@/features/engagement/seen";
 import { FollowedChanges } from "@/features/today/followed-changes";
 import { FollowedStrip } from "@/features/today/followed-strip";
@@ -22,16 +29,67 @@ const STORIES = [
 
 const WEEKDAY = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
 
-/** "10月29日 星期四", as the date line under News' title. */
+/** "10月29日 星期四", the date line over the title. */
 function dateLine(now = new Date()) {
   return `${now.getMonth() + 1}月${now.getDate()}日 ${WEEKDAY[now.getDay()]}`;
 }
 
-/**
- * iOS and Android draw 今天 in the system bar: on iOS the large title, which collapses into the bar
- * as the page scrolls. The web has no bar on a tab root, so the column draws the title there.
- */
-const TITLE_IN_COLUMN = Platform.OS === "web";
+/** Shortcuts under the hero, each a bare glyph over its name. Only pages that exist. */
+const QUICK: { label: string; icon: LucideIcon; href: Href }[] = [
+  { label: "挑战", icon: Trophy, href: "/learn/challenge" },
+  { label: "场馆", icon: Landmark, href: "/institutions" },
+  { label: "日历", icon: CalendarDays, href: "/calendar" },
+  { label: "猜熊猫", icon: ScanFace, href: "/guess" },
+];
+
+function QuickEntries() {
+  const stacked = useStacked();
+  return (
+    <View className={stacked ? "flex-row flex-wrap gap-y-2" : "flex-row"}>
+      {QUICK.map((item) => (
+        <Pressable
+          key={item.label}
+          role="link"
+          accessibilityLabel={item.label}
+          onPress={() => router.push(item.href)}
+          className="min-h-11 items-center gap-1.5 py-2 active:opacity-60"
+          style={stacked ? { width: "50%" } : { flex: 1 }}
+        >
+          <Icon icon={item.icon} size={26} tone="tint" strokeWidth={2} />
+          <Text variant="footnote" className="font-semibold">
+            {item.label}
+          </Text>
+        </Pressable>
+      ))}
+    </View>
+  );
+}
+
+const AVATAR = 38;
+
+/** The date over a large 今天, with the fan's avatar at the right, which opens 我的. */
+function TodayHeader() {
+  const { state } = useSession();
+  const { profile } = useProfile();
+  const signedIn = state.status === "signedIn";
+  const email = signedIn ? state.email : null;
+  const name = signedIn && profile ? displayName(profile, email) : null;
+  return (
+    <View className="flex-row items-end justify-between gap-3">
+      <View className="shrink">
+        <Text variant="footnote" className="font-semibold text-muted-foreground">
+          {dateLine()}
+        </Text>
+        <Text variant="display" role="heading">
+          今天
+        </Text>
+      </View>
+      <Pressable role="link" accessibilityLabel="我的" onPress={() => router.push("/me")} className="mb-1 active:opacity-70">
+        <ProfileAvatar name={name} size={AVATAR} />
+      </Pressable>
+    </View>
+  );
+}
 
 /** Gap between the small cards in the scroller, and what each snap moves past. */
 const GAP = 12;
@@ -42,38 +100,42 @@ export default function TodayScreen() {
   const { width, fontScale } = useWindowDimensions();
   const photos = useStoryPhotos(localToday(), STORIES.length);
   const column = Math.min(width, 700) - 32;
-  // The featured story is close to a 4:5 portrait. The smaller cards show about one and a half
-  // at a time, so the next one peeks in and says the row scrolls; they grow at big text sizes.
-  const lead = Math.round(column * 1.2);
+  // The head card is a wide band, so the shortcuts and the row below show on the first screen.
+  // It grows with the text size so a big title still fits. The smaller cards show about one
+  // and a half at a time, so the next one peeks in.
+  const lead = Math.round(column * (useStacked() ? 1.2 : 0.62));
   const small = Math.round(Math.min(column * 0.72, 300));
   const smallHeight = Math.round(Math.max(small * 1.22, 220 * Math.min(fontScale, 1.6)));
-  const [featured, ...rest] = STORIES;
+  const birthday = useBirthdayWeek();
+  const [featured, ...more] = STORIES;
+  // A birthday this week takes the head of the page; the featured story joins the row.
+  const rest = birthday ? STORIES : more;
 
   return (
     <ScrollView
       className="flex-1 bg-background"
       contentInsetAdjustmentBehavior="automatic"
       contentContainerClassName="gap-section px-4"
-      contentContainerStyle={{ paddingTop: TITLE_IN_COLUMN ? insets.top + 12 : 0, paddingBottom: bottom }}
+      contentContainerStyle={{ paddingTop: insets.top + 6, paddingBottom: bottom }}
     >
-      <Stack.Screen options={{ title: "今天" }} />
+      {/* The column draws the title so the date can sit over it, with the avatar beside. */}
+      <Stack.Screen options={{ title: "今天", headerShown: false }} />
       <View className="gap-stack">
-        {/* The date says when, under the title as News dates its issue: a quiet secondary line. */}
-        <View>
-          {TITLE_IN_COLUMN ? <Text variant="display">今天</Text> : null}
-          <Text variant="body" className="text-muted-foreground">
-            {dateLine()}
-          </Text>
-        </View>
-        <StoryCard
-          featured
-          id={featured.id}
-          title={featured.title}
-          feature={featured.feature}
-          href={featured.href}
-          photo={photos[0]}
-          height={lead}
-        />
+        <TodayHeader />
+        {birthday ? (
+          <BirthdayHero hero={birthday} height={lead} />
+        ) : (
+          <StoryCard
+            featured
+            id={featured.id}
+            title={featured.title}
+            feature={featured.feature}
+            href={featured.href}
+            photo={photos[0]}
+            height={lead}
+          />
+        )}
+        <QuickEntries />
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -91,7 +153,7 @@ export default function TodayScreen() {
               title={story.title}
               feature={story.feature}
               href={story.href}
-              photo={photos[index + 1]}
+              photo={photos[birthday ? index : index + 1]}
               width={small}
               height={smallHeight}
             />

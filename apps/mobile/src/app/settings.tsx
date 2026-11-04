@@ -1,101 +1,94 @@
-import { router } from "expo-router";
-import { View } from "react-native";
+import { type Href, router } from "expo-router";
+import { Pressable, View } from "react-native";
 
-import { ListCell, ListSection, SectionTitle } from "@/components/grouped-list";
-import { FileText, Info, Lock, ShieldCheck, SunMoon } from "@/components/icons";
+import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
+import { FileText, Info, Lock, SunMoon } from "@/components/icons";
 import { Page } from "@/components/page";
-import { Segmented } from "@/components/segmented";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { type Appearance, useAppearance } from "@/features/appearance/appearance";
+import { APPEARANCES, useAppearance } from "@/features/appearance/appearance";
 import { LegalRow } from "@/features/legal/legal-links";
-import { MilestoneSettings } from "@/features/milestones/settings-section";
-import { OnThisDaySettings } from "@/features/on-this-day/settings-section";
+import { MilestoneSwitch } from "@/features/milestones/settings-section";
+import { OnThisDaySwitch } from "@/features/on-this-day/settings-section";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
 
-const AVATAR = 80;
+const AVATAR = 52;
 
-const APPEARANCES: readonly { value: Appearance; label: string }[] = [
-  { value: "system", label: "跟随系统" },
-  { value: "light", label: "浅色" },
-  { value: "dark", label: "深色" },
-];
-
-/** The account at the head of 设置, centred as the system Settings shows the Apple Account. */
-function SignedInHeader({ email }: { email: string | null }) {
-  const { profile } = useProfile();
-  if (!profile) return <Skeleton className="h-36 w-full rounded-card" accessibilityLabel="正在加载" />;
-  const name = displayName(profile, email);
+/** The account as one row at the head of 设置, as Settings shows the Apple Account; it opens 账号与数据. */
+function AccountRow({ name, detail, href, hint }: { name: string | null; detail: string | null; href: Href; hint: string }) {
+  // At accessibility sizes the avatar sits above the name so the name keeps the full width.
+  const stacked = useStacked();
   return (
-    <View className="items-center gap-stack-tight">
-      <ProfileAvatar name={name} size={AVATAR} />
-      <View className="items-center gap-hair-gap">
-        <Text variant="title" className="text-center" numberOfLines={1}>
-          {name}
-        </Text>
-        {email && email !== name ? (
-          <Text variant="footnote" className="text-center text-muted-foreground" numberOfLines={1}>
-            {email}
+    <ListSection>
+      <Pressable
+        role="link"
+        accessibilityLabel={[name ?? "登录", detail].filter(Boolean).join("，")}
+        accessibilityHint={hint}
+        onPress={() => router.push(href)}
+        className={`min-h-11 gap-row px-inset py-stack-tight active:bg-accent ${stacked ? "flex-col items-start" : "flex-row items-center"}`}
+      >
+        <ProfileAvatar name={name} size={AVATAR} />
+        <View className={`min-w-0 gap-hair-gap ${stacked ? "self-stretch" : "flex-1"}`}>
+          <Text variant="headline" numberOfLines={2}>
+            {name ?? "登录"}
           </Text>
-        ) : null}
-      </View>
-    </View>
+          {detail ? (
+            <Text variant="footnote" className="text-muted-foreground" numberOfLines={2}>
+              {detail}
+            </Text>
+          ) : null}
+        </View>
+        {stacked ? null : <Chevron />}
+      </Pressable>
+    </ListSection>
   );
 }
 
-function SignedOutHeader() {
-  return (
-    <View className="items-center gap-row">
-      <ProfileAvatar name={null} size={AVATAR} />
-      <Text variant="subheadline" className="text-center text-muted-foreground">
-        登录后，关注的熊猫和图鉴会保存在你的账号里。
-      </Text>
-      <Button className="self-stretch" onPress={() => router.push("/sign-in")}>
-        <Text>登录</Text>
-      </Button>
-    </View>
-  );
+function SignedInRow({ email }: { email: string | null }) {
+  const { profile } = useProfile();
+  if (!profile) return <Skeleton className="h-20 w-full rounded-group" accessibilityLabel="正在加载" />;
+  const name = displayName(profile, email);
+  return <AccountRow name={name} detail={email && email !== name ? email : null} href="/account" hint="打开账号与数据" />;
 }
 
-function AppearanceSection() {
-  const [appearance, setAppearance] = useAppearance();
-  return (
-    <View className="gap-1.5">
-      <SectionTitle title="外观" icon={SunMoon} />
-      <Segmented value={appearance} options={APPEARANCES} onChange={setAppearance} accessibilityLabel="外观" />
-    </View>
-  );
-}
-
-/** 设置: the account, the look of the app, where the content comes from, the legal pages and 退出登录. */
+/** 设置: the account, the 今天页 switches, 外观, the about and legal pages, and 退出登录. */
 export default function SettingsScreen() {
   const { state, signOut } = useSession();
+  const [appearance] = useAppearance();
   const signedIn = state.status === "signedIn";
   return (
     <Page title="设置">
-      {state.status === "loading" ? (
-        <Skeleton className="h-36 w-full rounded-card" accessibilityLabel="正在加载" />
+      {state.status === "loading" ? <Skeleton className="h-20 w-full rounded-group" accessibilityLabel="正在加载" /> : null}
+      {signedIn ? <SignedInRow email={state.email} /> : null}
+      {state.status === "signedOut" ? (
+        <AccountRow name={null} detail={null} href="/sign-in" hint="打开登录" />
       ) : null}
-      {signedIn ? <SignedInHeader email={state.email} /> : null}
-      {state.status === "signedOut" ? <SignedOutHeader /> : null}
       {state.status === "unavailable" ? (
         <Text variant="subheadline" className="text-center text-muted-foreground">
           账号暂时不可用，请稍后再试。
         </Text>
       ) : null}
-      <AppearanceSection />
-      <OnThisDaySettings />
-      <MilestoneSettings />
       <ListSection>
-        {signedIn ? <ListCell label="账号与数据" glyph={ShieldCheck} href="/account" /> : null}
-        <ListCell label="内容和照片从哪来" glyph={Info} href="/about" last />
+        <ListCell
+          label="外观"
+          glyph={SunMoon}
+          meta={APPEARANCES.find((option) => option.value === appearance)?.label}
+          href="/appearance"
+          last
+        />
+      </ListSection>
+      <ListSection title="今天页">
+        <OnThisDaySwitch separator />
+        <MilestoneSwitch />
       </ListSection>
       <ListSection>
-        <LegalRow id="terms" glyph={FileText} />
-        <LegalRow id="privacy" glyph={Lock} last />
+        <ListCell label="内容和照片来源" glyph={Info} href="/about" last />
+      </ListSection>
+      <ListSection>
+        <LegalRow id="privacy" glyph={Lock} />
+        <LegalRow id="terms" glyph={FileText} last />
       </ListSection>
       {signedIn || state.status === "unavailable" ? (
         <ListSection>

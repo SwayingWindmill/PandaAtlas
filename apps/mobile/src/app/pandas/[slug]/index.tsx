@@ -3,16 +3,19 @@ import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
+import { useCSSVariable } from "uniwind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Chevron, ListCell, ListSection, SectionTitle, useStacked } from "@/components/grouped-list";
+import { ListCell, ListSection, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import {
+  Baby,
+  BadgeCheck,
+  BookA,
   Cake,
   CalendarHeart,
-  CircleQuestionMark,
   Flag,
   Flower,
   FolderHeart,
@@ -22,19 +25,24 @@ import {
   type LucideIcon,
   MapPin,
   Mars,
+  Navigation,
   Network,
   Newspaper,
+  Plane,
+  Sparkles,
   Users,
   Venus,
 } from "@/components/icons";
-import { IconRow } from "@/components/icon-row";
-import { ConfirmedMark, PendingDot } from "@/components/status-mark";
+import { PendingDot } from "@/components/status-mark";
 import { LoadFailed } from "@/components/load-failed";
-import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { HeroHeader, useHeroScroll } from "@/components/hero-header";
+import { HeroFade } from "@/components/scrim";
+import { Segmented } from "@/components/segmented";
 import { StretchyHero } from "@/components/stretchy-hero";
+import { Timeline, type TimelineItem } from "@/components/timeline";
 import { PAGE_ENTER } from "@/design/motion";
+import { component } from "@/design/tokens";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { CompareRows } from "@/features/compare/compare-rows";
@@ -45,74 +53,79 @@ import { useMilestonesOn } from "@/features/milestones/prefs";
 import { DECEASED_POLICY, isCubDay } from "@/features/on-this-day/on-this-day";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type Profile, longDate, profileQueryOptions } from "@/features/pandas/profile";
-import { type Stat, UNKNOWN } from "@/features/pandas/profile-facts";
+import type { Stat } from "@/features/pandas/profile-facts";
+import type { MilestoneKind } from "@/features/timeline/timeline";
 import { RADIUS } from "@/lib/surface";
+import { cn } from "@/lib/utils";
 
 /** Hero height below the status bar. The photo runs under the status bar too. */
-const HERO = 340;
+const HERO = 320;
+/** How far the name block rides up onto the photo's faded bottom. */
+const OVERLAP = 64;
 
 function correct(slug: string) {
   router.push({ pathname: "/pandas/[slug]/correct", params: { slug } });
 }
 
-/** The glyph beside each stat's label. 性别 shows the sex itself, so it reads at a glance. */
 function statIcon(stat: Stat, deceased: boolean): LucideIcon {
-  if (stat.key === "sex") return stat.value === "雄" ? Mars : stat.value === "雌" ? Venus : CircleQuestionMark;
-  if (stat.key === "age") return deceased ? Hourglass : Cake;
-  return deceased ? Flower : House;
+  if (stat.key === "birth") return Cake;
+  if (stat.key === "age") return deceased ? Hourglass : Sparkles;
+  return deceased ? Flower : MapPin;
 }
 
-/** How much of the row each block takes: the place needs room for a zoo's name. */
-const STAT_FLEX: Record<Stat["key"], number> = { sex: 1, age: 1.25, place: 1.9 };
-/** Below this width three tiles leave the sex tile too narrow for its label, so the place takes its own row. */
-const STAT_ROW_MIN_WIDTH = 360;
+/** The glyph on a timeline line, by what happened. */
+const KIND_ICON: Record<MilestoneKind, LucideIcon> = {
+  birth: Cake,
+  cub: Baby,
+  move: Plane,
+  arrive: MapPin,
+  home: House,
+  debut: Sparkles,
+  naming: BookA,
+  death: Flower,
+  stay: House,
+  leave: Navigation,
+  month: Cake,
+  hundred: Cake,
+  age: Cake,
+  parent: Baby,
+};
 
-function StatBlock({
+/** One of the three tiles: a bare glyph, the value large with its unit, the label under it. */
+function StatTile({
   stat,
-  deceased,
+  confirmed,
   onPress,
   stacked,
-  wrapped,
-  birthConfirmed,
+  deceased,
 }: {
   stat: Stat;
   deceased: boolean;
-  /** The age tile's birth year carries a check when the birth date is confirmed. */
-  birthConfirmed: boolean;
+  /** The birthday tile carries a badge when the date is confirmed. */
+  confirmed: boolean;
   onPress?: () => void;
   stacked: boolean;
-  wrapped: boolean;
 }) {
-  const confirmed = birthConfirmed && stat.key === "age" && Boolean(stat.detail);
-  const spoken = `${stat.label}，${stat.value}${stat.detail ? `，${stat.detail}` : ""}${confirmed ? "，生日已确认" : ""}`;
+  const label = stat.key === "place" ? (stat.detail ?? stat.label) : stat.label;
+  const spoken = `${stat.label}，${stat.value}${stat.unit ?? ""}${stat.detail ? `，${stat.detail}` : ""}${confirmed ? "，已确认" : ""}`;
   const body = (
-    <View
-      className="gap-1 bg-card p-3"
-      style={{ flex: 1, borderRadius: RADIUS.tile, borderCurve: "continuous", minHeight: 96 }}
-    >
-      <View className="flex-row items-center gap-1">
-        <Icon icon={statIcon(stat, deceased)} size="footnote" tone="secondary" />
-        <Text variant="footnote" className="flex-1 text-muted-foreground" numberOfLines={1}>
-          {stat.label}
-        </Text>
-        {confirmed ? <ConfirmedMark /> : null}
-        {onPress ? <Chevron /> : null}
+    <View className="flex-1 bg-card p-3" style={{ borderRadius: RADIUS.tile, borderCurve: "continuous" }}>
+      <View className="flex-row items-center justify-between">
+        <Icon icon={statIcon(stat, deceased)} size="subhead" tone="secondary" />
+        {confirmed ? <Icon icon={BadgeCheck} size="subhead" tone="tint" /> : null}
       </View>
-      <Text variant="stat" numberOfLines={stacked ? undefined : 2}>
-        {stat.value}
-      </Text>
-      {stat.detail ? (
-        <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
-          {stat.detail}
+      <View className="mt-2.5 flex-row items-baseline gap-0.5">
+        <Text variant="stat" className="shrink" numberOfLines={stacked ? undefined : 1} adjustsFontSizeToFit={!stacked}>
+          {stat.value}
         </Text>
-      ) : null}
+        {stat.unit ? <Text className="text-footnote font-semibold">{stat.unit}</Text> : null}
+      </View>
+      <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : 1}>
+        {label}
+      </Text>
     </View>
   );
-  const style = stacked
-    ? undefined
-    : wrapped && stat.key === "place"
-      ? { flexBasis: "100%" as const }
-      : { flex: STAT_FLEX[stat.key] };
+  const style = stacked ? undefined : { flex: 1 };
   if (!onPress) {
     return (
       <View style={style} accessible accessibilityLabel={spoken}>
@@ -121,41 +134,24 @@ function StatBlock({
     );
   }
   return (
-    <PressScale
-      onPress={onPress}
-      role="link"
-      accessibilityLabel={`${stat.label}，${stat.value}，参观指南`}
-      containerStyle={style}
-      style={{ flex: 1 }}
-    >
+    <PressScale onPress={onPress} role="link" accessibilityLabel={spoken} containerStyle={style} style={{ flex: 1 }}>
       {body}
     </PressScale>
   );
 }
 
-/** Sex, age and where it lives as three tiles, the way Health leads with its summary. */
 function Stats({ profile }: { profile: Profile }) {
   const stacked = useStacked();
-  const wrapped = useWindowDimensions().width < STAT_ROW_MIN_WIDTH;
   const visit = profile.visit;
-  const fact = (label: string) => profile.facts.find((item) => item.label === label)?.value;
-  const born = fact("出生");
-  const birthPlace = fact("出生地");
-  const birthLine =
-    born && born !== UNKNOWN
-      ? `${born}出生${birthPlace && birthPlace !== UNKNOWN ? `于${birthPlace}` : ""}`
-      : null;
   return (
-    <View className="gap-2">
-    <View className={stacked ? "gap-2" : wrapped ? "flex-row flex-wrap gap-2" : "flex-row gap-2"}>
+    <View className={stacked ? "gap-2.5" : "flex-row gap-2.5"}>
       {profile.stats.map((stat) => (
-        <StatBlock
+        <StatTile
           key={stat.key}
           stat={stat}
-          deceased={profile.deceased}
-          birthConfirmed={profile.certainty.birth === "confirmed"}
           stacked={stacked}
-          wrapped={wrapped}
+          deceased={profile.deceased}
+          confirmed={stat.key === "birth" && profile.certainty.birth === "confirmed"}
           onPress={
             stat.key === "place" && visit
               ? () => router.push({ pathname: "/institutions/[slug]", params: { slug: visit.institutionSlug } })
@@ -164,105 +160,154 @@ function Stats({ profile }: { profile: Profile }) {
         />
       ))}
     </View>
-      {birthLine ? (
-        <View className="px-1">
-          <IconRow icon={MapPin} text={birthLine} />
-        </View>
-      ) : null}
+  );
+}
+
+const FACE = 26;
+const FACE_RING = 2;
+
+/** A parent's face on the 父母 row: the photo, or the first character, ringed in the card colour. */
+function Face({ member, first }: { member: FamilyMember; first: boolean }) {
+  return (
+    <View
+      className={cn("items-center justify-center overflow-hidden border-card bg-highlight-soft", !first && "-ml-2.5")}
+      style={{ width: FACE, height: FACE, borderRadius: FACE / 2, borderWidth: FACE_RING }}
+    >
+      {member.photoUrl ? (
+        <Image source={member.photoUrl} style={{ width: FACE, height: FACE }} contentFit="cover" accessible={false} />
+      ) : (
+        <Text className="text-footnote font-bold text-primary">{member.name.slice(0, 1)}</Text>
+      )}
     </View>
   );
 }
 
-/** Avatar 44 inside a 52pt capsule with 4pt padding: the circles share a centre. */
-const AVATAR = 44;
-const CHIP_PAD = 4;
-
-function FamilyChip({ member }: { member: FamilyMember }) {
+/** 父母 and the latest move, as two rows; each opens the page that tells the rest. */
+function KeyRows({ profile }: { profile: Profile }) {
+  const parents = profile.family ? [profile.family.mother, profile.family.father].filter((m): m is FamilyMember => m !== null) : [];
+  const move = profile.move;
+  if (parents.length === 0 && !move) return null;
   return (
-    <PressScale onPress={() => openPanda(member.slug)} role="link" accessibilityLabel={`${member.name}，${member.relation}`}>
-      <View
-        className="flex-row items-center gap-2.5 bg-card"
-        style={{ padding: CHIP_PAD, paddingRight: 16, borderRadius: (AVATAR + CHIP_PAD * 2) / 2, borderCurve: "continuous" }}
-      >
-        <View
-          className="items-center justify-center overflow-hidden bg-muted"
-          style={{ width: AVATAR, height: AVATAR, borderRadius: AVATAR / 2 }}
-        >
-          {member.photoUrl ? (
-            <Image source={member.photoUrl} style={{ width: AVATAR, height: AVATAR }} contentFit="cover" accessible={false} />
-          ) : (
-            <Text variant="body" className="font-semibold text-muted-foreground">
-              {member.name.slice(0, 1)}
-            </Text>
-          )}
-          <PhotoOutline radius={AVATAR / 2} />
-        </View>
-        <View>
-          <Text variant="body" className="font-semibold" numberOfLines={1}>
-            {member.name}
-          </Text>
-          <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
-            {member.relation}
-          </Text>
-        </View>
-      </View>
-    </PressScale>
-  );
-}
-
-function Family({ profile }: { profile: Profile }) {
-  const relatives = profile.family ? relativesOf(profile.family) : [];
-  const parents = profile.facts.find((fact) => fact.label === "父母");
-  if (relatives.length === 0) {
-    return (
-      <ListSection title="家族" titleIcon={Users}>
-        <ListCell icon={Users} label="父母" meta={parents?.value ?? UNKNOWN} last />
-      </ListSection>
-    );
-  }
-  return (
-    <View className="gap-1.5">
-      <SectionTitle title="家族" icon={Users} />
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        className="-mx-4"
-        contentContainerClassName="gap-2 px-4 pb-1.5"
-      >
-        {relatives.map((member) => (
-          <FamilyChip key={member.id} member={member} />
-        ))}
-      </ScrollView>
-      <ListSection>
-        {/* 查关系 now opens from the family, where the tree it starts from is on screen. */}
-        <ListCell icon={Network} label="查看家族" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} last />
-      </ListSection>
-    </View>
-  );
-}
-
-/** Where it lived before. Where it lives now is the 所在地 tile, which opens the institution. */
-function PlacesLived({ profile }: { profile: Profile }) {
-  const past = profile.placesLived.filter((place) => !place.current);
-  if (past.length === 0) return null;
-  return (
-    <ListSection title={profile.deceased ? "生活过的地方" : "以前住过"} titleIcon={House}>
-      {past.map((place, index) => (
+    <ListSection>
+      {parents.length > 0 ? (
         <ListCell
-          key={`${place.place}-${place.years}`}
-          label={place.place}
-          meta={place.years || undefined}
-          last={index === past.length - 1}
+          icon={Users}
+          label={parents.map((member) => member.name).join(" · ")}
+          accessibilityLabel={`父母，${parents.map((member) => `${member.relation}${member.name}`).join("，")}`}
+          trailing={
+            <View className="flex-row" accessible={false}>
+              {parents.map((member, index) => (
+                <Face key={member.id} member={member} first={index === 0} />
+              ))}
+            </View>
+          }
+          href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }}
+          last={!move}
         />
-      ))}
+      ) : null}
+      {move ? (
+        <ListCell
+          icon={Plane}
+          label={`${move.from} → ${move.to}`}
+          accessibilityLabel={`${move.year} 年从${move.from}到${move.to}`}
+          meta={move.year}
+          href={{ pathname: "/pandas/[slug]/timeline", params: { slug: profile.slug } }}
+          last
+        />
+      ) : null}
     </ListSection>
   );
 }
 
-/**
- * 那年今天 on the panda's own page; for a panda that has died it is 纪念, and quiet: no countdown, no
- * celebration, just what happened on this day, with where it is written down.
- */
+function timelineItems(profile: Profile): TimelineItem[] {
+  return [...profile.events]
+    .reverse()
+    .map((event) => ({ key: event.id, date: event.date, title: event.text, icon: KIND_ICON[event.kind] }));
+}
+
+/** The latest few events in a card, newest first. */
+function Recent({ profile }: { profile: Profile }) {
+  const items = timelineItems(profile).slice(0, 3);
+  if (items.length === 0) return null;
+  return (
+    <View className="gap-2.5 bg-card px-4 py-3.5" style={{ borderRadius: RADIUS.tile, borderCurve: "continuous" }}>
+      <Pressable
+        role="link"
+        accessibilityLabel="最近，看时间线"
+        onPress={() => router.push({ pathname: "/pandas/[slug]/timeline", params: { slug: profile.slug } })}
+        className="flex-row items-center justify-between"
+      >
+        <Text variant="headline">最近</Text>
+        <Icon icon={History} size="subhead" tone="tertiary" />
+      </Pressable>
+      <Timeline items={items} />
+    </View>
+  );
+}
+
+function FamilyList({ profile }: { profile: Profile }) {
+  const relatives = profile.family ? relativesOf(profile.family) : [];
+  return (
+    <ListSection>
+      {relatives.map((member) => (
+        <ListCell
+          key={member.id}
+          label={member.name}
+          meta={member.relation}
+          leading={<Face member={member} first />}
+          onPress={() => openPanda(member.slug)}
+          role="link"
+        />
+      ))}
+      <ListCell icon={Network} label="家族树" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} last />
+    </ListSection>
+  );
+}
+
+const GRID_GAP = 2;
+
+function PhotoGrid({ profile }: { profile: Profile }) {
+  const { width } = useWindowDimensions();
+  const size = Math.floor((width - 32 - GRID_GAP * 2) / 3);
+  const open = () => router.push({ pathname: "/pandas/[slug]/photos", params: { slug: profile.slug } });
+  if (profile.photos.length === 0) {
+    return (
+      <ListSection>
+        <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
+      </ListSection>
+    );
+  }
+  return (
+    <View className="flex-row flex-wrap overflow-hidden" style={{ gap: GRID_GAP, borderRadius: RADIUS.tile }}>
+      {profile.photos.slice(0, 12).map((photo, index) => (
+        <Pressable key={photo.id} onPress={open} role="link" accessibilityLabel={`照片 ${index + 1}`}>
+          <Image source={photo.url} style={{ width: size, height: size }} contentFit="cover" accessible={false} />
+        </Pressable>
+      ))}
+    </View>
+  );
+}
+
+function EventsList({ profile }: { profile: Profile }) {
+  const items = timelineItems(profile);
+  const timeline = { pathname: "/pandas/[slug]/timeline" as const, params: { slug: profile.slug } };
+  return (
+    <View className="gap-3">
+      {items.length > 0 ? (
+        <View className="bg-card px-4 py-3.5" style={{ borderRadius: RADIUS.tile, borderCurve: "continuous" }}>
+          <Timeline items={items} />
+        </View>
+      ) : null}
+      <ListSection>
+        <ListCell icon={History} label="时间线" href={timeline} last={items.length > 0} />
+        {items.length === 0 ? (
+          <ListCell label="知道它的经历？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
+        ) : null}
+      </ListSection>
+    </View>
+  );
+}
+
 function Memories({ profile }: { profile: Profile }) {
   const sources = new Map(profile.sources.map((source) => [source.id, source]));
   // 满月 and 满百天 are 里程碑, and go with its switch.
@@ -280,38 +325,6 @@ function Memories({ profile }: { profile: Profile }) {
           last={index === memories.length - 1}
         />
       ))}
-    </ListSection>
-  );
-}
-
-function Events({ profile }: { profile: Profile }) {
-  // Newest first, the way a feed reads.
-  const events = [...profile.events].reverse();
-  // The whole life, oldest first and with a source on each line, is one tap away under the latest news.
-  const timeline = (
-    <ListCell
-      label="看时间线"
-      accessibilityHint="一生的大事按年排好，附上出处"
-      href={{ pathname: "/pandas/[slug]/timeline", params: { slug: profile.slug } }}
-      last={events.length > 0}
-    />
-  );
-  return (
-    <ListSection title="动态" titleIcon={History}>
-      {events.length === 0 ? (
-        <>
-          <ListCell label={UNKNOWN} />
-          {timeline}
-          <ListCell label="知道它的经历？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
-        </>
-      ) : (
-        <>
-          {events.map((event) => (
-            <ListCell key={event.id} label={event.text} meta={event.date} lines={3} />
-          ))}
-          {timeline}
-        </>
-      )}
     </ListSection>
   );
 }
@@ -354,10 +367,40 @@ function NoPhoto({ profile }: { profile: Profile }) {
   );
 }
 
+type Tab = "overview" | "family" | "photos" | "events";
+const TABS: { value: Tab; label: string }[] = [
+  { value: "overview", label: "概况" },
+  { value: "family", label: "家族" },
+  { value: "photos", label: "照片" },
+  { value: "events", label: "动态" },
+];
+
+/** Alive and confirmed: a solid dot with a soft ring. Still being checked: the hollow dot. */
+function LifeDot({ profile }: { profile: Profile }) {
+  if (profile.deceased || !profile.certainty.life) return null;
+  if (profile.certainty.life === "pending") return <PendingDot />;
+  const size = component.statusDot + 2;
+  return (
+    <View
+      aria-hidden
+      accessible={false}
+      className="rounded-pill border-highlight-soft bg-graphic"
+      style={{ width: size + 6, height: size + 6, borderWidth: 3 }}
+    />
+  );
+}
+
+function lifeWords(profile: Profile) {
+  if (profile.deceased || !profile.certainty.life) return "";
+  return profile.certainty.life === "pending" ? "，在世，待核实" : "，在世";
+}
+
 export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const { data: profile, isError: failed, refetch } = useQuery(profileQueryOptions(slug));
   const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
+  const [tab, setTab] = useState<Tab>("overview");
+  const page = String(useCSSVariable("--color-background"));
 
   if (!profile) {
     return (
@@ -370,12 +413,13 @@ export default function ProfileScreen() {
         ) : (
           <View className="gap-4" accessibilityLabel="正在加载资料">
             <Skeleton className="h-96 w-full rounded-none" />
-            <View className="gap-3 px-4">
+            <View className="gap-4 px-4">
               <Skeleton className="h-10 w-32" />
-              <View className="flex-row gap-2">
-                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.sex }} />
-                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.age }} />
-                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.place }} />
+              <Skeleton className="h-12 w-full rounded-pill" />
+              <View className="flex-row gap-2.5">
+                {[0, 1, 2].map((key) => (
+                  <Skeleton key={key} className="h-24 flex-1 rounded-tile" />
+                ))}
               </View>
             </View>
           </View>
@@ -385,12 +429,21 @@ export default function ProfileScreen() {
   }
 
   const cover = profile.photos[0];
+  const share = () => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } });
+  const sexIcon = profile.sex === "male" ? Mars : profile.sex === "female" ? Venus : null;
   return (
     <View className="flex-1 bg-background">
       <HeroHeader
         title={profile.name}
         pastHero={pastHero}
-        onShare={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })}
+        menu={[
+          {
+            label: "加入合集",
+            icon: FolderHeart,
+            onPress: () => router.push({ pathname: "/pandas/[slug]/collect", params: { slug: profile.slug } }),
+          },
+          { label: "资料有误", icon: Flag, onPress: () => correct(profile.slug) },
+        ]}
       />
       <Animated.ScrollView
         className="flex-1"
@@ -406,48 +459,60 @@ export default function ProfileScreen() {
             scrollY={scrollY}
             label={`查看${profile.name}的照片，共 ${profile.photos.length} 张`}
             onPress={() => router.push({ pathname: "/pandas/[slug]/photos", params: { slug: profile.slug } })}
+            overlay={<HeroFade id={`hero-${profile.id}`} page={page} />}
           />
         ) : (
           <NoPhoto profile={profile} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-4 pt-5">
-          <View className="gap-3">
-            <View
-              className="flex-row items-center gap-stack-tight"
-            >
-              {/* The display variant is the page heading; the hollow dot's words ride on it for screen readers. */}
-              <Text
-                variant="display"
-                className="shrink"
-                accessibilityLabel={`${profile.name}${!profile.deceased && profile.certainty.life === "pending" ? "，在世，待核实" : ""}`}
-              >
+        <Animated.View entering={PAGE_ENTER} className="gap-4 px-4" style={cover ? { marginTop: -OVERLAP } : undefined}>
+          <View>
+            <View className="flex-row items-center gap-2">
+              {/* The display variant is the page heading; the dot's words ride on it for screen readers. */}
+              <Text variant="display" className="shrink" accessibilityLabel={`${profile.name}${lifeWords(profile)}`}>
                 {profile.name}
               </Text>
-              {!profile.deceased && profile.certainty.life === "pending" ? <PendingDot /> : null}
+              <LifeDot profile={profile} />
             </View>
-            {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
+            {profile.nameEn || sexIcon ? (
+              <View
+                className="flex-row items-center gap-1.5"
+                accessible
+                accessibilityLabel={`${profile.nameEn ?? ""}${profile.sex === "male" ? "，雄性" : profile.sex === "female" ? "，雌性" : ""}`}
+              >
+                {profile.nameEn ? (
+                  <Text variant="subheadline" className="text-muted-foreground">
+                    {profile.nameEn}
+                  </Text>
+                ) : null}
+                {sexIcon ? <Icon icon={sexIcon} size="footnote" tone="tint" strokeWidth={2.4} /> : null}
+              </View>
+            ) : null}
           </View>
+          <PandaActions pandaId={profile.id} name={profile.name} onShare={share} deceased={profile.deceased} />
           <Stats profile={profile} />
-          <Family profile={profile} />
-          <PlacesLived profile={profile} />
-          <CompareRows slug={profile.slug} />
-          {profile.memories.length > 0 ? <Memories profile={profile} /> : null}
-          <Events profile={profile} />
-          {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
-          <ListSection>
-            <ListCell
-              icon={FolderHeart}
-              label="加入合集"
-              tone="tint"
-              onPress={() => router.push({ pathname: "/pandas/[slug]/collect", params: { slug: profile.slug } })}
-            />
-            <ListCell icon={Flag} label="资料有误？纠错" tone="tint" onPress={() => correct(profile.slug)} last />
-          </ListSection>
-          {cover?.credit ? (
-            <Text variant="footnote" className="px-4 text-muted-foreground">
-              {`封面照片：${cover.credit}`}
-            </Text>
-          ) : null}
+          <View className="pt-0.5">
+            <Segmented value={tab} options={TABS} onChange={setTab} accessibilityLabel="资料分区" />
+          </View>
+          {tab === "overview" ? (
+            <View className="gap-3">
+              <KeyRows profile={profile} />
+              <Recent profile={profile} />
+              <CompareRows slug={profile.slug} />
+              {profile.memories.length > 0 ? <Memories profile={profile} /> : null}
+              {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
+              {cover?.credit ? (
+                <Text variant="footnote" className="px-4 text-muted-foreground">
+                  {`封面照片：${cover.credit}`}
+                </Text>
+              ) : null}
+            </View>
+          ) : tab === "family" ? (
+            <FamilyList profile={profile} />
+          ) : tab === "photos" ? (
+            <PhotoGrid profile={profile} />
+          ) : (
+            <EventsList profile={profile} />
+          )}
         </Animated.View>
       </Animated.ScrollView>
     </View>

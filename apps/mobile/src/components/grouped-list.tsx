@@ -4,7 +4,7 @@ import { Pressable, useWindowDimensions, View } from "react-native";
 import Animated, { useReducedMotion } from "react-native-reanimated";
 
 import { Icon } from "@/components/icon";
-import { ChevronRight, type LucideIcon } from "@/components/icons";
+import { Check, ChevronRight, type LucideIcon } from "@/components/icons";
 import { Text } from "@/components/ui/text";
 import { component, cubicBezierCss, semantic } from "@/design/tokens";
 import { HAIRLINE } from "@/lib/surface";
@@ -112,6 +112,8 @@ export function ListCell({
   tone = "label",
   lines,
   chevron = true,
+  checked,
+  trailing,
 }: {
   label: string;
   detail?: string;
@@ -132,6 +134,10 @@ export function ListCell({
   lines?: number;
   /** The disclosure chevron on a tappable row. Off for a row that chooses rather than opens (a picker). */
   chevron?: boolean;
+  /** A picker row: a trailing checkmark on the chosen one, read as selected. */
+  checked?: boolean;
+  /** Drawn before the meta and chevron: the parents' faces on the 父母 row. */
+  trailing?: ReactNode;
 }) {
   const stacked = useStacked();
   const open = href ? () => router.push(href) : onPress;
@@ -154,6 +160,7 @@ export function ListCell({
         role={open ? role : undefined}
         accessibilityLabel={accessibilityLabel ?? (meta ? `${label}，${meta}` : label)}
         accessibilityHint={accessibilityHint}
+        accessibilityState={checked === undefined ? undefined : { selected: checked }}
         className="min-h-11 flex-row items-center gap-3 px-4 py-3 active:bg-accent"
       >
         {glyph ? <GlyphSquare icon={glyph} /> : icon ? <Icon icon={icon} tone={tone === "tint" ? "tint" : "secondary"} /> : leading}
@@ -172,8 +179,10 @@ export function ListCell({
           ) : null}
           {stacked ? metaText : null}
         </View>
+        {trailing}
         {stacked ? null : metaText}
-        {open && chevron && tone === "label" ? <Chevron /> : null}
+        {checked ? <Icon icon={Check} size="body" tone="tint" strokeWidth={2.5} /> : null}
+        {open && chevron && checked === undefined && tone === "label" ? <Chevron /> : null}
       </Pressable>
       {last ? null : (
         <View
@@ -195,35 +204,46 @@ export function SwitchRow({
   onChange,
   glyph,
   accessibilityLabel,
+  separator = false,
 }: {
   label: string;
   value: boolean;
   onChange: (value: boolean) => void;
+  /** A hairline under the row, inset as ListCell's, when another row follows in the group. */
+  separator?: boolean;
   glyph?: LucideIcon;
   accessibilityLabel?: string;
 }) {
   // At accessibility sizes or in a narrow window the switch moves under its label, as a value does.
   const stacked = useStacked();
   return (
-    <Pressable
-      role="switch"
-      aria-checked={value}
-      accessibilityState={{ checked: value }}
-      accessibilityLabel={accessibilityLabel ?? label}
-      onPress={() => onChange(!value)}
-      className={cn(
-        "min-h-11 gap-row px-inset py-stack-tight active:bg-accent",
-        stacked ? "items-start" : "flex-row items-center",
-      )}
-    >
-      <View className={cn("flex-row items-center gap-row", stacked ? "self-stretch" : "min-w-0 flex-1")}>
-        {glyph ? <GlyphSquare icon={glyph} /> : null}
-        <Text variant="body" className="min-w-0 flex-1">
-          {label}
-        </Text>
-      </View>
-      <SwitchTrack on={value} />
-    </Pressable>
+    <View>
+      <Pressable
+        role="switch"
+        aria-checked={value}
+        accessibilityState={{ checked: value }}
+        accessibilityLabel={accessibilityLabel ?? label}
+        onPress={() => onChange(!value)}
+        className={cn(
+          "min-h-11 gap-row px-inset py-stack-tight active:bg-accent",
+          stacked ? "items-start" : "flex-row items-center",
+        )}
+      >
+        <View className={cn("flex-row items-center gap-row", stacked ? "self-stretch" : "min-w-0 flex-1")}>
+          {glyph ? <GlyphSquare icon={glyph} /> : null}
+          <Text variant="body" className="min-w-0 flex-1">
+            {label}
+          </Text>
+        </View>
+        <SwitchTrack on={value} />
+      </Pressable>
+      {separator ? (
+        <View
+          className={cn("bg-border", !glyph && "ml-4")}
+          style={[{ height: HAIRLINE }, glyph ? GLYPH_INSET : null]}
+        />
+      ) : null}
+    </View>
   );
 }
 
