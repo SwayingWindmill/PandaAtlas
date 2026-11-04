@@ -50,7 +50,7 @@ function Section({ title, note, children }: { title: string; note?: string; chil
 
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <View className={`gap-row rounded-tile bg-card p-inset ${className ?? ""}`} style={{ borderCurve: "continuous" }}>
+    <View className={`gap-row rounded-group bg-card p-inset ${className ?? ""}`} style={{ borderCurve: "continuous" }}>
       {children}
     </View>
   );

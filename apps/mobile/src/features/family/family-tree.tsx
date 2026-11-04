@@ -189,7 +189,7 @@ export function FamilyTree({ family, previousFamily, ...actions }: CardActions &
   }, [centreOnFocus]);
 
   return (
-    <Animated.View testID="family-tree-canvas" entering={previousFamily ? undefined : FadeIn.duration(250).reduceMotion(ReduceMotion.System)} className="overflow-hidden rounded-tile bg-card" onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
+    <Animated.View testID="family-tree-canvas" entering={previousFamily ? undefined : FadeIn.duration(250).reduceMotion(ReduceMotion.System)} className="overflow-hidden rounded-group bg-card" onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
       {layout ? (
         // A family wider than the screen shows its scroll bar, so relatives past the edge read as more to see.
         <ScrollView ref={scroll} horizontal showsHorizontalScrollIndicator={layout.width > width} onContentSizeChange={centreOnFocus}>

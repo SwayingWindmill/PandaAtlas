@@ -5,7 +5,7 @@ import Animated from "react-native-reanimated";
 
 import { ListCell, ListSection, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Check, Eye, MapPin, ScanFace } from "@/components/icons";
+import { Eye, MapPin, ScanFace } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PandaThumb } from "@/components/panda-thumb";
@@ -37,7 +37,7 @@ import { LockedPhotoTile, StoryPhotoTile } from "@/features/today/story-photo-ti
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { loadVisits } from "@/features/visits/visits";
 import { authedApi } from "@/lib/api";
-import { RADIUS } from "@/lib/surface";
+import { RADIUS, pageColumn } from "@/lib/surface";
 
 const GAP = 12;
 /** Tiles the grid shows before 显示全部: three rows of four. */
@@ -124,7 +124,7 @@ function Lit({ met, catalog }: { met: number; catalog: number }) {
   const percent = catalogPercent(met, catalog);
   return (
     <View
-      className="flex-row items-center gap-stack rounded-tile bg-card p-inset"
+      className="flex-row items-center gap-stack rounded-group bg-card p-inset"
       style={{ borderCurve: "continuous" }}
       accessible
       accessibilityLabel={`点亮 ${met} 只，共收录 ${catalog.toLocaleString("zh-CN")} 只，${percent}%`}
@@ -160,7 +160,7 @@ function Stats({ book }: { book: Book }) {
 function useTiles() {
   const { width } = useWindowDimensions();
   const columns = useStacked() ? 3 : 4;
-  const column = Math.min(width, 700) - 32;
+  const column = pageColumn(width);
   return { columns, tile: Math.floor((column - GAP * (columns - 1)) / columns) };
 }
 
@@ -176,7 +176,7 @@ function MetTile({ entry, panda, detail, size }: { entry: LifeEntry; panda: Pand
       className="items-center gap-stack-tight active:opacity-70"
       style={{ width: size }}
     >
-      <PandaThumb pandaId={entry.pandaId} name={name} size={size} />
+      <PandaThumb pandaId={entry.pandaId} name={name} size={size} shape="tile" />
       <Text variant="footnote" className="font-semibold" numberOfLines={1}>
         {name}
       </Text>
@@ -199,7 +199,7 @@ function Unmet({ count, columns, size }: { count: number; columns: number; size:
         <View key={index} className="items-center gap-stack-tight" style={{ width: size }} accessible={false}>
           <View
             className="items-center justify-center bg-card"
-            style={{ width: size, height: size, borderRadius: RADIUS.control, borderCurve: "continuous" }}
+            style={{ width: size, height: size, borderRadius: RADIUS.tile, borderCurve: "continuous" }}
           >
             <Icon icon={Eye} tone="tertiary" />
           </View>
@@ -260,7 +260,6 @@ function Bases({ bases }: { bases: Group[] }) {
               icon={MapPin}
               label={group.title}
               meta={progress ?? undefined}
-              trailing={done ? <Icon icon={Check} tone="confirmed" /> : undefined}
               href={group.slug ? { pathname: "/places/[slug]", params: { slug: group.slug } } : undefined}
               accessibilityLabel={[group.title, spoken, done ? "全部认识" : null].filter(Boolean).join("，")}
               last={index === started.length - 1}
@@ -345,7 +344,7 @@ function SignedIn() {
 function useGrid() {
   const { width } = useWindowDimensions();
   const columns = useStacked() ? 2 : 3;
-  const column = Math.min(width, 700) - 32;
+  const column = pageColumn(width);
   return { columns, tile: Math.floor((column - GAP * (columns - 1)) / columns) };
 }
 

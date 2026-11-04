@@ -4,7 +4,7 @@
 
 import { addDays } from "@/features/milestones/milestones";
 
-import type { Memory } from "./on-this-day";
+import type { Memory, MemoryKind } from "./on-this-day";
 
 export type Range = "week" | "month";
 
@@ -27,10 +27,25 @@ export function sentenceOn(memory: Pick<Memory, "text">, day: string, today: str
   return memory.text.replace(/^\d+ 年前的今天，?/, "").replace(/^今天/, "");
 }
 
-/** "11月5日 周四 · 27 周年": when it falls in the range and how many years it marks. */
-export function whenLine(memory: Pick<Memory, "years" | "kind">, day: string, today: string): string {
-  const [, month, date] = day.split("-");
-  const weekday = "日一二三四五六"[new Date(`${day}T00:00:00Z`).getUTCDay()];
-  const head = day === today ? "今天" : `${Number(month)}月${Number(date)}日 周${weekday}`;
-  return memory.years > 0 && memory.kind !== "birthday" ? `${head} · ${memory.years} 周年` : head;
+/**
+ * The row's line, with who it is about: "美香回国，住进雅安碧峰峡基地", "宝力 6 岁生日", and for the fan's own
+ * records the name where the sentence says 它 ("你在史密森国家动物园见过宝力").
+ */
+export function titleOn(memory: Pick<Memory, "text" | "subject">, day: string, today: string): string {
+  const sentence = sentenceOn(memory, day, today);
+  const name = memory.subject.name;
+  if (sentence.includes("它")) return sentence.replace("它", name);
+  if (sentence.includes("这里")) return sentence.replace("这里", name);
+  return /^[\d]/.test(sentence) ? `${name} ${sentence}` : `${name}${sentence}`;
+}
+
+/** "11.05 · 1999": the day in the range and the year it happened. */
+export function datePart(memory: Pick<Memory, "date">, day: string): string {
+  return `${day.slice(5, 7)}.${day.slice(8, 10)} · ${memory.date.slice(0, 4)}`;
+}
+
+/** "27 周年" for an anniversary; nothing for a birthday, which already counts its years, or a cub's day. */
+export function yearsPart(memory: Pick<Memory, "years" | "kind">): string | null {
+  const counted: MemoryKind[] = ["home", "arrival", "seen", "recognized", "visit"];
+  return counted.includes(memory.kind) && memory.years > 0 ? `${memory.years} 周年` : null;
 }

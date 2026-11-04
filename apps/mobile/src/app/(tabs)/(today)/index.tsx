@@ -19,6 +19,7 @@ import { TodayBirthdays } from "@/features/today/today-birthdays";
 import { WeekCard } from "@/features/today/week-card";
 import { WeekHero, useWeekMemory } from "@/features/today/week-hero";
 import { useBottomClearance } from "@/lib/bottom-clearance";
+import { pageColumn } from "@/lib/surface";
 
 const STORIES = [
   { id: "daily", title: "今天是哪只熊猫？", feature: "每日一猫", href: "/daily" },
@@ -99,7 +100,7 @@ export default function TodayScreen() {
   const bottom = useBottomClearance();
   const { width, fontScale } = useWindowDimensions();
   const photos = useStoryPhotos(localToday(), STORIES.length);
-  const column = Math.min(width, 700) - 32;
+  const column = pageColumn(width);
   // The head card is a wide band, so the shortcuts and the row below show on the first screen.
   // It grows with the text size so a big title still fits. The smaller cards show about one
   // and a half at a time, so the next one peeks in.
@@ -115,7 +116,7 @@ export default function TodayScreen() {
     <ScrollView
       className="flex-1 bg-background"
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerClassName="gap-section px-4"
+      contentContainerClassName="gap-section px-gutter"
       contentContainerStyle={{ paddingTop: insets.top + 6, paddingBottom: bottom }}
     >
       {/* The column draws the title so the date can sit over it, with the avatar beside. */}
@@ -139,8 +140,8 @@ export default function TodayScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          className="-mx-4"
-          contentContainerClassName="px-4"
+          className="-mx-gutter"
+          contentContainerClassName="px-gutter"
           contentContainerStyle={{ gap: GAP }}
           snapToInterval={small + GAP}
           snapToAlignment="start"

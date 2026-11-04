@@ -137,8 +137,8 @@ function SignedOut() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            className="-mx-inset"
-            contentContainerClassName="gap-row px-inset"
+            className="-mx-gutter"
+            contentContainerClassName="gap-row px-gutter"
           >
             {strip.map((photo) => (
               <StoryPhotoTile key={photo.pandaId} photo={photo} width={STRIP_TILE} slot={`me-${photo.pandaId}`} />

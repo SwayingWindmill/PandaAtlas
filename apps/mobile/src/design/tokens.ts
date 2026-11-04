@@ -70,7 +70,8 @@ const palette = {
 /** The 4pt spacing scale. Keys follow Tailwind's numbering, so `p-4` is 16. */
 const space = { 0: 0, 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32, 10: 40 } as const;
 
-const radius = { xs: 4, sm: 8, md: 10, lg: 12, xl: 16, "2xl": 24, full: 999 } as const;
+/** sm–xl are the React Native Reusables scale; `field` and up are only reached through the roles below. */
+const radius = { xs: 4, sm: 8, md: 10, lg: 12, field: 14, xl: 16, "2xl": 20, "3xl": 24, full: 999 } as const;
 
 const duration = { instant: 100, press: 120, quick: 200, base: 280, slow: 480 } as const;
 
@@ -311,7 +312,8 @@ const spacing = {
   hairGap: { value: space[1], use: "Between an icon and its label, a value and its unit." },
   stackTight: { value: space[2], use: "Between lines that belong together (title and footnote)." },
   row: { value: space[3], use: "A row's vertical padding; the gap between tiles in a grid or scroller." },
-  inset: { value: space[4], use: "The page's side inset and a card's padding." },
+  gutter: { value: space[5], use: "The page's side margin: the column's edge on every screen (v4 mockups)." },
+  inset: { value: space[4], use: "A card's and a grouped row's padding." },
   stack: { value: space[5], use: "Between blocks inside a section." },
   sectionTight: { value: space[6], use: "Between a section header and the previous group on a dense screen." },
   section: { value: space[8], use: "Between sections on a page." },
@@ -320,10 +322,10 @@ const spacing = {
 
 /** Radius roles. Nested shapes are concentric: inner = outer − padding (see `concentric`). */
 const radii = {
-  card: { value: radius["2xl"], use: "The featured 今天 story card." },
-  tile: { value: radius.xl, use: "Story cards in the scroller, resident tiles, stat blocks, quiz photos." },
+  card: { value: radius["3xl"], use: "The featured 今天 story card and the week hero." },
+  tile: { value: radius.xl, use: "Photos: story cards in the scroller, explore cards, resident tiles, 图鉴 grid tiles, quiz photos." },
   control: { value: radius.lg, use: "Search field, segmented control, small photo in a row." },
-  group: { value: radius.md, use: "Inset grouped lists." },
+  group: { value: radius["2xl"], use: "Grey surfaces: inset grouped lists, stat tiles and cards on the page (v4 mockups)." },
   pill: { value: radius.full, use: "Buttons, capsules and chips. Height / 2 in practice." },
 } as const;
 
@@ -363,7 +365,7 @@ export const component = {
   hitTarget: 44,
   button: { height: 48, paddingX: space[6], radius: radius.full },
   listRow: { minHeight: 44, paddingX: space[4], paddingY: space[3], iconInset: 50 },
-  searchField: { height: 44, radius: radius.md },
+  searchField: { height: 44, radius: radius.field },
   glassButton: { size: 44 },
   familyChip: { height: 52, padding: space[1], avatar: 44 },
   /** 设置 rows: the bare glyph centred in a slot, so labels line up. No tile behind it. */

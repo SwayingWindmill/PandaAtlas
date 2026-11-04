@@ -18,6 +18,7 @@ import { localToday } from "@/features/engagement/seen";
 import { ExploreCard } from "@/features/pandas/explore-card";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { useBottomClearance } from "@/lib/bottom-clearance";
+import { pageColumn } from "@/lib/surface";
 
 const GAP = 12;
 
@@ -49,7 +50,7 @@ export default function FindScreen() {
   const { width } = useWindowDimensions();
   const bottom = useBottomClearance();
   const photos = useStoryPhotos(localToday(), TODAY_STORIES + 4).slice(TODAY_STORIES);
-  const card = Math.round(Math.min((Math.min(width, 700) - 32) * 0.42, 200));
+  const card = Math.round(Math.min(pageColumn(width) * 0.42, 200));
   const { data: pandas, isError: failed, refetch } = useQuery(pandaIndexQueryOptions());
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
@@ -67,10 +68,10 @@ export default function FindScreen() {
   const browsing = !deferredQuery.trim() && area === "全部";
   const explore = [
     { id: "map", title: "熊猫在哪里", icon: MapPin, href: "/map" as const },
-    ...(hasInstitutions ? [{ id: "institutions", title: "基地和动物园", icon: House, href: "/institutions" as const }] : []),
-    { id: "relationship", title: "查两只熊猫的关系", icon: Network, href: "/relationship" as const },
+    ...(hasInstitutions ? [{ id: "institutions", title: "场馆", spoken: "基地和动物园", icon: House, href: "/institutions" as const }] : []),
+    { id: "relationship", title: "查关系", spoken: "查两只熊猫的关系", icon: Network, href: "/relationship" as const },
     // The user picks both pandas on /compare; nothing here proposes a pair.
-    { id: "compare", title: "比一比两只熊猫", icon: Columns, href: "/compare" as const },
+    { id: "compare", title: "比一比", spoken: "比一比两只熊猫", icon: Columns, href: "/compare" as const },
   ];
 
   const searchBar = SYSTEM_SEARCH ? (
@@ -99,7 +100,7 @@ export default function FindScreen() {
           )}
           className="flex-1 bg-background"
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerClassName="px-4"
+          contentContainerClassName="px-gutter"
           contentContainerStyle={{ paddingBottom: bottom }}
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
@@ -111,8 +112,8 @@ export default function FindScreen() {
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
-                  className="-mx-4"
-                  contentContainerClassName="gap-stack-tight px-4"
+                  className="-mx-gutter"
+                  contentContainerClassName="gap-stack-tight px-gutter"
                   accessibilityLabel="按地方看"
                 >
                   {["全部", ...chips].map((chip) => (
@@ -125,8 +126,8 @@ export default function FindScreen() {
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
-                  className="-mx-4"
-                  contentContainerClassName="px-4"
+                  className="-mx-gutter"
+                  contentContainerClassName="px-gutter"
                   contentContainerStyle={{ gap: GAP }}
                   snapToInterval={card + GAP}
                   snapToAlignment="start"
@@ -137,6 +138,7 @@ export default function FindScreen() {
                       key={entry.id}
                       id={entry.id}
                       title={entry.title}
+                      spoken={"spoken" in entry ? entry.spoken : undefined}
                       icon={entry.icon}
                       href={entry.href}
                       photo={photos[index]}
@@ -178,14 +180,14 @@ export default function FindScreen() {
         contentContainerStyle={{ paddingBottom: bottom }}
       >
         {Platform.OS === "web" ? (
-          <Text variant="display" className="px-4">
+          <Text variant="display" className="px-gutter">
             找熊猫
           </Text>
         ) : null}
         {failed ? (
-          <LoadFailed message="熊猫列表暂时打不开。" onRetry={() => void refetch()} className="mx-4" />
+          <LoadFailed message="熊猫列表暂时打不开。" onRetry={() => void refetch()} className="mx-gutter" />
         ) : (
-          <View className="gap-row px-4 pt-row" accessibilityLabel="正在加载熊猫列表">
+          <View className="gap-row px-gutter pt-row" accessibilityLabel="正在加载熊猫列表">
             {SYSTEM_SEARCH ? null : <Skeleton className="h-11 rounded-control" />}
             {[0, 1, 2, 3, 4, 5].map((key) => (
               <View key={key} className="flex-row items-center gap-row">

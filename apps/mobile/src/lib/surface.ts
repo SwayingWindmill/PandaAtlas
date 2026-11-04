@@ -11,11 +11,19 @@ export { concentric } from "@/design/tokens";
  */
 export const HAIRLINE = Platform.OS === "web" ? 0.5 : StyleSheet.hairlineWidth;
 
+/** The page's side margin (20pt in the v4 mockups), and the column it leaves on a window up to 700pt. */
+export const GUTTER = semantic.spacing.gutter.value;
+
+export function pageColumn(width: number): number {
+  return Math.min(width, 700) - GUTTER * 2;
+}
+
 /**
  * Corner radii, nested concentrically: an element inside a rounded surface takes the outer radius
  * minus the padding between them, so the two curves share a centre.
  *   card 24, padding 16 → inner 8       a featured 今天 card and what sits on it
- *   tile 16, padding 12 → inner 4       a stat block, a resident tile, a small 今天 card
+ *   group 20, padding 12 → inner 8      a stat tile, a grey card, an inset group
+ *   tile 16, padding 12 → inner 4       a photo tile, a small 今天 card
  *   chip = height / 2, padding 4 → avatar = chip − 4
  */
 export const RADIUS = {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { rangeDays, sentenceOn, whenLine } from "./range";
+import { datePart, rangeDays, sentenceOn, titleOn, yearsPart } from "./range";
 
 describe("rangeDays", () => {
   it("takes today and the next six days for 本周", () => {
@@ -34,10 +34,19 @@ describe("sentenceOn", () => {
   });
 });
 
-describe("whenLine", () => {
-  it("names the day and the years, but not for a birthday, which already says them", () => {
-    expect(whenLine({ years: 27, kind: "arrival" }, "2026-11-05", "2026-11-04")).toBe("11月5日 周四 · 27 周年");
-    expect(whenLine({ years: 3, kind: "home" }, "2026-11-04", "2026-11-04")).toBe("今天 · 3 周年");
-    expect(whenLine({ years: 6, kind: "birthday" }, "2026-11-08", "2026-11-04")).toBe("11月8日 周日");
+describe("titleOn", () => {
+  const panda = (name: string) => ({ kind: "panda" as const, key: name, id: name, slug: name, name });
+  it("says who the memory is about", () => {
+    expect(titleOn({ text: "3 年前的今天回国，住进雅安碧峰峡基地", subject: panda("美香") }, "2026-11-08", "2026-11-04")).toBe("美香回国，住进雅安碧峰峡基地");
+    expect(titleOn({ text: "6 岁生日", subject: panda("宝力") }, "2026-11-08", "2026-11-04")).toBe("宝力 6 岁生日");
+    expect(titleOn({ text: "2 年前的今天，你在史密森国家动物园见过它", subject: panda("宝力") }, "2026-11-08", "2026-11-04")).toBe("你在史密森国家动物园见过宝力");
+  });
+});
+
+describe("datePart and yearsPart", () => {
+  it("dates the row and counts an anniversary, not a birthday", () => {
+    expect(datePart({ date: "1999-11-05" }, "2026-11-05")).toBe("11.05 · 1999");
+    expect(yearsPart({ years: 27, kind: "arrival" })).toBe("27 周年");
+    expect(yearsPart({ years: 6, kind: "birthday" })).toBeNull();
   });
 });

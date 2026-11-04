@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { memo } from "react";
 import { Pressable, View } from "react-native";
 
+import { Chevron } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import { Mars, Venus } from "@/components/icons";
 import { PhotoOutline } from "@/components/photo-outline";
@@ -19,7 +20,7 @@ export function openPanda(slug: string) {
 const SEX: Record<string, string> = { male: "雄性", female: "雌性" };
 
 /** The row's photo, and where the separator under it starts: under the name, past the photo. */
-const PHOTO = 56;
+const PHOTO = 44;
 const SEPARATOR_INSET = { marginLeft: 16 + PHOTO + 12 } as const;
 
 /**
@@ -56,7 +57,7 @@ export const PandaRow = memo(function PandaRow({
           {photo ? (
             <Image source={photo} style={{ width: PHOTO, height: PHOTO }} contentFit="cover" accessible={false} />
           ) : (
-            <Text variant="title" className="text-muted-foreground">
+            <Text variant="headline" className="text-muted-foreground">
               {item.name.slice(0, 1)}
             </Text>
           )}
@@ -64,7 +65,7 @@ export const PandaRow = memo(function PandaRow({
         </View>
         <View className="min-w-0 flex-1 gap-hair-gap">
           <View className="flex-row items-center gap-hair-gap">
-            <Text variant="headline" className="shrink" numberOfLines={1}>
+            <Text variant="body" className="shrink" numberOfLines={1}>
               {item.name}
             </Text>
             {item.sex ? <Icon icon={item.sex === "female" ? Venus : Mars} size="footnote" /> : null}
@@ -75,6 +76,7 @@ export const PandaRow = memo(function PandaRow({
             </Text>
           ) : null}
         </View>
+        <Chevron />
       </Pressable>
       {last ? null : <View className="bg-border" style={[{ height: HAIRLINE }, SEPARATOR_INSET]} />}
     </View>

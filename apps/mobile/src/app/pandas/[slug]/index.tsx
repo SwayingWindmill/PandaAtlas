@@ -104,7 +104,7 @@ function StatTile({
   const label = stat.key === "place" ? (stat.detail ?? stat.label) : stat.label;
   const spoken = `${stat.label}，${stat.value}${stat.unit ?? ""}${stat.detail ? `，${stat.detail}` : ""}${confirmed ? "，已确认" : ""}`;
   const body = (
-    <View className="flex-1 bg-card px-3 py-3" style={{ borderRadius: RADIUS.tile, borderCurve: "continuous" }}>
+    <View className="flex-1 bg-card px-3 py-3" style={{ borderRadius: RADIUS.group, borderCurve: "continuous" }}>
       <View className="flex-row items-center gap-1">
         <Icon icon={statIcon(stat, deceased)} size="footnote" tone="tint" strokeWidth={2.3} />
         <Text variant="footnote" className="shrink font-semibold text-muted-foreground" numberOfLines={stacked ? undefined : 1}>
@@ -265,7 +265,7 @@ function Experience({ profile }: { profile: Profile }) {
   if (items.length === 0) return null;
   const source = eventSource(profile);
   return (
-    <View className="gap-3 bg-card px-4 py-3.5" style={{ borderRadius: RADIUS.tile, borderCurve: "continuous" }}>
+    <View className="gap-3 bg-card px-4 py-3.5" style={{ borderRadius: RADIUS.group, borderCurve: "continuous" }}>
       <View className="flex-row items-center justify-between gap-3">
         <Pressable
           role="link"
@@ -346,7 +346,7 @@ function Tree({ family }: { family: Family }) {
   const children = treeChildren(family);
   const n = children.length;
   return (
-    <View className="bg-card px-2.5 pt-4 pb-4" style={{ borderRadius: RADIUS.tile, borderCurve: "continuous" }}>
+    <View className="bg-card px-2.5 pt-4 pb-4" style={{ borderRadius: RADIUS.group, borderCurve: "continuous" }}>
       <View className="flex-row justify-center gap-14">
         {parents.map((member) => (
           <TreeNode key={member.id} member={member} size={TREE_PARENT} />
@@ -526,7 +526,7 @@ function EventsList({ profile }: { profile: Profile }) {
   return (
     <View className="gap-3">
       {items.length > 0 ? (
-        <View className="bg-card px-4 py-3.5" style={{ borderRadius: RADIUS.tile, borderCurve: "continuous" }}>
+        <View className="bg-card px-4 py-3.5" style={{ borderRadius: RADIUS.group, borderCurve: "continuous" }}>
           <Timeline items={items} />
         </View>
       ) : null}
@@ -590,7 +590,7 @@ function Sources({ sources }: { sources: Profile["sources"] }) {
 function NoPhoto({ profile }: { profile: Profile }) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ paddingTop: insets.top + 64 }} className="px-4">
+    <View style={{ paddingTop: insets.top + 64 }} className="px-gutter">
       <ListSection>
         <ListCell label="暂无照片" />
         <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
@@ -619,13 +619,13 @@ export default function ProfileScreen() {
       <View className="flex-1 bg-background">
         <HeroHeader title="" pastHero={false} />
         {failed ? (
-          <View className="px-4 pt-28">
+          <View className="px-gutter pt-28">
             <LoadFailed message="资料暂时打不开。" onRetry={() => void refetch()} />
           </View>
         ) : (
           <View className="gap-4" accessibilityLabel="正在加载资料">
             <Skeleton className="h-96 w-full rounded-none" />
-            <View className="gap-4 px-4">
+            <View className="gap-4 px-gutter">
               <Skeleton className="h-10 w-32" />
               <Skeleton className="h-12 w-full rounded-pill" />
               <View className="flex-row gap-2.5">
@@ -677,7 +677,7 @@ export default function ProfileScreen() {
         ) : (
           <NoPhoto profile={profile} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-4 px-4" style={cover ? { marginTop: -OVERLAP } : undefined}>
+        <Animated.View entering={PAGE_ENTER} className="gap-4 px-gutter" style={cover ? { marginTop: -OVERLAP } : undefined}>
           <View>
             <View className="flex-row items-center gap-2">
               <Text variant="display" className="shrink">

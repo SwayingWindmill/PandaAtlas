@@ -263,7 +263,7 @@ function ClueTile({ clue, index, fresh }: { clue: DailyPandaClue | undefined; in
     <Animated.View
       // Only a clue unlocked on this visit arrives; the ones already open on load are just there.
       entering={fresh ? PAGE_ENTER : undefined}
-      className="min-h-24 flex-1 justify-between gap-stack-tight rounded-tile bg-card p-inset"
+      className="min-h-24 flex-1 justify-between gap-stack-tight rounded-group bg-card p-inset"
       style={{ borderCurve: "continuous" }}
       accessible
       accessibilityLabel={`${label}：${text}`}

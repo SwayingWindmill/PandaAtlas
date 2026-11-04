@@ -22,6 +22,7 @@ const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
 export function ExploreCard({
   id,
   title,
+  spoken = title,
   icon,
   photo,
   href,
@@ -29,6 +30,8 @@ export function ExploreCard({
 }: {
   id: string;
   title: string;
+  /** The full name read aloud, when the card shows a short one (场馆 for 基地和动物园). */
+  spoken?: string;
   icon: LucideIcon;
   photo: StoryPhoto | undefined;
   href: Href;
@@ -38,7 +41,7 @@ export function ExploreCard({
     <PressScale
       onPress={() => router.push(href)}
       role="button"
-      accessibilityLabel={title}
+      accessibilityLabel={spoken}
       style={{ width, aspectRatio: 4 / 5 }}
     >
       <View

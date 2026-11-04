@@ -10,6 +10,7 @@ import { loadCalendarSources } from "@/features/calendar/sources";
 import { localToday } from "@/features/engagement/seen";
 import { useMemoryPrefs } from "@/features/on-this-day/prefs";
 import { openPanda } from "@/features/pandas/panda-row";
+import { pageColumn } from "@/lib/surface";
 
 /** How many tiles the shelf shows before 看日历 takes over. */
 const SHOWN = 10;
@@ -66,7 +67,7 @@ export function TodayBirthdays() {
 
   if (!shelf || shelf.entries.length === 0) return null;
   // About two and a half tiles show, so the next one peeks in; they widen at large text sizes.
-  const tile = Math.round(Math.min((Math.min(width, 700) - 32) * 0.4, 180) * Math.min(Math.max(fontScale, 1), 1.4));
+  const tile = Math.round(Math.min(pageColumn(width) * 0.4, 180) * Math.min(Math.max(fontScale, 1), 1.4));
   const more = shelf.entries.length - SHOWN;
 
   return (
@@ -84,8 +85,8 @@ export function TodayBirthdays() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        className="-mx-inset"
-        contentContainerClassName="px-inset"
+        className="-mx-gutter"
+        contentContainerClassName="px-gutter"
         contentContainerStyle={{ gap: GAP }}
         snapToInterval={tile + GAP}
         snapToAlignment="start"

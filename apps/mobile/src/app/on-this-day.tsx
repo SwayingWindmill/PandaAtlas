@@ -11,19 +11,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PAGE_ENTER } from "@/design/motion";
 import { localToday, shortDay } from "@/features/engagement/seen";
 import { useMilestonePrefs } from "@/features/milestones/prefs";
-import { MemoryGroup, UndoLine } from "@/features/on-this-day/memory-group";
+import { UndoLine } from "@/features/on-this-day/memory-group";
+import { MemoryTimeline } from "@/features/on-this-day/memory-timeline";
 import { type Memory, type MemoryPrefs, visibleMemories } from "@/features/on-this-day/on-this-day";
 import { setMemoryPrefs, showLess, useMemoryPrefs } from "@/features/on-this-day/prefs";
-import { RANGES, type Range, rangeDays, sentenceOn, whenLine } from "@/features/on-this-day/range";
+import { RANGES, type Range, rangeDays } from "@/features/on-this-day/range";
 import { OnThisDaySettings } from "@/features/on-this-day/settings-section";
 import { useMemories } from "@/features/on-this-day/use-memories";
 import { WeekHero } from "@/features/today/week-hero";
 import { weekMemory } from "@/features/today/week-memory";
 import { tapHaptic } from "@/lib/haptics";
+import { pageColumn } from "@/lib/surface";
 
 /**
  * 那年今天: the anniversaries of 本周 or 本月, the nearest public one as the photo card that heads 今天, then
- * every memory of the range in date order, each with its day and its sources, and the switches at the foot.
+ * every memory of the range in date order on one timeline card, its sources under it, and the switches at the foot.
  * A panda that has died is remembered on its own page instead.
  */
 export default function OnThisDayScreen() {
@@ -41,7 +43,7 @@ export default function OnThisDayScreen() {
 
   if (!days || !prefs || !milestones) {
     return (
-      <Page title="那年今天" label={label}>
+      <Page title="那年今天" dateline={label}>
         <View className="gap-section">
           {control}
           {failed ? <LoadFailed message="那年今天暂时打不开。" onRetry={reload} /> : <OnThisDaySkeleton />}
@@ -60,10 +62,10 @@ export default function OnThisDayScreen() {
   const dayOf = new Map(shown.flatMap((day) => day.memories.map((memory) => [memory.key, day.date] as const)));
   const memories: Memory[] = shown.flatMap((day) => day.memories);
   const hero = weekMemory(shown, shown.length);
-  const heroHeight = Math.round((Math.min(width, 700) - 32) * (stacked ? 1.2 : 0.62));
+  const heroHeight = Math.round(pageColumn(width) * (stacked ? 1.2 : 0.62));
 
   return (
-    <Page title="那年今天" label={label}>
+    <Page title="那年今天" dateline={label}>
       <Animated.View entering={PAGE_ENTER} className="gap-section">
         {control}
         {undo ? (
@@ -76,17 +78,17 @@ export default function OnThisDayScreen() {
             }}
           />
         ) : null}
-        {hero ? <WeekHero hero={hero} height={heroHeight} /> : null}
+        {hero ? <WeekHero hero={hero} height={heroHeight} variant="page" /> : null}
         {memories.length === 0 ? (
           <ScreenState
             message={`${range === "week" ? "这一周" : "这个月剩下的日子里"}没有往年记下的事。有确切日期和出处的生日、满月、搬家和回国，会在那一天出现在这里。`}
           />
         ) : (
-          <MemoryGroup
+          <MemoryTimeline
             memories={memories}
+            dayOf={dayOf}
+            today={today}
             sources={sources}
-            when={(memory) => whenLine(memory, dayOf.get(memory.key) ?? today, today)}
-            sentence={(memory) => sentenceOn(memory, dayOf.get(memory.key) ?? today, today)}
             onLess={(memory) => change(showLess(prefs, memory.subject.key), `已少显示${memory.subject.name}。`)}
             onOff={() => change({ ...prefs, off: true }, "今天页不再显示那年今天。")}
           />
