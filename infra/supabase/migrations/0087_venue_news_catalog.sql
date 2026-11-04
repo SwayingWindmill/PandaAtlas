@@ -17,9 +17,6 @@ create table if not exists place.venue_news_catalog (
   constraint venue_news_catalog_items_array check (jsonb_typeof(document -> 'items') = 'array')
 );
 
-comment on table place.venue_news_catalog is
-  '场馆动态: neutral facts from official announcements, each with source URL and updated-at. Draft and published entries; the public API returns published entries only.';
-
 grant select on place.venue_news_catalog to zhipanda_app;
 
 commit;
