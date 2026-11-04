@@ -37,7 +37,7 @@ function DateLeaf({ date }: { date: string }) {
       accessible={false}
     >
       <Text variant="footnote" className="text-muted-foreground">{`${Number(month)}月`}</Text>
-      <Text variant="headline" className="tabular-nums">
+      <Text variant="headline" className="font-rounded tabular-nums">
         {String(Number(day))}
       </Text>
     </View>

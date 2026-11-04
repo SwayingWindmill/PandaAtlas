@@ -59,6 +59,10 @@
   --text-display--line-height: 41px;
   --text-title: 22px;
   --text-title--line-height: 28px;
+  --text-stat: 22px;
+  --text-stat--line-height: 28px;
+  --text-figure: 34px;
+  --text-figure--line-height: 41px;
   --text-headline: 17px;
   --text-headline--line-height: 24px;
   --text-body: 17px;
@@ -104,6 +108,9 @@
   --text-xl: 22px;
   --text-xl--line-height: 28px;
 
+  /* Rounded figures (`font-rounded`). This is the web stack; iOS and Android override it below. */
+  --font-rounded: ui-rounded, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", system-ui, sans-serif;
+
   /* Motion. */
   --duration-instant: 100ms;
   --duration-press: 120ms;
@@ -117,6 +124,14 @@
 
 @layer theme {
   :root {
+    /* Native Text takes one family name, no fallback list. */
+    @variant ios {
+      --font-rounded: ui-rounded;
+    }
+    @variant android {
+      --font-rounded: sans-serif;
+    }
+
     @variant light {
       --color-background: #f2f2f7; /* systemGroupedBackground */
       --color-foreground: #000000; /* label */

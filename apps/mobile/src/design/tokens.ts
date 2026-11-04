@@ -89,11 +89,25 @@ const spring = {
   snappy: { mass: 1, stiffness: 400, damping: 40 },
 } as const;
 
+/**
+ * System faces only; nothing is bundled. `system` is the platform default (SF Pro + PingFang SC on
+ * Apple, Roboto + Noto Sans CJK on Android) and is never set on native Text. `rounded` is SF Pro
+ * Rounded for figures: iOS resolves `ui-rounded` (React Native 0.78+), Safari takes the CSS keyword,
+ * and everything else falls back to the text face. Chinese inside a rounded run (岁, 天, 只) falls
+ * back to PingFang, so one figure style can carry its unit.
+ * No style sets letter spacing: SF applies its own optical tracking per size, and CJK is never tracked.
+ */
 const fontFamily = {
-  system: "-apple-system, BlinkMacSystemFont, PingFang SC, sans-serif",
+  system: '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", system-ui, sans-serif',
+  rounded: {
+    ios: "ui-rounded",
+    android: "sans-serif",
+    web: 'ui-rounded, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", system-ui, sans-serif',
+  },
 } as const;
 
-const fontWeight = { regular: "400", semibold: "600", bold: "700" } as const;
+/** PingFang SC stops at Semibold, so on iOS 700 and 800 draw Chinese at 600; SF Rounded has them all. */
+const fontWeight = { regular: "400", semibold: "600", bold: "700", heavy: "800" } as const;
 
 export const primitive = { palette, space, radius, duration, easing, spring, fontFamily, fontWeight } as const;
 
@@ -197,7 +211,9 @@ export interface TextStyle {
   size: number;
   lineHeight: number;
   weight: (typeof fontWeight)[keyof typeof fontWeight];
-  /** Letter spacing in px. 0 everywhere: CJK text is never tracked. */
+  /** `rounded` for figures (SF Pro Rounded, tabular). Default: the system text face. */
+  family?: "rounded";
+  /** Letter spacing in px. 0 everywhere: SF tracks itself by size, and CJK text is never tracked. */
   tracking: number;
   /** What the style is for, and where it must not go. */
   use: string;
@@ -215,6 +231,14 @@ const text = {
   title: {
     size: 22, lineHeight: 28, weight: fontWeight.bold, tracking: 0,
     use: "A section, a card title, a resident's name on a tile, a stat value (with tabular figures).",
+  },
+  stat: {
+    size: 22, lineHeight: 28, weight: fontWeight.bold, tracking: 0, family: "rounded",
+    use: "A value in a stat tile or a week card: a count, an age, a day number. Rounded tabular figures.",
+  },
+  figure: {
+    size: 34, lineHeight: 41, weight: fontWeight.bold, tracking: 0, family: "rounded",
+    use: "The one number a card is about: a countdown, an age, a total. Rounded tabular figures, never a sentence.",
   },
   headline: {
     size: 17, lineHeight: 24, weight: fontWeight.semibold, tracking: 0,

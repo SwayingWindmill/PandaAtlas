@@ -102,7 +102,7 @@ function MonthGrid({
                   <Text
                     variant="body"
                     className={cn(
-                      "tabular-nums",
+                      "font-rounded tabular-nums",
                       isSelected
                         ? "font-semibold text-primary-foreground"
                         : isToday
