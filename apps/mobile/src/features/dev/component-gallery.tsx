@@ -30,7 +30,7 @@ function Demo({ name, children }: { name: string; children: React.ReactNode }) {
           <Text>示例</Text>
         </Badge>
       </View>
-      <View className="gap-row rounded-tile bg-card p-inset" style={{ borderCurve: "continuous" }}>
+      <View className="gap-row rounded-group bg-card p-inset" style={{ borderCurve: "continuous" }}>
         {children}
       </View>
     </View>

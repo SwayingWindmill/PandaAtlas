@@ -60,7 +60,7 @@ import { HAIRLINE, RADIUS } from "@/lib/surface";
 
 /** Under a resident's photo while it loads, dark enough that the white name already reads. */
 const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
-const GUTTER = semantic.spacing.inset.value;
+const GUTTER = semantic.spacing.gutter.value;
 const GAP = semantic.spacing.row.value;
 
 function openMaps(name: string, { latitude, longitude }: NonNullable<Facility["coordinates"]>) {
@@ -406,7 +406,7 @@ export default function InstitutionScreen() {
       <View className="flex-1 bg-background">
         <HeroHeader title="" pastHero={false} />
         {failed ? (
-          <View className="px-4" style={{ paddingTop: insets.top + 64 }}>
+          <View className="px-gutter" style={{ paddingTop: insets.top + 64 }}>
             <LoadFailed message="这一页暂时打不开。" onRetry={retry} />
           </View>
         ) : (
@@ -450,7 +450,7 @@ export default function InstitutionScreen() {
         ) : (
           <PlateHero institution={institution} pending={hero === undefined} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-4 pt-5">
+        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-gutter pt-5">
           {institution.summary ? <Text variant="body">{institution.summary}</Text> : null}
           {institution.residents.length > 0 ? <Residents pandas={institution.residents} /> : null}
           <VisitGuide institution={institution} unseen={unseen} />

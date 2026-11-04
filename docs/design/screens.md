@@ -31,9 +31,9 @@ Status: #814 ships 1–3. Steps 4 and 5 wait for #811, #806 and #807.
 2. A search field with the placeholder 名字、拼音或场馆.
 3. Filter chips (`Chip`), single select: 全部, 在中国, 在海外, 双胞胎, 归国. A chip shows only when its filter has a real query behind it.
 4. **探索.** A horizontal scroller of photo cards, each with a bare glyph and a title on the photo: 归国熊猫, 双胞胎, 场馆, and the existing explore entries (熊猫在哪里, 查两只熊猫的关系, 比一比两只熊猫). A card shows only when its page exists.
-5. **大家常看.** One inset group of panda rows: a 56pt round photo, the name with a sex glyph, the current place as a subheadline, and a chevron. 全部 opens the full list. The mockup marks this block 示例. It ships only when there is a real popularity signal. Until then the block is the plain list, which is today's behavior, without the 大家常看 heading.
+5. **大家常看.** One inset group of panda rows: a 44pt round photo, the name with a sex glyph, the current place as a subheadline, and a chevron. 全部 opens the full list. The mockup marks this block 示例. It ships only when there is a real popularity signal. Until then the block is the plain list, which is today's behavior, without the 大家常看 heading.
 
-Status: the second batch, in progress.
+Status: built in the second batch, without 大家常看 (no popularity data) and without the 双胞胎 and 归国 chips (#808, #812). The chips are 在中国, 在海外 and each area in China.
 
 ## 图鉴 — `03-book`
 
@@ -46,7 +46,7 @@ Status: the second batch, in progress.
 
 Signed out and empty states stay as described in DESIGN.md › The Life List Rule.
 
-Status: the second batch, in progress.
+Status: built in the second batch.
 
 ## 我的 — `04-me`
 
@@ -59,7 +59,7 @@ Status: the second batch, in progress.
 
 Signed out, the profile row becomes 登录 and the stat tiles and the first group are hidden.
 
-Status: the second batch, in progress.
+Status: built in the second batch, without the 年度回顾 banner (#805). 关注的熊猫 opens `/following` and 我的纠错 opens `/contributions`.
 
 ## 设置 — `05-settings`
 
@@ -101,10 +101,10 @@ Each of these is built in its own PR. Each PR moves to palette C and the new com
 | 月度挑战 | `11-monthly-challenge` | #806 |
 | 双胞胎 | `12-twins` | #808 |
 | 双胞胎对比 | `13-twins-compare` | #808 (built on `CompareTable`) |
-| 那年今天 | `14-on-this-day` | the second batch |
+| 那年今天 | `14-on-this-day` | built in the second batch |
 | 归国熊猫 | `15-overseas-return` | #812 |
 
-The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and the large title, then a `Segmented` control with 本周 and 本月, the week hero with its photo credit under it, a `Timeline` card of the other memories in the range (each with its date and year, a bare kind glyph, N 周年 and a thumbnail), the source badges, and the 那年今天提醒 switch. The ••• 少显示 actions in The On This Day Rule stay on each row.
+The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and the large title, then a `Segmented` control with 本周 and 本月, the week hero, the memories of the range, and the 那年今天 switch. The memories are one timeline card as in the mockup (`MemoryTimeline`), with 少显示 and 关闭 on a long press and as accessibility actions, and the sources as badges under the card. The hero is the page variant of the week hero: no tag, the day it happened, what happened, and N 周年 at the right.
 
 ## Open decisions
 

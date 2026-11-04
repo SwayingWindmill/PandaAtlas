@@ -2,6 +2,8 @@ import { Image } from "expo-image";
 import { type Href, router } from "expo-router";
 import { View } from "react-native";
 
+import { Icon } from "@/components/icon";
+import type { LucideIcon } from "@/components/icons";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { Scrim } from "@/components/scrim";
@@ -13,19 +15,24 @@ import { RADIUS } from "@/lib/surface";
 const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
 
 /**
- * A landscape photo card that opens one of 找熊猫's ways in (熊猫在哪里, 基地和动物园, 查两只熊猫的
- * 关系, 比一比两只熊猫), as Music's Browse leads with large artwork: a real panda photo, the destination's name in
- * white and a footnote that names the panda pictured, so the photo never pretends to be something else.
+ * A portrait photo card that opens one of 找熊猫's ways in (熊猫在哪里, 基地和动物园, 查两只熊猫的
+ * 关系, 比一比两只熊猫), as Music's Browse leads with artwork: a real panda photo, the destination's glyph and
+ * name in white, and a footnote that names the panda pictured, so the photo never pretends to be something else.
  */
 export function ExploreCard({
   id,
   title,
+  spoken = title,
+  icon,
   photo,
   href,
   width,
 }: {
   id: string;
   title: string;
+  /** The full name read aloud, when the card shows a short one (场馆 for 基地和动物园). */
+  spoken?: string;
+  icon: LucideIcon;
   photo: StoryPhoto | undefined;
   href: Href;
   width: number;
@@ -34,8 +41,8 @@ export function ExploreCard({
     <PressScale
       onPress={() => router.push(href)}
       role="button"
-      accessibilityLabel={title}
-      style={{ width, aspectRatio: 4 / 3 }}
+      accessibilityLabel={spoken}
+      style={{ width, aspectRatio: 4 / 5 }}
     >
       <View
         style={{
@@ -57,9 +64,12 @@ export function ExploreCard({
         ) : null}
         <Scrim id={`explore-${id}`} />
         <View className="absolute right-0 bottom-0 left-0 gap-hair-gap p-inset">
-          <Text variant="title" role="none" className="text-on-media" numberOfLines={2}>
-            {title}
-          </Text>
+          <View className="flex-row items-center gap-stack-tight">
+            <Icon icon={icon} tone="onMedia" />
+            <Text variant="headline" role="none" className="shrink text-on-media" numberOfLines={2}>
+              {title}
+            </Text>
+          </View>
           {photo ? (
             <Text variant="footnote" className="text-on-media/85" numberOfLines={1}>
               {`照片：${photo.name}`}

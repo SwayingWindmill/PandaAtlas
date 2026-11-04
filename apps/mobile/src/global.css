@@ -40,13 +40,14 @@
   --radius-card: 24px;
   --radius-tile: 16px;
   --radius-control: 12px;
-  --radius-group: 10px;
+  --radius-group: 20px;
   --radius-pill: 999px;
 
   /* Spacing roles on the 4pt scale (numbers like p-4 still work: 4 × 4px). */
   --spacing-hair-gap: 4px;
   --spacing-stack-tight: 8px;
   --spacing-row: 12px;
+  --spacing-gutter: 20px;
   --spacing-inset: 16px;
   --spacing-stack: 20px;
   --spacing-section-tight: 24px;

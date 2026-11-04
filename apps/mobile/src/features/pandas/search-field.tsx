@@ -3,6 +3,7 @@ import { useCSSVariable } from "uniwind";
 
 import { Icon } from "@/components/icon";
 import { Search } from "@/components/icons";
+import { component } from "@/design/tokens";
 
 /** The round search field of 找熊猫, the 查关系 picker, 每日一猫 and the welcome picker. */
 export function SearchField({
@@ -25,8 +26,8 @@ export function SearchField({
   return (
     <View
       // min-h, not h: at large text the line is taller than 44pt and a fixed height pushed the glyph out.
-      className="min-h-11 flex-row items-center gap-2 rounded-control bg-card px-3"
-      style={{ borderCurve: "continuous" }}
+      className="min-h-11 flex-row items-center gap-2 bg-card px-3"
+      style={{ borderRadius: component.searchField.radius, borderCurve: "continuous" }}
     >
       <Icon icon={Search} size="subhead" strokeWidth={2} />
       <TextInput

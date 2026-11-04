@@ -44,11 +44,18 @@ async function loadPersonal(): Promise<PersonalRecords> {
   return { recognized: book, seen, visits };
 }
 
-/**
- * Today's memories. The panda list is needed; life events and stays are each optional, so an older data
- * release without them still tells birthdays, and a signed-out fan gets the public ones only.
- */
+/** Today's memories. */
 export async function loadMemories({ signedIn, today = localToday() }: { signedIn: boolean; today?: string }): Promise<Memory[]> {
+  const [day] = await loadMemoryDays({ signedIn, days: [today] });
+  return day!.memories;
+}
+
+/**
+ * Each day's memories, the data read once. The panda list is needed; life events and stays are each
+ * optional, so an older data release without them still tells birthdays, and a signed-out fan gets the
+ * public ones only.
+ */
+export async function loadMemoryDays({ signedIn, days }: { signedIn: boolean; days: string[] }): Promise<MemoryDay[]> {
   const [pandas, places, events, residencies, personal] = await Promise.all([
     loadPandaIndex(),
     loadPlaces().catch(() => new Map<string, Place>()),
@@ -56,7 +63,13 @@ export async function loadMemories({ signedIn, today = localToday() }: { signedI
     loadResidencies().catch(() => []),
     signedIn ? loadPersonal() : Promise.resolve(null),
   ]);
-  return memoriesOn({ today, pandas, events, residencies, places: memoryPlaces(places), personal });
+  const where = memoryPlaces(places);
+  return days.map((date) => ({ date, memories: memoriesOn({ today: date, pandas, events, residencies, places: where, personal }) }));
+}
+
+export interface MemoryDay {
+  date: string;
+  memories: Memory[];
 }
 
 const sources = new Map<string, Promise<Evidence | null>>();

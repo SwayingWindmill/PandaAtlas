@@ -72,8 +72,8 @@ export function FollowedStrip() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        className="-mx-4"
-        contentContainerClassName="gap-row px-4"
+        className="-mx-gutter"
+        contentContainerClassName="gap-row px-gutter"
       >
         {items.map((panda) => (
           <PandaAvatar key={panda.id} panda={panda} />

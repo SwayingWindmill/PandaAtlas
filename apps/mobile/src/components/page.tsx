@@ -29,6 +29,7 @@ const BARLESS_TOP = 24;
 
 export function Page({
   label,
+  dateline,
   title,
   back = true,
   prominent = false,
@@ -36,6 +37,8 @@ export function Page({
   ...scroll
 }: {
   label?: string;
+  /** A date over the large title (11月4日), as 今天 draws its own; it puts the title in the column. */
+  dateline?: string;
   title: string;
   back?: boolean;
   /** Draw the large title in the column, and leave the bar as a back button. */
@@ -45,14 +48,14 @@ export function Page({
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const bottom = useBottomClearance();
-  const inContent = contentOwnsTitle(prominent);
+  const inContent = contentOwnsTitle(prominent || dateline !== undefined);
   // On web a root screen (no back) has no bar at all, so the column clears the status area itself
   // and keeps a bar's worth of air above the large title instead of starting at the window's edge.
   const barless = Platform.OS === "web" && !back;
   useLayoutEffect(() => {
     navigation.setOptions({
       title: inContent ? "" : title,
-      headerLargeTitleEnabled: Platform.OS === "ios" && !prominent && !back,
+      headerLargeTitleEnabled: Platform.OS === "ios" && !inContent && !back,
       headerBackVisible: back,
       headerShown: !barless,
       ...(inContent ? NO_WEB_BAR_TITLE : {}),
@@ -63,18 +66,26 @@ export function Page({
     <ScrollView
       className="flex-1 bg-background"
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerClassName="gap-6 px-4"
+      contentContainerClassName="gap-6 px-gutter"
       {...scroll}
       contentContainerStyle={[{ paddingBottom: bottom }, barless && { paddingTop: insets.top + BARLESS_TOP }, scroll.contentContainerStyle]}
     >
       {inContent ? (
         <View className="gap-1">
-          <Text variant="display">{title}</Text>
+          {dateline ? (
+            <Text variant="footnote" className="font-semibold text-muted-foreground">
+              {dateline}
+            </Text>
+          ) : null}
+          <Text variant="display" role="heading">
+            {title}
+          </Text>
           {label ? <Text variant="subheadline" className="text-muted-foreground">{label}</Text> : null}
         </View>
-      ) : label ? (
+      ) : label || dateline ? (
+        // Android keeps the title in its bar, so the date stands first in the column.
         <Text variant="subheadline" className="text-muted-foreground">
-          {label}
+          {label ?? dateline}
         </Text>
       ) : null}
       {children}
