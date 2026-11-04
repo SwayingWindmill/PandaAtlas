@@ -257,8 +257,13 @@ function VisitGuide({ institution, unseen }: { institution: InstitutionDetail; u
       ) : null}
       {guided.map((facility) => (
         <View key={facility.id} className="gap-4">
-          <FacilityGuide facility={facility} title={several ? facility.name : undefined} />
+          {several ? (
+            <Text variant="headline" role="heading">
+              {facility.name}
+            </Text>
+          ) : null}
           <ViewingTiming facility={facility} />
+          <FacilityGuide facility={facility} title="须知" />
         </View>
       ))}
       {institution.websiteUrl ? (
