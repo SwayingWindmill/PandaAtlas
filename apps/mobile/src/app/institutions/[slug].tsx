@@ -55,6 +55,7 @@ import { useSession } from "@/features/session/session";
 import { openPanda } from "@/features/pandas/panda-row";
 import type { PandaListItem } from "@/features/pandas/pandas";
 import { longDate } from "@/features/pandas/profile";
+import { VenueNewsSection } from "@/features/venue-news/venue-news-section";
 import { FacilityVisits } from "@/features/visits/facility-visits";
 import { usePandaCover } from "@/lib/covers";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
@@ -463,6 +464,7 @@ export default function InstitutionScreen() {
         <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-gutter pt-5">
           {institution.summary ? <Text variant="body">{institution.summary}</Text> : null}
           {institution.residents.length > 0 ? <Residents pandas={institution.residents} /> : null}
+          <VenueNewsSection institutionSlug={institution.slug} />
           <VisitGuide institution={institution} unseen={unseen} />
           {institution.facilities.length > 0 ? <FacilityVisits facilities={institution.facilities} /> : null}
           {institution.former.length > 0 ? <Former pandas={institution.former} /> : null}

@@ -925,6 +925,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/venue-news": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Published 场馆动态: neutral facts from institutions' own announcements, each with its source */
+        get: operations["listVenueNews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/ask/status": {
         parameters: {
             query?: never;
@@ -2058,6 +2075,29 @@ export interface components {
             terms: components["schemas"]["LearningTermDto"][];
             faceGuides: components["schemas"]["LearningFaceGuideDto"][];
             challenges: components["schemas"]["LearningChallengeDto"][];
+        };
+        VenueNewsItemDto: {
+            id: string;
+            institutionSlug: string;
+            /** @enum {string} */
+            kind: "enclosure" | "schedule" | "closure" | "arrival" | "departure" | "event" | "other";
+            /** @description The announcement's own headline, verbatim. */
+            headline: string;
+            pandaSlugs: string[];
+            /** @description The institution's announcement (https). */
+            sourceUrl: string;
+            sourcePublisher: string;
+            /** Format: date */
+            publishedOn: string;
+            /**
+             * Format: date-time
+             * @description When this entry was last checked against the source.
+             */
+            updatedAt: string;
+        };
+        VenueNewsDto: {
+            version: string;
+            items: components["schemas"]["VenueNewsItemDto"][];
         };
         AskStatusDto: {
             enabled: boolean;
@@ -3863,6 +3903,35 @@ export interface operations {
                 };
             };
             /** @description The stored learning catalog is missing or invalid. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listVenueNews: {
+        parameters: {
+            query?: {
+                /** @description Institution slug */
+                institution?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VenueNewsDto"];
+                };
+            };
+            /** @description The stored venue news catalog is invalid. */
             503: {
                 headers: {
                     [name: string]: unknown;
