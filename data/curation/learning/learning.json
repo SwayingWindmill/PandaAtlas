@@ -1,6 +1,6 @@
 {
-  "$comment": "科普文章、知识卡、专题、名词解释、认脸指南和认脸挑战。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, run python scripts/curation/validate_learning_content.py, and after merging write it to the database with the curation.learning batch operation (new version for changed content). Every entry is published as of 2026.11.01 (PR #765). An entry set back to draft stays in the database and is left out of GET /api/v2/learning. 2026.11.04.2 adds published Chinese-only entries (articles endangered-to-vulnerable, back-to-the-wild, captive-breeding, qinling-pandas; cards conservation-status, reintroduction, captive-breeding, qinling-pandas; topic panda-conservation; 8 terms); English is deferred by owner decision. Conflicting figures now follow official sources (release count, brown-panda records, first captive birth, newborn weight, estrus window, daily bamboo) in new and existing entries.",
-  "version": "2026.11.04.2",
+  "$comment": "科普文章、知识卡、专题、名词解释、认脸指南和认脸挑战。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, run python scripts/curation/validate_learning_content.py, and after merging write it to the database with the curation.learning batch operation (new version for changed content). Every entry is published as of 2026.11.01 (PR #765). An entry set back to draft stays in the database and is left out of GET /api/v2/learning. 2026.11.04.2 adds published Chinese-only entries (articles endangered-to-vulnerable, back-to-the-wild, captive-breeding, qinling-pandas; cards conservation-status, reintroduction, captive-breeding, qinling-pandas; topic panda-conservation; 8 terms); English is deferred by owner decision. Conflicting figures now follow official sources (release count, brown-panda records, first captive birth, newborn weight, estrus window, daily bamboo) in new and existing entries. 2026.11.04.3 新增习性专题 panda-behavior、4 张知识卡、6 篇文章和 8 个名词（只有中文）。",
+  "version": "2026.11.04.3",
   "articles": [
     {
       "slug": "black-eye-patches",
@@ -3319,6 +3319,1617 @@
         "sectionCount": 5,
         "referenceCount": 6
       }
+    },
+    {
+      "slug": "solitary-and-home-range",
+      "status": "published",
+      "category": "繁殖与成长",
+      "sourceCardSlug": "solitary-life",
+      "title": {
+        "zh": "独来独往，却不孤单：大熊猫的独居与领地"
+      },
+      "dek": {
+        "zh": "成年大熊猫大多独自在竹林里生活，可它们并非互不往来。一只大熊猫要多大的地方？它们怎样划分地盘，又怎样保持联系？"
+      },
+      "body": {
+        "sections": [
+          {
+            "heading": {
+              "zh": "独居是常态"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "国家林草局转载的《大熊猫201问》写道，大熊猫长期生活在竹林茂密的森林里，喜欢独来独往，通常用尿液和肛周腺分泌物来标记自己的领地范围。史密森尼国家动物园也介绍，成年大熊猫总体上过着独居生活，只是会不时借助气味标记、叫声和偶尔的相遇互相联系。"
+                },
+                "refs": [
+                  "nfga-201",
+                  "si"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "成都大熊猫繁育研究基地的科普说得更具体：除了发情配种季节，大熊猫一般都是独居，各有自己的活动区域。即便在繁殖季节聚到一起，交配结束后雌雄也会再次分开、单独生活，妊娠、分娩和育幼都由雌性独自完成。"
+                },
+                "refs": [
+                  "cpb-repro"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "繁殖季节是例外。成都基地介绍，野外的交配场地有时会聚集 2 到 5 只雄性，通过打斗竞争优先交配权；同一个发情季节里，一只雄性可以和多只雌性交配，一只雌性也可能接受多只雄性，基地称之为“多雄多雌制”。"
+                },
+                "refs": [
+                  "cpb-repro"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "成年大熊猫也没有固定的窝，走到哪里就在哪里休息，最喜欢找大树边或倒木旁这样可以倚靠的地方。刚出生的幼仔则待在妈妈准备好的树洞或岩洞里。"
+                },
+                "refs": [
+                  "nfga-201"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "一只大熊猫要多大地方"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "科学家主要靠给野生大熊猫戴无线电或 GPS 项圈来回答这个问题。2016 年发表在《整合动物学》上的一篇综述，首次汇总了此前全部 5 项大熊猫遥测研究。按最常用的最小凸多边形法计算，各项研究估算的[[home-range|家域]]大约在 5 到 13 平方公里之间；雌性平均约 5.6 平方公里，雄性平均约 8.6 平方公里。"
+                },
+                "refs": [
+                  "connor-2016"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "综述作者认为，雄性的家域更大，可能是因为繁殖季节它们要去拜访好几只雌性。亚特兰大动物园也介绍，大熊猫个体不会长途跋涉，和食肉目里的其他物种相比，雄性建立的领地并不算大。"
+                },
+                "refs": [
+                  "connor-2016",
+                  "za"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "这篇综述还纠正了一个旧看法：过去认为邛崃山和秦岭两地大熊猫的家域大小不同，汇总数据却显示并无差别。综述还发现，雌性在交配季节也会增加活动，而这种行为过去通常只被归于雄性。"
+                },
+                "refs": [
+                  "connor-2016"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "家域里的“常去处”"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "家域并不是被均匀使用的。2015 年《哺乳动物学杂志》发表的一项研究，在卧龙用 GPS 项圈追踪了 5 只大熊猫。研究发现，它们会集中使用家域里许多小块的“核心区”，每只大熊猫有 16 到 39 个这样的核心区，离开后隔 8 到 191 天又会回来。研究者还记录到，秋季雄性和雌性之间会发生互动。"
+                },
+                "refs": [
+                  "hull-2015"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "另一项 2014 年发表的研究在陕西佛坪追踪了 4 只大熊猫，发现个体之间的活动范围高度重叠，但它们彼此既不刻意回避，也不互相吸引。也就是说，邻居之间共享山林，却各过各的日子。"
+                },
+                "refs": [
+                  "zhang-2014"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "领地与“群体”"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "独居不等于各自为政。史密森尼国家动物园介绍，研究发现在一个局部种群里，7 到 15 只大熊猫可能组成一个“群体”，共同占用一片领地。在这片领地里，雄性的家域几乎完全重叠，雌性的家域重叠得少得多；不同群体的成员一般互相回避。"
+                },
+                "refs": [
+                  "si"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "它们划地盘的办法不是打架，而是气味。成都大熊猫繁育研究基地把[[scent-mark|气味标记]]称为大熊猫在竹林里保持和平的秘诀：同一个标记，既能让彼此避开，也能在繁殖季节把它们聚到一起。"
+                },
+                "refs": [
+                  "cpb-scent"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "妈妈和孩子"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "大熊猫一生中最长的“同居”是母子关系。史密森尼国家动物园介绍，幼仔会跟着妈妈生活一年半到三年，之后才独立。独立以后还要再长几年才进入繁殖年龄：成都基地介绍，圈养条件下雌性约 5 岁、雄性约 6 岁性成熟，野外的稍晚；史密森尼国家动物园给出的范围是 4 到 7 岁。国家林草局的科普还提到，幼仔半岁左右就能跟着妈妈爬树，在树上生活和睡觉，以躲避天敌。"
+                },
+                "refs": [
+                  "si",
+                  "cpb-repro",
+                  "nfga-201"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "长大的幼仔会离开出生地。前面提到的 2016 年综述整理了遥测和遗传两方面的证据，显示雌性大熊猫也存在离开出生地的扩散行为。"
+                },
+                "refs": [
+                  "connor-2016"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "成都基地介绍，野外的交配场地有时会有亚成年大熊猫在旁边“观摩学习”。大熊猫性情总体温和，不主动进攻其他动物，但在发情求偶和产仔季节进攻性变强，更容易伤人。这也提醒我们，在野外偶遇大熊猫时应当远远避开。"
+                },
+                "refs": [
+                  "cpb-repro",
+                  "nfga-201"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "pullQuote": {
+        "zh": "大熊猫在竹林里保持和平的秘诀",
+        "drawnFromBody": true
+      },
+      "keyFacts": [
+        {
+          "text": {
+            "zh": "除发情配种季节外，大熊猫一般独居，各有活动区域。"
+          },
+          "refs": [
+            "cpb-repro",
+            "si"
+          ]
+        },
+        {
+          "text": {
+            "zh": "追踪研究估算的大熊猫家域约 5 到 13 平方公里，雄性大于雌性。"
+          },
+          "refs": [
+            "connor-2016"
+          ]
+        },
+        {
+          "text": {
+            "zh": "卧龙的 5 只大熊猫各有 16 到 39 个反复回访的核心区。"
+          },
+          "refs": [
+            "hull-2015"
+          ]
+        },
+        {
+          "text": {
+            "zh": "局部种群里 7 到 15 只大熊猫可能共用一片“群体”领地。"
+          },
+          "refs": [
+            "si"
+          ]
+        },
+        {
+          "text": {
+            "zh": "幼仔会跟着妈妈生活一年半到三年。"
+          },
+          "refs": [
+            "si"
+          ]
+        }
+      ],
+      "glossaryTerms": [
+        {
+          "slug": "home-range",
+          "label": "家域",
+          "inLearningJson": true
+        },
+        {
+          "slug": "scent-mark",
+          "label": "气味标记",
+          "inLearningJson": true
+        }
+      ],
+      "images": [
+        {
+          "role": "hero",
+          "type": "wanted",
+          "pandaSlug": null,
+          "shot": {
+            "zh": "一只成年大熊猫独自走在竹林小路上的远景，周围没有其他个体。"
+          },
+          "caption": {
+            "zh": "独自穿行竹林的大熊猫（待配图）。"
+          },
+          "captionRefs": []
+        }
+      ],
+      "references": [
+        {
+          "id": "si",
+          "title": "Giant panda（史密森尼国家动物园动物介绍页）",
+          "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cpb-scent",
+          "title": "【熊猫知识】气味标记（2025-06-05）",
+          "publisher": "成都大熊猫繁育研究基地",
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-201",
+          "title": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "za",
+          "title": "Giant panda（亚特兰大动物园动物介绍页）",
+          "publisher": "Zoo Atlanta",
+          "url": "https://zooatlanta.org/animal/giant-panda/",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cpb-repro",
+          "title": "【熊猫知识】繁殖",
+          "publisher": "成都大熊猫繁育研究基地",
+          "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/361.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "connor-2016",
+          "title": "Telemetry research on elusive wildlife: A synthesis of studies on giant pandas（2016）",
+          "publisher": "Integrative Zoology",
+          "url": "https://doi.org/10.1111/1749-4877.12197",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "zhang-2014",
+          "title": "Ecological scale and seasonal heterogeneity in the spatial behaviors of giant pandas（2014）",
+          "publisher": "Integrative Zoology",
+          "url": "https://doi.org/10.1111/1749-4877.12030",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "hull-2015",
+          "title": "Space use by endangered giant pandas（2015）",
+          "publisher": "Journal of Mammalogy",
+          "url": "https://doi.org/10.1093/jmammal/gyu031",
+          "citedOn": "2026-11-04"
+        }
+      ],
+      "relatedArticles": [
+        "scent-marking-pandas",
+        "panda-vocal-communication",
+        "cubs"
+      ],
+      "stats": {
+        "bodyChars": 1464,
+        "bodyCjkChars": 1242,
+        "sectionCount": 5,
+        "referenceCount": 8
+      }
+    },
+    {
+      "slug": "scent-marking-pandas",
+      "status": "published",
+      "category": "繁殖与成长",
+      "sourceCardSlug": "scent-marking",
+      "title": {
+        "zh": "树干上的“留言板”：大熊猫怎样做气味标记"
+      },
+      "dek": {
+        "zh": "在雾气弥漫、彼此看不见的竹林里，大熊猫靠气味互通消息。它们怎样留下气味，气味里又写着什么？"
+      },
+      "body": {
+        "sections": [
+          {
+            "heading": {
+              "zh": "为什么靠气味"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "成都大熊猫繁育研究基地介绍，大熊猫的圆脸缺乏表情，尾巴很短，没有可以展开的冠毛或鬃毛，耳朵能竖起放下却也不够灵活，看得见的信号对它们几乎没有意义。这是因为它们常年生活在高山上茂密、薄雾弥漫的竹林里，彼此看不见。所以大熊猫大多数的交流，都靠留在栖息地里的气味。"
+                },
+                "refs": [
+                  "cpb-scent"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "国家林草局转载的《大熊猫201问》也说，大熊猫的嗅觉非常敏锐，能识别出其他个体留下的气味信息；相比之下，它们的视力远不如听力和嗅觉。史密森尼国家动物园同样介绍，大熊猫大部分交流是靠在栖息地和领地里做气味标记完成的。"
+                },
+                "refs": [
+                  "nfga-201",
+                  "si"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "怎样做标记"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "大熊猫把[[anal-gland|肛周腺]]的分泌物涂在柱子、树桩、墙上、地面以及经常经过的地方，也常用尿液，或尿液和肛周腺分泌物的混合物。成都基地写道，做标记时它们会晃动头部、嘴巴半张；做完后还会在旁边剥掉树皮或留下抓痕，好让同类注意到。"
+                },
+                "refs": [
+                  "cpb-scent"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "史密森尼国家动物园补充说，这些标记通常留在大熊猫习惯走的小路沿线，附近的大熊猫因此能察觉彼此的存在。"
+                },
+                "refs": [
+                  "si"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "倒立的“签名”"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "最有名的姿势是倒立。国家林草局的科普提到，大熊猫站立的功夫十分了得，还会倒立，一般是倒立在树干上做肛周腺的气味标记。"
+                },
+                "refs": [
+                  "nfga-201"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "亚特兰大动物园介绍，雄性会定期在领地边缘做气味标记，方式是摆出“倒立”的姿势，用肛周腺在竹竿上留下气味。这家动物园长期研究大熊猫行为，它把气味称为大熊猫在茂密竹林里最主要的交流方式。"
+                },
+                "refs": [
+                  "za"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "气味说了什么"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "2022 年《四川动物》上的一篇综述总结，大熊猫在生活中常用化学通讯和听觉通讯两种方式交流；肛周腺分泌物和尿液里，携带着年龄、性别、社会地位和亲缘关系等可用于识别个体的信息。综述还提到，大熊猫的咩叫和鸟叫同样带有身份、亲缘和发情状态的信息；发情时，化学信号和声音信号结合起来的“多模式信号”，是提示雌性发情程度和排卵的最佳预测指标。也有研究证实，大熊猫会用标记行为来回应异性的叫声。"
+                },
+                "refs": [
+                  "scdw-2022"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "同一个标记，不同的熊猫读出不同的意思。史密森尼国家动物园介绍，非发情季节，一个陌生的气味通常就足以让闯入者走开；到了发情季节，雌性的气味会宣告它已准备好交配，把雄性吸引过来，而且雌性更容易接受气味熟悉、以前打过照面的雄性。"
+                },
+                "refs": [
+                  "si"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "从气味到见面"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "成都基地的繁殖科普写道，雌性大熊猫每年发情一次，通常在 3 到 5 月。成年雌雄大熊猫主要靠留下气味标记和嗅闻标记，逐渐聚到同一个地方、相互了解；到了发情高潮，才改用连续的咩叫声和待配姿势等声音、视觉信号。基地还提到，雄性的发情行为随雌性的发情而出现，也随雌性达到高潮而达到高潮。"
+                },
+                "refs": [
+                  "cpb-repro"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "《四川动物》的综述描述，雌性进入发情前期时食欲减退、活动量增加，开始出现咩叫、蹭阴、戏水和嗅闻气味等行为；随着发情推进，这些行为越来越频繁，它也从对雄性不感兴趣，变为主动接近雄性。"
+                },
+                "refs": [
+                  "scdw-2022"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "《四川动物》的综述也提到，随着雌性发情程度加深，雌雄双方会交替表现出咩叫、鸟叫和标记等行为；雌性进入发情高峰时，雄性除了频繁咩叫，还常伴有标记、戏水、尿频等行为，喜欢舔舐雌性的尿液，并跟随、靠近雌性。成都基地总结说，这些气味标记既能让大熊猫互相回避，也能让它们聚到一起。"
+                },
+                "refs": [
+                  "scdw-2022",
+                  "cpb-scent"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "pullQuote": {
+        "zh": "大熊猫大多数的交流，都靠留在栖息地里的气味",
+        "drawnFromBody": true
+      },
+      "keyFacts": [
+        {
+          "text": {
+            "zh": "大熊猫用肛周腺分泌物和尿液做气味标记。"
+          },
+          "refs": [
+            "cpb-scent"
+          ]
+        },
+        {
+          "text": {
+            "zh": "做完标记常会剥树皮或留抓痕，引起同类注意。"
+          },
+          "refs": [
+            "cpb-scent"
+          ]
+        },
+        {
+          "text": {
+            "zh": "雄性会在领地边缘倒立着用肛周腺在竹竿上标记。"
+          },
+          "refs": [
+            "nfga-201",
+            "za"
+          ]
+        },
+        {
+          "text": {
+            "zh": "肛周腺分泌物和尿液带有年龄、性别、社会地位和亲缘信息。"
+          },
+          "refs": [
+            "scdw-2022"
+          ]
+        },
+        {
+          "text": {
+            "zh": "发情季节雌性的气味会吸引雄性。"
+          },
+          "refs": [
+            "si"
+          ]
+        }
+      ],
+      "glossaryTerms": [
+        {
+          "slug": "anal-gland",
+          "label": "肛周腺",
+          "inLearningJson": true
+        },
+        {
+          "slug": "scent-mark",
+          "label": "气味标记",
+          "inLearningJson": true
+        }
+      ],
+      "images": [
+        {
+          "role": "hero",
+          "type": "wanted",
+          "pandaSlug": null,
+          "shot": {
+            "zh": "一只大熊猫倒立在树干上做气味标记，后腿抵着树干。"
+          },
+          "caption": {
+            "zh": "倒立在树干上做标记的大熊猫（待配图）。"
+          },
+          "captionRefs": []
+        }
+      ],
+      "references": [
+        {
+          "id": "si",
+          "title": "Giant panda（史密森尼国家动物园动物介绍页）",
+          "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cpb-scent",
+          "title": "【熊猫知识】气味标记（2025-06-05）",
+          "publisher": "成都大熊猫繁育研究基地",
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-201",
+          "title": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "za",
+          "title": "Giant panda（亚特兰大动物园动物介绍页）",
+          "publisher": "Zoo Atlanta",
+          "url": "https://zooatlanta.org/animal/giant-panda/",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cpb-repro",
+          "title": "【熊猫知识】繁殖",
+          "publisher": "成都大熊猫繁育研究基地",
+          "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/361.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "scdw-2022",
+          "title": "圈养雌性大熊猫发情及排卵监测方法论述及展望（《四川动物》2022 年第 41 卷第 3 期）",
+          "publisher": "四川动物",
+          "url": "https://html.rhhz.net/scdwzz/html/68235.htm",
+          "citedOn": "2026-11-04"
+        }
+      ],
+      "relatedArticles": [
+        "solitary-and-home-range",
+        "panda-vocal-communication"
+      ],
+      "stats": {
+        "bodyChars": 1207,
+        "bodyCjkChars": 1077,
+        "sectionCount": 5,
+        "referenceCount": 6
+      }
+    },
+    {
+      "slug": "panda-vocal-communication",
+      "status": "published",
+      "category": "繁殖与成长",
+      "sourceCardSlug": "panda-calls",
+      "title": {
+        "zh": "咩叫、吠声和鸟叫：大熊猫怎样用声音交流"
+      },
+      "dek": {
+        "zh": "大熊猫平时很安静，可一到发情季节就“话”很多。它们会发出哪些声音？科学家又从叫声里听出了什么？"
+      },
+      "body": {
+        "sections": [
+          {
+            "heading": {
+              "zh": "沉默也是一种交流"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "成都大熊猫繁育研究基地介绍，沉默是另一种交流方式：当大熊猫在玩耍，或只是表示友好、没有交配或争斗的想法时，它们通常不发出任何声音。基地说，这条“声音规则”能帮你看懂动物园里大多数大熊猫的行为。史密森尼国家动物园也提到，大熊猫是独居动物，但在社交互动时会发声。"
+                },
+                "refs": [
+                  "cpb-scent",
+                  "si"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "叫声有好多种"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "国家林草局转载的《大熊猫201问》写道，大熊猫在不同情境、不同情绪下叫声不同，主要有牛叫声、羊叫声、呻吟声、吠声、唧唧声，还有嗷嗷叫、嗥叫、鸟叫、吱吱叫等。其中像羊叫的[[bleat|咩叫]]最常被提起。史密森尼国家动物园列出的则有啾啾声、鸣笛般的叫声、咩叫、咂嘴声和吠声。"
+                },
+                "refs": [
+                  "nfga-201",
+                  "si"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "2022 年《四川动物》上的一篇综述介绍，大熊猫在发情期的叫声类型较为复杂，有 6 到 12 种声音与发情有关，包括咩叫、鸟叫、狗吠、嗥叫、嗷嗷叫、咆哮和哼叫等。其中咩叫和鸟叫属于非攻击性、表达友好亲近的叫声，在交配季节可以用来吸引异性、协调雌雄双方同步发情。"
+                },
+                "refs": [
+                  "scdw-2022"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "饲养员怎样“听”发情"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "雌性大熊猫一年只有很短的受孕窗口。史密森尼国家动物园介绍，雌性每年春季只排卵一次，排卵前后约 2 到 3 天是唯一能受孕的时间，叫声和气味会把雌雄吸引到一起。"
+                },
+                "refs": [
+                  "si"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "因此，叫声成了判断发情的重要线索。《四川动物》的综述总结，随着发情高峰到来，雌性咩叫的音调和持续时间会增加，高峰期每 10 分钟可达 22 到 51 次；发情后期咩叫明显减少，降到每 10 分钟 0 到 1 次。雌性还会在交配前约一周开始鸟叫，交配前 2 天达到峰值。"
+                },
+                "refs": [
+                  "scdw-2022"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "叫声里的“身份证”"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "2009 年发表在《美国声学学会杂志》上的一项研究分析了大熊猫的咩叫，发现咩叫带有很强的个体特征，可以用来区分不同个体。最能体现个体身份的是与喉部发声有关的特征，尤其是平均基频、每秒的振幅变化和每次振幅调制的幅度。"
+                },
+                "refs": [
+                  "charlton-jasa"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "研究还发现，个体之间的亲缘程度和叫声整体的相似度并不相关，却和振幅调制的速率、基频的范围高度相关。作者认为，这些可能是咩叫里可以遗传的成分，可以用作衡量亲缘关系的指标；他们还讨论了用声学方法监测野外种群数量的可能。"
+                },
+                "refs": [
+                  "charlton-jasa"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "同年发表在《生物学快报》上的回放实验进一步显示，雌性大熊猫能分辨不同雄性的咩叫。研究者先让雌性反复听同一只雄性的咩叫，直到它反应变淡，再换成另一只雄性的咩叫，雌性的反应明显回升。把咩叫的音高和振幅调制统一后再播放，研究者发现振幅调制是雌性分辨不同雄性时最关注的特征。研究者认为，在彼此难得见面的竹林里，这能帮助雌性在繁殖季节挑选配偶。"
+                },
+                "refs": [
+                  "charlton-biollett"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "鸟叫透露“好时机”"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "2010 年发表在《英国皇家学会会刊 B》上的研究，结合激素测定和声学分析，录下了卧龙发情雌性的鸟叫，再到碧峰峡对雄性做回放实验。结果显示，雌性在可受孕阶段发出的鸟叫更长、更“粗糙”，而雄性能听出这种差别，等于叫声在替雌性“报告”时机。"
+                },
+                "refs": [
+                  "charlton-procb"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "史密森尼国家动物园介绍，交配期间大熊猫会变得非常“健谈”。成都基地也写道，到了发情高潮，雌雄之间靠连续不断的咩叫声表达爱意、达成配对。亚特兰大动物园的研究同样指出，叫声看似细微，却是至关重要的交流工具，在繁殖季节尤其如此。"
+                },
+                "refs": [
+                  "si",
+                  "cpb-repro",
+                  "za"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "pullQuote": {
+        "zh": "沉默是另一种交流方式",
+        "drawnFromBody": true
+      },
+      "keyFacts": [
+        {
+          "text": {
+            "zh": "大熊猫玩耍或示好时通常不出声。"
+          },
+          "refs": [
+            "cpb-scent"
+          ]
+        },
+        {
+          "text": {
+            "zh": "有 6 到 12 种叫声与发情有关，咩叫和鸟叫属于友好的叫声。"
+          },
+          "refs": [
+            "scdw-2022"
+          ]
+        },
+        {
+          "text": {
+            "zh": "发情高峰期雌性咩叫每 10 分钟可达 22 到 51 次。"
+          },
+          "refs": [
+            "scdw-2022"
+          ]
+        },
+        {
+          "text": {
+            "zh": "咩叫带有个体特征，可以区分不同个体。"
+          },
+          "refs": [
+            "charlton-jasa"
+          ]
+        },
+        {
+          "text": {
+            "zh": "雌性在可受孕阶段的鸟叫更长、更“粗糙”。"
+          },
+          "refs": [
+            "charlton-procb"
+          ]
+        }
+      ],
+      "glossaryTerms": [
+        {
+          "slug": "bleat",
+          "label": "咩叫",
+          "inLearningJson": true
+        }
+      ],
+      "images": [
+        {
+          "role": "hero",
+          "type": "wanted",
+          "pandaSlug": null,
+          "shot": {
+            "zh": "两只大熊猫在繁殖季节隔着栏杆对视、张嘴发声的画面。"
+          },
+          "caption": {
+            "zh": "繁殖季节正在“对话”的两只大熊猫（待配图）。"
+          },
+          "captionRefs": []
+        }
+      ],
+      "references": [
+        {
+          "id": "si",
+          "title": "Giant panda（史密森尼国家动物园动物介绍页）",
+          "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cpb-scent",
+          "title": "【熊猫知识】气味标记（2025-06-05）",
+          "publisher": "成都大熊猫繁育研究基地",
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-201",
+          "title": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "za",
+          "title": "Giant panda（亚特兰大动物园动物介绍页）",
+          "publisher": "Zoo Atlanta",
+          "url": "https://zooatlanta.org/animal/giant-panda/",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cpb-repro",
+          "title": "【熊猫知识】繁殖",
+          "publisher": "成都大熊猫繁育研究基地",
+          "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/361.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "scdw-2022",
+          "title": "圈养雌性大熊猫发情及排卵监测方法论述及展望（《四川动物》2022 年第 41 卷第 3 期）",
+          "publisher": "四川动物",
+          "url": "https://html.rhhz.net/scdwzz/html/68235.htm",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "charlton-procb",
+          "title": "Female giant panda (Ailuropoda melanoleuca) chirps advertise the caller's fertile phase（2010）",
+          "publisher": "Proceedings of the Royal Society B",
+          "url": "https://doi.org/10.1098/rspb.2009.1431",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "charlton-biollett",
+          "title": "Vocal discrimination of potential mates by female giant pandas (Ailuropoda melanoleuca)（2009）",
+          "publisher": "Biology Letters",
+          "url": "https://doi.org/10.1098/rsbl.2009.0331",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "charlton-jasa",
+          "title": "Vocal cues to identity and relatedness in giant pandas (Ailuropoda melanoleuca)（2009）",
+          "publisher": "The Journal of the Acoustical Society of America",
+          "url": "https://doi.org/10.1121/1.3224720",
+          "citedOn": "2026-11-04"
+        }
+      ],
+      "relatedArticles": [
+        "scent-marking-pandas",
+        "solitary-and-home-range"
+      ],
+      "stats": {
+        "bodyChars": 1209,
+        "bodyCjkChars": 1031,
+        "sectionCount": 5,
+        "referenceCount": 9
+      }
+    },
+    {
+      "slug": "seasonal-migration-bamboo",
+      "status": "published",
+      "category": "食性",
+      "sourceCardSlug": "seasonal-migration",
+      "title": {
+        "zh": "不冬眠的大熊猫：跟着竹子上山下山"
+      },
+      "dek": {
+        "zh": "熊类大多冬眠，大熊猫却整年醒着。冬天去哪儿、夏天去哪儿，全看竹子长在哪里，而它们似乎记得路。"
+      },
+      "body": {
+        "sections": [
+          {
+            "heading": {
+              "zh": "为什么不冬眠"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "国家林草局转载的《大熊猫201问》写道，大熊猫没有冬眠的习性：竹子是四季常绿的植物，冬季照样能吃竹子过冬。它们还“喜冷怕热”，惧酷热而不畏寒冷。"
+                },
+                "refs": [
+                  "nfga-201"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "同一篇科普提到，野外的大熊猫只爱喝流动的溪水或源头水，冬天水面结了冰，它们会用前掌把冰层击破。大熊猫还是游泳高手，可以长距离深水游泳，这也是它们在复杂地形里得以迁徙的主要手段。"
+                },
+                "refs": [
+                  "nfga-201"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "冬天下山，天暖上山"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "国家林草局的科普说，冬季大熊猫通常从高海拔迁到中低海拔，因为那里气温相对较高，竹子等食物也相对充足。这种随季节在不同海拔之间往返的行为，称为[[altitudinal-migration|垂直迁移]]。"
+                },
+                "refs": [
+                  "nfga-201"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "史密森尼国家动物园介绍，野生大熊猫生活在海拔约 1500 到 3000 米的阔叶林和针叶林里，林下长着茂密的竹子，终年多雨多雾。2014 年在陕西佛坪的一项 GPS 研究发现，大熊猫的冬季和夏季空间行为差别明显，季节不同，它们使用山林的方式也不同。"
+                },
+                "refs": [
+                  "si",
+                  "zhang-2014"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "佛坪的两种竹子"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "2023 年发表在《动物学研究》上的一项研究，就做在秦岭南坡的佛坪国家级自然保护区。保护区面积约 292 平方公里，生活着约 70 到 80 只大熊猫，是已知大熊猫密度最高的地区之一，平均每平方公里约 0.13 只。作为对照，国家林业局公布的第四次调查全国平均种群密度是每平方公里 0.072 只。"
+                },
+                "refs": [
+                  "zr-migration",
+                  "nfga-4th"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "这里的大熊猫主要吃两种竹子：分布在较低海拔、平均约 1600 米的巴山木竹，以及较高海拔、平均约 2400 米的秦岭箭竹。巴山木竹在 5 月出笋，秦岭箭竹到 6 月初才出笋。大熊猫上山下山，正是在追着不同海拔、不同时节的竹笋和竹叶。"
+                },
+                "refs": [
+                  "zr-migration"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "记得回家的路"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "研究者用 GPS 项圈追踪了 6 只大熊猫，时间跨度从 2007 年到 2018 年，累计监测 6393 天，获得 51150 个定位点。所有个体都表现出季节性的垂直迁移，而且在较短时间内完成向夏季栖息地的转移：它们首次到达夏季栖息地的时间集中在 5 月 20 日到 6 月 20 日之间，那时气温已比较稳定。返回冬季栖息地的时间则因个体而异，在 8 月到 10 月之间，与气温明显下降相吻合。"
+                },
+                "refs": [
+                  "zr-migration"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "更有意思的是它们的“恋旧”。研究发现，每只大熊猫年复一年回到相同或相近的冬季和夏季活动区，家域的重叠比例也保持稳定。有一只个体每年都去北边同一块夏季栖息地，另一只七年里去遍了东边的几块，却从没去过北边。"
+                },
+                "refs": [
+                  "zr-migration"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "靠记忆找食物"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "作者认为，这种稳定的迁移模式说明大熊猫依靠空间记忆来寻找可靠的食物来源：记住哪里在什么时候有好吃的竹子，就能在合适的时间、合适的地点吃到营养最好的食物，弥补竹子本身营养贫乏的不足。作者指出，这种效率很关键，因为 9 月到次年 4 月觅食条件相对较差，可能影响大熊猫的身体状况和存活。"
+                },
+                "refs": [
+                  "zr-migration"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "这和有名的“绿浪假说”不同。按照这个假说，不少迁徙动物会沿着春季返青的植被一路“冲浪”。研究发现，大熊猫并没有沿途追逐营养逐渐变好的植物，而是从长着一种竹子的低海拔斑块，直接而迅速地移到长着另一种、发笋更晚的竹子的高海拔斑块，像是在利用好几道较小的“浪”。它们的迁移方向也很稳定，比如一只个体连续六年去夏季栖息地时都往东走，返回时都往西走。"
+                },
+                "refs": [
+                  "zr-migration"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "研究者认为，这些发现不仅加深了人们对大熊猫觅食和移动方式的理解，也能为基于食物资源利用的保护和管理策略提供重要参考。"
+                },
+                "refs": [
+                  "zr-migration"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "pullQuote": {
+        "zh": "每只大熊猫年复一年回到相同或相近的冬季和夏季活动区",
+        "drawnFromBody": true
+      },
+      "keyFacts": [
+        {
+          "text": {
+            "zh": "大熊猫不冬眠，冬季照样吃竹子。"
+          },
+          "refs": [
+            "nfga-201"
+          ]
+        },
+        {
+          "text": {
+            "zh": "冬季通常迁到气温较高的中低海拔。"
+          },
+          "refs": [
+            "nfga-201"
+          ]
+        },
+        {
+          "text": {
+            "zh": "佛坪大熊猫主要吃约 1600 米的巴山木竹和约 2400 米的秦岭箭竹。"
+          },
+          "refs": [
+            "zr-migration"
+          ]
+        },
+        {
+          "text": {
+            "zh": "它们首次到达夏季栖息地集中在 5 月 20 日到 6 月 20 日。"
+          },
+          "refs": [
+            "zr-migration"
+          ]
+        },
+        {
+          "text": {
+            "zh": "一项 12 年的 GPS 研究显示它们每年回到相同的冬夏活动区。"
+          },
+          "refs": [
+            "zr-migration"
+          ]
+        }
+      ],
+      "glossaryTerms": [
+        {
+          "slug": "altitudinal-migration",
+          "label": "垂直迁移",
+          "inLearningJson": true
+        }
+      ],
+      "images": [
+        {
+          "role": "hero",
+          "type": "wanted",
+          "pandaSlug": null,
+          "shot": {
+            "zh": "冬季雪地里的竹林中，一只大熊猫正在啃食竹子。"
+          },
+          "caption": {
+            "zh": "冬天也不冬眠的大熊猫（待配图）。"
+          },
+          "captionRefs": []
+        }
+      ],
+      "references": [
+        {
+          "id": "si",
+          "title": "Giant panda（史密森尼国家动物园动物介绍页）",
+          "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-201",
+          "title": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "zr-migration",
+          "title": "Stable seasonal migration patterns in giant pandas（2023）",
+          "publisher": "Zoological Research",
+          "url": "https://doi.org/10.24272/j.issn.2095-8137.2022.421",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-4th",
+          "title": "全国第四次大熊猫调查主要结果（2011-2014年）（2015-03-02）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/lczy/38173.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "zhang-2014",
+          "title": "Ecological scale and seasonal heterogeneity in the spatial behaviors of giant pandas（2014）",
+          "publisher": "Integrative Zoology",
+          "url": "https://doi.org/10.1111/1749-4877.12030",
+          "citedOn": "2026-11-04"
+        }
+      ],
+      "relatedArticles": [
+        "bamboo",
+        "what-pandas-eat",
+        "solitary-and-home-range"
+      ],
+      "stats": {
+        "bodyChars": 1291,
+        "bodyCjkChars": 1055,
+        "sectionCount": 5,
+        "referenceCount": 5
+      }
+    },
+    {
+      "slug": "lifespan-and-health",
+      "status": "published",
+      "category": "保护",
+      "sourceTopicSlug": "panda-behavior",
+      "title": {
+        "zh": "大熊猫能活多久，又会生什么病"
+      },
+      "dek": {
+        "zh": "人工照料下的大熊猫能比野外的同类多活十几年。熊猫几岁算老？它们最怕哪些病，老了又怎样照顾？"
+      },
+      "body": {
+        "sections": [
+          {
+            "heading": {
+              "zh": "野外与圈养的寿命"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "史密森尼国家动物园介绍，科学家并不确定野生大熊猫能活多久，但可以肯定比动物园里短。他们估计野生大熊猫约活 15 到 20 年，人工照料下约 30 年。"
+                },
+                "refs": [
+                  "si"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "有记录的长寿个体还要更老。据新华社报道，重庆动物园的雌性大熊猫“新星”1982 年出生于四川宝兴，2020 年 12 月 8 日去世，终年 38 岁零 4 个月，是当时全球最长寿的圈养大熊猫，死因是高龄导致的多脏器衰竭。"
+                },
+                "refs": [
+                  "xinhua-xinxing"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "熊猫几岁算老"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "国家林草局的一篇科普把大熊猫的一生分成几段：出生到 1 岁半是幼儿期，1 岁半到性成熟是亚成年期，性成熟到 20 岁是繁殖期，20 岁以上就进入老年。如果要和人类年龄类比，大致可以把大熊猫的年龄乘以 3.5，比如 5 岁的大熊猫约相当于人类的 17 到 18 岁。"
+                },
+                "refs": [
+                  "nfga-age"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "不过，20 岁并不是一刀切的门槛。据华西都市报报道，中国大熊猫保护研究中心的兽医邓林华介绍，20 岁以上的大熊猫被称为老年大熊猫，但是否需要搬进专门的康养区，要看个体的健康状况。"
+                },
+                "refs": [
+                  "wcc-elderly"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "“熊猫养老院”"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "同一篇报道介绍，中国大熊猫保护研究中心都江堰基地设有康养区，报道称之为全球唯一的“熊猫养老院”。这里住着 10 只老年大熊猫，平均年龄接近 30 岁，年纪最大的“白云”已经 34 岁。它们都不同程度地患有老年大熊猫常见的高血压和白内障。兽医说，随着大熊猫越来越长寿，出现的老年病也越来越多。"
+                },
+                "refs": [
+                  "wcc-elderly"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "照顾它们很讲究。康养区每天记录每只大熊猫的体重和排便，每周量两次血压；大熊猫一天进食 4 次，药物要塞在窝窝头、胡萝卜或苹果里才肯吃。老年大熊猫普遍牙口不好，剪竹叶、剥竹笋是饲养员每天的必修课。31 岁的“海子”来自野外，曾创下大熊猫最高龄产妇的纪录，如今每天要把竹子剥好了给它。"
+                },
+                "refs": [
+                  "wcc-elderly"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "野外：寄生虫是大麻烦"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "国家林草局的科普把大熊猫的疾病分为内科、外科、产科、传染病和寄生虫病几大类，并指出野生大熊猫最常见的是寄生虫病和胃肠道疾病。"
+                },
+                "refs": [
+                  "nfga-201"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "成都大熊猫繁育研究基地介绍，科学家已在大熊猫身上发现 22 种寄生虫，最常见的有蛔虫病、痒螨病、蠕形螨病和蜱病。基地抢救的野外大熊猫几乎每次蛔虫感染率都达到 100%，曾有一只体内多达 1605 条蛔虫；寄生虫病是野生大熊猫消瘦和死亡的主要病因之一。圈养大熊猫有良好的医疗护理，感染率和感染强度都低得多。"
+                },
+                "refs": [
+                  "cpb-disease"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "救治野外病弱个体，也为今天的圈养种群打下了基础。成都基地介绍，上世纪 80 到 90 年代，基地先后抢救治疗野外生病大熊猫 63 只，治愈 58 只；这些大熊猫后来被送往国内外各圈养单位，构成了全国圈养大熊猫种群的基础。"
+                },
+                "refs": [
+                  "cpb-disease"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "圈养：防住传染病"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "对圈养种群威胁最大的是传染病。成都基地写道，[[canine-distemper|犬瘟热]]是一种急性、高度接触性、高致死性的传染病，近年来在多地大熊猫保护机构暴发过，是威胁圈养大熊猫种群安全的第一大烈性传染病。目前专家已筛选出预防疫苗。上世纪 80 年代，因抢救野外大熊猫而传入圈养种群的侵袭性大肠杆菌 O152 引起的出血性肠炎也曾导致大熊猫死亡；轮状病毒、细小病毒等也都给圈养种群造成过很大伤害。"
+                },
+                "refs": [
+                  "cpb-disease"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "常见病还有消化系统和呼吸系统的内科病。成都基地举过一个例子：2016 年 12 月，大熊猫“囡囡”腹痛、排不出粪便，被诊断为肠梗阻，兽医通过手术从它肠道里取出 8 个粪团，共 2.8 公斤，之后它顺利康复。"
+                },
+                "refs": [
+                  "cpb-disease"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "给大熊猫看病并不容易。成都基地介绍，大熊猫属于食肉目，咬肌发达、牙齿锋利，发起怒来非常凶猛，即便生病也难以接近，兽医通常要先麻醉，才能做检查、输液和手术。"
+                },
+                "refs": [
+                  "cpb-disease"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "pullQuote": {
+        "zh": "野生大熊猫约活 15 到 20 年，人工照料下约 30 年",
+        "drawnFromBody": true
+      },
+      "keyFacts": [
+        {
+          "text": {
+            "zh": "野生大熊猫约活 15 到 20 年，圈养约 30 年。"
+          },
+          "refs": [
+            "si"
+          ]
+        },
+        {
+          "text": {
+            "zh": "重庆动物园的“新星”活到 38 岁零 4 个月。"
+          },
+          "refs": [
+            "xinhua-xinxing"
+          ]
+        },
+        {
+          "text": {
+            "zh": "大熊猫 20 岁以上进入老年，年龄约乘以 3.5 可类比人类年龄。"
+          },
+          "refs": [
+            "nfga-age"
+          ]
+        },
+        {
+          "text": {
+            "zh": "野外大熊猫蛔虫感染率常达 100%。"
+          },
+          "refs": [
+            "cpb-disease"
+          ]
+        },
+        {
+          "text": {
+            "zh": "犬瘟热是威胁圈养大熊猫的第一大烈性传染病。"
+          },
+          "refs": [
+            "cpb-disease"
+          ]
+        }
+      ],
+      "glossaryTerms": [
+        {
+          "slug": "canine-distemper",
+          "label": "犬瘟热",
+          "inLearningJson": true
+        }
+      ],
+      "images": [
+        {
+          "role": "hero",
+          "type": "wanted",
+          "pandaSlug": null,
+          "shot": {
+            "zh": "兽医在麻醉后为一只大熊猫做体检的画面。"
+          },
+          "caption": {
+            "zh": "兽医为大熊猫体检（待配图）。"
+          },
+          "captionRefs": []
+        }
+      ],
+      "references": [
+        {
+          "id": "si",
+          "title": "Giant panda（史密森尼国家动物园动物介绍页）",
+          "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-201",
+          "title": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "cpb-disease",
+          "title": "疾病防治",
+          "publisher": "成都大熊猫繁育研究基地",
+          "url": "https://www.panda.org.cn/cn/animal/preventionandcure/",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "xinhua-xinxing",
+          "title": "全球最年长圈养大熊猫“新星”去世（2020-12-21，新华社）",
+          "publisher": "红网（转载新华社）",
+          "url": "https://moment.rednet.cn/content/2020/12/21/8740899.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-age",
+          "title": "大熊猫科普｜大熊猫年龄与人类年龄的类比（2024-07-08）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/dzw/574916.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "wcc-elderly",
+          "title": "“熊猫养老院”里的宝贝（2025-10-30，华西都市报）",
+          "publisher": "华西都市报",
+          "url": "https://www.wccdaily.com.cn/shtml/hxdsb/20251030/237951.shtml",
+          "citedOn": "2026-11-04"
+        }
+      ],
+      "relatedArticles": [
+        "captive-breeding",
+        "endangered-to-vulnerable"
+      ],
+      "stats": {
+        "bodyChars": 1375,
+        "bodyCjkChars": 1117,
+        "sectionCount": 5,
+        "referenceCount": 6
+      }
+    },
+    {
+      "slug": "field-survey-methods",
+      "status": "published",
+      "category": "保护",
+      "sourceTopicSlug": "panda-behavior",
+      "title": {
+        "zh": "从一堆粪便数大熊猫：野外调查怎么做"
+      },
+      "dek": {
+        "zh": "野生大熊猫很少露面，全国调查却能数出 1864 只。调查队员靠的，是竹林里留下的粪便。"
+      },
+      "body": {
+        "sections": [
+          {
+            "heading": {
+              "zh": "约十年一次的“家底”普查"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "全国大熊猫调查由国家林业主管部门组织，约每十年一次，从上世纪 70 年代启动以来已完成四次。国家林业局公布，第四次调查于 2011 年启动、2014 年结束。调查内容包括野外种群、栖息地、同域分布动物、干扰因素、保护管理、圈养种群和分布区经济社会状况七个方面，范围涉及四川、陕西、甘肃三省 62 个县（市、区），调查面积近 436 万公顷，共投入 2000 多人，完成调查样线 20513 条、植被调查样方 11901 个。"
+                },
+                "refs": [
+                  "thepaper-survey",
+                  "nfga-4th"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "走样线，找痕迹"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "澎湃新闻采访四川调查分队时介绍，四川省林业厅从保护区、林业部门和高校抽调了 200 余人，其中 100 人是长期固定人员；分队从若尔盖县一路南下到雷波县，两地车程就有 843.5 公里。工作人员事先在地图上以 2 平方公里为单位划出网格并编号，尽量每天完成一个网格；距离远的网格，队员要带足食物和帐篷在野外露营。仅在四川，队员们就走过了 10000 多个网格。"
+                },
+                "refs": [
+                  "thepaper-survey"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "在每个网格里，队员要记录地形、植被、竹子分布和海拔，搜寻大熊猫的粪便、卧迹、洞穴和爪痕等踪迹。GPS、罗盘、地形图、卷尺和游标卡尺都是必备品；这次还多了手持 PDA，可以直接录入数据。真正见到大熊猫很难：四川分队 200 多人一年半的调查里，只发现过 4 次活体野生大熊猫，12 名队员有幸目睹。队员们倒是在调查中见到了藏酋猴、黑熊、毛冠鹿、林麝、小熊猫、豹猫等动物的踪迹。"
+                },
+                "refs": [
+                  "thepaper-survey"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "量竹节"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "大熊猫消化竹子的能力有限，粪便里夹着没嚼碎的竹节。全国调查采用胡锦矗创立的[[bite-size-method|咬节法]]：测量粪便里竹节的长度，两份样本的咬节平均值相差超过 2 毫米，就判为两只个体。四川调查队员解释，大熊猫横着咬竹子，下颌越宽咬出的竹节越长。报道称 2 毫米是比较保险的标准，据此得出的数量也偏保守。"
+                },
+                "refs": [
+                  "thepaper-survey"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "竹节还能透露年龄。报道引述西华师范大学的研究者说，年龄大的大熊猫牙齿磨损严重，咬过的竹节较宽，未成年的则较窄；但幼仔以吃竹叶为主，粪便里很难找到咬节，所以幼年大熊猫往往不在咬节法的统计范围之内。"
+                },
+                "refs": [
+                  "thepaper-survey"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "验 DNA"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "第四次调查首次引入了[[fecal-dna|粪便 DNA]]分析：从新鲜粪便中的肠壁细胞提取 DNA，可以识别个体，并分析性别和亲缘关系。队员把粪便用酒精浸泡，收集的脱洗液冷藏保存，最后统一送到中国科学院动物研究所做 DNA 识别和分析。"
+                },
+                "refs": [
+                  "nfga-4th",
+                  "thepaper-survey"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "DNA 方法更精确。报道提到，2003 年到 2005 年科研人员曾在王朗自然保护区用 DNA 法调查，结果显示那里生活着 66 只大熊猫，比第三次调查的结果高出两倍。这种方法全名“非损伤性 DNA 数量调查法”，2011 年 6 月四川的第四次调查启动后，首次在王朗保护区正式投入使用。"
+                },
+                "refs": [
+                  "thepaper-survey"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": {
+              "zh": "调查数出了什么"
+            },
+            "paragraphs": [
+              {
+                "text": {
+                  "zh": "国家林业局公布，截至 2013 年底，全国野生大熊猫有 1864 只，比第三次调查增加 268 只，增长 16.8%；其中四川 1387 只，占 74.4%。圈养大熊猫达到 375 只。野生大熊猫栖息地面积 258 万公顷，比第三次调查增长 11.8%。"
+                },
+                "refs": [
+                  "nfga-4th"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "调查也评估了保护成效：已有 66.8% 的野生大熊猫和 53.8% 的大熊猫栖息地被纳入自然保护区网络，有大熊猫分布的保护区增加到 67 处。"
+                },
+                "refs": [
+                  "nfga-4th"
+                ]
+              },
+              {
+                "text": {
+                  "zh": "但调查同样揭示了隐忧。澎湃新闻援引调查结果报道，仍有 46.2% 的栖息地、33.2% 的种群在自然保护区体系之外；全国 33 个局域种群中，有 24 个小种群面临较高的生存风险，这些小种群只占全国大熊猫个体的 12%。盗猎、采割等一般干扰总体在下降，采矿、路网扩张、水电开发和旅游建设等大型干扰的影响却日趋严峻。"
+                },
+                "refs": [
+                  "thepaper-survey"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "pullQuote": {
+        "zh": "两份样本的咬节平均值相差超过 2 毫米，就判为两只个体",
+        "drawnFromBody": true
+      },
+      "keyFacts": [
+        {
+          "text": {
+            "zh": "全国大熊猫调查约每十年一次，已完成四次。"
+          },
+          "refs": [
+            "thepaper-survey"
+          ]
+        },
+        {
+          "text": {
+            "zh": "第四次调查投入 2000 多人，完成样线 20513 条。"
+          },
+          "refs": [
+            "nfga-4th"
+          ]
+        },
+        {
+          "text": {
+            "zh": "咬节平均值相差超过 2 毫米判为不同个体。"
+          },
+          "refs": [
+            "thepaper-survey"
+          ]
+        },
+        {
+          "text": {
+            "zh": "第四次调查首次引入粪便 DNA 分析。"
+          },
+          "refs": [
+            "nfga-4th"
+          ]
+        },
+        {
+          "text": {
+            "zh": "截至 2013 年底，全国野生大熊猫 1864 只。"
+          },
+          "refs": [
+            "nfga-4th",
+            "thepaper-survey"
+          ]
+        }
+      ],
+      "glossaryTerms": [
+        {
+          "slug": "bite-size-method",
+          "label": "咬节法",
+          "inLearningJson": true
+        },
+        {
+          "slug": "fecal-dna",
+          "label": "粪便 DNA",
+          "inLearningJson": true
+        }
+      ],
+      "images": [
+        {
+          "role": "hero",
+          "type": "wanted",
+          "pandaSlug": null,
+          "shot": {
+            "zh": "调查队员在竹林中蹲下用尺子测量大熊猫粪便里竹节长度的画面。"
+          },
+          "caption": {
+            "zh": "调查队员测量粪便中的竹节（待配图）。"
+          },
+          "captionRefs": []
+        }
+      ],
+      "references": [
+        {
+          "id": "thepaper-survey",
+          "title": "大熊猫“家底”普查细节揭秘：千里找粪便，检测DNA（2015-02-28）",
+          "publisher": "澎湃新闻",
+          "url": "https://www.thepaper.cn/newsDetail_forward_1306421",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "id": "nfga-4th",
+          "title": "全国第四次大熊猫调查主要结果（2011-2014年）（2015-03-02）",
+          "publisher": "国家林业和草原局政府网",
+          "url": "https://www.forestry.gov.cn/c/www/lczy/38173.jhtml",
+          "citedOn": "2026-11-04"
+        }
+      ],
+      "relatedArticles": [
+        "endangered-to-vulnerable",
+        "back-to-the-wild"
+      ],
+      "stats": {
+        "bodyChars": 1419,
+        "bodyCjkChars": 1062,
+        "sectionCount": 5,
+        "referenceCount": 2
+      }
     }
   ],
   "cards": [
@@ -3636,6 +5247,158 @@
             "en": ""
           },
           "url": "https://ioz.cas.cn/gb2018/xwdt/kyjz/202403/t20240307_7019225.html",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "solitary-life",
+      "status": "published",
+      "title": {
+        "zh": "独来独往的大熊猫",
+        "en": ""
+      },
+      "summary": {
+        "zh": "成年大熊猫大多独自生活，靠气味、叫声和偶尔相遇保持联系。",
+        "en": ""
+      },
+      "body": {
+        "zh": "成年大熊猫通常独来独往。它们并非毫无往来：史密森尼国家动物园介绍，研究发现局部种群里 7 到 15 只大熊猫可能组成一个“群体”，共用一片领地，雄性的家域几乎完全重叠，雌性重叠得少。幼仔会跟着妈妈生活一年半到三年。",
+        "en": ""
+      },
+      "sources": [
+        {
+          "title": {
+            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
+            "en": ""
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "scent-marking",
+      "status": "published",
+      "title": {
+        "zh": "气味标记",
+        "en": ""
+      },
+      "summary": {
+        "zh": "大熊猫靠涂抹肛周腺分泌物和尿液来“留言”，雄性有时还会倒立着标记。",
+        "en": ""
+      },
+      "body": {
+        "zh": "在雾气弥漫的竹林里彼此看不见，大熊猫大多数交流靠气味。它们把肛周腺分泌物和尿液涂在树干、石头和常走的路上。非发情季节，陌生的气味会让来者走开；发情季节，雌性的气味会吸引雄性。雄性还会倒立在树干上做标记。",
+        "en": ""
+      },
+      "sources": [
+        {
+          "title": {
+            "zh": "【熊猫知识】气味标记（2025-06-05）",
+            "en": ""
+          },
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
+            "en": ""
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Giant panda（亚特兰大动物园动物介绍页）",
+            "en": ""
+          },
+          "url": "https://zooatlanta.org/animal/giant-panda/",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "panda-calls",
+      "status": "published",
+      "title": {
+        "zh": "大熊猫的叫声",
+        "en": ""
+      },
+      "summary": {
+        "zh": "大熊猫平时安静，发情季节和相遇时会发出咩叫、吠声、鸟叫等多种声音。",
+        "en": ""
+      },
+      "body": {
+        "zh": "大熊猫独处或玩耍时多半不出声。到了发情季节，它们会用丰富的叫声表达从示好到发怒的情绪。国家林草局科普列出的叫声包括牛叫声、羊叫声、呻吟声、吠声、唧唧声、嗥叫、鸟叫和吱吱叫等。",
+        "en": ""
+      },
+      "sources": [
+        {
+          "title": {
+            "zh": "【熊猫知识】气味标记（2025-06-05）",
+            "en": ""
+          },
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
+            "en": ""
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "seasonal-migration",
+      "status": "published",
+      "title": {
+        "zh": "跟着竹子搬家",
+        "en": ""
+      },
+      "summary": {
+        "zh": "大熊猫不冬眠，而是随季节在高低海拔之间往返，找当季能吃的竹子。",
+        "en": ""
+      },
+      "body": {
+        "zh": "竹子四季常绿，大熊猫不用冬眠。国家林草局科普介绍，冬季它们通常从高海拔迁到气温较高、食物较足的中低海拔。一项历时 12 年的 GPS 项圈研究发现，大熊猫每年会回到相同或相近的冬季和夏季活动区，像是记住了哪里有可靠的食物。",
+        "en": ""
+      },
+      "sources": [
+        {
+          "title": {
+            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Stable seasonal migration patterns in giant pandas（2023）",
+            "en": ""
+          },
+          "url": "https://doi.org/10.24272/j.issn.2095-8137.2022.421",
           "citedOn": "2026-11-04"
         }
       ]
@@ -3986,6 +5749,98 @@
             "en": ""
           },
           "url": "https://www.chinanews.com.cn/sh/2018/01-03/8415623.shtml",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "panda-behavior",
+      "status": "published",
+      "title": {
+        "zh": "大熊猫的习性",
+        "en": ""
+      },
+      "summary": {
+        "zh": "大熊猫独来独往，却并不孤僻：它们用气味和叫声交流，随季节在山间上下迁移，靠竹子过完一生。",
+        "en": ""
+      },
+      "sections": [
+        {
+          "heading": {
+            "zh": "独居与交流",
+            "en": ""
+          },
+          "body": {
+            "zh": "成年大熊猫大多独自生活，但会通过气味标记、叫声和偶尔相遇互相联系。竹林茂密、视线受阻，所以气味比表情更管用。",
+            "en": ""
+          }
+        },
+        {
+          "heading": {
+            "zh": "季节性迁移",
+            "en": ""
+          },
+          "body": {
+            "zh": "大熊猫不冬眠。冬季下到中低海拔，天暖后上到高海拔，每年常回到相同的冬夏活动区。",
+            "en": ""
+          }
+        },
+        {
+          "heading": {
+            "zh": "寿命与健康",
+            "en": ""
+          },
+          "body": {
+            "zh": "史密森尼国家动物园估计野生大熊猫约活 15 到 20 年，人工照料下约 30 年。野外最常见的是寄生虫病和胃肠道疾病，圈养种群最怕犬瘟热。",
+            "en": ""
+          }
+        }
+      ],
+      "cardSlugs": [
+        "solitary-life",
+        "scent-marking",
+        "panda-calls",
+        "seasonal-migration"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
+            "en": ""
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "【熊猫知识】气味标记（2025-06-05）",
+            "en": ""
+          },
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Stable seasonal migration patterns in giant pandas（2023）",
+            "en": ""
+          },
+          "url": "https://doi.org/10.24272/j.issn.2095-8137.2022.421",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "疾病防治",
+            "en": ""
+          },
+          "url": "https://www.panda.org.cn/cn/animal/preventionandcure/",
           "citedOn": "2026-11-04"
         }
       ]
@@ -4395,6 +6250,233 @@
             "en": ""
           },
           "url": "https://www.news.cn/politics/2021-10/11/c_1127946984.htm",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "home-range",
+      "status": "published",
+      "term": {
+        "zh": "家域",
+        "en": ""
+      },
+      "definition": {
+        "zh": "一只动物日常觅食、休息和活动的范围。大熊猫的家域会彼此重叠：同一群体里雄性的家域几乎完全重叠，雌性的重叠少得多。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "scent-mark"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
+            "en": ""
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "scent-mark",
+      "status": "published",
+      "term": {
+        "zh": "气味标记",
+        "en": ""
+      },
+      "definition": {
+        "zh": "大熊猫把肛周腺分泌物或尿液涂在树干、石头和常走的路上，用气味告诉同类“我来过”。这是它们最主要的交流方式。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "anal-gland",
+        "home-range"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "【熊猫知识】气味标记（2025-06-05）",
+            "en": ""
+          },
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
+            "en": ""
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "anal-gland",
+      "status": "published",
+      "term": {
+        "zh": "肛周腺",
+        "en": ""
+      },
+      "definition": {
+        "zh": "大熊猫尾巴下方的腺体，分泌物带有个体气味，是做气味标记的主要材料。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "scent-mark"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "【熊猫知识】气味标记（2025-06-05）",
+            "en": ""
+          },
+          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "bleat",
+      "status": "published",
+      "term": {
+        "zh": "咩叫",
+        "en": ""
+      },
+      "definition": {
+        "zh": "大熊猫发出的类似羊叫的声音，常在发情季节、个体相遇时出现，属于较友好的叫声。",
+        "en": ""
+      },
+      "relatedSlugs": [],
+      "sources": [
+        {
+          "title": {
+            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
+            "en": ""
+          },
+          "url": "https://nationalzoo.si.edu/animals/giant-panda",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "altitudinal-migration",
+      "status": "published",
+      "term": {
+        "zh": "垂直迁移",
+        "en": ""
+      },
+      "definition": {
+        "zh": "大熊猫随季节在不同海拔之间往返：冬季下到气温较高的中低海拔，天暖后再上到高海拔，跟着可吃的竹子走。",
+        "en": ""
+      },
+      "relatedSlugs": [],
+      "sources": [
+        {
+          "title": {
+            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
+            "en": ""
+          },
+          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
+          "citedOn": "2026-11-04"
+        },
+        {
+          "title": {
+            "zh": "Stable seasonal migration patterns in giant pandas（2023）",
+            "en": ""
+          },
+          "url": "https://doi.org/10.24272/j.issn.2095-8137.2022.421",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "bite-size-method",
+      "status": "published",
+      "term": {
+        "zh": "咬节法",
+        "en": ""
+      },
+      "definition": {
+        "zh": "胡锦矗创立的野外调查方法：测量粪便里未嚼碎竹节的长度，平均值相差超过 2 毫米就判为两只不同的大熊猫。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "fecal-dna"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "大熊猫“家底”普查细节揭秘：千里找粪便，检测DNA（2015-02-28）",
+            "en": ""
+          },
+          "url": "https://www.thepaper.cn/newsDetail_forward_1306421",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "fecal-dna",
+      "status": "published",
+      "term": {
+        "zh": "粪便 DNA",
+        "en": ""
+      },
+      "definition": {
+        "zh": "从新鲜粪便里的肠壁细胞提取 DNA，用来识别个体、性别和亲缘关系，不用见到大熊猫本身。",
+        "en": ""
+      },
+      "relatedSlugs": [
+        "bite-size-method"
+      ],
+      "sources": [
+        {
+          "title": {
+            "zh": "大熊猫“家底”普查细节揭秘：千里找粪便，检测DNA（2015-02-28）",
+            "en": ""
+          },
+          "url": "https://www.thepaper.cn/newsDetail_forward_1306421",
+          "citedOn": "2026-11-04"
+        }
+      ]
+    },
+    {
+      "slug": "canine-distemper",
+      "status": "published",
+      "term": {
+        "zh": "犬瘟热",
+        "en": ""
+      },
+      "definition": {
+        "zh": "由犬瘟热病毒引起的急性、高度接触性、高致死性传染病，成都基地称它是威胁圈养大熊猫的第一大烈性传染病。",
+        "en": ""
+      },
+      "relatedSlugs": [],
+      "sources": [
+        {
+          "title": {
+            "zh": "疾病防治",
+            "en": ""
+          },
+          "url": "https://www.panda.org.cn/cn/animal/preventionandcure/",
           "citedOn": "2026-11-04"
         }
       ]

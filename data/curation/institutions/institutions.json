@@ -34,20 +34,36 @@
               {
                 "topic": "getting_there",
                 "text": {
-                  "zh": "距市中心天府广场约 10 公里，距双流国际机场约 30 公里，距天府国际机场约 70 公里。",
-                  "en": "About 10 km from Tianfu Square in the city centre, 30 km from Shuangliu airport and 70 km from Tianfu airport."
+                  "zh": "距市中心天府广场约 10 公里。坐地铁 3 号线到熊猫大道站 A 口，换乘 408 路接驳车到南门。"
                 }
               },
               {
                 "topic": "good_to_know",
                 "text": {
-                  "zh": "开放时间和门票以基地官网公告为准。",
-                  "en": "Check the base's official website for current opening hours and tickets."
+                  "zh": "所有游客须提前实名预约，最早提前 14 天；60 岁以上和 6 岁以下或身高不到 1.3 米的儿童免票，也要预约。门票不含都江堰熊猫谷。"
+                }
+              },
+              {
+                "topic": "best_time",
+                "text": {
+                  "zh": "大熊猫上午更活跃。3 月至 10 月 7:30 起入园，11 月至 2 月 8:00 起入园；买下午票的游客别提前到。"
+                }
+              },
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "大熊猫六号别墅区每周一闭馆（法定节假日除外）。禁止闪光拍照和投喂，部分区域可能因天气或动物护理临时关闭。"
                 }
               }
             ],
-            "verifiedOn": "2026-10-23",
-            "sourceUrls": ["https://www.panda.org.cn/"]
+            "verifiedOn": "2026-11-04",
+            "sourceUrls": [
+              "https://www.panda.org.cn/",
+              "https://m.panda.org.cn/cn/service/opentime/",
+              "https://www.panda.org.cn/yd/service/",
+              "https://www.panda.org.cn/cn/service/transit/",
+              "https://www.panda.org.cn/cn/service/notice/"
+            ]
           }
         }
       ]
@@ -84,20 +100,44 @@
               {
                 "topic": "good_to_know",
                 "text": {
-                  "zh": "2004 年开放，2008 年地震后接收了从卧龙转移的大熊猫。开放时间和门票以中心公告为准。",
-                  "en": "Opened in 2004 and took in pandas moved from Wolong after the 2008 earthquake. Check the centre's notices for current hours and tickets."
+                  "zh": "2003 年 12 月 28 日正式开园，基地位于碧峰峡景区内。开放时间和门票以中心和景区公告为准。"
                 }
               }
             ],
-            "verifiedOn": "2026-10-23",
-            "sourceUrls": ["https://en.wikipedia.org/wiki/Bifengxia_Panda_Base"]
+            "verifiedOn": "2026-11-04",
+            "sourceUrls": [
+              "https://en.wikipedia.org/wiki/Bifengxia_Panda_Base",
+              "https://www.chinanews.com.cn/n/2003-12-29/26/385977.html",
+              "https://www.chinanews.com.cn/n/2003-12-30/26/386405.html"
+            ]
           }
         },
         {
           "slug": "ccrcgp-wolong-shenshuping-base",
           "legacySlugs": ["ccrcgp-wolong-gengda-base"],
           "longitude": 103.3182,
-          "latitude": 31.1032
+          "latitude": 31.1032,
+          "visitGuide": {
+            "address": {
+              "zh": "四川省卧龙自然保护区耿达镇神树坪"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "2016 年 5 月 11 日开园，由香港特区援建，设有大熊猫圈舍、熊猫幼儿园、繁育中心、大熊猫医院、野化培训区、科普教育中心和游客接待中心。开放时间和门票以中心公告为准。"
+                }
+              },
+              {
+                "topic": "getting_there",
+                "text": {
+                  "zh": "基地在耿达镇神树坪。从映秀沿省道 303 映秀至卧龙段前往，途经耿达镇。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-04",
+            "sourceUrls": ["https://www.info.gov.hk/gia/general/201605/11/P201605110928.htm"]
+          }
         }
       ]
     },
@@ -139,9 +179,44 @@
               "zh": "亚洲步道（Asia Trail）",
               "en": "Asia Trail"
             },
-            "tips": [],
-            "verifiedOn": "2026-10-23",
-            "sourceUrls": ["https://nationalzoo.si.edu/animals/giant-panda"]
+            "tips": [
+              {
+                "topic": "finding_pandas",
+                "text": {
+                  "zh": "宝力和青宝住在亚洲步道尽头的大卫·鲁宾斯坦家族大熊猫馆。"
+                }
+              },
+              {
+                "topic": "best_time",
+                "text": {
+                  "zh": "大熊猫清晨最活跃，上午来看最好。闭园前排队可能提前截止，每次参观限时约 10 分钟。"
+                }
+              },
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "入园免费，但每人都需要预约入园通行证；看大熊猫不另收费。室内展馆比园区晚一小时开门。"
+                }
+              },
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "除 12 月 25 日外每天开放。3 月 15 日至 9 月 14 日园区 8:00 至 18:00，其余时间 8:00 至 16:00。"
+                }
+              },
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "来不了也能看：动物园官网的熊猫直播每天美东时间 7:00 至 19:00 播出。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-04",
+            "sourceUrls": [
+              "https://nationalzoo.si.edu/animals/giant-panda",
+              "https://nationalzoo.si.edu/animals/giant-panda-faqs",
+              "https://nationalzoo.si.edu/visit/hours"
+            ]
           }
         }
       ]
@@ -180,9 +255,38 @@
               "zh": "Arthur M. Blank Panda Grove（11 月 6 日开放）",
               "en": "Arthur M. Blank Panda Grove (opens November 6)"
             },
-            "tips": [],
-            "verifiedOn": "2026-10-23",
-            "sourceUrls": ["https://zooatlanta.org/"]
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "平平和福双 2026 年 9 月 27 日从成都大熊猫繁育研究基地抵达，目前在检疫，11 月 6 日起对公众开放。"
+                }
+              },
+              {
+                "topic": "finding_pandas",
+                "text": {
+                  "zh": "大熊猫住在阿瑟·布兰克大熊猫林，翻新后的室内馆各有攀爬架和水池。"
+                }
+              },
+              {
+                "topic": "best_time",
+                "text": {
+                  "zh": "平日 9:00 至 17:00 开放，15:30 停止入园；11 月 6 日开馆当天 10:30 开园。"
+                }
+              },
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "门票按日期动态定价，现场购买最贵，提前网上买更划算；3 岁以下免费。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-04",
+            "sourceUrls": [
+              "https://zooatlanta.org/",
+              "https://zooatlanta.org/panda-cam/faqs-giant-panda/",
+              "https://zooatlanta.org/tickets/"
+            ]
           }
         }
       ]
@@ -227,15 +331,34 @@
               {
                 "topic": "good_to_know",
                 "text": {
-                  "zh": "2026 年 1 月 27 日起园内没有大熊猫。",
-                  "en": "There have been no giant pandas at the zoo since January 27, 2026."
+                  "zh": "园内的大熊猫已于 2026 年 1 月 27 日启程回国，目前没有大熊猫。"
+                }
+              },
+              {
+                "topic": "finding_pandas",
+                "text": {
+                  "zh": "原大熊猫馆“熊猫之森”2020 年开放，现在还养着小熊猫，馆内有大熊猫的介绍展板。"
+                }
+              },
+              {
+                "topic": "getting_there",
+                "text": {
+                  "zh": "有正门、弁天门、池之端门三个门。JR 上野站公园口步行约 5 分钟，京成上野站约 4 分钟。"
+                }
+              },
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "园内没有停车场，周末人多，建议坐电车前往。"
                 }
               }
             ],
-            "verifiedOn": "2026-10-23",
+            "verifiedOn": "2026-11-04",
             "sourceUrls": [
               "https://www.tokyo-zoo.net/english/ueno/",
-              "https://english.adnkronos.com/2026/01/25/people-bid-farewell-to-ueno-zoo-pandas-on-final-viewing-day/"
+              "https://english.adnkronos.com/2026/01/25/people-bid-farewell-to-ueno-zoo-pandas-on-final-viewing-day/",
+              "https://www.tokyo-zoo.net/ueno/visitor-info/access/index.html",
+              "https://www.tokyo-zoo.net/ueno/news/6493/index.html"
             ]
           }
         }
