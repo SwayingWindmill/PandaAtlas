@@ -1,2 +1,4 @@
 apps/web/public/_headers text eol=lf
 .gitignore text eol=lf
+# Shell scripts run in Git Bash, WSL and CI; a CRLF checkout breaks them on the first line.
+*.sh text eol=lf
