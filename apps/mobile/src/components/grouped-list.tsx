@@ -247,7 +247,7 @@ export function SwitchRow({
   );
 }
 
-/** The iOS switch's look: a 51×31 pill with a 27pt knob, in the tint when on. Decoration for SwitchRow. */
+/** The iOS switch's look: a 51×31 pill with a 27pt knob, in ink when on. Decoration for SwitchRow. */
 function SwitchTrack({ on }: { on: boolean }) {
   const reduced = useReducedMotion();
   const { width, height, knob } = component.switchTrack;
@@ -261,7 +261,7 @@ function SwitchTrack({ on }: { on: boolean }) {
       aria-hidden
       accessible={false}
       importantForAccessibility="no-hide-descendants"
-      className={on ? "bg-primary" : "bg-input"}
+      className={on ? "bg-foreground dark:bg-graphic" : "bg-input"}
       style={{ width, height, borderRadius: height / 2, transitionProperty: "backgroundColor", ...transition }}
     >
       <Animated.View

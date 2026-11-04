@@ -1,8 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { type Href, router } from "expo-router";
-import { Pressable, View } from "react-native";
+import { Pressable } from "react-native";
 
 import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
-import { FileText, Info, Lock, SunMoon } from "@/components/icons";
+import { Database, FileText, Lock, Moon } from "@/components/icons";
 import { Page } from "@/components/page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -13,33 +14,27 @@ import { OnThisDaySwitch } from "@/features/on-this-day/settings-section";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
+import { api } from "@/lib/api";
 
-const AVATAR = 52;
+const AVATAR = 48;
 
 /** The account as one row at the head of 设置, as Settings shows the Apple Account; it opens 账号与数据. */
-function AccountRow({ name, detail, href, hint }: { name: string | null; detail: string | null; href: Href; hint: string }) {
+function AccountRow({ name, href, hint }: { name: string | null; href: Href; hint: string }) {
   // At accessibility sizes the avatar sits above the name so the name keeps the full width.
   const stacked = useStacked();
   return (
     <ListSection>
       <Pressable
         role="link"
-        accessibilityLabel={[name ?? "登录", detail].filter(Boolean).join("，")}
+        accessibilityLabel={name ?? "登录"}
         accessibilityHint={hint}
         onPress={() => router.push(href)}
         className={`min-h-11 gap-row px-inset py-stack-tight active:bg-accent ${stacked ? "flex-col items-start" : "flex-row items-center"}`}
       >
-        <ProfileAvatar name={name} size={AVATAR} />
-        <View className={`min-w-0 gap-hair-gap ${stacked ? "self-stretch" : "flex-1"}`}>
-          <Text variant="headline" numberOfLines={2}>
-            {name ?? "登录"}
-          </Text>
-          {detail ? (
-            <Text variant="footnote" className="text-muted-foreground" numberOfLines={2}>
-              {detail}
-            </Text>
-          ) : null}
-        </View>
+        <ProfileAvatar name={name} size={AVATAR} quiet />
+        <Text variant="headline" numberOfLines={2} className={stacked ? "self-stretch" : "min-w-0 flex-1"}>
+          {name ?? "登录"}
+        </Text>
         {stacked ? null : <Chevron />}
       </Pressable>
     </ListSection>
@@ -50,10 +45,25 @@ function SignedInRow({ email }: { email: string | null }) {
   const { profile } = useProfile();
   if (!profile) return <Skeleton className="h-20 w-full rounded-group" accessibilityLabel="正在加载" />;
   const name = displayName(profile, email);
-  return <AccountRow name={name} detail={email && email !== name ? email : null} href="/account" hint="打开账号与数据" />;
+  return <AccountRow name={name} href="/account" hint="打开账号与数据" />;
 }
 
-/** 设置: the account, the 今天页 switches, 外观, the about and legal pages, and 退出登录. */
+/** The published data release, said at the foot of 设置. Nothing when the stats cannot be read. */
+function DataVersion() {
+  const { data } = useQuery({
+    queryKey: ["stats"],
+    queryFn: async () => (await api.GET("/api/v2/stats")).data ?? null,
+  });
+  const version = data?.release.version;
+  if (!version) return null;
+  return (
+    <Text variant="footnote" className="text-center tabular-nums text-muted-foreground">
+      {`吱熊猫 · 数据版本 ${version}`}
+    </Text>
+  );
+}
+
+/** 设置: the account, 外观, the 提醒 switches, the source and legal pages, and 退出登录. */
 export default function SettingsScreen() {
   const { state, signOut } = useSession();
   const [appearance] = useAppearance();
@@ -63,7 +73,7 @@ export default function SettingsScreen() {
       {state.status === "loading" ? <Skeleton className="h-20 w-full rounded-group" accessibilityLabel="正在加载" /> : null}
       {signedIn ? <SignedInRow email={state.email} /> : null}
       {state.status === "signedOut" ? (
-        <AccountRow name={null} detail={null} href="/sign-in" hint="打开登录" />
+        <AccountRow name={null} href="/sign-in" hint="打开登录" />
       ) : null}
       {state.status === "unavailable" ? (
         <Text variant="subheadline" className="text-center text-muted-foreground">
@@ -73,20 +83,18 @@ export default function SettingsScreen() {
       <ListSection>
         <ListCell
           label="外观"
-          glyph={SunMoon}
+          glyph={Moon}
           meta={APPEARANCES.find((option) => option.value === appearance)?.label}
           href="/appearance"
           last
         />
       </ListSection>
-      <ListSection title="今天页">
+      <ListSection title="提醒">
         <OnThisDaySwitch separator />
         <MilestoneSwitch />
       </ListSection>
       <ListSection>
-        <ListCell label="内容和照片来源" glyph={Info} href="/about" last />
-      </ListSection>
-      <ListSection>
+        <ListCell label="数据来源" glyph={Database} href="/about" />
         <LegalRow id="privacy" glyph={Lock} />
         <LegalRow id="terms" glyph={FileText} last />
       </ListSection>
@@ -95,6 +103,7 @@ export default function SettingsScreen() {
           <ListCell label="退出登录" tone="destructive" onPress={() => void signOut()} last />
         </ListSection>
       ) : null}
+      <DataVersion />
     </Page>
   );
 }

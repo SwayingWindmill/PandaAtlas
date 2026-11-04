@@ -1,5 +1,5 @@
 import { ListSection, SwitchRow } from "@/components/grouped-list";
-import { Flag } from "@/components/icons";
+import { Star } from "@/components/icons";
 import { tapHaptic } from "@/lib/haptics";
 
 import { MILESTONE_CONFIG } from "./milestones";
@@ -14,7 +14,7 @@ export function MilestoneSwitch({ separator }: { separator?: boolean }) {
   if (!prefs) return null;
   return (
     <SwitchRow
-      glyph={Flag}
+      glyph={Star}
       label="里程碑"
       accessibilityLabel="显示里程碑"
       value={!prefs.off}

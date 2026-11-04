@@ -9,7 +9,6 @@ import { Text } from "@/components/ui/text";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
-import { BirthdayHero, useBirthdayWeek } from "@/features/today/birthday-hero";
 import { localToday } from "@/features/engagement/seen";
 import { FollowedChanges } from "@/features/today/followed-changes";
 import { FollowedStrip } from "@/features/today/followed-strip";
@@ -18,6 +17,7 @@ import { StoryCard } from "@/features/today/story-card";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { TodayBirthdays } from "@/features/today/today-birthdays";
 import { WeekCard } from "@/features/today/week-card";
+import { WeekHero, useWeekMemory } from "@/features/today/week-hero";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 
 const STORIES = [
@@ -55,7 +55,7 @@ function QuickEntries() {
           className="min-h-11 items-center gap-1.5 py-2 active:opacity-60"
           style={stacked ? { width: "50%" } : { flex: 1 }}
         >
-          <Icon icon={item.icon} size={26} tone="tint" strokeWidth={2} />
+          <Icon icon={item.icon} size={26} tone="label" strokeWidth={2} />
           <Text variant="footnote" className="font-semibold">
             {item.label}
           </Text>
@@ -85,7 +85,7 @@ function TodayHeader() {
         </Text>
       </View>
       <Pressable role="link" accessibilityLabel="我的" onPress={() => router.push("/me")} className="mb-1 active:opacity-70">
-        <ProfileAvatar name={name} size={AVATAR} />
+        <ProfileAvatar name={name} size={AVATAR} quiet />
       </Pressable>
     </View>
   );
@@ -106,10 +106,10 @@ export default function TodayScreen() {
   const lead = Math.round(column * (useStacked() ? 1.2 : 0.62));
   const small = Math.round(Math.min(column * 0.72, 300));
   const smallHeight = Math.round(Math.max(small * 1.22, 220 * Math.min(fontScale, 1.6)));
-  const birthday = useBirthdayWeek();
+  const memory = useWeekMemory();
   const [featured, ...more] = STORIES;
-  // A birthday this week takes the head of the page; the featured story joins the row.
-  const rest = birthday ? STORIES : more;
+  // An anniversary this week takes the head of the page; the featured story joins the row.
+  const rest = memory ? STORIES : more;
 
   return (
     <ScrollView
@@ -122,8 +122,8 @@ export default function TodayScreen() {
       <Stack.Screen options={{ title: "今天", headerShown: false }} />
       <View className="gap-stack">
         <TodayHeader />
-        {birthday ? (
-          <BirthdayHero hero={birthday} height={lead} />
+        {memory ? (
+          <WeekHero hero={memory} height={lead} />
         ) : (
           <StoryCard
             featured
@@ -153,7 +153,7 @@ export default function TodayScreen() {
               title={story.title}
               feature={story.feature}
               href={story.href}
-              photo={photos[birthday ? index : index + 1]}
+              photo={photos[memory ? index : index + 1]}
               width={small}
               height={smallHeight}
             />

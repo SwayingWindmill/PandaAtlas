@@ -18,7 +18,7 @@ A pre-merge review of the app redesign on top of PR #810 (`feat/typography-syste
 
 **How it was checked**
 
-- `expo lint`, `tsc --noEmit`, `tsc -p e2e`, `vitest` (33 files, 197 tests) and `design:tokens:check` all pass.
+- `expo lint`, `tsc --noEmit`, `tsc -p e2e`, `vitest` (34 files, 204 tests) and `design:tokens:check` all pass.
 - Screens were run on an Expo web dev build against the local proxy, using Playwright with Chrome. Profiles: normal, dark, dt200 and w320.
 - Not seen on an iOS device.
 - Screenshots are in `/workspace/feature-shots/ink-bamboo/{normal,dark}/` on the review box and are not committed:
@@ -122,6 +122,52 @@ These are controls or selection marks, not icon tiles, so they keep their ground
 - An ink filled button paired with a tinted second action matches how iOS pairs a prominent button with a tinted one.
 - Settings rows use bare glyphs in a 30pt slot. This is lighter than the system Settings tiles, at the user's request; separators still start after the slot.
 - No decorative motion was added, which follows Emil's "you don't need animations" (https://emilkowal.ski/ui/you-dont-need-animations).
+
+## v4 mockups (01-today, 05-settings, 06-panda, 06b, 06c)
+
+The approved v4 set was built for 今天, 设置 and the panda detail page (概况, 家族 and 照片 tabs). Each real shot was put next to its mockup in `/workspace/feature-shots/ink-bamboo/compare/` (normal and dark). Red boxes mark blocks that are in the mockup but hidden in the app.
+
+**Built**
+
+- **今天:**
+  - The lead card is the nearest 那年今天 memory in the next 7 days (`features/today/week-memory.ts`). It shows a 那年今天 or 生日周 chip, the title, the names and the date, and replaces the birthday-week hero.
+  - Quick entries are bare label-tone glyphs.
+  - The header avatar is quiet.
+- **Detail:**
+  - Bare header glyphs and a softer hero fade.
+  - 经历 is a timeline of completed events.
+  - 家族 is a parent → sibling tree with the panda ringed.
+  - 照片 has a count, source chips and a 1 + 2 grid.
+  - `?tab=family` / `?tab=photos` open a tab directly.
+- **设置:**
+  - The account row shows the name only.
+  - 外观 uses Moon. 提醒 holds the 那年今天 and 里程碑 switches.
+  - One group holds 数据来源, 隐私政策 and 用户协议.
+  - The footer shows the real data version from `/api/v2/stats`.
+  - Switches are ink when on.
+
+**Hidden or different, and why**
+
+- **今天:**
+  - 观猫时机 is #806. The challenge ring is 示例 data. 场馆动态 is #807.
+  - The 观猫时机 and 归国 entries have no pages, so the existing routes stay.
+  - The mockup's 11.8 回国 date is further away than the real nearest memory.
+- **经历:**
+  - Only completed events are shown. 公告 is not an event, and there is no 出生 event in the data.
+- **家族:**
+  - The family data has no source, so there is no source seal.
+  - The tree shows at most 4 of a generation; the list below shows all of them.
+- **照片:**
+  - Photos have no `sourceId`, so the only chips are 全部 / Wikimedia. No 史密森 chip is made up.
+  - The credit line uses the 13px type floor.
+- **设置:**
+  - 生日提醒, 场馆动态, 反馈 and 关于 have no switches or pages, so they are not shown.
+  - 用户协议 and 退出登录 stay.
+
+**Checks**
+
+- Impeccable live detect on `/`, `/settings` and `/pandas/xiao-qi-ji` (all three tabs) found 0, after one fix: the data-version footer moved from tertiary to muted text (it was 2.2:1).
+- `vitest` passes: 34 files, 204 tests.
 
 ## Not touched
 

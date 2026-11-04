@@ -23,7 +23,7 @@ test("外观 switches the app to dark, stays dark after a restart, and follows t
 
 test("关于 shows what the published release holds", async ({ page }) => {
   await page.goto("/settings");
-  await page.getByRole("button", { name: "内容和照片来源" }).click();
+  await page.getByRole("button", { name: "数据来源" }).click();
   await expect(page.getByRole("heading", { name: "内容和照片从哪来" })).toBeVisible();
   await expect(page.getByText(/^[\d,]+ 只$/)).toBeVisible();
   await expect(page.getByText("资料版本")).toBeVisible();
