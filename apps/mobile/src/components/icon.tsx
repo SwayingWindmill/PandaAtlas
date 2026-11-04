@@ -21,9 +21,11 @@ const HIDDEN = Platform.OS === "web" ? {} : { accessible: false };
 /**
  * Who an icon speaks for. `secondary` is the default: a row's icon names a category, it is not
  * a control. `tint` is only for an icon on an action row (the row is the control). `tertiary`
- * is the disclosure chevron. `label` and `onMedia` are for toolbar glyphs.
+ * is the disclosure chevron. `label` and `onMedia` are for toolbar glyphs. `confirmed` is the
+ * tint check beside a confirmed fact (it replaces the words 已确认). `graphic` is the
+ * stroke of a rail or a ring. `onButton` is a glyph inside the filled (ink) button.
  */
-export type IconTone = "secondary" | "tint" | "tertiary" | "label" | "onMedia";
+export type IconTone = "secondary" | "tint" | "tertiary" | "label" | "onMedia" | "confirmed" | "graphic" | "onButton";
 
 /**
  * One Lucide glyph, drawn with react-native-svg on iOS, Android and web alike. Strokes are
@@ -53,6 +55,9 @@ export function Icon({
     tertiary: colors.tertiaryLabel,
     label: colors.label,
     onMedia: colors.onMedia,
+    confirmed: colors.tint,
+    graphic: colors.graphic,
+    onButton: colors.buttonLabel,
   }[tone];
   const px = typeof size === "number" ? size : ICON_SIZE[size];
   return (

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { baseGroups, buildLifeList, entryDetail, familyGroups, filterEntries, groupProgress, monthDay } from "./book";
+import { baseGroups, baseProgress, buildLifeList, catalogPercent, entryDetail, filterEntries, monthDay } from "./book";
 
 describe("buildLifeList", () => {
   const list = buildLifeList(
@@ -75,35 +75,18 @@ describe("baseGroups", () => {
     ]);
   });
 
-  it("says how far along a group is", () => {
-    expect(groupProgress(groups[0]!)).toBe("认识 1/2 只");
-    expect(groupProgress(groups[1]!)).toBe("现在没有熊猫住在这里");
-    expect(groupProgress({ known: 2, members: ["a", "b"] })).toBe("2 只全部认识");
+  it("says how far along a base is", () => {
+    expect(baseProgress(groups[0]!)).toBe("1 / 2");
+    expect(baseProgress(groups[1]!)).toBeNull();
   });
 });
 
-describe("familyGroups", () => {
-  const pandas = new Map(
-    ["添添", "美香", "宝宝", "宝力", "泰山", "伦伦", "喜伦"].map((name) => [name, { name, slug: `slug-${name}` }]),
-  );
-  const groups = familyGroups(
-    [
-      { childId: "宝宝", parentId: "添添" },
-      { childId: "宝宝", parentId: "美香" },
-      { childId: "泰山", parentId: "美香" },
-      { childId: "宝力", parentId: "宝宝" },
-      { childId: "喜伦", parentId: "伦伦" },
-      { childId: "喜伦", parentId: "unpublished" },
-    ],
-    pandas,
-    new Set(["宝力", "喜伦"]),
-  );
-
-  it("joins parents and children into families named by the eldest generation", () => {
-    expect(groups.map((group) => [group.title, group.members.length, group.known])).toEqual([
-      ["伦伦家", 2, 1],
-      ["美香和添添家", 5, 1],
-    ]);
-    expect(groups[1]!.slug).toBe("slug-美香");
+describe("catalogPercent", () => {
+  it("rounds down, but shows at least 1% once a panda is met", () => {
+    expect(catalogPercent(18, 942)).toBe(1);
+    expect(catalogPercent(30, 942)).toBe(3);
+    expect(catalogPercent(0, 942)).toBe(0);
+    expect(catalogPercent(5, 0)).toBe(0);
+    expect(catalogPercent(942, 942)).toBe(100);
   });
 });

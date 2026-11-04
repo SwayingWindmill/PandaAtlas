@@ -22,7 +22,7 @@ test("first launch welcomes the fan, who signs in, follows two pandas and lands 
   await expect(page.getByRole("heading", { name: "今天", exact: true })).toBeVisible();
 
   await page.goto("/me");
-  await expect(page.getByRole("heading", { name: /^关注的熊猫\s+2$/ })).toBeVisible();
+  await expect(page.getByLabel("关注 2 只")).toBeVisible();
 });
 
 test("skipping the welcome shows it only once", async ({ page }) => {

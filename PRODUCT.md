@@ -45,8 +45,8 @@ Fans use the Expo app on a phone, in Chinese. Writers draft 科普 in `data/cura
 
 - The product name in the interface is 吱熊猫.
 - Voice: plain Chinese for panda fans. Short labels. No explanatory paragraphs about the interface. No 「·」 as a separator.
-- The product is recognized by photographs of named pandas. Green is the tint for actions and the selected tab, not a fill for cards.
-- App color is the iOS system palette (grouped background, labels, separators) plus that green. Recorded in `DESIGN.md`, generated from `apps/mobile/src/design/tokens.ts`. The website stays on Radix olive.
+- The product is recognized by photographs of named pandas. In the app, sky blue is the tint for actions and the selected tab, ink fills the main button, and neither fills a card.
+- App color is panda black and white with neutral grey cards plus that one sky blue. Recorded in `DESIGN.md`, generated from `apps/mobile/src/design/tokens.ts`. The website stays on Radix olive.
 - App type is the iOS text styles, with line heights opened for Chinese. The system font draws Latin and Chinese. The website keeps its own four sizes.
 
 ## Evidence on Hand

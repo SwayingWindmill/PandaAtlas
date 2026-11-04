@@ -1,14 +1,15 @@
 import { router } from "expo-router";
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { ListCell, ListSection, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Binoculars, Check, MapPin, ScanFace } from "@/components/icons";
+import { Eye, MapPin, ScanFace } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PandaThumb } from "@/components/panda-thumb";
+import { ProgressRing } from "@/components/progress-ring";
 import { SectionHeader } from "@/components/section-header";
 import { Segmented } from "@/components/segmented";
 import { StatTile } from "@/components/stat-tile";
@@ -17,20 +18,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import {
+  type Filter,
   type Group,
   type LifeEntry,
   type LifeList,
   baseGroups,
+  baseProgress,
   buildLifeList,
+  catalogPercent,
   entryDetail,
-  familyGroups,
-  groupProgress,
-  monthDay,
+  filterEntries,
 } from "@/features/book/book";
 import { localToday } from "@/features/engagement/seen";
-import { MilestoneBadge } from "@/features/milestones/badge";
-import { MILESTONE_CONFIG } from "@/features/milestones/milestones";
-import { useMilestonesOn } from "@/features/milestones/prefs";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex, loadPlaces, placeName } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
@@ -38,45 +37,39 @@ import { LockedPhotoTile, StoryPhotoTile } from "@/features/today/story-photo-ti
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { loadVisits } from "@/features/visits/visits";
 import { authedApi } from "@/lib/api";
-import { loadLineage } from "@/lib/public-data";
-import { HAIRLINE } from "@/lib/surface";
-import { cn } from "@/lib/utils";
+import { RADIUS, pageColumn } from "@/lib/surface";
 
 const GAP = 12;
-const PHOTO = 56;
-/** Rows the 清单 shows before 显示全部. */
-const FIRST_ROWS = 12;
+/** Tiles the grid shows before 显示全部: three rows of four. */
+const FIRST_TILES = 12;
 
-type Lens = "list" | "bases" | "families";
 const VIEWS = [
-  { value: "list", label: "清单" },
-  { value: "bases", label: "按基地" },
-  { value: "families", label: "按家族" },
+  { value: "all", label: "全部" },
+  { value: "seen", label: "见过" },
+  { value: "recognized", label: "认出" },
 ] as const;
 
 interface Book {
   list: LifeList;
   pandas: Map<string, PandaListItem>;
   placeNames: Map<string, string>;
+  /** Every published panda: what 点亮 counts against. */
+  catalog: number;
   visitedPlaces: number;
   bases: Group[];
-  families: Group[];
 }
 
 async function loadBook(): Promise<Book> {
-  const [games, seen, visits, index, places, lineage] = await Promise.all([
+  const [games, seen, visits, index, places] = await Promise.all([
     authedApi.GET("/api/v2/me/panda-book"),
     authedApi.GET("/api/v2/me/seen-pandas"),
     loadVisits(),
     loadPandaIndex(),
     loadPlaces(),
-    // Families are a bonus: the list still opens if the lineage does not.
-    loadLineage().catch(() => []),
   ]);
   if (!games.data || !seen.data) throw new Error("Panda book unavailable");
   const list = buildLifeList(games.data.items, seen.data.items);
   const known = new Set(list.entries.map((entry) => entry.pandaId));
-  const pandas = new Map(index.map((panda) => [panda.id, panda]));
   const placeNames = new Map(
     [...places].flatMap(([id, place]) => {
       const name = placeName(place);
@@ -88,11 +81,11 @@ async function loadBook(): Promise<Book> {
   );
   return {
     list,
-    pandas,
+    pandas: new Map(index.map((panda) => [panda.id, panda])),
     placeNames,
+    catalog: index.length,
     visitedPlaces: new Set(visits.map((visit) => visit.placeId)).size,
     bases: baseGroups(index.filter((panda) => !panda.deceased), placeLike, known, visits),
-    families: familyGroups(lineage, pandas, known),
   };
 }
 
@@ -108,7 +101,7 @@ function WaysIn({ title, footer }: { title: string; footer?: string }) {
         accessibilityLabel="认出：每日一猫和猜熊猫里猜中的熊猫会自动记下，去猜今天的每日一猫"
       />
       <ListCell
-        icon={Binoculars}
+        icon={Eye}
         label="见过"
         detail="在现场见到了，就在它的资料页点「见过」"
         href="/find"
@@ -126,217 +119,28 @@ function WaysIn({ title, footer }: { title: string; footer?: string }) {
   );
 }
 
-/**
- * One panda in the list, as Music lists songs in an album: the photo, the name, the story, its number. A
- * number that is a 里程碑 (the 1st, 10th, 50th…) is a 笋金 chip, while 里程碑 is on.
- */
-function LifeRow({
-  entry,
-  panda,
-  detail,
-  milestone,
-  last,
-}: {
-  entry: LifeEntry;
-  panda: PandaListItem | undefined;
-  detail: string;
-  milestone: boolean;
-  last: boolean;
-}) {
-  const stacked = useStacked();
-  const name = panda?.name ?? "熊猫";
-  const number = `No.${entry.number}`;
+/** 点亮: the pandas met against every published panda, one ring, as Fitness shows a share. */
+function Lit({ met, catalog }: { met: number; catalog: number }) {
+  const percent = catalogPercent(met, catalog);
   return (
-    <View>
-      <Pressable
-        onPress={() => panda && openPanda(panda.slug)}
-        disabled={!panda}
-        role="button"
-        accessibilityLabel={[number, milestone ? "里程碑" : null, name, detail].filter(Boolean).join("，")}
-        className={cn("min-h-11 gap-row px-inset py-stack-tight active:bg-accent", stacked ? "items-start" : "flex-row items-center")}
-      >
-        <PandaThumb pandaId={entry.pandaId} name={name} size={PHOTO} />
-        <View className={cn("min-w-0 gap-hair-gap", stacked ? "self-stretch" : "flex-1")}>
-          <View className="flex-row items-baseline gap-stack-tight">
-            <Text variant="headline" className="min-w-0 flex-1" numberOfLines={stacked ? undefined : 1}>
-              {name}
-            </Text>
-            {milestone ? (
-              <MilestoneBadge label={number} />
-            ) : (
-              <Text variant="footnote" className="text-muted-foreground tabular-nums">
-                {number}
-              </Text>
-            )}
-          </View>
-          <View className="flex-row items-start gap-hair-gap">
-            <View className="flex-row gap-hair-gap pt-0.5" accessible={false}>
-              {entry.seen ? <Icon icon={Binoculars} size="footnote" tone="secondary" /> : null}
-              {entry.recognized ? <Icon icon={ScanFace} size="footnote" tone="secondary" /> : null}
-            </View>
-            <Text variant="footnote" className="min-w-0 flex-1 text-muted-foreground" numberOfLines={stacked ? undefined : 2}>
-              {detail}
-            </Text>
-          </View>
-        </View>
-      </Pressable>
-      {last ? null : <View className="bg-border" style={{ height: HAIRLINE, marginLeft: stacked ? 16 : 16 + PHOTO + 12 }} />}
-    </View>
-  );
-}
-
-/** A finite goal's progress: a neutral track, as Fitness draws a ring's share, never the tint. */
-function Track({ known, total }: { known: number; total: number }) {
-  if (total === 0) return null;
-  return (
-    <View className="h-1 overflow-hidden rounded-pill bg-secondary" accessible={false}>
-      <View className="h-1 rounded-pill bg-foreground" style={{ width: `${(known / total) * 100}%`, minWidth: known ? 4 : 0 }} />
-    </View>
-  );
-}
-
-/** Up to three faces from a group, overlapping as Messages shows a group's members. */
-function Faces({ ids, pandas }: { ids: string[]; pandas: Map<string, PandaListItem> }) {
-  const shown = ids.slice(0, 3);
-  return (
-    <View className="flex-row" style={{ width: PHOTO }} accessible={false}>
-      {shown.map((id, index) => (
-        <View
-          key={id}
-          className="rounded-full border-2 border-card"
-          style={{ marginLeft: index === 0 ? 0 : -24, zIndex: shown.length - index }}
-        >
-          <PandaThumb pandaId={id} name={pandas.get(id)?.name ?? "熊"} size={32} shape="round" />
-        </View>
-      ))}
-    </View>
-  );
-}
-
-function GroupRow({ group, leading, onPress, last }: { group: Group; leading: ReactNode; onPress: () => void; last: boolean }) {
-  const stacked = useStacked();
-  const progress = groupProgress(group);
-  const visited = group.visitedOn ? `${monthDay(group.visitedOn)}去过` : null;
-  const done = group.members.length > 0 && group.known === group.members.length;
-  return (
-    <View>
-      <Pressable
-        onPress={onPress}
-        role="button"
-        accessibilityLabel={[group.title, progress, visited].filter(Boolean).join("，")}
-        className={cn("min-h-11 gap-row px-inset py-row active:bg-accent", stacked ? "items-start" : "flex-row items-center")}
-      >
-        {leading}
-        <View className={cn("min-w-0 gap-hair-gap", stacked ? "self-stretch" : "flex-1")}>
-          <Text variant="body" numberOfLines={stacked ? undefined : 2}>
-            {group.title}
+    <View
+      className="flex-row items-center gap-stack rounded-group bg-card p-inset"
+      style={{ borderCurve: "continuous" }}
+      accessible
+      accessibilityLabel={`点亮 ${met} 只，共收录 ${catalog.toLocaleString("zh-CN")} 只，${percent}%`}
+    >
+      <ProgressRing value={percent / 100} label={`${percent}%`} accessibilityLabel={`点亮 ${percent}%`} />
+      <View className="min-w-0 flex-1 gap-hair-gap">
+        <Text variant="footnote" className="text-muted-foreground" role="none">
+          点亮
+        </Text>
+        <Text role="none">
+          <Text variant="stat">{met.toLocaleString("zh-CN")}</Text>
+          <Text variant="subheadline" className="text-muted-foreground tabular-nums">
+            {` / ${catalog.toLocaleString("zh-CN")}`}
           </Text>
-          <View className="flex-row flex-wrap items-center gap-x-stack-tight">
-            <Text variant="footnote" className="text-muted-foreground tabular-nums">
-              {progress}
-            </Text>
-            {visited ? (
-              <View className="flex-row items-center gap-hair-gap">
-                <Icon icon={MapPin} size="footnote" tone="tint" />
-                <Text variant="footnote" className="text-primary">
-                  {visited}
-                </Text>
-              </View>
-            ) : null}
-          </View>
-          <Track known={group.known} total={group.members.length} />
-        </View>
-        {done ? <Icon icon={Check} tone="tint" /> : null}
-      </Pressable>
-      {last ? null : <View className="bg-border" style={{ height: HAIRLINE, marginLeft: stacked ? 16 : 16 + PHOTO + 12 }} />}
-    </View>
-  );
-}
-
-function Card({ children }: { children: ReactNode }) {
-  return (
-    <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
-      {children}
-    </View>
-  );
-}
-
-function Bases({ book }: { book: Book }) {
-  return (
-    <View className="gap-row">
-      <Card>
-        {book.bases.map((group, index) => (
-          <GroupRow
-            key={group.key}
-            group={group}
-            leading={<Faces ids={group.members.length ? group.members : []} pandas={book.pandas} />}
-            onPress={() => group.slug && router.push({ pathname: "/places/[slug]", params: { slug: group.slug } })}
-            last={index === book.bases.length - 1}
-          />
-        ))}
-      </Card>
-      <Text variant="footnote" className="px-inset text-muted-foreground">
-        只算现在住在那里的熊猫，熊猫搬家后会跟着变。
-      </Text>
-      <ListSection>
-        <ListCell icon={MapPin} label="去过的地点" meta={`${book.visitedPlaces} 个`} href="/visits" last />
-      </ListSection>
-    </View>
-  );
-}
-
-function Families({ book }: { book: Book }) {
-  if (book.families.length === 0) {
-    return <Text variant="subheadline" className="px-inset text-muted-foreground">家族资料暂时打不开。</Text>;
-  }
-  return (
-    <View className="gap-row">
-      <Card>
-        {book.families.map((group, index) => (
-          <GroupRow
-            key={group.key}
-            group={group}
-            leading={<Faces ids={group.members} pandas={book.pandas} />}
-            onPress={() => group.slug && router.push({ pathname: "/pandas/[slug]/family", params: { slug: group.slug } })}
-            last={index === book.families.length - 1}
-          />
-        ))}
-      </Card>
-      <Text variant="footnote" className="px-inset text-muted-foreground">
-        家族来自公开的谱系资料，有出处的亲缘才算进来。
-      </Text>
-    </View>
-  );
-}
-
-function List({ book }: { book: Book }) {
-  const [all, setAll] = useState(false);
-  const entries = all ? book.list.entries : book.list.entries.slice(0, FIRST_ROWS);
-  const name = (placeId: string) => book.placeNames.get(placeId) ?? null;
-  const milestonesOn = useMilestonesOn();
-  const nodes = new Set<number>(MILESTONE_CONFIG.pandas);
-  return (
-    <View className="gap-section">
-      <View className="gap-row">
-        <Card>
-          {entries.map((entry, index) => (
-            <LifeRow
-              key={entry.pandaId}
-              entry={entry}
-              panda={book.pandas.get(entry.pandaId)}
-              detail={entryDetail(entry, name)}
-              milestone={milestonesOn && nodes.has(entry.number)}
-              last={index === entries.length - 1}
-            />
-          ))}
-        </Card>
-        {book.list.entries.length > FIRST_ROWS ? (
-          <Button variant="plain" onPress={() => setAll((value) => !value)}>
-            <Text>{all ? "收起" : `显示全部 ${book.list.entries.length} 只`}</Text>
-          </Button>
-        ) : null}
+        </Text>
       </View>
-      <WaysIn title="怎样记下" footer="见过可以随时在熊猫的资料页补记或取消。这份清单只给你自己看。" />
     </View>
   );
 }
@@ -345,9 +149,124 @@ function Stats({ book }: { book: Book }) {
   const stacked = useStacked();
   return (
     <View className={stacked ? "gap-row" : "flex-row gap-row"}>
-      <StatTile icon={Binoculars} label="见过" value={`${book.list.seenCount} 只`} />
+      <StatTile icon={Eye} label="见过" value={`${book.list.seenCount} 只`} />
       <StatTile icon={ScanFace} label="认出" value={`${book.list.recognizedCount} 只`} />
       <StatTile icon={MapPin} label="去过" value={`${book.visitedPlaces} 处`} />
+    </View>
+  );
+}
+
+/** Four square tiles a row, as Photos lays out an album; three when rows stack. */
+function useTiles() {
+  const { width } = useWindowDimensions();
+  const columns = useStacked() ? 3 : 4;
+  const column = pageColumn(width);
+  return { columns, tile: Math.floor((column - GAP * (columns - 1)) / columns) };
+}
+
+/** One panda met: its cover and its name. The spoken label says when and where. */
+function MetTile({ entry, panda, detail, size }: { entry: LifeEntry; panda: PandaListItem | undefined; detail: string; size: number }) {
+  const name = panda?.name ?? "熊猫";
+  return (
+    <Pressable
+      onPress={() => panda && openPanda(panda.slug)}
+      disabled={!panda}
+      role="link"
+      accessibilityLabel={`No.${entry.number}，${name}，${detail}`}
+      className="items-center gap-stack-tight active:opacity-70"
+      style={{ width: size }}
+    >
+      <PandaThumb pandaId={entry.pandaId} name={name} size={size} shape="tile" />
+      <Text variant="footnote" className="font-semibold" numberOfLines={1}>
+        {name}
+      </Text>
+    </Pressable>
+  );
+}
+
+/** What is still to meet: one row of empty tiles, never the whole catalog. It opens 找熊猫. */
+function Unmet({ count, columns, size }: { count: number; columns: number; size: number }) {
+  const tiles = Array.from({ length: Math.min(count, columns) }, (_, index) => index);
+  return (
+    <Pressable
+      onPress={() => router.push("/find")}
+      role="link"
+      accessibilityLabel={`还有 ${count.toLocaleString("zh-CN")} 只没见过，去找熊猫`}
+      className="flex-row active:opacity-70"
+      style={{ gap: GAP }}
+    >
+      {tiles.map((index) => (
+        <View key={index} className="items-center gap-stack-tight" style={{ width: size }} accessible={false}>
+          <View
+            className="items-center justify-center bg-card"
+            style={{ width: size, height: size, borderRadius: RADIUS.tile, borderCurve: "continuous" }}
+          >
+            <Icon icon={Eye} tone="tertiary" />
+          </View>
+          <Text variant="footnote" className="text-muted-foreground">
+            未见过
+          </Text>
+        </View>
+      ))}
+    </Pressable>
+  );
+}
+
+function Grid({ book, filter }: { book: Book; filter: Filter }) {
+  const { columns, tile } = useTiles();
+  const [all, setAll] = useState(false);
+  const entries = filterEntries(book.list.entries, filter);
+  const shown = all ? entries : entries.slice(0, FIRST_TILES);
+  const name = (placeId: string) => book.placeNames.get(placeId) ?? null;
+  const unmet = book.catalog - book.list.entries.length;
+  return (
+    <View className="gap-row">
+      <View className="flex-row flex-wrap" style={{ gap: GAP }}>
+        {shown.map((entry) => (
+          <MetTile
+            key={entry.pandaId}
+            entry={entry}
+            panda={book.pandas.get(entry.pandaId)}
+            detail={entryDetail(entry, name)}
+            size={tile}
+          />
+        ))}
+      </View>
+      {entries.length > FIRST_TILES ? (
+        <Button variant="plain" onPress={() => setAll((value) => !value)}>
+          <Text>{all ? "收起" : `显示全部 ${entries.length} 只`}</Text>
+        </Button>
+      ) : null}
+      {filter !== "recognized" && unmet > 0 ? <Unmet count={unmet} columns={columns} size={tile} /> : null}
+    </View>
+  );
+}
+
+/** Each base the fan has met a panda at or been to: met out of those living there now. */
+function Bases({ bases }: { bases: Group[] }) {
+  const started = bases.filter((group) => group.known > 0 || group.visitedOn !== null);
+  if (started.length === 0) return null;
+  return (
+    <View className="gap-row">
+      <SectionHeader title="各个基地" />
+      <ListSection>
+        {started.map((group, index) => {
+          const progress = baseProgress(group);
+          const done = group.members.length > 0 && group.known === group.members.length;
+          const spoken = progress ? `认识 ${group.known} 只，共 ${group.members.length} 只` : "现在没有熊猫住在这里";
+          return (
+            <ListCell
+              key={group.key}
+              icon={MapPin}
+              label={group.title}
+              meta={progress ?? undefined}
+              href={group.slug ? { pathname: "/places/[slug]", params: { slug: group.slug } } : undefined}
+              accessibilityLabel={[group.title, spoken, done ? "全部认识" : null].filter(Boolean).join("，")}
+              last={index === started.length - 1}
+            />
+          );
+        })}
+      </ListSection>
     </View>
   );
 }
@@ -355,6 +274,7 @@ function Stats({ book }: { book: Book }) {
 function Loading() {
   return (
     <View className="gap-section" accessibilityLabel="正在加载图鉴">
+      <Skeleton className="h-24 w-full rounded-tile" />
       <View className="flex-row gap-row">
         {[0, 1, 2].map((key) => (
           <Skeleton key={key} className="h-20 flex-1 rounded-tile" />
@@ -370,7 +290,7 @@ function Loading() {
 function SignedIn() {
   const [book, setBook] = useState<Book | null>(null);
   const [failed, setFailed] = useState(false);
-  const [view, setView] = useState<Lens>("list");
+  const [filter, setFilter] = useState<Filter>("all");
 
   const load = useCallback(() => {
     loadBook()
@@ -395,29 +315,27 @@ function SignedIn() {
   const empty = book.list.entries.length === 0;
   return (
     <Animated.View entering={PAGE_ENTER} className="gap-section">
-      <Stats book={book} />
+      <View className="gap-row">
+        <Lit met={book.list.entries.length} catalog={book.catalog} />
+        <Stats book={book} />
+      </View>
       {empty ? (
         <>
-          <View className="gap-hair-gap px-inset">
+          <View className="gap-hair-gap">
             <Text variant="title">从第一只开始</Text>
             <Text variant="subheadline" className="text-muted-foreground">
-              认出、见过的熊猫会按先后编号，第一只就是 No.1。
+              认出、见过的熊猫会点亮在这里。
             </Text>
           </View>
           <WaysIn title="怎样记下" />
-          <View className="gap-row">
-            <View className="px-inset">
-              <SectionHeader title="各个基地" />
-            </View>
-            <Bases book={book} />
-          </View>
         </>
       ) : (
-        <>
-          <Segmented value={view} options={VIEWS} onChange={setView} accessibilityLabel="图鉴的看法" />
-          {view === "list" ? <List book={book} /> : view === "bases" ? <Bases book={book} /> : <Families book={book} />}
-        </>
+        <View className="gap-row">
+          <Segmented value={filter} options={VIEWS} onChange={setFilter} accessibilityLabel="图鉴里看哪些熊猫" />
+          <Grid key={filter} book={book} filter={filter} />
+        </View>
       )}
+      <Bases bases={book.bases} />
     </Animated.View>
   );
 }
@@ -426,7 +344,7 @@ function SignedIn() {
 function useGrid() {
   const { width } = useWindowDimensions();
   const columns = useStacked() ? 2 : 3;
-  const column = Math.min(width, 700) - 32;
+  const column = pageColumn(width);
   return { columns, tile: Math.floor((column - GAP * (columns - 1)) / columns) };
 }
 

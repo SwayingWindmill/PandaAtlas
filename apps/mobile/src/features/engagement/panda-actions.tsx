@@ -2,6 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { View } from "react-native";
 
+import { Icon } from "@/components/icon";
+import { Eye, Heart } from "@/components/icons";
+import { useStacked } from "@/components/grouped-list";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { setFollowing, useFollowed } from "@/features/engagement/favorites";
@@ -9,11 +12,28 @@ import { loadSeen, localToday, markSeen, shortDay, unmarkSeen } from "@/features
 import { useSession } from "@/features/session/session";
 import { selectionHaptic, successHaptic, tapHaptic } from "@/lib/haptics";
 
+/** 关注 takes a little more of the row than 见过, as the primary action. */
+const FOLLOW_FLEX = { flex: 1.3 } as const;
+const SEEN_FLEX = { flex: 1 } as const;
+
 /**
- * 关注 and 见过 under a living panda's name, as iOS pairs a primary and a secondary action:
- * 关注 is a tinted capsule, 见过 is plain tint text. Signed-out fans are sent to sign in first.
+ * 关注 and 见过 under a panda's name, as iOS pairs a primary and a secondary action:
+ * 关注 is the filled ink capsule (grey once followed), 见过 the grey tonal capsule. Each carries its bare
+ * glyph. Signed-out fans are sent to sign in first. A panda that has died has neither; share is in the bar.
  */
-export function PandaActions({ pandaId, name }: { pandaId: string; name: string }) {
+export function PandaActions({
+  pandaId,
+  name,
+  deceased = false,
+}: {
+  pandaId: string;
+  name: string;
+  deceased?: boolean;
+}) {
+  const stacked = useStacked();
+  const row = stacked ? "flex-row flex-wrap items-center gap-2.5" : "flex-row items-center gap-2.5";
+  const fill = stacked ? undefined : FOLLOW_FLEX;
+  const half = stacked ? undefined : SEEN_FLEX;
   const { state } = useSession();
   const followed = useFollowed();
   const signedIn = state.status === "signedIn";
@@ -40,13 +60,17 @@ export function PandaActions({ pandaId, name }: { pandaId: string; name: string 
 
   const following = followed?.has(pandaId) ?? false;
 
+  if (deceased) return null;
+
   if (!signedIn) {
     return (
-      <View className="flex-row flex-wrap items-center gap-2">
-        <Button variant="tinted" size="sm" className="min-w-24 px-5" accessibilityLabel={`关注${name}`} onPress={() => router.push("/sign-in")}>
+      <View className={row}>
+        <Button className="px-5" style={fill} accessibilityLabel={`关注${name}`} onPress={() => router.push("/sign-in")}>
+          <Icon icon={Heart} size="subhead" tone="onButton" strokeWidth={2} />
           <Text className="text-body font-semibold">关注</Text>
         </Button>
-        <Button variant="plain" size="sm" accessibilityLabel={`记下见过${name}`} onPress={() => router.push("/sign-in")}>
+        <Button variant="secondary" className="bg-card px-4" style={half} accessibilityLabel={`记下见过${name}`} onPress={() => router.push("/sign-in")}>
+          <Icon icon={Eye} size="subhead" tone="label" strokeWidth={2} />
           <Text className="text-body font-semibold">见过</Text>
         </Button>
       </View>
@@ -54,11 +78,11 @@ export function PandaActions({ pandaId, name }: { pandaId: string; name: string 
   }
 
   return (
-    <View className="flex-row flex-wrap items-center gap-2">
+    <View className={row}>
       <Button
-        variant={following ? "secondary" : "tinted"}
-        size="sm"
-        className="min-w-24 px-5"
+        variant={following ? "secondary" : "default"}
+        className="px-5"
+        style={fill}
         disabled={followed === null}
         accessibilityLabel={following ? `已关注${name}，点按取消` : `关注${name}`}
         onPress={() => {
@@ -66,16 +90,21 @@ export function PandaActions({ pandaId, name }: { pandaId: string; name: string 
           if (signedIn) void setFollowing(state.accountId, pandaId, !following);
         }}
       >
+        <Icon icon={Heart} size="subhead" tone={following ? "label" : "onButton"} strokeWidth={2} />
         <Text className="text-body font-semibold">{following ? "已关注" : "关注"}</Text>
       </Button>
       <Button
-        variant="plain"
-        size="sm"
+        variant="secondary"
+        className="bg-card px-4"
+        style={half}
         disabled={toggleSeen.isPending || seen === undefined}
         accessibilityLabel={seen ? `${seen.seenOn ? shortDay(seen.seenOn) : ""}见过${name}，点按取消` : `记下见过${name}`}
         onPress={() => toggleSeen.mutate()}
       >
-        <Text className="text-body font-semibold">{seen ? `见过${seen.seenOn ? `　${shortDay(seen.seenOn)}` : ""}` : "见过"}</Text>
+        <Icon icon={Eye} size="subhead" tone="label" strokeWidth={2} />
+        <Text className="text-body font-semibold" numberOfLines={1}>
+          {seen ? `见过${seen.seenOn ? `　${shortDay(seen.seenOn)}` : ""}` : "见过"}
+        </Text>
       </Button>
     </View>
   );

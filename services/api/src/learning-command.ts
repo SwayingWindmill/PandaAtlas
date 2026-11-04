@@ -37,6 +37,7 @@ export function storedDocument(file: unknown): { version: string; document: Reco
   const document = Object.fromEntries(["version", ...COLLECTIONS].map((key) => [key, source[key]]));
   const version = typeof document.version === "string" ? document.version : "";
   // The API parses the stored document with this function, so a document it would refuse is never written.
+  // Published entries may be Chinese only; a missing en is served as an empty string.
   return { version, document, catalog: publishedCatalog({ version, document }) };
 }
 

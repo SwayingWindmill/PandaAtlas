@@ -27,12 +27,14 @@ const CSS_COLORS: [cssName: string, role: ColorRole, note?: string][] = [
   ["popover", "card"],
   ["popover-foreground", "label"],
   ["primary", "tint", "tint"],
-  ["primary-foreground", "buttonLabel"],
+  ["primary-foreground", "buttonLabel", "label on a filled button or a tint fill"],
+  ["button", "button", "the filled button"],
+  ["graphic", "graphic", "strokes and fills: rings, rails, bars. Not text"],
   ["secondary", "fill", "system fill"],
   ["secondary-foreground", "label"],
   ["muted", "fill"],
   ["muted-foreground", "secondaryLabel", "secondary label"],
-  ["accent", "pressed", "pressed (shadcn name; the brand accent is `warm`)"],
+  ["accent", "pressed", "pressed (shadcn name, not a brand color)"],
   ["accent-foreground", "label"],
   ["destructive", "destructive"],
   ["border", "separator", "opaqueSeparator"],
@@ -44,8 +46,7 @@ const CSS_COLORS: [cssName: string, role: ColorRole, note?: string][] = [
   ["warning", "warning"],
   ["paper", "background", "systemBackground, the reading column"],
   ["tertiary-foreground", "tertiaryLabel", "tertiary label: chevrons, not text"],
-  ["warm", "warm", "笋金: markers only, never actions"],
-  ["warm-soft", "warmSoft", "warm badge fill"],
+  ["switch-knob", "switchKnob", "the thumb of a switch"],
   ["on-media", "onMedia", "over a scrim"],
   ["media-placeholder", "mediaPlaceholder"],
   ["photo-stroke", "photoStroke"],
@@ -83,6 +84,12 @@ export function renderCssBlock(): string {
     lines.push(...textVars(name, style));
   }
 
+  lines.push(
+    "",
+    "  /* Rounded figures (`font-rounded`). This is the web stack; iOS and Android override it below. */",
+    `  --font-rounded: ${primitive.fontFamily.rounded.web};`,
+  );
+
   lines.push("", "  /* Motion. */");
   for (const [name, ms] of Object.entries(primitive.duration)) lines.push(`  --duration-${name}: ${ms}ms;`);
   for (const [name, points] of Object.entries(primitive.easing)) {
@@ -91,6 +98,11 @@ export function renderCssBlock(): string {
   lines.push("}", "");
 
   lines.push("@layer theme {", "  :root {");
+  lines.push("    /* Native Text takes one family name, no fallback list. */");
+  for (const platform of ["ios", "android"] as const) {
+    lines.push(`    @variant ${platform} {`, `      --font-rounded: ${primitive.fontFamily.rounded[platform]};`, "    }");
+  }
+  lines.push("");
   for (const scheme of ["light", "dark"] as const) {
     lines.push(`    @variant ${scheme} {`);
     for (const [cssName, role, note] of CSS_COLORS) {
@@ -122,7 +134,7 @@ const yamlString = (value: string) => JSON.stringify(value);
 function colorEntries() {
   const entries: [string, string][] = [];
   for (const role of Object.keys(semantic.color.light) as ColorRole[]) {
-    if (role === "button" || role === "photoStroke" || role === "glassFallback" || role === "barMaterial") continue;
+    if (role === "photoStroke" || role === "glassFallback" || role === "barMaterial") continue;
     const name = role === "tint" ? "primary" : kebab(role);
     entries.push([name, semantic.color.light[role]]);
     entries.push([`${name}-dark`, semantic.color.dark[role]]);
@@ -130,9 +142,9 @@ function colorEntries() {
   return entries;
 }
 
-function typographyEntry(style: Pick<TextStyle, "size" | "lineHeight" | "weight" | "tracking">) {
+function typographyEntry(style: Pick<TextStyle, "size" | "lineHeight" | "weight" | "tracking" | "family">) {
   return [
-    `    fontFamily: ${yamlString("system-ui")}`,
+    `    fontFamily: ${yamlString(style.family === "rounded" ? "ui-rounded" : "system-ui")}`,
     `    fontSize: ${style.size}px`,
     `    fontWeight: ${Number(style.weight)}`,
     `    lineHeight: ${style.lineHeight}px`,
@@ -194,7 +206,7 @@ function componentEntries(): [string, Record<string, string>][] {
     ),
     ...pair(
       (s) => ({
-        backgroundColor: `{colors.primary${s}}`,
+        backgroundColor: `{colors.button${s}}`,
         textColor: `{colors.button-label${s}}`,
         typography: "{typography.headline}",
         rounded: "{rounded.pill}",
@@ -212,6 +224,25 @@ function componentEntries(): [string, Record<string, string>][] {
         height: `${component.button.height}px`,
       }),
       "button-tinted",
+    ),
+    ...pair(
+      (s) => ({
+        backgroundColor: `{colors.highlight-soft${s}}`,
+        textColor: `{colors.primary${s}}`,
+        typography: "{typography.subheadline}",
+        rounded: "{rounded.pill}",
+        height: `${component.chip.height}px`,
+      }),
+      "chip-selected",
+    ),
+    ...pair(
+      (s) => ({
+        backgroundColor: `{colors.fill${s}}`,
+        textColor: `{colors.graphic${s}}`,
+        rounded: "{rounded.pill}",
+        size: `${component.progressRing.size}px`,
+      }),
+      "progress-ring",
     ),
     ...pair(
       (s) => ({
@@ -242,19 +273,27 @@ function componentEntries(): [string, Record<string, string>][] {
     ),
     ...pair(
       (s) => ({
-        backgroundColor: `{colors.warm-soft${s}}`,
-        textColor: `{colors.warm${s}}`,
+        backgroundColor: `{colors.highlight-soft${s}}`,
+        textColor: `{colors.primary${s}}`,
         typography: "{typography.footnote}",
         rounded: "{rounded.pill}",
         padding: "4px",
       }),
-      "warm-badge",
+      "tint-badge",
     ),
     ...pair(
       (s) => ({
         backgroundColor: `{colors.card${s}}`,
         textColor: `{colors.label${s}}`,
-        typography: "{typography.title}",
+        typography: "{typography.figure}",
+      }),
+      "figure",
+    ),
+    ...pair(
+      (s) => ({
+        backgroundColor: `{colors.card${s}}`,
+        textColor: `{colors.label${s}}`,
+        typography: "{typography.stat}",
         rounded: "{rounded.tile}",
         padding: `${semantic.spacing.inset.value}px`,
       }),
@@ -280,7 +319,7 @@ export function renderFrontMatter(): string {
     "version: alpha",
     "name: 吱熊猫",
     `description: ${yamlString(
-      "A calm iOS app about giant pandas: system colors with a bamboo-jade tint and a rare shoot-gold accent, purpose-named type, and photographs that do the talking.",
+      "A calm iOS app about giant pandas: panda black and white with one sky-blue tint, neutral grey cards, purpose-named type, and photographs that do the talking.",
     )}`,
     "colors:",
   );

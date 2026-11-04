@@ -13,6 +13,8 @@ const twMerge = extendTailwindMerge({
             "display",
             "title",
             "subheadline",
+            "stat",
+            "figure",
             "reading-title",
             "reading-heading",
             "reading-lead",

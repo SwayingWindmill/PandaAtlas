@@ -28,7 +28,7 @@ export function DayCircle({
         mark === "leave" && "bg-highlight-soft",
         mark === "retro" && "border border-dashed border-primary",
         track && "bg-secondary",
-        mark !== "visit" && mark !== "leave" && mark !== "retro" && today && "border border-warm",
+        mark !== "visit" && mark !== "leave" && mark !== "retro" && today && "border border-primary",
       )}
       style={{ width: size, height: size }}
       accessible={false}
@@ -37,13 +37,13 @@ export function DayCircle({
         <Text
           variant={size < 32 ? "footnote" : "body"}
           className={cn(
-            "tabular-nums",
+            "font-rounded tabular-nums",
             mark === "visit"
               ? "font-semibold text-primary-foreground"
               : mark === "leave" || mark === "retro"
                 ? "font-semibold text-primary"
                 : today
-                  ? "font-semibold text-warm"
+                  ? "font-semibold text-primary"
                   : mark === "none" && "text-muted-foreground",
           )}
         >

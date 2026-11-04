@@ -65,10 +65,10 @@ export function StoryCard({
             ) : null}
             <Scrim id={`scrim-${id}`} />
             <View className={featured ? "absolute right-0 bottom-0 left-0 gap-1 p-5" : "absolute right-0 bottom-0 left-0 gap-0.5 p-4"}>
-              <Text variant={featured ? "display" : "title"} role="none" className="text-white" numberOfLines={featured ? 3 : 2}>
+              <Text variant={featured ? "display" : "title"} role="none" className="text-on-media" numberOfLines={featured ? 3 : 2}>
                 {title}
               </Text>
-              <Text variant="footnote" className="font-semibold text-white/85" numberOfLines={featured ? 2 : 1}>
+              <Text variant="footnote" className="font-semibold text-on-media/85" numberOfLines={featured ? 2 : 1}>
                 {caption}
               </Text>
             </View>

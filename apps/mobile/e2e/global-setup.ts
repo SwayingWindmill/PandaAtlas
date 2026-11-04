@@ -27,8 +27,7 @@ export default async function globalSetup(): Promise<void> {
   const { createReleaseCommandContext } = await load<{
     createReleaseCommandContext(): Promise<{ app: { close(): Promise<void> }; ports: unknown }>;
   }>("modules/publication/release-command.module.js");
-  const { buildRelease, publishRelease } = await load<{
-    buildRelease(ports: unknown, manifest: object, context: object): Promise<unknown>;
+  const { publishRelease } = await load<{
     publishRelease(ports: unknown, manifest: object, context: object, reason: string): Promise<unknown>;
   }>("modules/publication/application/release-command.js");
 
@@ -206,7 +205,6 @@ export default async function globalSetup(): Promise<void> {
 
     const manifest = { version: `2099.01.01.${Date.now()}`, action: "publish", reason: "End-to-end journeys fixture release." };
     const context = { actor: { kind: "system", systemKey: "release-batch-workflow" }, correlationId: randomUUID() };
-    await buildRelease(command.ports, manifest, context);
     await publishRelease(command.ports, manifest, context, manifest.reason);
 
     const notice = { id: others[0].pandaId, slug: `e2e-option-${"乙".codePointAt(0)}-${run}`, name: `选项乙${run}` };

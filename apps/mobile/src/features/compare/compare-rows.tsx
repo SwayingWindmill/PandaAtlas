@@ -31,13 +31,16 @@ export function CompareRows({ slug }: { slug: string }) {
   if (catalog.status === "loading") return null;
   const suggestions = compareSuggestions(target, pandas, challenges);
   if (suggestions.length === 0) return null;
+  // One shared reason under every row is repetition, not information: it is spoken, not drawn.
+  const sameReason = suggestions.every(({ reason }) => reason === suggestions[0]!.reason);
   return (
     <ListSection title="比一比">
       {suggestions.map(({ panda, reason }, index) => (
         <ListCell
           key={panda.slug}
           label={`和${panda.name}比一比`}
-          detail={reason}
+          detail={sameReason ? undefined : reason}
+          accessibilityLabel={`和${panda.name}比一比，${reason}`}
           href={{ pathname: "/compare", params: { a: target.slug, b: panda.slug } }}
           last={index === suggestions.length - 1}
         />

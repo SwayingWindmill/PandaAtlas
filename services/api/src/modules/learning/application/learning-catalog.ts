@@ -7,6 +7,7 @@ export type FaceTipKey = (typeof FACE_TIP_KEYS)[number];
 
 export interface LearningText {
   zh: string;
+  /** English copy. Empty when the item was published in Chinese only; clients show `zh` instead. */
   en: string;
 }
 
@@ -128,10 +129,9 @@ function exactKeys(value: Record<string, unknown>, keys: readonly string[], labe
 }
 
 function text(value: unknown, label: string): LearningText {
-  const item = record(value, label);
-  exactKeys(item, ["zh", "en"], label);
-  if (typeof item.zh !== "string" || typeof item.en !== "string") fail(`${label} needs zh and en strings`);
-  return { zh: item.zh, en: item.en };
+  // Same shape as article copy: zh is required, en may be omitted. The public response still
+  // includes en (as "") so an older client that expects the key does not crash.
+  return zhText(value, label);
 }
 
 function slug(value: unknown, label: string): string {

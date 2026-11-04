@@ -19,3 +19,37 @@ export function areaChips(items: { area: string | null }[]): string[] {
   const present = new Set(items.flatMap((item) => (item.area ? [item.area] : [])));
   return [...Object.values(AREA_ZH), "海外"].filter((area) => present.has(area));
 }
+
+/** The usual Chinese names of the cities abroad that keep pandas, from a facility's region. */
+const CITY_ZH: Record<string, string> = {
+  Washington: "华盛顿",
+  Tokyo: "东京",
+  Atlanta: "亚特兰大",
+  "San Diego": "圣地亚哥",
+  Memphis: "孟菲斯",
+  Edinburgh: "爱丁堡",
+  Vienna: "维也纳",
+  Berlin: "柏林",
+  Madrid: "马德里",
+  Seoul: "首尔",
+};
+
+/**
+ * A place as fans say it in a few characters: the area for a Chinese base (卧龙, with 神树坪基地 inside it),
+ * the city for a zoo abroad (华盛顿, with the zoo's name). Null when the record has neither.
+ */
+export function shortPlace(place: Place | undefined): { short: string; sub: string | null } | null {
+  if (!place || place.placeType !== "facility") return null;
+  const first = place.region?.split(",")[0]?.trim() ?? "";
+  const name = place.nameZh ?? null;
+  if (place.countryCode && place.countryCode !== "CN") {
+    const city = CITY_ZH[first];
+    if (city) return { short: city, sub: name };
+    return name ? { short: name, sub: null } : null;
+  }
+  const area = AREA_ZH[first];
+  if (!area) return name ? { short: name, sub: null } : null;
+  const at = name?.indexOf(area) ?? -1;
+  const rest = name && at >= 0 ? name.slice(at + area.length) : "";
+  return { short: area, sub: rest || null };
+}

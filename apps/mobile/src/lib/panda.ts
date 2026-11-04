@@ -65,6 +65,16 @@ function fact(panda: PandaSummary, key: string): unknown {
   return panda.facts.find((item) => item.fieldKey === key)?.value;
 }
 
+/**
+ * How sure the record is of one fact: confirmed, or anything else (provisional, disputed) as pending.
+ * Null when the record has no such fact. Shown as a check or a hollow dot, never as words on screen.
+ */
+export function pandaFactStatus(panda: PandaSummary, key: string): "confirmed" | "pending" | null {
+  const item = panda.facts.find((entry) => entry.fieldKey === key);
+  if (!item) return null;
+  return item.status === "confirmed" ? "confirmed" : "pending";
+}
+
 export function pandaSex(panda: PandaSummary): "male" | "female" | null {
   const value = fact(panda, "sex");
   return value === "male" || value === "female" ? value : null;
