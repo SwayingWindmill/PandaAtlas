@@ -35,6 +35,7 @@ import { PressScale } from "@/components/press-scale";
 import { Scrim } from "@/components/scrim";
 import { HeroHeader, useHeroScroll } from "@/components/hero-header";
 import { StretchyHero } from "@/components/stretchy-hero";
+import { ViewingTiming } from "@/features/viewing/viewing-timing";
 import { PAGE_ENTER } from "@/design/motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -191,6 +192,7 @@ function FacilityGuide({ facility, title }: { facility: Facility; title?: string
     ...facility.tips.map((tip) => ({ label: tip.label, value: tip.text })),
   ];
   const coordinates = facility.coordinates;
+  if (rows.length === 0 && !coordinates) return null;
   return (
     <ListSection title={title}>
       {rows.map((row, index) => (
@@ -255,7 +257,15 @@ function VisitGuide({ institution, unseen }: { institution: InstitutionDetail; u
         </ListSection>
       ) : null}
       {guided.map((facility) => (
-        <FacilityGuide key={facility.id} facility={facility} title={several ? facility.name : undefined} />
+        <View key={facility.id} className="gap-4">
+          {several ? (
+            <Text variant="headline" role="heading">
+              {facility.name}
+            </Text>
+          ) : null}
+          <ViewingTiming facility={facility} />
+          <FacilityGuide facility={facility} title="须知" />
+        </View>
       ))}
       {institution.websiteUrl ? (
         <ListSection>

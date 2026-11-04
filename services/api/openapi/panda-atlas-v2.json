@@ -4903,6 +4903,62 @@
           "text"
         ]
       },
+      "TimeWindowDto": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "description": "Local time, HH:MM."
+          },
+          "end": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "description": "Local time, HH:MM."
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ]
+      },
+      "ViewingTimingDto": {
+        "type": "object",
+        "properties": {
+          "activeWindows": {
+            "description": "When the pandas are usually active, as the facility publishes.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimeWindowDto"
+            }
+          },
+          "napWindow": {
+            "description": "The usual midday rest.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimeWindowDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "activeWindows"
+        ]
+      },
+      "PhotoSpotDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/LocalizedTextDto"
+          },
+          "window": {
+            "$ref": "#/components/schemas/TimeWindowDto"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "FacilityVisitGuideDto": {
         "type": "object",
         "properties": {
@@ -4922,6 +4978,15 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FacilityVisitTipDto"
+            }
+          },
+          "viewing": {
+            "$ref": "#/components/schemas/ViewingTimingDto"
+          },
+          "photoSpots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhotoSpotDto"
             }
           },
           "verifiedOn": {
