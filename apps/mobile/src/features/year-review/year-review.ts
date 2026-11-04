@@ -1,49 +1,54 @@
-import type { LifeEvent } from "../timeline/timeline";
+import type { GameEntry, SeenEntry } from "@/features/book/book";
 
-// 年度回顾: one year told only from the published record. Births from the panda index's birth dates, birthdays
-// of living pandas with a known day, and the moves and homecomings the life events record (completed, sourced,
-// dated to that year). Counts and names only: no sentence here says anything the record does not.
-// Pure rules; loading is in load.ts.
+// 年度回顾 (v4 `10-year-review`): the fan's own year, told only from their records. The first panda they met
+// that year, the pandas they saw, the days they checked in and the places they went, check-ins by month, and
+// the year's firsts. Counts and names only; nothing here guesses. Pure rules; loading is in load.ts.
 
-export interface ReviewPanda {
-  id: string;
-  slug: string;
-  name: string;
-  birthDate: string | null;
-  deceased: boolean;
-}
+export type FirstKind = "recognized" | "seen" | "visit" | "checkin";
 
-export interface ReviewPlace {
-  name: string | null;
-  countryCode: string | null;
-}
-
-export interface ReviewMove {
-  eventId: string;
+export interface YearFirst {
+  kind: FirstKind;
+  /** YYYY-MM-DD. */
   date: string;
-  pandaId: string;
-  slug: string;
-  name: string;
-  /** "抵达上野动物园", "回国，住进碧峰峡基地": the same words as the panda's timeline. */
-  text: string;
-  home: boolean;
+  /** The panda it is about, for a 认出 or a 见过. */
+  pandaId: string | null;
+  /** The place, for a 去过. */
+  placeId: string | null;
 }
 
 export interface YearReview {
   year: number;
   /** True while the year is still going: counts are "so far". */
   partial: boolean;
-  births: ReviewPanda[];
-  /** Living pandas with a known birthday that fell in the year, up to today. */
-  birthdays: number;
-  moves: ReviewMove[];
-  homecomings: number;
-  /** Nothing at all recorded for the year. */
+  /** The first panda met that year, either way. */
+  first: { pandaId: string; date: string } | null;
+  /** Pandas marked 见过 with a day in the year. */
+  seen: number;
+  /** Pandas first 认出 in the year. */
+  recognized: number;
+  /** Days checked in. */
+  checkinDays: number;
+  /** Places visited, each counted once. */
+  places: number;
+  /** Check-in days per month, January first. */
+  months: number[];
+  /** The month with the most check-in days (1–12), or null when none. */
+  busiest: number | null;
+  /** The first 认出, 见过, 去过 and 打卡 of the year, oldest first. */
+  firsts: YearFirst[];
   empty: boolean;
 }
 
-const DAY = /^(\d{4})-(\d{2})-(\d{2})$/;
-const MOVE_TYPES = new Set(["arrival", "transfer", "return"]);
+export interface YearInput {
+  year: number;
+  today: string;
+  games: readonly GameEntry[];
+  seen: readonly SeenEntry[];
+  visits: readonly { placeId: string; visitedOn: string }[];
+  checkins: readonly { day: string; kind: string }[];
+}
+
+const day = (value: string) => value.slice(0, 10);
 
 /** The years a review can be asked for: the current one and the three before it. */
 export function reviewYears(today: string): number[] {
@@ -58,65 +63,55 @@ export function parseYear(value: string | undefined, today: string): number {
   return years.includes(asked) ? asked : years[0]!;
 }
 
-function moveText(event: LifeEvent, places: ReadonlyMap<string, ReviewPlace>, home: boolean): string {
-  const to = event.toPlaceId ? places.get(event.toPlaceId)?.name : null;
-  const from = event.fromPlaceId ? places.get(event.fromPlaceId)?.name : null;
-  if (home) return to ? `回国，住进${to}` : "回国";
-  if (event.eventType === "arrival") return to ? `抵达${to}` : "抵达新家";
-  if (from && to) return `从${from}搬到${to}`;
-  return to ? `搬到${to}` : "搬家";
+function earliest<T>(items: T[], dateOf: (item: T) => string): T | null {
+  return items.reduce<T | null>((best, item) => (best === null || dateOf(item) < dateOf(best) ? item : best), null);
 }
 
-export function yearReview(input: {
-  year: number;
-  today: string;
-  pandas: readonly ReviewPanda[];
-  events: readonly LifeEvent[];
-  places: ReadonlyMap<string, ReviewPlace>;
-  /** Restrict to one panda. */
-  pandaId?: string;
-}): YearReview {
-  const { year, today, places } = input;
+export function yearReview({ year, today, games, seen, visits, checkins }: YearInput): YearReview {
   const prefix = String(year);
   const end = today.startsWith(prefix) ? today : `${prefix}-12-31`;
-  const pandas = input.pandaId ? input.pandas.filter((panda) => panda.id === input.pandaId) : input.pandas;
-  const byId = new Map(input.pandas.map((panda) => [panda.id, panda]));
+  const inYear = (value: string | null | undefined): value is string => Boolean(value && day(value).startsWith(prefix) && day(value) <= end);
 
-  const births = pandas
-    .filter((panda) => panda.birthDate?.startsWith(prefix) && panda.birthDate.slice(0, 10) <= end)
-    .sort((a, b) => (a.birthDate ?? "").localeCompare(b.birthDate ?? "") || a.name.localeCompare(b.name, "zh-CN"));
+  const recognizedIn = games.filter((game) => inYear(game.firstMetAt));
+  const seenIn = seen.filter((item) => inYear(item.seenOn ?? item.firstSeenAt));
+  const visitsIn = visits.filter((visit) => inYear(visit.visitedOn));
+  const checkinsIn = checkins.filter((item) => item.kind === "visit" && inYear(item.day));
 
-  const birthdays = pandas.filter((panda) => {
-    const match = panda.birthDate ? DAY.exec(panda.birthDate) : null;
-    if (!match || panda.deceased || Number(match[1]) >= year) return false;
-    return `${prefix}-${match[2]}-${match[3] === "29" && match[2] === "02" ? "28" : match[3]}` <= end;
-  }).length;
+  const months = Array.from({ length: 12 }, () => 0);
+  for (const item of checkinsIn) months[Number(item.day.slice(5, 7)) - 1]! += 1;
+  const most = Math.max(...months);
+  const busiest = most > 0 ? months.indexOf(most) + 1 : null;
 
-  const moves: ReviewMove[] = [];
-  for (const event of input.events) {
-    if (event.eventStatus !== "completed" || !MOVE_TYPES.has(event.eventType) || event.sourceIds.length === 0) continue;
-    const date = event.occurredOn?.slice(0, 10);
-    if (!date?.startsWith(prefix) || date > end) continue;
-    const from = event.fromPlaceId ? places.get(event.fromPlaceId) : undefined;
-    const to = event.toPlaceId ? places.get(event.toPlaceId) : undefined;
-    const home =
-      event.eventType === "return" ||
-      (Boolean(from?.countryCode) && from?.countryCode !== "CN" && to?.countryCode === "CN");
-    for (const pandaId of event.participantIds) {
-      const panda = byId.get(pandaId);
-      if (!panda || (input.pandaId && pandaId !== input.pandaId)) continue;
-      moves.push({ eventId: event.eventId, date, pandaId, slug: panda.slug, name: panda.name, text: moveText(event, places, home), home });
-    }
-  }
-  moves.sort((a, b) => a.date.localeCompare(b.date) || a.name.localeCompare(b.name, "zh-CN"));
+  const firstGame = earliest(recognizedIn, (game) => day(game.firstMetAt));
+  const firstSeen = earliest(seenIn, (item) => day(item.seenOn ?? item.firstSeenAt));
+  const firstVisit = earliest(visitsIn, (visit) => visit.visitedOn);
+  const firstCheckin = earliest(checkinsIn, (item) => item.day);
+  const firsts: YearFirst[] = [
+    ...(firstGame ? [{ kind: "recognized" as const, date: day(firstGame.firstMetAt), pandaId: firstGame.pandaId, placeId: null }] : []),
+    ...(firstSeen ? [{ kind: "seen" as const, date: day(firstSeen.seenOn ?? firstSeen.firstSeenAt), pandaId: firstSeen.pandaId, placeId: null }] : []),
+    ...(firstVisit ? [{ kind: "visit" as const, date: firstVisit.visitedOn, pandaId: null, placeId: firstVisit.placeId }] : []),
+    ...(firstCheckin ? [{ kind: "checkin" as const, date: firstCheckin.day, pandaId: null, placeId: null }] : []),
+  ].sort((a, b) => a.date.localeCompare(b.date));
+
+  const met = firsts.filter((item): item is YearFirst & { pandaId: string } => item.pandaId !== null);
+  const first = met[0] ? { pandaId: met[0].pandaId, date: met[0].date } : null;
 
   return {
     year,
     partial: end === today,
-    births,
-    birthdays,
-    moves,
-    homecomings: moves.filter((move) => move.home).length,
-    empty: births.length === 0 && birthdays === 0 && moves.length === 0,
+    first,
+    seen: new Set(seenIn.map((item) => item.pandaId)).size,
+    recognized: new Set(recognizedIn.map((game) => game.pandaId)).size,
+    checkinDays: checkinsIn.length,
+    places: new Set(visitsIn.map((visit) => visit.placeId)).size,
+    months,
+    busiest,
+    firsts,
+    empty: recognizedIn.length + seenIn.length + visitsIn.length + checkinsIn.length === 0,
   };
+}
+
+/** "03.14", as the 第一次 timeline dates a day. */
+export function monthDot(date: string): string {
+  return `${date.slice(5, 7)}.${date.slice(8, 10)}`;
 }

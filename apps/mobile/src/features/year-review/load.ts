@@ -1,25 +1,57 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { loadCheckins } from "@/features/checkin/checkin";
 import { localToday } from "@/features/engagement/seen";
-import { memoryPlaces } from "@/features/on-this-day/load";
-import { loadPandaIndex, loadPlaces } from "@/features/pandas/pandas";
-import { loadLifeEvents } from "@/lib/public-data";
+import { type PandaListItem, loadPandaIndex, loadPlaces, placeName } from "@/features/pandas/pandas";
+import { useSession } from "@/features/session/session";
+import { loadVisits } from "@/features/visits/visits";
+import { authedApi } from "@/lib/api";
 
-import { yearReview } from "./year-review";
+import { type YearReview, yearReview } from "./year-review";
 
-/** One year's review from the cached index, places and life events; for one panda when `slug` is given. */
-export function useYearReview(year: number, slug?: string) {
+export interface YearReviewData {
+  review: YearReview;
+  pandas: ReadonlyMap<string, PandaListItem>;
+  placeNames: ReadonlyMap<string, string>;
+  /** Pandas met in all (the 图鉴's 点亮) and every published panda. */
+  met: number;
+  catalog: number;
+}
+
+async function loadYearReview(year: number, today: string): Promise<YearReviewData> {
+  const [games, seen, visits, checkins, index, places] = await Promise.all([
+    authedApi.GET("/api/v2/me/panda-book"),
+    authedApi.GET("/api/v2/me/seen-pandas"),
+    loadVisits(),
+    loadCheckins(today),
+    loadPandaIndex(),
+    loadPlaces(),
+  ]);
+  if (!games.data || !seen.data) throw new Error("Year review unavailable");
+  const placeNames = new Map(
+    [...places].flatMap(([id, place]) => {
+      const name = placeName(place);
+      return name ? [[id, name] as const] : [];
+    }),
+  );
+  const met = new Set([...games.data.items.map((item) => item.pandaId), ...seen.data.items.map((item) => item.pandaId)]).size;
+  return {
+    review: yearReview({ year, today, games: games.data.items, seen: seen.data.items, visits, checkins: checkins.days }),
+    pandas: new Map(index.map((panda) => [panda.id, panda])),
+    placeNames,
+    met,
+    catalog: index.length,
+  };
+}
+
+/** The signed-in fan's review of `year`; idle while signed out. */
+export function useYearReview(year: number) {
+  const { state } = useSession();
+  const accountId = state.status === "signedIn" ? state.accountId : null;
   const today = localToday();
   return useQuery({
-    queryKey: ["year-review", year, slug ?? "", today],
-    queryFn: async () => {
-      const [pandas, places, events] = await Promise.all([loadPandaIndex(), loadPlaces(), loadLifeEvents()]);
-      const panda = slug ? pandas.find((item) => item.slug === slug) : undefined;
-      if (slug && !panda) throw new Error("Panda not found");
-      return {
-        panda: panda ?? null,
-        review: yearReview({ year, today, pandas, events, places: memoryPlaces(places), pandaId: panda?.id }),
-      };
-    },
+    queryKey: ["year-review", accountId ?? "", year, today],
+    queryFn: () => loadYearReview(year, today),
+    enabled: accountId !== null,
   });
 }

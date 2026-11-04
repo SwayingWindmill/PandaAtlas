@@ -38,6 +38,7 @@ import { unreadCount } from "@/features/notifications/notifications";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { NICKNAME_MAX, displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
+import { YearReviewBanner } from "@/features/year-review/banner";
 import { StoryPhotoTile } from "@/features/today/story-photo-tile";
 import { type StoryPhoto, useStoryPhotos } from "@/features/today/story-photos";
 import { loadVisits } from "@/features/visits/visits";
@@ -77,9 +78,7 @@ const COLLAGE_HEIGHT = 196;
 function CollagePhoto({ photo, style }: { photo: StoryPhoto | undefined; style: object }) {
   return (
     <View className="overflow-hidden bg-secondary" style={style}>
-      {photo ? (
-        <Image source={photo.url} style={{ flex: 1 }} contentFit="cover" transition={200} accessible={false} />
-      ) : null}
+      {photo ? <Image source={photo.url} style={{ flex: 1 }} contentFit="cover" transition={200} accessible={false} /> : null}
     </View>
   );
 }
@@ -282,10 +281,13 @@ function SignedIn({ email }: { email: string | null }) {
   return (
     <View className="gap-section">
       <Profile email={email} />
-      <View className={stacked ? "gap-row" : "flex-row gap-row"}>
-        <StatTile icon={Heart} label="关注" value={amount(followed?.size, "只")} href="/following" />
-        <StatTile icon={CalendarHeart} label="打卡" value={amount(counts.checkinDays, "天")} href="/checkin" />
-        <StatTile icon={MapPin} label="去过" value={amount(counts.places, "处")} href="/visits" />
+      <View className="gap-row">
+        <View className={stacked ? "gap-row" : "flex-row gap-row"}>
+          <StatTile icon={Heart} label="关注" value={amount(followed?.size, "只")} href="/following" />
+          <StatTile icon={CalendarHeart} label="打卡" value={amount(counts.checkinDays, "天")} href="/checkin" />
+          <StatTile icon={MapPin} label="去过" value={amount(counts.places, "处")} href="/visits" />
+        </View>
+        <YearReviewBanner />
       </View>
       <ListSection>
         <ListCell label="关注的熊猫" icon={Heart} meta={count(followed?.size)} href="/following" />
@@ -311,9 +313,7 @@ export default function MeScreen() {
   const { state } = useSession();
   return (
     <Page title="我的" back={false}>
-      {state.status === "loading" ? (
-        <Skeleton className="h-44 w-full rounded-card" accessibilityLabel="正在加载" />
-      ) : null}
+      {state.status === "loading" ? <Skeleton className="h-44 w-full rounded-card" accessibilityLabel="正在加载" /> : null}
       {state.status === "signedOut" ? <SignedOut /> : null}
       {state.status === "unavailable" ? (
         <ProfileCard>

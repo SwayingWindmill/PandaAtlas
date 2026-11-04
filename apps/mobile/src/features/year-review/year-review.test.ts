@@ -1,62 +1,73 @@
 import { describe, expect, it } from "vitest";
 
-import type { LifeEvent } from "../timeline/timeline";
+import { monthDot, parseYear, reviewYears, yearReview } from "./year-review";
 
-import { parseYear, reviewYears, yearReview } from "./year-review";
+const base = {
+  year: 2026,
+  today: "2026-11-04",
+  games: [
+    { pandaId: "a", firstGame: "daily_panda" as const, firstMetAt: "2026-03-14T09:00:00Z", timesMet: 4 },
+    { pandaId: "b", firstGame: "guess_panda" as const, firstMetAt: "2025-12-30T09:00:00Z", timesMet: 1 },
+  ],
+  seen: [
+    { pandaId: "c", seenOn: "2026-07-02", placeId: "p1", firstSeenAt: "2026-07-02T10:00:00Z" },
+    { pandaId: "d", seenOn: null, placeId: null, firstSeenAt: "2026-02-01T10:00:00Z" },
+  ],
+  visits: [
+    { placeId: "p1", visitedOn: "2026-07-02" },
+    { placeId: "p1", visitedOn: "2026-08-10" },
+    { placeId: "p2", visitedOn: "2025-05-01" },
+  ],
+  checkins: [
+    { day: "2026-08-01", kind: "visit" },
+    { day: "2026-08-02", kind: "visit" },
+    { day: "2026-01-05", kind: "visit" },
+    { day: "2026-01-06", kind: "leave" },
+    { day: "2025-08-01", kind: "visit" },
+  ],
+};
 
-const panda = (id: string, birthDate: string | null, deceased = false) => ({ id, slug: `s-${id}`, name: `熊猫${id}`, birthDate, deceased });
-const event = (over: Partial<LifeEvent>): LifeEvent => ({
-  eventId: "e1",
-  eventType: "arrival",
-  eventStatus: "completed",
-  occurredOn: "2026-03-01",
-  occurredPrecision: "day",
-  participantIds: ["a"],
-  sourceIds: ["src"],
-  ...over,
-});
-const places = new Map([
-  ["us", { name: "史密森国家动物园", countryCode: "US" }],
-  ["cn", { name: "碧峰峡基地", countryCode: "CN" }],
-]);
-
-describe("yearReview", () => {
-  it("counts births, birthdays up to today and sourced moves", () => {
-    const review = yearReview({
-      year: 2026,
-      today: "2026-06-30",
-      pandas: [panda("a", "2020-05-01"), panda("b", "2026-02-10"), panda("c", "2019-08-01"), panda("d", "2010-01-01", true)],
-      events: [
-        event({}),
-        event({ eventId: "e2", eventType: "transfer", fromPlaceId: "us", toPlaceId: "cn", participantIds: ["c"] }),
-        event({ eventId: "e3", sourceIds: [] }),
-        event({ eventId: "e4", occurredOn: "2026-09-01" }),
-        event({ eventId: "e5", eventStatus: "announced" }),
-      ],
-      places,
-    });
+describe("year review", () => {
+  it("counts the year's own records", () => {
+    const review = yearReview(base);
+    expect(review.seen).toBe(2);
+    expect(review.recognized).toBe(1);
+    expect(review.checkinDays).toBe(3);
+    expect(review.places).toBe(1);
+    expect(review.months[0]).toBe(1);
+    expect(review.months[7]).toBe(2);
+    expect(review.busiest).toBe(8);
     expect(review.partial).toBe(true);
-    expect(review.births.map((p) => p.id)).toEqual(["b"]);
-    expect(review.birthdays).toBe(1);
-    expect(review.moves.map((m) => [m.pandaId, m.text, m.home])).toEqual([
-      ["a", "抵达新家", false],
-      ["c", "回国，住进碧峰峡基地", true],
+    expect(review.empty).toBe(false);
+  });
+
+  it("lists the firsts oldest first and takes the first panda met", () => {
+    const review = yearReview(base);
+    expect(review.firsts.map((item) => `${item.kind}:${item.date}`)).toEqual([
+      "checkin:2026-01-05",
+      "seen:2026-02-01",
+      "recognized:2026-03-14",
+      "visit:2026-07-02",
     ]);
-    expect(review.homecomings).toBe(1);
+    expect(review.first).toEqual({ pandaId: "d", date: "2026-02-01" });
   });
 
-  it("restricts to one panda and reports an empty year", () => {
-    const review = yearReview({ year: 2024, today: "2026-11-04", pandas: [panda("a", "2020-05")], events: [event({})], places, pandaId: "a" });
-    expect(review.partial).toBe(false);
+  it("is empty for a year with nothing, and not partial once it is over", () => {
+    const review = yearReview({ ...base, year: 2024 });
     expect(review.empty).toBe(true);
+    expect(review.busiest).toBeNull();
+    expect(review.first).toBeNull();
+    expect(yearReview({ ...base, year: 2025 }).partial).toBe(false);
   });
-});
 
-describe("years", () => {
-  it("offers this year and three before, and rejects others", () => {
+  it("ignores what comes after today", () => {
+    expect(yearReview({ ...base, today: "2026-07-01" }).places).toBe(0);
+  });
+
+  it("accepts only the recent years", () => {
     expect(reviewYears("2026-11-04")).toEqual([2026, 2025, 2024, 2023]);
-    expect(parseYear("2024", "2026-11-04")).toBe(2024);
-    expect(parseYear("1999", "2026-11-04")).toBe(2026);
-    expect(parseYear(undefined, "2026-11-04")).toBe(2026);
+    expect(parseYear("2025", "2026-11-04")).toBe(2025);
+    expect(parseYear("2019", "2026-11-04")).toBe(2026);
+    expect(monthDot("2026-03-14")).toBe("03.14");
   });
 });

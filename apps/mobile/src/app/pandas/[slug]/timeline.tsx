@@ -92,15 +92,6 @@ export default function TimelineScreen() {
             ))}
           </ListSection>
         ) : null}
-        <ListSection>
-          <ListCell
-            label="年度回顾"
-            tone="tint"
-            role="link"
-            onPress={() => router.push({ pathname: "/year-review", params: { panda: timeline.slug } })}
-            last
-          />
-        </ListSection>
         <ListSection footer="只收已经发生、有公开资料的事。点出处可以看原文。">
           <ListCell label="少了什么或写错了？告诉我们" tone="tint" onPress={() => correct(timeline.slug)} last />
         </ListSection>
