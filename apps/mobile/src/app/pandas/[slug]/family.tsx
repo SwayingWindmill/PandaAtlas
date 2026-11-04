@@ -2,7 +2,7 @@ import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, useFocusEffect, useLocalSearchParams, useNavigation, usePreventRemove } from "expo-router";
 import { HeaderBackButton } from "expo-router/react-navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { BackHandler, Linking, Modal, Platform, ScrollView, View } from "react-native";
+import { AccessibilityInfo, BackHandler, Linking, Modal, Platform, ScrollView, View } from "react-native";
 
 import { ListCell, ListSection, useSingleColumn } from "@/components/grouped-list";
 import { FileText, MapPin, Network, Users } from "@/components/icons";
@@ -201,11 +201,13 @@ export default function FamilyScreen() {
       setPending(to);
       setSwitchFailed(false);
       try {
-        await queryClient.ensureQueryData(familyPageQuery(to));
+        const next = await queryClient.ensureQueryData(familyPageQuery(to));
         if (current !== request.current) return;
         if (family) setTransition({ from: family, to });
         setHistory(nextHistory);
         router.setParams({ slug: to });
+        // The tree changes in place, with no new screen for VoiceOver to land on.
+        AccessibilityInfo.announceForAccessibility(`已切换到${next.family.focus.name}的家族`);
       } catch {
         if (current === request.current) setSwitchFailed(true);
       } finally {
@@ -281,6 +283,7 @@ export default function FamilyScreen() {
           family={family}
           previousFamily={transition?.to === slug ? transition.from : undefined}
           onSelect={(member) => select(member.slug)}
+          onOpen={(member) => openPanda(member.slug)}
           pending={pending}
         />
         {switchFailed ? (

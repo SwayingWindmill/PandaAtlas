@@ -3,9 +3,14 @@ import type { Family, FamilyMember } from "@/features/family/family";
 // One generation up and one down around the focus panda, like FamilySearch's family view.
 // Tapping any relative re-centres the tree on it, so the layout never needs more rows.
 
-export const PARENT_CARD = { width: 112, height: 124 };
-export const MEMBER_CARD = { width: 96, height: 124 };
-export const FOCUS_CARD = { width: 120, height: 140 };
+const PARENT = { width: 112, height: 124 };
+const MEMBER = { width: 96, height: 124 };
+const FOCUS = { width: 120, height: 140 };
+
+// A card's two text lines (body name, footnote relation) at the default text size; they grow with it.
+const CARD_TEXT = 24 + 18;
+/** The largest text scale the tree follows; past it the 家谱 lists below carry the names. */
+export const TREE_MAX_TEXT_SCALE = 2;
 
 const PAD = 16;
 const ROW_GAP = 52;
@@ -81,7 +86,11 @@ function branch(source: Point, targets: (Point & { id: string })[], familyId: st
   ];
 }
 
-export function layoutFamily(family: Family, availableWidth: number): FamilyLayout {
+export function layoutFamily(family: Family, availableWidth: number, textScale = 1): FamilyLayout {
+  const grow = CARD_TEXT * (Math.min(Math.max(textScale, 1), TREE_MAX_TEXT_SCALE) - 1);
+  const PARENT_CARD = { ...PARENT, height: PARENT.height + grow };
+  const MEMBER_CARD = { ...MEMBER, height: MEMBER.height + grow };
+  const FOCUS_CARD = { ...FOCUS, height: FOCUS.height + grow };
   const cards: PlacedCard[] = [];
   const groups: PlacedGroup[] = [];
   const parents = [family.father, family.mother].filter((parent): parent is FamilyMember => parent !== null);
@@ -194,7 +203,8 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
   return {
     width,
     height: bottom + PAD * 2,
-    cards: cards.map(shift),
+    // Top to bottom, left to right: the order VoiceOver reads the absolutely placed cards in.
+    cards: cards.map(shift).sort((a, b) => a.y - b.y || a.x - b.x),
     groups: groups.map(shift),
     lines: lines.map((line) => ({ ...line, path: shiftPath(line.path) })),
     couple: couple ? shift(couple) : null,

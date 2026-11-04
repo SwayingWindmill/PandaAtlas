@@ -11,6 +11,9 @@ const bezier = (name: keyof typeof primitive.easing) => {
 /** Strong ease-out: fast start, gentle settle. UI motion never eases in. */
 export const EASE_OUT = bezier("out");
 
+/** On-screen movement from one place to another: the `move` role's curve. */
+export const EASE_MOVE = bezier("inOut");
+
 /** 竹 bamboo, the signature curve: bends ~3% past its mark and settles. Transforms only. */
 export const EASE_BAMBOO = bezier("bamboo");
 
