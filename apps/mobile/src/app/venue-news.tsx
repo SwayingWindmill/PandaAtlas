@@ -1,57 +1,80 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
-import { View } from "react-native";
+import { useState } from "react";
+import { ScrollView, View } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { ListSection } from "@/components/grouped-list";
+import { Chip } from "@/components/chip";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { ScreenState } from "@/components/screen-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PAGE_ENTER } from "@/design/motion";
-import { institutionListQueryOptions } from "@/features/institutions/institutions";
-import { type VenueNewsItem, loadVenueNews } from "@/features/venue-news/venue-news";
-import { VenueNewsRow } from "@/features/venue-news/venue-news-section";
+import { NewsTimeline } from "@/features/venue-news/news-timeline";
+import { useNewsContext } from "@/features/venue-news/use-news-context";
+import { loadVenueNews } from "@/features/venue-news/venue-news";
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-
-function byInstitution(items: VenueNewsItem[]) {
-  const groups = new Map<string, VenueNewsItem[]>();
-  for (const item of items) groups.set(item.institutionSlug, [...(groups.get(item.institutionSlug) ?? []), item]);
-  return [...groups];
-}
+const ALL = "all";
+const FOLLOWED = "followed";
 
 /**
- * 场馆动态: official notices only, grouped by institution, newest first. A row is the notice's own
- * headline and opens the original. Like Apple Developer's News list: headline, then source and date.
+ * 场馆动态 (v4 `07b-venue-news`): official notices only, newest first, on one timeline card. Chips narrow it
+ * to the venues the user's pandas live at (关注的) or to one venue; each venue with a notice gets a chip.
+ * A row is the notice's own headline and opens the original.
  */
 export default function VenueNewsScreen() {
   const params = useLocalSearchParams<{ institution?: string }>();
-  const institution = params.institution && SLUG.test(params.institution) ? params.institution : undefined;
-  const news = useQuery({ queryKey: ["venue-news", institution ?? "all"], queryFn: () => loadVenueNews(institution) });
-  const institutions = useQuery(institutionListQueryOptions());
-  const names = new Map((institutions.data ?? []).map((i) => [i.slug, i.nameZh ?? i.slug]));
+  const start = params.institution && SLUG.test(params.institution) ? params.institution : ALL;
+  const [filter, setFilter] = useState(start);
+  const news = useQuery({ queryKey: ["venue-news", "all"], queryFn: () => loadVenueNews() });
+  const { venues, pandas, followedVenues } = useNewsContext();
+
+  const items = news.data ?? [];
+  const venuesWithNews = [...new Set(items.map((item) => item.institutionSlug))];
+  const followedWithNews = followedVenues ? venuesWithNews.filter((slug) => followedVenues.has(slug)) : [];
+  const shown =
+    filter === ALL
+      ? items
+      : filter === FOLLOWED
+        ? items.filter((item) => followedVenues?.has(item.institutionSlug))
+        : items.filter((item) => item.institutionSlug === filter);
+  const chips = [
+    { key: ALL, label: "全部" },
+    ...(followedWithNews.length > 0 ? [{ key: FOLLOWED, label: "关注的" }] : []),
+    ...venuesWithNews.map((slug) => ({ key: slug, label: venues.get(slug) ?? slug })),
+  ];
 
   return (
-    <Page title="场馆动态" label={institution ? names.get(institution) : "官方公告"}>
+    <Page title="场馆动态">
       {news.isError ? (
         <LoadFailed message="场馆动态暂时打不开。" onRetry={() => void news.refetch()} />
       ) : !news.data ? (
-        <View className="gap-1.5" accessibilityLabel="正在加载">
-          <Skeleton className="h-16 w-full rounded-group" />
-          <Skeleton className="h-16 w-full rounded-group" />
+        <View className="gap-row" accessibilityLabel="正在加载">
+          <Skeleton className="h-8 w-2/3 rounded-pill" />
+          <Skeleton className="h-64 w-full rounded-group" />
         </View>
-      ) : news.data.length === 0 ? (
+      ) : items.length === 0 ? (
         <ScreenState message="暂无动态" />
       ) : (
-        <Animated.View entering={PAGE_ENTER} className="gap-section-tight">
-          {byInstitution(news.data).map(([slug, items]) => (
-            <ListSection key={slug} title={institution ? undefined : (names.get(slug) ?? slug)}>
-              {items.map((item, index) => (
-                <VenueNewsRow key={item.id} item={item} last={index === items.length - 1} />
+        <Animated.View entering={PAGE_ENTER} className="gap-row">
+          {venuesWithNews.length > 1 ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="-mx-gutter"
+              contentContainerClassName="gap-stack-tight px-gutter"
+            >
+              {chips.map((chip) => (
+                <Chip key={chip.key} label={chip.label} appearance="ink" selected={filter === chip.key} onPress={() => setFilter(chip.key)} />
               ))}
-            </ListSection>
-          ))}
+            </ScrollView>
+          ) : null}
+          {shown.length > 0 ? (
+            <NewsTimeline items={shown} venues={venues} pandas={pandas} showVenue={filter === ALL || filter === FOLLOWED} />
+          ) : (
+            <ScreenState message="这里暂无动态" />
+          )}
         </Animated.View>
       )}
     </Page>

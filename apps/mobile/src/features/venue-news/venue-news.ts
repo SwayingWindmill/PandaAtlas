@@ -21,4 +21,4 @@ export async function loadVenueNews(institution?: string): Promise<VenueNewsItem
   return data.items.filter((item) => item.sourceUrl.startsWith("https://"));
 }
 
-export { newsDate, newsDetail, sourceHost, updatedDay } from "./format";
+export { daysUntil, dotDate, sourceHost, updatedDay } from "./format";
