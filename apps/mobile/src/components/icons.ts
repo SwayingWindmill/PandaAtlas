@@ -3,7 +3,10 @@
  * the bundle carries only these. One meaning per glyph; reuse the name here before adding one.
  * See DESIGN.md, "Icons", for where an icon belongs and where it does not.
  */
+export { default as Baby } from "lucide-react-native/icons/baby";
+export { default as BadgeCheck } from "lucide-react-native/icons/badge-check";
 export { default as Bell } from "lucide-react-native/icons/bell";
+export { default as BellRing } from "lucide-react-native/icons/bell-ring";
 export { default as Binoculars } from "lucide-react-native/icons/binoculars";
 export { default as BookA } from "lucide-react-native/icons/book-a";
 export { default as BookOpen } from "lucide-react-native/icons/book-open";
@@ -12,17 +15,21 @@ export { default as CalendarCheck } from "lucide-react-native/icons/calendar-che
 export { default as CalendarDays } from "lucide-react-native/icons/calendar-days";
 export { default as CalendarHeart } from "lucide-react-native/icons/calendar-heart";
 export { default as Check } from "lucide-react-native/icons/check";
+export { default as ChevronDown } from "lucide-react-native/icons/chevron-down";
 export { default as ChevronLeft } from "lucide-react-native/icons/chevron-left";
 export { default as ChevronRight } from "lucide-react-native/icons/chevron-right";
 export { default as CircleAlert } from "lucide-react-native/icons/circle-alert";
 export { default as CircleQuestionMark } from "lucide-react-native/icons/circle-question-mark";
 export { default as Clock } from "lucide-react-native/icons/clock";
+export { default as Columns } from "lucide-react-native/icons/columns-3";
 export { default as Download } from "lucide-react-native/icons/download";
 export { default as Ellipsis } from "lucide-react-native/icons/ellipsis";
 export { default as FileText } from "lucide-react-native/icons/file-text";
 export { default as Flag } from "lucide-react-native/icons/flag";
 export { default as Flower } from "lucide-react-native/icons/flower-2";
 export { default as FolderHeart } from "lucide-react-native/icons/folder-heart";
+export { default as Heart } from "lucide-react-native/icons/heart";
+export { default as Eye } from "lucide-react-native/icons/eye";
 export { default as Globe } from "lucide-react-native/icons/globe";
 export { default as HeartPulse } from "lucide-react-native/icons/heart-pulse";
 export { default as History } from "lucide-react-native/icons/rotate-ccw-clock";
@@ -39,13 +46,14 @@ export { default as Navigation } from "lucide-react-native/icons/navigation";
 export { default as Network } from "lucide-react-native/icons/network";
 export { default as Newspaper } from "lucide-react-native/icons/newspaper";
 export { default as PawPrint } from "lucide-react-native/icons/paw-print";
+export { default as Photo } from "lucide-react-native/icons/image";
 export { default as RotateCw } from "lucide-react-native/icons/rotate-cw";
 export { default as ScanFace } from "lucide-react-native/icons/scan-face";
-export { default as Photo } from "lucide-react-native/icons/image";
 export { default as Search } from "lucide-react-native/icons/search";
 export { default as Settings } from "lucide-react-native/icons/settings";
 export { default as Share } from "lucide-react-native/icons/share";
 export { default as ShieldCheck } from "lucide-react-native/icons/shield-check";
+export { default as Sparkles } from "lucide-react-native/icons/sparkles";
 export { default as Sun } from "lucide-react-native/icons/sun";
 export { default as SunMoon } from "lucide-react-native/icons/sun-moon";
 export { default as Sunrise } from "lucide-react-native/icons/sunrise";

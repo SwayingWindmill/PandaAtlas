@@ -106,7 +106,7 @@ function MonthGrid({
                       isSelected
                         ? "font-semibold text-primary-foreground"
                         : isToday
-                          ? "font-semibold text-warm"
+                          ? "font-semibold text-primary"
                           : count === 0 && "text-muted-foreground",
                     )}
                   >

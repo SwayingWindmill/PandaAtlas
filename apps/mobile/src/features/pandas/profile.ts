@@ -10,7 +10,7 @@ import { currentPlaceId, loadPlaces, placeName } from "@/features/pandas/pandas"
 import { type PlaceLived, type Stat, headlineStats, infobox, placesLived } from "@/features/pandas/profile-facts";
 import { publicMediaUrl } from "@/lib/api";
 import { describeEvent } from "@/features/timeline/timeline";
-import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
+import { displayName, pandaBirthDate, pandaFactStatus, pandaIsDeceased, pandaSex } from "@/lib/panda";
 import { loadPandaDetail } from "@/lib/public-panda";
 
 type Schemas = components["schemas"];
@@ -22,6 +22,11 @@ export interface Profile {
   slug: string;
   name: string;
   deceased: boolean;
+  /**
+   * How sure the record is of the birth date and of 在世/离世. The page draws these as a check and a
+   * hollow dot (DESIGN.md, The Structure Rule); the words go to VoiceOver only.
+   */
+  certainty: { birth: "confirmed" | "pending" | null; life: "confirmed" | "pending" | null };
   /** Cover first; empty when no photo is published. */
   photos: Photo[];
   facts: { label: string; value: string }[];
@@ -145,6 +150,7 @@ export async function loadProfile(slug: string): Promise<Profile> {
     slug: panda.canonicalSlug,
     name: displayName(panda),
     deceased,
+    certainty: { birth: birthDate ? pandaFactStatus(panda, "birth_date") : null, life: pandaFactStatus(panda, "life_status") },
     photos: photosOf(media),
     facts,
     stats: headlineStats({

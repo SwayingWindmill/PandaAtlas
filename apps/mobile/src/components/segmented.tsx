@@ -83,7 +83,7 @@ export function Segmented<T extends string>({
           >
             <Text
               variant="subheadline"
-              className={cn("text-center", selected ? "font-semibold" : "text-muted-foreground")}
+              className={cn("text-center", selected && "font-semibold")}
             >
               {option.label}
             </Text>

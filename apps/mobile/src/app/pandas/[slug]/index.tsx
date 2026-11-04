@@ -7,20 +7,28 @@ import { ScrollView, View, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
+import { Chevron, ListCell, ListSection, SectionTitle, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import {
   Cake,
+  CalendarHeart,
   CircleQuestionMark,
+  Flag,
   Flower,
+  FolderHeart,
+  History,
   Hourglass,
   House,
   type LucideIcon,
+  MapPin,
   Mars,
   Network,
+  Newspaper,
   Users,
   Venus,
 } from "@/components/icons";
+import { IconRow } from "@/components/icon-row";
+import { ConfirmedMark, PendingDot } from "@/components/status-mark";
 import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
@@ -47,15 +55,6 @@ function correct(slug: string) {
   router.push({ pathname: "/pandas/[slug]/correct", params: { slug } });
 }
 
-/** A section's footnote header, aligned with the text inside the group below it. */
-function SectionHeader({ children }: { children: string }) {
-  return (
-    <Text variant="footnote" role="heading" className="px-4 text-muted-foreground">
-      {children}
-    </Text>
-  );
-}
-
 /** The glyph beside each stat's label. 性别 shows the sex itself, so it reads at a glance. */
 function statIcon(stat: Stat, deceased: boolean): LucideIcon {
   if (stat.key === "sex") return stat.value === "雄" ? Mars : stat.value === "雌" ? Venus : CircleQuestionMark;
@@ -74,13 +73,18 @@ function StatBlock({
   onPress,
   stacked,
   wrapped,
+  birthConfirmed,
 }: {
   stat: Stat;
   deceased: boolean;
+  /** The age tile's birth year carries a check when the birth date is confirmed. */
+  birthConfirmed: boolean;
   onPress?: () => void;
   stacked: boolean;
   wrapped: boolean;
 }) {
+  const confirmed = birthConfirmed && stat.key === "age" && Boolean(stat.detail);
+  const spoken = `${stat.label}，${stat.value}${stat.detail ? `，${stat.detail}` : ""}${confirmed ? "，生日已确认" : ""}`;
   const body = (
     <View
       className="gap-1 bg-card p-3"
@@ -91,6 +95,7 @@ function StatBlock({
         <Text variant="footnote" className="flex-1 text-muted-foreground" numberOfLines={1}>
           {stat.label}
         </Text>
+        {confirmed ? <ConfirmedMark /> : null}
         {onPress ? <Chevron /> : null}
       </View>
       <Text variant="stat" numberOfLines={stacked ? undefined : 2}>
@@ -110,7 +115,7 @@ function StatBlock({
       : { flex: STAT_FLEX[stat.key] };
   if (!onPress) {
     return (
-      <View style={style} accessible accessibilityLabel={`${stat.label}，${stat.value}${stat.detail ? `，${stat.detail}` : ""}`}>
+      <View style={style} accessible accessibilityLabel={spoken}>
         {body}
       </View>
     );
@@ -148,6 +153,7 @@ function Stats({ profile }: { profile: Profile }) {
           key={stat.key}
           stat={stat}
           deceased={profile.deceased}
+          birthConfirmed={profile.certainty.birth === "confirmed"}
           stacked={stacked}
           wrapped={wrapped}
           onPress={
@@ -159,9 +165,9 @@ function Stats({ profile }: { profile: Profile }) {
       ))}
     </View>
       {birthLine ? (
-        <Text variant="footnote" className="px-1 text-muted-foreground">
-          {birthLine}
-        </Text>
+        <View className="px-1">
+          <IconRow icon={MapPin} text={birthLine} />
+        </View>
       ) : null}
     </View>
   );
@@ -209,14 +215,14 @@ function Family({ profile }: { profile: Profile }) {
   const parents = profile.facts.find((fact) => fact.label === "父母");
   if (relatives.length === 0) {
     return (
-      <ListSection title="家族">
+      <ListSection title="家族" titleIcon={Users}>
         <ListCell icon={Users} label="父母" meta={parents?.value ?? UNKNOWN} last />
       </ListSection>
     );
   }
   return (
     <View className="gap-1.5">
-      <SectionHeader>家族</SectionHeader>
+      <SectionTitle title="家族" icon={Users} />
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -240,7 +246,7 @@ function PlacesLived({ profile }: { profile: Profile }) {
   const past = profile.placesLived.filter((place) => !place.current);
   if (past.length === 0) return null;
   return (
-    <ListSection title={profile.deceased ? "生活过的地方" : "以前住过"}>
+    <ListSection title={profile.deceased ? "生活过的地方" : "以前住过"} titleIcon={House}>
       {past.map((place, index) => (
         <ListCell
           key={`${place.place}-${place.years}`}
@@ -264,7 +270,7 @@ function Memories({ profile }: { profile: Profile }) {
   const memories = profile.memories.filter((memory) => milestonesOn || !isCubDay(memory));
   if (memories.length === 0) return null;
   return (
-    <ListSection title={profile.deceased ? DECEASED_POLICY.heading : "那年今天"}>
+    <ListSection title={profile.deceased ? DECEASED_POLICY.heading : "那年今天"} titleIcon={CalendarHeart}>
       {memories.map((memory, index) => (
         <ListCell
           key={memory.key}
@@ -285,13 +291,13 @@ function Events({ profile }: { profile: Profile }) {
   const timeline = (
     <ListCell
       label="看时间线"
-      detail="一生的大事按年排好，附上出处"
+      accessibilityHint="一生的大事按年排好，附上出处"
       href={{ pathname: "/pandas/[slug]/timeline", params: { slug: profile.slug } }}
       last={events.length > 0}
     />
   );
   return (
-    <ListSection title="动态">
+    <ListSection title="动态" titleIcon={History}>
       {events.length === 0 ? (
         <>
           <ListCell label={UNKNOWN} />
@@ -318,14 +324,14 @@ function Sources({ sources }: { sources: Profile["sources"] }) {
   const shown = all ? sources : sources.slice(0, SOURCES_SHOWN);
   const hidden = sources.length - shown.length;
   return (
-    <ListSection title="资料来源">
+    <ListSection title="资料来源" titleIcon={Newspaper}>
       {shown.map((source, index) => (
         <ListCell
           key={source.id}
           role="link"
           label={source.title}
-          detail={`${source.publisher}　核实于 ${longDate(source.lastVerifiedOn)}`}
-          accessibilityLabel={`${source.publisher}，${source.title}`}
+          detail={`${source.publisher}　${longDate(source.lastVerifiedOn)}`}
+          accessibilityLabel={`${source.publisher}，${source.title}，核实于 ${longDate(source.lastVerifiedOn)}`}
           accessibilityHint="在浏览器中打开"
           onPress={() => void WebBrowser.openBrowserAsync(source.url)}
           last={hidden === 0 && index === shown.length - 1}
@@ -406,7 +412,19 @@ export default function ProfileScreen() {
         )}
         <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-4 pt-5">
           <View className="gap-3">
-            <Text variant="display">{profile.name}</Text>
+            <View
+              className="flex-row items-center gap-stack-tight"
+            >
+              {/* The display variant is the page heading; the hollow dot's words ride on it for screen readers. */}
+              <Text
+                variant="display"
+                className="shrink"
+                accessibilityLabel={`${profile.name}${!profile.deceased && profile.certainty.life === "pending" ? "，在世，待核实" : ""}`}
+              >
+                {profile.name}
+              </Text>
+              {!profile.deceased && profile.certainty.life === "pending" ? <PendingDot /> : null}
+            </View>
             {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
           </View>
           <Stats profile={profile} />
@@ -418,11 +436,12 @@ export default function ProfileScreen() {
           {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
           <ListSection>
             <ListCell
+              icon={FolderHeart}
               label="加入合集"
               tone="tint"
               onPress={() => router.push({ pathname: "/pandas/[slug]/collect", params: { slug: profile.slug } })}
             />
-            <ListCell label="资料有误？纠错" tone="tint" onPress={() => correct(profile.slug)} last />
+            <ListCell icon={Flag} label="资料有误？纠错" tone="tint" onPress={() => correct(profile.slug)} last />
           </ListSection>
           {cover?.credit ? (
             <Text variant="footnote" className="px-4 text-muted-foreground">

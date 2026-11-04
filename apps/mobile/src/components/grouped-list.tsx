@@ -43,32 +43,48 @@ const GLYPH_INSET = { marginLeft: component.settingsGlyph.inset } as const;
 const META_MAX = { maxWidth: "60%" } as const;
 
 /**
- * A 设置 row's glyph: the tint drawn in a 30pt square of the tinted fill, as the system Settings
- * app draws its rows. Only 设置 uses it (DESIGN.md, "Icons").
+ * A 设置 row's glyph: the bare glyph, centred in a 30pt slot so labels line up. No tile behind it
+ * (v2.15: icons never sit in a square, a rounded tile or a circle; DESIGN.md, "Icons").
  */
 export function GlyphSquare({ icon, tone = "tint" }: { icon: LucideIcon; tone?: "tint" | "destructive" }) {
   const size = component.settingsGlyph.size;
   return (
-    <View
-      className={cn("items-center justify-center rounded-glyph", tone === "tint" ? "bg-highlight-soft" : "bg-secondary")}
-      style={{ width: size, height: size, borderCurve: "continuous" }}
-    >
-      <Icon icon={icon} size={component.settingsGlyph.icon} tone={tone === "tint" ? "tint" : "secondary"} strokeWidth={2} />
+    <View className="items-center justify-center" style={{ width: size, height: size }}>
+      <Icon icon={icon} size={component.settingsGlyph.icon} tone={tone === "tint" ? "label" : "secondary"} />
     </View>
   );
 }
 
 /** An inset grouped section: footnote header, white (or elevated) rounded group, optional footer. */
-export function ListSection({ title, footer, children }: { title?: string; footer?: string; children: ReactNode }) {
+export function ListSection({
+  title,
+  titleIcon,
+  footer,
+  children,
+}: {
+  title?: string;
+  /** A secondary glyph before the header naming the section's kind (家族, 动态). Decoration only. */
+  titleIcon?: LucideIcon;
+  footer?: string;
+  children: ReactNode;
+}) {
   return (
     <View className="gap-1.5">
-      {title ? (
-        <Text variant="footnote" role="heading" className="px-4 text-muted-foreground">
-          {title}
-        </Text>
-      ) : null}
+      {title ? <SectionTitle title={title} icon={titleIcon} /> : null}
       <View className="overflow-hidden rounded-group bg-card">{children}</View>
       {footer ? <Text variant="footnote" className="px-4 text-muted-foreground">{footer}</Text> : null}
+    </View>
+  );
+}
+
+/** A grouped section's footnote header, with an optional leading glyph, aligned with the rows' text. */
+export function SectionTitle({ title, icon }: { title: string; icon?: LucideIcon }) {
+  return (
+    <View className="flex-row items-center gap-hair-gap px-4">
+      {icon ? <Icon icon={icon} size="footnote" /> : null}
+      <Text variant="footnote" role="heading" className="text-muted-foreground">
+        {title}
+      </Text>
     </View>
   );
 }
@@ -229,7 +245,7 @@ function SwitchTrack({ on }: { on: boolean }) {
       style={{ width, height, borderRadius: height / 2, transitionProperty: "backgroundColor", ...transition }}
     >
       <Animated.View
-        className="absolute bg-white shadow-sm"
+        className="absolute bg-switch-knob shadow-sm"
         style={{
           top: inset,
           left: inset,

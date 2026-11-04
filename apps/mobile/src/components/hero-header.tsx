@@ -89,7 +89,7 @@ export function HeroHeader({ title, pastHero, onShare }: { title: string; pastHe
           headerShown: true,
           headerTransparent: true,
           headerLargeTitleEnabled: false,
-          // Label, not tint: over a photo the jade glyph loses contrast; the bar stays neutral.
+          // Label, not tint: over a photo the tint glyph loses contrast; the bar stays neutral.
           headerTintColor: label,
           title,
           headerTitle: pastHero ? title : "",

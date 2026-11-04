@@ -1,8 +1,8 @@
 import { router } from "expo-router";
 import { View } from "react-native";
 
-import { ListCell, ListSection } from "@/components/grouped-list";
-import { Info, ShieldCheck, FileText, Lock } from "@/components/icons";
+import { ListCell, ListSection, SectionTitle } from "@/components/grouped-list";
+import { FileText, Info, Lock, ShieldCheck, SunMoon } from "@/components/icons";
 import { Page } from "@/components/page";
 import { Segmented } from "@/components/segmented";
 import { Button } from "@/components/ui/button";
@@ -64,9 +64,7 @@ function AppearanceSection() {
   const [appearance, setAppearance] = useAppearance();
   return (
     <View className="gap-1.5">
-      <Text variant="footnote" role="heading" className="px-inset text-muted-foreground">
-        外观
-      </Text>
+      <SectionTitle title="外观" icon={SunMoon} />
       <Segmented value={appearance} options={APPEARANCES} onChange={setAppearance} accessibilityLabel="外观" />
     </View>
   );

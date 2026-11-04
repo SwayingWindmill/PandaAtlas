@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { useStacked } from "@/components/grouped-list";
+import { Sparkles } from "@/components/icons";
 import { SectionHeader } from "@/components/section-header";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
@@ -65,6 +66,7 @@ export function WeekCard() {
     <View className="gap-row">
       <SectionHeader
         title="本周新鲜事"
+        icon={Sparkles}
         action={{
           label: "全部",
           href: "/week",

@@ -6,9 +6,10 @@ import { useCSSVariable } from "uniwind";
 
 import { ListCell, ListSection } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Bell, CalendarHeart, Flag, FolderHeart, LayoutGrid, MapPin, PawPrint, Settings } from "@/components/icons";
+import { Bell, CalendarHeart, Flag, FolderHeart, LayoutGrid, MapPin, PawPrint, Settings, Sun } from "@/components/icons";
 import { Page } from "@/components/page";
 import { SectionHeader } from "@/components/section-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -31,7 +32,6 @@ import { StoryPhotoTile } from "@/features/today/story-photo-tile";
 import { type StoryPhoto, useStoryPhotos } from "@/features/today/story-photos";
 import { successHaptic } from "@/lib/haptics";
 import { HAIRLINE } from "@/lib/surface";
-import { cn } from "@/lib/utils";
 
 const AVATAR = 72;
 
@@ -101,9 +101,6 @@ function SignedOut() {
         <View className="gap-stack p-stack">
           <View className="gap-hair-gap">
             <Text variant="title">把喜欢的熊猫留在身边</Text>
-            <Text variant="subheadline" className="text-muted-foreground">
-              登录后，关注的熊猫、图鉴和去过的地点都保存在你的账号里，换手机也不会丢。
-            </Text>
             {pictured.length > 0 ? (
               <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
                 {`照片：${pictured.join("、")}`}
@@ -117,16 +114,16 @@ function SignedOut() {
         <SettingsButton />
       </View>
       <ListSection title="登录后可以">
-        <ListCell icon={PawPrint} label="关注熊猫" detail="在今天页第一时间看到它们的新动态" />
-        <ListCell icon={LayoutGrid} label="点亮图鉴" detail="猜中每日一猫、去现场见过，都记进你的图鉴" />
-        <ListCell icon={FolderHeart} label="收进合集" detail="把喜欢的熊猫按自己的方式分组" />
-        <ListCell icon={MapPin} label="记下去过的地点" detail="去过的基地和动物园，一处不落" />
-        <ListCell icon={CalendarHeart} label="每日打卡" detail="每天打开每日一猫就记一天，累计不清零" />
-        <ListCell icon={Bell} label="收到通知" detail="关注的熊猫资料更新时告诉你" last />
+        <ListCell icon={PawPrint} label="关注熊猫" accessibilityLabel="关注熊猫，在今天页第一时间看到它们的新动态" />
+        <ListCell icon={LayoutGrid} label="点亮图鉴" accessibilityLabel="点亮图鉴，猜中每日一猫、去现场见过，都记进你的图鉴" />
+        <ListCell icon={FolderHeart} label="收进合集" accessibilityLabel="收进合集，把喜欢的熊猫按自己的方式分组" />
+        <ListCell icon={MapPin} label="记下去过的地点" accessibilityLabel="记下去过的地点，去过的基地和动物园，一处不落" />
+        <ListCell icon={CalendarHeart} label="每日打卡" accessibilityLabel="每日打卡，每天打开每日一猫就记一天，累计不清零" />
+        <ListCell icon={Bell} label="收到通知" accessibilityLabel="收到通知，关注的熊猫资料更新时告诉你" last />
       </ListSection>
       {strip.length > 0 ? (
         <View className="gap-row">
-          <SectionHeader title="今天的熊猫" action={{ label: "找熊猫", href: "/find" }} />
+          <SectionHeader title="今天的熊猫" icon={Sun} action={{ label: "找熊猫", href: "/find" }} />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -233,6 +230,7 @@ function Following() {
     <View className="gap-row">
       <SectionHeader
         title="关注的熊猫"
+        icon={PawPrint}
         count={String(items.length)}
         action={items.length === 0 ? { label: "找熊猫", href: "/find" } : undefined}
       />
@@ -309,7 +307,7 @@ function Contributions() {
   if (!items || items.length === 0) return null;
   return (
     <View className="gap-row">
-      <SectionHeader title="我的纠错" count={String(items.length)} />
+      <SectionHeader title="我的纠错" icon={Flag} count={String(items.length)} />
       <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
         {items.map((item, index) => {
           const panda = pandas.get(item.targetPandaId);
@@ -328,14 +326,9 @@ function Contributions() {
                   <Text variant="headline" className="min-w-0 flex-1" numberOfLines={1}>
                     {name}
                   </Text>
-                  <Text
-                    variant="subheadline"
-                    className={cn(
-                      item.status === "accepted" ? "font-semibold text-foreground" : "text-muted-foreground",
-                    )}
-                  >
-                    {status}
-                  </Text>
+                  <Badge variant={item.status === "accepted" ? "tint" : "neutral"}>
+                    <Text>{status}</Text>
+                  </Badge>
                 </View>
                 <Text variant="footnote" className="text-muted-foreground tabular-nums">
                   {`${shortDay(item.submittedAt.slice(0, 10))}提交`}

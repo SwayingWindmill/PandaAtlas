@@ -32,7 +32,7 @@ function rows<T>(items: readonly T[]): T[][] {
   return out;
 }
 
-/** A panda to follow: its cover, its name, and a jade ring with a check once chosen, as Photos marks a pick. */
+/** A panda to follow: its cover, its name, and a tint ring with a check once chosen, as Photos marks a pick. */
 function Tile({ panda, selected, onToggle }: { panda: PandaListItem; selected: boolean; onToggle: () => void }) {
   const photo = usePandaCover(panda.id);
   return (

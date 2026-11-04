@@ -4,7 +4,7 @@ import { cn } from "./utils";
 
 describe("cn", () => {
   it("keeps the text color next to every design-system text size", () => {
-    for (const size of ["display", "title", "headline", "body", "subheadline", "footnote", "reading-body"]) {
+    for (const size of ["display", "title", "headline", "body", "subheadline", "footnote", "reading-body", "stat", "figure"]) {
       expect(cn("text-body text-foreground", `text-${size}`)).toContain("text-foreground");
     }
   });

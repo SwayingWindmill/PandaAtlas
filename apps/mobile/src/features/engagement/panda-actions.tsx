@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { View } from "react-native";
 
+import { Icon } from "@/components/icon";
+import { Eye, Heart } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { setFollowing, useFollowed } from "@/features/engagement/favorites";
@@ -11,7 +13,8 @@ import { selectionHaptic, successHaptic, tapHaptic } from "@/lib/haptics";
 
 /**
  * 关注 and 见过 under a living panda's name, as iOS pairs a primary and a secondary action:
- * 关注 is a tinted capsule, 见过 is plain tint text. Signed-out fans are sent to sign in first.
+ * 关注 is the filled ink capsule (a grey capsule once followed), 见过 is a tinted capsule. Each
+ * carries its bare glyph. Signed-out fans are sent to sign in first.
  */
 export function PandaActions({ pandaId, name }: { pandaId: string; name: string }) {
   const { state } = useSession();
@@ -43,10 +46,12 @@ export function PandaActions({ pandaId, name }: { pandaId: string; name: string 
   if (!signedIn) {
     return (
       <View className="flex-row flex-wrap items-center gap-2">
-        <Button variant="tinted" size="sm" className="min-w-24 px-5" accessibilityLabel={`关注${name}`} onPress={() => router.push("/sign-in")}>
+        <Button size="sm" className="min-w-24 px-5" accessibilityLabel={`关注${name}`} onPress={() => router.push("/sign-in")}>
+          <Icon icon={Heart} size="subhead" tone="onButton" strokeWidth={2} />
           <Text className="text-body font-semibold">关注</Text>
         </Button>
-        <Button variant="plain" size="sm" accessibilityLabel={`记下见过${name}`} onPress={() => router.push("/sign-in")}>
+        <Button variant="tinted" size="sm" className="px-4" accessibilityLabel={`记下见过${name}`} onPress={() => router.push("/sign-in")}>
+          <Icon icon={Eye} size="subhead" tone="tint" strokeWidth={2} />
           <Text className="text-body font-semibold">见过</Text>
         </Button>
       </View>
@@ -56,7 +61,7 @@ export function PandaActions({ pandaId, name }: { pandaId: string; name: string 
   return (
     <View className="flex-row flex-wrap items-center gap-2">
       <Button
-        variant={following ? "secondary" : "tinted"}
+        variant={following ? "secondary" : "default"}
         size="sm"
         className="min-w-24 px-5"
         disabled={followed === null}
@@ -66,15 +71,18 @@ export function PandaActions({ pandaId, name }: { pandaId: string; name: string 
           if (signedIn) void setFollowing(state.accountId, pandaId, !following);
         }}
       >
+        <Icon icon={Heart} size="subhead" tone={following ? "label" : "onButton"} strokeWidth={2} />
         <Text className="text-body font-semibold">{following ? "已关注" : "关注"}</Text>
       </Button>
       <Button
-        variant="plain"
+        variant="tinted"
         size="sm"
+        className="px-4"
         disabled={toggleSeen.isPending || seen === undefined}
         accessibilityLabel={seen ? `${seen.seenOn ? shortDay(seen.seenOn) : ""}见过${name}，点按取消` : `记下见过${name}`}
         onPress={() => toggleSeen.mutate()}
       >
+        <Icon icon={Eye} size="subhead" tone="tint" strokeWidth={2} />
         <Text className="text-body font-semibold">{seen ? `见过${seen.seenOn ? `　${shortDay(seen.seenOn)}` : ""}` : "见过"}</Text>
       </Button>
     </View>

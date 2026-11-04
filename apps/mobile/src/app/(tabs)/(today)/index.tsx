@@ -58,10 +58,10 @@ export default function TodayScreen() {
     >
       <Stack.Screen options={{ title: "今天" }} />
       <View className="gap-stack">
-        {/* The date is the screen's one 笋金 mark: it says when, under the title as News dates its issue. */}
+        {/* The date says when, under the title as News dates its issue: a quiet secondary line. */}
         <View>
           {TITLE_IN_COLUMN ? <Text variant="display">今天</Text> : null}
-          <Text variant="body" className="text-warm">
+          <Text variant="body" className="text-muted-foreground">
             {dateLine()}
           </Text>
         </View>
