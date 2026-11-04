@@ -337,6 +337,8 @@ The website keeps its olive paper. The app does not. Android uses the same color
 - Structure over sentences: a status is a glyph or a dot with its words in the accessibility label, not a line of copy.
 - Dark mode follows the system (我的 › 外观 can pin light or dark): true black ground and `#151517` cards.
 
+**Screens.** What each screen holds, in what order and when a block is hidden is in [`docs/design/screens.md`](docs/design/screens.md), with the approved v4 mockups in `docs/design/mockups/v4/`. This file is the visual system those screens are built from.
+
 **Reference screens.** 科普 (`learn/index.tsx`, `learn/articles/[slug].tsx`) for the reading column; 今天, a panda (`pandas/[slug]/index.tsx`) and an institution (`institutions/[slug].tsx`) for photo-led pages; 家谱 (`pandas/[slug]/family.tsx`) for lists.
 
 ## Colors
@@ -439,17 +441,19 @@ A 4pt scale (`4 8 12 16 20 24 32 40`, Tailwind numbers `1 2 3 4 5 6 8 10`) with 
 More space sits above a section heading than between the heading and the group. A photograph that is the subject runs to both edges and ignores the inset. Tab content clears the bottom bar.
 
 ### Page templates
-- **Tab root:** system large title (in the column on web), grouped-background page, sections separated by `section`. 今天's 今天 is the system large title on iOS (the bar's title on Android, in the column on web), with the date as the first line of content under it, then the featured card and the scroller.
+- **Tab root:** system large title (in the column on web), grouped-background page, sections separated by `section`. 今天 draws its own header in the column: the date as a semibold secondary footnote line over 今天 in display, with the monogram avatar at the right; then the week hero (or the featured card), the quick entries and the rest.
 - **Hero detail** (a panda, an institution): a full-bleed stretchy hero under the status bar with back/share in a transparent system bar on iOS 26+ (the page title moves into the bar once it scrolls under it) and floating glass-fallback buttons elsewhere, then the content column at `inset`, entering with `enter`.
 - **List / directory:** inset grouped `ListSection` + `ListCell` (or `NavRow`) at `inset`. A long result list (找熊猫) may run full-bleed.
 - **Reading column** (科普): `paper` ground, a lead photograph with its caption below (never text on it), the reading set, large title kept in the column.
 - **Photo card:** one photograph, continuous corners (`card` or `tile`), media placeholder, bottom scrim, on-media title, photo stroke, press scale.
 - **Stat block:** three elevated tiles in a row, `tile` radius, footnote label with glyph over a `stat` value; stacks past font scale 1.35.
-- **Tab roots.** 今天: title and date, story cards, then 那年今天 (only on a day that has one; see The On This Day Rule), 本周新鲜事 (only when the last 7 days have something; see The Weekly Digest Rule), 你关注的 avatars, a birthday tile scroller (快过生日了; 今天生日 only while 那年今天 is turned off, since the card already says it) and 关注的新资料 rows in one group. 找熊猫: search (the system search bar under the large title on iOS, kept visible while scrolling; an in-page field on Android and web), area chips, a scroller of explore cards (熊猫在哪里, 基地和动物园, 查两只熊猫的关系, 比一比两只熊猫) while browsing, then the list in one inset group with 56pt photos. 图鉴 is a personal life list: a stat block (见过, 认出, 去过), a `Segmented` 清单 / 按基地 / 按家族, then one inset group per view; signed out, a grid of two lit and four locked real covers, 登录 and 每日一猫, and the three ways in. Empty, the stats at zero, 从第一只开始, the three ways in, and every base at 0. 我的: a profile card (monogram avatar, name, 改名字, a 设置 gear), 关注的熊猫 avatars, then 我的合集 / 去过的地点 / 里程碑 (while it is on) / 通知 rows and 我的纠错. 设置 (pushed from the gear): a centered profile header, 外观 as a segmented control, glyph rows, the legal pages, 退出登录.
+- **Tab roots.** The blocks of 今天, 找熊猫, 图鉴, 我的 and 设置, their order and their data are in [`docs/design/screens.md`](docs/design/screens.md). The rules below say how each kind of block looks and behaves wherever it appears.
 
 **The Plate Rule.** The first figure on a panda, an institution or a 科普 article is one published photograph. On a panda or institution page it runs full-bleed under the status bar and stretches on pull-down, as Music and App Store heroes do (`components/stretchy-hero.tsx`). A panda's name is a display title below the photo, then 关注 (the filled ink button with a `Heart`) and 见过 (tinted, with an `Eye`); an institution's name sits on its photo over a bottom scrim with a footnote line for type and country. The institution hero is the first resident whose cover is on the reviewed list (`CURATED_COVERS`) and carries no agency watermark (`features/institutions/hero-pick.ts`). With none, the top is a plate in `highlight-soft` fading into the page, the name in display at its foot: no unreviewed photo stands in.
 
-**The Story Card Rule.** 今天 is one featured App Store Today-style card (24pt continuous corners, white display title) and, under it, a horizontal scroller of smaller cards (16pt corners, white title, snapping one card at a time, the next card peeking in). Each card is one photograph with a bottom scrim and a footnote under its title naming the feature and the panda in the photo. Each card uses a different panda. Nothing sits above the title on a card.
+**The Story Card Rule.** 今天 is one featured App Store Today-style card (24pt continuous corners, white display title) and, under it, a horizontal scroller of smaller cards (16pt corners, white title, snapping one card at a time, the next card peeking in). Each card is one photograph with a bottom scrim and a footnote under its title naming the feature and the panda in the photo. Each card uses a different panda. Nothing sits above the title on a card, except on the week hero (below).
+
+**The Week Hero Rule.** In a week with a 那年今天 or 生日周 anniversary, 今天 opens with one photo card for the nearest one instead of the featured story (`WeekHero`, `features/today/week-memory.ts`): the first panda's cover, one tag in the top-left corner (那年今天 or 生日周, footnote semibold on a white pill, the only tag allowed on a photo card), the title in display (回国 3 周年) with the pandas' names under it at the bottom-left, and the day as a `figure` (11.8 over 周日, or 今天) at the bottom-right. It opens the first panda. The same dates and the same 少显示 choices as The On This Day Rule apply; with nothing in the week the featured story comes back.
 
 **The Clean Photo Rule.** A photo under a title must not carry a burned-in mark. Covers credited to Xinhua/新华 or Pandapia are left out of story cards and institution heroes (`hasBurnedInMark` in `features/today/story-order.ts`; the API only gives the credit, so this goes by credit). They stay on the panda's own page and in lists.
 
@@ -568,6 +572,8 @@ One set: Lucide (`lucide-react-native` on `react-native-svg`), same glyphs on ev
 **The Structure Rule.** A status the layout can show is not written out. A confirmed date gets a tint `Check` beside it; a fact still being verified gets a hollow secondary dot; an official source is its institution's name with a `BadgeCheck` (`SourceBadge`). The words (生日已确认, 在世待核实, 官方来源) live in the accessibilityLabel so VoiceOver reads them. Hints that repeat what a chevron, a glyph or the group header already says are removed. 科普 and editorial copy are not touched by this rule.
 
 ### Screen state
+**The Sample Rule.** A mockup block marked 示例 shows a layout, never data. It ships with real values or not at all: hidden when it is one block among others, the screen's empty state when it is the screen's reason to exist. No invented counts, rings, progress or popularity, and no 即将上线 or disabled stand-in for a feature that is not built.
+
 - **Loading:** `Skeleton` in the final layout; content arrives with `enter`.
 - **Empty / error:** one secondary sentence, centered, and a secondary 重试 button when the fan can retry. Not a filled card.
 - **Offline:** `OfflineBanner`; cached content stays on screen.
@@ -585,7 +591,7 @@ Navigation is Expo Router's `native-tabs` and native stack (the SDK 58 way to th
 - **Do** test light and dark, Reduce Motion, and a large Dynamic Type size.
 
 ### Don't
-- **Don't** put a kicker above the title.
+- **Don't** put a kicker above the title. A date line over 今天 or 那年今天 is content, not a kicker.
 - **Don't** put an icon in a square, tile or circle, anywhere.
 - **Don't** paint a card, a progress track, or a hero with the tint, add a second accent (no gold), or tint a card pastel.
 - **Don't** hand-roll a glass panel.
@@ -645,6 +651,7 @@ No screen uses these since v2.8; the `Text` variants stay defined so nothing old
 
 ## Changelog
 
+- **v2.16 (2026-11-04).** The v4 mockups are the screen reference: `docs/design/screens.md` (blocks, order, data and hide conditions per screen, with open decisions) and `docs/design/mockups/v4/`. The per-tab composition moves out of Layout › Page templates into that file. New: The Week Hero Rule (the one photo card with a corner tag) and The Sample Rule (示例 never ships). 今天's header is the date over a display 今天 in the column.
 - **v2.15 (2026-11-04).** Palette direction C, 熊猫: white page and `#F3F3F5` cards (black and `#151517` in dark), an ink main button (white in dark), sky-blue tint `#0A6CDB` / `#5AB4FF` and graphic `#1A8CFF` / `#4DA8FF`; primitives `ink` and `sky` replace `jade` and `shoot`. The 笋金 accent and the `warm`, `warm-figure` and `warm-soft` roles are removed; milestone chips go neutral, the today ring and badges go tint. `highlight-soft` light is `#EBF4FF`, one step off the `sky` 50 primitive, for 4.52:1. Bare glyphs everywhere: `GlyphSquare` and the list thumbs lose their tiles, and the `glyph` radius is removed. Icon tone `onButton`. 关注 is the filled ink button with `Heart`, 见过 tinted with `Eye`. Compare rows hide a reason repeated on every row (it stays in the spoken label).
 - **v2.14 (2026-11-04).** New components: `Timeline`, `Chip`, `SourceBadge`, `ProgressRing`, `CompareTable`, `TimeBand`, `Stepper`, `Accordion` (RNR), `Badge` (RNR) and `IconRow`; `SectionHeader icon`. Color roles `button`, `graphic` and `warm-figure` split out with today's values, so the palette can change in `tokens.ts` alone. Status words become glyphs with spoken labels (The Structure Rule). Section headers, stat tiles and settings rows take glyphs.
 - **v2.13 (2026-11-04).** Type: rounded figures (`font-rounded`, SF Pro Rounded via `ui-rounded` on iOS, fallback elsewhere) with the `stat` and `figure` styles and The Rounded Figure Rule; day marks, milestone chips, map counts, 到访 day numbers and week-card counts use them. Weight `heavy` (800) for a card's hero number. The web stack names the CJK fallbacks. Tracking stays 0, now with the reason.
