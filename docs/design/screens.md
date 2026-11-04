@@ -38,7 +38,7 @@ Status: the second batch, in progress.
 ## 图鉴 — `03-book`
 
 1. The large title 图鉴.
-2. **Progress card.** A `ProgressRing` and 点亮 18 / 942. See [Open decisions](#open-decisions): this conflicts with The Life List Rule.
+2. **Progress card.** A `ProgressRing` and 点亮 N / total: pandas met (见过 or 认出, once each) over the published catalog count from the API (The Life List Rule). Hidden signed out; at zero it shows 0 / total.
 3. **Stat tiles.** Three tiles: 见过 N 只 (`Eye`), 认出 N 只 (`BadgeCheck`) and 去过 N 处 (`MapPin`). Each opens its own list.
 4. A `Segmented` control with 全部, 见过 and 认出.
 5. **Grid.** Four columns of square photo tiles with the name under each. Pandas not yet met are a `card` tile with a tertiary `Eye` and 未见过. Show at most one row of unmet tiles, not the whole catalog.
@@ -108,9 +108,9 @@ The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and t
 
 ## Open decisions
 
+Decided: 图鉴 follows its mockup (2026-11-04), with the ring against the whole catalog and the 全部 / 见过 / 认出 views; DESIGN.md › The Life List Rule says so.
+
 These are places where a mockup and a written rule disagree. The rule holds until the owner decides.
 
-1. **图鉴 progress against the whole catalog.** The mockup shows 点亮 18 / 942. The Life List Rule says no bar against the whole catalog: progress is shown only against a finite goal the user can finish, such as one base or one family. Ship the mockup's tiles, grid and 各个基地, and leave the ring out until this is decided.
-2. **图鉴 views.** The mockup has 全部 / 见过 / 认出. DESIGN.md has 清单 / 按基地 / 按家族. The mockup moves 按基地 into the 各个基地 group and drops 按家族.
-3. **Tab glyphs.** The mockup uses calendar for 今天 and book for 图鉴, where the app now uses `sun` and `layout-grid`. Changing them means regenerating `assets/symbols/` and `assets/tab-icons/`.
-4. **大家常看.** There is no popularity signal in the API yet. Decide whether to build one, or to drop the block.
+1. **Tab glyphs.** The mockup uses calendar for 今天 and book for 图鉴, where the app now uses `sun` and `layout-grid`. Changing them means regenerating `assets/symbols/` and `assets/tab-icons/`.
+2. **大家常看.** There is no popularity signal in the API yet. Decide whether to build one, or to drop the block.
