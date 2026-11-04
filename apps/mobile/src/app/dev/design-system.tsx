@@ -16,11 +16,14 @@ import {
   colorRoleNotes,
   component,
   concentric,
+  contrastRatio,
   primitive,
   semantic,
   type TextStyle,
 } from "@/design/tokens";
 import { useIOSColors } from "@/lib/theme";
+
+import { ComponentGallery } from "@/features/dev/component-gallery";
 
 /**
  * The design-system showcase: every token rendered from src/design/tokens.ts, in both appearances.
@@ -121,20 +124,19 @@ function Swatch({ role }: { role: ColorRole }) {
   );
 }
 
-function WarmDemo() {
+function TintDemo() {
   return (
     <Card>
-      <Text variant="footnote" className="text-muted-foreground">笋金只做标记：今天、新、里程碑。不做按钮、链接或卡片底色。</Text>
       <View className="flex-row flex-wrap items-center gap-stack-tight">
-        <View className="rounded-pill bg-warm-soft px-stack-tight py-hair-gap">
-          <Text variant="footnote" className="font-semibold text-warm">今天</Text>
+        <View className="rounded-pill bg-highlight-soft px-stack-tight py-hair-gap">
+          <Text variant="footnote" className="font-semibold text-primary">今天</Text>
         </View>
-        <View className="rounded-pill bg-warm-soft px-stack-tight py-hair-gap">
-          <Text variant="footnote" className="font-semibold text-warm">新成员</Text>
+        <View className="rounded-pill bg-button px-stack-tight py-hair-gap">
+          <Text variant="footnote" className="font-semibold text-primary-foreground">关注</Text>
         </View>
         <View className="flex-row items-center gap-hair-gap">
-          <View className="rounded-pill bg-warm" style={{ width: 8, height: 8 }} />
-          <Text variant="footnote" className="text-warm">10 月 29 日 · 今天</Text>
+          <View className="rounded-pill bg-graphic" style={{ width: 8, height: 8 }} />
+          <Text variant="footnote" className="text-primary">10 月 29 日　今天</Text>
         </View>
       </View>
     </Card>
@@ -243,7 +245,7 @@ function MotionDemo() {
   const y = useSharedValue(0);
   const bamboo = useAnimatedStyle(() => ({ transform: [{ translateX: x.get() }] }));
   const plain = useAnimatedStyle(() => ({ transform: [{ translateX: y.get() }] }));
-  const { tint, warm } = useIOSColors();
+  const { tint, label } = useIOSColors();
   const go = () => {
     const to = x.get() === 0 ? 200 : 0;
     x.set(withSpring(to, SPRING_BAMBOO));
@@ -264,7 +266,7 @@ function MotionDemo() {
         {primitive.spring.bamboo.damping} · cubic-bezier({primitive.easing.bamboo.join(", ")})
       </Text>
       <Pressable role="button" onPress={go} className="gap-stack-tight py-hair-gap">
-        <Animated.View style={[{ width: 40, height: 40, borderRadius: 20, backgroundColor: warm }, bamboo]} />
+        <Animated.View style={[{ width: 40, height: 40, borderRadius: 20, backgroundColor: label }, bamboo]} />
         <Animated.View style={[{ width: 40, height: 40, borderRadius: 20, backgroundColor: tint }, plain]} />
         <Text variant="footnote" className="text-muted-foreground">点一下：上 = bamboo 弹簧，下 = ease-out 280ms</Text>
       </Pressable>
@@ -317,6 +319,9 @@ function Sizes() {
   );
 }
 
+const ratio = (a: string, b: string) => contrastRatio(a, b).toFixed(1);
+const TINT_NOTE = `天空蓝 ${semantic.color.light.tint}（白底 ${ratio(semantic.color.light.tint, semantic.color.light.groupedBackground)}:1，灰卡 ${ratio(semantic.color.light.tint, semantic.color.light.card)}:1），深色 ${semantic.color.dark.tint}（卡片 ${ratio(semantic.color.dark.tint, semantic.color.dark.card)}:1）。按钮是熊猫黑白。`;
+
 function DesignSystemShowcase() {
   return (
     <Page title="设计系统" label="开发专用 · 数据来自 src/design/tokens.ts" prominent>
@@ -328,8 +333,11 @@ function DesignSystemShowcase() {
           ))}
         </Card>
       </Section>
-      <Section title="笋金 · 暖色点缀" note="浅色 #846018（白底 5.7:1），深色 #E3BD6E（黑底 11.8:1）">
-        <WarmDemo />
+      <Section title="熊猫：黑白和天空蓝" note={TINT_NOTE}>
+        <TintDemo />
+      </Section>
+      <Section title="组件" note="v2.14：状态用结构表达，文字放进读屏标签。">
+        <ComponentGallery />
       </Section>
       <Section title="文字样式" note="按用途命名，每个样式绑定字号、行高、字重；中文不加字距。">
         <TypeScale />

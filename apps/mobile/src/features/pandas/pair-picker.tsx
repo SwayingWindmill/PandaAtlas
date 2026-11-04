@@ -57,10 +57,7 @@ function Slot({
       {panda ? (
         <PandaThumb pandaId={panda.id} name={panda.name} size={AVATAR} shape="round" />
       ) : (
-        <View
-          className="items-center justify-center rounded-full bg-secondary"
-          style={{ width: AVATAR, height: AVATAR }}
-        >
+        <View className="items-center justify-center" style={{ width: AVATAR, height: AVATAR }}>
           <Icon icon={PawPrint} tone="secondary" />
         </View>
       )}

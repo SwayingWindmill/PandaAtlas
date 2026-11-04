@@ -168,7 +168,7 @@ function MysteryCard({
         <>
           {photoUrl ? <Scrim id="daily-scrim" height="60%" /> : null}
           <View className="absolute right-0 bottom-0 left-0 gap-hair-gap p-inset">
-            <Text variant="display" className={photoUrl ? "text-white" : undefined} numberOfLines={2}>
+            <Text variant="display" className={photoUrl ? "text-on-media" : undefined} numberOfLines={2}>
               {answerName ?? "这只熊猫"}
             </Text>
             <View className="flex-row items-center gap-hair-gap">
@@ -182,7 +182,7 @@ function MysteryCard({
                 variant="subheadline"
                 className={cn(
                   "font-semibold",
-                  photoUrl ? "text-white" : state.solved ? "text-primary" : "text-muted-foreground",
+                  photoUrl ? "text-on-media" : state.solved ? "text-primary" : "text-muted-foreground",
                 )}
               >
                 {result}
@@ -192,9 +192,9 @@ function MysteryCard({
         </>
       ) : photoUrl ? (
         <View className="absolute top-0 left-0 p-inset">
-          <View className="flex-row items-center gap-hair-gap rounded-pill bg-black/45 px-stack-tight py-hair-gap">
+          <View className="flex-row items-center gap-hair-gap rounded-pill bg-glass-fallback px-stack-tight py-hair-gap">
             <Icon icon={Photo} size="footnote" tone="onMedia" />
-            <Text variant="footnote" className="font-semibold text-white">
+            <Text variant="footnote" className="font-semibold text-on-media">
               照片线索
             </Text>
           </View>
@@ -248,8 +248,8 @@ function ClueTile({ clue, index, fresh }: { clue: DailyPandaClue | undefined; in
         accessible
         accessibilityLabel={`第 ${index + 1} 条线索，猜错一次解锁`}
       >
-        <View className="size-8 items-center justify-center rounded-pill bg-secondary">
-          <Icon icon={Lock} size="footnote" tone="tertiary" />
+        <View className="size-8 items-start justify-center">
+          <Icon icon={Lock} size="body" tone="tertiary" />
         </View>
         <Text variant="footnote" className="text-muted-foreground">
           猜错解锁
@@ -268,8 +268,8 @@ function ClueTile({ clue, index, fresh }: { clue: DailyPandaClue | undefined; in
       accessible
       accessibilityLabel={`${label}：${text}`}
     >
-      <View className="size-8 items-center justify-center rounded-pill bg-highlight-soft">
-        <Icon icon={clueGlyph(clue)} size="footnote" color={String(glyph)} strokeWidth={2} />
+      <View className="size-8 items-start justify-center">
+        <Icon icon={clueGlyph(clue)} size="body" color={String(glyph)} />
       </View>
       <View className="gap-hair-gap">
         <Text variant="footnote" className="text-muted-foreground">
@@ -417,11 +417,10 @@ export default function DailyPandaScreen() {
     <Page label={LABEL} title={TITLE} keyboardShouldPersistTaps="handled">
       <View className="gap-row">
         <View className="flex-row flex-wrap items-center justify-between gap-stack-tight">
-          {/* 笋金 marks today, once on the screen. */}
-          <View className="rounded-pill bg-warm-soft px-stack-tight py-hair-gap">
+          <View className="rounded-pill bg-secondary px-stack-tight py-hair-gap">
             <Text
               variant="footnote"
-              className="font-semibold text-warm"
+              className="font-semibold tabular-nums"
             >{`今天　${shortDate(current.puzzleDate)}`}</Text>
           </View>
           <Attempts state={current} />

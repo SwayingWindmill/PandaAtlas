@@ -4,6 +4,7 @@ import { ScrollView, View } from "react-native";
 
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { PawPrint } from "@/components/icons";
 import { SectionHeader } from "@/components/section-header";
 import { Text } from "@/components/ui/text";
 import { useFollowed } from "@/features/engagement/favorites";
@@ -67,7 +68,7 @@ export function FollowedStrip() {
   if (items.length === 0) return null;
   return (
     <View className="gap-row">
-      <SectionHeader title={`你关注的 ${items.length} 只`} />
+      <SectionHeader title={`你关注的 ${items.length} 只`} icon={PawPrint} />
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

@@ -39,12 +39,9 @@ function open(memory: Memory) {
 
 function Thumb({ memory }: { memory: Memory }) {
   if (memory.subject.kind === "panda") return <PandaThumb pandaId={memory.subject.id} name={memory.subject.name} size={PHOTO} />;
-  // A place has no cover: its pin, on the same fill a panda without a photo gets.
+  // A place has no cover: its bare pin in the photo's slot, so the rows still line up.
   return (
-    <View
-      className="items-center justify-center rounded-control bg-secondary"
-      style={{ width: PHOTO, height: PHOTO, borderCurve: "continuous" }}
-    >
+    <View className="items-center justify-center" style={{ width: PHOTO, height: PHOTO }}>
       <Icon icon={MapPin} size="title3" />
     </View>
   );

@@ -3,6 +3,8 @@ import { useCallback, useState } from "react";
 import { View } from "react-native";
 
 import { Chevron } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
+import { CalendarHeart } from "@/components/icons";
 import { PressScale } from "@/components/press-scale";
 import { Text } from "@/components/ui/text";
 
@@ -38,7 +40,8 @@ export function CheckinCard() {
       className="gap-row rounded-card bg-card p-inset"
       style={{ borderCurve: "continuous" }}
     >
-      <View className="flex-row items-center gap-row">
+      <View className="flex-row items-center gap-stack-tight">
+        <Icon icon={CalendarHeart} size="subhead" />
         <Text variant="headline" className="min-w-0 flex-1">
           每日打卡
         </Text>
@@ -50,7 +53,7 @@ export function CheckinCard() {
             <View key={day} className="flex-1 items-center gap-hair-gap">
               <Text
                 variant="footnote"
-                className={day === summary.today ? "font-semibold text-warm" : "text-muted-foreground"}
+                className={day === summary.today ? "font-semibold text-primary" : "text-muted-foreground"}
               >
                 {WEEK[index]}
               </Text>

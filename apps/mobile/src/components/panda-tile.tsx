@@ -63,11 +63,11 @@ export function PandaTile({
         ) : null}
         <Scrim id={`tile-${pandaId}`} height="55%" />
         <View className="absolute right-0 bottom-0 left-0 gap-hair-gap p-row">
-          <Text variant="headline" role="none" className="text-white" numberOfLines={1}>
+          <Text variant="headline" role="none" className="text-on-media" numberOfLines={1}>
             {name}
           </Text>
           {caption ? (
-            <Text variant="footnote" className="text-white/85 tabular-nums" numberOfLines={1}>
+            <Text variant="footnote" className="text-on-media/85 tabular-nums" numberOfLines={1}>
               {caption}
             </Text>
           ) : null}

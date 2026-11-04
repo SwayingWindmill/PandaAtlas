@@ -25,14 +25,11 @@ export interface PlaceRow {
   onPress: () => void;
 }
 
-/** The place's first resident, or a glyph on the fill when nobody lives there now. */
+/** The place's first resident, or a bare glyph in its slot when nobody lives there now. */
 function Thumb({ lead, icon }: { lead: PlaceRow["lead"]; icon: LucideIcon }) {
   if (lead) return <PandaThumb pandaId={lead.id} name={lead.name} size={THUMB} />;
   return (
-    <View
-      className="items-center justify-center rounded-control bg-secondary"
-      style={{ width: THUMB, height: THUMB, borderCurve: "continuous" }}
-    >
+    <View className="items-center justify-center" style={{ width: THUMB, height: THUMB }}>
       <Icon icon={icon} tone="secondary" />
     </View>
   );

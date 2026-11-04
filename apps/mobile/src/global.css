@@ -3,7 +3,7 @@
 @import "tw-animate-css";
 
 /*
- * App tokens: iOS system colors with the bamboo-jade tint, the shoot-gold accent, purpose-named
+ * App tokens: panda black and white with one sky-blue tint, neutral grey cards, purpose-named
  * text styles, the 4pt spacing roles, radii and motion. The block between the @generated markers
  * is written from src/design/tokens.ts; edit that file and run `npm run design:tokens`.
  * The website keeps its own Radix tokens.
@@ -42,7 +42,6 @@
   --radius-control: 12px;
   --radius-group: 10px;
   --radius-pill: 999px;
-  --radius-glyph: 8px;
 
   /* Spacing roles on the 4pt scale (numbers like p-4 still work: 4 × 4px). */
   --spacing-hair-gap: 4px;
@@ -133,32 +132,33 @@
     }
 
     @variant light {
-      --color-background: #f2f2f7; /* systemGroupedBackground */
-      --color-foreground: #000000; /* label */
-      --color-card: #ffffff; /* secondarySystemGroupedBackground */
-      --color-card-foreground: #000000;
-      --color-popover: #ffffff;
-      --color-popover-foreground: #000000;
-      --color-primary: #165c3c; /* tint */
-      --color-primary-foreground: #ffffff;
+      --color-background: #ffffff; /* systemGroupedBackground */
+      --color-foreground: #0a0a0a; /* label */
+      --color-card: #f3f3f5; /* secondarySystemGroupedBackground */
+      --color-card-foreground: #0a0a0a;
+      --color-popover: #f3f3f5;
+      --color-popover-foreground: #0a0a0a;
+      --color-primary: #0a6cdb; /* tint */
+      --color-primary-foreground: #ffffff; /* label on a filled button or a tint fill */
+      --color-button: #0a0a0a; /* the filled button */
+      --color-graphic: #1a8cff; /* strokes and fills: rings, rails, bars. Not text */
       --color-secondary: #e5e5ea; /* system fill */
-      --color-secondary-foreground: #000000;
+      --color-secondary-foreground: #0a0a0a;
       --color-muted: #e5e5ea;
-      --color-muted-foreground: #636366; /* secondary label */
-      --color-accent: #d1d1d6; /* pressed (shadcn name; the brand accent is `warm`) */
-      --color-accent-foreground: #000000;
+      --color-muted-foreground: #6b6b70; /* secondary label */
+      --color-accent: #d1d1d6; /* pressed (shadcn name, not a brand color) */
+      --color-accent-foreground: #0a0a0a;
       --color-destructive: #ce2c31;
-      --color-border: #c6c6c8; /* opaqueSeparator */
+      --color-border: #d1d1d6; /* opaqueSeparator */
       --color-input: #e5e5ea;
-      --color-ring: #165c3c;
-      --color-highlight: #165c3c;
-      --color-highlight-foreground: #165c3c;
-      --color-highlight-soft: #e3ebe8; /* tinted-button fill */
+      --color-ring: #0a6cdb;
+      --color-highlight: #0a6cdb;
+      --color-highlight-foreground: #0a6cdb;
+      --color-highlight-soft: #ebf4ff; /* tinted-button fill */
       --color-warning: #b25000;
       --color-paper: #ffffff; /* systemBackground, the reading column */
-      --color-tertiary-foreground: #c4c4c7; /* tertiary label: chevrons, not text */
-      --color-warm: #846018; /* 笋金: markers only, never actions */
-      --color-warm-soft: #f5eddb; /* warm badge fill */
+      --color-tertiary-foreground: #aeaeb2; /* tertiary label: chevrons, not text */
+      --color-switch-knob: #ffffff; /* the thumb of a switch */
       --color-on-media: #ffffff; /* over a scrim */
       --color-media-placeholder: #3a3a3c;
       --color-photo-stroke: rgba(0,0,0,0.1);
@@ -169,35 +169,36 @@
     @variant dark {
       --color-background: #000000; /* systemGroupedBackground */
       --color-foreground: #ffffff; /* label */
-      --color-card: #1c1c1e; /* secondarySystemGroupedBackground */
+      --color-card: #151517; /* secondarySystemGroupedBackground */
       --color-card-foreground: #ffffff;
-      --color-popover: #1c1c1e;
+      --color-popover: #151517;
       --color-popover-foreground: #ffffff;
-      --color-primary: #7dcaa4; /* tint */
-      --color-primary-foreground: #000000;
+      --color-primary: #5ab4ff; /* tint */
+      --color-primary-foreground: #000000; /* label on a filled button or a tint fill */
+      --color-button: #ffffff; /* the filled button */
+      --color-graphic: #4da8ff; /* strokes and fills: rings, rails, bars. Not text */
       --color-secondary: #2c2c2e; /* system fill */
       --color-secondary-foreground: #ffffff;
       --color-muted: #2c2c2e;
-      --color-muted-foreground: #aeaeb2; /* secondary label */
-      --color-accent: #3a3a3c; /* pressed (shadcn name; the brand accent is `warm`) */
+      --color-muted-foreground: #a1a1a6; /* secondary label */
+      --color-accent: #3a3a3c; /* pressed (shadcn name, not a brand color) */
       --color-accent-foreground: #ffffff;
       --color-destructive: #ff6961;
       --color-border: #38383a; /* opaqueSeparator */
       --color-input: #2c2c2e;
-      --color-ring: #7dcaa4;
-      --color-highlight: #7dcaa4;
-      --color-highlight-foreground: #7dcaa4;
-      --color-highlight-soft: #16241e; /* tinted-button fill */
+      --color-ring: #5ab4ff;
+      --color-highlight: #5ab4ff;
+      --color-highlight-foreground: #5ab4ff;
+      --color-highlight-soft: #0c2033; /* tinted-button fill */
       --color-warning: #ff9f0a;
       --color-paper: #000000; /* systemBackground, the reading column */
       --color-tertiary-foreground: #5b5b60; /* tertiary label: chevrons, not text */
-      --color-warm: #e3bd6e; /* 笋金: markers only, never actions */
-      --color-warm-soft: #2b2312; /* warm badge fill */
+      --color-switch-knob: #ffffff; /* the thumb of a switch */
       --color-on-media: #ffffff; /* over a scrim */
       --color-media-placeholder: #3a3a3c;
       --color-photo-stroke: rgba(255,255,255,0.1);
       --color-glass-fallback: rgba(0,0,0,0.38);
-      --color-bar-material: rgba(28,28,30,0.86);
+      --color-bar-material: rgba(21,21,23,0.86);
     }
   }
 }

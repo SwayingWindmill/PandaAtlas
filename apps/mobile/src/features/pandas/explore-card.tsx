@@ -57,11 +57,11 @@ export function ExploreCard({
         ) : null}
         <Scrim id={`explore-${id}`} />
         <View className="absolute right-0 bottom-0 left-0 gap-hair-gap p-inset">
-          <Text variant="title" role="none" className="text-white" numberOfLines={2}>
+          <Text variant="title" role="none" className="text-on-media" numberOfLines={2}>
             {title}
           </Text>
           {photo ? (
-            <Text variant="footnote" className="text-white/85" numberOfLines={1}>
+            <Text variant="footnote" className="text-on-media/85" numberOfLines={1}>
               {`照片：${photo.name}`}
             </Text>
           ) : null}

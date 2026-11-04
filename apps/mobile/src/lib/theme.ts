@@ -6,9 +6,9 @@ import { semantic } from "@/design/tokens";
 /**
  * The color roles for both appearances, straight from the design tokens (src/design/tokens.ts),
  * so code, global.css and DESIGN.md can't drift. Grouped backgrounds, labels and separators are the
- * iOS system values. Tint is a deep bamboo jade (#165C3C, 8:1 on white) in light mode and a pale
- * jade (#7DCAA4, 11:1 on black) in dark, where filled buttons take black labels. `warm` is the
- * 笋金 accent: markers only (today, new, a milestone), never an action.
+ * iOS system values. v2.15 (direction C 熊猫): panda black and white,
+ * neutral grey cards, one sky-blue tint (#0A6CDB light, #5AB4FF dark). The filled button is ink
+ * with a white label in light mode and white with a black label in dark. No warm accent.
  */
 export const IOS = semantic.color;
 

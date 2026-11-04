@@ -82,33 +82,44 @@ describe("placesLived", () => {
 });
 
 describe("headlineStats", () => {
-  const living = { sex: "male" as const, birthDate: "2021-08-04", deceased: false, deathDate: null, currentPlace: "史密森国家动物园" };
+  const living = {
+    birthDate: "2021-08-04",
+    deceased: false,
+    deathDate: null,
+    place: { short: "卧龙", sub: "神树坪基地" },
+  };
 
-  it("leads with sex, age and where it lives", () => {
+  it("leads with the birthday, the age and where it lives", () => {
     expect(headlineStats({ ...living, today: "2026-10-29" })).toEqual([
-      { key: "sex", label: "性别", value: "雄" },
-      { key: "age", label: "年龄", value: "5 岁", detail: "2021 年出生" },
-      { key: "place", label: "所在地", value: "史密森国家动物园" },
+      { key: "birth", label: "生日", value: "8.4" },
+      { key: "age", label: "年龄", value: "5", unit: "岁" },
+      { key: "place", label: "所在地", value: "卧龙", detail: "神树坪基地" },
     ]);
   });
 
   it("counts a cub under a year in months", () => {
-    expect(headlineStats({ ...living, birthDate: "2026-03-30", today: "2026-10-29" })[1]?.value).toBe("6 个月");
+    const [, age] = headlineStats({ ...living, birthDate: "2026-03-30", today: "2026-10-29" });
+    expect(age).toMatchObject({ value: "6", unit: "个月" });
+  });
+
+  it("keeps a birthday as precise as the record", () => {
+    expect(headlineStats({ ...living, birthDate: "2021-08", today: "2026-10-29" })[0]).toMatchObject({ value: "8", unit: "月" });
+    expect(headlineStats({ ...living, birthDate: "2021", today: "2026-10-29" })[0]).toMatchObject({ value: "2021", unit: "年" });
   });
 
   it("gives the age at death and the year it died once it has", () => {
     expect(
-      headlineStats({ ...living, deceased: true, birthDate: "1986-09-04", deathDate: "2016-10-16", currentPlace: null, today: "2026-10-29" }),
+      headlineStats({ ...living, deceased: true, birthDate: "1986-09-04", deathDate: "2016-10-16", place: null, today: "2026-10-29" }),
     ).toEqual([
-      { key: "sex", label: "性别", value: "雄" },
-      { key: "age", label: "享年", value: "30 岁", detail: "1986 年出生" },
-      { key: "place", label: "离世", value: "2016 年" },
+      { key: "birth", label: "生日", value: "9.4" },
+      { key: "age", label: "享年", value: "30", unit: "岁" },
+      { key: "place", label: "离世", value: "2016", unit: "年" },
     ]);
   });
 
   it("says what is not recorded in words short enough for a tile", () => {
-    const stats = headlineStats({ sex: null, birthDate: null, deceased: false, deathDate: null, currentPlace: null, today: "2026-10-29" });
+    const stats = headlineStats({ birthDate: null, deceased: false, deathDate: null, place: null, today: "2026-10-29" });
     expect(stats.map((stat) => stat.value)).toEqual([NOT_RECORDED, NOT_RECORDED, NOT_RECORDED]);
-    expect(stats[1]?.detail).toBeUndefined();
+    expect(stats.every((stat) => !stat.unit && !stat.detail)).toBe(true);
   });
 });

@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
 
 import { PandaTile } from "@/components/panda-tile";
+import { Cake } from "@/components/icons";
 import { SectionHeader } from "@/components/section-header";
 import { type CalendarEntry, calendarMonth, shiftMonth } from "@/features/calendar/calendar";
 import { loadCalendarSources } from "@/features/calendar/sources";
@@ -72,6 +73,7 @@ export function TodayBirthdays() {
     <View className="gap-row">
       <SectionHeader
         title={shelf.today ? "今天生日" : "快过生日了"}
+        icon={Cake}
         count={shelf.today ? `${shelf.entries.length} 只` : undefined}
         action={{
           label: more > 0 ? `还有 ${more} 只` : "看日历",
