@@ -104,6 +104,8 @@ Each of these is built in its own PR. Each PR moves to palette C and the new com
 | 那年今天 | `14-on-this-day` | built in the second batch |
 | 归国熊猫 | `15-overseas-return` | #812 |
 
+双胞胎 (`12-twins`) lists pairs as cards: the two covers side by side (the first character on the placeholder when one has none), the names joined by a quiet &, the birthday (2021.06.23 出生) for twins or the written note for a pair, and a chevron to 比一比. A `Segmented` switches 双胞胎 and 像的熊猫 when both exist. Twins come only from sourced lineage (same mother, same exact birth date). The mockup's birthplace waits for a birthplace field. 找熊猫 opens it from a 双胞胎 explore card; the 双胞胎 filter chip is still to come. 对比 (`13-twins-compare`) is the existing 比一比 page on `CompareTable`; its 同框 photo waits for photos tagged with both pandas.
+
 The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and the large title, then a `Segmented` control with 本周 and 本月, the week hero, the memories of the range, and the 那年今天 switch. The memories are one timeline card as in the mockup (`MemoryTimeline`), with 少显示 and 关闭 on a long press and as accessibility actions, and the sources as badges under the card. The hero is the page variant of the week hero: no tag, the day it happened, what happened, and N 周年 at the right.
 
 ## Open decisions
