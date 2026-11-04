@@ -100,6 +100,15 @@ describe("resolveChallenge", () => {
     expect(learningText(challenge.tip)).toBe("[草稿] 占位提示。");
   });
 
+  it("shows Chinese when English is missing, blank, or requested", () => {
+    expect(learningText({ zh: "黑眼圈" })).toBe("黑眼圈");
+    expect(learningText({ zh: "黑眼圈", en: "" })).toBe("黑眼圈");
+    expect(learningText({ zh: "黑眼圈", en: "   " })).toBe("黑眼圈");
+    expect(learningText({ zh: "黑眼圈" }, "en")).toBe("黑眼圈");
+    expect(learningText({ zh: "黑眼圈", en: "Eye patches" }, "en")).toBe("Eye patches");
+    expect(learningText({ zh: "", en: "Eye patches" })).toBe("Eye patches");
+  });
+
   it("hides a face-guide tip whose body is empty", () => {
     const tips = [
       { body: { zh: "两颊圆润。", en: "Round cheeks." } },
