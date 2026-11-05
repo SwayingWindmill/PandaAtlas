@@ -15,6 +15,7 @@ import { OnThisDaySwitch } from "@/features/on-this-day/settings-section";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
+import { VenueNewsSwitch } from "@/features/venue-news/settings-section";
 import { api } from "@/lib/api";
 
 const AVATAR = 48;
@@ -93,7 +94,8 @@ export default function SettingsScreen() {
       <ListSection title="提醒">
         <BirthdaySwitch separator />
         <OnThisDaySwitch separator />
-        <MilestoneSwitch />
+        <MilestoneSwitch separator />
+        <VenueNewsSwitch />
       </ListSection>
       <ListSection>
         <ListCell label="数据来源" glyph={Database} href="/about" />

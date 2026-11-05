@@ -23,7 +23,7 @@ There are four tabs: 今天, 找熊猫, 图鉴 and 我的. The bar is the system
 5. **场馆动态.** A `Timeline` card with the next and the latest event at the venues the user follows, a countdown (2 天后) on an upcoming one, and a chevron to the list. It needs #807.
 6. **What follows.** The story cards, 本周新鲜事, 你关注的 and the birthday scroller stay below, as in DESIGN.md, until the blocks above are live. After that, decide whether they stay.
 
-Status: #814 ships 1–3. Steps 4 and 5 wait for #811, #806 and #807.
+Status: all five steps are built. The quick entries are 观猫时机 (the venue of the first followed panda that publishes viewing hours; 日历 when there is none), 归国, 挑战 (the monthly challenge) and 场馆. 观猫时机 shows that venue's first active window (8–12 点) over its day band; "nearest venue" waits for location. 挑战 shows only once the fan has joined this month, with their own progress. 场馆动态 shows the next and the latest notice at the venues where followed pandas live, and 设置 can turn it off. Each block is hidden when it has nothing real.
 
 ## 找熊猫 — `02-find`
 
@@ -33,7 +33,7 @@ Status: #814 ships 1–3. Steps 4 and 5 wait for #811, #806 and #807.
 4. **探索.** A horizontal scroller of photo cards, each with a bare glyph and a title on the photo: 归国熊猫, 双胞胎, 场馆, and the existing explore entries (熊猫在哪里, 查两只熊猫的关系, 比一比两只熊猫). A card shows only when its page exists.
 5. **大家常看.** One inset group of panda rows: a 44pt round photo, the name with a sex glyph, the current place as a subheadline, and a chevron. 全部 opens the full list. The mockup marks this block 示例. It ships only when there is a real popularity signal. Until then the block is the plain list, which is today's behavior, without the 大家常看 heading.
 
-Status: built in the second batch, without 大家常看 (no popularity data) and without the 双胞胎 and 归国 chips (#808, #812). The chips are 在中国, 在海外 and each area in China.
+Status: built, without 大家常看 (no popularity data). The chips are 在中国, 在海外, 双胞胎 (pandas in a sourced twin pair), 归国 (pandas the overseas catalog marks returned), then each area in China; each shows only when it keeps a panda.
 
 ## 图鉴 — `03-book`
 
@@ -71,7 +71,7 @@ Status: built in the second batch; the 年度回顾 banner came with #805. 关�
 6. The data version, as a centered footnote.
 7. 退出登录, in its own group.
 
-Status: shipped in #814 without 生日提醒, 场馆动态, 反馈 and 关于.
+Status: built, without 反馈 and 关于 (no pages yet). 场馆动态 turns the 今天 card on and off; it is kept on this device.
 
 ## 熊猫详情 — `06-panda`, `06-panda-dark`, `06b-panda-family`, `06c-panda-photos`
 

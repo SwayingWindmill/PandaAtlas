@@ -40,3 +40,12 @@ export function daySlots(viewing: { active: TimeWindow[]; nap: TimeWindow | null
     ...(viewing.nap ? [{ kind: "nap" as const, window: viewing.nap }] : []),
   ].sort((a, b) => a.window.start.localeCompare(b.window.start));
 }
+
+/** "8–12 点" for whole hours, "8:30–11 点" otherwise: the hours as the 今天 card says them. */
+export function hoursLabel(window: TimeWindow): string {
+  const hour = (time: string) => {
+    const [h, m] = time.split(":");
+    return m === "00" ? String(Number(h)) : `${Number(h)}:${m}`;
+  };
+  return `${hour(window.start)}–${hour(window.end)} 点`;
+}

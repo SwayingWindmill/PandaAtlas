@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { CalendarDays, Landmark, type LucideIcon, ScanFace, Trophy } from "@/components/icons";
+import { CalendarDays, House, type LucideIcon, Plane, Sun, Trophy } from "@/components/icons";
 import { Text } from "@/components/ui/text";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
@@ -17,6 +17,7 @@ import { OnThisDayCard } from "@/features/today/on-this-day-card";
 import { StoryCard } from "@/features/today/story-card";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { TodayBirthdays } from "@/features/today/today-birthdays";
+import { TodayCards, TodayVenueNews, type ViewingSpot, useFollowedViewing } from "@/features/today/venue-blocks";
 import { WeekCard } from "@/features/today/week-card";
 import { WeekHero, useWeekMemory } from "@/features/today/week-hero";
 import { useBottomClearance } from "@/lib/bottom-clearance";
@@ -36,19 +37,23 @@ function dateLine(now = new Date()) {
   return `${now.getMonth() + 1}月${now.getDate()}日 ${WEEKDAY[now.getDay()]}`;
 }
 
-/** Shortcuts under the hero, each a bare glyph over its name. Only pages that exist. */
-const QUICK: { label: string; icon: LucideIcon; href: Href }[] = [
-  { label: "挑战", icon: Trophy, href: "/learn/challenge" },
-  { label: "场馆", icon: Landmark, href: "/institutions" },
-  { label: "日历", icon: CalendarDays, href: "/calendar" },
-  { label: "猜熊猫", icon: ScanFace, href: "/guess" },
-];
-
-function QuickEntries() {
+/**
+ * Shortcuts under the hero, each a bare glyph over its name (v4 `01-today`): 观猫时机 at the followed panda's
+ * venue when it publishes the hours, else 日历; then 归国, 挑战 and 场馆.
+ */
+function QuickEntries({ viewing }: { viewing: ViewingSpot | null }) {
   const stacked = useStacked();
+  const quick: { label: string; icon: LucideIcon; href: Href }[] = [
+    viewing
+      ? { label: "观猫时机", icon: Sun, href: { pathname: "/institutions/[slug]", params: { slug: viewing.slug } } }
+      : { label: "日历", icon: CalendarDays, href: "/calendar" },
+    { label: "归国", icon: Plane, href: "/returning" },
+    { label: "挑战", icon: Trophy, href: "/challenge" },
+    { label: "场馆", icon: House, href: "/institutions" },
+  ];
   return (
     <View className={stacked ? "flex-row flex-wrap gap-y-2" : "flex-row"}>
-      {QUICK.map((item) => (
+      {quick.map((item) => (
         <Pressable
           key={item.label}
           role="link"
@@ -109,6 +114,7 @@ export default function TodayScreen() {
   const small = Math.round(Math.min(column * 0.72, 300));
   const smallHeight = Math.round(Math.max(small * 1.22, 220 * Math.min(fontScale, 1.6)));
   const memory = useWeekMemory();
+  const viewing = useFollowedViewing();
   const [featured, ...more] = STORIES;
   // An anniversary this week takes the head of the page; the featured story joins the row.
   const rest = memory ? STORIES : more;
@@ -137,7 +143,9 @@ export default function TodayScreen() {
             height={lead}
           />
         )}
-        <QuickEntries />
+        <QuickEntries viewing={viewing} />
+        <TodayCards viewing={viewing} />
+        <TodayVenueNews />
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}

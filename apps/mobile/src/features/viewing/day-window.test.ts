@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { daySlots, minutesOf, partOfDay, placeOnStrip, spanLabel, stripRange } from "./day-window";
+import { daySlots, hoursLabel, minutesOf, partOfDay, placeOnStrip, spanLabel, stripRange } from "./day-window";
 
 const viewing = {
   active: [
@@ -29,5 +29,10 @@ describe("day window", () => {
     expect(slots.map((slot) => slot.kind)).toEqual(["active", "nap", "active"]);
     expect(partOfDay(viewing.active[0]!)).toBe("上午");
     expect(partOfDay(viewing.active[1]!)).toBe("下午");
+  });
+
+  it("says whole hours plainly", () => {
+    expect(hoursLabel({ start: "08:00", end: "12:00" })).toBe("8–12 点");
+    expect(hoursLabel({ start: "08:30", end: "11:00" })).toBe("8:30–11 点");
   });
 });

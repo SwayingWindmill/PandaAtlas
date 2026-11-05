@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { institutionListQueryOptions } from "@/features/institutions/institutions";
 import { areaChips } from "@/features/pandas/areas";
+import { SPECIAL_CHIPS, type SpecialChips, isSpecialChip, useSpecialChips } from "@/features/pandas/special-chips";
 import { PandaRow } from "@/features/pandas/panda-row";
 import { pandaIndexQueryOptions, searchPandas } from "@/features/pandas/pandas";
 import { SearchField } from "@/features/pandas/search-field";
@@ -26,14 +27,21 @@ const GAP = 12;
  * 在中国 and 在海外 first, then each area in China that has a panda. Overseas cities stay under 在海外,
  * so the row stays short.
  */
-function findChips(pandas: { area: string | null }[]): string[] {
+function findChips(pandas: { area: string | null }[], special: SpecialChips): string[] {
   const areas = areaChips(pandas);
   const china = areas.filter((area) => area !== "海外");
-  return [...(china.length > 0 ? ["在中国"] : []), ...(areas.includes("海外") ? ["在海外"] : []), ...china];
+  return [
+    ...(china.length > 0 ? ["在中国"] : []),
+    ...(areas.includes("海外") ? ["在海外"] : []),
+    ...SPECIAL_CHIPS.filter((chip) => special[chip].size > 0),
+    ...china,
+  ];
 }
 
-function inChip(area: string | null, chip: string): boolean {
+function inChip(panda: { area: string | null; slug: string }, chip: string, special: SpecialChips): boolean {
+  const { area } = panda;
   if (chip === "全部") return true;
+  if (isSpecialChip(chip)) return special[chip].has(panda.slug);
   if (chip === "在海外") return area === "海外";
   if (chip === "在中国") return area !== null && area !== "海外";
   return area === chip;
@@ -60,11 +68,12 @@ export default function FindScreen() {
   const hasInstitutions = (institutions?.length ?? 0) > 0;
 
   const [area, setArea] = useState("全部");
-  const chips = useMemo(() => (pandas ? findChips(pandas) : []), [pandas]);
+  const special = useSpecialChips();
+  const chips = useMemo(() => (pandas ? findChips(pandas, special) : []), [pandas, special]);
   const results = useMemo(() => {
     const found = pandas ? searchPandas(pandas, deferredQuery) : [];
-    return found.filter((panda) => inChip(panda.area, area));
-  }, [pandas, deferredQuery, area]);
+    return found.filter((panda) => inChip(panda, area, special));
+  }, [pandas, deferredQuery, area, special]);
   const browsing = !deferredQuery.trim() && area === "全部";
   const explore = [
     { id: "returning", title: "归国熊猫", icon: Plane, href: "/returning" as const },
