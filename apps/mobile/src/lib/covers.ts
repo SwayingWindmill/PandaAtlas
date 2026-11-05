@@ -34,11 +34,15 @@ function loadCover(id: string): Promise<string | null> {
   });
 }
 
-/** The panda's cover photo URL, or null while loading and when it has none. */
-export function usePandaCover(pandaId: string): string | null {
+/**
+ * The panda's cover photo URL, or null while loading and when it has none. With no panda yet (a screen
+ * still loading which one to show) it asks for nothing.
+ */
+export function usePandaCover(pandaId: string | undefined): string | null {
   const { data } = useQuery({
     queryKey: ["public", "panda-cover", pandaId],
-    queryFn: () => loadCover(pandaId),
+    queryFn: () => loadCover(pandaId!),
+    enabled: Boolean(pandaId),
     staleTime: 300_000,
     networkMode: "always",
   });

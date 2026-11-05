@@ -40,7 +40,7 @@ function param(value: string | string[] | undefined): string | undefined {
 function Hero({ data }: { data: YearReviewData }) {
   const first = data.review.first;
   const panda = first ? data.pandas.get(first.pandaId) : undefined;
-  const photo = usePandaCover(first?.pandaId ?? "");
+  const photo = usePandaCover(first?.pandaId);
   if (!first || !panda) return null;
   return (
     <View
