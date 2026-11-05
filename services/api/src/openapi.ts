@@ -7,6 +7,7 @@ import { EngagementModule } from "./modules/engagement/engagement.module.js";
 import { GameModule } from "./modules/game/game.module.js";
 import { LearningModule } from "./modules/learning/learning.module.js";
 import { OverseasStatusModule } from "./modules/overseas-status/overseas-status.module.js";
+import { PopularityModule } from "./modules/popularity/popularity.module.js";
 import { VenueNewsModule } from "./modules/venue-news/venue-news.module.js";
 import { IdentityModule } from "./modules/identity/identity.module.js";
 import { NotificationModule } from "./modules/notification/notification.module.js";
@@ -56,6 +57,7 @@ export function createV2OpenApiDocument(app: INestApplication): OpenAPIObject {
       GameModule,
       LearningModule,
       OverseasStatusModule,
+      PopularityModule,
       VenueNewsModule,
       AskModule,
       PublicationModule,

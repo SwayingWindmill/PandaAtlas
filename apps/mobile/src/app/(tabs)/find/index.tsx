@@ -13,6 +13,7 @@ import { institutionListQueryOptions } from "@/features/institutions/institution
 import { areaChips } from "@/features/pandas/areas";
 import { SPECIAL_CHIPS, type SpecialChips, isSpecialChip, useSpecialChips } from "@/features/pandas/special-chips";
 import { PandaRow } from "@/features/pandas/panda-row";
+import { usePopularPandas } from "@/features/pandas/popular";
 import { pandaIndexQueryOptions, searchPandas } from "@/features/pandas/pandas";
 import { SearchField } from "@/features/pandas/search-field";
 import { localToday } from "@/features/engagement/seen";
@@ -75,6 +76,7 @@ export default function FindScreen() {
     return found.filter((panda) => inChip(panda, area, special));
   }, [pandas, deferredQuery, area, special]);
   const browsing = !deferredQuery.trim() && area === "全部";
+  const popular = usePopularPandas(pandas);
   const explore = [
     { id: "returning", title: "归国熊猫", icon: Plane, href: "/returning" as const },
     { id: "look-alikes", title: "双胞胎", spoken: "双胞胎和像的熊猫", icon: Users, href: "/look-alikes" as const },
@@ -157,6 +159,14 @@ export default function FindScreen() {
                     />
                   ))}
                 </ScrollView>
+              ) : null}
+              {browsing && popular.length > 0 ? (
+                <View className="gap-stack-tight">
+                  <SectionHeader title="大家常看" />
+                  {popular.map((item, index) => (
+                    <PandaRow key={item.id} item={item} first={index === 0} last={index === popular.length - 1} />
+                  ))}
+                </View>
               ) : null}
               {results.length > 0 ? (
                 <SectionHeader
