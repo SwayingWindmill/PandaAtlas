@@ -16,7 +16,7 @@ import { useYearReview } from "./load";
 export function YearReviewBanner() {
   const year = Number(localToday().slice(0, 4));
   const { data } = useYearReview(year);
-  const photo = usePandaCover(data?.review.first?.pandaId ?? "");
+  const photo = usePandaCover(data?.review.first?.pandaId);
   if (!data || data.review.empty) return null;
   return (
     <Pressable
