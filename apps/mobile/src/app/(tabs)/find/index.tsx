@@ -4,7 +4,7 @@ import { useDeferredValue, useMemo, useState } from "react";
 import { FlatList, Platform, ScrollView, View, useWindowDimensions } from "react-native";
 
 import { Chip } from "@/components/chip";
-import { Columns, House, MapPin, Network, Users } from "@/components/icons";
+import { Columns, House, MapPin, Network, Plane, Users } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { SectionHeader } from "@/components/section-header";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -67,6 +67,7 @@ export default function FindScreen() {
   }, [pandas, deferredQuery, area]);
   const browsing = !deferredQuery.trim() && area === "全部";
   const explore = [
+    { id: "returning", title: "归国熊猫", icon: Plane, href: "/returning" as const },
     { id: "look-alikes", title: "双胞胎", spoken: "双胞胎和像的熊猫", icon: Users, href: "/look-alikes" as const },
     { id: "map", title: "熊猫在哪里", icon: MapPin, href: "/map" as const },
     ...(hasInstitutions ? [{ id: "institutions", title: "场馆", spoken: "基地和动物园", icon: House, href: "/institutions" as const }] : []),

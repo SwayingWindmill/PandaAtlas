@@ -37,6 +37,13 @@ export interface PlaceInstitutions {
   updated_at: Generated<Timestamp>;
 }
 
+export interface PlaceOverseasStatusCatalog {
+  catalog_id: Generated<number>;
+  document: Json;
+  updated_at: Generated<Timestamp>;
+  version: string;
+}
+
 export interface PlacePlaces {
   boundary: string | null;
   center: string | null;
@@ -69,6 +76,7 @@ export interface PlaceVenueNewsCatalog {
 
 export interface DB {
   "place.institutions": PlaceInstitutions;
+  "place.overseas_status_catalog": PlaceOverseasStatusCatalog;
   "place.places": PlacePlaces;
   "place.venue_news_catalog": PlaceVenueNewsCatalog;
 }
