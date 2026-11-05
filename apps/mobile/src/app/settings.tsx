@@ -8,6 +8,7 @@ import { Page } from "@/components/page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { APPEARANCES, useAppearance } from "@/features/appearance/appearance";
+import { BirthdaySwitch } from "@/features/birthdays/settings-section";
 import { LegalRow } from "@/features/legal/legal-links";
 import { MilestoneSwitch } from "@/features/milestones/settings-section";
 import { OnThisDaySwitch } from "@/features/on-this-day/settings-section";
@@ -90,6 +91,7 @@ export default function SettingsScreen() {
         />
       </ListSection>
       <ListSection title="提醒">
+        <BirthdaySwitch separator />
         <OnThisDaySwitch separator />
         <MilestoneSwitch />
       </ListSection>

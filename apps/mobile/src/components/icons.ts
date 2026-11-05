@@ -41,6 +41,7 @@ export { default as House } from "lucide-react-native/icons/house";
 export { default as Info } from "lucide-react-native/icons/info";
 export { default as Landmark } from "lucide-react-native/icons/landmark";
 export { default as LayoutGrid } from "lucide-react-native/icons/layout-grid";
+export { default as Link } from "lucide-react-native/icons/link";
 export { default as Lock } from "lucide-react-native/icons/lock";
 export { default as MapPin } from "lucide-react-native/icons/map-pin";
 export { default as Mars } from "lucide-react-native/icons/mars";

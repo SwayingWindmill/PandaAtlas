@@ -1,14 +1,25 @@
 import { Image } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { type ComponentRef, type RefObject, useCallback, useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
+import { Icon } from "@/components/icon";
+import { Heart, Link, type LucideIcon, Share } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
+import { Segmented } from "@/components/segmented";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import {
+  BIRTHDAY_CARD_STYLES,
+  BirthdayCard,
+  type BirthdayCardData,
+  type BirthdayCardStyle,
+} from "@/features/birthdays/birthday-card";
+import { nextBirthday } from "@/features/birthdays/birthday-week";
+import { localToday } from "@/features/engagement/seen";
 import { type Profile, loadProfile } from "@/features/pandas/profile";
 import { profileUrl, shareCardImage, shareLink } from "@/features/pandas/share-card";
 
@@ -59,8 +70,48 @@ function Card({ profile, cardRef }: { profile: Profile; cardRef: RefObject<Compo
   );
 }
 
+/** One of the 生日卡's actions: a glyph over its word, as the share sheet's row reads. */
+function Action({ icon, label, onPress, disabled }: { icon: LucideIcon; label: string; onPress: () => void; disabled?: boolean }) {
+  return (
+    <Pressable
+      role="button"
+      onPress={onPress}
+      disabled={disabled}
+      className="min-w-16 items-center gap-1.5 py-1 active:opacity-60"
+      style={disabled ? { opacity: 0.4 } : undefined}
+    >
+      <Icon icon={icon} size="title3" tone="label" />
+      <Text variant="footnote" className="font-semibold">
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
+
+/** The 生日卡 for a living panda with a full birth date; null otherwise, and the ordinary card shows. */
+function birthdayCardOf(profile: Profile): BirthdayCardData | null {
+  if (profile.deceased || !profile.birthDate) return null;
+  const next = nextBirthday(profile.birthDate, localToday());
+  if (!next || next.age < 1) return null;
+  const cover = profile.photos[0];
+  return {
+    name: profile.name,
+    nameEn: profile.nameEn,
+    birthDate: profile.birthDate,
+    place: profile.visit?.place ?? null,
+    sex: profile.sex,
+    ...next,
+    photo: cover ? { url: cover.url, credit: cover.credit } : null,
+  };
+}
+
 export default function ShareScreen() {
-  const { slug } = useLocalSearchParams<{ slug: string }>();
+  const { slug, birthday: birthdayParam, look: lookParam } = useLocalSearchParams<{ slug: string; birthday?: string; look?: string }>();
+  // Only a whole age from 生日周 asks for a 生日卡; anything else shows the ordinary card.
+  const wantsBirthday = Boolean(birthdayParam && /^[1-9]\d?$/.test(birthdayParam));
+  const [look, setLook] = useState<BirthdayCardStyle>(
+    BIRTHDAY_CARD_STYLES.find((option) => option.value === lookParam)?.value ?? "cover",
+  );
   const card = useRef<ComponentRef<typeof View>>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [failed, setFailed] = useState(false);
@@ -73,6 +124,8 @@ export default function ShareScreen() {
   }, [slug]);
   useEffect(load, [load]);
 
+  const birthday = wantsBirthday && profile ? birthdayCardOf(profile) : null;
+
   async function shareImage() {
     setStatus("sharing");
     try {
@@ -84,15 +137,32 @@ export default function ShareScreen() {
   }
 
   return (
-    <Page label="分享" title="分享这只熊猫">
+    <Page label={wantsBirthday ? undefined : "分享"} title={wantsBirthday ? "生日卡" : "分享这只熊猫"}>
       {failed ? (
         <LoadFailed message="资料暂时打不开。" onRetry={() => { setFailed(false); load(); }} />
       ) : !profile ? (
         <Skeleton className="h-96 w-full" accessibilityLabel="正在加载" />
       ) : (
         <>
-          <Card profile={profile} cardRef={card} />
-          <View className="flex-row flex-wrap gap-2">
+          {birthday ? (
+            <>
+              <Segmented value={look} options={BIRTHDAY_CARD_STYLES} onChange={setLook} accessibilityLabel="生日卡样式" />
+              <View className="px-6">
+                <BirthdayCard card={birthday} look={look} cardRef={card} />
+              </View>
+              <View className="flex-row justify-center gap-section">
+                <Action icon={Share} label="分享" onPress={() => void shareImage()} disabled={status === "sharing"} />
+                <Action icon={Link} label="分享链接" onPress={() => void shareLink(profile.name, profile.slug).catch(() => undefined)} />
+              </View>
+              <Button size="lg" className="rounded-pill" onPress={() => router.push({ pathname: "/pandas/[slug]", params: { slug: profile.slug } })}>
+                <Icon icon={Heart} size="body" tone="onButton" />
+                <Text>看看{profile.name}</Text>
+              </Button>
+            </>
+          ) : (
+            <Card profile={profile} cardRef={card} />
+          )}
+          {birthday ? null : <View className="gap-2">
             <Button onPress={() => void shareImage()} disabled={status === "sharing"}>
               <Text>分享图片</Text>
             </Button>
@@ -102,7 +172,7 @@ export default function ShareScreen() {
             >
               <Text>分享链接</Text>
             </Button>
-          </View>
+          </View>}
           {status === "failed" ? <Text className="text-destructive">没能生成图片，请再试一次。</Text> : null}
         </>
       )}
