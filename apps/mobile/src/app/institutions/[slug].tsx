@@ -35,6 +35,7 @@ import { PressScale } from "@/components/press-scale";
 import { Scrim } from "@/components/scrim";
 import { HeroHeader, useHeroScroll } from "@/components/hero-header";
 import { StretchyHero } from "@/components/stretchy-hero";
+import { ViewingTiming } from "@/features/viewing/viewing-timing";
 import { PAGE_ENTER } from "@/design/motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -54,6 +55,7 @@ import { useSession } from "@/features/session/session";
 import { openPanda } from "@/features/pandas/panda-row";
 import type { PandaListItem } from "@/features/pandas/pandas";
 import { longDate } from "@/features/pandas/profile";
+import { VenueNewsSection } from "@/features/venue-news/venue-news-section";
 import { FacilityVisits } from "@/features/visits/facility-visits";
 import { usePandaCover } from "@/lib/covers";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
@@ -190,6 +192,7 @@ function FacilityGuide({ facility, title }: { facility: Facility; title?: string
     ...facility.tips.map((tip) => ({ label: tip.label, value: tip.text })),
   ];
   const coordinates = facility.coordinates;
+  if (rows.length === 0 && !coordinates) return null;
   return (
     <ListSection title={title}>
       {rows.map((row, index) => (
@@ -254,7 +257,15 @@ function VisitGuide({ institution, unseen }: { institution: InstitutionDetail; u
         </ListSection>
       ) : null}
       {guided.map((facility) => (
-        <FacilityGuide key={facility.id} facility={facility} title={several ? facility.name : undefined} />
+        <View key={facility.id} className="gap-4">
+          {several ? (
+            <Text variant="headline" role="heading">
+              {facility.name}
+            </Text>
+          ) : null}
+          <ViewingTiming facility={facility} />
+          <FacilityGuide facility={facility} title="须知" />
+        </View>
       ))}
       {institution.websiteUrl ? (
         <ListSection>
@@ -453,6 +464,7 @@ export default function InstitutionScreen() {
         <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-gutter pt-5">
           {institution.summary ? <Text variant="body">{institution.summary}</Text> : null}
           {institution.residents.length > 0 ? <Residents pandas={institution.residents} /> : null}
+          <VenueNewsSection institutionSlug={institution.slug} />
           <VisitGuide institution={institution} unseen={unseen} />
           {institution.facilities.length > 0 ? <FacilityVisits facilities={institution.facilities} /> : null}
           {institution.former.length > 0 ? <Former pandas={institution.former} /> : null}

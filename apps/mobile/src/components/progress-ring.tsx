@@ -16,18 +16,22 @@ export function ProgressRing({
   label,
   accessibilityLabel,
   size = "regular",
+  children,
 }: {
   /** 0 to 1. */
   value: number;
   /** What sits in the middle ("7/12"). */
   label?: string;
   accessibilityLabel: string;
-  size?: "regular" | "small";
+  /** "large" leads a page (月度挑战). */
+  size?: "regular" | "small" | "large";
+  /** Center content in place of `label`, when the value needs more than one style ("3/5"). */
+  children?: React.ReactNode;
 }) {
   const colors = useIOSColors();
   const ring = component.progressRing;
-  const px = size === "small" ? ring.small : ring.size;
-  const stroke = size === "small" ? ring.smallStroke : ring.stroke;
+  const px = size === "small" ? ring.small : size === "large" ? ring.large : ring.size;
+  const stroke = size === "small" ? ring.smallStroke : size === "large" ? ring.largeStroke : ring.stroke;
   const r = (px - stroke) / 2;
   const circumference = 2 * Math.PI * r;
   const clamped = Math.min(Math.max(value, 0), 1);
@@ -56,11 +60,11 @@ export function ProgressRing({
           />
         ) : null}
       </Svg>
-      {label ? (
+      {children ?? (label ? (
         <Text variant={size === "small" ? "footnote" : "subheadline"} className="font-rounded font-semibold tabular-nums" role="none">
           {label}
         </Text>
-      ) : null}
+      ) : null)}
     </View>
   );
 }

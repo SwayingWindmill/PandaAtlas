@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { Landmark } from "@/components/icons";
+import { ListCell, ListSection } from "@/components/grouped-list";
+import { Landmark, Newspaper } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { ScreenState } from "@/components/screen-state";
@@ -74,6 +75,9 @@ export default function InstitutionsScreen() {
       {loaded ? (
         loaded.items.length > 0 ? (
           <Animated.View entering={PAGE_ENTER} className="gap-section-tight">
+            <ListSection>
+              <ListCell icon={Newspaper} label="场馆动态" href="/venue-news" last />
+            </ListSection>
             <Group title="国内" items={loaded.items.filter((item) => item.domestic)} residents={loaded.residents} />
             <Group title="海外" items={loaded.items.filter((item) => !item.domestic)} residents={loaded.residents} />
           </Animated.View>
