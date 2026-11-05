@@ -2293,6 +2293,41 @@
         ]
       }
     },
+    "/api/v2/venue-news": {
+      "get": {
+        "operationId": "listVenueNews",
+        "parameters": [
+          {
+            "name": "institution",
+            "required": false,
+            "in": "query",
+            "description": "Institution slug",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VenueNewsDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The stored venue news catalog is invalid."
+          }
+        },
+        "summary": "Published 场馆动态: neutral facts from institutions' own announcements, each with its source",
+        "tags": [
+          "Venue news"
+        ]
+      }
+    },
     "/api/v2/ask/status": {
       "get": {
         "operationId": "getAskStatus",
@@ -4893,6 +4928,62 @@
           "text"
         ]
       },
+      "TimeWindowDto": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "description": "Local time, HH:MM."
+          },
+          "end": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "description": "Local time, HH:MM."
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ]
+      },
+      "ViewingTimingDto": {
+        "type": "object",
+        "properties": {
+          "activeWindows": {
+            "description": "When the pandas are usually active, as the facility publishes.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimeWindowDto"
+            }
+          },
+          "napWindow": {
+            "description": "The usual midday rest.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimeWindowDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "activeWindows"
+        ]
+      },
+      "PhotoSpotDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/LocalizedTextDto"
+          },
+          "window": {
+            "$ref": "#/components/schemas/TimeWindowDto"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "FacilityVisitGuideDto": {
         "type": "object",
         "properties": {
@@ -4912,6 +5003,15 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FacilityVisitTipDto"
+            }
+          },
+          "viewing": {
+            "$ref": "#/components/schemas/ViewingTimingDto"
+          },
+          "photoSpots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhotoSpotDto"
             }
           },
           "verifiedOn": {
@@ -6245,6 +6345,84 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/OverseasStatusItemDto"
+            }
+          }
+        },
+        "required": [
+          "version",
+          "items"
+        ]
+      },
+      "VenueNewsItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "institutionSlug": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "enclosure",
+              "schedule",
+              "closure",
+              "arrival",
+              "departure",
+              "event",
+              "other"
+            ]
+          },
+          "headline": {
+            "type": "string",
+            "description": "The announcement's own headline, verbatim."
+          },
+          "pandaSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sourceUrl": {
+            "type": "string",
+            "description": "The institution's announcement (https)."
+          },
+          "sourcePublisher": {
+            "type": "string"
+          },
+          "publishedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this entry was last checked against the source."
+          }
+        },
+        "required": [
+          "id",
+          "institutionSlug",
+          "kind",
+          "headline",
+          "pandaSlugs",
+          "sourceUrl",
+          "sourcePublisher",
+          "publishedOn",
+          "updatedAt"
+        ]
+      },
+      "VenueNewsDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VenueNewsItemDto"
             }
           }
         },

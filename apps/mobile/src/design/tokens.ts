@@ -384,7 +384,7 @@ export const component = {
   /** A filter or choice chip: 32pt tall, inside a 44pt hit area. */
   chip: { height: 32, paddingX: space[3] },
   /** A progress ring: the track and the arc share one stroke; the value sits in the middle. */
-  progressRing: { size: 64, stroke: 6, small: 44, smallStroke: 4 },
+  progressRing: { size: 64, stroke: 6, small: 44, smallStroke: 4, large: 120, largeStroke: 12 },
   /** A timeline: a 2pt rail, 10pt dots, the newest one ringed in the tint. */
   timeline: { rail: 2, dot: 10, column: 20 },
   /** A stepper's numbered disc. */
@@ -393,6 +393,22 @@ export const component = {
   statusDot: 8,
   /** A time band's track and its "now" marker. */
   timeBand: { track: 8, marker: 14 },
+  /**
+   * 生日卡: a saved image, so it keeps one look in light and dark. Drawn on a 360×480 artboard and scaled
+   * to its width; ink, white and sky come from the palette, these are the few extra stops it needs.
+   */
+  birthdayCard: {
+    artboard: { width: 360, height: 480 },
+    radius: 28,
+    rule: alpha("white", 0.25),
+    /** B 奖章's radial background: lit centre to deep edge around ink 950. */
+    medalLight: "#26262A",
+    medalDeep: "#000000",
+    /** The shaded side of the silver age medal. */
+    badgeShade: "#8E8E93",
+    /** C 园区海报's second stripe, between sky 50 and sky 200. */
+    stripe: "#D3E8FF",
+  },
 } as const;
 
 // ---------------------------------------------------------------------------------------------

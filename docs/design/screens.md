@@ -59,7 +59,7 @@ Status: built in the second batch.
 
 Signed out, the profile row becomes 登录 and the stat tiles and the first group are hidden.
 
-Status: built in the second batch, without the 年度回顾 banner (#805). 关注的熊猫 opens `/following` and 我的纠错 opens `/contributions`.
+Status: built in the second batch; the 年度回顾 banner came with #805. 关注的熊猫 opens `/following` and 我的纠错 opens `/contributions`.
 
 ## 设置 — `05-settings`
 
@@ -103,6 +103,20 @@ Each of these is built in its own PR. Each PR moves to palette C and the new com
 | 双胞胎对比 | `13-twins-compare` | #808 (built on `CompareTable`) |
 | 那年今天 | `14-on-this-day` | built in the second batch |
 | 归国熊猫 | `15-overseas-return` | #812 |
+
+The 参观攻略 (`07-venue-guide`) leads each facility with the 观猫时机 card: the first window the pandas are up in `figure` type, a day band (active in `graphic`, the midday rest in a quiet fill, hours every four), the other windows in a line, and a key. The band carries no "now" marker or month, since the facility publishes usual hours, not today's. 拍照点位 is a list with each spot's best hours: no spot has a published photo, so the mockup's photo cards wait for one. 须知 follows (opening hours with their `TimeBand`, tickets, tips, 导航过去). The stat tiles (开放, 每次, 直播) and the 示例 key entry are left out until the data exists.
+
+场馆动态 (`07b-venue-news`) is one timeline card (`NewsTimeline`), newest first, the newest dot tinted. Each row has the date (2026.11.06), the venue, the notice's own headline, a countdown (2 天后) on one still to come, or else the photo of the first panda it names, and it opens the original. Ink chips narrow it: 全部, 关注的 (the venues where the followed pandas live, shown when one has a notice), then each venue with a notice. The hosts follow as official `SourceBadge`s. The mockup's bell waits for a news reminder. A venue's page shows its three newest notices on the same card, with 全部动态 when there are more.
+
+生日周 (`08-birthday-week`) has 接下来 7 天 over the title, a strip of the seven days (weekday over date, today on an ink tile, a dot under each day with a birthday), then one group per day (今天 · 11月4日 周三) of 44pt round photos with the age at the right; a row opens the 生日卡. 生日提醒 sits at the foot as a switch, and also in 设置's 提醒 group. The mockup's bell is left out: the reminder lives on 今天, not in a push. 官方生日活动 shows only when an institution's own announcement is curated in `events.ts`.
+
+生日卡 (`09-birthday-card`) has 封面, 奖章 and 海报 in a `Segmented` above the card, the card itself on a 360×480 artboard in palette C (ink ground, white type, sky accent, a silver medal), then 分享 and 分享链接 as glyph actions and 看看{名字} as the filled button. 存到相册 and 复制链接 wait for the media-library and clipboard modules; the page dots wait for a swipeable card.
+
+年度回顾 (`10-year-review`) is the fan's own year, from their records only: the year over the title; a hero with the first panda they met that year (今年第一只, the day at the right); 见过, 打卡 and 去过 as stat tiles; 每月打卡 as twelve bars with the busiest month in `graphic`; the 图鉴点亮 ring card shared with 图鉴 (`LitCard`); 第一次, the year's first 认出, 见过, 去过 and 打卡 on a `Timeline`; and 分享回顾, which saves the top of the page as an image. The mockup's 看得最多 41 次 needs per-year counts the records do not keep, so the hero names the first panda instead. On 我的 the banner (the year's first panda behind 2026 年度回顾) shows once the year holds a record. An earlier build reviewed the public record (births, moves) instead; it was replaced to follow the mockup.
+
+月度挑战 (`11-monthly-challenge`) has 月度挑战 over 十一月挑战, then a card with a large `ProgressRing` (done over total) and the days left; 任务 as a stepper of discs on a rail, an ink check once done (the disc is the checkbox) and the number until then, each row opening the page that does it; and 往期, a trophy per earlier month joined, ink when complete. Joining is opt-in and kept on this device: before joining the page offers 参加十一月挑战, and 退出本月挑战 sits at the foot. Tasks are ticked by hand. The mockup's tasks that name a panda or read a record (认出晓晓和蕾蕾, 打卡 7 天) wait for a month's theme to be written.
+
+双胞胎 (`12-twins`) lists pairs as cards: the two covers side by side (the first character on the placeholder when one has none), the names joined by a quiet &, the birthday (2021.06.23 出生) for twins or the written note for a pair, and a chevron to 比一比. A `Segmented` switches 双胞胎 and 像的熊猫 when both exist. Twins come only from sourced lineage (same mother, same exact birth date). The mockup's birthplace waits for a birthplace field. 找熊猫 opens it from a 双胞胎 explore card; the 双胞胎 filter chip is still to come. 对比 (`13-twins-compare`) is the existing 比一比 page on `CompareTable`; its 同框 photo waits for photos tagged with both pandas.
 
 归国熊猫 (`15-overseas-return`) has country chips (全部, then each country with an entry), then 即将归国 (检疫中, 归国途中, 已宣布归国 with its expected date), each year's returns newest first, and 旅居海外. Pandas that came home together on one day from one institution share a row: two overlapping faces, the names, a `Plane` with "上野 → 中国", and the day (01.28) at the right. The catalog records where they left, not the base they went to, so the arrow ends at 中国 until it does. The announcements follow as official `SourceBadge`s. 找熊猫 opens it from the first explore card; the 归国 filter chip is still to come.
 

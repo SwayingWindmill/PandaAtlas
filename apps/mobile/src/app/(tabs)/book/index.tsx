@@ -9,7 +9,6 @@ import { Eye, MapPin, ScanFace } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PandaThumb } from "@/components/panda-thumb";
-import { ProgressRing } from "@/components/progress-ring";
 import { SectionHeader } from "@/components/section-header";
 import { Segmented } from "@/components/segmented";
 import { StatTile } from "@/components/stat-tile";
@@ -25,12 +24,12 @@ import {
   baseGroups,
   baseProgress,
   buildLifeList,
-  catalogPercent,
   entryDetail,
   filterEntries,
 } from "@/features/book/book";
 import { localToday } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
+import { LitCard } from "@/features/book/lit-card";
 import { type PandaListItem, loadPandaIndex, loadPlaces, placeName } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
 import { LockedPhotoTile, StoryPhotoTile } from "@/features/today/story-photo-tile";
@@ -116,32 +115,6 @@ function WaysIn({ title, footer }: { title: string; footer?: string }) {
         last
       />
     </ListSection>
-  );
-}
-
-/** 点亮: the pandas met against every published panda, one ring, as Fitness shows a share. */
-function Lit({ met, catalog }: { met: number; catalog: number }) {
-  const percent = catalogPercent(met, catalog);
-  return (
-    <View
-      className="flex-row items-center gap-stack rounded-group bg-card p-inset"
-      style={{ borderCurve: "continuous" }}
-      accessible
-      accessibilityLabel={`点亮 ${met} 只，共收录 ${catalog.toLocaleString("zh-CN")} 只，${percent}%`}
-    >
-      <ProgressRing value={percent / 100} label={`${percent}%`} accessibilityLabel={`点亮 ${percent}%`} />
-      <View className="min-w-0 flex-1 gap-hair-gap">
-        <Text variant="footnote" className="text-muted-foreground" role="none">
-          点亮
-        </Text>
-        <Text role="none">
-          <Text variant="stat">{met.toLocaleString("zh-CN")}</Text>
-          <Text variant="subheadline" className="text-muted-foreground tabular-nums">
-            {` / ${catalog.toLocaleString("zh-CN")}`}
-          </Text>
-        </Text>
-      </View>
-    </View>
   );
 }
 
@@ -316,7 +289,7 @@ function SignedIn() {
   return (
     <Animated.View entering={PAGE_ENTER} className="gap-section">
       <View className="gap-row">
-        <Lit met={book.list.entries.length} catalog={book.catalog} />
+        <LitCard met={book.list.entries.length} catalog={book.catalog} />
         <Stats book={book} />
       </View>
       {empty ? (
