@@ -31,6 +31,11 @@ export function useStoryPhotos(day: string, count: number): StoryPhoto[] {
         const candidates = storyCandidates(pandas, day)
           .filter((panda) => hasCuratedCover(panda.id))
           .slice(0, LOOKAHEAD);
+        // With no reviewed cover among today's pandas there is nothing to ask for (the API refuses no ids).
+        if (candidates.length === 0) {
+          if (active) setPhotos([]);
+          return;
+        }
         const { data } = await api.GET("/api/v2/panda-covers", {
           params: { query: { ids: candidates.map((panda) => panda.id).join(",") } },
         });
