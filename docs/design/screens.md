@@ -59,7 +59,7 @@ Status: built in the second batch.
 
 Signed out, the profile row becomes 登录 and the stat tiles and the first group are hidden.
 
-Status: built in the second batch, without the 年度回顾 banner (#805). 关注的熊猫 opens `/following` and 我的纠错 opens `/contributions`.
+Status: built in the second batch; the 年度回顾 banner came with #805. 关注的熊猫 opens `/following` and 我的纠错 opens `/contributions`.
 
 ## 设置 — `05-settings`
 
@@ -111,6 +111,8 @@ The 参观攻略 (`07-venue-guide`) leads each facility with the 观猫时机 ca
 生日周 (`08-birthday-week`) has 接下来 7 天 over the title, a strip of the seven days (weekday over date, today on an ink tile, a dot under each day with a birthday), then one group per day (今天 · 11月4日 周三) of 44pt round photos with the age at the right; a row opens the 生日卡. 生日提醒 sits at the foot as a switch, and also in 设置's 提醒 group. The mockup's bell is left out: the reminder lives on 今天, not in a push. 官方生日活动 shows only when an institution's own announcement is curated in `events.ts`.
 
 生日卡 (`09-birthday-card`) has 封面, 奖章 and 海报 in a `Segmented` above the card, the card itself on a 360×480 artboard in palette C (ink ground, white type, sky accent, a silver medal), then 分享 and 分享链接 as glyph actions and 看看{名字} as the filled button. 存到相册 and 复制链接 wait for the media-library and clipboard modules; the page dots wait for a swipeable card.
+
+年度回顾 (`10-year-review`) is the fan's own year, from their records only: the year over the title; a hero with the first panda they met that year (今年第一只, the day at the right); 见过, 打卡 and 去过 as stat tiles; 每月打卡 as twelve bars with the busiest month in `graphic`; the 图鉴点亮 ring card shared with 图鉴 (`LitCard`); 第一次, the year's first 认出, 见过, 去过 and 打卡 on a `Timeline`; and 分享回顾, which saves the top of the page as an image. The mockup's 看得最多 41 次 needs per-year counts the records do not keep, so the hero names the first panda instead. On 我的 the banner (the year's first panda behind 2026 年度回顾) shows once the year holds a record. An earlier build reviewed the public record (births, moves) instead; it was replaced to follow the mockup.
 
 The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and the large title, then a `Segmented` control with 本周 and 本月, the week hero, the memories of the range, and the 那年今天 switch. The memories are one timeline card as in the mockup (`MemoryTimeline`), with 少显示 and 关闭 on a long press and as accessibility actions, and the sources as badges under the card. The hero is the page variant of the week hero: no tag, the day it happened, what happened, and N 周年 at the right.
 
