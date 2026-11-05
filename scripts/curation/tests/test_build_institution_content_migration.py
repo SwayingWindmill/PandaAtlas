@@ -78,6 +78,22 @@ class ValidateContentTests(unittest.TestCase):
         self.assert_error(lambda c: guide(c)["tips"].append({"topic": "food", "text": {"en": "x"}}), "topic")
         self.assert_error(lambda c: guide(c).update(admission={"en": " "}), "admission")
 
+    def test_checks_viewing_windows_and_photo_spots(self) -> None:
+        guide = lambda c: c["institutions"][0]["places"][0]["visitGuide"]
+        content = copy.deepcopy(VALID)
+        guide(content).update(
+            viewing={"activeWindows": [{"start": "09:00", "end": "11:00"}], "napWindow": {"start": "12:00", "end": "14:30"}},
+            photoSpots=[{"name": {"zh": "外场东侧"}}],
+        )
+        self.assertEqual(BUILDER.validate_content(content), [])
+        self.assert_error(lambda c: guide(c).update(viewing={"activeWindows": []}), "activeWindows")
+        self.assert_error(lambda c: guide(c).update(viewing={"activeWindows": [{"start": "11:00", "end": "10:00"}]}), "start before")
+        self.assert_error(
+            lambda c: guide(c).update(viewing={"activeWindows": [{"start": "09:00", "end": "11:00"}, {"start": "10:00", "end": "12:00"}]}),
+            "overlap",
+        )
+        self.assert_error(lambda c: guide(c).update(photoSpots=[{"window": {"start": "09:00", "end": "10:00"}}]), "needs a name")
+
     def test_rejects_half_a_coordinate_and_duplicate_places(self) -> None:
         self.assert_error(lambda c: c["institutions"][0]["places"][0].pop("latitude"), "go together")
         self.assert_error(

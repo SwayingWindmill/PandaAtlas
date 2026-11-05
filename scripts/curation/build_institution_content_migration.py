@@ -97,11 +97,62 @@ def validate_profile(profile: object, label: str, errors: list[str]) -> None:
     validate_sourced(profile, label, errors)
 
 
+HHMM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
+
+
+def validate_window(window: object, label: str, errors: list[str]) -> None:
+    if window is None:
+        return
+    if not isinstance(window, dict) or set(window) != {"start", "end"}:
+        errors.append(f"{label}: must be {{start, end}}")
+        return
+    start, end = window["start"], window["end"]
+    if not (isinstance(start, str) and isinstance(end, str) and HHMM.match(start) and HHMM.match(end)):
+        errors.append(f"{label}: times must be HH:MM")
+    elif start >= end:
+        errors.append(f"{label}: must start before it ends")
+
+
+def validate_viewing(viewing: object, label: str, errors: list[str]) -> None:
+    if viewing is None:
+        return
+    if not isinstance(viewing, dict) or set(viewing) - {"activeWindows", "napWindow"}:
+        errors.append(f"{label}: unknown fields")
+        return
+    windows = viewing.get("activeWindows")
+    if not isinstance(windows, list) or not 1 <= len(windows) <= 6:
+        errors.append(f"{label}.activeWindows: needs 1 to 6 windows")
+        return
+    for index, window in enumerate(windows):
+        validate_window(window, f"{label}.activeWindows[{index}]", errors)
+    try:
+        ordered = sorted(windows, key=lambda w: w["start"])
+        if any(b["start"] < a["end"] for a, b in zip(ordered, ordered[1:])):
+            errors.append(f"{label}.activeWindows: overlap")
+    except (KeyError, TypeError):
+        pass
+    validate_window(viewing.get("napWindow"), f"{label}.napWindow", errors)
+
+
+def validate_photo_spots(spots: object, label: str, errors: list[str]) -> None:
+    if spots is None:
+        return
+    if not isinstance(spots, list) or len(spots) > 12:
+        errors.append(f"{label}: must be a list of at most 12")
+        return
+    for index, spot in enumerate(spots):
+        if not isinstance(spot, dict) or spot.get("name") is None or set(spot) - {"name", "window"}:
+            errors.append(f"{label}[{index}]: needs a name")
+            continue
+        validate_text(spot["name"], f"{label}[{index}].name", errors)
+        validate_window(spot.get("window"), f"{label}[{index}].window", errors)
+
+
 def validate_guide(guide: object, label: str, errors: list[str]) -> None:
     if not isinstance(guide, dict):
         errors.append(f"{label}: must be an object")
         return
-    unknown = set(guide) - {*GUIDE_TEXT_FIELDS, "tips", "verifiedOn", "sourceUrls"}
+    unknown = set(guide) - {*GUIDE_TEXT_FIELDS, "tips", "viewing", "photoSpots", "verifiedOn", "sourceUrls"}
     if unknown:
         errors.append(f"{label}: unknown fields {sorted(unknown)}")
     for field in GUIDE_TEXT_FIELDS:
@@ -117,6 +168,8 @@ def validate_guide(guide: object, label: str, errors: list[str]) -> None:
             if tip.get("text") is None:
                 errors.append(f"{label}.tips[{index}]: needs text")
             validate_text(tip.get("text"), f"{label}.tips[{index}].text", errors)
+    validate_viewing(guide.get("viewing"), f"{label}.viewing", errors)
+    validate_photo_spots(guide.get("photoSpots"), f"{label}.photoSpots", errors)
     validate_sourced(guide, label, errors)
 
 

@@ -268,6 +268,30 @@ export class FacilityVisitTipDto {
   public declare text: LocalizedTextDto;
 }
 
+export class TimeWindowDto {
+  @ApiProperty({ pattern: "^([01]\\d|2[0-3]):[0-5]\\d$", description: "Local time, HH:MM." })
+  public declare start: string;
+
+  @ApiProperty({ pattern: "^([01]\\d|2[0-3]):[0-5]\\d$", description: "Local time, HH:MM." })
+  public declare end: string;
+}
+
+export class ViewingTimingDto {
+  @ApiProperty({ type: () => TimeWindowDto, isArray: true, description: "When the pandas are usually active, as the facility publishes." })
+  public declare activeWindows: TimeWindowDto[];
+
+  @ApiPropertyOptional({ type: () => TimeWindowDto, description: "The usual midday rest." })
+  public declare napWindow?: TimeWindowDto;
+}
+
+export class PhotoSpotDto {
+  @ApiProperty({ type: () => LocalizedTextDto })
+  public declare name: LocalizedTextDto;
+
+  @ApiPropertyOptional({ type: () => TimeWindowDto })
+  public declare window?: TimeWindowDto;
+}
+
 export class FacilityVisitGuideDto {
   @ApiPropertyOptional({ type: () => LocalizedTextDto })
   public declare address?: LocalizedTextDto;
@@ -283,6 +307,12 @@ export class FacilityVisitGuideDto {
 
   @ApiProperty({ type: () => FacilityVisitTipDto, isArray: true })
   public declare tips: FacilityVisitTipDto[];
+
+  @ApiPropertyOptional({ type: () => ViewingTimingDto })
+  public declare viewing?: ViewingTimingDto;
+
+  @ApiPropertyOptional({ type: () => PhotoSpotDto, isArray: true })
+  public declare photoSpots?: PhotoSpotDto[];
 
   @ApiProperty({ format: "date", description: "Opening hours and prices change; this is the day they were last checked." })
   public declare verifiedOn: string;

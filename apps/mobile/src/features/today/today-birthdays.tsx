@@ -77,9 +77,9 @@ export function TodayBirthdays() {
         icon={Cake}
         count={shelf.today ? `${shelf.entries.length} 只` : undefined}
         action={{
-          label: more > 0 ? `还有 ${more} 只` : "看日历",
-          href: "/calendar",
-          accessibilityLabel: more > 0 ? `还有 ${more} 只，看日历` : "看日历",
+          label: more > 0 ? `还有 ${more} 只` : shelf.today ? "看日历" : "生日周",
+          href: more > 0 || shelf.today ? "/calendar" : "/birthdays",
+          accessibilityLabel: more > 0 ? `还有 ${more} 只，看日历` : shelf.today ? "看日历" : "看生日周",
         }}
       />
       <ScrollView
