@@ -20,7 +20,7 @@ const shortSpan = (window: TimeWindow) => `${short(window.start)}–${short(wind
  * rest in a quiet fill, the rest of the day on the track, hour labels every four hours under it.
  * Decorative: the card's label says the same in words.
  */
-function DayBand({ viewing }: { viewing: Viewing }) {
+export function DayBand({ viewing }: { viewing: Viewing }) {
   const { track } = component.timeBand;
   const range = stripRange([...viewing.active, ...(viewing.nap ? [viewing.nap] : [])]);
   const ticks: number[] = [];
