@@ -47,12 +47,14 @@ Both run in CI when files under `apps/mobile/` change (`npm run verify:dev -- --
 
 ## End-to-end journeys
 
-`apps/mobile/e2e/` drives the app's web build with Playwright against the real local stack: Supabase Auth (sign-in codes are read from its Mailpit inbox) and the NestJS API on the local database, with a fresh `@example.test` user per run. Start Supabase, then run the suite; it starts the API on port 3101 and the app on port 8792 itself:
+`apps/mobile/tests/` holds the journeys, run by [e2e](https://github.com/tester-army/e2e) (`e2e.config.ts`) against the app's web build and the real local stack: Supabase Auth (sign-in codes are read from its Mailpit inbox) and the NestJS API on the local database, with a fresh `@example.test` user per journey. `tests/support/stack.ts` is the app e2e starts: it builds the API, publishes this run's fixture data through the API's own modules, and serves the API on port 3101 and the app on port 8792. Start Supabase, then run the suite:
 
 ```powershell
 npm run infra:start
 npm run test:e2e -w @zhipanda/mobile
 ```
+
+One journey: `npx e2e run tests/<file>.e2e.ts:<line>` from `apps/mobile`, the line its `test(` opens on. A failure names its trace page, `.e2e/results/<test>/trace.md`, with the screen at the failure. The journeys use locators and exact values only, so they need no model; an `agent.act` goal would need a model under `agents` in the config. `npx e2e telemetry disable` turns off e2e's usage telemetry on a machine.
 
 Sign-in uses Supabase Auth directly: `src/lib/supabase.ts` keeps the session in SecureStore (split into chunks under Android's size limit) and refreshes it while the app is in the foreground; `src/features/session/session.tsx` owns the signed-in state and provisions the application account once; `authedApi` in `src/lib/api.ts` adds the access token to personal API calls.
 

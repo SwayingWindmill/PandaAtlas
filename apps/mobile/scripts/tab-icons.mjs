@@ -3,7 +3,7 @@
 // It also writes each glyph as an SVG to assets/symbols/, which react-native-nano-icons turns into a
 // custom SF Symbol (iOS) and a VectorDrawable (Android) at prebuild; Expo Go keeps the PNGs.
 // Run from apps/mobile: node scripts/tab-icons.mjs
-import { chromium } from "@playwright/test";
+import { chromium } from "playwright-core";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

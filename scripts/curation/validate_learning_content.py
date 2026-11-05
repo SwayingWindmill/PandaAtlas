@@ -33,7 +33,10 @@ COMMONS_ASSET_PREFIXES = ("https://commons.wikimedia.org/wiki/Special:Redirect/f
 FREE_LICENSE = re.compile(r"^(CC BY(-SA)? \d\.\d( [a-z]{2})?|CC0 1\.0|Public domain)$")
 STATUSES = {"draft", "published"}
 FACE_TIP_KEYS = ("shape", "leftRight", "eyePatches", "ears")
-COLLECTIONS = ("articles", "cards", "topics", "terms", "faceGuides", "challenges")
+COLLECTIONS = ("articles", "cards", "topics", "terms", "faceGuides", "challenges", "monthThemes")
+# Mirrors MONTH_TASK_KINDS in services/api/src/modules/learning/application/learning-catalog.ts.
+MONTH_TASK_KINDS = {"daily", "guess", "learn", "checkin", "collections", "compare"}
+MONTH = re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
 CATEGORIES = {
     "外形与识别": "Shape and recognition",
     "食性": "Diet",
@@ -339,8 +342,38 @@ def validate_content(
         validate_text(challenge.get("tip"), f"{label}.tip", "tip", status, errors)
         validate_sources(challenge.get("sources"), f"{label}.sources", status, errors)
 
+    validate_month_themes(content.get("monthThemes", []), errors)
     validate_articles(content.get("articles"), terms, pandas, errors)
     return errors
+
+
+def validate_month_themes(rows: object, errors: list[str]) -> None:
+    """月度主题挑战: optional. A month not listed uses the app's default checklist."""
+    if not isinstance(rows, list):
+        errors.append("monthThemes: must be a list")
+        return
+    months: set[str] = set()
+    for index, theme in enumerate(rows):
+        label = f"monthThemes[{index}]"
+        if not isinstance(theme, dict) or set(theme) != {"month", "status", "title", "intro", "tasks"}:
+            errors.append(f"{label}: must have month, status, title, intro and tasks")
+            continue
+        status = require_status(theme, label, errors)
+        month = theme.get("month")
+        if not isinstance(month, str) or not MONTH.match(month):
+            errors.append(f"{label}.month: must be YYYY-MM")
+        elif month in months:
+            errors.append(f"{label}.month: {month} is listed twice")
+        else:
+            months.add(month)
+        validate_text(theme.get("title"), f"{label}.title", "title", status, errors)
+        if theme.get("intro") is not None:
+            validate_text(theme.get("intro"), f"{label}.intro", "summary", status, errors)
+        tasks = theme.get("tasks")
+        if not isinstance(tasks, list) or not tasks or len(set(map(str, tasks))) != len(tasks):
+            errors.append(f"{label}.tasks: needs different tasks")
+        elif any(task not in MONTH_TASK_KINDS for task in tasks):
+            errors.append(f"{label}.tasks: each task must be one of {sorted(MONTH_TASK_KINDS)}")
 
 
 MARKUP = re.compile(r"\[\[([a-z0-9]+(?:-[a-z0-9]+)*)\|([^\]]+)\]\]")

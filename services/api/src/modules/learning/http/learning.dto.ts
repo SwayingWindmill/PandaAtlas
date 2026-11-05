@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import type { FaceTipKey } from "../application/learning-catalog.js";
+import { type FaceTipKey, MONTH_TASK_KINDS, type MonthTaskKind } from "../application/learning-catalog.js";
 
 export class LearningTextDto {
   @ApiProperty({ description: "Chinese text." })
@@ -133,6 +133,20 @@ export class LearningChallengeDto {
   public declare sources: LearningSourceDto[];
 }
 
+export class LearningMonthThemeDto {
+  @ApiProperty({ example: "2026-11" })
+  public declare month: string;
+
+  @ApiProperty({ type: LearningTextDto })
+  public declare title: LearningTextDto;
+
+  @ApiProperty({ type: LearningTextDto, nullable: true })
+  public declare intro: LearningTextDto | null;
+
+  @ApiProperty({ enum: MONTH_TASK_KINDS, enumName: "MonthTaskKind", isArray: true })
+  public declare tasks: MonthTaskKind[];
+}
+
 export class LearningArticleParagraphDto {
   @ApiProperty({ type: LearningTextDto })
   public declare text: LearningTextDto;
@@ -255,4 +269,7 @@ export class LearningCatalogDto {
 
   @ApiProperty({ type: [LearningChallengeDto] })
   public declare challenges: LearningChallengeDto[];
+
+  @ApiProperty({ type: [LearningMonthThemeDto], description: "月度主题挑战 themes. A month not listed uses the app's default checklist." })
+  public declare monthThemes: LearningMonthThemeDto[];
 }

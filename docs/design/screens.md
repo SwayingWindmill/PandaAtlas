@@ -31,9 +31,9 @@ Status: all five steps are built. The quick entries are 观猫时机 (the venue 
 2. A search field with the placeholder 名字、拼音或场馆.
 3. Filter chips (`Chip`), single select: 全部, 在中国, 在海外, 双胞胎, 归国. A chip shows only when its filter has a real query behind it.
 4. **探索.** A horizontal scroller of photo cards, each with a bare glyph and a title on the photo: 归国熊猫, 双胞胎, 场馆, and the existing explore entries (熊猫在哪里, 查两只熊猫的关系, 比一比两只熊猫). A card shows only when its page exists.
-5. **大家常看.** One inset group of panda rows: a 44pt round photo, the name with a sex glyph, the current place as a subheadline, and a chevron. 全部 opens the full list. The mockup marks this block 示例. It ships only when there is a real popularity signal. Until then the block is the plain list, which is today's behavior, without the 大家常看 heading.
+5. **大家常看.** One inset group of panda rows: a 44pt round photo, the name with a sex glyph, the current place as a subheadline, and a chevron. The signal is follows: the published pandas that the most fans began following in the last 30 days, counting only pandas with at least five such fans (`GET /api/v2/popular-pandas`, no counts published). The block shows the top five and only while 全部 is selected with no search. It is hidden when no panda reaches the floor. The full list follows directly under it as 全部熊猫, so the block has no 全部 link.
 
-Status: built, without 大家常看 (no popularity data). The chips are 在中国, 在海外, 双胞胎 (pandas in a sourced twin pair), 归国 (pandas the overseas catalog marks returned), then each area in China; each shows only when it keeps a panda.
+Status: built. 大家常看 stays hidden until five fans follow one panda within 30 days. The chips are 在中国, 在海外, 双胞胎 (pandas in a sourced twin pair), 归国 (pandas the overseas catalog marks returned), then each area in China; each shows only when it keeps a panda.
 
 ## 图鉴 — `03-book`
 
@@ -124,8 +124,6 @@ The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and t
 
 ## Open decisions
 
-Decided: 图鉴 follows its mockup (2026-11-04), with the ring against the whole catalog and the 全部 / 见过 / 认出 views; DESIGN.md › The Life List Rule says so. The tab glyphs follow the mockup (2026-11-05). 大家常看 stays (2026-11-05); what it counts is item 1 below.
+Decided: 图鉴 follows its mockup (2026-11-04), with the ring against the whole catalog and the 全部 / 见过 / 认出 views; DESIGN.md › The Life List Rule says so. The tab glyphs follow the mockup (2026-11-05). 大家常看 counts follows in the last 30 days, with at least 5 followers (2026-11-05).
 
-These are places where a mockup and a written rule disagree. The rule holds until the owner decides.
-
-1. **大家常看's signal.** The block stays. The API has no view counts; the real signals today are follows and 见过. Decide what it counts before it is built.
+None are open now. When a mockup and a written rule disagree, the rule holds until the owner decides, and the disagreement is listed here.
