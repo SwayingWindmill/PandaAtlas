@@ -68,6 +68,16 @@
       "artifact_paths": [".batch-work/learning"]
     },
     {
+      "id": "curation.content",
+      "status": "ready",
+      "effect": "production-write",
+      "approval_required": true,
+      "manifest_required": true,
+      "idempotency": "Writes one curated content file (venue news, overseas status or institutions) into the database. A catalog file goes into its one row: the same content is reported as already current, and changed content needs a new version. Institutions are upserted by slug and existing facility places updated by slug, so a repeated run changes nothing.",
+      "command": ["node", "services/api/dist/content-command.js"],
+      "artifact_paths": [".batch-work/content"]
+    },
+    {
       "id": "media.process",
       "status": "ready",
       "effect": "generated-output",

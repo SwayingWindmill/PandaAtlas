@@ -10,7 +10,7 @@ describe("curation.learning batch adapter", () => {
   it("stores the repository file without its comment, as the API reads it", () => {
     const { version, document, catalog } = storedDocument(repositoryFile);
     expect(version).toBe(repositoryFile.version);
-    expect(Object.keys(document)).toEqual(["version", "articles", "cards", "topics", "terms", "faceGuides", "challenges"]);
+    expect(Object.keys(document)).toEqual(["version", "articles", "cards", "topics", "terms", "faceGuides", "challenges", "monthThemes"]);
     expect(catalog.articles.length).toBeGreaterThan(0);
   });
 
@@ -55,7 +55,7 @@ describe("curation.learning batch adapter", () => {
       version: "2026.11.03.1",
       previousVersion: "2026.11.01.2",
       outcome: "written",
-      published: { articles: 4, cards: 0, topics: 0, terms: 12, faceGuides: 3, challenges: 1 },
+      published: { articles: 4, cards: 0, topics: 0, terms: 12, faceGuides: 3, challenges: 1, monthThemes: 0 },
     });
     expect(markdown).toContain("## 科普 catalog 2026.11.03.1: written");
     expect(markdown).toContain("Replaced: 2026.11.01.2.");

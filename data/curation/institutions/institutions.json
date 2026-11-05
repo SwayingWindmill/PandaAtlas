@@ -1,5 +1,5 @@
 {
-  "$comment": "Visitor content for zoos and breeding centers. Each institution lists the existing facility places it runs, by slug, with a map point and an optional visit guide. legacySlugs lists duplicate places merged into it: the migration moves their residencies, events and check-ins here and keeps the old slug so old links resolve. Edit here, then run scripts/curation/build_institution_content_migration.py to write the migration. Hours and prices change: only record what an official page says, and update verifiedOn when you recheck.",
+  "$comment": "Visitor content for zoos and breeding centers. Each institution lists the existing facility places it runs, by slug, with a map point and an optional visit guide. legacySlugs lists duplicate places merged into it: the batch moves their residencies, events and check-ins here and keeps the old slug so old links resolve. Edit here; CI validates the file (scripts/curation/validate_institution_content.py), and after merge the curation.content batch writes it and release.publish serves it (docs/runbooks/content-entry.md). Hours and prices change: only record what an official page says, and update verifiedOn when you recheck.",
   "institutions": [
     {
       "slug": "chengdu-research-base",

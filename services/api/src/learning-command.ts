@@ -18,7 +18,7 @@ import type { Database } from "./platform/database/database.types.js";
 // DATABASE_URL after production-batch approval.
 
 const REPORT_DIRECTORY = ".batch-work/learning";
-const COLLECTIONS = ["articles", "cards", "topics", "terms", "faceGuides", "challenges"] as const;
+const COLLECTIONS = ["articles", "cards", "topics", "terms", "faceGuides", "challenges", "monthThemes"] as const;
 
 @Module({ imports: [ConfigModule, DatabaseModule] })
 class LearningCommandModule {}
@@ -30,11 +30,11 @@ export interface LearningReport {
   published: Record<(typeof COLLECTIONS)[number], number>;
 }
 
-/** The stored document is the file without its comment: the version and the six collections. */
+/** The stored document is the file without its comment: the version and its collections. */
 export function storedDocument(file: unknown): { version: string; document: Record<string, unknown>; catalog: PublicLearningCatalog } {
   if (typeof file !== "object" || file === null) throw new Error("The learning manifest is not a JSON object.");
   const source = file as Record<string, unknown>;
-  const document = Object.fromEntries(["version", ...COLLECTIONS].map((key) => [key, source[key]]));
+  const document = Object.fromEntries(["version", ...COLLECTIONS].filter((key) => key in source).map((key) => [key, source[key]]));
   const version = typeof document.version === "string" ? document.version : "";
   // The API parses the stored document with this function, so a document it would refuse is never written.
   // Published entries may be Chinese only; a missing en is served as an empty string.

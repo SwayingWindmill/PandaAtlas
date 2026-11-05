@@ -7,8 +7,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-MODULE_PATH = Path(__file__).resolve().parents[1] / "build_institution_content_migration.py"
-SPEC = importlib.util.spec_from_file_location("build_institution_content_migration", MODULE_PATH)
+MODULE_PATH = Path(__file__).resolve().parents[1] / "validate_institution_content.py"
+SPEC = importlib.util.spec_from_file_location("validate_institution_content", MODULE_PATH)
 assert SPEC and SPEC.loader
 BUILDER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(BUILDER)
@@ -151,56 +151,6 @@ class MergeTests(unittest.TestCase):
         self.assertEqual(len(findings), 2, findings)
         self.assertIn("chengdu-base and coarse-1", findings[0])
         self.assertIn("zoo-a and zoo-b look like one place (same map point)", findings[1])
-
-
-class RenderMigrationTests(unittest.TestCase):
-    def test_merges_legacy_slugs_before_updating_places(self) -> None:
-        content = copy.deepcopy(VALID)
-        content["institutions"][0]["places"][0]["legacySlugs"] = ["old-zoo", "older-zoo"]
-        sql = BUILDER.render_migration(content)
-        merge = "select place.merge_place('old-zoo', 'sample-zoo');"
-        self.assertIn(merge, sql)
-        self.assertIn("select place.merge_place('older-zoo', 'sample-zoo');", sql)
-        self.assertLess(sql.index(merge), sql.index("insert into place.institutions"))
-        self.assertNotIn("merge_place", BUILDER.render_migration(VALID))
-
-    def test_upserts_institutions_and_updates_only_facility_places(self) -> None:
-        sql = BUILDER.render_migration(VALID)
-        self.assertIn("on conflict (slug) do update", sql)
-        self.assertIn("'{\"kind\":\"zoo\",\"summary\":{\"en\":\"A zoo''s pandas.\"}", sql)
-        self.assertIn("ST_SetSRID(ST_MakePoint(-77.05, 38.93), 4326)", sql)
-        self.assertEqual(sql.count("and place_type = 'facility';"), 2)
-        annex = sql.split("where slug = 'sample-zoo-annex'")[0].rsplit("update place.places set", 1)[1]
-        self.assertNotIn("center", annex)
-        self.assertIn("visit_guide = null", annex)
-        self.assertTrue(sql.startswith("-- Generated") and sql.rstrip().endswith("commit;"))
-
-    def test_check_and_write_add_a_new_migration_only_when_content_changes(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            data_path = root / "institutions.json"
-            migrations = root / "migrations"
-            migrations.mkdir()
-            (migrations / "0001_schema.sql").write_text("select 1;\n", encoding="utf-8")
-            data_path.write_text(json.dumps(VALID), encoding="utf-8")
-            original = (BUILDER.ROOT, BUILDER.DATA_PATH, BUILDER.MIGRATIONS_DIR)
-            BUILDER.ROOT, BUILDER.DATA_PATH, BUILDER.MIGRATIONS_DIR = root, data_path, migrations
-            try:
-                self.assertEqual(BUILDER.main(["--check"]), 1)
-                self.assertEqual(BUILDER.main(["--write"]), 0)
-                self.assertTrue((migrations / "0002_institution_content.sql").exists())
-                self.assertEqual(BUILDER.main(["--check"]), 0)
-                self.assertEqual(BUILDER.main(["--write"]), 0)
-                self.assertFalse((migrations / "0003_institution_content.sql").exists())
-
-                changed = copy.deepcopy(VALID)
-                changed["institutions"][0]["nameEn"] = "Sample Zoo and Gardens"
-                data_path.write_text(json.dumps(changed), encoding="utf-8")
-                self.assertEqual(BUILDER.main(["--check"]), 1)
-                self.assertEqual(BUILDER.main(["--write"]), 0)
-                self.assertTrue((migrations / "0003_institution_content.sql").exists())
-            finally:
-                BUILDER.ROOT, BUILDER.DATA_PATH, BUILDER.MIGRATIONS_DIR = original
 
 
 if __name__ == "__main__":

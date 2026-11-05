@@ -26,6 +26,7 @@ import {
   themeFor,
   toggleTask,
 } from "@/features/challenges/challenge";
+import { useMonthThemes } from "@/features/challenges/month-themes";
 import { saveChallengeState, useChallengeState } from "@/features/challenges/prefs";
 import { localToday } from "@/features/engagement/seen";
 import { tapHaptic } from "@/lib/haptics";
@@ -164,7 +165,8 @@ export default function ChallengeScreen() {
   const state = useChallengeState();
   const today = localToday();
   const month = monthKey(today);
-  const theme = themeFor(month);
+  const themes = useMonthThemes();
+  const theme = themeFor(month, themes);
   const title = theme.title ?? fallbackTitle(month);
 
   if (!state) {
@@ -176,9 +178,9 @@ export default function ChallengeScreen() {
   }
   const joined = state.joined.includes(month);
   const save = (next: ChallengeState) => saveChallengeState(next);
-  const { done, total } = progress(state, month);
+  const { done, total } = progress(state, month, theme);
   const doneIds = state.done[month] ?? [];
-  const past = pastMonths(state, month);
+  const past = pastMonths(state, month, themes);
 
   return (
     <Page title={title} dateline="月度挑战">
