@@ -1,0 +1,1 @@
+"""ZhiPanda continuous collector."""

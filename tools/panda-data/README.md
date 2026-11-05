@@ -4,14 +4,13 @@
 
 ## What belongs here
 
-- reviewed source acquisition adapters, identity reconciliation and the crawler comparison lab
 - curation CSV validation
 - media processing and offline artifact construction
 - technical pipeline job/attempt/artifact bookkeeping
 
 The code lives under `src/panda_data` and never imports the NestJS API.
 
-Before changing an acquisition adapter, the source runner, identity reconciliation or the reviewed source registry, read its design record in [`docs/data-acquisition/`](../../docs/data-acquisition/): the candidate contract, runner, reconciliation, crawler PoC, the Smithsonian and Xi Lun adapters, and the source review bound by `data/acquisition-sources/registry.json`.
+Content collection moved to [`services/collector`](../../services/collector/) (ADR 0004).
 
 ## Authority boundary
 
@@ -34,8 +33,6 @@ Pydantic classes inside this project are implementation representations, not a s
 ```sh
 uv sync --directory tools/panda-data --all-extras
 uv run --directory tools/panda-data panda-data contracts check
-uv run --directory tools/panda-data panda-data source run
-uv run --directory tools/panda-data panda-data crawler compare
 uv run --directory tools/panda-data panda-data curation validate
 uv run --directory tools/panda-data panda-data media process
 uv run --directory tools/panda-data panda-data artifact manifest <path> --bucket <bucket> --artifact-kind <kind> --job-id <id>

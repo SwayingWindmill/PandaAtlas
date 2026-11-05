@@ -83,6 +83,9 @@ test("changed-path routing stays centralized in the development scope classifier
   assert.deepEqual(classifyDevelopmentScopes(["scripts/development/tests/first-admin-bootstrap.test.mjs"]), ["release", "api"]);
   assert.deepEqual(classifyDevelopmentScopes(["tools/panda-data/src/panda_data/cli.py"]), ["curation", "data"]);
   assert.deepEqual(classifyDevelopmentScopes(["contracts/panda-data/pipeline-job.v1.schema.json"]), ["curation", "data"]);
+  assert.deepEqual(classifyDevelopmentScopes(["services/collector/src/collector/store.py"]), ["collector"]);
+  assert.deepEqual(classifyDevelopmentScopes(["data/collector/targets.yaml"]), ["collector"]);
+  assert.deepEqual(classifyDevelopmentScopes(["data/curation/pandas/pandas.csv"]), ["curation", "collector"]);
   // Documentation and ignore-rule changes run the release scope, whose verification checks doc references.
   assert.deepEqual(classifyDevelopmentScopes(["docs/architecture/example.md"]), ["release"]);
   assert.deepEqual(classifyDevelopmentScopes(["README.md"]), ["release"]);

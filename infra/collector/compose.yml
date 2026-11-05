@@ -1,0 +1,62 @@
+# Base services for the collector host (ADR 0004). The collector itself, weibo-crawler and
+# MediaCrawler run on the host with uv; Douyin_TikTok_Download_API runs from its own compose.
+#
+#   cp infra/collector/env.example infra/collector/.env
+#   docker compose -f infra/collector/compose.yml --env-file infra/collector/.env up -d
+name: zhipanda-collector
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: collector
+      POSTGRES_PASSWORD: ${COLLECTOR_DB_PASSWORD:-collector}
+      POSTGRES_DB: collector
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - collector-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U collector -d collector"]
+      interval: 10s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  # Official sites without a feed, and accounts RSSHub has routes for.
+  rsshub:
+    image: diygod/rsshub:chromium-bundled
+    restart: unless-stopped
+    depends_on: [redis]
+    environment:
+      NODE_ENV: production
+      CACHE_TYPE: redis
+      REDIS_URL: redis://redis:6379/
+      CACHE_EXPIRE: 600
+      WEIBO_COOKIES: ${WEIBO_COOKIE:-}
+      XIAOHONGSHU_COOKIE: ${XIAOHONGSHU_COOKIE:-}
+      BILIBILI_COOKIE_DEFAULT: ${BILIBILI_COOKIE:-}
+    ports:
+      - "127.0.0.1:1200:1200"
+
+  # Logged-in Xiaohongshu browser behind a REST API. Log in once by QR code; cookies persist in
+  # ./data/xhs.
+  xiaohongshu-mcp:
+    image: xpzouying/xiaohongshu-mcp
+    restart: unless-stopped
+    tty: true
+    environment:
+      COOKIES_PATH: /app/data/cookies.json
+      HOME: /app/data/home
+      XDG_CONFIG_HOME: /app/data/config
+      AUTH_TOKEN: ${XHS_MCP_TOKEN:?set XHS_MCP_TOKEN in infra/collector/.env}
+    volumes:
+      - ./data/xhs:/app/data
+    ports:
+      - "127.0.0.1:18060:18060"
+
+volumes:
+  collector-db:

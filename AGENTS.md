@@ -64,6 +64,10 @@
 - **用户明确要求的范围优先于顺带优化。**
 - 如果存在多种合理方案，优先选择修改范围小、维护成本低、符合当前架构的方案。
 
+## pstack
+
+The `pstack` plugin (`pstack@pstack-claude`) is enabled for this project in `.claude/settings.json`. Its SessionStart hook routes tasks to `poteto-mode`, which picks a pstack workflow. Where a pstack skill and this file disagree, this file wins.
+
 ## Matt Pocock 技能与 Issue 工作流
 
 Matt Pocock skills are tracked under `.agents/skills/` as the synced release (v1.3.1) for agents without the plugin. The installed `mattpocock-skills` plugin of the same release is equivalent; use whichever your harness loads.

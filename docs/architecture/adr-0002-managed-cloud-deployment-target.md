@@ -1,6 +1,6 @@
 # ADR 0002: Managed services only
 
-- Status: accepted (2026-08-01); the provider plan in the original record was superseded
+- Status: accepted (2026-08-01); the provider plan in the original record was superseded; the content collector is exempt under [ADR 0004](adr-0004-continuous-collector.md)
 
 ZhiPanda runs only on managed services: no self-managed virtual machine, Docker host, PostgreSQL server or other persistent application server in production. Local Docker and PostgreSQL serve development and recovery drills only. Bounded batch work runs in GitHub Actions; long-running imports, crawls and media processing never run inside request-bound functions.
 
