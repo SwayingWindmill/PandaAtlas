@@ -1,19 +1,21 @@
 import { randomUUID } from "node:crypto";
-import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-// Real data for the journeys: a panda created through the API's own domain modules (the compiled output the
-// API dev server just built) and published in a local release with the release command, as production does.
+import type { Fixture } from "./fixture.ts";
 
-const apiDist = path.resolve(__dirname, "../../../services/api/dist");
-export const statePath = path.join(__dirname, ".state.json");
+// Real data for the journeys: a panda created through the API's own domain modules (the compiled output
+// stack.ts just built) and published in a local release with the release command, as production does.
+// stack.ts runs it once per run, before it serves the app.
+
+const apiDist = path.resolve(import.meta.dirname, "../../../../services/api/dist");
 
 async function load<T>(relative: string): Promise<T> {
   return (await import(pathToFileURL(path.join(apiDist, relative)).href)) as T;
 }
 
-export default async function globalSetup(): Promise<void> {
+/** Publishes this run's pandas, family, zoo, photos and 猜熊猫 question, and returns what the tests look for. */
+export async function seed(): Promise<Pick<Fixture, "panda" | "notice" | "zoo">> {
   const { createApplication } = await load<{ createApplication(): Promise<{ get<T>(token: unknown): T; close(): Promise<void> }> }>("bootstrap.js");
   const { EVIDENCE_PORT } = await load<{ EVIDENCE_PORT: symbol }>("modules/evidence/application/evidence.application.js");
   const { PANDA_PORT } = await load<{ PANDA_PORT: symbol }>("modules/panda/application/panda.application.js");
@@ -207,8 +209,8 @@ export default async function globalSetup(): Promise<void> {
     const context = { actor: { kind: "system", systemKey: "release-batch-workflow" }, correlationId: randomUUID() };
     await publishRelease(command.ports, manifest, context, manifest.reason);
 
-    const notice = { id: others[0].pandaId, slug: `e2e-option-${"乙".codePointAt(0)}-${run}`, name: `选项乙${run}` };
-    await writeFile(statePath, JSON.stringify({ panda: { id: panda.pandaId, slug, name: `测试熊猫${run}` }, notice, zoo }), "utf8");
+    const notice = { id: others[0]!.pandaId, slug: `e2e-option-${"乙".codePointAt(0)}-${run}`, name: `选项乙${run}` };
+    return { panda: { id: panda.pandaId, slug, name: `测试熊猫${run}` }, notice, zoo };
   } finally {
     await command.app.close();
     await app.close();

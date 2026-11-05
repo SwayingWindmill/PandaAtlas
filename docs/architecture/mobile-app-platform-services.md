@@ -19,4 +19,4 @@ How the Expo app (`apps/mobile`) uses Supabase and Cloudflare within the [archit
 
 ## Verification
 
-The app's journeys run against the real stack: Playwright drives the Expo web build against the local API and local Supabase (Auth codes from the local mail catcher, TOTP from the secret the app shows, the Cron cycle run in-process). The fixture data comes from the API's own domain modules and a published release. See `apps/mobile/README.md`.
+The app's journeys run against the real stack: e2e (tester-army/e2e) drives the Expo web build against the local API and local Supabase (Auth codes from the local mail catcher, TOTP from the secret the app shows, the Cron cycle run in-process). The fixture data comes from the API's own domain modules and a published release. See `apps/mobile/README.md`.
