@@ -384,7 +384,7 @@ export const component = {
   /** A filter or choice chip: 32pt tall, inside a 44pt hit area. */
   chip: { height: 32, paddingX: space[3] },
   /** A progress ring: the track and the arc share one stroke; the value sits in the middle. */
-  progressRing: { size: 64, stroke: 6, small: 44, smallStroke: 4 },
+  progressRing: { size: 64, stroke: 6, small: 44, smallStroke: 4, large: 120, largeStroke: 12 },
   /** A timeline: a 2pt rail, 10pt dots, the newest one ringed in the tint. */
   timeline: { rail: 2, dot: 10, column: 20 },
   /** A stepper's numbered disc. */
