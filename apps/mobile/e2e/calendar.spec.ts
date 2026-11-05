@@ -7,7 +7,7 @@ import { signIn, testEmail } from "./session";
 test("the calendar walks to July and opens a panda from its birthday", async ({ page }) => {
   const { panda } = fixture();
   await page.goto("/");
-  await page.getByRole("link", { name: "看日历" }).click();
+  await page.getByRole("link", { name: "日历", exact: true }).click();
   const now = new Date();
   await expect(
     page.getByRole("heading", {

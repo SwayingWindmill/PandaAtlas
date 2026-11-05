@@ -14,8 +14,8 @@ test("family portraits re-centre the tree, while 家谱 rows open a profile", as
 
   await page.getByRole("button", { name: "返回" }).click();
   await expect(page.getByRole("heading", { name: `${panda.name}的家族` })).toBeVisible();
-  // The 家谱 list below the tree opens a profile; its row reads name then relation, without the tree's "查看它的家族".
-  await page.getByRole("button", { name: new RegExp(`^${mother}(?!.*查看它的家族).*妈妈`) }).first().click();
+  // The 家谱 list below the tree opens a profile; its row is named by the panda alone, unlike the tree's portrait.
+  await page.getByRole("button", { name: mother, exact: true }).click();
   await expect(page.getByRole("heading", { name: mother })).toBeVisible();
 });
 

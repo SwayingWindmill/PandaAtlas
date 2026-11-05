@@ -25,6 +25,6 @@ test("关于 shows what the published release holds", async ({ page }) => {
   await page.goto("/settings");
   await page.getByRole("button", { name: "数据来源" }).click();
   await expect(page.getByRole("heading", { name: "内容和照片从哪来" })).toBeVisible();
-  await expect(page.getByText(/^[\d,]+ 只$/)).toBeVisible();
+  await expect(page.getByLabel(/^熊猫 [\d,]+ 只$/)).toBeVisible();
   await expect(page.getByText("资料版本")).toBeVisible();
 });

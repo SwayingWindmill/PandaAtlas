@@ -17,7 +17,8 @@ test("a profile's photos open in a viewer with their credits", async ({ page }) 
   await expect(viewer.getByRole("button", { name: "上一张" })).toBeEnabled();
   await expect(viewer.getByText("照片 E2E Second Photographer / CC BY 4.0，CC-BY-4.0")).toBeVisible();
 
-  await viewer.getByRole("button", { name: "返回" }).click();
+  // The viewer is a stack screen; its back is the bar's own link, outside the dialog.
+  await page.getByRole("link", { name: /^返回/ }).click();
   await expect(page.getByRole("heading", { name: panda.name })).toBeVisible();
 });
 

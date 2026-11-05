@@ -41,7 +41,7 @@ test("started again without a connection, the app shows the list and profile it 
   await restarted.getByLabel("搜索熊猫").fill(panda.name);
   await restarted.getByRole("button", { name: new RegExp(`^${panda.name}`) }).click();
   await expect(restarted.getByRole("heading", { name: panda.name })).toBeVisible();
-  await expect(restarted.getByText("2020 年 7 月 20 日")).toBeVisible();
+  await expect(restarted.getByLabel("生日，7.20，已确认")).toBeVisible();
 });
 
 test("a profile shares as an image card", async ({ page }) => {
