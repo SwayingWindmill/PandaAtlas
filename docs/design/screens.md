@@ -12,7 +12,7 @@ The mockups are in [`mockups/v4/`](mockups/v4/), and [`00-overview.webp`](mockup
 
 ## Tab bar
 
-There are four tabs: 今天, 找熊猫, 图鉴 and 我的. The bar is the system bar described in DESIGN.md › Navigation. The mockups use a calendar glyph for 今天 and a book for 图鉴. Whether to switch from the current glyphs (`sun`, `layout-grid`) is an open decision.
+There are four tabs: 今天, 找熊猫, 图鉴 and 我的. The bar is the system bar described in DESIGN.md › Navigation. The glyphs follow the mockups: calendar for 今天, search, book for 图鉴, and the person for 我的.
 
 ## 今天 — `01-today`, `01-today-dark`
 
@@ -124,9 +124,8 @@ The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and t
 
 ## Open decisions
 
-Decided: 图鉴 follows its mockup (2026-11-04), with the ring against the whole catalog and the 全部 / 见过 / 认出 views; DESIGN.md › The Life List Rule says so.
+Decided: 图鉴 follows its mockup (2026-11-04), with the ring against the whole catalog and the 全部 / 见过 / 认出 views; DESIGN.md › The Life List Rule says so. The tab glyphs follow the mockup (2026-11-05). 大家常看 stays (2026-11-05); what it counts is item 1 below.
 
 These are places where a mockup and a written rule disagree. The rule holds until the owner decides.
 
-1. **Tab glyphs.** The mockup uses calendar for 今天 and book for 图鉴, where the app now uses `sun` and `layout-grid`. Changing them means regenerating `assets/symbols/` and `assets/tab-icons/`.
-2. **大家常看.** There is no popularity signal in the API yet. Decide whether to build one, or to drop the block.
+1. **大家常看's signal.** The block stays. The API has no view counts; the real signals today are follows and 见过. Decide what it counts before it is built.

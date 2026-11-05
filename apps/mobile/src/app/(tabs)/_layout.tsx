@@ -7,7 +7,7 @@ import { NATIVE_SYMBOLS, nanoSymbol } from "@/lib/native-symbols";
 import { IOS, useIOSColors } from "@/lib/theme";
 
 /**
- * Lucide glyphs (sun, search, layout-grid, user-round), because the system tab bar takes images,
+ * Lucide glyphs (calendar, search, book, user-round; v4 mockups), because the system tab bar takes images,
  * not components. The bar tints them: secondary label at rest, tint when selected. A native build
  * uses them as custom SF Symbols and VectorDrawables (see `lib/native-symbols.ts`), which scale with
  * the bar and follow the symbol weight; Expo Go uses the same glyphs as template PNGs at 25pt.
