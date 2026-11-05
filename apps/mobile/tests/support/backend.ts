@@ -2,13 +2,17 @@ import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
+import { fixture } from "./fixture.ts";
+
 // Server-side steps a journey needs between taps, run through the API's own compiled modules as production
 // runs them: an editor's publication control, and the scheduled async cycle (a Cron Trigger in production)
 // that projects notifications and processes privacy requests.
 
-const apiDist = path.resolve(__dirname, "../../../services/api/dist");
+const apiDist = path.resolve(import.meta.dirname, "../../../../services/api/dist");
 
 async function load<T>(relative: string): Promise<T> {
+  // The modules read the same configuration as the API that stack.ts started.
+  Object.assign(process.env, fixture().apiEnv);
   return (await import(pathToFileURL(path.join(apiDist, relative)).href)) as T;
 }
 
