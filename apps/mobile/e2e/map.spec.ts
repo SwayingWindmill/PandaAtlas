@@ -18,7 +18,12 @@ test("the map opens a zoo from its dot and from the list, and lists a place with
   await expect(places.getByRole("button", { name: new RegExp(`^${place}，日本，现在没有熊猫$`) })).toBeVisible();
   await expect(page.getByTestId("panda-world-map").getByRole("button", { name: new RegExp(place) })).toHaveCount(0);
 
-  await page.getByTestId("panda-world-map").getByRole("button", { name: zooLabel }).click();
+  // Every run's zoo sits at the same coordinates, so on a reused local database the dot holds earlier runs'
+  // zoos too and opens 这个点上 instead; this run's zoo is then picked there.
+  const dot = page.getByTestId("panda-world-map").getByRole("button", { name: new RegExp(`(^|、)${zoo.name}[，、]`) });
+  const several = /个地方$/.test((await dot.getAttribute("aria-label")) ?? "");
+  await dot.click();
+  if (several) await page.getByRole("button", { name: zooLabel }).first().click();
   await expect(page.getByRole("heading", { name: zoo.name })).toBeVisible();
   await page.getByRole("button", { name: "返回" }).click();
   await expect(page.getByRole("heading", { name: "熊猫在哪里" })).toBeVisible();

@@ -8,7 +8,9 @@ const run = () => fixture().panda.name.replace("测试熊猫", "");
 test("from a family, 查关系 names a half-sibling and walks the chain through their mother", async ({ page }) => {
   const { panda, notice } = fixture();
   await page.goto(`/pandas/${panda.slug}`);
-  await page.getByRole("button", { name: "查看家族" }).click();
+  // The family is a segment of the profile; 查关系 lives on the full tree it links to.
+  await page.getByRole("radio", { name: "家族" }).click();
+  await page.getByRole("button", { name: "家族树" }).click();
   await page.getByRole("button", { name: "查关系" }).click();
   await expect(page.getByRole("button", { name: `第一只，${panda.name}` })).toBeVisible();
 

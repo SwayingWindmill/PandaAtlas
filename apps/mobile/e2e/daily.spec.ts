@@ -23,5 +23,5 @@ test("a signed-in fan finishes the Daily Panda and it joins the 图鉴", async (
   await expect(finished).toBeVisible();
   await expect(page.getByText("已收进图鉴")).toBeVisible();
   await page.goto("/book");
-  await expect(page.getByRole("button", { name: /，\d+\/\d+ 每日一猫$/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^No\.1，.+每日一猫/ })).toBeVisible();
 });
