@@ -2,7 +2,7 @@
 
 科普首页读的是 `articles`。撰稿稿用这一套字段，程序按原样收，不改句子。正式版只返回 `status` 为 `published` 的文章。
 
-改 `data/curation/learning/learning.json`。改完后运行 `python scripts/curation/validate_learning_content.py`；合并后由维护者用 `curation.learning` 批处理写进数据库。
+改 `data/curation/learning/learning.json`。改完后运行 `python scripts/curation/validate_learning_content.py`；合并后由维护者用 `curation.learning` 批处理写进数据库（[内容录入](../../../docs/runbooks/content-entry.md)）。
 
 ## 语言
 
@@ -50,3 +50,26 @@
 ## 例子
 
 见文件里的 `black-eye-patches`。封面是喜伦的已审核照片；新生幼仔那一张不拍某只熊猫，`pandaSlug` 为 `null`，用的是 Wikimedia Commons 上授权的成都基地新生幼仔照片。
+
+## 月度挑战主题
+
+`monthThemes` 是可选的列表，一个月一条。没写的月份，App 用默认清单（今日熊猫、猜熊猫、认脸练习、打卡），标题是「十一月挑战」这样的月份名。
+
+```json
+{
+  "month": "2026-12",
+  "status": "draft",
+  "title": { "zh": "认脸月" },
+  "intro": { "zh": "这个月多看几只熊猫的脸。" },
+  "tasks": ["learn", "daily", "compare"]
+}
+```
+
+| 字段 | 说明 |
+|---|---|
+| `month` | `YYYY-MM`，每个月最多一条。 |
+| `title` | 主题名，和知识卡标题的字数上限相同。 |
+| `intro` | 标题下的一句话，可以写 `null`。 |
+| `tasks` | 从 `daily`、`guess`、`learn`、`checkin`、`collections`、`compare` 里选，不能重复，顺序就是 App 里的顺序。 |
+
+每周的内容复核会在月底前 10 天提醒下个月还没有主题。

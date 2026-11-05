@@ -1,6 +1,6 @@
 {
   "$comment": "科普文章、知识卡、专题、名词解释、认脸指南和认脸挑战。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, run python scripts/curation/validate_learning_content.py, and after merging write it to the database with the curation.learning batch operation (new version for changed content). Every entry is published as of 2026.11.01 (PR #765). An entry set back to draft stays in the database and is left out of GET /api/v2/learning. 2026.11.04.2 adds published Chinese-only entries (articles endangered-to-vulnerable, back-to-the-wild, captive-breeding, qinling-pandas; cards conservation-status, reintroduction, captive-breeding, qinling-pandas; topic panda-conservation; 8 terms); English is deferred by owner decision. Conflicting figures now follow official sources (release count, brown-panda records, first captive birth, newborn weight, estrus window, daily bamboo) in new and existing entries. 2026.11.04.3 新增习性专题 panda-behavior、4 张知识卡、6 篇文章和 8 个名词（只有中文）。",
-  "version": "2026.11.04.3",
+  "version": "2026.11.05.1",
   "articles": [
     {
       "slug": "black-eye-patches",
@@ -6695,5 +6695,6 @@
         }
       ]
     }
-  ]
+  ],
+  "monthThemes": []
 }

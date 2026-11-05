@@ -8,7 +8,8 @@ import { Sun, Trophy } from "@/components/icons";
 import { ProgressRing } from "@/components/progress-ring";
 import { Timeline, type TimelineItem } from "@/components/timeline";
 import { Text } from "@/components/ui/text";
-import { monthKey, monthName, progress } from "@/features/challenges/challenge";
+import { monthKey, monthName, progress, themeFor } from "@/features/challenges/challenge";
+import { useMonthThemes } from "@/features/challenges/month-themes";
 import { useChallengeState } from "@/features/challenges/prefs";
 import { localToday } from "@/features/engagement/seen";
 import { type Facility, loadInstitution } from "@/features/institutions/institutions";
@@ -114,8 +115,9 @@ export function TodayCards({ viewing }: { viewing: ViewingSpot | null }) {
   const stacked = useStacked();
   const state = useChallengeState();
   const month = monthKey(localToday());
+  const themes = useMonthThemes();
   const joined = state?.joined.includes(month) ?? false;
-  const { done, total } = state ? progress(state, month) : { done: 0, total: 0 };
+  const { done, total } = state ? progress(state, month, themeFor(month, themes)) : { done: 0, total: 0 };
   if (!viewing && !joined) return null;
   return (
     <View className={stacked ? "gap-row" : "flex-row gap-row"}>

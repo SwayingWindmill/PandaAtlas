@@ -2083,6 +2083,15 @@ export interface components {
             tip: components["schemas"]["LearningTextDto"];
             sources: components["schemas"]["LearningSourceDto"][];
         };
+        /** @enum {string} */
+        MonthTaskKind: "daily" | "guess" | "learn" | "checkin" | "collections" | "compare";
+        LearningMonthThemeDto: {
+            /** @example 2026-11 */
+            month: string;
+            title: components["schemas"]["LearningTextDto"];
+            intro: (components["schemas"]["LearningTextDto"] | null) & components["schemas"]["LearningTextDto"];
+            tasks: components["schemas"]["MonthTaskKind"][];
+        };
         LearningCatalogDto: {
             /** @example 2026.10.29.2 */
             version: string;
@@ -2092,6 +2101,8 @@ export interface components {
             terms: components["schemas"]["LearningTermDto"][];
             faceGuides: components["schemas"]["LearningFaceGuideDto"][];
             challenges: components["schemas"]["LearningChallengeDto"][];
+            /** @description 月度主题挑战 themes. A month not listed uses the app's default checklist. */
+            monthThemes: components["schemas"]["LearningMonthThemeDto"][];
         };
         PartialDateDto: {
             /** @description YYYY-MM-DD, YYYY-MM or YYYY, matching precision. */

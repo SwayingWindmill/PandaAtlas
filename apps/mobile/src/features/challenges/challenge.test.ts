@@ -36,3 +36,27 @@ describe("monthly challenge", () => {
     ]);
   });
 });
+
+describe("themeFor with published themes", () => {
+  const themes = [{ month: "2026-11", title: { zh: "认脸月" }, intro: null, tasks: ["learn", "compare"] as const }].map((theme) => ({
+    ...theme,
+    tasks: [...theme.tasks],
+  }));
+
+  it("uses the month's published theme and its tasks", () => {
+    const theme = themeFor("2026-11", themes);
+    expect(theme.title).toBe("认脸月");
+    expect(theme.intro).toBeNull();
+    expect(theme.tasks.map((task) => task.kind)).toEqual(["learn", "compare"]);
+  });
+
+  it("falls back to the default checklist for another month", () => {
+    expect(themeFor("2026-12", themes).title).toBeNull();
+    expect(themeFor("2026-12", themes).tasks).toHaveLength(4);
+  });
+
+  it("counts progress against the theme's tasks", () => {
+    const state = { joined: ["2026-11"], done: { "2026-11": ["learn"] } };
+    expect(progress(state, "2026-11", themeFor("2026-11", themes))).toEqual({ done: 1, total: 2 });
+  });
+});

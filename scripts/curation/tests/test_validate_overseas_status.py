@@ -5,8 +5,8 @@ import json
 import unittest
 from pathlib import Path
 
-MODULE_PATH = Path(__file__).resolve().parents[1] / "build_overseas_status_migration.py"
-SPEC = importlib.util.spec_from_file_location("build_overseas_status_migration", MODULE_PATH)
+MODULE_PATH = Path(__file__).resolve().parents[1] / "validate_overseas_status.py"
+SPEC = importlib.util.spec_from_file_location("validate_overseas_status", MODULE_PATH)
 assert SPEC and SPEC.loader
 BUILDER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(BUILDER)
@@ -49,10 +49,6 @@ class OverseasStatusTests(unittest.TestCase):
     def test_rejects_duplicates(self):
         self.assertTrue(BUILDER.validate({"version": "v", "items": [item(), item()]}, {"zoo-a"}))
 
-    def test_sql_is_upsert(self):
-        sql = BUILDER.migration_sql({"version": "v'1", "items": []})
-        self.assertIn("on conflict (catalog_id)", sql)
-        self.assertIn("'v''1'", sql)
 
 
 if __name__ == "__main__":

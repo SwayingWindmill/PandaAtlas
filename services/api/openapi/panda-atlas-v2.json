@@ -6206,6 +6206,52 @@
           "sources"
         ]
       },
+      "MonthTaskKind": {
+        "type": "string",
+        "enum": [
+          "daily",
+          "guess",
+          "learn",
+          "checkin",
+          "collections",
+          "compare"
+        ]
+      },
+      "LearningMonthThemeDto": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "example": "2026-11"
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "intro": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LearningTextDto"
+              }
+            ]
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonthTaskKind"
+            }
+          }
+        },
+        "required": [
+          "month",
+          "title",
+          "intro",
+          "tasks"
+        ]
+      },
       "LearningCatalogDto": {
         "type": "object",
         "properties": {
@@ -6248,6 +6294,13 @@
             "items": {
               "$ref": "#/components/schemas/LearningChallengeDto"
             }
+          },
+          "monthThemes": {
+            "description": "月度主题挑战 themes. A month not listed uses the app's default checklist.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningMonthThemeDto"
+            }
           }
         },
         "required": [
@@ -6257,7 +6310,8 @@
           "topics",
           "terms",
           "faceGuides",
-          "challenges"
+          "challenges",
+          "monthThemes"
         ]
       },
       "PartialDateDto": {
