@@ -9,6 +9,7 @@ export const DEVELOPMENT_SCOPE_ORDER = [
   "api",
   "curation",
   "data",
+  "collector",
 ];
 
 const commands = [
@@ -346,6 +347,26 @@ const commands = [
     effect: "generated-output",
   },
   {
+    id: "collector.lint",
+    category: "verification",
+    description: "Lint the collector service.",
+    command: "uv",
+    args: ["run", "--isolated", "--directory", "services/collector", "--frozen", "--extra", "dev", "ruff", "check", "src", "tests"],
+    requires: ["python", "uv"],
+    effect: "read-only",
+  },
+  {
+    // The store and scheduler tests need the PostgreSQL that infra/collector/compose.yml starts
+    // (CI: the verify job's postgres service). They create and empty their own collector_test DB.
+    id: "collector.test",
+    category: "verification",
+    description: "Run collector tests against PostgreSQL.",
+    command: "uv",
+    args: ["run", "--isolated", "--directory", "services/collector", "--frozen", "--extra", "dev", "pytest", "-q"],
+    requires: ["python", "uv"],
+    effect: "read-only",
+  },
+  {
     id: "data.check",
     category: "verification",
     description: "Validate the Golden Dataset contract.",
@@ -502,6 +523,7 @@ export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
     "curation.media-test",
   ],
   data: ["data.test", "data.check"],
+  collector: ["collector.lint", "collector.test"],
 });
 
 function copyCommand(command) {

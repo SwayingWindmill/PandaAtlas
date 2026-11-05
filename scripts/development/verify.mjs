@@ -140,9 +140,16 @@ export function classifyDevelopmentScopes(paths) {
 
     if (
       changedPath.startsWith("scripts/curation/") ||
-      changedPath.startsWith("data/curation/") ||
-      changedPath.startsWith("data/acquisition-sources/")
+      changedPath.startsWith("data/curation/")
     ) addScope(scopes, "curation");
+
+    if (
+      changedPath.startsWith("services/collector/") ||
+      changedPath.startsWith("data/collector/") ||
+      changedPath.startsWith("infra/collector/") ||
+      // The collector tags items with names from the panda archive.
+      changedPath === "data/curation/pandas/pandas.csv"
+    ) addScope(scopes, "collector");
 
     if (
       changedPath.startsWith("scripts/golden-dataset/") ||

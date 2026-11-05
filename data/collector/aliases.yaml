@@ -1,0 +1,8 @@
+# Nicknames fans use that are not the archive name, by panda slug (data/curation/pandas/pandas.csv).
+# The lexicon tags an item with a slug when its text contains the archive name or one of these.
+# Add a nickname only when it is in common use for that panda; a short common word here tags
+# unrelated posts.
+#
+# he-hua: [花花]
+he-hua:
+  - 花花

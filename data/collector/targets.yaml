@@ -1,0 +1,101 @@
+# Collector targets. `collector sync` (and every `collector run` start) loads this file:
+# targets removed here are disabled in the database, never deleted.
+#
+# Target fields
+#   adapter           rss | xhs_mcp | douyin_api | weibo_crawler | mediacrawler
+#   kind              account | keyword | feed
+#   value             account id, search term, feed URL, or an RSSHub route as "rsshub:/route"
+#   label             name shown in alerts and as the AIHOT source name
+#   tier              official | key_account | keyword | backfill   (sets the default interval)
+#   interval_minutes  optional override
+#   params            adapter options:
+#     all             max_pages (3), empty_alert_after (per tier), timeout (subprocess seconds)
+#     rss             platform: platform name to record (default "web")
+#     xhs_mcp         xsec_token (accounts, required), detail_limit (10), filters (search)
+#     douyin_api      platform: douyin | bilibili (default douyin), count (20)
+#     weibo_crawler   since_days (3, first run only), only_original (0)
+#     mediacrawler    platform: xhs | dy | wb | bili (required), login_type (qrcode)
+#
+# Account ids
+#   Weibo        numeric uid from https://weibo.com/u/<uid>
+#   Douyin       sec_user_id from https://www.douyin.com/user/<sec_user_id>
+#   Xiaohongshu  user id from https://www.xiaohongshu.com/user/profile/<id>; the xsec_token comes
+#                from the same link opened from a note (…?xsec_token=…). It expires; renew it
+#                when the target raises "not_found" or "login_expired".
+#
+# The first official and key-account list is for the owner to fill in: ids are not guessed here.
+# Uncomment and complete each entry once its id is confirmed on the platform.
+
+targets: []
+  # Official -----------------------------------------------------------------------------------
+  # - adapter: weibo_crawler
+  #   kind: account
+  #   value: "<uid>"
+  #   label: 成都大熊猫繁育研究基地（微博）
+  #   tier: official
+  #   interval_minutes: 30
+  # - adapter: rss
+  #   kind: feed
+  #   value: "rsshub:/weibo/user/<uid>"
+  #   label: 中国大熊猫保护研究中心（微博，经 RSSHub）
+  #   tier: official
+  #   params: { platform: weibo }
+  # - adapter: douyin_api
+  #   kind: account
+  #   value: "<sec_user_id>"
+  #   label: 成都大熊猫繁育研究基地（抖音）
+  #   tier: official
+  #
+  # Key accounts -------------------------------------------------------------------------------
+  # - adapter: xhs_mcp
+  #   kind: account
+  #   value: "<user id>"
+  #   label: <熊猫博主>（小红书）
+  #   tier: key_account
+  #   params: { xsec_token: "<token>" }
+  #
+  # Backfill: walks further back once a day.
+  # - adapter: douyin_api
+  #   kind: account
+  #   value: "<sec_user_id>"
+  #   label: 成都大熊猫繁育研究基地（抖音补采）
+  #   tier: backfill
+  #   id: douyin_api:backfill:chengdu-base
+  #   params: { max_pages: 20 }
+
+# Each term is searched on every adapter listed. Names are the pandas fans search for most and
+# that the archive (data/curation/pandas/pandas.csv) has.
+keyword_groups:
+  - tier: keyword
+    adapters: [xhs_mcp, douyin_api]
+    terms:
+      - 大熊猫
+      - 熊猫基地
+      - 成都大熊猫繁育研究基地
+      - 中国大熊猫保护研究中心
+      - 福宝
+      - 和花
+      - 和叶
+      - 萌兰
+      - 七仔
+      - 丫丫
+      - 小奇迹
+      - 宝力
+      - 青宝
+      - 云川
+      - 鑫宝
+      - 二顺
+      - 盈盈
+      - 美香
+      - 星二
+
+  # Phase one: the same terms through MediaCrawler, for the comparison report. Leave this group
+  # in place; it only runs on a host that sets MEDIACRAWLER_DIR.
+  - tier: keyword
+    adapters:
+      - { adapter: mediacrawler, params: { platform: xhs } }
+      - { adapter: mediacrawler, params: { platform: dy } }
+    terms:
+      - 大熊猫
+      - 福宝
+      - 和花

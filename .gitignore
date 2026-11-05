@@ -49,8 +49,14 @@ htmlcov/
 .env
 .env.*
 
+# Collector host state: login cookies and per-run output, never committed.
+infra/collector/data/
+.collector/
+
 # Local agent/planning state
-.claude/
+.claude/*
+# Shared project plugins (pstack) live in the committed project settings.
+!.claude/settings.json
 .ai-bridge/
 .codegraph/
 .codex/
