@@ -60,7 +60,15 @@ export interface PlacePlaces {
   visit_guide: Json | null;
 }
 
+export interface PlaceVenueNewsCatalog {
+  catalog_id: Generated<number>;
+  document: Json;
+  updated_at: Generated<Timestamp>;
+  version: string;
+}
+
 export interface DB {
   "place.institutions": PlaceInstitutions;
   "place.places": PlacePlaces;
+  "place.venue_news_catalog": PlaceVenueNewsCatalog;
 }
