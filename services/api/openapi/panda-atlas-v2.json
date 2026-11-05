@@ -2293,6 +2293,28 @@
         ]
       }
     },
+    "/api/v2/popular-pandas": {
+      "get": {
+        "operationId": "listPopularPandas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PopularPandasDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "大家常看: published pandas most fans began following in the last 30 days, at least five fans each",
+        "tags": [
+          "Popularity"
+        ]
+      }
+    },
     "/api/v2/venue-news": {
       "get": {
         "operationId": "listVenueNews",
@@ -6404,6 +6426,41 @@
         },
         "required": [
           "version",
+          "items"
+        ]
+      },
+      "PopularPandaDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pandaId",
+          "slug"
+        ]
+      },
+      "PopularPandasDto": {
+        "type": "object",
+        "properties": {
+          "windowDays": {
+            "type": "number",
+            "description": "How many days back the follows are counted."
+          },
+          "items": {
+            "description": "Most new followers first. No counts are published.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PopularPandaDto"
+            }
+          }
+        },
+        "required": [
+          "windowDays",
           "items"
         ]
       },
