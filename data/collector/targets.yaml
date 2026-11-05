@@ -23,37 +23,658 @@
 #                from the same link opened from a note (…?xsec_token=…). It expires; renew it
 #                when the target raises "not_found" or "login_expired".
 #
-# The first official and key-account list is for the owner to fill in: ids are not guessed here.
-# Uncomment and complete each entry once its id is confirmed on the platform.
+# Weibo accounts were resolved and checked on 2026-11-05: each uid belongs to an account Weibo
+# verifies as the institution's own (or, for iPanda and 开饭了大熊猫, the live-stream channel's).
+# Douyin and Xiaohongshu ids were found the same day through a signed-in search.
 
-targets: []
-  # Official -----------------------------------------------------------------------------------
-  # - adapter: weibo_crawler
-  #   kind: account
-  #   value: "<uid>"
-  #   label: 成都大熊猫繁育研究基地（微博）
-  #   tier: official
-  #   interval_minutes: 30
-  # - adapter: rss
-  #   kind: feed
-  #   value: "rsshub:/weibo/user/<uid>"
-  #   label: 中国大熊猫保护研究中心（微博，经 RSSHub）
-  #   tier: official
-  #   params: { platform: weibo }
-  # - adapter: douyin_api
-  #   kind: account
-  #   value: "<sec_user_id>"
-  #   label: 成都大熊猫繁育研究基地（抖音）
-  #   tier: official
-  #
-  # Key accounts -------------------------------------------------------------------------------
-  # - adapter: xhs_mcp
-  #   kind: account
-  #   value: "<user id>"
-  #   label: <熊猫博主>（小红书）
-  #   tier: key_account
-  #   params: { xsec_token: "<token>" }
-  #
+targets:
+  # Weibo, official institutions and panda live channels ------------------------------------
+  - adapter: weibo_crawler
+    kind: account
+    value: "1798176285"
+    label: 成都大熊猫繁育研究基地（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "6026046656"
+    label: 中国大熊猫保护研究中心（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "3148426650"
+    label: 卧龙大熊猫俱乐部（中国大熊猫保护研究中心）（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "7737964317"
+    label: 大熊猫国家公园成都管理分局（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "2660775741"
+    label: 四川唐家河国家级自然保护区（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "2741831927"
+    label: 北京动物园（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "2603613931"
+    label: 重庆动物园（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "2169174091"
+    label: 上海动物园（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "1789198185"
+    label: 上海野生动物园（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "1706625004"
+    label: 西安秦岭野生动物园（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "1867677355"
+    label: 南京市红山森林动物园（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "1711469735"
+    label: 长隆野生动物世界（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "1676627893"
+    label: 香港海洋公园（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "3222817584"
+    label: iPanda熊猫频道（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7012741040"
+    label: 开饭了大熊猫（咪咕）（微博）
+    tier: key_account
+
+  # Douyin: sec_user_id from the signed-in user search on 2026-11-05. Each account carries
+  # Douyin's institution label (官方账号 / 商家认证) except the Chengdu base, which is a business
+  # account without label text, and 开饭了大熊猫, whose bio names it MIGU PANDA's official account.
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAA8l3R5iQTWJc_W0_7HVDQhoVdvAUEC_IuDmvYeI9x4ug"
+    label: 成都大熊猫繁育研究基地（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAuz6Uc1mR7eCZPUPEEK--0HsHLw9RFjcNKczc_p9LIwA"
+    label: 中国大熊猫保护研究中心（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAAaywlN4SVepn2Ws64UirdTChLDYa_xPZQs-LR4XwOAI"
+    label: 大熊猫国家公园成都管理分局（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAKqAFAUiVnXNIR_cqPvpgE5zNIyZ6A845GwcgRcQiAHAG_Av31YYJCPnsS48Kl2jc"
+    label: 四川唐家河国家级自然保护区（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAbJlnRc6gCStv69_wvFJPrIWIWaX6NEqf44-0QiGP0iUsUZv3W0ci1OSYfgVsfVPM"
+    label: 秦岭大熊猫佛坪基地（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAj7M7L-2IsqHhXDjBecN5Pp0v0kpcCLMoLZPaMsKYMaIk1o6ytRIH6dJhOwxBUpGI"
+    label: 北京动物园（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAtlndxZge1BeG0cD8hsqt9csSlV7m3fTeAoQB6d97J0oOhZgJQ4GfRc_hsUlD2yH8"
+    label: 重庆动物园（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAnxH33i2U-uZ27jPtFegtItPZewHjUkfnuLb0tOy07xEUdItB8XH1Z9mLfWrvyEni"
+    label: 上海动物园（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAMKZk0T8TjaVDaAPr3_DhSkDmHMgpayYMTb-3ipAbl24"
+    label: 上海野生动物园（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAqyWe5j_LKaT4Lk7MFaSedPIPAo1mTehEpIUVBe9ekoM"
+    label: 西安秦岭野生动物园（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAm_YnyAFmPQaVGMpzb_Pha41b4tzFcICMKzP7SKY_a2k"
+    label: 南京市红山森林动物园（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAp0RdcUnlcndqBkqbPB-WR3_wZS72cvvfHkpGPqg1OOM"
+    label: 广州长隆野生动物世界（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAA1R0HxROPW9sabDa9q7gqZOG3N23r8dkt76QtEANvRlWdd_CfyJBbjzSffmc2wqXo"
+    label: 香港海洋公园（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAESTEb_bdL_DVuIqWWILM_WjsfmwsWPOHfL6k8YwB14g"
+    label: iPanda熊猫频道（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAK9WERheJYKjvJplzE4CoEByKhATwwblZqt0EEOmeH7dfeWWhyX9mcAyK64s3Cz5x"
+    label: 开饭了大熊猫（咪咕）（抖音）
+    tier: key_account
+
+  # Xiaohongshu: only these four institutions have an officially verified account. The
+  # xsec_token comes from the same search and expires; renew it when the target alerts.
+  - adapter: xhs_mcp
+    kind: account
+    value: "6542657f000000000301dd1d"
+    label: 成都大熊猫繁育研究基地（小红书）
+    tier: official
+    interval_minutes: 90
+    params: { xsec_token: "ABkb-k-g6Qvy89blPXcPif3NaQ_GtMYgS78GSdWSO4Hqo=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "639305a60000000026013070"
+    label: 上海动物园（小红书）
+    tier: official
+    interval_minutes: 90
+    params: { xsec_token: "AB0pSiy6VxlZXTz1ZajqwC-XDbruQo2DaIai05DX4d-ro=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "6423d7bb00000000120133c1"
+    label: 香港海洋公园（小红书）
+    tier: official
+    interval_minutes: 90
+    params: { xsec_token: "ABFl298KpZM0V2-hLIny3Qds1l3F4_dWg0YCIvc0_YC28=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "642d4b8c0000000011020b7e"
+    label: iPanda熊猫频道（小红书）
+    tier: key_account
+    interval_minutes: 90
+    params: { xsec_token: "AByJbfsoJUAYjlggkeM7FV0thKSLjBdKLKFas6npSHikU=" }
+
+  # Weibo fan stations and big fan accounts (key_account, default 90 min): panda-only accounts
+  # with 2万+ followers from the visitor user search on 2026-11-05. Name collisions dropped.
+  - adapter: weibo_crawler
+    kind: account
+    value: "3423696990"
+    label: 成都大熊猫繁育研究基金会（微博）
+    tier: official
+    interval_minutes: 30
+  - adapter: weibo_crawler
+    kind: account
+    value: "6378485548"
+    label: 熊猫守护者（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7350238175"
+    label: Pandaful熊猫社区（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "1785980644"
+    label: ruirui_和花叶同行（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "6261706051"
+    label: 大熊猫萌兰（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "6450786067"
+    label: 大熊猫奇一（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "5538081597"
+    label: 朵朵虎e（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "5228992157"
+    label: pandapia熊猫乌托邦（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "2576968464"
+    label: 泰迪家有熊_猫儿（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "5813689027"
+    label: 谢梓嫣的窝（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "2158306174"
+    label: 安娜丽丝k（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "1853550707"
+    label: Jeany的微博（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7541886630"
+    label: 萌萌哒花花小公主（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "1004785801"
+    label: 深爱福宝的米粉（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7761063927"
+    label: 大熊猫和花Bot（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "3093018477"
+    label: 冲田君的糖白川（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "1912784953"
+    label: 小帅-花叶小熊熊（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7013352332"
+    label: 大熊猫胖大海（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "5822577618"
+    label: 大熊猫和花我的宝（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7625510402"
+    label: 纪录片守护大熊猫之福宝诞生记（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7377707034"
+    label: 萌兰的瓜姐（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7562281567"
+    label: 大熊猫绩笑official（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "2809290847"
+    label: GiantSnowball（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7836533596"
+    label: 七仔快乐ka（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "5535049107"
+    label: 福宝福猪猪（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "1291042467"
+    label: 萌兰·么么儿_Carol（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "6048310085"
+    label: 大熊猫蔓越煤宇宙厚圆会（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "1080845642"
+    label: 萌兰最帅小仙熊（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "8286945342"
+    label: 北京动物园萌兰（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "2187762820"
+    label: Love和花和叶（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7879968235"
+    label: 莫斯科动物园大熊猫（微博）
+    tier: key_account
+  - adapter: weibo_crawler
+    kind: account
+    value: "7847474869"
+    label: 婷福宝幸福驿站（微博）
+    tier: key_account
+  # Douyin panda venues without the institution label, then fan and blogger accounts with
+  # 2万+ followers that post only pandas (signed-in user search, 2026-11-05).
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAwS7xcu7gxbSpUWy35zbC0NS4eev9O3B1rhQMRH_fvCk"
+    label: 都江堰熊猫家园（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAA0i1a7vtFBB4rGaVfT5PaMC2Ft7PpT_DBoPCMnbo0ZLs"
+    label: 广州长隆熊猫村（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAA9u8RBTKE4rjS6gkwAH3P8LI0_yy379qI-sbmvpLycotlolzzagt2tp75sTV5VKe6"
+    label: 秦岭四宝科学公园（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAkfG6yU6PwsFGau1o4hy9-TETb62A8sgTgQaGTtxZxhNjQvh4Yb07yeNFQV2gi6uo"
+    label: 卧龙中华大熊猫苑（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAk19KJDQTRA7MCdMQqmKNV8QxnzOra8wJbEjYCGviAasFPFAxGzSfFYNERuhHwQtc"
+    label: 南山竹海大熊猫（抖音）
+    tier: official
+    interval_minutes: 60
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAEanTRA-jAIARvC6JFqnoM6OdHGUHO53JxGzvhxHfbV8"
+    label: 熊猫中心哈啰潘达（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAA5mvzrAcnyb-NmKWBERkCQrCwBmJFooLFQuFPRfK8jf0"
+    label: aPandaCity熊猫之都（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAA6naxm2eKkglBpjBOXEyP2Fn0NY0ff3feQjgtm8wJRGvS6Q7Qxzu2YoWH3MxZwqPp"
+    label: 熊猫滚滚（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAyO2f4NlLiUzFVgPwzTmQQDNgiPfekulFy3cF4z3K0Xw"
+    label: 熊猫班卜（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAprPfM2-THlRpw7tt0-MU8wofiRony2D4mKNl-tx8YE0"
+    label: Pandaful熊猫社区（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAA-2w0G7Sq9LIXH4ACfaLY1pEmK0ssgV9FdsAETok2zKI"
+    label: pandapia熊猫乌托邦（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAOY_NsVGdI1_ASBiyj3U8-3DabULEY8t_Dr5Lfk5hmIw"
+    label: 熊猫南小月（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAARcmoBYv8UJtqH2JcZkl-kGLqW05t5D-K6T4NTlgvQURRlhOnb6v874irMw0-r8It"
+    label: 福猪猪是bao（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAA9GxW9ZKQ_BrT_Q_sBzmJ4ecK0uR_EhGfXlVOOoBLgeHi0TxrpXSvCPT0s_j_5A69"
+    label: 大熊猫饲养员（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAoSooxcfOLAS4hAsBuu11f6_tRyr5iC_OIC76zD7YPt7X1rQBW_vmtP9UU2o3e-7z"
+    label: 王烟花（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAEPZwAaFuJn9zPw9gIAzKnosF3Qfte7VXPcD3AqI3Grk"
+    label: 七仔王国（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAA-v6F0y-yRWHZSYusnGvnDMy4mgawLpEw-xX77nw4ZCIsNuN0UbuwGK8lLLGaDSq7"
+    label: 福宝time（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAA59GkttNTYb_0dmBwlmEuIWQTEWhiCDeNX8-z2tGPQT0"
+    label: 阿三看熊猫（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAji1g5UHEWfRd5iJ9zueoNTzUpm3wrl8rUf76TB_B30c"
+    label: 黑白萌团子（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAYY3NucZk_W5eO7qL9yEu9YWmr8UeR0XTy6sR5XStVKM"
+    label: 熊猫胖嘟嘟（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAfRXNGiJz0SbC2zgP4X5_UogF-jfELMgXQAYA8ghjnUg"
+    label: 七仔和它的小伙伴们（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAArTeHu_af2ClX4KaLsznCO2PUDieMw6XN01JtJKd82fGZo5eoEMiiqDAp7KnMAUyZ"
+    label: 港宝胖哒（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAGuCuDvX6UIXP-fSC1FpFT-0-Z39FFwvuLcsS5xBcZNQPd5FMkzd2IedkBqyG1l5Q"
+    label: 糖姐爱熊猫（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAVbsrqrnR1fBExFsw9gdTOa9E3P-PlgSHuq3Ly8T0apM"
+    label: 大熊猫梅兰（肉肉）（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAARkolbEGx7aq3FgYh_Tn8cNnALcHK_XYooCkxWYsgipA"
+    label: 阿秋的熊猫日记（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAw9UkhkM_tnvAEFvlSIlIqNom8lh4a2AU9BUKjzGku0Q"
+    label: 懵萌幼稚园（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAApNvLYURya3pjFqBcEp9_6iAaoGlD7s81JVCWmT8ubZ8"
+    label: 花花吃果果（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAsXGdsSeq4_dr7yz1yJpXS1ZANf0ouoCEJ6UOKKU4eJQ"
+    label: 噗噗啊（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAiu_UUSP-9atynhCIA1M6bpHfkuVG8wrudexyBQyKI5s"
+    label: 你好，大熊猫！（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAZBWF4kp9DQH3LMf_vP2dmXpEcr_vbqbPUQOqKgMbY9g62yIiXKBPaP5rZKF6Job8"
+    label: 柚子君（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAFab-eWvU8lTDcR2VvLAguSG4Jiae5JpumFFcF_xzpx4"
+    label: 七仔快乐ka（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAARdyvBow0Cv--4oeyzDcdYj497fEIjte_f52Er-omVzM"
+    label: 瑞宝爱熊猫（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAALkcERwCMLpO8ohapYUQohZh9icWUfogBF2wxkhdCDUM"
+    label: 杨佩奇看大熊猫喀秋莎（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAcLbnhMKdcRdCoCxlkDu_55ZmkSPVrR_OIWGhvtT1uC04-v80_tRXMr4AjG3rGx8A"
+    label: 焦小熊（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAANDHn6i_EryGpdKKF1K296nIRp7L2iLgoFybzywmaGGWb2zrOJ6hvO8ZY1eGcWpPd"
+    label: 阿布爱熊猫（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAIoiikK6p9_eNKHKwBIBynAsvpRve0tbGlj-ZMGRXbza3jSD5bTGE_VV9Un5_4YEt"
+    label: 大熊猫萌兰（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAOSbI11HgE3aTh1xhTyDElbpclZQo1km8_jVTFlAvLptx3_8OnQxiJBXw6NpiVwr4"
+    label: 和花的小跟班（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAxxq0DRAYLmkckKSGMkbtZjDM3seTapJ0DWmu7orMyUg"
+    label: 朵朵虎（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAd4C03VKTIzAPT988Z50w6tZPBIGfhni73DIS6Dzi0F0"
+    label: 大熊猫和花我的宝（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAp5VQS1VXrDknZmtmRnoLrv6HVLyug8r_KEVwZaqwFh07wafqDG0f6CEjvMYmGAdr"
+    label: 云端吸熊猫（抖音）
+    tier: key_account
+  - adapter: douyin_api
+    kind: account
+    value: "MS4wLjABAAAAX8NXKFv6I8r80FBuLt1mSc-93gnaQqankhlVS4wcGZNWY1j4u2XJyNZc4rbG3Kf3"
+    label: 大熊猫飞云（抖音）
+    tier: key_account
+  # Xiaohongshu zoos with big unverified accounts, then panda fan accounts. Same token caveat.
+  - adapter: xhs_mcp
+    kind: account
+    value: "604864590000000001007072"
+    label: 南京市红山森林动物园（小红书）
+    tier: official
+    interval_minutes: 90
+    params: { xsec_token: "ABYDUuvrwfppgXTDB57XWnOGVKCMoPOpGUmNw1BhggU_0=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "574d344b5e87e75ffbedbe5a"
+    label: 上海野生动物园（小红书）
+    tier: official
+    interval_minutes: 90
+    params: { xsec_token: "AB2vBGoiCOUuPPNzMKf-Z1LVhYalXETVjnt2DQ82iW3GA=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "639633690000000026005afa"
+    label: 重庆动物园（小红书）
+    tier: official
+    interval_minutes: 90
+    params: { xsec_token: "AB9ugb_Q-dif8AstCHtSNzOrz-iZDwK1owiO3hDO1v-Is=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "604fab44000000000101cb78"
+    label: 大熊猫南小月和她的朋友（小红书）
+    tier: key_account
+    params: { xsec_token: "ABTWhdFY7jAsiZU9ZmC4uKIVyqIau_DpcSdUoxqPHo-To=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "61010d6200000000200293b5"
+    label: pandapia熊猫乌托邦（小红书）
+    tier: key_account
+    params: { xsec_token: "ABqT8ocrLZnBs2jsB_3kVugfhYQI-fVQHrd_HjRJUR1Bo=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "617cfde1000000001f03ab64"
+    label: Pandaful熊猫社区（小红书）
+    tier: key_account
+    params: { xsec_token: "ABEXEvUrNKSGlAyokFG2Jj2ZtQ16mZvOMYwdKmgl4wOZ8=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "642589210000000011020bd4"
+    label: M.LanPanda萌兰（小红书）
+    tier: key_account
+    params: { xsec_token: "ABlFU_lRD9_Ak3ehZ7JQreyJIX8mITwNo7ya9kSc2iyy8=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "64a756d4000000001f0057dc"
+    label: 花花熊猫乌托邦（小红书）
+    tier: key_account
+    params: { xsec_token: "ABDearPvJZTbsL8jNIINjY6Ji186mbiXKJcYRfi8VrCTA=" }
+  - adapter: xhs_mcp
+    kind: account
+    value: "5ea0ea08000000000100315f"
+    label: 熊猫班卜Bamboo Panda（小红书）
+    tier: key_account
+    params: { xsec_token: "ABIxNsMLHyaQdrXApQck2g4UnlH7_au28pLD-jZpuLd6U=" }
+
   # Backfill: walks further back once a day.
   # - adapter: douyin_api
   #   kind: account
