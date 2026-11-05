@@ -40,6 +40,7 @@ describe("publishedCatalog", () => {
       terms: [],
       faceGuides: [],
       challenges: [],
+      monthThemes: [],
     });
   });
 
@@ -56,6 +57,25 @@ describe("publishedCatalog", () => {
       },
     ]);
     expect(catalog.cards[0]).not.toHaveProperty("status");
+  });
+
+  it("serves published month themes and reads a catalog stored before they existed", () => {
+    expect(publishedCatalog({ version: "2026.10.29.1", document: document() }).monthThemes).toEqual([]);
+    const themes = [
+      { month: "2026-11", status: "published", title: { zh: "认脸月" }, intro: null, tasks: ["learn", "daily"] },
+      { month: "2026-12", status: "draft", title: { zh: "草稿" }, intro: { zh: "还没写完" }, tasks: ["daily"] },
+    ];
+    expect(publishedCatalog({ version: "2026.10.29.1", document: { ...document(), monthThemes: themes } }).monthThemes).toEqual([
+      { month: "2026-11", title: { zh: "认脸月", en: "" }, intro: null, tasks: ["learn", "daily"] },
+    ]);
+    for (const bad of [
+      { ...themes[0], month: "2026-13" },
+      { ...themes[0], tasks: ["daily", "daily"] },
+      { ...themes[0], tasks: ["fly"] },
+    ]) {
+      expect(() => publishedCatalog({ version: "2026.10.29.1", document: { ...document(), monthThemes: [bad] } })).toThrow(LearningCatalogError);
+    }
+    expect(() => publishedCatalog({ version: "2026.10.29.1", document: { ...document(), monthThemes: [themes[0], themes[0]] } })).toThrow(/twice/);
   });
 
   it("fails closed when the stored document does not match its version", () => {

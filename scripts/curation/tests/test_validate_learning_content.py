@@ -112,6 +112,15 @@ class ValidateLearningContentTests(unittest.TestCase):
         errors = BUILDER.validate_content(content, PANDAS, PUBLISHED)
         self.assertTrue(any(fragment in error for error in errors), errors)
 
+    def test_month_themes_are_optional_and_checked(self) -> None:
+        theme = {"month": "2026-11", "status": "published", "title": {"zh": "认脸月"}, "intro": None, "tasks": ["learn", "daily"]}
+        content = {**document(), "monthThemes": [theme]}
+        self.assertEqual(BUILDER.validate_content(content, PANDAS, PUBLISHED), [])
+        self.assert_error(lambda c: c.update(monthThemes=[{**theme, "month": "2026-13"}]), "month: must be YYYY-MM")
+        self.assert_error(lambda c: c.update(monthThemes=[theme, theme]), "listed twice")
+        self.assert_error(lambda c: c.update(monthThemes=[{**theme, "tasks": ["fly"]}]), "each task must be one of")
+        self.assert_error(lambda c: c.update(monthThemes=[{**theme, "tasks": []}]), "needs different tasks")
+
     def test_unmarked_drafts_are_allowed_and_published_text_must_not_look_like_a_draft(self) -> None:
         content = document()
         content["cards"][0]["title"] = {"zh": "黑眼圈", "en": "Eye patches"}

@@ -59,6 +59,19 @@ export interface PublicLearningChallenge {
   sources: LearningSource[];
 }
 
+/** What a 月度挑战 task opens; the app maps each kind to its page. */
+export const MONTH_TASK_KINDS = ["daily", "guess", "learn", "checkin", "collections", "compare"] as const;
+export type MonthTaskKind = (typeof MONTH_TASK_KINDS)[number];
+
+/** 月度主题挑战: a month's theme and checklist. A month without one uses the app's default checklist. */
+export interface PublicMonthTheme {
+  /** "YYYY-MM". */
+  month: string;
+  title: LearningText;
+  intro: LearningText | null;
+  tasks: MonthTaskKind[];
+}
+
 export interface PublicLearningArticle {
   slug: string;
   category: string;
@@ -88,6 +101,7 @@ export interface PublicLearningCatalog {
   terms: PublicLearningTerm[];
   faceGuides: PublicLearningFaceGuide[];
   challenges: PublicLearningChallenge[];
+  monthThemes: PublicMonthTheme[];
 }
 
 export const EMPTY_LEARNING_CATALOG: PublicLearningCatalog = {
@@ -98,6 +112,7 @@ export const EMPTY_LEARNING_CATALOG: PublicLearningCatalog = {
   terms: [],
   faceGuides: [],
   challenges: [],
+  monthThemes: [],
 };
 
 export class LearningCatalogError extends Error {
@@ -173,7 +188,9 @@ function list(value: unknown, label: string): unknown[] {
 export function publishedCatalog(row: LearningCatalogRow | null): PublicLearningCatalog {
   if (row === null) return EMPTY_LEARNING_CATALOG;
   const document = record(row.document, "document");
-  exactKeys(document, ["version", "articles", "cards", "topics", "terms", "faceGuides", "challenges"], "document");
+  // monthThemes came later: a stored catalog written before it has none.
+  const collections = ["articles", "cards", "topics", "terms", "faceGuides", "challenges", ...(Object.hasOwn(document, "monthThemes") ? ["monthThemes"] : [])];
+  exactKeys(document, ["version", ...collections], "document");
   if (document.version !== row.version || typeof document.version !== "string") fail("document version does not match the catalog");
 
   const cards = list(document.cards, "cards").flatMap((item, index): PublicLearningCard[] => {
@@ -271,7 +288,30 @@ export function publishedCatalog(row: LearningCatalogRow | null): PublicLearning
 
   const articles = list(document.articles, "articles").flatMap((item, index) => projectArticle(item, index));
 
-  return { version: row.version, articles, cards, topics, terms, faceGuides, challenges };
+  const months = new Set<string>();
+  const monthThemes = list(document.monthThemes ?? [], "monthThemes").flatMap((item, index): PublicMonthTheme[] => {
+    const label = `monthThemes[${index}]`;
+    const theme = record(item, label);
+    exactKeys(theme, ["month", "status", "title", "intro", "tasks"], label);
+    const status = statusOf(theme, label);
+    if (typeof theme.month !== "string" || !/^\d{4}-(0[1-9]|1[0-2])$/u.test(theme.month)) fail(`${label}.month must be YYYY-MM`);
+    if (months.has(theme.month)) fail(`${label}.month ${theme.month} is listed twice`);
+    months.add(theme.month);
+    const tasks = list(theme.tasks, `${label}.tasks`).map((task, taskIndex) => {
+      if (!MONTH_TASK_KINDS.includes(task as MonthTaskKind)) fail(`${label}.tasks[${taskIndex}] is not a task kind`);
+      return task as MonthTaskKind;
+    });
+    if (tasks.length === 0 || new Set(tasks).size !== tasks.length) fail(`${label}.tasks needs different tasks`);
+    const projected: PublicMonthTheme = {
+      month: theme.month,
+      title: text(theme.title, `${label}.title`),
+      intro: theme.intro === null ? null : text(theme.intro, `${label}.intro`),
+      tasks,
+    };
+    return status === "published" ? [projected] : [];
+  });
+
+  return { version: row.version, articles, cards, topics, terms, faceGuides, challenges, monthThemes };
 }
 
 const ARTICLE_KEYS = [

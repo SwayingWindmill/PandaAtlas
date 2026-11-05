@@ -1,0 +1,49 @@
+name: Content Review
+
+# Weekly re-check of curated content (docs/runbooks/content-entry.md). Lists what is due in one issue
+# labelled content-review, updates it in place each week, and closes it when nothing is due.
+on:
+  schedule:
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: content-review
+  cancel-in-progress: false
+
+jobs:
+  review:
+    name: List content due for a re-check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Build the checklist
+        run: python scripts/curation/review_due.py --out review.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Update the content-review issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create content-review --color 0E8A16 --description "Weekly curated-content re-check" 2>/dev/null || true
+          issue=$(gh issue list --label content-review --state open --limit 1 --json number --jq '.[0].number // empty')
+          if grep -q -- "- \[ \]" review.md; then
+            if [ -n "$issue" ]; then
+              gh issue edit "$issue" --body-file review.md
+            else
+              gh issue create --title "内容复核清单" --label content-review --body-file review.md
+            fi
+          elif [ -n "$issue" ]; then
+            gh issue close "$issue" --comment "这周没有到期的内容。"
+          fi

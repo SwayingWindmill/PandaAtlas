@@ -2293,6 +2293,28 @@
         ]
       }
     },
+    "/api/v2/popular-pandas": {
+      "get": {
+        "operationId": "listPopularPandas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PopularPandasDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "大家常看: published pandas most fans began following in the last 30 days, at least five fans each",
+        "tags": [
+          "Popularity"
+        ]
+      }
+    },
     "/api/v2/venue-news": {
       "get": {
         "operationId": "listVenueNews",
@@ -6206,6 +6228,52 @@
           "sources"
         ]
       },
+      "MonthTaskKind": {
+        "type": "string",
+        "enum": [
+          "daily",
+          "guess",
+          "learn",
+          "checkin",
+          "collections",
+          "compare"
+        ]
+      },
+      "LearningMonthThemeDto": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "example": "2026-11"
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "intro": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LearningTextDto"
+              }
+            ]
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonthTaskKind"
+            }
+          }
+        },
+        "required": [
+          "month",
+          "title",
+          "intro",
+          "tasks"
+        ]
+      },
       "LearningCatalogDto": {
         "type": "object",
         "properties": {
@@ -6248,6 +6316,13 @@
             "items": {
               "$ref": "#/components/schemas/LearningChallengeDto"
             }
+          },
+          "monthThemes": {
+            "description": "月度主题挑战 themes. A month not listed uses the app's default checklist.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningMonthThemeDto"
+            }
           }
         },
         "required": [
@@ -6257,7 +6332,8 @@
           "topics",
           "terms",
           "faceGuides",
-          "challenges"
+          "challenges",
+          "monthThemes"
         ]
       },
       "PartialDateDto": {
@@ -6350,6 +6426,41 @@
         },
         "required": [
           "version",
+          "items"
+        ]
+      },
+      "PopularPandaDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pandaId",
+          "slug"
+        ]
+      },
+      "PopularPandasDto": {
+        "type": "object",
+        "properties": {
+          "windowDays": {
+            "type": "number",
+            "description": "How many days back the follows are counted."
+          },
+          "items": {
+            "description": "Most new followers first. No counts are published.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PopularPandaDto"
+            }
+          }
+        },
+        "required": [
+          "windowDays",
           "items"
         ]
       },
