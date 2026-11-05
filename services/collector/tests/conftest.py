@@ -17,7 +17,7 @@ DSN = os.environ.get("COLLECTOR_TEST_DATABASE_URL", f"{SERVER}/collector_test")
 TABLES = "outbox, item_sightings, item_versions, items, runs, alerts, adapter_state, targets"
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def test_database() -> None:
     if "COLLECTOR_TEST_DATABASE_URL" in os.environ:
         return
@@ -44,7 +44,7 @@ def anyio_backend() -> tuple[str, dict[str, object]]:
 
 
 @pytest.fixture
-async def store() -> AsyncIterator[Store]:
+async def store(test_database: None) -> AsyncIterator[Store]:
     try:
         store = await asyncio.wait_for(Store.open(DSN), 10)
     except Exception as exc:  # pragma: no cover - environment guard
