@@ -54,6 +54,10 @@ def _person(platform: str, account_id: Any, name: Any) -> dict[str, Any]:
     return {"platform": platform, "accountId": account_id, "name": name}
 
 
+def source_name(label: str, tier: str) -> str:
+    return f"{label}（{TIER_LABELS.get(tier, '')}）"
+
+
 def to_item(row: dict[str, Any]) -> dict[str, Any]:
     platform, body = row["platform"], row["body"]
     raw: dict[str, Any] = {
@@ -91,7 +95,7 @@ async def push(store: Store, client: httpx.AsyncClient, base_url: str, token: st
     pushed = 0
     for target_id, target_rows in by_target.items():
         first = target_rows[0]
-        name = f"{first['target_label']}（{TIER_LABELS.get(first['target_tier'], '')}）"
+        name = source_name(first["target_label"], first["target_tier"])
         for start in range(0, len(target_rows), MAX_ITEMS):
             batch = target_rows[start : start + MAX_ITEMS]
             keys = [(r["item_id"], r["version"]) for r in batch]

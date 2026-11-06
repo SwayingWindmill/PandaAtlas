@@ -123,7 +123,10 @@ async def cmd_report(settings: Settings, args: argparse.Namespace) -> None:
 
 async def cmd_registry(settings: Settings, args: argparse.Namespace) -> None:
     targets = load_targets(settings.targets_file)
-    registry.write(targets, Path(args.out))
+    if args.sql:
+        Path(args.out).write_text(registry.sources_sql(targets), encoding="utf-8")
+    else:
+        registry.write(targets, Path(args.out))
     print(f"wrote {args.out}")
 
 
@@ -188,6 +191,7 @@ def main(argv: list[str] | None = None) -> None:
     rep.add_argument("--out")
     reg = commands.add_parser("registry", help="account registry and AIHOT sources (JSON)")
     reg.add_argument("--out", required=True)
+    reg.add_argument("--sql", action="store_true", help="AIHOT sources as SQL upserts instead")
     commands.add_parser("status", help="paused adapters and failing targets")
     resume = commands.add_parser("resume", help="lift an adapter pause after fixing its login")
     resume.add_argument("adapter")

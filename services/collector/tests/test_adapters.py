@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 from datetime import UTC, datetime
 from pathlib import Path
@@ -15,7 +16,7 @@ from collector.adapters.base import FetchContext
 from collector.adapters.douyin_api import DouyinApiAdapter
 from collector.adapters.mediacrawler import item_from_row, read_new_rows
 from collector.adapters.rss import RssAdapter
-from collector.adapters.weibo_crawler import read_output
+from collector.adapters.weibo_crawler import WeiboCrawlerAdapter, read_output
 from collector.adapters.xhs_mcp import XhsMcpAdapter
 from collector.models import CollectError, ErrorKind, Target, TargetKind, Tier
 
@@ -300,3 +301,30 @@ def test_mediacrawler_reads_only_new_complete_lines(tmp_path: Path) -> None:
 )
 def test_process_output_classification(log: str, kind: ErrorKind | None) -> None:
     assert process.classify(log) is kind
+
+
+@pytest.mark.parametrize("layout", ["config_dir", "root"])
+def test_weibo_config_goes_where_weibo_crawler_reads_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, layout: str
+) -> None:
+    checkout = tmp_path / "weibo-crawler"
+    checkout.mkdir()
+    if layout == "config_dir":
+        (checkout / "config").mkdir()
+    expected = (
+        checkout / "config" / "config.json" if layout == "config_dir" else checkout / "config.json"
+    )
+    seen: list[dict] = []
+
+    async def fake_run(
+        command: str, args: list[str], cwd: Path, timeout: int, service: str
+    ) -> None:
+        seen.append(json.loads(expected.read_text(encoding="utf-8")))
+
+    monkeypatch.setattr("collector.adapters.weibo_crawler.process.run", fake_run)
+    adapter = WeiboCrawlerAdapter(checkout, "python weibo.py", "SUB=x", tmp_path / "state")
+    target = Target(
+        "w:1", "weibo_crawler", TargetKind.ACCOUNT, "123", "基地", Tier.OFFICIAL, 15, {}
+    )
+    asyncio.run(adapter.fetch(target, None, None))  # type: ignore[arg-type]
+    assert seen and seen[0]["user_id_list"] == ["123"] and seen[0]["cookie"] == "SUB=x"

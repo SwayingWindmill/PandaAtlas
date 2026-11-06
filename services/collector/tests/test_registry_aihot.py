@@ -9,6 +9,7 @@ from typing import Any
 
 from collector import aihot, registry
 from collector.config import load_targets
+from collector.models import Role, Target, TargetKind, Tier
 
 
 def row(**overrides: Any) -> dict[str, Any]:
@@ -108,3 +109,28 @@ def test_registry_lists_accounts_and_sources_in_stable_order(tmp_path: Path) -> 
     }
     assert all(s["participation_mode"] == "editorial" for s in doc["sources"])
     assert [s["id"] for s in doc["sources"]] == sorted(tiers)
+
+
+def test_sources_sql_upserts_every_target_as_editorial() -> None:
+    targets = [
+        Target(
+            "weibo_crawler:account:1",
+            "weibo_crawler",
+            TargetKind.ACCOUNT,
+            "1",
+            "北京动物园（微博）",
+            Tier.OFFICIAL,
+            30,
+            {},
+            role=Role.INSTITUTION,
+        ),
+        Target(
+            "rss:feed:x", "rss", TargetKind.KEYWORD, "福宝", "粉丝's 关键词", Tier.KEYWORD, 180, {}
+        ),
+    ]
+    sql = registry.sources_sql(targets)
+    assert sql.startswith("INSERT INTO sources")
+    assert "'zhipanda-weibo-crawler-account-1', '北京动物园（微博）（官方）', 'external'" in sql
+    assert "'T1', 'editorial'" in sql and "'T2', 'editorial'" in sql
+    assert "'粉丝''s 关键词（关键词）'" in sql
+    assert sql.rstrip().endswith("participation_mode = EXCLUDED.participation_mode;")
