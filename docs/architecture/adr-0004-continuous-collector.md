@@ -3,6 +3,7 @@
 - 状态：已接受（2026-11-05）
 - 取代：`docs/data-acquisition/` 下的受控采集体系（候选契约 v1、adapter runner v1、逐源审核登记表、Scrapy/Scrapling PoC）
 - 修订：ADR-0002 对采集部分的约束（见"部署"）
+- 被修订：第 4 层（智能处理层）和"部署"里采集结果进入 App 的方式，由 [ADR-0005](adr-0005-panda-news-and-fact-updates.md) 修订
 
 ## 背景
 

@@ -14,8 +14,9 @@ The product priority is **panda fan experience first**. Archive, provenance, rev
 |---|---|---|
 | [ADR 0001](adr-0001-single-source-api-boundary.md) | Accepted | One API owns domain rules and writes: the NestJS V2 API. |
 | [ADR 0002](adr-0002-managed-cloud-deployment-target.md) | Accepted, amended by ADR 0004 | Managed services only; production is Cloudflare Workers with Supabase. The collector is the one exception. |
-| [ADR 0003](adr-0003-single-accountable-archive-approver.md) | Accepted | One accountable approver decides publication, with no four-eyes step. |
-| [ADR 0004](adr-0004-continuous-collector.md) | Accepted | A continuously running multi-platform collector on its own host replaces the reviewed-source acquisition runtime. |
+| [ADR 0003](adr-0003-single-accountable-archive-approver.md) | Accepted, amended by ADR 0005 | One accountable approver decides publication, with no four-eyes step. |
+| [ADR 0004](adr-0004-continuous-collector.md) | Accepted, amended by ADR 0005 | A continuously running multi-platform collector on its own host replaces the reviewed-source acquisition runtime. |
+| [ADR 0005](adr-0005-panda-news-and-fact-updates.md) | Proposed | AIHOT, run headless, processes collected content; panda news and confirmed fact updates are pulled into `services/api` and shown in the web and app. |
 | [Batch workflow interfaces](batch-workflow-interfaces.md) | Current | The bounded batch control plane. |
 | [Mobile app and platform services](mobile-app-platform-services.md) | Current | Which Supabase and Cloudflare services the Expo app uses, and why the others do not fit. |
 
