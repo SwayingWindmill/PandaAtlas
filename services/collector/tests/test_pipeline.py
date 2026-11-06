@@ -222,7 +222,6 @@ async def test_report_counts_latency_from_first_run(store: Store) -> None:
 
 async def test_run_forever_claims_only_free_slots_per_adapter(store: Store) -> None:
 
-
     slow_targets = [make_target("weibo_crawler", str(i)) for i in range(3)]
     await store.sync_targets([*slow_targets, make_target("rss", "f")])
     release = asyncio.Event()

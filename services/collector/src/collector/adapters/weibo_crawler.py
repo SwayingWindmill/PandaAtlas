@@ -96,6 +96,11 @@ class WeiboCrawlerAdapter:
         self.cookie = cookie
         self.output_dir = state_dir / "weibo-crawler"
 
+    def config_path(self) -> Path:
+        # weibo-crawler reads config/config.json first and falls back to the old root location.
+        config_dir = self.checkout / "config"
+        return config_dir / "config.json" if config_dir.is_dir() else self.checkout / "config.json"
+
     def since(self, target: Target, cursor: JsonDict | None) -> str:
         mark = watermark(cursor)
         if mark:
@@ -129,7 +134,7 @@ class WeiboCrawlerAdapter:
             "download_repost": 0,
             "cookie": self.cookie,
         }
-        (self.checkout / "config.json").write_text(
+        self.config_path().write_text(
             json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8"
         )
         await process.run(
