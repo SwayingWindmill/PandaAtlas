@@ -55,7 +55,8 @@ class Target:
     interval_minutes: int
     params: JsonDict = field(default_factory=dict)
     role: Role | None = None
-    #: ZhiPanda institution slug; always set when `role` is `institution`.
+    #: ZhiPanda institution slug, only for `role: institution`. Unset while the institution is
+    #: not yet in ZhiPanda's catalog; the account still counts as the institution's own.
     institution: str | None = None
 
 

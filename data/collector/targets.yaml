@@ -11,14 +11,13 @@
 #   role              account targets only; who runs the account. AIHOT takes the source tier of a
 #                     post from its original author's role, and fact updates apply automatically
 #                     only for `institution`:
-#                       institution  the institution's own account (needs `institution`)
-#                       official     other official channels (iPanda, 熊猫守护者, institutions we
-#                                    have no slug for yet)
+#                       institution  the institution's own account (zoos, bases, reserves)
+#                       official     other official channels (iPanda, 开饭了, 熊猫守护者, 基金会)
 #                       media        media and community brands
 #                       fan          fan stations and individual fans
 #                     Keyword and backfill targets have no role. Unknown values fail loading.
-#   institution       ZhiPanda institution slug (data/curation/institutions); required for
-#                     role institution. An account whose institution has no slug stays `official`.
+#   institution       ZhiPanda institution slug (data/curation/institutions), only for role
+#                     institution. Left out while the institution is not in ZhiPanda's catalog yet.
 #   (`role` and `institution` are filled by services/collector/scripts/assign_roles.py)
 #   params            adapter options:
 #     all             max_pages (3), empty_alert_after (per tier), timeout (subprocess seconds)
@@ -70,70 +69,70 @@ targets:
     value: "7737964317"
     label: 大熊猫国家公园成都管理分局（微博）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 30
   - adapter: weibo_crawler
     kind: account
     value: "2660775741"
     label: 四川唐家河国家级自然保护区（微博）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 30
   - adapter: weibo_crawler
     kind: account
     value: "2741831927"
     label: 北京动物园（微博）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 30
   - adapter: weibo_crawler
     kind: account
     value: "2603613931"
     label: 重庆动物园（微博）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 30
   - adapter: weibo_crawler
     kind: account
     value: "2169174091"
     label: 上海动物园（微博）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 30
   - adapter: weibo_crawler
     kind: account
     value: "1789198185"
     label: 上海野生动物园（微博）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 30
   - adapter: weibo_crawler
     kind: account
     value: "1706625004"
     label: 西安秦岭野生动物园（微博）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 30
   - adapter: weibo_crawler
     kind: account
     value: "1867677355"
     label: 南京市红山森林动物园（微博）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 30
   - adapter: weibo_crawler
     kind: account
     value: "1711469735"
     label: 长隆野生动物世界（微博）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 30
   - adapter: weibo_crawler
     kind: account
     value: "1676627893"
     label: 香港海洋公园（微博）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 30
   - adapter: weibo_crawler
     kind: account
@@ -172,77 +171,77 @@ targets:
     value: "MS4wLjABAAAAAaywlN4SVepn2Ws64UirdTChLDYa_xPZQs-LR4XwOAI"
     label: 大熊猫国家公园成都管理分局（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAKqAFAUiVnXNIR_cqPvpgE5zNIyZ6A845GwcgRcQiAHAG_Av31YYJCPnsS48Kl2jc"
     label: 四川唐家河国家级自然保护区（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAbJlnRc6gCStv69_wvFJPrIWIWaX6NEqf44-0QiGP0iUsUZv3W0ci1OSYfgVsfVPM"
     label: 秦岭大熊猫佛坪基地（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAj7M7L-2IsqHhXDjBecN5Pp0v0kpcCLMoLZPaMsKYMaIk1o6ytRIH6dJhOwxBUpGI"
     label: 北京动物园（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAtlndxZge1BeG0cD8hsqt9csSlV7m3fTeAoQB6d97J0oOhZgJQ4GfRc_hsUlD2yH8"
     label: 重庆动物园（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAnxH33i2U-uZ27jPtFegtItPZewHjUkfnuLb0tOy07xEUdItB8XH1Z9mLfWrvyEni"
     label: 上海动物园（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAMKZk0T8TjaVDaAPr3_DhSkDmHMgpayYMTb-3ipAbl24"
     label: 上海野生动物园（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAqyWe5j_LKaT4Lk7MFaSedPIPAo1mTehEpIUVBe9ekoM"
     label: 西安秦岭野生动物园（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAm_YnyAFmPQaVGMpzb_Pha41b4tzFcICMKzP7SKY_a2k"
     label: 南京市红山森林动物园（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAp0RdcUnlcndqBkqbPB-WR3_wZS72cvvfHkpGPqg1OOM"
     label: 广州长隆野生动物世界（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAA1R0HxROPW9sabDa9q7gqZOG3N23r8dkt76QtEANvRlWdd_CfyJBbjzSffmc2wqXo"
     label: 香港海洋公园（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
@@ -273,7 +272,7 @@ targets:
     value: "639305a60000000026013070"
     label: 上海动物园（小红书）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 90
     params: { xsec_token: "AB0pSiy6VxlZXTz1ZajqwC-XDbruQo2DaIai05DX4d-ro=" }
   - adapter: xhs_mcp
@@ -281,7 +280,7 @@ targets:
     value: "6423d7bb00000000120133c1"
     label: 香港海洋公园（小红书）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 90
     params: { xsec_token: "ABFl298KpZM0V2-hLIny3Qds1l3F4_dWg0YCIvc0_YC28=" }
   - adapter: xhs_mcp
@@ -495,35 +494,35 @@ targets:
     value: "MS4wLjABAAAAwS7xcu7gxbSpUWy35zbC0NS4eev9O3B1rhQMRH_fvCk"
     label: 都江堰熊猫家园（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAA0i1a7vtFBB4rGaVfT5PaMC2Ft7PpT_DBoPCMnbo0ZLs"
     label: 广州长隆熊猫村（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAA9u8RBTKE4rjS6gkwAH3P8LI0_yy379qI-sbmvpLycotlolzzagt2tp75sTV5VKe6"
     label: 秦岭四宝科学公园（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAkfG6yU6PwsFGau1o4hy9-TETb62A8sgTgQaGTtxZxhNjQvh4Yb07yeNFQV2gi6uo"
     label: 卧龙中华大熊猫苑（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
     value: "MS4wLjABAAAAk19KJDQTRA7MCdMQqmKNV8QxnzOra8wJbEjYCGviAasFPFAxGzSfFYNERuhHwQtc"
     label: 南山竹海大熊猫（抖音）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 60
   - adapter: douyin_api
     kind: account
@@ -747,7 +746,7 @@ targets:
     value: "604864590000000001007072"
     label: 南京市红山森林动物园（小红书）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 90
     params: { xsec_token: "ABYDUuvrwfppgXTDB57XWnOGVKCMoPOpGUmNw1BhggU_0=" }
   - adapter: xhs_mcp
@@ -755,7 +754,7 @@ targets:
     value: "574d344b5e87e75ffbedbe5a"
     label: 上海野生动物园（小红书）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 90
     params: { xsec_token: "AB2vBGoiCOUuPPNzMKf-Z1LVhYalXETVjnt2DQ82iW3GA=" }
   - adapter: xhs_mcp
@@ -763,7 +762,7 @@ targets:
     value: "639633690000000026005afa"
     label: 重庆动物园（小红书）
     tier: official
-    role: official
+    role: institution
     interval_minutes: 90
     params: { xsec_token: "AB9ugb_Q-dif8AstCHtSNzOrz-iZDwK1owiO3hDO1v-Is=" }
   - adapter: xhs_mcp
