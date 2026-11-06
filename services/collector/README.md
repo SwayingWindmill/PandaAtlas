@@ -44,8 +44,8 @@ MediaCrawler ──────┘     （仅第一阶段对照）
 
 | 字段 | 说明 |
 |---|---|
-| `role` | `institution`（机构自己的账号）、`official`（其他官方频道，以及我们还没有机构 slug 的机构）、`media`、`fan`。写错会在加载时报错；关键词和补采目标不写 |
-| `institution` | 知熊猫的机构 slug（`data/curation/institutions`）。`role: institution` 时必填 |
+| `role` | `institution`（动物园、基地、保护区等机构自己的账号）、`official`（iPanda、开饭了等其他官方频道）、`media`、`fan`。写错会在加载时报错；关键词和补采目标不写 |
+| `institution` | 吱熊猫的机构 slug（`data/curation/institutions`），只用于 `role: institution`。机构还没进吱熊猫的机构目录时不写，账号仍算机构自己的 |
 
 新增账号后运行 `uv run python scripts/assign_roles.py` 补上角色，再核对一遍结果；已有角色的目标不会被改。
 

@@ -15,16 +15,17 @@ from pathlib import Path
 
 TARGETS = Path(__file__).resolve().parents[3] / "data/collector/targets.yaml"
 
-#: Account name (platform suffix removed) -> ZhiPanda institution slug. Only institutions that
-#: exist in place.institutions (data/curation/institutions) can be listed here.
+#: Account name (platform suffix removed) -> ZhiPanda institution slug, for institutions that
+#: exist in place.institutions (data/curation/institutions).
 INSTITUTIONS = {
     "成都大熊猫繁育研究基地": "chengdu-research-base",
     "中国大熊猫保护研究中心": "ccrcgp",
     "卧龙大熊猫俱乐部（中国大熊猫保护研究中心）": "ccrcgp",
 }
 
-#: Official accounts whose institution has no slug yet, and non-institution official channels.
-OFFICIAL = {
+#: Institutions' own accounts whose institution is not yet in ZhiPanda's catalog: role institution,
+#: no slug. Add the slug to INSTITUTIONS once the institution is published.
+INSTITUTIONS_WITHOUT_SLUG = {
     "大熊猫国家公园成都管理分局",
     "四川唐家河国家级自然保护区",
     "秦岭大熊猫佛坪基地",
@@ -42,6 +43,10 @@ OFFICIAL = {
     "秦岭四宝科学公园",
     "卧龙中华大熊猫苑",
     "南山竹海大熊猫",
+}
+
+#: Official channels that are not an institution's own account.
+OFFICIAL = {
     "iPanda熊猫频道",
     "开饭了大熊猫（咪咕）",
     "成都大熊猫繁育研究基金会",
@@ -62,6 +67,8 @@ def classify(label: str) -> tuple[str, str | None]:
     name = PLATFORM_SUFFIX.sub("", label)
     if name in INSTITUTIONS:
         return "institution", INSTITUTIONS[name]
+    if name in INSTITUTIONS_WITHOUT_SLUG:
+        return "institution", None
     if name in OFFICIAL:
         return "official", None
     if name in MEDIA:

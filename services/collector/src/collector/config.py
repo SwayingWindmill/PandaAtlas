@@ -123,8 +123,8 @@ def _target(entry: dict[str, Any], defaults: dict[str, Any]) -> Target:
     if adapter not in ADAPTER_NAMES:
         raise ConfigError(f"unknown adapter {adapter!r} in {entry!r}")
     institution = str(merged["institution"]).strip() if merged.get("institution") else None
-    if role is Role.INSTITUTION and not institution:
-        raise ConfigError(f"role institution needs an institution slug: {entry!r}")
+    if institution and role is not Role.INSTITUTION:
+        raise ConfigError(f"only role institution takes an institution slug: {entry!r}")
     params = {**defaults.get("params", {}), **entry.get("params", {})}
     # Multi-platform adapters search the same term once per platform.
     scope = (

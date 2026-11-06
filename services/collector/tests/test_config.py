@@ -98,8 +98,7 @@ targets:
     ("entry", "message"),
     [
         ("role: chief", "chief"),
-        ("role: institution", "institution slug"),
-        ("role: institution, institution: ''", "institution slug"),
+        ("role: fan, institution: ccrcgp", "only role institution"),
     ],
 )
 def test_bad_role_fails_loading(tmp_path: Path, entry: str, message: str) -> None:
