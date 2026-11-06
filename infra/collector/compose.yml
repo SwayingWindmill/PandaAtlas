@@ -56,7 +56,7 @@ services:
     volumes:
       - ./data/xhs:/app/data
     ports:
-      - "127.0.0.1:18060:18060"
+      - "127.0.0.1:${XHS_MCP_PORT:-18060}:18060"
 
 volumes:
   collector-db:
