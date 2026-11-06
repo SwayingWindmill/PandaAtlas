@@ -38,6 +38,21 @@ MediaCrawler ──────┘     （仅第一阶段对照）
 - **去重与历史**：同一平台按平台 ID 去重。标题、正文或媒体类型变了，就记一个新版本，旧版本保留在 `item_versions`。跨平台的同一件事由 AIHOT 聚成事件。
 - **异常监测**：登录失效、限流、验证码会暂停整个适配器并告警；同一目标连续失败 3 次告警；连续空结果超过阈值也告警（官方源 96 次，其他 8 次，可用 `params.empty_alert_after` 改）。同一个告警没解决前不会重复发送。
 
+## 账号角色与登记表
+
+账号类目标在 targets.yaml 里带两个字段，用来判断一条帖子的原作者是谁（设计见 [ADR 0005](../../docs/architecture/adr-0005-panda-news-and-fact-updates.md)）：
+
+| 字段 | 说明 |
+|---|---|
+| `role` | `institution`（机构自己的账号）、`official`（其他官方频道，以及我们还没有机构 slug 的机构）、`media`、`fan`。写错会在加载时报错；关键词和补采目标不写 |
+| `institution` | 知熊猫的机构 slug（`data/curation/institutions`）。`role: institution` 时必填 |
+
+新增账号后运行 `uv run python scripts/assign_roles.py` 补上角色，再核对一遍结果；已有角色的目标不会被改。
+
+`uv run collector registry --out <路径>` 从 targets.yaml 生成 JSON：`accounts` 是账号登记表（平台、账号 id、角色、机构），`sources` 是 AIHOT 的信源（`id` 与推送时的 `sourceId` 相同，分级 `institution`→`T1`、`official`→`T1_5`，其余→`T2`，`participation_mode` 为 `editorial`）。输出顺序固定，可以直接提交或比对。
+
+推给 AIHOT 的每条内容除标题、链接和时间外，还带 `bodyText`、`excerpt`（正文前 200 字）、`media`（只收 http/https 的图片和视频），以及 `raw.externalId`（`<平台>:<平台内容 id>`）、`raw.author`。转发的帖子再带 `raw.originalAuthor`；目前只有微博（weibo-crawler 的 `retweet`）取得到原作者，其他平台不带这个字段。
+
 ## 在采集主机上部署
 
 需要 Docker、[uv](https://docs.astral.sh/uv/) 和 Python 3.12。

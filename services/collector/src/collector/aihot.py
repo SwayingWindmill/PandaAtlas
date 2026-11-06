@@ -30,22 +30,56 @@ def source_id(target_id: str) -> str:
     return "zhipanda-" + re.sub(r"[^a-z0-9]+", "-", target_id.lower()).strip("-")[:100]
 
 
+EXCERPT_CHARS = 200
+
+
+def _media(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Our media (`type`) in AIHOT's shape (`kind`); only plain image and video links."""
+    out = []
+    for m in items:
+        url, kind = m.get("url"), m.get("type")
+        if kind not in ("image", "video") or not isinstance(url, str):
+            continue
+        if not url.startswith(("http://", "https://")):
+            continue
+        entry: dict[str, Any] = {"kind": kind, "url": url}
+        for dim in ("width", "height"):
+            if isinstance(m.get(dim), int) and not isinstance(m[dim], bool):
+                entry[dim] = m[dim]
+        out.append(entry)
+    return out
+
+
+def _person(platform: str, account_id: Any, name: Any) -> dict[str, Any]:
+    return {"platform": platform, "accountId": account_id, "name": name}
+
+
 def to_item(row: dict[str, Any]) -> dict[str, Any]:
+    platform, body = row["platform"], row["body"]
+    raw: dict[str, Any] = {
+        "platform": platform,
+        "body": body,
+        "media": row["media"],
+        "metrics": row["metrics"],
+        "pandaSlugs": row["panda_slugs"],
+        "collector": {"itemId": row["item_id"], "version": row["version"]},
+        "externalId": f"{platform}:{row['platform_item_id']}",
+        "author": _person(platform, row["author_id"], row["author_name"]),
+        # History walked by a backfill target must not show up as today's news.
+        "_aihot": {"backfill": row["target_tier"] == "backfill"},
+    }
+    original = (row.get("item_raw") or {}).get("original_author")
+    if original:
+        raw["originalAuthor"] = _person(platform, original["accountId"], original.get("name"))
     return {
-        "title": row["title"] or row["body"][:80] or row["url"],
+        "title": row["title"] or body[:80] or row["url"],
         "url": row["url"],
         "publishedAt": row["published_at"].isoformat() if row["published_at"] else None,
         "author": row["author_name"],
-        "raw": {
-            "platform": row["platform"],
-            "body": row["body"],
-            "media": row["media"],
-            "metrics": row["metrics"],
-            "pandaSlugs": row["panda_slugs"],
-            "collector": {"itemId": row["item_id"], "version": row["version"]},
-            # History walked by a backfill target must not show up as today's news.
-            "_aihot": {"backfill": row["target_tier"] == "backfill"},
-        },
+        "bodyText": body,
+        "excerpt": body[:EXCERPT_CHARS],
+        "media": _media(row["media"]),
+        "raw": raw,
     }
 
 

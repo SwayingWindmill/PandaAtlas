@@ -187,6 +187,8 @@ async def test_push_to_aihot_batches_per_source_and_marks_pushed(store: Store) -
     assert body["sourceName"] == "label 1（官方）"
     first = body["items"][0]
     assert first["raw"]["pandaSlugs"] == ["fu-bao"] and first["raw"]["_aihot"]["backfill"] is False
+    assert first["raw"]["externalId"] == "weibo:0" and first["bodyText"] == "福宝在吃竹子"
+    assert first["raw"]["author"] == {"platform": "weibo", "accountId": "1", "name": "基地"}
     assert (await store.pending_outbox(10)) == []
 
 
