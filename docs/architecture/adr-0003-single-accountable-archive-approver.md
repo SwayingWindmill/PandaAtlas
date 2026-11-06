@@ -1,7 +1,7 @@
 # ADR 0003: One accountable approver
 
 - Status: accepted (2026-07-30); the V1 compatibility migration in the original record was retired with V1 storage
-- Amended by [ADR 0005](adr-0005-panda-news-and-fact-updates.md): fact changes from panda news are confirmed by one person, then published by a scheduled system release
+- Amended by [ADR 0005](adr-0005-panda-news-and-fact-updates.md): fact changes from panda news apply automatically when the reviewed policy allows it, otherwise one person confirms them; a scheduled system release publishes them
 
 One accountable approver decides each publication, with no four-eyes step. Validation, by a machine or a person, can make a change ready, but ready is never an approval: publishing stays an explicit command that carries the approver's capability, recent authentication, reason and audit trail. #611 applies this to V2 contribution approval.
 
