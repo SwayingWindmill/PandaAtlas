@@ -16,7 +16,7 @@ from collector.adapters.mediacrawler import MediaCrawlerAdapter
 from collector.adapters.rss import RssAdapter
 from collector.adapters.weibo_crawler import WeiboCrawlerAdapter
 from collector.adapters.xhs_mcp import XhsMcpAdapter
-from collector.models import DEFAULT_INTERVAL_MINUTES, Target, TargetKind, Tier
+from collector.models import DEFAULT_INTERVAL_MINUTES, Role, Target, TargetKind, Tier
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 
@@ -117,10 +117,14 @@ def _target(entry: dict[str, Any], defaults: dict[str, Any]) -> Target:
     try:
         adapter, kind, value = merged["adapter"], TargetKind(merged["kind"]), str(merged["value"])
         tier = Tier(merged.get("tier", "key_account"))
+        role = Role(merged["role"]) if merged.get("role") else None
     except (KeyError, ValueError) as exc:
         raise ConfigError(f"bad target {entry!r}: {exc}") from exc
     if adapter not in ADAPTER_NAMES:
         raise ConfigError(f"unknown adapter {adapter!r} in {entry!r}")
+    institution = str(merged["institution"]).strip() if merged.get("institution") else None
+    if role is Role.INSTITUTION and not institution:
+        raise ConfigError(f"role institution needs an institution slug: {entry!r}")
     params = {**defaults.get("params", {}), **entry.get("params", {})}
     # Multi-platform adapters search the same term once per platform.
     scope = (
@@ -137,6 +141,8 @@ def _target(entry: dict[str, Any], defaults: dict[str, Any]) -> Target:
         tier=tier,
         interval_minutes=int(merged.get("interval_minutes") or DEFAULT_INTERVAL_MINUTES[tier]),
         params=params,
+        role=role,
+        institution=institution,
     )
 
 

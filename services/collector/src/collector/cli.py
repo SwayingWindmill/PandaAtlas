@@ -13,7 +13,7 @@ from pathlib import Path
 
 import httpx
 
-from collector import aihot, alerts, report
+from collector import aihot, alerts, registry, report
 from collector.config import Settings, build_adapters, load_targets
 from collector.lexicon import Lexicon
 from collector.scheduler import Scheduler
@@ -121,6 +121,12 @@ async def cmd_report(settings: Settings, args: argparse.Namespace) -> None:
         sys.stdout.write(text)
 
 
+async def cmd_registry(settings: Settings, args: argparse.Namespace) -> None:
+    targets = load_targets(settings.targets_file)
+    registry.write(targets, Path(args.out))
+    print(f"wrote {args.out}")
+
+
 async def cmd_status(settings: Settings, _: argparse.Namespace) -> None:
     store = await _open(settings)
     try:
@@ -180,6 +186,8 @@ def main(argv: list[str] | None = None) -> None:
     rep = commands.add_parser("report", help="collector comparison report (Markdown)")
     rep.add_argument("--days", type=int, default=14)
     rep.add_argument("--out")
+    reg = commands.add_parser("registry", help="account registry and AIHOT sources (JSON)")
+    reg.add_argument("--out", required=True)
     commands.add_parser("status", help="paused adapters and failing targets")
     resume = commands.add_parser("resume", help="lift an adapter pause after fixing its login")
     resume.add_argument("adapter")
@@ -204,6 +212,7 @@ def main(argv: list[str] | None = None) -> None:
             "run": cmd_run,
             "once": cmd_once,
             "report": cmd_report,
+            "registry": cmd_registry,
             "status": cmd_status,
             "resume": cmd_resume,
         }[args.command]

@@ -27,6 +27,15 @@ class Tier(StrEnum):
     BACKFILL = "backfill"
 
 
+class Role(StrEnum):
+    """Who runs an account. AIHOT derives a post's source tier from its original author's role."""
+
+    INSTITUTION = "institution"
+    OFFICIAL = "official"
+    MEDIA = "media"
+    FAN = "fan"
+
+
 DEFAULT_INTERVAL_MINUTES: dict[Tier, int] = {
     Tier.OFFICIAL: 15,
     Tier.KEY_ACCOUNT: 90,
@@ -45,6 +54,9 @@ class Target:
     tier: Tier
     interval_minutes: int
     params: JsonDict = field(default_factory=dict)
+    role: Role | None = None
+    #: ZhiPanda institution slug; always set when `role` is `institution`.
+    institution: str | None = None
 
 
 @dataclass(frozen=True)

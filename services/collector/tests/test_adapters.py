@@ -245,6 +245,27 @@ def test_weibo_output_is_read_in_china_time(tmp_path: Path) -> None:
     assert read_output(tmp_path / "missing.json") == []
 
 
+def test_weibo_repost_exposes_the_original_author(tmp_path: Path) -> None:
+    path = tmp_path / "1.json"
+    post = {"id": 1, "user_id": 1, "text": "转发", "created_at": "2026-11-05T09:30:00"}
+    path.write_text(
+        json.dumps(
+            {
+                "user": {"id": "1"},
+                "weibo": [
+                    {**post, "retweet": {"id": 9, "user_id": 77, "screen_name": "北京动物园"}},
+                    {**post, "id": 2},
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    repost, original = read_output(path)
+    assert repost.raw["original_author"] == {"accountId": "77", "name": "北京动物园"}
+    assert original.raw["original_author"] is None
+
+
 def test_mediacrawler_reads_only_new_complete_lines(tmp_path: Path) -> None:
     path = tmp_path / "search_contents_2026-11-05.jsonl"
     first = {

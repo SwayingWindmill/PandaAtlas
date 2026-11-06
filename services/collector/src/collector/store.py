@@ -416,8 +416,9 @@ class Store:
             cur = await conn.execute(
                 """
                 SELECT o.item_id, o.version, o.target_id, t.label AS target_label,
-                       t.tier AS target_tier, i.platform, i.url, i.title, i.body, i.author_name,
-                       i.published_at, i.media, i.metrics, i.panda_slugs, i.first_seen_at,
+                       t.tier AS target_tier, i.platform, i.platform_item_id, i.url, i.title,
+                       i.body, i.author_id, i.author_name, v.raw AS item_raw, i.published_at,
+                       i.media, i.metrics, i.panda_slugs, i.first_seen_at,
                        (v.version > 1) AS is_revision
                 FROM outbox o
                 JOIN items i ON i.id = o.item_id

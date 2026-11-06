@@ -29,6 +29,15 @@ def _urls(value: Any) -> list[str]:
     return [v for v in str(value or "").split(",") if v.strip()]
 
 
+def _original_author(weibo: dict[str, Any]) -> JsonDict | None:
+    """weibo-crawler nests the reposted post under `retweet`, with its own `user_id`."""
+    retweet = weibo.get("retweet")
+    account_id = retweet.get("user_id") if isinstance(retweet, dict) else None
+    if not account_id:
+        return None
+    return {"accountId": str(account_id), "name": retweet.get("screen_name")}
+
+
 def item_from_weibo(weibo: dict[str, Any], user: dict[str, Any]) -> Item:
     created = weibo.get("created_at")
     media: list[JsonDict] = [{"type": "image", "url": u} for u in _urls(weibo.get("pics"))]
@@ -52,8 +61,19 @@ def item_from_weibo(weibo: dict[str, Any], user: dict[str, Any]) -> Item:
             "reposts": weibo.get("reposts_count"),
         },
         raw={
-            k: weibo.get(k)
-            for k in ("bid", "topics", "at_users", "location", "source", "article_url", "retweet")
+            **{
+                k: weibo.get(k)
+                for k in (
+                    "bid",
+                    "topics",
+                    "at_users",
+                    "location",
+                    "source",
+                    "article_url",
+                    "retweet",
+                )
+            },
+            "original_author": _original_author(weibo),
         },
     )
 
