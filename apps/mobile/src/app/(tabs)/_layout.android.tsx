@@ -4,7 +4,7 @@ import type { ColorValue } from "react-native";
 
 import { CapsuleTabBar } from "@/components/capsule-tab-bar";
 import { Icon } from "@/components/icon";
-import { Book, Calendar, type LucideIcon, Search, UserRound } from "@/components/icons";
+import { Book, Calendar, Compass, type LucideIcon, Search, UserRound } from "@/components/icons";
 import { component } from "@/design/tokens";
 import { useWelcomeSeen } from "@/features/onboarding/welcome";
 
@@ -16,7 +16,7 @@ function tabIcon(glyph: LucideIcon) {
 }
 
 /**
- * Android's tabs: the same four as iOS, drawn by `CapsuleTabBar` over the page instead of the
+ * Android's tabs: the same five as iOS, drawn by `CapsuleTabBar` over the page instead of the
  * Material bar. iOS keeps the system bar (`_layout.tsx`) and web its own (`_layout.web.tsx`).
  */
 export default function AndroidTabsLayout() {
@@ -26,6 +26,7 @@ export default function AndroidTabsLayout() {
   return (
     <Tabs tabBar={(props) => <CapsuleTabBar {...props} />} screenOptions={{ headerShown: false }}>
       <Tabs.Screen name="(today)" options={{ title: "今天", tabBarIcon: tabIcon(Calendar) }} />
+      <Tabs.Screen name="discover" options={{ title: "发现", tabBarIcon: tabIcon(Compass) }} />
       <Tabs.Screen name="find" options={{ title: "找熊猫", tabBarIcon: tabIcon(Search) }} />
       <Tabs.Screen name="book" options={{ title: "图鉴", tabBarIcon: tabIcon(Book) }} />
       <Tabs.Screen name="me" options={{ title: "我的", tabBarIcon: tabIcon(UserRound) }} />

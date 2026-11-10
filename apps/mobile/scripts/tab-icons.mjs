@@ -1,5 +1,5 @@
 // Rasterizes Lucide glyphs to template PNGs (@1x/@2x/@3x) for the native bars, which take images,
-// not components: the four tab glyphs (25pt, stroke 1.9) and the header toolbar glyphs (22pt, stroke 2).
+// not components: the five tab glyphs (25pt, stroke 1.9) and the header toolbar glyphs (22pt, stroke 2).
 // It also writes each glyph as an SVG to assets/symbols/, which react-native-nano-icons turns into a
 // custom SF Symbol (iOS) and a VectorDrawable (Android) at prebuild; Expo Go keeps the PNGs.
 // Run from apps/mobile: node scripts/tab-icons.mjs
@@ -18,6 +18,7 @@ const sets = [
     stroke: 1.9,
     icons: {
       today: "calendar",
+      discover: "compass",
       search: "search",
       atlas: "book",
       me: "user-round",

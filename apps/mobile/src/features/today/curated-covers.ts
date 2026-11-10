@@ -1,4 +1,4 @@
-// Covers cleared for full-bleed use: 今天's story cards, 找熊猫's explore cards and 图鉴/我的 previews.
+// Covers cleared for full-bleed use: 今天's story cards, 发现's photo cards and 图鉴/我的 previews.
 //
 // The API gives no size, colour or overlay data, and about half of the remaining covers are not
 // fit to sit under a title: thumbnails smaller than 600px on the short side (blurry when stretched,

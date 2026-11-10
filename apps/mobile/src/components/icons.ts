@@ -24,6 +24,7 @@ export { default as ChevronRight } from "lucide-react-native/icons/chevron-right
 export { default as CircleAlert } from "lucide-react-native/icons/circle-alert";
 export { default as CircleQuestionMark } from "lucide-react-native/icons/circle-question-mark";
 export { default as Clock } from "lucide-react-native/icons/clock";
+export { default as Compass } from "lucide-react-native/icons/compass";
 export { default as Columns } from "lucide-react-native/icons/columns-3";
 export { default as Database } from "lucide-react-native/icons/database";
 export { default as Download } from "lucide-react-native/icons/download";

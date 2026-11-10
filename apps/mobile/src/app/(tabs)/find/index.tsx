@@ -1,32 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { useDeferredValue, useMemo, useState } from "react";
-import { FlatList, Platform, ScrollView, View, useWindowDimensions } from "react-native";
+import { FlatList, Platform, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Chip } from "@/components/chip";
-import { Columns, House, MapPin, Network, Plane, Users } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { BARLESS_TOP, ROOT_TITLE_IN_COLUMN } from "@/components/page";
 import { SectionHeader } from "@/components/section-header";
 import { StatusBarCover } from "@/components/status-bar-cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { institutionListQueryOptions } from "@/features/institutions/institutions";
 import { areaChips } from "@/features/pandas/areas";
 import { SPECIAL_CHIPS, type SpecialChips, isSpecialChip, useSpecialChips } from "@/features/pandas/special-chips";
 import { PandaRow } from "@/features/pandas/panda-row";
 import { usePopularPandas } from "@/features/pandas/popular";
 import { pandaIndexQueryOptions, searchPandas } from "@/features/pandas/pandas";
 import { SearchField } from "@/features/pandas/search-field";
-import { localToday } from "@/features/engagement/seen";
-import { ExploreCard } from "@/features/pandas/explore-card";
-import { useStoryPhotos } from "@/features/today/story-photos";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
-import { pageColumn } from "@/lib/surface";
-
-const GAP = 12;
 
 /**
  * 在中国 and 在海外 first, then each area in China that has a panda. Overseas cities stay under 在海外,
@@ -56,26 +48,16 @@ function inChip(panda: { area: string | null; slug: string }, chip: string, spec
  * own; Android and the web keep the in-page field.
  */
 const SYSTEM_SEARCH = Platform.OS === "ios";
-/** 今天 takes the day's first four story photos; 找熊猫 takes the next ones, so no panda repeats. */
-const TODAY_STORIES = 4;
 
 export default function FindScreen() {
-  const { width } = useWindowDimensions();
   const bottom = useBottomClearance();
   const refreshControl = usePullToRefresh();
   const insets = useSafeAreaInsets();
   // Android has no bar on a tab root, so the column clears the status bar itself.
   const top = Platform.OS === "android" ? insets.top + BARLESS_TOP : 0;
-  const photos = useStoryPhotos(localToday(), TODAY_STORIES + 4).slice(TODAY_STORIES);
-  const card = Math.round(Math.min(pageColumn(width) * 0.42, 200));
   const { data: pandas, isError: failed, refetch } = useQuery(pandaIndexQueryOptions());
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
-
-  // The entry appears once a release publishes institutions; until then there is nothing behind it.
-  const { data: institutions } = useQuery(institutionListQueryOptions());
-  const hasInstitutions = (institutions?.length ?? 0) > 0;
-
   const [area, setArea] = useState("全部");
   const special = useSpecialChips();
   const chips = useMemo(() => (pandas ? findChips(pandas, special) : []), [pandas, special]);
@@ -85,15 +67,6 @@ export default function FindScreen() {
   }, [pandas, deferredQuery, area, special]);
   const browsing = !deferredQuery.trim() && area === "全部";
   const popular = usePopularPandas(pandas);
-  const explore = [
-    { id: "returning", title: "归国熊猫", icon: Plane, href: "/returning" as const },
-    { id: "look-alikes", title: "双胞胎", spoken: "双胞胎和像的熊猫", icon: Users, href: "/look-alikes" as const },
-    { id: "map", title: "熊猫在哪里", icon: MapPin, href: "/map" as const },
-    ...(hasInstitutions ? [{ id: "institutions", title: "场馆", spoken: "基地和动物园", icon: House, href: "/institutions" as const }] : []),
-    { id: "relationship", title: "查关系", spoken: "查两只熊猫的关系", icon: Network, href: "/relationship" as const },
-    // The user picks both pandas on /compare; nothing here proposes a pair.
-    { id: "compare", title: "比一比", spoken: "比一比两只熊猫", icon: Columns, href: "/compare" as const },
-  ];
 
   const searchBar = SYSTEM_SEARCH ? (
     <Stack.SearchBar
@@ -141,32 +114,6 @@ export default function FindScreen() {
                 >
                   {["全部", ...chips].map((chip) => (
                     <Chip key={chip} label={chip} appearance="ink" selected={area === chip} onPress={() => setArea(chip)} />
-                  ))}
-                </ScrollView>
-              ) : null}
-              {browsing ? <SectionHeader title="探索" /> : null}
-              {browsing ? (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  className="-mx-gutter"
-                  contentContainerClassName="px-gutter"
-                  contentContainerStyle={{ gap: GAP }}
-                  snapToInterval={card + GAP}
-                  snapToAlignment="start"
-                  decelerationRate="fast"
-                >
-                  {explore.map((entry, index) => (
-                    <ExploreCard
-                      key={entry.id}
-                      id={entry.id}
-                      title={entry.title}
-                      spoken={"spoken" in entry ? entry.spoken : undefined}
-                      icon={entry.icon}
-                      href={entry.href}
-                      photo={photos[index]}
-                      width={card}
-                    />
                   ))}
                 </ScrollView>
               ) : null}

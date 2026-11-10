@@ -12,7 +12,7 @@ The mockups are in [`mockups/v4/`](mockups/v4/), and [`00-overview.webp`](mockup
 
 ## Tab bar
 
-There are four tabs: 今天, 找熊猫, 图鉴 and 我的. The bar is the system bar described in DESIGN.md › Navigation. The glyphs follow the mockups: calendar for 今天, search, book for 图鉴, and the person for 我的.
+There are five tabs: 今天, 发现, 找熊猫, 图鉴 and 我的. The bar is the system bar described in DESIGN.md › Navigation. The glyphs follow the mockups: calendar for 今天, compass for 发现, search, book for 图鉴, and the person for 我的. 发现 came after v4; its plan and canvas are the 发现页 design artifact (2026-11-10).
 
 ## 今天 — `01-today`, `01-today-dark`
 
@@ -30,10 +30,24 @@ Status: all five steps are built. The quick entries are 观猫时机 (the venue 
 1. The large title 找熊猫.
 2. A search field with the placeholder 名字、拼音或场馆.
 3. Filter chips (`Chip`), single select: 全部, 在中国, 在海外, 双胞胎, 归国. A chip shows only when its filter has a real query behind it.
-4. **探索.** A horizontal scroller of photo cards, each with a bare glyph and a title on the photo: 归国熊猫, 双胞胎, 场馆, and the existing explore entries (熊猫在哪里, 查两只熊猫的关系, 比一比两只熊猫). A card shows only when its page exists.
-5. **大家常看.** One inset group of panda rows: a 44pt round photo, the name with a sex glyph, the current place as a subheadline, and a chevron. The signal is follows: the published pandas that the most fans began following in the last 30 days, counting only pandas with at least five such fans (`GET /api/v2/popular-pandas`, no counts published). The block shows the top five and only while 全部 is selected with no search. It is hidden when no panda reaches the floor. The full list follows directly under it as 全部熊猫, so the block has no 全部 link.
+4. **大家常看.** One inset group of panda rows: a 44pt round photo, the name with a sex glyph, the current place as a subheadline, and a chevron. The signal is follows: the published pandas that the most fans began following in the last 30 days, counting only pandas with at least five such fans (`GET /api/v2/popular-pandas`, no counts published). The block shows the top five and only while 全部 is selected with no search. It is hidden when no panda reaches the floor. The full list follows directly under it as 全部熊猫, so the block has no 全部 link.
 
 Status: built. 大家常看 stays hidden until five fans follow one panda within 30 days. The chips are 在中国, 在海外, 双胞胎 (pandas in a sourced twin pair), 归国 (pandas the overseas catalog marks returned), then each area in China; each shows only when it keeps a panda.
+
+## 发现 (after v4)
+
+The standing directory of the app's pages. 今天 pushes what is timely; 发现 keeps every page one tap away, including the ones 今天 only shows on a day that has something. Every block except 工具 is photographs: reviewed covers from `useStoryPhotos` (after the four 今天 uses, so no panda repeats), each with a 照片：name footnote. 找熊猫's old 探索 scroller moved here.
+
+1. The large title 发现.
+2. **本期专题.** The featured `StoryCard`: one 专题 that has content, turning over each day among 归国熊猫, 双胞胎 and 场馆动态.
+3. **专题.** 4:5 photo cards for the other 专题 with content, then 熊猫在哪里. 归国熊猫 needs overseas-status items and 场馆动态 venue-news items.
+4. **玩一玩.** Four square photo cards, always there: 每日一猫, 猜熊猫, 认脸挑战, 月度挑战.
+5. **时间里的熊猫.** Wide photo cards for 那年今天, 生日周 and 本周新鲜事, each only on a day it has something; then capsule links to 熊猫日历 and, once the year holds a record of the fan's own, 年度回顾.
+6. **按场馆逛.** One square tile per published institution with the photo its page leads with, or the first character of its name; 全部 opens the list.
+7. **认识大熊猫.** The first three published 科普 articles as rows, with 全部. Hidden when nothing is published.
+8. **工具.** One inset group: 比一比, 查关系.
+
+Status: phase 1 built. Phase 2 adds each block's status (counts, 玩一玩 progress) from the loaders the pages already use, and orders venues by the followed pandas.
 
 ## 图鉴 — `03-book`
 

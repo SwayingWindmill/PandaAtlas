@@ -12,7 +12,7 @@ export const NATIVE_SYMBOLS = Platform.OS !== "web" && !isRunningInExpoGo();
 
 /** `assets/symbols/<name>.svg` as an iOS symbol (`nano.<name>`) and an Android drawable (`nano_<name>`). */
 export function nanoSymbol(
-  name: "today" | "search" | "atlas" | "me" | "share" | "back",
+  name: "today" | "discover" | "search" | "atlas" | "me" | "share" | "back",
 ) {
   return { xcasset: `nano.${name}`, drawable: `nano_${name}` };
 }
