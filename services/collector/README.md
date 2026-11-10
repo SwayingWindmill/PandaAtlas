@@ -95,7 +95,7 @@ cd ~/collectors/MediaCrawler && uv sync && uv run playwright install chromium
 
 **6. AIHOT。** 按 [AIHOT 的文档](https://github.com/KKKKhazix/AIHOT) 部署一个实例，在它的 `.env` 里设 `INGEST_TOKEN`（至少 16 位）。熊猫相关的分类和精选标准写在 AIHOT 实例的 `industry/` 目录里。
 
-**7. 启动采集器。** 环境变量见下表，可以写进 `services/collector/.env` 后再 `set -a; . ./.env`：
+**7. 启动采集器。** 环境变量见下表，写在 `infra/collector/.env` 里。下面的命令都要带上它：Linux 上先 `set -a; . ../../infra/collector/.env; set +a`，Windows 上给每条命令加 `uv run --env-file ../../infra/collector/.env`。带空格的值要加双引号，地址写 `127.0.0.1` 而不是 `localhost`（有的 Windows 机器上 `localhost` 会先试 IPv6 并卡住）。
 
 ```bash
 cd services/collector
