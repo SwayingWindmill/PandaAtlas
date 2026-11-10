@@ -6,7 +6,8 @@ import Animated, { useReducedMotion } from "react-native-reanimated";
 import { Icon } from "@/components/icon";
 import { Check, ChevronRight, type LucideIcon } from "@/components/icons";
 import { Text } from "@/components/ui/text";
-import { component, cubicBezierCss, semantic } from "@/design/tokens";
+import { component, semantic } from "@/design/tokens";
+import { cssEasing } from "@/design/motion";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -254,7 +255,7 @@ function SwitchTrack({ on }: { on: boolean }) {
   const inset = (height - knob) / 2;
   const transition = {
     transitionDuration: reduced ? 0 : semantic.motion.move.duration,
-    transitionTimingFunction: cubicBezierCss("inOut"),
+    transitionTimingFunction: cssEasing("inOut"),
   } as const;
   return (
     <Animated.View

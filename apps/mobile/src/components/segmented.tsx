@@ -3,7 +3,8 @@ import { type LayoutChangeEvent, Pressable, View } from "react-native";
 import Animated, { useReducedMotion } from "react-native-reanimated";
 
 import { Text } from "@/components/ui/text";
-import { cubicBezierCss, component, semantic } from "@/design/tokens";
+import { component, semantic } from "@/design/tokens";
+import { cssEasing } from "@/design/motion";
 import { selectionHaptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 
@@ -57,7 +58,7 @@ export function Segmented<T extends string>({
             transform: [{ translateX: index * segment }],
             transitionProperty: "transform",
             transitionDuration: reduced ? 0 : semantic.motion.move.duration,
-            transitionTimingFunction: cubicBezierCss("inOut"),
+            transitionTimingFunction: cssEasing("inOut"),
           }}
         />
       ) : null}
