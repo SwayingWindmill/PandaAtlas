@@ -17,6 +17,7 @@ from collector.adapters.douyin_api import DouyinApiAdapter
 from collector.adapters.mediacrawler import item_from_row, read_new_rows
 from collector.adapters.rss import RssAdapter
 from collector.adapters.weibo_crawler import WeiboCrawlerAdapter, read_output
+from collector.adapters.weibo_rsshub import WeiboRsshubAdapter
 from collector.adapters.xhs_mcp import XhsMcpAdapter
 from collector.models import CollectError, ErrorKind, Target, TargetKind, Tier
 
@@ -64,6 +65,70 @@ async def test_rss_parses_and_uses_conditional_get() -> None:
 
         again = await adapter.fetch(feed, page.cursor, CTX)
         assert again.not_modified and not again.empty
+
+
+# The shape RSSHub's /weibo/user route writes: guid and link are https://weibo.com/<uid>/<bid>,
+# and a repost quotes the original post with its author's profile link.
+WEIBO_FEED = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>成都大熊猫繁育研究基地的微博</title>
+<link>https://weibo.com/1798176285/</link>
+<item><title>“娅娅”缓步走入树荫</title>
+<description><![CDATA[“娅娅”缓步走入树荫，慢悠悠进食<br><img src="https://wx1.sinaimg.cn/large/a.jpg">]]></description>
+<pubDate>Thu, 05 Nov 2026 05:57:18 GMT</pubDate>
+<guid isPermaLink="false">https://weibo.com/1798176285/RpY6vinmu</guid>
+<link>https://weibo.com/1798176285/RpY6vinmu</link></item>
+<item><title>转发 - 福宝的新家</title>
+<description><![CDATA[转发微博<br><blockquote> - 转发
+<a href="https://weibo.com/6026046656" target="_blank">@中国大熊猫保护研究中心</a>:&ensp;
+福宝的新家<br></blockquote>]]></description>
+<pubDate>Wed, 04 Nov 2026 09:06:17 GMT</pubDate>
+<guid isPermaLink="false">https://weibo.com/1798176285/RpPUIfel3</guid>
+<link>https://weibo.com/1798176285/RpPUIfel3</link></item>
+</channel></rss>""".encode()
+
+
+async def test_weibo_rsshub_reads_an_account_as_weibo_posts() -> None:
+    fetched: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        fetched.append(str(request.url))
+        return httpx.Response(200, content=WEIBO_FEED)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        adapter = WeiboRsshubAdapter(client, "http://rsshub:1200/")
+        page = await adapter.fetch(
+            target("weibo_rsshub", TargetKind.ACCOUNT, "1798176285"), None, CTX
+        )
+
+    assert fetched == ["http://rsshub:1200/weibo/user/1798176285"]
+    own, repost = page.items
+    assert own.platform == "weibo"
+    assert own.platform_item_id == "RpY6vinmu"
+    assert own.url == "https://weibo.com/1798176285/RpY6vinmu"
+    assert own.author_id == "1798176285"
+    assert own.author_name == "成都大熊猫繁育研究基地"
+    assert own.media == [{"type": "image", "url": "https://wx1.sinaimg.cn/large/a.jpg"}]
+    assert own.published_at == datetime(2026, 11, 5, 5, 57, 18, tzinfo=UTC)
+    assert own.raw["original_author"] is None
+    # AIHOT tiers a repost by the account that wrote the original.
+    assert repost.raw["original_author"] == {
+        "accountId": "6026046656",
+        "name": "中国大熊猫保护研究中心",
+    }
+
+
+async def test_weibo_rsshub_needs_an_rsshub_host_and_an_account() -> None:
+    async with httpx.AsyncClient() as client:
+        with pytest.raises(CollectError) as no_host:
+            await WeiboRsshubAdapter(client, None).fetch(
+                target("weibo_rsshub", TargetKind.ACCOUNT, "1"), None, CTX
+            )
+        with pytest.raises(CollectError) as keyword:
+            await WeiboRsshubAdapter(client, "http://rsshub:1200").fetch(
+                target("weibo_rsshub", TargetKind.KEYWORD, "福宝"), None, CTX
+            )
+    assert no_host.value.kind is ErrorKind.NOT_FOUND
+    assert keyword.value.kind is ErrorKind.NOT_FOUND
 
 
 def xhs_feed(note_id: str) -> dict[str, Any]:

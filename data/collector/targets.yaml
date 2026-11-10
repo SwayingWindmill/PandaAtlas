@@ -2,7 +2,7 @@
 # targets removed here are disabled in the database, never deleted.
 #
 # Target fields
-#   adapter           rss | bjzoo | xhs_mcp | douyin_api | weibo_crawler | mediacrawler
+#   adapter           rss | bjzoo | weibo_rsshub | xhs_mcp | douyin_api | weibo_crawler | mediacrawler
 #   kind              account | keyword | feed
 #   value             account id, search term, feed URL, or an RSSHub route as "rsshub:/route"
 #   label             name shown in alerts and as the AIHOT source name
@@ -23,6 +23,7 @@
 #     all             max_pages (3), empty_alert_after (per tier), timeout (subprocess seconds)
 #     rss             platform: platform name to record (default "web")
 #     bjzoo           value is the list page's name on www.bjzoo.com (no params)
+#     weibo_rsshub    value is the Weibo uid; RSSHub's /weibo/user route, no login, latest ~10 posts
 #     xhs_mcp         xsec_token (accounts, required), detail_limit (10), filters (search)
 #     douyin_api      platform: douyin | bilibili (default douyin), count (20)
 #     weibo_crawler   since_days (3, first run only), only_original (0)
@@ -56,107 +57,107 @@ targets:
     role: institution
     interval_minutes: 240
   # Weibo, official institutions and panda live channels ------------------------------------
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "1798176285"
     label: 成都大熊猫繁育研究基地（微博）
     tier: official
     role: institution
     institution: chengdu-research-base
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "6026046656"
     label: 中国大熊猫保护研究中心（微博）
     tier: official
     role: institution
     institution: ccrcgp
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "3148426650"
     label: 卧龙大熊猫俱乐部（中国大熊猫保护研究中心）（微博）
     tier: official
     role: institution
     institution: ccrcgp
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "7737964317"
     label: 大熊猫国家公园成都管理分局（微博）
     tier: official
     role: institution
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "2660775741"
     label: 四川唐家河国家级自然保护区（微博）
     tier: official
     role: institution
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "2741831927"
     label: 北京动物园（微博）
     tier: official
     role: institution
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "2603613931"
     label: 重庆动物园（微博）
     tier: official
     role: institution
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "2169174091"
     label: 上海动物园（微博）
     tier: official
     role: institution
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "1789198185"
     label: 上海野生动物园（微博）
     tier: official
     role: institution
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "1706625004"
     label: 西安秦岭野生动物园（微博）
     tier: official
     role: institution
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "1867677355"
     label: 南京市红山森林动物园（微博）
     tier: official
     role: institution
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "1711469735"
     label: 长隆野生动物世界（微博）
     tier: official
     role: institution
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "1676627893"
     label: 香港海洋公园（微博）
     tier: official
     role: institution
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "3222817584"
     label: iPanda熊猫频道（微博）
     tier: key_account
     role: official
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7012741040"
     label: 开饭了大熊猫（咪咕）（微博）
@@ -310,194 +311,194 @@ targets:
 
   # Weibo fan stations and big fan accounts (key_account, default 90 min): panda-only accounts
   # with 2万+ followers from the visitor user search on 2026-11-05. Name collisions dropped.
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "3423696990"
     label: 成都大熊猫繁育研究基金会（微博）
     tier: official
     role: official
-    interval_minutes: 30
-  - adapter: weibo_crawler
+    interval_minutes: 60
+  - adapter: weibo_rsshub
     kind: account
     value: "6378485548"
     label: 熊猫守护者（微博）
     tier: key_account
     role: official
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7350238175"
     label: Pandaful熊猫社区（微博）
     tier: key_account
     role: media
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "1785980644"
     label: ruirui_和花叶同行（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "6261706051"
     label: 大熊猫萌兰（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "6450786067"
     label: 大熊猫奇一（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "5538081597"
     label: 朵朵虎e（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "5228992157"
     label: pandapia熊猫乌托邦（微博）
     tier: key_account
     role: media
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "2576968464"
     label: 泰迪家有熊_猫儿（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "5813689027"
     label: 谢梓嫣的窝（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "2158306174"
     label: 安娜丽丝k（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "1853550707"
     label: Jeany的微博（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7541886630"
     label: 萌萌哒花花小公主（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "1004785801"
     label: 深爱福宝的米粉（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7761063927"
     label: 大熊猫和花Bot（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "3093018477"
     label: 冲田君的糖白川（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "1912784953"
     label: 小帅-花叶小熊熊（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7013352332"
     label: 大熊猫胖大海（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "5822577618"
     label: 大熊猫和花我的宝（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7625510402"
     label: 纪录片守护大熊猫之福宝诞生记（微博）
     tier: key_account
     role: media
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7377707034"
     label: 萌兰的瓜姐（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7562281567"
     label: 大熊猫绩笑official（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "2809290847"
     label: GiantSnowball（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7836533596"
     label: 七仔快乐ka（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "5535049107"
     label: 福宝福猪猪（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "1291042467"
     label: 萌兰·么么儿_Carol（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "6048310085"
     label: 大熊猫蔓越煤宇宙厚圆会（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "1080845642"
     label: 萌兰最帅小仙熊（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "8286945342"
     label: 北京动物园萌兰（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "2187762820"
     label: Love和花和叶（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7879968235"
     label: 莫斯科动物园大熊猫（微博）
     tier: key_account
     role: fan
-  - adapter: weibo_crawler
+  - adapter: weibo_rsshub
     kind: account
     value: "7847474869"
     label: 婷福宝幸福驿站（微博）

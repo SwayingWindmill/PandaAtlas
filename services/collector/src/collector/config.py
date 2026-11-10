@@ -16,6 +16,7 @@ from collector.adapters.douyin_api import DouyinApiAdapter
 from collector.adapters.mediacrawler import MediaCrawlerAdapter
 from collector.adapters.rss import RssAdapter
 from collector.adapters.weibo_crawler import WeiboCrawlerAdapter
+from collector.adapters.weibo_rsshub import WeiboRsshubAdapter
 from collector.adapters.xhs_mcp import XhsMcpAdapter
 from collector.models import DEFAULT_INTERVAL_MINUTES, Role, Target, TargetKind, Tier
 
@@ -88,6 +89,7 @@ def build_adapters(settings: Settings, client: httpx.AsyncClient) -> dict[str, A
     adapters: dict[str, Adapter] = {
         "rss": RssAdapter(client, settings.rsshub_url),
         "bjzoo": BjzooAdapter(client),
+        "weibo_rsshub": WeiboRsshubAdapter(client, settings.rsshub_url),
     }
     if settings.xhs_mcp_url:
         adapters["xhs_mcp"] = XhsMcpAdapter(client, settings.xhs_mcp_url, settings.xhs_mcp_token)
@@ -109,7 +111,15 @@ def build_adapters(settings: Settings, client: httpx.AsyncClient) -> dict[str, A
     return adapters
 
 
-ADAPTER_NAMES = {"rss", "bjzoo", "xhs_mcp", "douyin_api", "weibo_crawler", "mediacrawler"}
+ADAPTER_NAMES = {
+    "rss",
+    "bjzoo",
+    "weibo_rsshub",
+    "xhs_mcp",
+    "douyin_api",
+    "weibo_crawler",
+    "mediacrawler",
+}
 
 
 class ConfigError(ValueError):
