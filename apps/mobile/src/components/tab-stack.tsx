@@ -13,7 +13,8 @@ export function TabStack({ title }: { title: string }) {
         ...stackScreenOptions(scheme),
         title,
         headerLargeTitleEnabled: Platform.OS === "ios",
-        headerShown: Platform.OS !== "web",
+        // Off iOS a tab root has no bar; its column draws the title (`ROOT_TITLE_IN_COLUMN`).
+        headerShown: Platform.OS === "ios",
       }}
     />
   );

@@ -46,7 +46,7 @@ export default function VenueNewsScreen() {
   ];
 
   return (
-    <Page title="场馆动态">
+    <Page title="场馆动态" prominent>
       {news.isError ? (
         <LoadFailed message="场馆动态暂时打不开。" onRetry={() => void news.refetch()} />
       ) : !news.data ? (

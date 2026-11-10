@@ -95,7 +95,7 @@ export default function LookAlikesScreen() {
 
   if (data.isError || catalog.state.status === "failed") {
     return (
-      <Page title="双胞胎">
+      <Page title="双胞胎" prominent>
         <LoadFailed
           message="没加载出来"
           onRetry={() => {
@@ -108,7 +108,7 @@ export default function LookAlikesScreen() {
   }
   if (!data.data || catalog.state.status === "loading") {
     return (
-      <Page title="双胞胎">
+      <Page title="双胞胎" prominent>
         <Skeleton className="h-60 rounded-group" />
       </Page>
     );
@@ -122,7 +122,7 @@ function Pairs({ pairs }: { pairs: LookAlikePair[] }) {
   const [kind, setKind] = useState<LookAlikePair["kind"]>(kinds[0]?.value ?? "twins");
   const shown = pairs.filter((pair) => pair.kind === kind);
   return (
-    <Page title="双胞胎">
+    <Page title="双胞胎" prominent>
       <Animated.View entering={PAGE_ENTER} className="gap-row">
         {pairs.length === 0 ? <ScreenState message="暂无" /> : null}
         {kinds.length > 1 ? (

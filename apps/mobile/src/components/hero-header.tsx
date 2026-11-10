@@ -1,5 +1,6 @@
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { router, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { ActionSheetIOS, Modal, Platform, Pressable, View } from "react-native";
 import { useAnimatedReaction, useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
@@ -8,6 +9,7 @@ import { scheduleOnRN } from "react-native-worklets";
 
 import { Icon } from "@/components/icon";
 import { ChevronLeft, Ellipsis, type LucideIcon, Share } from "@/components/icons";
+import { StatusBarCover } from "@/components/status-bar-cover";
 import { Text } from "@/components/ui/text";
 import { component } from "@/design/tokens";
 import { selectionHaptic } from "@/lib/haptics";
@@ -98,6 +100,8 @@ export function HeroHeader({
     return (
       <>
         <Stack.Screen options={{ headerShown: false, title }} />
+        {/* With no bar, the status bar sits on the photo, then on the page once the photo has scrolled away. */}
+        {pastHero ? <StatusBarCover /> : <StatusBar style="light" />}
         <FloatingToolbar onShare={onShare} menu={menu} />
       </>
     );
