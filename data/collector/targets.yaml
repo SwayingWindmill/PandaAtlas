@@ -2,7 +2,7 @@
 # targets removed here are disabled in the database, never deleted.
 #
 # Target fields
-#   adapter           rss | xhs_mcp | douyin_api | weibo_crawler | mediacrawler
+#   adapter           rss | bjzoo | xhs_mcp | douyin_api | weibo_crawler | mediacrawler
 #   kind              account | keyword | feed
 #   value             account id, search term, feed URL, or an RSSHub route as "rsshub:/route"
 #   label             name shown in alerts and as the AIHOT source name
@@ -22,6 +22,7 @@
 #   params            adapter options:
 #     all             max_pages (3), empty_alert_after (per tier), timeout (subprocess seconds)
 #     rss             platform: platform name to record (default "web")
+#     bjzoo           value is the list page's name on www.bjzoo.com (no params)
 #     xhs_mcp         xsec_token (accounts, required), detail_limit (10), filters (search)
 #     douyin_api      platform: douyin | bilibili (default douyin), count (20)
 #     weibo_crawler   since_days (3, first run only), only_original (0)
@@ -39,6 +40,21 @@
 # Douyin and Xiaohongshu ids were found the same day through a signed-in search.
 
 targets:
+  # Beijing Zoo's site, which AIHOT cannot read (see adapters/bjzoo.py) -------------------------
+  - adapter: bjzoo
+    kind: account
+    value: activityNewsInsideOutsidePark
+    label: 北京动物园（园内外新闻）
+    tier: official
+    role: institution
+    interval_minutes: 240
+  - adapter: bjzoo
+    kind: account
+    value: activityParkAnnouncement
+    label: 北京动物园（园内公告）
+    tier: official
+    role: institution
+    interval_minutes: 240
   # Weibo, official institutions and panda live channels ------------------------------------
   - adapter: weibo_crawler
     kind: account
