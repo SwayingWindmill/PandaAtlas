@@ -146,6 +146,7 @@ const colorLight = {
   photoStroke: alpha("black", 0.1),
   glassFallback: alpha("black", 0.38),
   barMaterial: alpha("white", 0.86),
+  capsuleMaterial: alpha("white", 0.94),
 } as const;
 export type ColorRole = keyof typeof colorLight;
 
@@ -172,6 +173,7 @@ const colorDark: Record<ColorRole, string> = {
   photoStroke: alpha("white", 0.1),
   glassFallback: alpha("black", 0.38),
   barMaterial: "rgba(21,21,23,0.86)", // card (dark) at 86%
+  capsuleMaterial: "rgba(21,21,23,0.94)", // card (dark) at 94%
 };
 
 /** What each color role is for. Read by the generator (DESIGN.md) and the showcase. */
@@ -198,6 +200,7 @@ export const colorRoleNotes: Record<ColorRole, string> = {
   photoStroke: "The 1px inside edge on a rounded photograph.",
   glassFallback: "The translucent disc behind a toolbar glyph where Liquid Glass is unavailable.",
   barMaterial: "The web tab bar, under a backdrop blur.",
+  capsuleMaterial: "Android's floating tab capsule, which has no blur.",
 };
 
 /** The bottom scrim over a photograph: black, clear at the top to 72% at the bottom. */
@@ -378,6 +381,20 @@ export const component = {
   icon: { footnote: 15, subhead: 18, body: 22, title3: 24, chevron: 17 },
   /** The web tab bar (native tabs draw their own). */
   tabBar: { icon: 25, iconStroke: 1.9, label: 10, labelLine: 14, webHeight: 54 },
+  /**
+   * Android's floating tab bar: a 64pt capsule 16pt in from the sides and 8pt above the navigation
+   * bar, the selected glyph in a 56×32 pill, an 11pt label 2pt under it.
+   */
+  capsuleBar: {
+    height: 64,
+    inset: space[4],
+    gap: space[2],
+    pill: { width: 56, height: 32 },
+    label: 11,
+    labelLine: 14,
+    labelGap: 2,
+    shadow: "0 4px 16px rgba(0, 0, 0, 0.12)",
+  },
   iconStroke: { regular: 1.75, bold: 2 },
   press: { scale: 0.97, reducedOpacity: 0.85 },
   enter: { rise: space[2] },
