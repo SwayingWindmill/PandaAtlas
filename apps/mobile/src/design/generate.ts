@@ -134,7 +134,7 @@ const yamlString = (value: string) => JSON.stringify(value);
 function colorEntries() {
   const entries: [string, string][] = [];
   for (const role of Object.keys(semantic.color.light) as ColorRole[]) {
-    if (role === "photoStroke" || role === "glassFallback" || role === "barMaterial") continue;
+    if (role === "photoStroke" || role === "glassFallback" || role === "barMaterial" || role === "capsuleMaterial") continue;
     const name = role === "tint" ? "primary" : kebab(role);
     entries.push([name, semantic.color.light[role]]);
     entries.push([`${name}-dark`, semantic.color.dark[role]]);

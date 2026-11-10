@@ -6,11 +6,14 @@ import { Text } from "@/components/ui/text";
 import { component } from "@/design/tokens";
 
 /**
- * Space left for the tab bar under the notice. The native tab bar's height cannot be read from a
- * root layout, so this is the iOS 26 floating bar's (the tallest of them) plus a gap; on a screen
- * without a tab bar the notice just sits a little higher.
+ * Space left for the tab bar under the notice. A tab bar's height cannot be read from a root
+ * layout, so this is each platform's bar plus a gap: the iOS 26 floating bar, Android's capsule
+ * with its gap, the web bar. On a screen without a tab bar the notice just sits a little higher.
  */
-const TAB_BAR_ROOM = Platform.OS === "web" ? component.tabBar.webHeight + 8 : 64;
+const TAB_BAR_ROOM = {
+  web: component.tabBar.webHeight + 8,
+  android: component.capsuleBar.height + component.capsuleBar.gap * 2,
+}[Platform.OS as string] ?? 64;
 
 /**
  * A small notice above the tab bar while the device has no connection. Screens keep showing what
