@@ -420,10 +420,6 @@ export function concentric(outer: number, padding: number) {
   return Math.max(outer - padding, 0);
 }
 
-export function cubicBezierCss(name: keyof typeof easing) {
-  return `cubic-bezier(${easing[name].join(", ")})`;
-}
-
 export const tokens = { primitive, semantic, component } as const;
 
 /** WCAG 2 contrast ratio between two opaque hex colors. */

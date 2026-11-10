@@ -1,11 +1,20 @@
 import { Platform } from "react-native";
-import { Easing, Keyframe, ReduceMotion } from "react-native-reanimated";
+import { cubicBezier, Easing, Keyframe, ReduceMotion } from "react-native-reanimated";
 
-import { cubicBezierCss, primitive, semantic, component } from "@/design/tokens";
+import { primitive, semantic, component } from "@/design/tokens";
 
 const bezier = (name: keyof typeof primitive.easing) => {
   const [x1, y1, x2, y2] = primitive.easing[name];
   return Easing.bezier(x1, y1, x2, y2);
+};
+
+/**
+ * A token curve for a Reanimated CSS transition. Native Reanimated rejects a "cubic-bezier(…)" string and
+ * throws on render, so a transition takes the curve as an easing object on every platform.
+ */
+export const cssEasing = (name: keyof typeof primitive.easing) => {
+  const [x1, y1, x2, y2] = primitive.easing[name];
+  return cubicBezier(x1, y1, x2, y2);
 };
 
 /** Strong ease-out: fast start, gentle settle. UI motion never eases in. */
@@ -25,7 +34,7 @@ export const PRESS = {
   scale: component.press.scale,
   reducedOpacity: component.press.reducedOpacity,
   duration: semantic.motion.press.duration,
-  timing: cubicBezierCss("out"),
+  timing: cssEasing("out"),
 } as const;
 
 /**
