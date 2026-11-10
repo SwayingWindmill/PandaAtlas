@@ -51,7 +51,7 @@ MediaCrawler ──────┘     （仅第一阶段对照）
 
 `uv run collector registry --out <路径>` 从 targets.yaml 生成 JSON：`accounts` 是账号登记表（平台、账号 id、角色、机构），`sources` 是 AIHOT 的信源（`id` 与推送时的 `sourceId` 相同，分级 `institution`→`T1`、`official`→`T1_5`，其余→`T2`，`participation_mode` 为 `editorial`）。输出顺序固定，可以直接提交或比对。
 
-推给 AIHOT 的每条内容除标题、链接和时间外，还带 `bodyText`、`excerpt`（正文前 200 字）、`media`（只收 http/https 的图片和视频），以及 `raw.externalId`（`<平台>:<平台内容 id>`）、`raw.author`。转发的帖子再带 `raw.originalAuthor`；目前只有微博（weibo-crawler 的 `retweet`）取得到原作者，其他平台不带这个字段。
+推给 AIHOT 的每条内容除标题、链接和时间外，还带 `bodyText`、`excerpt`（正文前 200 字）、`media`（只收 http/https 的图片和视频），以及 `raw.externalId`（`<平台>:<平台内容 id>`）、`raw.author`。转发的帖子再带 `raw.originalAuthor`；目前只有微博取得到原作者（weibo-crawler 的 `retweet`，或 RSSHub 转发引用里的作者链接），其他平台不带这个字段。
 
 ## 在采集主机上部署
 
@@ -79,7 +79,7 @@ git clone https://github.com/Evil0ctal/Douyin_TikTok_Download_API ~/collectors/d
 cd ~/collectors/dtk && docker compose -p dtk -f docker/compose.yml up -d
 ```
 
-**4. 微博。** clone 一份专给采集器用的 weibo-crawler（每次运行都会改写它的 `config.json`），装好依赖：
+**4. 微博。** 账号目标默认走 `weibo_rsshub`：通过第 1 步的 RSSHub 读 `/weibo/user/<uid>`，用微博访客身份，不需要登录，每次只拿到最新一页（约 10 条）。要补历史或搜关键词时，再 clone 一份专给采集器用的 weibo-crawler（每次运行都会改写它的 `config.json`），装好依赖，并配 `WEIBO_COOKIE`：
 
 ```bash
 git clone https://github.com/dataabc/weibo-crawler ~/collectors/weibo-crawler

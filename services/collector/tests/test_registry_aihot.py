@@ -71,7 +71,7 @@ targets:
      role: institution, institution: ccrcgp, params: {xsec_token: t}}
   - {adapter: weibo_crawler, kind: account, value: "2", label: 微博官方, role: official}
   - {adapter: douyin_api, kind: account, value: sec3, label: 抖音粉丝, role: fan}
-  - {adapter: weibo_crawler, kind: account, value: "1", label: 微博媒体, role: media}
+  - {adapter: weibo_rsshub, kind: account, value: "1", label: 微博媒体, role: media}
   - {adapter: weibo_crawler, kind: account, value: "9", label: 未分类}
 keyword_groups:
   - adapters: [xhs_mcp]
@@ -104,7 +104,7 @@ def test_registry_lists_accounts_and_sources_in_stable_order(tmp_path: Path) -> 
         aihot.source_id("xhs_mcp:account:xhs2"): "T1",
         aihot.source_id("weibo_crawler:account:2"): "T1_5",
         aihot.source_id("douyin_api:account:sec3"): "T2",
-        aihot.source_id("weibo_crawler:account:1"): "T2",
+        aihot.source_id("weibo_rsshub:account:1"): "T2",
         aihot.source_id("weibo_crawler:account:9"): "T2",
         aihot.source_id("xhs_mcp:keyword:福宝"): "T2",
     }

@@ -26,7 +26,7 @@ SOURCE_TIER: dict[Role | None, str] = {
 def target_platform(target: Target) -> str:
     """The platform name items of this target carry in `items.platform`."""
     params = target.params
-    if target.adapter == "weibo_crawler":
+    if target.adapter in ("weibo_crawler", "weibo_rsshub"):
         return "weibo"
     if target.adapter == "xhs_mcp":
         return "xiaohongshu"

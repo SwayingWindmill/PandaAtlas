@@ -78,6 +78,9 @@ class RssAdapter:
             return self.rsshub_url + target.value.removeprefix("rsshub:")
         return target.value
 
+    def parse(self, content: bytes, target: Target) -> list[Item]:
+        return parse_feed(content, target.params.get("platform", self.platform))
+
     async def fetch(self, target: Target, cursor: JsonDict | None, ctx: FetchContext) -> Page:
         cursor = dict(cursor or {})
         headers = {}
@@ -97,7 +100,7 @@ class RssAdapter:
             return Page([], cursor, not_modified=True)
         if response.status_code != 200:
             raise http_error(response, "rss")
-        items = parse_feed(response.content, target.params.get("platform", self.platform))
+        items = self.parse(response.content, target)
         cursor = advance(cursor, items)
         for header, key in (("etag", "etag"), ("last-modified", "last_modified")):
             if response.headers.get(header):
