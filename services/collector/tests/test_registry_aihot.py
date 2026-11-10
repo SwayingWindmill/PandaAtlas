@@ -8,7 +8,8 @@ from pathlib import Path
 from typing import Any
 
 from collector import aihot, registry
-from collector.config import load_targets
+from collector.aihot import source_id
+from collector.config import REPO_ROOT, load_targets
 from collector.models import Role, Target, TargetKind, Tier
 
 
@@ -134,3 +135,9 @@ def test_sources_sql_upserts_every_target_as_editorial() -> None:
     assert "'T1', 'editorial'" in sql and "'T2', 'editorial'" in sql
     assert "'粉丝''s 关键词（关键词）'" in sql
     assert sql.rstrip().endswith("participation_mode = EXCLUDED.participation_mode;")
+
+
+def test_every_target_gets_its_own_aihot_source() -> None:
+    targets = load_targets(REPO_ROOT / "data/collector/targets.yaml")
+    assert len({source_id(t.id) for t in targets}) == len(targets)
+    assert source_id("weibo_crawler:account:123") == "zhipanda-weibo-crawler-account-123"
