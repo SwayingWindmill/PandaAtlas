@@ -22,6 +22,7 @@ import { TodayCards, TodayVenueNews, type ViewingSpot, useFollowedViewing } from
 import { WeekCard } from "@/features/today/week-card";
 import { WeekHero, useWeekMemory } from "@/features/today/week-hero";
 import { useBottomClearance } from "@/lib/bottom-clearance";
+import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { pageColumn } from "@/lib/surface";
 
 const STORIES = [
@@ -105,6 +106,7 @@ const GAP = 12;
 export default function TodayScreen() {
   const insets = useSafeAreaInsets();
   const bottom = useBottomClearance();
+  const refreshControl = usePullToRefresh();
   const { width, fontScale } = useWindowDimensions();
   const photos = useStoryPhotos(localToday(), STORIES.length);
   const column = pageColumn(width);
@@ -127,6 +129,7 @@ export default function TodayScreen() {
         className="flex-1 bg-background"
         contentInsetAdjustmentBehavior="automatic"
         contentContainerClassName="gap-section px-gutter"
+        refreshControl={refreshControl}
         contentContainerStyle={{ paddingTop: insets.top + 6, paddingBottom: bottom }}
       >
         {/* The column draws the title so the date can sit over it, with the avatar beside. */}

@@ -23,6 +23,7 @@ import { localToday } from "@/features/engagement/seen";
 import { ExploreCard } from "@/features/pandas/explore-card";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { useBottomClearance } from "@/lib/bottom-clearance";
+import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { pageColumn } from "@/lib/surface";
 
 const GAP = 12;
@@ -61,6 +62,7 @@ const TODAY_STORIES = 4;
 export default function FindScreen() {
   const { width } = useWindowDimensions();
   const bottom = useBottomClearance();
+  const refreshControl = usePullToRefresh();
   const insets = useSafeAreaInsets();
   // Android has no bar on a tab root, so the column clears the status bar itself.
   const top = Platform.OS === "android" ? insets.top + BARLESS_TOP : 0;
@@ -121,6 +123,7 @@ export default function FindScreen() {
           className="flex-1 bg-background"
           contentInsetAdjustmentBehavior="automatic"
           contentContainerClassName="px-gutter"
+          refreshControl={refreshControl}
           contentContainerStyle={{ paddingTop: top, paddingBottom: bottom }}
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
