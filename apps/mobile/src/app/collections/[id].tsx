@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AccessibilityInfo, type HostInstance, Pressable, TextInput, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useCSSVariable } from "uniwind";
 
@@ -197,6 +197,13 @@ export default function CollectionScreen() {
   const [actionFailed, setActionFailed] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const stacked = useStacked();
+  const confirmHeading = useRef<HostInstance>(null);
+  // The confirmation replaces the button a screen-reader user just pressed, so their focus would land
+  // nowhere. Move it to the question, which reads the heading and the consequence in one stop.
+  useEffect(() => {
+    if (mode !== "confirmDelete") return;
+    if (confirmHeading.current) AccessibilityInfo.sendAccessibilityEvent(confirmHeading.current, "focus");
+  }, [mode]);
 
   const load = useCallback(() => {
     Promise.all([loadCollections(), loadPandaIndex()])
@@ -358,7 +365,7 @@ export default function CollectionScreen() {
             className="gap-row rounded-card bg-card p-stack"
             style={{ borderCurve: "continuous" }}
           >
-            <View className="gap-hair-gap">
+            <View ref={confirmHeading} accessible className="gap-hair-gap">
               <Text variant="headline" role="heading">{`删除「${collection.name}」？`}</Text>
               <Text variant="subheadline" className="text-muted-foreground">
                 只删除这个合集，里面的熊猫和你的关注、图鉴都不受影响。

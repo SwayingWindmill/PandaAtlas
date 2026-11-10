@@ -134,7 +134,11 @@ function TaskRow({
   );
 }
 
-/** 往期: a trophy per month joined before this one, ink when every task was done. */
+/**
+ * 往期: a trophy per month joined before this one, ink when every task was done. A done month also
+ * carries a check after its name, so the state never rests on the trophy's color alone, and an
+ * unfinished month's name stays in the secondary label, which keeps it readable.
+ */
 function Past({ months }: { months: { month: string; complete: boolean }[] }) {
   return (
     <View className="gap-row">
@@ -150,9 +154,12 @@ function Past({ months }: { months: { month: string; complete: boolean }[] }) {
             accessibilityLabel={`${monthName(month)}挑战，${complete ? "完成" : "未完成"}`}
           >
             <Icon icon={Trophy} size="title3" tone={complete ? "label" : "tertiary"} />
-            <Text variant="footnote" className={cn("font-semibold", complete ? "text-foreground" : "text-tertiary-foreground")}>
-              {monthName(month)}
-            </Text>
+            <View className="flex-row items-center gap-hair-gap">
+              <Text variant="footnote" className={cn("font-semibold", complete ? "text-foreground" : "text-muted-foreground")}>
+                {monthName(month)}
+              </Text>
+              {complete ? <Icon icon={Check} size="footnote" tone="label" /> : null}
+            </View>
           </View>
         ))}
       </View>

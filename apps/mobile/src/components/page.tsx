@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBarCover } from "@/components/status-bar-cover";
 import { Text } from "@/components/ui/text";
 import { useBottomClearance } from "@/lib/bottom-clearance";
+import { usePullToRefresh } from "@/lib/pull-to-refresh";
 
 /**
  * Where the screen title is drawn.
@@ -58,6 +59,7 @@ export function Page({
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const bottom = useBottomClearance();
+  const refreshControl = usePullToRefresh();
   const inContent = contentOwnsTitle(prominent || dateline !== undefined, back);
   // Off iOS a root screen (no back) has no bar at all, so the column clears the status area itself
   // and keeps a bar's worth of air above the large title instead of starting at the window's edge.
@@ -79,6 +81,7 @@ export function Page({
         className="flex-1 bg-background"
         contentInsetAdjustmentBehavior="automatic"
         contentContainerClassName="gap-6 px-gutter"
+        refreshControl={refreshControl}
         {...scroll}
         contentContainerStyle={[{ paddingBottom: bottom }, barless && { paddingTop: insets.top + BARLESS_TOP }, scroll.contentContainerStyle]}
       >
