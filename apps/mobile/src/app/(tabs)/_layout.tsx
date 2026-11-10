@@ -20,7 +20,11 @@ const TAB_ICON = {
   me: require("../../../assets/tab-icons/me.png"),
 };
 
-function TabIcon({ symbol, png }: { symbol: Parameters<typeof nanoSymbol>[0]; png: number }) {
+/**
+ * A tab's icon element. This is a function, not a component: `NativeTabs.Trigger` reads its direct
+ * children by type, so an icon inside a `<TabIcon>` wrapper is never found and the bar draws no glyph.
+ */
+function tabIcon(symbol: Parameters<typeof nanoSymbol>[0], png: number) {
   return NATIVE_SYMBOLS ? (
     <NativeTabs.Trigger.Icon {...nanoSymbol(symbol)} renderingMode="template" />
   ) : (
@@ -57,19 +61,19 @@ export default function TabsLayout() {
     >
       <NativeTabs.Trigger name="(today)">
         <NativeTabs.Trigger.Label>今天</NativeTabs.Trigger.Label>
-        <TabIcon symbol="today" png={TAB_ICON.today} />
+        {tabIcon("today", TAB_ICON.today)}
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="find">
         <NativeTabs.Trigger.Label>找熊猫</NativeTabs.Trigger.Label>
-        <TabIcon symbol="search" png={TAB_ICON.find} />
+        {tabIcon("search", TAB_ICON.find)}
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="book">
         <NativeTabs.Trigger.Label>图鉴</NativeTabs.Trigger.Label>
-        <TabIcon symbol="atlas" png={TAB_ICON.book} />
+        {tabIcon("atlas", TAB_ICON.book)}
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="me">
         <NativeTabs.Trigger.Label>我的</NativeTabs.Trigger.Label>
-        <TabIcon symbol="me" png={TAB_ICON.me} />
+        {tabIcon("me", TAB_ICON.me)}
       </NativeTabs.Trigger>
     </NativeTabs>
   );
