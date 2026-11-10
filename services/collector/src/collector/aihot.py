@@ -6,6 +6,7 @@ target becomes one AIHOT source, so its tier and participation mode are set once
 
 from __future__ import annotations
 
+import hashlib
 import logging
 import re
 from collections import defaultdict
@@ -27,7 +28,11 @@ TIER_LABELS = {
 
 
 def source_id(target_id: str) -> str:
-    return "zhipanda-" + re.sub(r"[^a-z0-9]+", "-", target_id.lower()).strip("-")[:100]
+    slug = re.sub(r"[^a-z0-9]+", "-", target_id.lower()).strip("-")[:100]
+    if target_id.isascii():
+        return f"zhipanda-{slug}"
+    # A Chinese keyword leaves nothing in the slug, so the hash keeps such targets apart.
+    return f"zhipanda-{slug}-{hashlib.sha1(target_id.encode()).hexdigest()[:8]}"
 
 
 EXCERPT_CHARS = 200
