@@ -98,7 +98,7 @@ export default function ReturningScreen() {
   const sources = [...new Map(shown.map((item) => [item.sourceUrl, item])).values()];
 
   return (
-    <Page title="归国熊猫">
+    <Page title="归国熊猫" prominent>
       {status.isError ? (
         <LoadFailed message="归国熊猫暂时打不开。" onRetry={() => void status.refetch()} />
       ) : !status.data ? (
