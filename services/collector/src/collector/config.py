@@ -11,6 +11,7 @@ import httpx
 import yaml
 
 from collector.adapters.base import Adapter
+from collector.adapters.bjzoo import BjzooAdapter
 from collector.adapters.douyin_api import DouyinApiAdapter
 from collector.adapters.mediacrawler import MediaCrawlerAdapter
 from collector.adapters.rss import RssAdapter
@@ -84,7 +85,10 @@ class Settings:
 
 def build_adapters(settings: Settings, client: httpx.AsyncClient) -> dict[str, Adapter]:
     """Only collectors this host is set up for; targets of the others wait and are not failed."""
-    adapters: dict[str, Adapter] = {"rss": RssAdapter(client, settings.rsshub_url)}
+    adapters: dict[str, Adapter] = {
+        "rss": RssAdapter(client, settings.rsshub_url),
+        "bjzoo": BjzooAdapter(client),
+    }
     if settings.xhs_mcp_url:
         adapters["xhs_mcp"] = XhsMcpAdapter(client, settings.xhs_mcp_url, settings.xhs_mcp_token)
     if settings.douyin_api_url:
@@ -105,7 +109,7 @@ def build_adapters(settings: Settings, client: httpx.AsyncClient) -> dict[str, A
     return adapters
 
 
-ADAPTER_NAMES = {"rss", "xhs_mcp", "douyin_api", "weibo_crawler", "mediacrawler"}
+ADAPTER_NAMES = {"rss", "bjzoo", "xhs_mcp", "douyin_api", "weibo_crawler", "mediacrawler"}
 
 
 class ConfigError(ValueError):
