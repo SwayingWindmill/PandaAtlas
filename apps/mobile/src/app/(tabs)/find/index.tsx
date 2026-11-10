@@ -2,11 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { useDeferredValue, useMemo, useState } from "react";
 import { FlatList, Platform, ScrollView, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Chip } from "@/components/chip";
 import { Columns, House, MapPin, Network, Plane, Users } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
+import { BARLESS_TOP, ROOT_TITLE_IN_COLUMN } from "@/components/page";
 import { SectionHeader } from "@/components/section-header";
+import { StatusBarCover } from "@/components/status-bar-cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { institutionListQueryOptions } from "@/features/institutions/institutions";
@@ -58,6 +61,9 @@ const TODAY_STORIES = 4;
 export default function FindScreen() {
   const { width } = useWindowDimensions();
   const bottom = useBottomClearance();
+  const insets = useSafeAreaInsets();
+  // Android has no bar on a tab root, so the column clears the status bar itself.
+  const top = Platform.OS === "android" ? insets.top + BARLESS_TOP : 0;
   const photos = useStoryPhotos(localToday(), TODAY_STORIES + 4).slice(TODAY_STORIES);
   const card = Math.round(Math.min(pageColumn(width) * 0.42, 200));
   const { data: pandas, isError: failed, refetch } = useQuery(pandaIndexQueryOptions());
@@ -105,6 +111,7 @@ export default function FindScreen() {
     return (
       <>
         {searchBar}
+        <StatusBarCover />
         <FlatList
           data={results}
           keyExtractor={(item) => item.id}
@@ -114,12 +121,12 @@ export default function FindScreen() {
           className="flex-1 bg-background"
           contentInsetAdjustmentBehavior="automatic"
           contentContainerClassName="px-gutter"
-          contentContainerStyle={{ paddingBottom: bottom }}
+          contentContainerStyle={{ paddingTop: top, paddingBottom: bottom }}
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={
             <View className="gap-stack pb-row">
-              {Platform.OS === "web" ? <Text variant="display">找熊猫</Text> : null}
+              {ROOT_TITLE_IN_COLUMN ? <Text variant="display">找熊猫</Text> : null}
               {SYSTEM_SEARCH ? null : <SearchField value={query} onChange={setQuery} placeholder="名字、拼音或场馆" />}
               {chips.length > 0 ? (
                 <ScrollView
@@ -195,12 +202,13 @@ export default function FindScreen() {
   return (
     <>
       {searchBar}
+      <StatusBarCover />
       <ScrollView
         className="flex-1 bg-background"
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ paddingBottom: bottom }}
+        contentContainerStyle={{ paddingTop: top, paddingBottom: bottom }}
       >
-        {Platform.OS === "web" ? (
+        {ROOT_TITLE_IN_COLUMN ? (
           <Text variant="display" className="px-gutter">
             找熊猫
           </Text>

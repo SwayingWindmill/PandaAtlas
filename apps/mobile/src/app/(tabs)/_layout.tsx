@@ -32,14 +32,29 @@ const iosTint = Platform.OS === "ios" ? DynamicColorIOS({ light: IOS.light.tint,
 
 export default function TabsLayout() {
   const welcomeSeen = useWelcomeSeen();
-  const { tint: schemeTint } = useIOSColors();
-  const tint = iosTint ?? schemeTint;
+  const colors = useIOSColors();
+  const tint = iosTint ?? colors.tint;
   if (welcomeSeen === null) return null;
   if (!welcomeSeen) return <Redirect href="/welcome" />;
   // iOS 26 draws this bar in Liquid Glass and ignores backgroundColor and blurEffect.
   // Earlier iOS uses the system tab bar. Android uses Material 3. Web uses _layout.web.tsx.
   return (
-    <NativeTabs tintColor={tint} minimizeBehavior="onScrollDown" disableTransparentOnScrollEdge>
+    <NativeTabs
+      tintColor={tint}
+      minimizeBehavior="onScrollDown"
+      disableTransparentOnScrollEdge
+      // Material 3 would otherwise paint its own lavender bar and pill, and label only the selected tab.
+      {...(Platform.OS === "android"
+        ? {
+            backgroundColor: colors.card,
+            indicatorColor: colors.highlightSoft,
+            rippleColor: colors.pressed,
+            iconColor: { default: colors.secondaryLabel, selected: colors.tint },
+            labelStyle: { default: { color: colors.secondaryLabel }, selected: { color: colors.tint } },
+            labelVisibilityMode: "labeled" as const,
+          }
+        : {})}
+    >
       <NativeTabs.Trigger name="(today)">
         <NativeTabs.Trigger.Label>今天</NativeTabs.Trigger.Label>
         <TabIcon symbol="today" png={TAB_ICON.today} />

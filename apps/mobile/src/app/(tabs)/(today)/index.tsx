@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import { CalendarDays, House, type LucideIcon, Plane, Sun, Trophy } from "@/components/icons";
+import { StatusBarCover } from "@/components/status-bar-cover";
 import { Text } from "@/components/ui/text";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
@@ -120,62 +121,65 @@ export default function TodayScreen() {
   const rest = memory ? STORIES : more;
 
   return (
-    <ScrollView
-      className="flex-1 bg-background"
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerClassName="gap-section px-gutter"
-      contentContainerStyle={{ paddingTop: insets.top + 6, paddingBottom: bottom }}
-    >
-      {/* The column draws the title so the date can sit over it, with the avatar beside. */}
-      <Stack.Screen options={{ title: "今天", headerShown: false }} />
-      <View className="gap-stack">
-        <TodayHeader />
-        {memory ? (
-          <WeekHero hero={memory} height={lead} />
-        ) : (
-          <StoryCard
-            featured
-            id={featured.id}
-            title={featured.title}
-            feature={featured.feature}
-            href={featured.href}
-            photo={photos[0]}
-            height={lead}
-          />
-        )}
-        <QuickEntries viewing={viewing} />
-        <TodayCards viewing={viewing} />
-        <TodayVenueNews />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="-mx-gutter"
-          contentContainerClassName="px-gutter"
-          contentContainerStyle={{ gap: GAP }}
-          snapToInterval={small + GAP}
-          snapToAlignment="start"
-          decelerationRate="fast"
-        >
-          {rest.map((story, index) => (
+    <>
+      <StatusBarCover />
+      <ScrollView
+        className="flex-1 bg-background"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerClassName="gap-section px-gutter"
+        contentContainerStyle={{ paddingTop: insets.top + 6, paddingBottom: bottom }}
+      >
+        {/* The column draws the title so the date can sit over it, with the avatar beside. */}
+        <Stack.Screen options={{ title: "今天", headerShown: false }} />
+        <View className="gap-stack">
+          <TodayHeader />
+          {memory ? (
+            <WeekHero hero={memory} height={lead} />
+          ) : (
             <StoryCard
-              key={story.id}
-              id={story.id}
-              title={story.title}
-              feature={story.feature}
-              href={story.href}
-              photo={photos[memory ? index : index + 1]}
-              width={small}
-              height={smallHeight}
+              featured
+              id={featured.id}
+              title={featured.title}
+              feature={featured.feature}
+              href={featured.href}
+              photo={photos[0]}
+              height={lead}
             />
-          ))}
-        </ScrollView>
-      </View>
-      <BirthdayReminderCard />
-      <OnThisDayCard />
-      <WeekCard />
-      <FollowedStrip />
-      <TodayBirthdays />
-      <FollowedChanges />
-    </ScrollView>
+          )}
+          <QuickEntries viewing={viewing} />
+          <TodayCards viewing={viewing} />
+          <TodayVenueNews />
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className="-mx-gutter"
+            contentContainerClassName="px-gutter"
+            contentContainerStyle={{ gap: GAP }}
+            snapToInterval={small + GAP}
+            snapToAlignment="start"
+            decelerationRate="fast"
+          >
+            {rest.map((story, index) => (
+              <StoryCard
+                key={story.id}
+                id={story.id}
+                title={story.title}
+                feature={story.feature}
+                href={story.href}
+                photo={photos[memory ? index : index + 1]}
+                width={small}
+                height={smallHeight}
+              />
+            ))}
+          </ScrollView>
+        </View>
+        <BirthdayReminderCard />
+        <OnThisDayCard />
+        <WeekCard />
+        <FollowedStrip />
+        <TodayBirthdays />
+        <FollowedChanges />
+      </ScrollView>
+    </>
   );
 }
