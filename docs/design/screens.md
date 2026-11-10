@@ -39,7 +39,7 @@ Status: built. 大家常看 stays hidden until five fans follow one panda within
 
 1. The large title 图鉴.
 2. **Progress card.** A `ProgressRing` and 点亮 N / total: pandas met (见过 or 认出, once each) over the published catalog count from the API (The Life List Rule). Hidden signed out; at zero it shows 0 / total.
-3. **Stat tiles.** Three tiles: 见过 N 只 (`Eye`), 认出 N 只 (`BadgeCheck`) and 去过 N 处 (`MapPin`). Each opens its own list.
+3. **Stat tiles.** Three tiles: 见过 N 只 (`Eye`), 认出 N 只 (`ScanFace`, per The Life List Rule; `BadgeCheck` means an official source) and 去过 N 处 (`MapPin`). Each opens its own list.
 4. A `Segmented` control with 全部, 见过 and 认出.
 5. **Grid.** Four columns of square photo tiles with the name under each. Pandas not yet met are a `card` tile with a tertiary `Eye` and 未见过. Show at most one row of unmet tiles, not the whole catalog.
 6. **各个基地.** One inset group, with a row per base that has a panda the user has met: `MapPin`, the name, met / living there now (2 / 2), and a chevron.

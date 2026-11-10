@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { loadResidencies } from "@/lib/public-data";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
 import { queryClient } from "@/lib/query-client";
+import { comparePandas } from "./order";
 
 type Schemas = components["schemas"];
 type Place = Schemas["PublicPlaceSummaryDto"];
@@ -26,8 +27,6 @@ export interface PandaListItem {
   /** Slug, every name and the current place, normalized for matching. */
   terms: string[];
 }
-
-const collator = new Intl.Collator("zh-CN", { sensitivity: "base", numeric: true });
 
 /** Case, accents, spaces and separators don't matter: "Fu Bao", "fubao" and "fu-bao" match. */
 export function normalizeTerm(value: string): string {
@@ -90,8 +89,7 @@ async function buildIndex(): Promise<PandaListItem[]> {
       terms: (place ? [...names, place] : names).map(normalizeTerm),
     };
   });
-  // Living pandas first: they are the ones people can still go and see.
-  return items.sort((a, b) => Number(a.deceased) - Number(b.deceased) || collator.compare(a.name, b.name));
+  return items.sort(comparePandas);
 }
 
 /** Every published panda, shared across screens while the result is fresh. */
