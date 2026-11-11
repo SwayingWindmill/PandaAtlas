@@ -103,7 +103,7 @@ function LayerToggle({
     <Pressable
       role="switch"
       accessibilityLabel={label}
-      accessibilityState={{ checked: on }}
+      aria-checked={on}
       onPress={onPress}
       className={cn("h-9 flex-row items-center gap-1 rounded-full px-3 active:opacity-70", on ? "bg-primary" : "")}
     >

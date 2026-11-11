@@ -44,7 +44,7 @@ test("the map shows the wild habitats with their populations, and the venues lay
 
   await map.getByRole("button", /^邛崃山，野生大熊猫 519 只$/).tap();
   await expect(screen.getByRole("heading", "邛崃山")).toBeVisible();
-  await expect(screen.getByText(/^邛崃山A，87 只/)).toBeVisible();
+  await expect(screen.getByLabel(/^邛崃山A，87 只/)).toBeVisible();
   await expect(screen.getByRole("link", "打开数据来源")).toBeVisible();
   await screen.getByRole("button", "关闭").tap();
 
