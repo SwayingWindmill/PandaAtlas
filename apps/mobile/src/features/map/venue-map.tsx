@@ -311,13 +311,36 @@ function Flows({ flows, camera, viewport }: { flows: YearView["flows"]; camera: 
 }
 
 /** Where a wild area's name goes: at its centre, or just above or below it when a venue's name is there. */
-function wildLabelAt(at: Point, name: string, markers: readonly MapMarker[], named: ReadonlySet<string>, width: number): Point {
-  const boxes = markers.filter((marker) => named.has(marker.id)).map((marker) => labelBox(marker, flipsAt(marker, width)));
-  const labelWidth = 24 + name.length * 13;
-  const clear = (y: number) =>
-    boxes.every((box) => at.x - 24 > box.right || at.x - 24 + labelWidth < box.left || y - 11 > box.bottom || y + 11 < box.top);
-  const y = [at.y, at.y + 24, at.y - 24, at.y + 44].find(clear) ?? at.y;
-  return { x: at.x, y };
+/** Where a range's name goes: under its largest circle, so the name never sits on the area; at the centre while the circles are dots. */
+function wildAnchor(area: WildArea, camera: Camera, viewport: Viewport): Point {
+  const largest = area.patches.reduce((best, patch) => (patch.radius > best.radius ? patch : best));
+  const radius = largest.radius * camera.scale;
+  if (radius < 8) return toScreen(area.label, camera, viewport);
+  const centre = toScreen(largest, camera, viewport);
+  return { x: centre.x, y: centre.y + radius + 12 };
+}
+
+type Box = ReturnType<typeof labelBox>;
+
+/** Where each range's name goes: the anchor, or the nearest row above or below it that no place name or earlier range name covers. */
+function wildLabelsAt(
+  wild: readonly WildArea[],
+  camera: Camera,
+  viewport: Viewport,
+  markers: readonly MapMarker[],
+  named: ReadonlySet<string>,
+): { area: WildArea; at: Point }[] {
+  const taken: Box[] = markers.filter((marker) => named.has(marker.id)).map((marker) => labelBox(marker, flipsAt(marker, viewport.width)));
+  return wild.map((area) => {
+    const anchor = wildAnchor(area, camera, viewport);
+    const width = 24 + area.range.name.length * 13;
+    const boxAt = (y: number): Box => ({ left: anchor.x - 24, right: anchor.x - 24 + width, top: y - 11, bottom: y + 11 });
+    const clear = (box: Box) =>
+      taken.every((other) => box.left > other.right || box.right < other.left || box.top > other.bottom || box.bottom < other.top);
+    const y = [anchor.y, anchor.y + 24, anchor.y - 24, anchor.y + 46, anchor.y - 46].find((row) => clear(boxAt(row))) ?? anchor.y;
+    taken.push(boxAt(y));
+    return { area, at: { x: anchor.x, y } };
+  });
 }
 
 /** A wild area's name with a bare trees glyph, haloed like a city name; it selects the area. */
@@ -463,8 +486,7 @@ export function VenueMap({
           );
         })}
       </Svg>
-      {wild.map((area) => {
-        const at = wildLabelAt(toScreen(area.label, camera, viewport), area.range.name, markers, named, viewport.width);
+      {wildLabelsAt(wild, camera, viewport, markers, named).map(({ area, at }) => {
         return (
           <WildLabel
             key={area.range.id}
