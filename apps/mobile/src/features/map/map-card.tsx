@@ -5,13 +5,14 @@ import { Pressable, View } from "react-native";
 
 import { Chevron } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Globe, House, MapPin, PawPrint } from "@/components/icons";
+import { Globe, House, MapPin, Trees } from "@/components/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 
 import { fitPoints } from "./camera";
 import { mapViewQueryOptions } from "./load";
 import { VenueMap } from "./venue-map";
+import { WILD_AREAS } from "./wild";
 
 const MAP_HEIGHT = 168;
 
@@ -26,15 +27,14 @@ export function MapCard() {
 
   const china = view?.items.filter((item) => !item.overseas && item.point) ?? [];
   const overseas = view?.items.filter((item) => item.overseas).length ?? 0;
-  const pandas = view?.items.reduce((sum, item) => sum + item.residentCount, 0) ?? 0;
   const viewport = { width, height: MAP_HEIGHT, top: 0, bottom: 0 };
   const camera = fitPoints(
-    china.flatMap((item) => (item.point ? [item.point] : [])),
+    [...china.flatMap((item) => (item.point ? [item.point] : [])), ...WILD_AREAS.flatMap((area) => area.patches)],
     viewport,
-    28,
-    40,
+    24,
+    8,
   );
-  const totals = view ? `${view.items.length} 个场馆　${pandas} 只熊猫` : "";
+  const totals = view ? `${view.items.length} 个场馆　${WILD_AREAS.length} 片野生区` : "";
 
   return (
     <Pressable
@@ -47,7 +47,7 @@ export function MapCard() {
     >
       <View style={{ height: MAP_HEIGHT }} pointerEvents="none">
         {view && width > 0 ? (
-          <VenueMap items={view.items} camera={camera} viewport={viewport} compact />
+          <VenueMap items={view.items} camera={camera} viewport={viewport} wild={WILD_AREAS} compact />
         ) : (
           <Skeleton className="h-full w-full rounded-none" />
         )}
@@ -72,8 +72,8 @@ export function MapCard() {
                 <Text variant="subheadline" className="text-muted-foreground tabular-nums">{`${view.items.length} 个场馆`}</Text>
               </View>
               <View className="flex-row items-center gap-1">
-                <Icon icon={PawPrint} size="footnote" tone="secondary" />
-                <Text variant="subheadline" className="text-muted-foreground tabular-nums">{`${pandas} 只熊猫`}</Text>
+                <Icon icon={Trees} size="footnote" tone="secondary" />
+                <Text variant="subheadline" className="text-muted-foreground tabular-nums">{`${WILD_AREAS.length} 片野生区`}</Text>
               </View>
             </View>
           ) : null}

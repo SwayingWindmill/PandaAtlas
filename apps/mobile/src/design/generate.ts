@@ -54,6 +54,8 @@ const CSS_COLORS: [cssName: string, role: ColorRole, note?: string][] = [
   ["bar-material", "barMaterial"],
   ["map-water", "mapWater"],
   ["map-land", "mapLand"],
+  ["map-wild", "mapWild"],
+  ["map-wild-ink", "mapWildInk"],
 ];
 
 function textVars(name: string, style: { size: number; lineHeight: number }) {

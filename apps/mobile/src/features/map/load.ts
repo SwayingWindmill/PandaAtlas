@@ -2,7 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { loadInstitutionList } from "@/features/institutions/institutions";
 import { type PandaListItem, loadPandaIndex, loadPlaces } from "@/features/pandas/pandas";
-import { loadResidencies } from "@/lib/public-data";
+import { loadLifeEvents, loadResidencies } from "@/lib/public-data";
 
 import { type MapView, type PlacePage, buildMapView, buildPlacePage } from "./model";
 
@@ -24,6 +24,19 @@ export async function loadMapView(): Promise<MapView> {
 /** The map's places, shared by the 找熊猫 thumbnail and the map screen. */
 export function mapViewQueryOptions() {
   return queryOptions({ queryKey: ["public", "map-view"], staleTime: 300_000, networkMode: "always", queryFn: loadMapView });
+}
+
+/** What the map's timeline reads: every residency and life event, and the published pandas to name them. */
+export function mapTimelineQueryOptions() {
+  return queryOptions({
+    queryKey: ["public", "map-timeline"],
+    staleTime: 300_000,
+    networkMode: "always",
+    queryFn: async () => {
+      const [residencies, events, pandas] = await Promise.all([loadResidencies(), loadLifeEvents(), loadPandaIndex()]);
+      return { residencies, events, pandas: pandasOf(pandas) };
+    },
+  });
 }
 
 /** A place that belongs to no institution. Null when the release has no such slug. */

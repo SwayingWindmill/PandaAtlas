@@ -46,6 +46,10 @@ colors:
   map-water-dark: "#0B1620"
   map-land: "#F4F2EC"
   map-land-dark: "#1F1F22"
+  map-wild: "#D3E8C9"
+  map-wild-dark: "#1E3A26"
+  map-wild-ink: "#2F6F35"
+  map-wild-ink-dark: "#8FD18A"
 typography:
   display:
     fontFamily: "system-ui"

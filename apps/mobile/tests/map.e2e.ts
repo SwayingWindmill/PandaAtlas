@@ -34,3 +34,22 @@ test("the map shows a zoo from its marker and from the list, and lists a place w
   await expect(screen.getByRole("heading", place)).toBeVisible();
   await expect(screen.getByText("日本")).toBeVisible();
 });
+
+test("the map shows the wild habitats with their populations, and the venues layer turns off", async ({ app, screen }) => {
+  await app.open("/map");
+  const map = screen.getByTestId("panda-world-map");
+  const venues = screen.getByRole("switch", "场馆");
+  await expect(venues).toBeChecked();
+  await expect(screen.getByRole("switch", "野生区")).toBeChecked();
+
+  await map.getByRole("button", /^邛崃山，野生大熊猫 519 只$/).tap();
+  await expect(screen.getByRole("heading", "邛崃山")).toBeVisible();
+  await expect(screen.getByText(/^邛崃山A，87 只/)).toBeVisible();
+  await expect(screen.getByRole("link", "打开数据来源")).toBeVisible();
+  await screen.getByRole("button", "关闭").tap();
+
+  await venues.tap();
+  await expect(venues).not.toBeChecked();
+  await expect(map.getByRole("button", /熊猫$|点一下放大$/)).toHaveCount(0);
+  await expect(map.getByRole("button", /^邛崃山，/)).toBeVisible();
+});
