@@ -567,6 +567,88 @@
         ]
       }
     },
+    "/api/v2/me/followed-venues": {
+      "get": {
+        "operationId": "listFollowedVenues",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowedVenueListDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/followed-venues/{slug}": {
+      "post": {
+        "operationId": "followVenue",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowedVenueDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "delete": {
+        "operationId": "unfollowVenue",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnfollowVenueDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
     "/api/v2/me/collections": {
       "get": {
         "operationId": "listCollections",
@@ -3650,6 +3732,55 @@
           "pandaId",
           "favorited",
           "favoritedAt"
+        ]
+      },
+      "FollowedVenueDto": {
+        "type": "object",
+        "properties": {
+          "institutionSlug": {
+            "type": "string",
+            "description": "Institution slug."
+          },
+          "followedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "institutionSlug",
+          "followedAt"
+        ]
+      },
+      "FollowedVenueListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FollowedVenueDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "UnfollowVenueDto": {
+        "type": "object",
+        "properties": {
+          "institutionSlug": {
+            "type": "string"
+          },
+          "followed": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          }
+        },
+        "required": [
+          "institutionSlug",
+          "followed"
         ]
       },
       "CollectionDto": {

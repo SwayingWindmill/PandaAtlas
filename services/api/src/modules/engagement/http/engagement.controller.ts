@@ -36,6 +36,9 @@ import {
   DeletedSeenPandaDto,
   FavoriteDto,
   FavoriteListDto,
+  FollowedVenueDto,
+  FollowedVenueListDto,
+  UnfollowVenueDto,
   SaveSeenPandaDto,
   SeenPandaDto,
   SeenPandaListDto,
@@ -66,6 +69,13 @@ function dailyCheckinSummary(result: DailyCheckinResult) {
     case "dayClosed":
       throw new ProblemException(409, "engagement.leaveDayClosed", "Leave cannot change for this day.");
   }
+}
+
+const VENUE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+function venueSlug(slug: string): string {
+  if (!VENUE_SLUG.test(slug)) throw new ProblemException(400, "request.invalid", "The venue must be a slug.");
+  return slug;
 }
 
 function leaveDay(day: string): string {
@@ -109,6 +119,33 @@ export class EngagementController {
   ) {
     await this.engagement.unfavorite(accountId(request), pandaId);
     return { pandaId, favorited: false as const, favoritedAt: null };
+  }
+
+  @Get("followed-venues")
+  @RequireCapabilities("engagement.read")
+  @ApiOperation({ operationId: "listFollowedVenues" })
+  @ApiOkResponse({ type: FollowedVenueListDto })
+  public async listFollowedVenues(@Req() request: HttpRequest) {
+    return { items: await this.engagement.listFollowedVenues(accountId(request)) };
+  }
+
+  @Post("followed-venues/:slug")
+  @RequireCapabilities("engagement.manage")
+  @ApiOperation({ operationId: "followVenue" })
+  @ApiCreatedResponse({ type: FollowedVenueDto })
+  public async followVenue(@Req() request: HttpRequest, @Param("slug") slug: string) {
+    const followed = await this.engagement.followVenue(accountId(request), venueSlug(slug));
+    if (!followed) throw new ProblemException(404, "engagement.venueNotFound", "No venue has this slug.");
+    return followed;
+  }
+
+  @Delete("followed-venues/:slug")
+  @RequireCapabilities("engagement.manage")
+  @ApiOperation({ operationId: "unfollowVenue" })
+  @ApiOkResponse({ type: UnfollowVenueDto })
+  public async unfollowVenue(@Req() request: HttpRequest, @Param("slug") slug: string) {
+    await this.engagement.unfollowVenue(accountId(request), venueSlug(slug));
+    return { institutionSlug: slug, followed: false as const };
   }
 
   @Get("collections")

@@ -5,20 +5,24 @@ import { Linking, Platform, Pressable, ScrollView, View, useWindowDimensions } f
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Icon } from "@/components/icon";
-import { ChevronLeft, Globe, House, LocateFixed, type LucideIcon, Navigation, PawPrint, X } from "@/components/icons";
+import { ChevronLeft, Globe, Heart, House, LocateFixed, type LucideIcon, Navigation, PawPrint, X } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { PandaTile } from "@/components/panda-tile";
 import { ScreenState } from "@/components/screen-state";
 import { StatTile } from "@/components/stat-tile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { setFollowingVenue, useFollowedVenues } from "@/features/engagement/followed-venues";
 import { type Camera, type Point, type Viewport, fitPoints } from "@/features/map/camera";
 import { mapViewQueryOptions } from "@/features/map/load";
 import { type MapItem, type MapView, pandaCountLabel } from "@/features/map/model";
 import { MapRows } from "@/features/map/place-list";
 import { useMapCamera } from "@/features/map/use-map-camera";
+import { useSession } from "@/features/session/session";
 import { type MapMarker, VenueMap } from "@/features/map/venue-map";
+import { tapHaptic } from "@/lib/haptics";
 import { HAIRLINE } from "@/lib/surface";
+import { cn } from "@/lib/utils";
 
 const BUTTON = 44;
 const TILE = 96;
@@ -129,16 +133,29 @@ function Overview({ view, onChoose }: { view: MapView; onChoose: (item: MapItem)
 }
 
 /** One of the place sheet's actions: a bare tint glyph over its label, on the card surface. */
-function Action({ icon, label, spoken, onPress }: { icon: LucideIcon; label: string; spoken: string; onPress: () => void }) {
+function Action({
+  icon,
+  label,
+  spoken,
+  filled = false,
+  onPress,
+}: {
+  icon: LucideIcon;
+  label: string;
+  spoken: string;
+  /** A state that is on (已关注): the tile takes the selected ground, as a selected chip does. */
+  filled?: boolean;
+  onPress: () => void;
+}) {
   return (
     <Pressable
       role="button"
       accessibilityLabel={spoken}
       onPress={onPress}
-      className="min-h-14 flex-1 items-center justify-center gap-1 rounded-control bg-card py-2 active:bg-accent"
+      className={cn("min-h-14 flex-1 items-center justify-center gap-1 rounded-control py-2 active:bg-accent", filled ? "bg-highlight-soft" : "bg-card")}
       style={{ borderCurve: "continuous" }}
     >
-      <Icon icon={icon} size="body" tone="tint" strokeWidth={2} />
+      <Icon icon={icon} size="body" tone="tint" strokeWidth={filled ? 2.5 : 2} />
       <Text variant="footnote" className="font-semibold text-primary">
         {label}
       </Text>
@@ -146,7 +163,27 @@ function Action({ icon, label, spoken, onPress }: { icon: LucideIcon; label: str
   );
 }
 
-/** The sheet for one place: its name, a route and its page, then who lives there. */
+/** 关注 for a venue: signed out it goes to sign-in; signed in it toggles, filled while followed. */
+function FollowAction({ item }: { item: MapItem }) {
+  const { state } = useSession();
+  const followed = useFollowedVenues();
+  const following = followed?.has(item.slug) ?? false;
+  return (
+    <Action
+      icon={Heart}
+      label={following ? "已关注" : "关注"}
+      spoken={following ? `已关注${item.name}，点按取消` : `关注${item.name}`}
+      filled={following}
+      onPress={() => {
+        tapHaptic();
+        if (state.status !== "signedIn") router.push("/sign-in");
+        else void setFollowingVenue(state.accountId, item.slug, !following);
+      }}
+    />
+  );
+}
+
+/** The sheet for one place: its name, a route, 关注 and its page, then who lives there. */
 function PlaceSheet({ item, onClose }: { item: MapItem; onClose: () => void }) {
   const route = routeUrl(item);
   const page = item.kind === "institution" ? "场馆页" : "地点页";
@@ -179,6 +216,7 @@ function PlaceSheet({ item, onClose }: { item: MapItem; onClose: () => void }) {
         {route ? (
           <Action icon={Navigation} label="路线" spoken={`在地图应用里打开去${item.name}的路线`} onPress={() => void Linking.openURL(route)} />
         ) : null}
+        {item.kind === "institution" ? <FollowAction item={item} /> : null}
         <Action icon={House} label={page} spoken={`打开${item.name}的页面`} onPress={() => openPage(item)} />
       </View>
       {item.residents.length > 0 ? (

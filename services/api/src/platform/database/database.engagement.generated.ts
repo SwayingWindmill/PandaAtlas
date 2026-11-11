@@ -40,6 +40,12 @@ export interface EngagementFavorites {
   panda_id: string;
 }
 
+export interface EngagementVenueFollows {
+  account_id: string;
+  followed_at: Generated<Timestamp>;
+  institution_id: string;
+}
+
 export interface EngagementLocationCheckins {
   account_id: string;
   checkin_id: Generated<string>;
@@ -65,6 +71,7 @@ export interface DB {
   "engagement.collections": EngagementCollections;
   "engagement.daily_checkins": EngagementDailyCheckins;
   "engagement.favorites": EngagementFavorites;
+  "engagement.venue_follows": EngagementVenueFollows;
   "engagement.location_checkins": EngagementLocationCheckins;
   "engagement.seen_pandas": EngagementSeenPandas;
 }

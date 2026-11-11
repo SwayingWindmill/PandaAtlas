@@ -6,6 +6,7 @@ import type {
   CreateCheckinInput,
   EngagementRepository,
   FavoriteRecord,
+  VenueFollowRecord,
   LocationCheckinRecord,
   SaveSeenPandaInput,
   SeenPandaRecord,
@@ -50,6 +51,51 @@ export class PostgresEngagementRepository implements EngagementRepository {
       .where("account_id", "=", accountId)
       .where("panda_id", "=", pandaId)
       .returning("panda_id")
+      .executeTakeFirst();
+    return deleted !== undefined;
+  }
+
+  public async listFollowedVenues(accountId: string): Promise<VenueFollowRecord[]> {
+    const rows = await this.database.db
+      .selectFrom("engagement.venue_follows as follow")
+      .innerJoin("place.institutions as institution", "institution.institution_id", "follow.institution_id")
+      .select(["institution.slug", "follow.followed_at"])
+      .where("follow.account_id", "=", accountId)
+      .orderBy("follow.followed_at", "desc")
+      .orderBy("institution.slug")
+      .execute();
+    return rows.map((row) => ({ institutionSlug: row.slug, followedAt: row.followed_at }));
+  }
+
+  public async followVenue(accountId: string, institutionSlug: string): Promise<VenueFollowRecord | undefined> {
+    const institution = await this.database.db
+      .selectFrom("place.institutions")
+      .select("institution_id")
+      .where("slug", "=", institutionSlug)
+      .executeTakeFirst();
+    if (institution === undefined) return undefined;
+    await this.database.db
+      .insertInto("engagement.venue_follows")
+      .values({ account_id: accountId, institution_id: institution.institution_id })
+      .onConflict((conflict) => conflict.columns(["account_id", "institution_id"]).doNothing())
+      .execute();
+    const row = await this.database.db
+      .selectFrom("engagement.venue_follows")
+      .select("followed_at")
+      .where("account_id", "=", accountId)
+      .where("institution_id", "=", institution.institution_id)
+      .executeTakeFirstOrThrow();
+    return { institutionSlug, followedAt: row.followed_at };
+  }
+
+  public async unfollowVenue(accountId: string, institutionSlug: string): Promise<boolean> {
+    const deleted = await this.database.db
+      .deleteFrom("engagement.venue_follows")
+      .where("account_id", "=", accountId)
+      .where("institution_id", "in", (query) =>
+        query.selectFrom("place.institutions").select("institution_id").where("slug", "=", institutionSlug),
+      )
+      .returning("institution_id")
       .executeTakeFirst();
     return deleted !== undefined;
   }
