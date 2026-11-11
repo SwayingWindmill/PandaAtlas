@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { Stack, router } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
+import { Linking, Platform, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Icon } from "@/components/icon";
-import { ChevronLeft, Globe, House, LocateFixed, PawPrint, X } from "@/components/icons";
+import { ChevronLeft, Globe, House, LocateFixed, type LucideIcon, Navigation, PawPrint, X } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { PandaTile } from "@/components/panda-tile";
 import { ScreenState } from "@/components/screen-state";
+import { StatTile } from "@/components/stat-tile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { type Camera, type Point, type Viewport, fitPoints } from "@/features/map/camera";
@@ -84,32 +85,34 @@ function ViewControls({ overseas, onOverseas, onHome }: { overseas: number; onOv
   );
 }
 
-/** One line of the map's totals, each after a bare glyph. */
-function Totals({ view }: { view: MapView }) {
-  return (
-    <View className="flex-row flex-wrap items-center gap-x-4 gap-y-1">
-      <View className="flex-row items-center gap-1.5">
-        <Icon icon={House} size="footnote" tone="secondary" />
-        <Text variant="subheadline" className="text-muted-foreground tabular-nums">{`${view.items.length} 个地方`}</Text>
-      </View>
-      <View className="flex-row items-center gap-1.5">
-        <Icon icon={PawPrint} size="footnote" tone="secondary" />
-        <Text variant="subheadline" className="text-muted-foreground tabular-nums">{`${pandasIn(view)} 只熊猫住在这些地方`}</Text>
-      </View>
-    </View>
-  );
+/** The phone's map app, with a pin on the place: 高德 on the web, where no app can be opened. */
+function routeUrl(item: MapItem): string | null {
+  if (!item.coordinates) return null;
+  const { longitude, latitude } = item.coordinates;
+  const name = encodeURIComponent(item.name);
+  if (Platform.OS === "ios") return `maps://?ll=${latitude},${longitude}&q=${name}`;
+  if (Platform.OS === "android") return `geo:${latitude},${longitude}?q=${latitude},${longitude}(${name})`;
+  return `https://uri.amap.com/marker?position=${longitude},${latitude}&name=${name}`;
 }
 
-/** The sheet with nothing chosen: what the map holds, and every place as a list, those without a position included. */
+/** The sheet with nothing chosen: what the map holds as tiles, then every place as a list, those without a position included. */
 function Overview({ view, onChoose }: { view: MapView; onChoose: (item: MapItem) => void }) {
   if (view.items.length === 0) return <ScreenState message="地点资料还在整理中。" />;
+  const overseas = view.items.filter((item) => item.overseas).length;
   return (
     <View className="gap-section-tight">
-      <View className="gap-1.5">
+      <View className="gap-hair-gap">
         <Text variant="title" role="heading">
           熊猫地图
         </Text>
-        <Totals view={view} />
+        <Text variant="subheadline" className="text-muted-foreground">
+          熊猫住在哪个场馆，点一下看是谁
+        </Text>
+      </View>
+      <View className="flex-row gap-stack-tight">
+        <StatTile icon={House} label="场馆" value={`${view.items.length}`} />
+        <StatTile icon={PawPrint} label="住在场馆" value={`${pandasIn(view)}`} />
+        <StatTile icon={Globe} label="在海外" value={`${overseas}`} />
       </View>
       <View testID="map-places" className="gap-section-tight">
         {view.groups.map((group) => (
@@ -125,11 +128,34 @@ function Overview({ view, onChoose }: { view: MapView; onChoose: (item: MapItem)
   );
 }
 
-/** The sheet for one place: who lives there, and the way to its own page. */
+/** One of the place sheet's actions: a bare tint glyph over its label, on the card surface. */
+function Action({ icon, label, spoken, onPress }: { icon: LucideIcon; label: string; spoken: string; onPress: () => void }) {
+  return (
+    <Pressable
+      role="button"
+      accessibilityLabel={spoken}
+      onPress={onPress}
+      className="min-h-14 flex-1 items-center justify-center gap-1 rounded-control bg-card py-2 active:bg-accent"
+      style={{ borderCurve: "continuous" }}
+    >
+      <Icon icon={icon} size="body" tone="tint" strokeWidth={2} />
+      <Text variant="footnote" className="font-semibold text-primary">
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
+
+/** The sheet for one place: its name, a route and its page, then who lives there. */
 function PlaceSheet({ item, onClose }: { item: MapItem; onClose: () => void }) {
+  const route = routeUrl(item);
+  const page = item.kind === "institution" ? "场馆页" : "地点页";
   return (
     <View className="gap-stack">
       <View className="flex-row items-start gap-row">
+        <View className="pt-1">
+          <Icon icon={House} size="title3" tone="tint" strokeWidth={2} />
+        </View>
         <View className="min-w-0 flex-1 gap-hair-gap">
           <Text variant="title" role="heading">
             {item.name}
@@ -149,31 +175,35 @@ function PlaceSheet({ item, onClose }: { item: MapItem; onClose: () => void }) {
           <Icon icon={X} size={16} tone="secondary" strokeWidth={2.5} />
         </Pressable>
       </View>
+      <View className="flex-row gap-stack-tight">
+        {route ? (
+          <Action icon={Navigation} label="路线" spoken={`在地图应用里打开去${item.name}的路线`} onPress={() => void Linking.openURL(route)} />
+        ) : null}
+        <Action icon={House} label={page} spoken={`打开${item.name}的页面`} onPress={() => openPage(item)} />
+      </View>
       {item.residents.length > 0 ? (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-gutter" contentContainerClassName="gap-stack-tight px-gutter">
-          {item.residents.map((panda) => (
-            <PandaTile
-              key={panda.id}
-              pandaId={panda.id}
-              name={panda.name}
-              width={TILE}
-              accessibilityLabel={panda.name}
-              onPress={() => router.push({ pathname: "/pandas/[slug]", params: { slug: panda.slug } })}
-            />
-          ))}
-        </ScrollView>
+        <View className="gap-stack-tight">
+          <View className="flex-row items-center gap-1.5">
+            <Icon icon={PawPrint} size="subhead" tone="label" strokeWidth={2} />
+            <Text variant="headline" role="heading" className="flex-1">
+              住在这里
+            </Text>
+            <Text variant="subheadline" className="text-muted-foreground tabular-nums">{`${item.residentCount} 只`}</Text>
+          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-gutter" contentContainerClassName="gap-stack-tight px-gutter">
+            {item.residents.map((panda) => (
+              <PandaTile
+                key={panda.id}
+                pandaId={panda.id}
+                name={panda.name}
+                width={TILE}
+                accessibilityLabel={panda.name}
+                onPress={() => router.push({ pathname: "/pandas/[slug]", params: { slug: panda.slug } })}
+              />
+            ))}
+          </ScrollView>
+        </View>
       ) : null}
-      <Pressable
-        role="link"
-        accessibilityLabel={`打开${item.name}的页面`}
-        onPress={() => openPage(item)}
-        className="h-12 flex-row items-center justify-center gap-2 rounded-full bg-highlight-soft active:opacity-70"
-      >
-        <Icon icon={House} size="subhead" tone="tint" strokeWidth={2} />
-        <Text variant="headline" className="text-primary">
-          {item.kind === "institution" ? "场馆页" : "地点页"}
-        </Text>
-      </Pressable>
     </View>
   );
 }

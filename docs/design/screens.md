@@ -30,7 +30,7 @@ Status: all five steps are built. The quick entries are 观猫时机 (the venue 
 1. The large title 找熊猫.
 2. A search field with the placeholder 名字、拼音或场馆.
 3. Filter chips (`Chip`), single select: 全部, 在中国, 在海外, 双胞胎, 归国. A chip shows only when its filter has a real query behind it.
-4. **熊猫地图.** A card with a still thumbnail of China: the land, faint city names and a bare house glyph per place, a 海外 N 个 capsule in the corner, and 熊猫地图 with the totals under it. The whole card opens `/map`. Shown while browsing.
+4. **熊猫地图.** A card with a still thumbnail of China: the land, faint city names and a bare house glyph per place, a 海外 N 个场馆 capsule in the corner, and 熊猫地图 with the totals after bare glyphs under it. The whole card opens `/map`. Shown while browsing.
 5. **查关系.** One grouped row with a leading glyph, to `/relationship`. Shown while browsing. 比一比 moved to 发现 as published comparisons; the venues live on the map.
 6. **大家常看.** One inset group of panda rows: a 44pt round photo, the name with a sex glyph, the current place as a subheadline, and a chevron. The signal is follows: the published pandas that the most fans began following in the last 30 days, counting only pandas with at least five such fans (`GET /api/v2/popular-pandas`, no counts published). The block shows the top five and only while 全部 is selected with no search. It is hidden when no panda reaches the floor. The full list follows directly under it as 全部熊猫, so the block has no 全部 link.
 
@@ -43,9 +43,9 @@ Mockups: 地图 · 现在 and 地图 · 点开场馆 on the 发现、找熊猫�
 1. The map fills the screen: the Natural Earth land outline on `mapWater`, land in `mapLand`, drawn by us (no tiles). One finger drags it, two pinch it, a mouse wheel zooms it on the web. It opens on the places in China.
 2. **Markers.** A bare house glyph haloed in the land color, the name and the resident count beside it, haloed the same way. Places closer than 44pt on screen merge into one marker named N 个地方, and a tap zooms to them. Where two labels would overlap, the smaller place keeps only its glyph. A name near the right edge hangs to the left of its glyph. City names (重庆, 西安 …) show faintly once the map is zoomed to China.
 3. **Controls.** A back button top left; top right, one capsule holding 海外 (fits every place) and 回到中国, split by a hairline.
-4. **Sheet.** Up to 46% of the screen. With nothing chosen: 熊猫地图, the totals after bare glyphs, then every place grouped 中国 and 海外 as rows (places without coordinates included; a row of one opens its page). A chosen place: its name, country and count, a close button, its pandas as photo tiles, and a tinted 场馆页 (or 地点页) button.
+4. **Sheet.** Up to 46% of the screen. With nothing chosen: 熊猫地图 and one line under it, three `StatTile`s (场馆, 住在场馆, 在海外), then every place grouped 中国 and 海外 as rows (places without coordinates included; a row of one opens its page). A chosen place: a bare house glyph, its name, country and count, a close button; an action row of 路线 (the phone's map app; 高德 on the web) and 场馆页 (or 地点页), each a tint glyph over its label; then 住在这里 with the count and the pandas as photo tiles.
 
-Status: phase 1 built. Next: the timeline (residencies, births and moves by year; a death is a quiet grey row), then wild areas once their data and its sourcing exist.
+Status: phase 1 built. Not built yet from the mockups: the 场馆/野生区 toggle and wild areas (no data), the timeline (phase 2) and 关注 on a venue (no venue follow exists). Next: the timeline (residencies, births and moves by year; a death is a quiet grey row), then wild areas once their data and its sourcing exist.
 
 ## 发现 (after v4)
 
@@ -55,8 +55,9 @@ What to read and play when the fan is not looking for one panda. The three tabs 
 2. **本期.** The featured `StoryCard`, turning over each day among the published articles whose hero panda has a reviewed cover (shown through that cover, not the article's hotlinked original) and the 专题 with content.
 3. **熊猫日历.** A card that opens `/calendar`, with the next three birthdays as photo tiles. 那年今天 and 生日周 are read by date from the calendar, so they need no block of their own here.
 4. **专题.** 4:5 photo cards for the 专题 with content that are not leading: 归国熊猫 (overseas-status items), 双胞胎, 场馆动态 (venue-news items).
-5. **玩一玩.** Four square photo cards, always there: 每日一猫, 猜熊猫, 认脸挑战, 月度挑战.
-6. **文章.** The first three published articles that are not leading, as 科普's feed rows, with 全部 to `/learn`.
+5. **比一比.** Pairs the team publishes (`data/curation/comparisons`, `GET /api/v2/comparisons`); fans do not pick them. A rail of cards: the two covers side by side split by a white hairline with 比 on a white disc, the names at the bottom corners, the title and the dek under the photo. A card opens `/compare` with the pair; 全部 opens `/comparisons` when there is more than one. Hidden until an entry is published.
+6. **玩一玩.** Four square photo cards, always there: 每日一猫, 猜熊猫, 认脸挑战, 月度挑战.
+7. **文章.** The first three published articles that are not leading, as 科普's feed rows, with 全部 to `/learn`.
 
 Status: built. Phase 2 adds status to the blocks (玩一玩 progress) from the loaders the pages already use.
 

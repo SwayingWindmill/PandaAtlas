@@ -5,7 +5,7 @@ import { Pressable, View } from "react-native";
 
 import { Chevron } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Globe, MapPin } from "@/components/icons";
+import { Globe, House, MapPin, PawPrint } from "@/components/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 
@@ -34,7 +34,7 @@ export function MapCard() {
     28,
     40,
   );
-  const totals = view ? `${view.items.length} 个地方　${pandas} 只熊猫` : "";
+  const totals = view ? `${view.items.length} 个场馆　${pandas} 只熊猫` : "";
 
   return (
     <Pressable
@@ -57,7 +57,7 @@ export function MapCard() {
             style={{ height: 30, boxShadow: "0 1px 4px rgba(0,0,0,0.1)" }}
           >
             <Icon icon={Globe} size="footnote" tone="tint" strokeWidth={2} />
-            <Text variant="footnote" className="font-semibold tabular-nums">{`海外 ${overseas} 个`}</Text>
+            <Text variant="footnote" className="font-semibold tabular-nums">{`海外 ${overseas} 个场馆`}</Text>
           </View>
         ) : null}
       </View>
@@ -66,9 +66,16 @@ export function MapCard() {
         <View className="min-w-0 flex-1 gap-hair-gap">
           <Text variant="headline">熊猫地图</Text>
           {view ? (
-            <Text variant="subheadline" className="text-muted-foreground tabular-nums">
-              {totals}
-            </Text>
+            <View className="flex-row flex-wrap items-center gap-x-3">
+              <View className="flex-row items-center gap-1">
+                <Icon icon={House} size="footnote" tone="secondary" />
+                <Text variant="subheadline" className="text-muted-foreground tabular-nums">{`${view.items.length} 个场馆`}</Text>
+              </View>
+              <View className="flex-row items-center gap-1">
+                <Icon icon={PawPrint} size="footnote" tone="secondary" />
+                <Text variant="subheadline" className="text-muted-foreground tabular-nums">{`${pandas} 只熊猫`}</Text>
+              </View>
+            </View>
           ) : null}
         </View>
         <Chevron />

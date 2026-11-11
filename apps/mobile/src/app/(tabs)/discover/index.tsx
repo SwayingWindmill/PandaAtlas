@@ -8,6 +8,8 @@ import { SectionHeader } from "@/components/section-header";
 import { StatusBarCover } from "@/components/status-bar-cover";
 import { Text } from "@/components/ui/text";
 import { CalendarCard } from "@/features/discover/calendar-card";
+import { ComparisonCard, pairOf } from "@/features/discover/comparison-card";
+import { comparisonsQueryOptions } from "@/features/discover/comparisons";
 import { PhotoCard } from "@/features/discover/photo-card";
 import { type TopicId, arrangeDiscover } from "@/features/discover/topics";
 import { localToday } from "@/features/engagement/seen";
@@ -75,7 +77,15 @@ export default function DiscoverScreen() {
   const leadPanda = lead?.kind === "article" ? pandaOf(lead.article) : undefined;
   const leadCover = usePandaCover(leadPanda?.id);
 
+  const comparisons = useQuery(comparisonsQueryOptions());
+  const pairs = (comparisons.data ?? []).flatMap((comparison) => {
+    const pair = pairOf(comparison, pandas);
+    return pair ? [{ comparison, pair }] : [];
+  });
+
   const card = Math.round(Math.min(column * 0.42, 200));
+  // Wide enough for two faces side by side; the next card peeks so the rail reads as one.
+  const pairCard = Math.round(Math.min(column * 0.62, 300));
   const square = Math.floor((column - GAP) / 2);
   const height = Math.round(column * 1.2);
 
@@ -139,6 +149,29 @@ export default function DiscoverScreen() {
                   photo={photos[1 + index]}
                   width={card}
                 />
+              ))}
+            </ScrollView>
+          </View>
+        ) : null}
+
+        {pairs.length > 0 ? (
+          <View className="gap-stack-tight">
+            <SectionHeader
+              title="比一比"
+              action={pairs.length > 1 ? { label: "全部", href: "/comparisons", accessibilityLabel: "全部比一比" } : undefined}
+            />
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="-mx-gutter"
+              contentContainerClassName="px-gutter"
+              contentContainerStyle={{ gap: GAP }}
+              snapToInterval={pairCard + GAP}
+              snapToAlignment="start"
+              decelerationRate="fast"
+            >
+              {pairs.map(({ comparison, pair }) => (
+                <ComparisonCard key={comparison.id} comparison={comparison} pandas={pair} width={pairCard} />
               ))}
             </ScrollView>
           </View>

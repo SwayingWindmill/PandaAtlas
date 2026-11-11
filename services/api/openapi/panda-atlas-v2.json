@@ -2350,6 +2350,31 @@
         ]
       }
     },
+    "/api/v2/comparisons": {
+      "get": {
+        "operationId": "listComparisons",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComparisonsDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The stored comparison catalog is invalid."
+          }
+        },
+        "summary": "Published 比一比: pairs of pandas the team compares side by side, newest first",
+        "tags": [
+          "Comparisons"
+        ]
+      }
+    },
     "/api/v2/ask/status": {
       "get": {
         "operationId": "getAskStatus",
@@ -6534,6 +6559,61 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/VenueNewsItemDto"
+            }
+          }
+        },
+        "required": [
+          "version",
+          "items"
+        ]
+      },
+      "ComparisonDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "description": "What the pair is, 16 characters or fewer."
+          },
+          "dek": {
+            "type": "string",
+            "description": "One line on what tells them apart, 30 characters or fewer."
+          },
+          "pandaSlugs": {
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "Two different pandas, in display order.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this entry was last checked."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "dek",
+          "pandaSlugs",
+          "updatedAt"
+        ]
+      },
+      "ComparisonsDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComparisonDto"
             }
           }
         },

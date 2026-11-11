@@ -25,7 +25,7 @@ test("the map shows a zoo from its marker and from the list, and lists a place w
   if (several) await places.getByRole("button", zooLabel).first().tap();
   else await marker.tap();
   await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
-  await screen.getByRole("link", `打开${zoo.name}的页面`).tap();
+  await screen.getByRole("button", `打开${zoo.name}的页面`).tap();
   await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
   await screen.getByRole("button", "返回").tap();
 

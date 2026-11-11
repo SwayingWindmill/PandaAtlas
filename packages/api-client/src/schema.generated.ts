@@ -976,6 +976,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/comparisons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Published 比一比: pairs of pandas the team compares side by side, newest first */
+        get: operations["listComparisons"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/ask/status": {
         parameters: {
             query?: never;
@@ -2182,6 +2199,24 @@ export interface components {
         VenueNewsDto: {
             version: string;
             items: components["schemas"]["VenueNewsItemDto"][];
+        };
+        ComparisonDto: {
+            id: string;
+            /** @description What the pair is, 16 characters or fewer. */
+            title: string;
+            /** @description One line on what tells them apart, 30 characters or fewer. */
+            dek: string;
+            /** @description Two different pandas, in display order. */
+            pandaSlugs: string[];
+            /**
+             * Format: date-time
+             * @description When this entry was last checked.
+             */
+            updatedAt: string;
+        };
+        ComparisonsDto: {
+            version: string;
+            items: components["schemas"]["ComparisonDto"][];
         };
         AskStatusDto: {
             enabled: boolean;
@@ -4061,6 +4096,32 @@ export interface operations {
                 };
             };
             /** @description The stored venue news catalog is invalid. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listComparisons: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ComparisonsDto"];
+                };
+            };
+            /** @description The stored comparison catalog is invalid. */
             503: {
                 headers: {
                     [name: string]: unknown;

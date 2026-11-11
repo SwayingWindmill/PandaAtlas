@@ -58,6 +58,8 @@ export interface MapItem {
   residentNames: string | null;
   residents: MapPandaInput[];
   point: { x: number; y: number } | null;
+  /** Where the place is, for a route in the phone's map app. */
+  coordinates: { longitude: number; latitude: number } | null;
 }
 
 export interface MapCluster {
@@ -174,6 +176,7 @@ function toItem(
     residentNames: residentNames(residents),
     residents,
     point: first ? projectToWorld(first.longitude, first.latitude) : null,
+    coordinates: first ?? null,
   };
 }
 
