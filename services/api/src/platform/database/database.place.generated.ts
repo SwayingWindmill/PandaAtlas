@@ -23,6 +23,13 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export interface PlaceComparisonCatalog {
+  catalog_id: Generated<number>;
+  document: Json;
+  updated_at: Generated<Timestamp>;
+  version: string;
+}
+
 export interface PlaceInstitutions {
   country_code: string | null;
   created_at: Generated<Timestamp>;
@@ -75,6 +82,7 @@ export interface PlaceVenueNewsCatalog {
 }
 
 export interface DB {
+  "place.comparison_catalog": PlaceComparisonCatalog;
   "place.institutions": PlaceInstitutions;
   "place.overseas_status_catalog": PlaceOverseasStatusCatalog;
   "place.places": PlacePlaces;

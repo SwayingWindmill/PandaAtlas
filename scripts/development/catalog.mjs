@@ -311,6 +311,15 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "curation.comparisons-check",
+    category: "verification",
+    description: "Validate 比一比 comparisons.",
+    command: "python",
+    args: ["scripts/curation/validate_comparisons.py"],
+    requires: ["python"],
+    effect: "read-only",
+  },
+  {
     id: "curation.overseas-status-check",
     category: "verification",
     description: "Validate overseas panda status.",
@@ -519,6 +528,7 @@ export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
     "curation.institutions-check",
     "curation.venue-news-check",
     "curation.overseas-status-check",
+    "curation.comparisons-check",
     "curation.learning-check",
     "curation.media-test",
   ],

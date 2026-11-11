@@ -10,6 +10,11 @@ import {
   type DailyCheckinSummary,
 } from "./daily-checkin.js";
 
+export interface VenueFollowRecord {
+  institutionSlug: string;
+  followedAt: Date;
+}
+
 export interface FavoriteRecord {
   pandaId: string;
   favoritedAt: Date;
@@ -63,6 +68,11 @@ export interface EngagementRepository {
   favorite(accountId: string, pandaId: string): Promise<FavoriteRecord>;
   unfavorite(accountId: string, pandaId: string): Promise<boolean>;
 
+  listFollowedVenues(accountId: string): Promise<VenueFollowRecord[]>;
+  /** Undefined when no institution has this slug. */
+  followVenue(accountId: string, institutionSlug: string): Promise<VenueFollowRecord | undefined>;
+  unfollowVenue(accountId: string, institutionSlug: string): Promise<boolean>;
+
   listCollections(accountId: string): Promise<CollectionRecord[]>;
   createCollection(accountId: string, name: string): Promise<CollectionRecord>;
   renameCollection(accountId: string, collectionId: string, name: string): Promise<CollectionRecord | undefined>;
@@ -109,6 +119,9 @@ export class EngagementApplication implements EngagementPort {
   public listFavorites(accountId: string) { return this.repository.listFavorites(accountId); }
   public favorite(accountId: string, pandaId: string) { return this.repository.favorite(accountId, pandaId); }
   public unfavorite(accountId: string, pandaId: string) { return this.repository.unfavorite(accountId, pandaId); }
+  public listFollowedVenues(accountId: string) { return this.repository.listFollowedVenues(accountId); }
+  public followVenue(accountId: string, institutionSlug: string) { return this.repository.followVenue(accountId, institutionSlug); }
+  public unfollowVenue(accountId: string, institutionSlug: string) { return this.repository.unfollowVenue(accountId, institutionSlug); }
   public listCollections(accountId: string) { return this.repository.listCollections(accountId); }
   public createCollection(accountId: string, name: string) { return this.repository.createCollection(accountId, name); }
   public renameCollection(accountId: string, collectionId: string, name: string) { return this.repository.renameCollection(accountId, collectionId, name); }

@@ -244,6 +244,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/me/followed-venues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listFollowedVenues"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/followed-venues/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["followVenue"];
+        delete: operations["unfollowVenue"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/me/collections": {
         parameters: {
             query?: never;
@@ -976,6 +1008,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/comparisons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Published 比一比: pairs of pandas the team compares side by side, newest first */
+        get: operations["listComparisons"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/ask/status": {
         parameters: {
             query?: never;
@@ -1386,6 +1435,20 @@ export interface components {
             /** @enum {boolean} */
             favorited: false;
             favoritedAt: null;
+        };
+        FollowedVenueDto: {
+            /** @description Institution slug. */
+            institutionSlug: string;
+            /** Format: date-time */
+            followedAt: string;
+        };
+        FollowedVenueListDto: {
+            items: components["schemas"]["FollowedVenueDto"][];
+        };
+        UnfollowVenueDto: {
+            institutionSlug: string;
+            /** @enum {boolean} */
+            followed: false;
         };
         CollectionDto: {
             /** Format: uuid */
@@ -2183,6 +2246,24 @@ export interface components {
             version: string;
             items: components["schemas"]["VenueNewsItemDto"][];
         };
+        ComparisonDto: {
+            id: string;
+            /** @description What the pair is, 16 characters or fewer. */
+            title: string;
+            /** @description One line on what tells them apart, 30 characters or fewer. */
+            dek: string;
+            /** @description Two different pandas, in display order. */
+            pandaSlugs: string[];
+            /**
+             * Format: date-time
+             * @description When this entry was last checked.
+             */
+            updatedAt: string;
+        };
+        ComparisonsDto: {
+            version: string;
+            items: components["schemas"]["ComparisonDto"][];
+        };
         AskStatusDto: {
             enabled: boolean;
             dailyLimit: number;
@@ -2724,6 +2805,67 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UnfavoriteDto"];
+                };
+            };
+        };
+    };
+    listFollowedVenues: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FollowedVenueListDto"];
+                };
+            };
+        };
+    };
+    followVenue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FollowedVenueDto"];
+                };
+            };
+        };
+    };
+    unfollowVenue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnfollowVenueDto"];
                 };
             };
         };
@@ -4061,6 +4203,32 @@ export interface operations {
                 };
             };
             /** @description The stored venue news catalog is invalid. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listComparisons: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ComparisonsDto"];
+                };
+            };
+            /** @description The stored comparison catalog is invalid. */
             503: {
                 headers: {
                     [name: string]: unknown;

@@ -9,6 +9,7 @@ import { GameModule } from "./modules/game/game.module.js";
 import { LearningModule } from "./modules/learning/learning.module.js";
 import { OverseasStatusModule } from "./modules/overseas-status/overseas-status.module.js";
 import { PopularityModule } from "./modules/popularity/popularity.module.js";
+import { ComparisonsModule } from "./modules/comparisons/comparisons.module.js";
 import { VenueNewsModule } from "./modules/venue-news/venue-news.module.js";
 import { IdentityModule } from "./modules/identity/identity.module.js";
 import { LifeHistoryModule } from "./modules/life-history/life-history.module.js";
@@ -39,6 +40,7 @@ import { HttpPlatformModule } from "./platform/http/http-platform.module.js";
     OverseasStatusModule,
     PopularityModule,
     VenueNewsModule,
+    ComparisonsModule,
     AskModule,
     EvidenceModule,
     PandaModule,

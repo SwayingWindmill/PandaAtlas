@@ -3,13 +3,13 @@ import { expect } from "e2e";
 import { fixture, runSuffix } from "./support/fixture.ts";
 import { test } from "./support/test.ts";
 
-test("the map opens a zoo from its dot and from the list, and lists a place with no coordinates", async ({ app, screen }) => {
+test("the map shows a zoo from its marker and from the list, and lists a place with no coordinates", async ({ app, screen }) => {
   const { zoo } = fixture();
   const place = `测试地点${runSuffix()}`;
   await app.open("/find");
-  await screen.getByRole("button", "熊猫在哪里").tap();
-  await expect(screen.getByRole("heading", "熊猫在哪里")).toBeVisible();
-  await expect(screen.getByRole("image", "大熊猫所在地世界地图")).toBeVisible();
+  await screen.getByRole("link", /^熊猫地图/).tap();
+  await expect(screen.getByRole("heading", "熊猫地图")).toBeVisible();
+  await expect(screen.getByRole("image", "大熊猫所在地地图")).toBeVisible();
 
   const zooLabel = new RegExp(`^${zoo.name}，`);
   const places = screen.getByTestId("map-places");
@@ -18,21 +18,38 @@ test("the map opens a zoo from its dot and from the list, and lists a place with
   await expect(places.getByRole("button", new RegExp(`^${place}，日本，现在没有熊猫$`))).toBeVisible();
   await expect(map.getByRole("button", new RegExp(place))).toHaveCount(0);
 
-  // Every run's zoo sits at the same coordinates, so on a reused local database the dot holds earlier runs'
-  // zoos too and opens 这个点上 instead; this run's zoo is then picked there.
-  const dot = map.getByRole("button", new RegExp(`(^|、)${zoo.name}[，、]`));
-  const several = /个地方$/.test((await dot.getAttribute("aria-label")) ?? "");
-  await dot.tap();
-  if (several) await screen.getByRole("button", zooLabel).first().tap();
+  // Every run's zoo sits at the same coordinates, so on a reused local database the marker holds earlier
+  // runs' zoos too; a tap then zooms in, and the zoo is picked from the list instead.
+  const marker = map.getByRole("button", new RegExp(`(^|、)${zoo.name}[，、]`));
+  const several = /个地方，点一下放大$/.test((await marker.getAttribute("aria-label")) ?? "");
+  if (several) await places.getByRole("button", zooLabel).first().tap();
+  else await marker.tap();
   await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
-  await screen.getByRole("button", "返回").tap();
-  await expect(screen.getByRole("heading", "熊猫在哪里")).toBeVisible();
-
-  await places.getByRole("button", zooLabel).tap();
+  await screen.getByRole("button", `打开${zoo.name}的页面`).tap();
   await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
   await screen.getByRole("button", "返回").tap();
 
+  await screen.getByRole("button", "关闭").tap();
   await places.getByRole("button", new RegExp(`^${place}，`)).tap();
   await expect(screen.getByRole("heading", place)).toBeVisible();
   await expect(screen.getByText("日本")).toBeVisible();
+});
+
+test("the map shows the wild habitats with their populations, and the venues layer turns off", async ({ app, screen }) => {
+  await app.open("/map");
+  const map = screen.getByTestId("panda-world-map");
+  const venues = screen.getByRole("switch", "场馆");
+  await expect(venues).toBeChecked();
+  await expect(screen.getByRole("switch", "野生区")).toBeChecked();
+
+  await map.getByRole("button", /^邛崃山，野生大熊猫 519 只$/).tap();
+  await expect(screen.getByRole("heading", "邛崃山")).toBeVisible();
+  await expect(screen.getByText(/^邛崃山A，87 只/)).toBeVisible();
+  await expect(screen.getByRole("link", "打开数据来源")).toBeVisible();
+  await screen.getByRole("button", "关闭").tap();
+
+  await venues.tap();
+  await expect(venues).not.toBeChecked();
+  await expect(map.getByRole("button", /熊猫$|点一下放大$/)).toHaveCount(0);
+  await expect(map.getByRole("button", /^邛崃山，/)).toBeVisible();
 });

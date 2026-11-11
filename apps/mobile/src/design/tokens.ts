@@ -65,6 +65,17 @@ const palette = {
   },
   red: { light: "#CE2C31", dark: "#FF6961" },
   orange: { light: "#B25000", dark: "#FF9F0A" },
+  /** The map's base, after Protomaps' light and dark basemaps: pale water, warm land, low contrast under the pins. */
+  map: {
+    waterLight: "#D4E4F0",
+    landLight: "#F4F2EC",
+    waterDark: "#0B1620",
+    landDark: "#1F1F22",
+    wildLight: "#D3E8C9", // a wild panda area: a soft green under the labels
+    wildDark: "#1E3A26",
+    wildInkLight: "#2F6F35", // its name and glyph: AA on the land and on the green
+    wildInkDark: "#8FD18A",
+  },
 } as const;
 
 /** The 4pt spacing scale. Keys follow Tailwind's numbering, so `p-4` is 16. */
@@ -147,6 +158,10 @@ const colorLight = {
   glassFallback: alpha("black", 0.38),
   barMaterial: alpha("white", 0.86),
   capsuleMaterial: alpha("white", 0.94),
+  mapWater: palette.map.waterLight,
+  mapLand: palette.map.landLight,
+  mapWild: palette.map.wildLight,
+  mapWildInk: palette.map.wildInkLight,
 } as const;
 export type ColorRole = keyof typeof colorLight;
 
@@ -174,6 +189,10 @@ const colorDark: Record<ColorRole, string> = {
   glassFallback: alpha("black", 0.38),
   barMaterial: "rgba(21,21,23,0.86)", // card (dark) at 86%
   capsuleMaterial: "rgba(21,21,23,0.94)", // card (dark) at 94%
+  mapWater: palette.map.waterDark,
+  mapLand: palette.map.landDark,
+  mapWild: palette.map.wildDark,
+  mapWildInk: palette.map.wildInkDark,
 };
 
 /** What each color role is for. Read by the generator (DESIGN.md) and the showcase. */
@@ -201,6 +220,10 @@ export const colorRoleNotes: Record<ColorRole, string> = {
   glassFallback: "The translucent disc behind a toolbar glyph where Liquid Glass is unavailable.",
   barMaterial: "The web tab bar, under a backdrop blur.",
   capsuleMaterial: "Android's floating tab capsule, which has no blur.",
+  mapWater: "The sea on the panda map.",
+  mapLand: "Land on the panda map. Labels on it take a halo in this color.",
+  mapWild: "A wild panda area on the map (a sketch of where a local population lives).",
+  mapWildInk: "The name and glyph of a wild area, and its selected outline.",
 };
 
 /** The bottom scrim over a photograph: black, clear at the top to 72% at the bottom. */

@@ -7,7 +7,7 @@ import { NATIVE_SYMBOLS, nanoSymbol } from "@/lib/native-symbols";
 import { IOS, useIOSColors } from "@/lib/theme";
 
 /**
- * Lucide glyphs (calendar, search, book, user-round; v4 mockups), because the system tab bar takes images,
+ * Lucide glyphs (calendar, compass, search, book, user-round; v4 mockups and the 发现 plan), because the system tab bar takes images,
  * not components. The bar tints them: secondary label at rest, tint when selected. A native build
  * uses them as custom SF Symbols and VectorDrawables (see `lib/native-symbols.ts`), which scale with
  * the bar and follow the symbol weight; Expo Go uses the same glyphs as template PNGs at 25pt.
@@ -15,6 +15,7 @@ import { IOS, useIOSColors } from "@/lib/theme";
  */
 const TAB_ICON = {
   today: require("../../../assets/tab-icons/today.png"),
+  discover: require("../../../assets/tab-icons/discover.png"),
   find: require("../../../assets/tab-icons/search.png"),
   book: require("../../../assets/tab-icons/atlas.png"),
   me: require("../../../assets/tab-icons/me.png"),
@@ -51,6 +52,10 @@ export default function TabsLayout() {
       <NativeTabs.Trigger name="(today)">
         <NativeTabs.Trigger.Label>今天</NativeTabs.Trigger.Label>
         {tabIcon("today", TAB_ICON.today)}
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="discover">
+        <NativeTabs.Trigger.Label>发现</NativeTabs.Trigger.Label>
+        {tabIcon("discover", TAB_ICON.discover)}
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="find">
         <NativeTabs.Trigger.Label>找熊猫</NativeTabs.Trigger.Label>

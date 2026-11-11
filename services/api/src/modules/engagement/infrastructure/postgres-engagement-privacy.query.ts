@@ -6,7 +6,7 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
     transaction: DatabaseTransaction,
     accountId: string,
   ): Promise<Record<string, unknown>> {
-    const [favorites, collections, checkins, seenPandas, dailyCheckins, askUsage] = await Promise.all([
+    const [favorites, collections, checkins, seenPandas, dailyCheckins, askUsage, venueFollows] = await Promise.all([
       transaction
         .selectFrom("engagement.favorites")
         .select(["panda_id", "favorited_at"])
@@ -46,6 +46,12 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
         .where("account_id", "=", accountId)
         .orderBy("usage_on")
         .execute(),
+      transaction
+        .selectFrom("engagement.venue_follows")
+        .select(["institution_id", "followed_at"])
+        .where("account_id", "=", accountId)
+        .orderBy("followed_at")
+        .execute(),
     ]);
 
     const collectionMap = new Map<string, { collectionId: string; name: string; pandaIds: string[]; createdAt: string; updatedAt: string }>();
@@ -63,6 +69,7 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
 
     return {
       favorites: favorites.map((row) => ({ pandaId: row.panda_id, favoritedAt: row.favorited_at.toISOString() })),
+      followedVenues: venueFollows.map((row) => ({ institutionId: row.institution_id, followedAt: row.followed_at.toISOString() })),
       collections: [...collectionMap.values()],
       checkins: checkins.map((row) => ({
         checkinId: row.checkin_id,
@@ -93,6 +100,7 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
 
   public async erasePrivacySubject(transaction: DatabaseTransaction, accountId: string): Promise<void> {
     await transaction.deleteFrom("engagement.favorites").where("account_id", "=", accountId).execute();
+    await transaction.deleteFrom("engagement.venue_follows").where("account_id", "=", accountId).execute();
     await transaction.deleteFrom("engagement.collections").where("account_id", "=", accountId).execute();
     await transaction.deleteFrom("engagement.location_checkins").where("account_id", "=", accountId).execute();
     await transaction.deleteFrom("engagement.seen_pandas").where("account_id", "=", accountId).execute();

@@ -65,6 +65,27 @@ export class FavoriteDto {
   public declare favoritedAt: string;
 }
 
+export class FollowedVenueDto {
+  @ApiProperty({ description: "Institution slug." })
+  public declare institutionSlug: string;
+
+  @ApiProperty({ format: "date-time" })
+  public declare followedAt: string;
+}
+
+export class FollowedVenueListDto {
+  @ApiProperty({ type: () => FollowedVenueDto, isArray: true })
+  public declare items: FollowedVenueDto[];
+}
+
+export class UnfollowVenueDto {
+  @ApiProperty()
+  public declare institutionSlug: string;
+
+  @ApiProperty({ enum: [false] })
+  public declare followed: false;
+}
+
 export class FavoriteListDto {
   @ApiProperty({ type: () => FavoriteDto, isArray: true })
   public declare items: FavoriteDto[];

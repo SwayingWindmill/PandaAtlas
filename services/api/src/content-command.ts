@@ -5,6 +5,7 @@ import { type Kysely, sql } from "kysely";
 import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { assertVerifiedDatabase } from "./batch-database.js";
+import { publishedComparisons } from "./modules/comparisons/application/comparison-catalog.js";
 import { publishedOverseasStatus } from "./modules/overseas-status/application/overseas-status-catalog.js";
 import { publishedVenueNews } from "./modules/venue-news/application/venue-news-catalog.js";
 import { ConfigModule } from "./platform/config/config.module.js";
@@ -20,13 +21,14 @@ import type { Database } from "./platform/database/database.types.js";
 
 const REPORT_DIRECTORY = ".batch-work/content";
 
-type CatalogTable = "place.venue_news_catalog" | "place.overseas_status_catalog";
+type CatalogTable = "place.venue_news_catalog" | "place.overseas_status_catalog" | "place.comparison_catalog";
 
-export type ContentKind = "venue-news" | "overseas-status" | "institutions";
+export type ContentKind = "venue-news" | "overseas-status" | "comparisons" | "institutions";
 
 const KINDS: Record<string, ContentKind> = {
   "data/curation/venue-news/venue-news.json": "venue-news",
   "data/curation/overseas-status/overseas-status.json": "overseas-status",
+  "data/curation/comparisons/comparisons.json": "comparisons",
   "data/curation/institutions/institutions.json": "institutions",
 };
 
@@ -161,8 +163,13 @@ export async function writeContent(db: Kysely<Database>, kind: ContentKind, file
   const version = typeof document?.version === "string" ? document.version : "";
   if (!version) throw new Error(`${kind} needs a version.`);
   const row = { version, document: file };
-  const published = kind === "venue-news" ? publishedVenueNews(row).items.length : publishedOverseasStatus(row).items.length;
-  const table = kind === "venue-news" ? "place.venue_news_catalog" : "place.overseas_status_catalog";
+  const catalogs = {
+    "venue-news": { table: "place.venue_news_catalog", count: () => publishedVenueNews(row).items.length },
+    "overseas-status": { table: "place.overseas_status_catalog", count: () => publishedOverseasStatus(row).items.length },
+    comparisons: { table: "place.comparison_catalog", count: () => publishedComparisons(row).items.length },
+  } as const satisfies Record<Exclude<ContentKind, "institutions">, { table: CatalogTable; count: () => number }>;
+  const { table, count } = catalogs[kind];
+  const published = count();
   return { kind, version, ...(await writeCatalog(db, table, version, file)), counts: { published } };
 }
 

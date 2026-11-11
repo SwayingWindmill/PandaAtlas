@@ -165,6 +165,10 @@
       --color-photo-stroke: rgba(0,0,0,0.1);
       --color-glass-fallback: rgba(0,0,0,0.38);
       --color-bar-material: rgba(255,255,255,0.86);
+      --color-map-water: #d4e4f0;
+      --color-map-land: #f4f2ec;
+      --color-map-wild: #d3e8c9;
+      --color-map-wild-ink: #2f6f35;
     }
 
     @variant dark {
@@ -200,6 +204,10 @@
       --color-photo-stroke: rgba(255,255,255,0.1);
       --color-glass-fallback: rgba(0,0,0,0.38);
       --color-bar-material: rgba(21,21,23,0.86);
+      --color-map-water: #0b1620;
+      --color-map-land: #1f1f22;
+      --color-map-wild: #1e3a26;
+      --color-map-wild-ink: #8fd18a;
     }
   }
 }

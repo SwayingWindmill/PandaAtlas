@@ -17,6 +17,8 @@ export interface TimelineItem {
   /** A trailing mark on the title line: a SourceBadge, a ConfirmedMark. */
   trailing?: React.ReactNode;
   icon?: LucideIcon;
+  /** A death: a small grey dot and grey text, never the vivid newest dot, with no glyph (DECEASED_POLICY). */
+  quiet?: boolean;
 }
 
 /**
@@ -36,7 +38,7 @@ export function Timeline({ items, newestFirst = true }: { items: TimelineItem[];
   return (
     <View>
       {items.map((item, index) => {
-        const isNewest = index === newest;
+        const isNewest = index === newest && !item.quiet;
         const first = index === 0;
         const last = index === items.length - 1;
         return (
@@ -48,7 +50,7 @@ export function Timeline({ items, newestFirst = true }: { items: TimelineItem[];
           >
             <View style={{ width: column }} className="items-center">
               <View className={cn("bg-border", first && "opacity-0")} style={{ width: rail, height: 6 }} />
-              {item.icon ? (
+              {item.icon && !item.quiet ? (
                 <Icon icon={item.icon} size="footnote" tone={isNewest ? "tint" : "graphic"} />
               ) : (
                 <View
@@ -74,7 +76,7 @@ export function Timeline({ items, newestFirst = true }: { items: TimelineItem[];
                 ) : null}
               </View>
               <View className="flex-row items-center gap-hair-gap">
-                <Text variant="subheadline" className="shrink font-semibold">
+                <Text variant="subheadline" className={cn("shrink", item.quiet ? "text-muted-foreground" : "font-semibold")}>
                   {item.title}
                 </Text>
                 {item.trailing}

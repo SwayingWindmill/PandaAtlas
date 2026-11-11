@@ -11,6 +11,7 @@
 | 场馆简介、地图点、参观指南（开放时间、票价、观猫时段、拍照点） | `data/curation/institutions/institutions.json` | 文件里的 `$comment` | `curation.content`，之后再跑 `release.publish` |
 | 场馆动态 | `data/curation/venue-news/venue-news.json` | [SCHEMA.md](../../data/curation/venue-news/SCHEMA.md) | `curation.content` |
 | 海外大熊猫状态（归国熊猫） | `data/curation/overseas-status/overseas-status.json` | [SCHEMA.md](../../data/curation/overseas-status/SCHEMA.md) | `curation.content` |
+| 比一比（发现页） | `data/curation/comparisons/comparisons.json` | [SCHEMA.md](../../data/curation/comparisons/SCHEMA.md) | `curation.content` |
 | 科普、认脸挑战、月度挑战主题 | `data/curation/learning/learning.json` | [ARTICLE_SCHEMA.md](../../data/curation/learning/ARTICLE_SCHEMA.md) | `curation.learning` |
 | 熊猫档案、照片 | `data/curation/pandas/*.csv` | [README.md](../../data/curation/pandas/README.md) | 研究流水线和 `release.publish` |
 
@@ -23,7 +24,7 @@
    ```
    它会跑改动涉及的校验，也可以只跑某一个，例如 `python scripts/curation/validate_venue_news.py`。
 3. **核对来源。** 打开 `sourceUrl`，确认原文和条目一致，再把 `status` 改成 `published`，并把 `updatedAt` 或 `verifiedOn` 改成今天。一个人核对即可。
-4. **改版本号。** `venue-news.json`、`overseas-status.json` 和 `learning.json` 的内容变了就要换 `version`，例如 `2026.11.05.1`。内容变了但版本没换，批处理会拒绝写入。`institutions.json` 没有版本号。
+4. **改版本号。** `venue-news.json`、`overseas-status.json`、`comparisons.json` 和 `learning.json` 的内容变了就要换 `version`，例如 `2026.11.05.1`。内容变了但版本没换，批处理会拒绝写入。`institutions.json` 没有版本号。
 5. **开 PR，CI 通过后合并。** 只改了内容的 PR 不触发代码部署。
 6. **发布。** 在 GitHub Actions 打开 **Bounded Batch Operations**，在 `main` 上运行：
    - operation 选表格里的发布操作，manifest 填该文件路径
