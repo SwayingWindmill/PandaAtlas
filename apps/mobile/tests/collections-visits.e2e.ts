@@ -42,6 +42,7 @@ test("a fan records a visit on a zoo's page and removes it from 去过的地点"
   const { zoo } = fixture();
   await signIn(app, screen, testEmail("visits"));
   await app.open(`/institutions/${zoo.slug}`);
+  await screen.getByRole("radio", "攻略").tap();
   await screen.getByRole("button", `记下今天去过${zoo.facility}`).tap();
   await expect(screen.getByText(`${todayLabel()}去过`)).toBeVisible();
   await expect(screen.getByRole("button", `今天已记下去过${zoo.facility}`)).toBeDisabled();
@@ -56,5 +57,6 @@ test("a fan records a visit on a zoo's page and removes it from 去过的地点"
 test("signed out, a zoo's page asks the fan to sign in to record a visit", async ({ app, screen }) => {
   const { zoo } = fixture();
   await app.open(`/institutions/${zoo.slug}`);
+  await screen.getByRole("radio", "攻略").tap();
   await expect(screen.getByRole("button", "登录后记下到访")).toBeVisible();
 });

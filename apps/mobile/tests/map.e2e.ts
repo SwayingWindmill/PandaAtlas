@@ -27,6 +27,8 @@ test("the map shows a zoo from its marker and from the list, and lists a place w
   await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
   await screen.getByRole("button", `打开${zoo.name}的页面`).tap();
   await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
+  await expect(screen.getByRole("radio", "概况")).toBeVisible();
+  await expect(screen.getByRole("radio", "攻略")).toBeVisible();
   await screen.getByRole("button", "返回").tap();
 
   await screen.getByRole("button", "关闭").tap();
@@ -46,10 +48,24 @@ test("the map shows the wild habitats with their populations, and the venues lay
   await expect(screen.getByRole("heading", "邛崃山")).toBeVisible();
   await expect(screen.getByLabel(/^邛崃山A，87 只/)).toBeVisible();
   await expect(screen.getByRole("link", "打开数据来源")).toBeVisible();
+  await expect(screen.getByRole("button", "打开邛崃山的页面")).toBeVisible();
   await screen.getByRole("button", "关闭").tap();
 
   await venues.tap();
   await expect(venues).not.toBeChecked();
   await expect(map.getByRole("button", /熊猫$|点一下放大$/)).toHaveCount(0);
   await expect(map.getByRole("button", /^邛崃山，/)).toBeVisible();
+});
+
+test("a wild habitat has its own page, with its populations, the other ranges and the source", async ({ app, screen }) => {
+  await app.open("/wild/qionglai");
+  await expect(screen.getByRole("heading", "邛崃山")).toBeVisible();
+  await expect(screen.getByRole("image", "邛崃山的4个局域种群在地图上的大致位置")).toBeVisible();
+  await expect(screen.getByLabel("野生大熊猫 519 只")).toBeVisible();
+  await expect(screen.getByLabel(/^邛崃山B，224 只/)).toBeVisible();
+  await expect(screen.getByRole("link", "打开数据来源")).toBeVisible();
+
+  await screen.getByRole("button", /^岷山/).tap();
+  await expect(screen.getByRole("heading", "岷山")).toBeVisible();
+  await expect(screen.getByLabel("野生大熊猫 765 只")).toBeVisible();
 });

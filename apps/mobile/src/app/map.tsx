@@ -41,7 +41,7 @@ import { MapRows } from "@/features/map/place-list";
 import { type MapTimeline, type YearEvent, type YearEventKind, buildTimeline, eventsInYear, residentsInYear } from "@/features/map/timeline";
 import { useMapCamera } from "@/features/map/use-map-camera";
 import { type MapMarker, VenueMap, type YearView } from "@/features/map/venue-map";
-import { WILD_AREAS, WILD_SOURCE, type WildArea } from "@/features/map/wild";
+import { WILD_AREAS, WILD_SOURCE, type WildArea, venuesNear } from "@/features/map/wild";
 import { useSession } from "@/features/session/session";
 import { tapHaptic } from "@/lib/haptics";
 import { HAIRLINE } from "@/lib/surface";
@@ -54,8 +54,6 @@ const SHEET_SHARE = 0.5;
 const SHEET_PEEK = 176;
 const FLOAT_SHADOW = "0 1px 2px rgba(0,0,0,0.1), 0 4px 14px rgba(0,0,0,0.1)";
 const PLAY_STEP_MS = 700;
-/** A venue within this many outline units of a wild area's centre (about 200 km) counts as near it. */
-const NEAR_WILD = 6;
 
 type Selection = { kind: "place"; id: string } | { kind: "wild"; id: string } | null;
 
@@ -616,6 +614,14 @@ function WildSheet({ area, nearVenues, onClose }: { area: WildArea; nearVenues: 
         <CloseButton onPress={onClose} />
       </View>
       <View className="flex-row gap-stack-tight">
+        <Action
+          icon={Trees}
+          label="栖息地页"
+          spoken={`打开${area.range.name}的页面`}
+          onPress={() => router.push({ pathname: "/wild/[id]", params: { id: area.range.id } })}
+        />
+      </View>
+      <View className="flex-row gap-stack-tight">
         <MapStat icon={PawPrint} label="野生大熊猫" value={`${area.count}`} tone="wild" />
         <MapStat icon={Trees} label="栖息地 km²" value={Math.round(area.habitatKm2).toLocaleString("en-US")} tone="wild" />
         <MapStat icon={House} label="附近场馆" value={`${nearVenues}`} />
@@ -797,11 +803,7 @@ export default function MapScreen() {
     />
   ) : null;
 
-  const nearVenues = wildArea
-    ? (view?.items.filter(
-        (item) => item.point && Math.hypot(item.point.x - wildArea.label.x, item.point.y - wildArea.label.y) < NEAR_WILD,
-      ).length ?? 0)
-    : 0;
+  const nearVenues = wildArea ? venuesNear(wildArea, view?.items ?? []).length : 0;
 
   return (
     <View className="flex-1 bg-background">
