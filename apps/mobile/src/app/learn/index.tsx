@@ -23,10 +23,11 @@ import {
   readingMinutes,
 } from "@/features/learning/catalog";
 import { loadAskStatus } from "@/features/ask/ask";
+import { FeedArticle, openArticle } from "@/features/learning/feed-article";
 import { PandaPhoto } from "@/features/learning/panda-photo";
 import { useLearningCatalog, useLearningPandas } from "@/features/learning/use-catalog";
 import { useSession } from "@/features/session/session";
-import { HAIRLINE, RADIUS } from "@/lib/surface";
+import { RADIUS } from "@/lib/surface";
 
 const CATEGORY_ORDER = ["外形与识别", "食性", "繁殖与成长", "保护"];
 const TITLE = "认识大熊猫";
@@ -62,9 +63,6 @@ function StillWriting({ shelves }: { shelves: Shelf[] }) {
   );
 }
 
-function openArticle(slug: string) {
-  router.push({ pathname: "/learn/articles/[slug]", params: { slug } });
-}
 
 /** The large title kept in the column, as 科普 does on every platform. */
 /**
@@ -299,46 +297,5 @@ function FeaturedArticle({ article }: { article: CatalogArticle }) {
       </View>
       <PhotoOutline radius={RADIUS.card} />
     </PressScale>
-  );
-}
-
-/** A story in a section: title and dek on the left, a square photo on the right, as News lists them. */
-function FeedArticle({ article, last }: { article: CatalogArticle; last: boolean }) {
-  const title = learningText(article.title);
-  const hero = articleHero(article);
-  return (
-    <View>
-      <PressScale
-        accessibilityRole="button"
-        accessibilityLabel={title}
-        onPress={() => openArticle(article.slug)}
-        className="flex-row items-start gap-row bg-card p-inset"
-      >
-        <View className="min-w-0 flex-1 gap-hair-gap">
-          <Text variant="headline" numberOfLines={3}>
-            {title}
-          </Text>
-          <Text variant="subheadline" className="text-muted-foreground" numberOfLines={2}>
-            {learningText(article.dek)}
-          </Text>
-          <Text
-            variant="footnote"
-            className="pt-hair-gap text-muted-foreground"
-          >{`${readingMinutes(article)} 分钟`}</Text>
-        </View>
-        {hero?.asset ? (
-          <View className="size-24 overflow-hidden rounded-control" style={{ borderCurve: "continuous" }}>
-            <Image
-              source={hero.asset}
-              style={{ width: "100%", height: "100%" }}
-              contentFit="cover"
-              accessible={false}
-            />
-            <PhotoOutline radius={RADIUS.control} />
-          </View>
-        ) : null}
-      </PressScale>
-      {last ? null : <View className="ml-inset bg-border" style={{ height: HAIRLINE }} />}
-    </View>
   );
 }

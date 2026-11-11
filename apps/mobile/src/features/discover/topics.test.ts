@@ -1,30 +1,34 @@
 import { describe, expect, it } from "vitest";
 
-import { type TopicId, arrangeTopics } from "./topics";
+import { type TopicId, arrangeDiscover } from "./topics";
 
 const only = (...ids: TopicId[]) => (id: TopicId) => ids.includes(id);
-const ids = (topics: { id: TopicId }[]) => topics.map((topic) => topic.id);
+const DAYS = ["2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13"];
+const leadName = (lead: ReturnType<typeof arrangeDiscover<string>>["lead"]) =>
+  lead?.kind === "article" ? lead.article : lead?.topic.id;
 
-describe("arrangeTopics", () => {
-  it("leaves out topics with nothing to show", () => {
-    const { hero, rail } = arrangeTopics(only("look-alikes", "map"), "2026-11-10");
-    expect(hero?.id).toBe("look-alikes");
-    expect(ids(rail)).toEqual(["map"]);
+describe("arrangeDiscover", () => {
+  it("leaves out 专题 with nothing to show", () => {
+    const { lead, rail } = arrangeDiscover<string>([], only("look-alikes"), "2026-11-10");
+    expect(leadName(lead)).toBe("look-alikes");
+    expect(rail).toEqual([]);
   });
 
-  it("turns the featured topic over from one day to the next", () => {
-    const has = only("returning", "look-alikes", "venue-news", "map");
-    const heroes = ["2026-11-10", "2026-11-11", "2026-11-12"].map((day) => arrangeTopics(has, day).hero?.id);
-    expect(new Set(heroes)).toEqual(new Set(["returning", "look-alikes", "venue-news"]));
+  it("turns the lead over each day among articles and 专题", () => {
+    const leads = DAYS.slice(0, 3).map((day) => leadName(arrangeDiscover(["eyes", "bamboo"], only("look-alikes"), day).lead));
+    expect(new Set(leads)).toEqual(new Set(["eyes", "bamboo", "look-alikes"]));
   });
 
-  it("keeps the featured topic out of the rail and the rest in order", () => {
-    const { hero, rail } = arrangeTopics(() => true, "2026-11-10");
-    expect(ids(rail)).not.toContain(hero!.id);
-    expect(ids(rail).at(-1)).toBe("map");
+  it("keeps the leading 专题 out of the rail, and every 专题 in it on an article's day", () => {
+    for (const day of DAYS) {
+      const { lead, rail } = arrangeDiscover(["eyes"], () => true, day);
+      const ids = rail.map((topic) => topic.id);
+      if (lead?.kind === "topic") expect(ids).not.toContain(lead.topic.id);
+      else expect(ids).toEqual(["returning", "look-alikes", "venue-news"]);
+    }
   });
 
-  it("never features 熊猫在哪里", () => {
-    expect(arrangeTopics(only("map"), "2026-11-10")).toEqual({ hero: null, rail: [expect.objectContaining({ id: "map" })] });
+  it("has no lead when there is nothing to lead with", () => {
+    expect(arrangeDiscover([], () => false, "2026-11-10")).toEqual({ lead: null, rail: [] });
   });
 });

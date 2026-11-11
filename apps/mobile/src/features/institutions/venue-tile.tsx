@@ -14,7 +14,7 @@ import { RADIUS } from "@/lib/surface";
 const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
 
 /**
- * One venue in 按场馆逛: the photo its own page leads with (a resident's reviewed cover), its name under it.
+ * One venue in 找熊猫's 场馆 row: the photo its own page leads with (a resident's reviewed cover), its name under it.
  * A venue with no such photo keeps a plate with the first character of its name.
  */
 export function VenueTile({ slug, name, size }: { slug: string; name: string; size: number }) {
