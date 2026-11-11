@@ -42,6 +42,10 @@ colors:
   on-media-dark: "#FFFFFF"
   media-placeholder: "#3A3A3C"
   media-placeholder-dark: "#3A3A3C"
+  map-water: "#D4E4F0"
+  map-water-dark: "#0B1620"
+  map-land: "#F4F2EC"
+  map-land-dark: "#1F1F22"
 typography:
   display:
     fontFamily: "system-ui"

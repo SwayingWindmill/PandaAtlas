@@ -1,20 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import { type Href, Stack, router } from "expo-router";
+import { Stack } from "expo-router";
 import { useDeferredValue, useMemo, useState } from "react";
-import { FlatList, Platform, Pressable, ScrollView, View } from "react-native";
+import { FlatList, Platform, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Chip } from "@/components/chip";
-import { Icon } from "@/components/icon";
-import { Columns, type LucideIcon, MapPin, Network } from "@/components/icons";
+import { ListCell, ListSection } from "@/components/grouped-list";
+import { Network } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { BARLESS_TOP, ROOT_TITLE_IN_COLUMN } from "@/components/page";
 import { SectionHeader } from "@/components/section-header";
 import { StatusBarCover } from "@/components/status-bar-cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { institutionListQueryOptions } from "@/features/institutions/institutions";
-import { VenueTile } from "@/features/institutions/venue-tile";
+import { MapCard } from "@/features/map/map-card";
 import { areaChips } from "@/features/pandas/areas";
 import { SPECIAL_CHIPS, type SpecialChips, isSpecialChip, useSpecialChips } from "@/features/pandas/special-chips";
 import { PandaRow } from "@/features/pandas/panda-row";
@@ -52,33 +51,14 @@ function inChip(panda: { area: string | null; slug: string }, chip: string, spec
  * own; Android and the web keep the in-page field.
  */
 const SYSTEM_SEARCH = Platform.OS === "ios";
-const VENUE = 88;
-
-const TOOLS: { label: string; spoken: string; icon: LucideIcon; href: Href }[] = [
-  { label: "地图", spoken: "熊猫在哪里", icon: MapPin, href: "/map" },
-  // The user picks both pandas on /compare; nothing here proposes a pair.
-  { label: "比一比", spoken: "比一比两只熊猫", icon: Columns, href: "/compare" },
-  { label: "查关系", spoken: "查两只熊猫的关系", icon: Network, href: "/relationship" },
-];
-
-/** Ways to look pandas up besides the search, as bare glyphs over their names (the 今天 quick entries). */
+/** Ways to look pandas up besides the search: the map, then 查关系. */
 function FindTools() {
   return (
-    <View className="flex-row">
-      {TOOLS.map((tool) => (
-        <Pressable
-          key={tool.label}
-          role="link"
-          accessibilityLabel={tool.spoken}
-          onPress={() => router.push(tool.href)}
-          className="min-h-11 flex-1 items-center gap-1.5 py-2 active:opacity-60"
-        >
-          <Icon icon={tool.icon} size={26} tone="label" strokeWidth={2} />
-          <Text variant="footnote" className="font-semibold">
-            {tool.label}
-          </Text>
-        </Pressable>
-      ))}
+    <View className="gap-stack-tight">
+      <MapCard />
+      <ListSection>
+        <ListCell icon={Network} label="查关系" detail="两只熊猫是什么亲戚" href="/relationship" last />
+      </ListSection>
     </View>
   );
 }
@@ -92,7 +72,6 @@ export default function FindScreen() {
   const { data: pandas, isError: failed, refetch } = useQuery(pandaIndexQueryOptions());
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
-  const { data: institutions } = useQuery(institutionListQueryOptions());
   const [area, setArea] = useState("全部");
   const special = useSpecialChips();
   const chips = useMemo(() => (pandas ? findChips(pandas, special) : []), [pandas, special]);
@@ -153,26 +132,6 @@ export default function FindScreen() {
                 </ScrollView>
               ) : null}
               {browsing ? <FindTools /> : null}
-              {browsing && institutions && institutions.length > 0 ? (
-                <View className="gap-stack-tight">
-                  <SectionHeader title="场馆" action={{ label: "全部", href: "/institutions", accessibilityLabel: "全部场馆" }} />
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    className="-mx-gutter"
-                    contentContainerClassName="gap-stack px-gutter"
-                  >
-                    {institutions.map((institution) => (
-                      <VenueTile
-                        key={institution.slug}
-                        slug={institution.slug}
-                        name={institution.nameZh ?? institution.nameEn ?? institution.slug}
-                        size={VENUE}
-                      />
-                    ))}
-                  </ScrollView>
-                </View>
-              ) : null}
               {browsing && popular.length > 0 ? (
                 <View className="gap-stack-tight">
                   <SectionHeader title="大家常看" />

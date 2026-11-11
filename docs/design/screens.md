@@ -30,11 +30,22 @@ Status: all five steps are built. The quick entries are 观猫时机 (the venue 
 1. The large title 找熊猫.
 2. A search field with the placeholder 名字、拼音或场馆.
 3. Filter chips (`Chip`), single select: 全部, 在中国, 在海外, 双胞胎, 归国. A chip shows only when its filter has a real query behind it.
-4. **Ways in.** Three bare glyphs over their names, as 今天's quick entries: 地图 (`/map`), 比一比 and 查关系. Shown while browsing.
-5. **场馆.** One square tile per published institution, with the photo its page leads with or the first character of its name, and 全部 to `/institutions`. Shown while browsing.
+4. **熊猫地图.** A card with a still thumbnail of China: the land, faint city names and a bare house glyph per place, a 海外 N 个 capsule in the corner, and 熊猫地图 with the totals under it. The whole card opens `/map`. Shown while browsing.
+5. **查关系.** One grouped row with a leading glyph, to `/relationship`. Shown while browsing. 比一比 moved to 发现 as published comparisons; the venues live on the map.
 6. **大家常看.** One inset group of panda rows: a 44pt round photo, the name with a sex glyph, the current place as a subheadline, and a chevron. The signal is follows: the published pandas that the most fans began following in the last 30 days, counting only pandas with at least five such fans (`GET /api/v2/popular-pandas`, no counts published). The block shows the top five and only while 全部 is selected with no search. It is hidden when no panda reaches the floor. The full list follows directly under it as 全部熊猫, so the block has no 全部 link.
 
-Status: built. 大家常看 stays hidden until five fans follow one panda within 30 days. The chips are 在中国, 在海外, 双胞胎 (pandas in a sourced twin pair), 归国 (pandas the overseas catalog marks returned), then each area in China; each shows only when it keeps a panda.
+Status: built. The map card replaced the three glyphs and the venue tiles (mockup: 找熊猫 · 地图卡片). 大家常看 stays hidden until five fans follow one panda within 30 days. The chips are 在中国, 在海外, 双胞胎 (pandas in a sourced twin pair), 归国 (pandas the overseas catalog marks returned), then each area in China; each shows only when it keeps a panda.
+
+## 熊猫地图 — `/map`
+
+Mockups: 地图 · 现在 and 地图 · 点开场馆 on the 发现、找熊猫与地图 canvas. References: Apple Maps for the markers and the control column, Protomaps for the base colors.
+
+1. The map fills the screen: the Natural Earth land outline on `mapWater`, land in `mapLand`, drawn by us (no tiles). One finger drags it, two pinch it, a mouse wheel zooms it on the web. It opens on the places in China.
+2. **Markers.** A bare house glyph haloed in the land color, the name and the resident count beside it, haloed the same way. Places closer than 44pt on screen merge into one marker named N 个地方, and a tap zooms to them. Where two labels would overlap, the smaller place keeps only its glyph. A name near the right edge hangs to the left of its glyph. City names (重庆, 西安 …) show faintly once the map is zoomed to China.
+3. **Controls.** A back button top left; top right, one capsule holding 海外 (fits every place) and 回到中国, split by a hairline.
+4. **Sheet.** Up to 46% of the screen. With nothing chosen: 熊猫地图, the totals after bare glyphs, then every place grouped 中国 and 海外 as rows (places without coordinates included; a row of one opens its page). A chosen place: its name, country and count, a close button, its pandas as photo tiles, and a tinted 场馆页 (or 地点页) button.
+
+Status: phase 1 built. Next: the timeline (residencies, births and moves by year; a death is a quiet grey row), then wild areas once their data and its sourcing exist.
 
 ## 发现 (after v4)
 

@@ -1,3 +1,5 @@
+import { queryOptions } from "@tanstack/react-query";
+
 import { loadInstitutionList } from "@/features/institutions/institutions";
 import { type PandaListItem, loadPandaIndex, loadPlaces } from "@/features/pandas/pandas";
 import { loadResidencies } from "@/lib/public-data";
@@ -17,6 +19,11 @@ export async function loadMapView(): Promise<MapView> {
     loadPandaIndex(),
   ]);
   return buildMapView(institutions, [...places.values()], residencies, pandasOf(pandas));
+}
+
+/** The map's places, shared by the 找熊猫 thumbnail and the map screen. */
+export function mapViewQueryOptions() {
+  return queryOptions({ queryKey: ["public", "map-view"], staleTime: 300_000, networkMode: "always", queryFn: loadMapView });
 }
 
 /** A place that belongs to no institution. Null when the release has no such slug. */
