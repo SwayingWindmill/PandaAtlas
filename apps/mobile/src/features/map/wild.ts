@@ -159,3 +159,12 @@ function areaOf(range: WildRange): WildArea {
 }
 
 export const WILD_AREAS: WildArea[] = WILD_RANGES.map(areaOf);
+
+/** A venue within this many outline units of a wild area's centre (about 200 km) counts as near it. */
+const NEAR_WILD = 6;
+
+/** The items within reach of a wild area's centre, nearest first. */
+export function venuesNear<T extends { point: { x: number; y: number } | null }>(area: WildArea, items: readonly T[]): T[] {
+  const distance = (item: T) => (item.point ? Math.hypot(item.point.x - area.label.x, item.point.y - area.label.y) : Infinity);
+  return items.filter((item) => distance(item) < NEAR_WILD).sort((a, b) => distance(a) - distance(b));
+}

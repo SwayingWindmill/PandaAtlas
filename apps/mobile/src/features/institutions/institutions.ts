@@ -2,6 +2,7 @@ import type { components } from "@zhipanda/api-client";
 import { queryOptions } from "@tanstack/react-query";
 
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
+import { type FormerResident, residentsOf } from "@/features/institutions/residents";
 import { api } from "@/lib/api";
 import { queryClient } from "@/lib/query-client";
 
@@ -53,6 +54,8 @@ export interface TimeWindow {
   end: string;
 }
 
+export type { FormerResident };
+
 export interface InstitutionDetail {
   slug: string;
   name: string;
@@ -64,7 +67,9 @@ export interface InstitutionDetail {
   sources: string[];
   facilities: Facility[];
   residents: PandaListItem[];
-  former: PandaListItem[];
+  former: FormerResident[];
+  /** Pandas, living here or not, whose first stay here began on the day they were born. */
+  bornHere: number;
 }
 
 const nameOf = (institution: Institution) => institution.nameZh ?? institution.nameEn ?? institution.slug;
@@ -141,10 +146,7 @@ export async function loadInstitution(slug: string): Promise<InstitutionDetail> 
   const placeIds = new Set(places.map((place) => place.placeId));
   const pandasById = new Map(pandas.map((panda) => [panda.id, panda]));
   const here = residencies.data.items.filter((residency) => placeIds.has(residency.placeId));
-  const pandasOf = (current: boolean) => [
-    ...new Set(here.filter((residency) => !residency.endOn === current).flatMap((residency) => pandasById.get(residency.pandaId) ?? [])),
-  ];
-  const residents = pandasOf(true);
+  const { residents, former, bornHere } = residentsOf(here, pandasById);
   const profile = institution.profile;
 
   return {
@@ -158,8 +160,8 @@ export async function loadInstitution(slug: string): Promise<InstitutionDetail> 
     sources: profile?.sourceUrls ?? [],
     facilities: places.map(facilityOf),
     residents,
-    // A panda that moved between this institution's facilities is a resident, not a former one.
-    former: pandasOf(false).filter((panda) => !residents.includes(panda)),
+    former,
+    bornHere,
   };
 }
 

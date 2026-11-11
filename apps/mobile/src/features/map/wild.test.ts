@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { WILD_AREAS, WILD_RANGES, WILD_SOURCE } from "./wild";
+import { WILD_AREAS, WILD_RANGES, WILD_SOURCE, venuesNear } from "./wild";
 
 describe("wild areas", () => {
   it("adds up to the park total in Table 1", () => {
@@ -27,5 +27,14 @@ describe("wild areas", () => {
 
   it("names the provinces a range crosses", () => {
     expect(WILD_AREAS.find((area) => area.range.id === "qinling")!.provinces.sort()).toEqual(["四川", "甘肃", "陕西"].sort());
+  });
+});
+
+describe("venuesNear", () => {
+  it("keeps venues within reach of the range's centre, nearest first, and skips ones with no point", () => {
+    const area = WILD_AREAS.find((item) => item.range.id === "qionglai")!;
+    const at = (dx: number) => ({ point: { x: area.label.x + dx, y: area.label.y } });
+    const near = venuesNear(area, [at(5), at(1), at(40), { point: null }]);
+    expect(near.map((item) => item.point!.x - area.label.x)).toEqual([1, 5]);
   });
 });
