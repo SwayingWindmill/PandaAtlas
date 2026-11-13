@@ -47,7 +47,7 @@ function QuickEntries({ viewing }: { viewing: ViewingSpot | null }) {
   const stacked = useStacked();
   const quick: { label: string; icon: LucideIcon; href: Href }[] = [
     viewing
-      ? { label: "观猫时机", icon: Sun, href: { pathname: "/institutions/[slug]", params: { slug: viewing.slug } } }
+      ? { label: "观猫时机", icon: Sun, href: { pathname: "/institutions/[slug]", params: { slug: viewing.slug, tab: "guide" } } }
       : { label: "日历", icon: CalendarDays, href: "/calendar" },
     { label: "归国", icon: Plane, href: "/returning" },
     { label: "挑战", icon: Trophy, href: "/challenge" },

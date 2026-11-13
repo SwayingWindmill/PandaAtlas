@@ -13,19 +13,15 @@ import { StatTile } from "@/components/stat-tile";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { mapViewQueryOptions } from "@/features/map/load";
-import { WILD_AREAS, WILD_SOURCE, type WildArea, venuesNear } from "@/features/map/wild";
+import { openVenue } from "@/features/map/place-list";
+import { WILD_AREAS, WILD_SOURCE, type WildArea, type WildPopulation, venuesNear } from "@/features/map/wild";
 import { HAIRLINE, pageColumn } from "@/lib/surface";
 
 const MAP_HEIGHT = 220;
 const MAP_PAD = 24;
 
-/** "邛崃山B" → "B": a population's letter within its range. */
 const letterOf = (area: WildArea, name: string) => name.slice(area.range.name.length) || name;
 
-/**
- * The range's local populations as the map draws them, fitted to the card: each a circle with its
- * habitat's area and its letter. Positions come from county seats, so this is a sketch, not a boundary.
- */
 function WildSketch({ area, width }: { area: WildArea; width: number }) {
   const [land, wild, ink] = useCSSVariable(["--color-map-land", "--color-map-wild", "--color-map-wild-ink"]).map(String) as [
     string,
@@ -78,9 +74,7 @@ function WildSketch({ area, width }: { area: WildArea; width: number }) {
   );
 }
 
-/** One local population: its letter, counties and count, with a bar against the range's largest. */
-function Population({ area, index, largest }: { area: WildArea; index: number; largest: number }) {
-  const population = area.range.populations[index]!;
+function Population({ area, population, largest }: { area: WildArea; population: WildPopulation; largest: number }) {
   const [ink] = useCSSVariable(["--color-map-wild-ink"]).map(String) as [string];
   return (
     <View className="gap-stack-tight px-inset py-row" accessible accessibilityLabel={`${population.name}，${population.count} 只，${population.counties.join("、")}`}>
@@ -98,7 +92,6 @@ function Population({ area, index, largest }: { area: WildArea; index: number; l
   );
 }
 
-/** A wild habitat's own page: how many wild pandas live there, where, which venues are near and the source. */
 export default function WildAreaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { width } = useWindowDimensions();
@@ -111,11 +104,9 @@ export default function WildAreaScreen() {
       </Page>
     );
   }
-  const column = Math.min(pageColumn(width), 700);
-  const populations = area.range.populations
-    .map((population, index) => ({ population, index }))
-    .sort((a, b) => b.population.count - a.population.count);
-  const largest = populations[0]?.population.count ?? 1;
+  const column = pageColumn(width);
+  const populations = [...area.range.populations].sort((a, b) => b.count - a.count);
+  const largest = populations[0]?.count ?? 1;
   const near = venuesNear(area, view?.items ?? []);
   const others = WILD_AREAS.filter((item) => item !== area).sort((a, b) => b.count - a.count);
   const share = Math.round((area.count / WILD_SOURCE.parkTotal) * 100);
@@ -134,9 +125,9 @@ export default function WildAreaScreen() {
             {`局域种群　${populations.length} 个`}
           </Text>
           <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
-            {populations.map(({ population, index }, order) => (
+            {populations.map((population, order) => (
               <View key={population.name}>
-                <Population area={area} index={index} largest={largest} />
+                <Population area={area} population={population} largest={largest} />
                 {order === populations.length - 1 ? null : <View className="ml-inset bg-border" style={{ height: HAIRLINE }} />}
               </View>
             ))}
@@ -150,11 +141,7 @@ export default function WildAreaScreen() {
                 icon={House}
                 label={item.name}
                 meta={item.residentCount > 0 ? `${item.residentCount} 只` : undefined}
-                onPress={() =>
-                  item.kind === "institution"
-                    ? router.push({ pathname: "/institutions/[slug]", params: { slug: item.slug } })
-                    : router.push({ pathname: "/places/[slug]", params: { slug: item.slug } })
-                }
+                onPress={() => openVenue(item)}
                 last={index === near.length - 1}
               />
             ))}
@@ -173,7 +160,7 @@ export default function WildAreaScreen() {
         </ListSection>
         <Pressable role="link" accessibilityLabel="打开数据来源" onPress={() => void Linking.openURL(WILD_SOURCE.url)} className="px-inset active:opacity-60">
           <Text variant="footnote" className="text-muted-foreground">
-            {`数量和栖息地面积出自${WILD_SOURCE.title}。地图上的范围按县城位置画，只是示意。`}
+            {`数量和栖息地面积出自${WILD_SOURCE.title}，${WILD_SOURCE.note}`}
             <Text variant="footnote" className="text-primary">
               查看来源
             </Text>

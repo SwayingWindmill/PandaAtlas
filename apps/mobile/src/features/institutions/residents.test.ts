@@ -39,13 +39,18 @@ describe("residentsOf", () => {
   it("counts a panda as born here when a stay here starts on its birthday", () => {
     const { former, bornHere } = residentsOf(
       [
-        { pandaId: "a", startOn: "2013-08-23", endOn: "2017-02-21" },
-        { pandaId: "c", startOn: "2000-12-06", endOn: "2023-11-08" },
+        { pandaId: "a", startOn: "2013-08-23", startPrecision: "day", endOn: "2017-02-21" },
+        { pandaId: "c", startOn: "2000-12-06", startPrecision: "day", endOn: "2023-11-08" },
       ],
       index,
     );
     expect(bornHere).toBe(1);
     expect(former.find((item) => item.panda.id === "a")?.bornHere).toBe(true);
+  });
+
+  it("does not count a year-precise arrival that happens to match a 1 January birthday", () => {
+    const { bornHere } = residentsOf([{ pandaId: "c", startOn: "2000-01-01", startPrecision: "year", endOn: "2005-01-01" }], index);
+    expect(bornHere).toBe(0);
   });
 
   it("leaves out pandas that are not in the published index", () => {

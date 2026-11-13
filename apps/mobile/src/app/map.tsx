@@ -33,17 +33,15 @@ import { ScreenState } from "@/components/screen-state";
 import { Timeline, type TimelineItem } from "@/components/timeline";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { setFollowingVenue, useFollowedVenues } from "@/features/engagement/followed-venues";
+import { useFollowVenue } from "@/features/engagement/followed-venues";
 import { type Camera, type Point, type Viewport, fitPoints } from "@/features/map/camera";
 import { mapTimelineQueryOptions, mapViewQueryOptions } from "@/features/map/load";
 import { type MapItem, type MapView, pandaCountLabel } from "@/features/map/model";
-import { MapRows } from "@/features/map/place-list";
+import { MapRows, openVenue } from "@/features/map/place-list";
 import { type MapTimeline, type YearEvent, type YearEventKind, buildTimeline, eventsInYear, residentsInYear } from "@/features/map/timeline";
 import { useMapCamera } from "@/features/map/use-map-camera";
 import { type MapMarker, VenueMap, type YearView } from "@/features/map/venue-map";
 import { WILD_AREAS, WILD_SOURCE, type WildArea, venuesNear } from "@/features/map/wild";
-import { useSession } from "@/features/session/session";
-import { tapHaptic } from "@/lib/haptics";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -56,11 +54,6 @@ const FLOAT_SHADOW = "0 1px 2px rgba(0,0,0,0.1), 0 4px 14px rgba(0,0,0,0.1)";
 const PLAY_STEP_MS = 700;
 
 type Selection = { kind: "place"; id: string } | { kind: "wild"; id: string } | null;
-
-function openPage(item: MapItem) {
-  if (item.kind === "institution") router.push({ pathname: "/institutions/[slug]", params: { slug: item.slug } });
-  else router.push({ pathname: "/places/[slug]", params: { slug: item.slug } });
-}
 
 function pointsOf(items: readonly MapItem[]): Point[] {
   return items.flatMap((item) => (item.point ? [item.point] : []));
@@ -505,22 +498,15 @@ function Action({
   );
 }
 
-/** 关注 for a venue: signed out it goes to sign-in; signed in it toggles, on the selected ground while followed. */
 function FollowAction({ item }: { item: MapItem }) {
-  const { state } = useSession();
-  const followed = useFollowedVenues();
-  const following = followed?.has(item.slug) ?? false;
+  const { following, toggle } = useFollowVenue(item.slug);
   return (
     <Action
       icon={Heart}
       label={following ? "已关注" : "关注"}
       spoken={following ? `已关注${item.name}，点按取消` : `关注${item.name}`}
       filled={following}
-      onPress={() => {
-        tapHaptic();
-        if (state.status !== "signedIn") router.push("/sign-in");
-        else void setFollowingVenue(state.accountId, item.slug, !following);
-      }}
+      onPress={toggle}
     />
   );
 }
@@ -565,7 +551,7 @@ function PlaceSheet({ item, onClose }: { item: MapItem; onClose: () => void }) {
           <Action icon={Navigation} label="路线" spoken={`在地图应用里打开去${item.name}的路线`} onPress={() => void Linking.openURL(route)} />
         ) : null}
         {item.kind === "institution" ? <FollowAction item={item} /> : null}
-        <Action icon={House} label={page} spoken={`打开${item.name}的页面`} onPress={() => openPage(item)} />
+        <Action icon={House} label={page} spoken={`打开${item.name}的页面`} onPress={() => openVenue(item)} />
       </View>
       {item.residents.length > 0 ? (
         <View className="gap-stack-tight">
@@ -649,7 +635,7 @@ function WildSheet({ area, nearVenues, onClose }: { area: WildArea; nearVenues: 
       </View>
       <Pressable role="link" accessibilityLabel="打开数据来源" onPress={() => void Linking.openURL(WILD_SOURCE.url)} className="active:opacity-60">
         <Text variant="footnote" className="text-muted-foreground">
-          {`数量和栖息地面积出自${WILD_SOURCE.title}，只算大熊猫国家公园里的部分。地图上的范围是示意，不是真实边界。`}
+          {`数量和栖息地面积出自${WILD_SOURCE.title}，${WILD_SOURCE.note}`}
           <Text variant="footnote" className="text-primary">
             查看来源
           </Text>
@@ -754,7 +740,7 @@ export default function MapScreen() {
 
   function choose(item: MapItem) {
     if (!item.point || !viewport || !camera) {
-      openPage(item);
+      openVenue(item);
       return;
     }
     setSelection({ kind: "place", id: item.id });

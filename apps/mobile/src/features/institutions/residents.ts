@@ -1,6 +1,5 @@
 import type { PandaListItem } from "@/features/pandas/pandas";
 
-/** A panda that lived here once: the years of its stay, and whether it was born here. */
 export interface FormerResident {
   panda: PandaListItem;
   from: number | null;
@@ -8,25 +7,27 @@ export interface FormerResident {
   bornHere: boolean;
 }
 
-type Stay = { pandaId: string; startOn?: string; endOn?: string };
+type Stay = { pandaId: string; startOn?: string; startPrecision?: string; endOn?: string };
 
 const yearOf = (date: string | null | undefined) => (date ? Number(date.slice(0, 4)) : null);
 
-/**
- * Who lives at a venue and who lived there, from its residencies. A panda that moved between the
- * venue's facilities and is still here is a resident, not a former one. Former residents come
- * newest departure first, with the span of all their stays here.
- */
+const arrivedOnDayOfBirth = (stay: Stay, birthDate: string | null) =>
+  birthDate !== null && stay.startPrecision === "day" && stay.startOn === birthDate;
+
 export function residentsOf(stays: readonly Stay[], pandasById: ReadonlyMap<string, PandaListItem>) {
   const byPanda = new Map<string, Stay[]>();
-  for (const stay of stays) byPanda.set(stay.pandaId, [...(byPanda.get(stay.pandaId) ?? []), stay]);
+  for (const stay of stays) {
+    const own = byPanda.get(stay.pandaId);
+    if (own) own.push(stay);
+    else byPanda.set(stay.pandaId, [stay]);
+  }
   const residents: PandaListItem[] = [];
   const former: FormerResident[] = [];
   let bornHere = 0;
   for (const [pandaId, own] of byPanda) {
     const panda = pandasById.get(pandaId);
     if (!panda) continue;
-    const born = panda.birthDate !== null && own.some((stay) => stay.startOn === panda.birthDate);
+    const born = own.some((stay) => arrivedOnDayOfBirth(stay, panda.birthDate));
     if (born) bornHere += 1;
     if (own.some((stay) => !stay.endOn)) {
       residents.push(panda);

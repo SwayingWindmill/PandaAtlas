@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 import { useMemo } from "react";
 
 import { useSession } from "@/features/session/session";
 import { authedApi } from "@/lib/api";
+import { tapHaptic } from "@/lib/haptics";
 import { queryClient } from "@/lib/query-client";
 
 const followedVenuesKey = (accountId: string) => ["private", accountId, "followed-venues"] as const;
@@ -47,4 +49,17 @@ export function useFollowedVenues(): ReadonlySet<string> | null {
     enabled: accountId !== null,
   });
   return useMemo(() => (accountId !== null && data ? new Set(data) : null), [accountId, data]);
+}
+
+export function useFollowVenue(slug: string): { following: boolean; toggle: () => void } {
+  const { state } = useSession();
+  const following = useFollowedVenues()?.has(slug) ?? false;
+  return {
+    following,
+    toggle: () => {
+      tapHaptic();
+      if (state.status === "signedOut") router.push("/sign-in");
+      else if (state.status === "signedIn") void setFollowingVenue(state.accountId, slug, !following);
+    },
+  };
 }
