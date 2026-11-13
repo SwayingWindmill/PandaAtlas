@@ -1,8 +1,9 @@
 // The app's web build against production's public data, for checking a screen with real content.
 // Production's API only sends CORS headers to its own origins, so a local proxy on 8797 forwards
-// GET and HEAD and adds them; anything that writes is refused. Photos load through it too: the app
-// builds media URLs from the API base (`/media/...`). Expo serves the app on 8796 and
-// reloads as files change. Ctrl-C (or killing this process) stops both.
+// GET and HEAD and adds them; anything that writes is refused. Photos load straight from production's
+// media host, which an <img> reaches without CORS. Supabase is pointed at the proxy too, so sign-in
+// (a POST) is refused instead of reaching production Auth. Expo serves the app on 8796 and reloads
+// as files change. Ctrl-C stops both; on Windows a watchdog also stops Expo if this process is killed.
 //   node apps/mobile/scripts/preview-production.mjs
 import { Buffer } from "node:buffer";
 import { spawn } from "node:child_process";
@@ -23,6 +24,7 @@ const proxy = http
       "access-control-allow-methods": "GET,HEAD,OPTIONS",
     };
     if (req.method === "OPTIONS") return res.writeHead(204, cors).end();
+    if (!req.url?.startsWith("/")) return res.writeHead(400, cors).end();
     if (req.method !== "GET" && req.method !== "HEAD") return res.writeHead(405, cors).end("read-only preview");
     try {
       const upstream = await fetch(UPSTREAM + req.url, { headers: { accept: req.headers.accept ?? "*/*" } });
@@ -42,6 +44,7 @@ const expo = spawn(process.execPath, [path.join(repoRoot, "node_modules/expo/bin
     ...process.env,
     BROWSER: "none",
     EXPO_PUBLIC_API_BASE_URL: `http://localhost:${PROXY_PORT}`,
+    EXPO_PUBLIC_SUPABASE_URL: `http://localhost:${PROXY_PORT}`,
   },
 });
 
@@ -54,4 +57,16 @@ function stop(code) {
 }
 for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) process.on(signal, () => stop(0));
 expo.on("exit", (code) => stop(code ?? 0));
+// On Windows a killed process runs no signal handler, so a detached watchdog ends Expo's tree once
+// this process is gone.
+if (process.platform === "win32") {
+  const watchdog = `
+    const [parent, pid] = process.argv.slice(1).map(Number);
+    setInterval(() => {
+      try { process.kill(parent, 0); return; } catch {}
+      require("node:child_process").spawnSync("taskkill", ["/pid", String(pid), "/T", "/F"], { stdio: "ignore" });
+      process.exit(0);
+    }, 1000);`;
+  spawn(process.execPath, ["-e", watchdog, String(process.pid), String(expo.pid)], { detached: true, stdio: "ignore" }).unref();
+}
 console.log(`[preview] proxy on http://127.0.0.1:${PROXY_PORT} -> ${UPSTREAM}; app on http://localhost:${APP_PORT}`);

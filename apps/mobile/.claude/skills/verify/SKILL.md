@@ -31,17 +31,14 @@ Every line must read `ok`. It checks these things, read-only:
 - The ports are free: 3101 (API) and 8792 (app) for `e2e`, 8796 (app) and 8797 (proxy) for `preview`.
 - For `e2e` only: Docker is running, local Supabase is up, and on Windows its ports are not reserved by Hyper-V.
 
-A busy port line shows the pid and command line of the process holding it. Read it before acting:
-
-- **A leftover from an earlier verification run in this checkout.** Its command line is this checkout's `services/api` `dist/cli.js`, its `expo ... start --web --port 8792`, or `node tests/support/stack.ts`, or `apps/mobile/scripts/preview-production.mjs`. On Windows the `stack.ts` watchdog does not always fire, so these do get left behind. End it with `taskkill /pid <pid> /T /F` (or `kill <pid>`) and rerun the doctor.
-- **Anything else.** That includes another checkout's path or a process you cannot place. It belongs to someone else. Do not kill it. Report it and ask the user.
+A busy port line shows the pid and command line of the process holding it. End it only if you started that process yourself in this session; you know its pid from your own launch. A command line alone cannot tell you that. The API always shows as `node dist/cli.js`, whichever worktree or session started it, and another session's live run looks the same as a leftover. For anything you did not start, do not kill it. Report the doctor's line to the user and ask.
 
 ## Launch
 
 ### Local stack
 
 1. `npm run infra:start` once. It checks the Windows port reservations first. If it stops with a `netsh` command, give that command to the user to run. It is a system setting, so never change it yourself.
-2. From `apps/mobile`, run one journey: `npx e2e run tests/<file>.e2e.ts:<line>`, where `<line>` is the line its `test(` opens on. e2e starts `tests/support/stack.ts` itself. That builds the API, seeds this run's fixture through the API's own modules, then serves the API on 3101 and the app on 8792.
+2. From `apps/mobile`, run one journey: `npx e2e run tests/<file>.e2e.ts:<line> --trace on`, where `<line>` is the line its `test(` opens on. Without `--trace on`, e2e keeps a trace page only for failures, and a passing run leaves nothing to quote. e2e starts `tests/support/stack.ts` itself. That builds the API, seeds this run's fixture through the API's own modules, then serves the API on 3101 and the app on 8792.
 3. It is ready when the run prints `✓ target "mobile-web" command ready`. The first start takes about two minutes, because it builds the API and bundles the app.
 
 Only one local stack can run per machine. The ports are fixed and every run shares the one local database. If the doctor reports 3101 or 8792 busy, wait for the other run, do not start a second.
@@ -50,7 +47,7 @@ To look at a screen live rather than through a journey, start the same stack by 
 
 ### Production preview
 
-`node apps/mobile/scripts/preview-production.mjs`, run in the background. It is ready when `http://localhost:8796` answers 200, and the first route then takes about 20 s to bundle. Open routes in the browser pane at a 390-wide viewport. It is read-only: the proxy refuses anything but GET and HEAD, so sign-in and every write fail by design.
+`node apps/mobile/scripts/preview-production.mjs`, run in the background. It is ready when `http://localhost:8796` answers 200, and the first route then takes about 20 s to bundle. Open routes in the browser pane at a 390-wide viewport. It is read-only: the proxy refuses anything but GET and HEAD, and the app's Supabase URL points at the proxy too, so sign-in and every write fail by design.
 
 ## Drive
 
@@ -78,7 +75,7 @@ Quote the pass line and the trace path in the PR's Verification section.
 
 ## Cleanup
 
-- **e2e.** e2e stops the stack when the run ends. On Windows a watchdog in `stack.ts` should take the API and Expo down with it, but it does not always fire. Run `node apps/mobile/scripts/verify-doctor.mjs --mode e2e` afterwards. If 3101 or 8792 is still busy, the doctor names the process. If it is this run's API or Expo, end it by its pid (`taskkill /pid <pid> /T /F` on Windows).
+- **e2e.** e2e stops the stack when the run ends. On Windows a watchdog in `stack.ts` should take the API and Expo down with it, but it does not always fire. Run `node apps/mobile/scripts/verify-doctor.mjs --mode e2e` afterwards. If 3101 or 8792 is still busy, the doctor names the process. If it is the API or Expo you started in this session, end it by that pid (`taskkill /pid <pid> /T /F` on Windows). Otherwise report it to the user.
 - **Supabase and Docker.** Stop them with `npm run infra:stop` only if you started them this session. Other sessions may be using them. On a machine short of memory, Docker and Expo together can make `npm ci` or Metro fail with an out-of-memory error, so stop what you no longer need.
 - **Production preview.** Stop it by ending the process you started.
 - **What stays.** `apps/mobile/.e2e/` keeps the evidence. Never delete it as part of cleanup.

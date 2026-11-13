@@ -23,9 +23,9 @@ Preconditions:
 
 - The doctor passes for `e2e`, and the fixture zoo is `fixture().zoo` (with `.name`, `.slug` and `.facility`).
 
-- **From the map.** Run `npx e2e run tests/map.e2e.ts:6` from `apps/mobile`. It opens `/find`, taps `link /^熊猫地图/`, picks the zoo from `getByTestId("map-places")`, and taps `button "打开<zoo>的页面"`. The result is that `heading "<zoo>"`, `radio "概况"` and `radio "攻略"` are visible.
+- **From the map.** Run `npx e2e run tests/map.e2e.ts:6` from `apps/mobile`. It opens `/find`, taps `link /^熊猫地图/`, selects the zoo (tapping its marker, or picking it from `getByTestId("map-places")` when the marker groups several zoos), and taps `button "打开<zoo>的页面"`. The result is that `heading "<zoo>"`, `radio "概况"` and `radio "攻略"` are visible.
 - **Deep link to 攻略.** Run `npx e2e run tests/collections-visits.e2e.ts:57`. It opens `/institutions/<slug>?tab=guide` signed out. The result is that `radio { name: "攻略", checked: true }` is visible, and so is `button "登录后记下到访"`.
-- **Tabs.** On the page, tap `radio "熊猫"`, then `radio "攻略"`. 熊猫 shows `住在这里的熊猫 N 只`. 攻略 shows the heading `参观攻略`.
+- **Tabs.** On the page, tap `radio "熊猫"`, then `radio "攻略"`. 熊猫 shows `住在这里的熊猫　N 只` (a full-width space). 攻略 shows the heading `参观攻略`.
 - **Live look with real data.** Start the production preview and open `http://localhost:8796/institutions/smithsonian-national-zoo`. The capsules read `免费参观`, `有官方直播` and `住着 N 只熊猫` in the accessibility tree. 熊猫 lists 以前住过 with 美香 and 添添 `2000–2023`.
 
 ## Gotchas
