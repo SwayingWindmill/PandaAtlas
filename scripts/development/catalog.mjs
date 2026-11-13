@@ -445,6 +445,7 @@ const commands = [
       "scripts/release/tests/repository-hygiene.test.mjs",
       "scripts/release/tests/research-script-policy.test.mjs",
       "scripts/development/tests/agent-guard.test.mjs",
+      "scripts/development/tests/check-local-ports.test.mjs",
       "scripts/development/tests/dev-processes.test.mjs",
       "scripts/development/tests/operations.test.mjs",
       "scripts/development/tests/verification-workflow.test.mjs",

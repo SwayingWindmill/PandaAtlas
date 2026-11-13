@@ -48,12 +48,14 @@
 - 验证真实运行结果，而不只依赖编译和测试通过；重复出现的问题优先通过类型、Lint、测试或脚本固化约束。
 - 修复 Bug 时，条件允许应增加能复现问题的回归测试；新增功能应覆盖关键路径和合理的边界情况。
 - 先查看项目提供的测试、Lint、类型检查和构建命令，再使用对应命令；不要臆造脚本。
-- 优先运行与修改范围直接相关的检查；必要时再扩大到完整项目。
+- 优先运行与修改范围直接相关的检查；必要时再扩大到完整项目。`npm run verify:dev` 只看未提交的改动，提交之后要加 `-- --base origin/main`。
+- Windows 上 Hyper-V 会占掉一段端口，本地 Supabase 的 543xx 可能起不来。`npm run infra:start` 会先检查，并打印需要用户用管理员权限执行的修复命令；那是系统设置，agent 不要自己改。
 - 不得声称未运行的测试已通过。受环境限制无法验证时，明确说明未验证的内容和原因。
 
 ## 7. Git 与交付
 
 - `E:\Code\PandaAtlas` 是多个会话共用的检出，别的会话会在里面切分支。每个任务在自己的 git worktree 里开分支、提交；不要在共用检出里提交或切分支。共用检出的 `.git` 里有标记文件 `pandaatlas-shared-checkout`，`.githooks/pre-commit` 据此拒绝 Claude Code agent（`CLAUDECODE` 已设置）在那里提交；别的克隆和手工提交不受影响。
+- 开新任务：`git worktree add ../PandaAtlas-<task> -b <branch> origin/main`，然后在新 worktree 里跑 `npm ci`（约 5 分钟）。不要把 `node_modules` 用 junction 或软链接连到共用检出：npm workspace 的链接会指回共用检出的包，Expo Router 也会找错 app 目录，打开就是 "Welcome to Expo"。任务结束用 `git worktree remove` 删掉。
 - 不要用 `git stash`：所有 worktree 共用一个 stash 列表，会拿错别人的修改。`.claude/settings.json` 里的 PreToolUse hook 会在 Claude Code 里拦下它。其他 agent 没有这两道 hook，照文字规则做。
 - 不覆盖用户已有的未提交修改；遇到冲突或不确定的修改来源时先说明情况。
 - 提交信息和 PR 用中文，提交信息用 Conventional Commits 前缀（如 `fix(mobile): …`）。PR 正文按 `.github/PULL_REQUEST_TEMPLATE.md` 的小节写，`## Why` 开头写用户的目标。
