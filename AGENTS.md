@@ -65,8 +65,9 @@
 - `main` 目前没有必需的状态检查，`gh pr merge --auto` 会立刻合并。所以开 PR 后不要开自动合并。
 - 合并的前提有两个：PR 自己的 Development Verification 跑绿；至少一个独立 reviewer（不是写代码的那个 agent）给出 PASS。自己的审查、测试和 CI 都不算独立审查。
 - 合并用 `gh pr merge <n> --squash --match-head-commit <审查过的 head>`，合并后看 `main` 上那次 Development Verification。
-- 以上合并流程只用于你在本次对话里自己开的 PR。
-- 下面这些每次都要用户在对话里明确同意：合并别人的 PR；生产部署（`Production` 环境审批）；批量内容发布（`production-batch`）；强推共享分支；删除数据；改 GitHub 仓库设置、分支保护、环境或密钥。
+- 以上合并流程只用于你在本次对话里自己开的 PR。其他 PR，包括以前对话里开的，都算在下一条里。
+- 合并前确认 PR 的目标分支是 `main`（`gh pr view <n> --json baseRefName`）。叠在别的分支上的 PR 会合进那个分支，而不是 `main`。
+- 下面这些每次都要用户在对话里明确同意：合并本次对话以外开的 PR；生产部署（`Production` 环境审批）；批量内容发布（`production-batch`）；强推共享分支；删除数据；改 GitHub 仓库设置、分支保护、环境或密钥。
 
 ## UI 与内容
 
