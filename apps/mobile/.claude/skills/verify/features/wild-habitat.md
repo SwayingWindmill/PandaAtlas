@@ -20,10 +20,11 @@ Preconditions:
 
 - The doctor passes for `e2e`, or for `preview` for a read-only look. The habitat data is bundled in the app, so it needs no seed.
 
-- **Layer and sheet.** Run `npx e2e run tests/map.e2e.ts:40` from `apps/mobile`. It checks that the venues layer switch is checked, turns it off, and checks that `button /^邛崃山，/` stays on the map.
+- **Layer.** Run `npx e2e run tests/map.e2e.ts:40` from `apps/mobile`. It checks that the venues layer switch is checked, turns it off, and checks that `button /^邛崃山，/` stays on the map.
 - **Habitat page.** Run `npx e2e run tests/map.e2e.ts:60`. It opens `/wild/qionglai`. The result is that these are visible: `heading "邛崃山"`, `image "邛崃山的4个局域种群在地图上的大致位置"`, the label `野生大熊猫 519 只`, the label `/^邛崃山B，224 只/` and `link "打开数据来源"`. Tapping `button /^岷山/` then shows `heading "岷山"` and `野生大熊猫 765 只`.
 
 ## Gotchas
 
+- No journey taps a range to open its sheet yet. A change to the sheet needs a new step in `map.e2e.ts`, or a live look through the production preview.
 - The map sheet stays in the DOM under a pushed page, so a locator for the page can match the sheet too. Open `/wild/<id>` directly rather than through the sheet when asserting page content.
 - Counts come from 《大熊猫国家公园总体规划（2023—2030年）》 table 1. A changed number is a data change, not a rendering bug.

@@ -41,16 +41,31 @@ function free(port) {
     server.listen(port, "127.0.0.1", () => server.close(() => resolve(true)));
   });
 }
+/** The process listening on a port, as "pid <n>: <command line>", so a leftover can be told apart. */
+function holder(port) {
+  try {
+    if (process.platform === "win32") {
+      const script = `$c = Get-NetTCPConnection -LocalPort ${port} -State Listen -ErrorAction Stop | Select-Object -First 1; $p = Get-CimInstance Win32_Process -Filter "ProcessId=$($c.OwningProcess)"; "pid $($p.ProcessId): $($p.CommandLine)"`;
+      return execFileSync("powershell.exe", ["-NoProfile", "-Command", script], { encoding: "utf8" }).trim();
+    }
+    const pid = execFileSync("lsof", ["-nP", `-iTCP:${port}`, "-sTCP:LISTEN", "-t"], { encoding: "utf8" }).trim().split("\n")[0];
+    return `pid ${pid}: ${execFileSync("ps", ["-o", "command=", "-p", pid], { encoding: "utf8" }).trim()}`;
+  } catch {
+    return "owner unknown";
+  }
+}
 for (const port of PORTS[mode]) {
   const ok = await free(port);
-  check(`port ${port}`, ok, ok ? "free" : "already in use; another verification run or a leftover process holds it");
+  check(`port ${port}`, ok, ok ? "free" : `in use by ${holder(port)}`);
 }
 
 if (mode === "e2e") {
   if (process.platform === "win32") {
     const config = readFileSync(path.join(repoRoot, "infra/supabase/config.toml"), "utf8");
-    const netsh = execFileSync("netsh", ["interface", "ipv4", "show", "excludedportrange", "protocol=tcp"], { encoding: "utf8" });
-    const blocked = blockedPorts(configuredPorts(config), reservedRanges(netsh));
+    const ranges = ["ipv4", "ipv6"].flatMap((family) =>
+      reservedRanges(execFileSync("netsh", ["interface", family, "show", "excludedportrange", "protocol=tcp"], { encoding: "utf8" })),
+    );
+    const blocked = blockedPorts(configuredPorts(config), ranges);
     check("supabase ports", blocked.length === 0, blocked.length === 0 ? "not reserved by Windows" : `Windows reserved ${blocked.join(", ")}; see npm run infra:start for the fix`);
   }
   let docker = false;

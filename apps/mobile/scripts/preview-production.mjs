@@ -1,8 +1,10 @@
 // The app's web build against production's public data, for checking a screen with real content.
 // Production's API only sends CORS headers to its own origins, so a local proxy on 8797 forwards
-// GET and HEAD and adds them; anything that writes is refused. Expo serves the app on 8796 and
+// GET and HEAD and adds them; anything that writes is refused. Photos load through it too: the app
+// builds media URLs from the API base (`/media/...`). Expo serves the app on 8796 and
 // reloads as files change. Ctrl-C (or killing this process) stops both.
 //   node apps/mobile/scripts/preview-production.mjs
+import { Buffer } from "node:buffer";
 import { spawn } from "node:child_process";
 import http from "node:http";
 import path from "node:path";
@@ -40,7 +42,6 @@ const expo = spawn(process.execPath, [path.join(repoRoot, "node_modules/expo/bin
     ...process.env,
     BROWSER: "none",
     EXPO_PUBLIC_API_BASE_URL: `http://localhost:${PROXY_PORT}`,
-    EXPO_PUBLIC_MEDIA_BASE_URL: `${UPSTREAM}/media`,
   },
 });
 

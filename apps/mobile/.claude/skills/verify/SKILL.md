@@ -12,7 +12,7 @@ There are two launches. Pick by what the change needs.
 | Launch | Data | Sign-in | Use it for |
 |---|---|---|---|
 | Local stack (`e2e`) | A fresh fixture per run on local Supabase | Yes, codes come from Mailpit | Anything that writes, anything signed in, and every proof that ends in a test |
-| Production preview | Production's public API, read only | No | How a screen looks with real content |
+| Production preview | Production's public API and photos, read only | No | How a screen looks with real content |
 
 All commands below run from the repo root unless they say `apps/mobile`. Paths in `features/` are app routes.
 
@@ -31,7 +31,10 @@ Every line must read `ok`. It checks these things, read-only:
 - The ports are free: 3101 (API) and 8792 (app) for `e2e`, 8796 (app) and 8797 (proxy) for `preview`.
 - For `e2e` only: Docker is running, local Supabase is up, and on Windows its ports are not reserved by Hyper-V.
 
-A busy port means another session's run or a leftover process holds it. Do not kill a process you did not start. Report it, and ask the user.
+A busy port line shows the pid and command line of the process holding it. Read it before acting:
+
+- **A leftover from an earlier verification run in this checkout.** Its command line is this checkout's `services/api` `dist/cli.js`, its `expo ... start --web --port 8792`, or `node tests/support/stack.ts`, or `apps/mobile/scripts/preview-production.mjs`. On Windows the `stack.ts` watchdog does not always fire, so these do get left behind. End it with `taskkill /pid <pid> /T /F` (or `kill <pid>`) and rerun the doctor.
+- **Anything else.** That includes another checkout's path or a process you cannot place. It belongs to someone else. Do not kill it. Report it and ask the user.
 
 ## Launch
 
@@ -75,7 +78,7 @@ Quote the pass line and the trace path in the PR's Verification section.
 
 ## Cleanup
 
-- **e2e.** e2e stops the stack when the run ends. On Windows a watchdog in `stack.ts` takes the API and Expo down with it. Run `node apps/mobile/scripts/verify-doctor.mjs --mode e2e` afterwards. If 3101 or 8792 is still busy and the process is one you started, end it by its pid (`taskkill /pid <pid> /T /F` on Windows).
+- **e2e.** e2e stops the stack when the run ends. On Windows a watchdog in `stack.ts` should take the API and Expo down with it, but it does not always fire. Run `node apps/mobile/scripts/verify-doctor.mjs --mode e2e` afterwards. If 3101 or 8792 is still busy, the doctor names the process. If it is this run's API or Expo, end it by its pid (`taskkill /pid <pid> /T /F` on Windows).
 - **Supabase and Docker.** Stop them with `npm run infra:stop` only if you started them this session. Other sessions may be using them. On a machine short of memory, Docker and Expo together can make `npm ci` or Metro fail with an out-of-memory error, so stop what you no longer need.
 - **Production preview.** Stop it by ending the process you started.
 - **What stays.** `apps/mobile/.e2e/` keeps the evidence. Never delete it as part of cleanup.
