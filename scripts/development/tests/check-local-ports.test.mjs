@@ -15,8 +15,21 @@ const NETSH = `
 * - 管理的端口排除。
 `;
 
-test("reads every port and shadow port from config.toml", () => {
-  assert.deepEqual(configuredPorts("[api]\nport = 54321\n[db]\nport = 54322\nshadow_port = 54320\ninspector_port = 8083\n"), [54321, 54322, 54320]);
+test("reads every port, disabled sections included, and skips other port keys", () => {
+  const config = [
+    "[api]",
+    "enabled = false",
+    "port = 54321",
+    "[db]",
+    "port = 54322 # database",
+    "shadow_port = 54320",
+    "[db.pooler]",
+    "enabled = false",
+    "port = 54329",
+    "[edge_runtime]",
+    "inspector_port = 8083",
+  ].join("\n");
+  assert.deepEqual(configuredPorts(config), [54321, 54322, 54329]);
 });
 
 test("finds configured ports inside Windows' reserved ranges", () => {

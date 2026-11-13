@@ -7,7 +7,7 @@ import { pathToFileURL } from "node:url";
 // Only a git invocation at the start of a command counts, so "git stash" quoted in a commit
 // message or a search pattern is left alone.
 const GIT_STASH =
-  /(?:^|[;&|\n({]|\b(?:then|do|else)\b)\s*(?:(?:[A-Za-z_]\w*=\S*|env|command|time)\s+)*git(?:\.exe)?(?:\s+(?:-[Cc]\s+(?:"[^"]*"|'[^']*'|\S+)|-[pP]|--[\w-]+(?:=\S+)?))*\s+stash\b/i;
+  /(?:^|[;&|\n({])\s*(?:(?:then|do|else)\s+)?(?:(?:[A-Za-z_]\w*=\S*|env|command|time)\s+)*git(?:\.exe)?(?:\s+(?:-[Cc]\s+(?:"[^"]*"|'[^']*'|\S+)|-[pP]|--[\w-]+(?:=\S+)?))*\s+stash\b/i;
 
 export function blockedReason(command) {
   if (GIT_STASH.test(command)) {

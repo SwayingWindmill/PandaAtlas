@@ -33,6 +33,12 @@ test("leaves other git commands and quoted mentions of git stash alone", () => {
     'rg -n "git stash" AGENTS.md',
     "grep -rn stash src",
     "git log --grep=stash",
+    'git commit -m "docs: then git stash"',
+    'git commit -m "else git stash is bad"',
+    "git commit -m 'what to do git stash list'",
+    'gh pr create --body "Never run git stash, then pop it"',
+    'rg "do git stash"',
+    'echo "Do Git Stash"',
   ]) {
     assert.equal(blockedReason(command), null, command);
   }

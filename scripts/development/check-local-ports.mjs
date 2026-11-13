@@ -5,8 +5,12 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
+/**
+ * Every `port` in the config. A section with `enabled = false` can still need its port: the Data
+ * API is off, yet Auth answers on the [api] gateway port.
+ */
 export function configuredPorts(configToml) {
-  return [...configToml.matchAll(/^\s*(?:port|shadow_port)\s*=\s*(\d+)\s*$/gm)].map((match) => Number(match[1]));
+  return [...configToml.matchAll(/^\s*port\s*=\s*(\d+)\s*(?:#.*)?$/gm)].map((match) => Number(match[1]));
 }
 
 export function reservedRanges(netshOutput) {
@@ -19,14 +23,17 @@ export function blockedPorts(ports, ranges) {
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href && process.platform === "win32") {
   const ports = configuredPorts(readFileSync(new URL("../../infra/supabase/config.toml", import.meta.url), "utf8"));
-  const netsh = execFileSync("netsh", ["interface", "ipv4", "show", "excludedportrange", "protocol=tcp"], { encoding: "utf8" });
-  const blocked = blockedPorts(ports, reservedRanges(netsh));
+  const ranges = ["ipv4", "ipv6"].flatMap((family) =>
+    reservedRanges(execFileSync("netsh", ["interface", family, "show", "excludedportrange", "protocol=tcp"], { encoding: "utf8" })),
+  );
+  const blocked = blockedPorts(ports, ranges);
   if (blocked.length > 0) {
     console.error(`Windows has reserved local Supabase port(s) ${blocked.join(", ")}, so infra:start would fail.`);
-    console.error("Fix it once, in an administrator PowerShell, then reboot:");
+    console.error("Windows reserves ports out of its dynamic range. Move that range above every port this repo uses,");
+    console.error("once, in an administrator PowerShell, then reboot:");
     console.error("  netsh int ipv4 set dynamic tcp start=60000 num=5536");
-    console.error("Windows reserves ports out of its dynamic range; this moves that range to 60000-65535, above every port this repo uses.");
-    console.error("For now, `net stop winnat` then `net start winnat` (administrator) releases the reservations until the next reboot.");
+    console.error("  netsh int ipv6 set dynamic tcp start=60000 num=5536");
+    console.error("Until then (administrator): `net stop winnat`, run `npm run infra:start`, then `net start winnat`.");
     process.exit(1);
   }
 }
