@@ -11,6 +11,7 @@
     "services/api"
   ],
   "scripts": {
+    "prepare": "node scripts/development/install-git-hooks.mjs",
     "ops": "node scripts/development/operations.mjs",
     "dev:api": "node scripts/development/operations.mjs run api.dev",
     "dev:admin": "node scripts/development/operations.mjs run admin.dev",
