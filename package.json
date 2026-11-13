@@ -51,7 +51,7 @@
     "verify:dev": "node scripts/development/operations.mjs run verify.dev",
     "verify:dev:list": "node scripts/development/operations.mjs run verify.plan",
     "test:source-adapters": "uv run --isolated --directory tools/panda-data --frozen --extra dev pytest -q tests/test_source_runtime.py",
-    "infra:start": "node scripts/development/operations.mjs run foundation.start",
+    "infra:start": "node scripts/development/check-local-ports.mjs && node scripts/development/operations.mjs run foundation.start",
     "infra:stop": "node scripts/development/operations.mjs run foundation.stop",
     "infra:reset": "node scripts/development/operations.mjs run foundation.reset",
     "infra:status": "node scripts/development/operations.mjs run foundation.status",

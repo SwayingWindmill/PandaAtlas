@@ -14,6 +14,13 @@ test("blocks git stash run as a command", () => {
     "git.exe stash",
     "& git stash",
     "git status; git stash",
+    "if true; then git stash; fi",
+    "for x in a; do git stash; done",
+    "try { git stash } catch {}",
+    "FOO=1 git stash",
+    "env git stash",
+    "git -p stash list",
+    "GIT stash",
   ]) {
     assert.ok(blockedReason(command), command);
   }
