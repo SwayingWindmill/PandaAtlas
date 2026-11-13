@@ -75,7 +75,7 @@ Quote the pass line and the trace path in the PR's Verification section.
 
 ## Cleanup
 
-- **e2e.** e2e stops the stack when the run ends. On Windows a watchdog in `stack.ts` should take the API and Expo down with it, but it does not always fire. Run `node apps/mobile/scripts/verify-doctor.mjs --mode e2e` afterwards. If 3101 or 8792 is still busy, the doctor names the process. If it is the API or Expo you started in this session, end it by that pid (`taskkill /pid <pid> /T /F` on Windows). Otherwise report it to the user.
+- **e2e.** e2e stops the stack when the run ends. On Windows a watchdog in `stack.ts` should take the API and Expo down with it, but it does not always fire. Run `node apps/mobile/scripts/verify-doctor.mjs --mode e2e` afterwards. If 3101 or 8792 is still busy after e2e exits, the doctor names the process. You launched `npx e2e`, not the API or Expo, so you do not know their pids. Do not end them; report the doctor's line to the user.
 - **Supabase and Docker.** Stop them with `npm run infra:stop` only if you started them this session. Other sessions may be using them. On a machine short of memory, Docker and Expo together can make `npm ci` or Metro fail with an out-of-memory error, so stop what you no longer need.
 - **Production preview.** Stop it by ending the process you started.
 - **What stays.** `apps/mobile/.e2e/` keeps the evidence. Never delete it as part of cleanup.

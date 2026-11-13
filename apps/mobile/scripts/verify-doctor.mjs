@@ -49,10 +49,18 @@ function answers(port, host) {
     socket.once("timeout", () => done(false));
   });
 }
-async function free(port) {
-  return !(await answers(port, "127.0.0.1")) && !(await answers(port, "::1"));
+/** Whether the port can be bound. This catches a port Windows has reserved, where nothing listens. */
+function bindable(port) {
+  return new Promise((resolve) => {
+    const server = net.createServer();
+    server.once("error", () => resolve(false));
+    server.listen(port, "127.0.0.1", () => server.close(() => resolve(true)));
+  });
 }
-/** The process listening on a port, as "pid <n>: <command line>", so a leftover can be told apart. */
+async function free(port) {
+  return (await bindable(port)) && !(await answers(port, "127.0.0.1")) && !(await answers(port, "::1"));
+}
+/** The process listening on a port, as "pid <n>: <command line>", to report to the user. */
 function holder(port) {
   try {
     if (process.platform === "win32") {
