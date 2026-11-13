@@ -2,6 +2,7 @@ apps/web/public/_headers text eol=lf
 .gitignore text eol=lf
 # Shell scripts run in Git Bash, WSL and CI; a CRLF checkout breaks them on the first line.
 *.sh text eol=lf
+.githooks/* text eol=lf
 # Generated files that tests and tools compare byte for byte with LF output. On a CRLF checkout the
 # design-token test fails and Uniwind rewrites its types on every Metro start.
 DESIGN.md text eol=lf
