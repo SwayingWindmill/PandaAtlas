@@ -18,9 +18,7 @@ Closes #ISSUE_NUMBER
 
 ## Blast Radius
 
-**Door:** <one-way or two-way>
-
-<受影响的页面、接口、数据>
+<受影响的页面、接口、数据；改动能否回退（two-way / one-way door）>
 
 ## Verification
 

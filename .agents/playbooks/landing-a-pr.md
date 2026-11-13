@@ -1,6 +1,6 @@
 ---
 extends: opening-a-pr
-when: Opening, merging, or landing a PR in SwayingWindmill/PandaAtlas.
+when: Opening, merging, or landing a PR you opened in this conversation in SwayingWindmill/PandaAtlas. Merging anyone else's PR needs the user's explicit consent.
 ---
 
 ### PandaAtlas: opening and landing a PR

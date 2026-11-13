@@ -8,7 +8,7 @@
 
 - 先阅读与任务相关的 README、项目配置、现有实现和测试；不要在不了解上下文时直接改代码。
 - 优先沿用项目已经采用的目录结构、命名方式、依赖和设计模式。
-- 确定修改范围和潜在影响。开工时先说清用户的目标和预期的最小改动，然后直接做，不等确认。
+- 确定修改范围和潜在影响。开工时先说清用户的目标和预期的最小改动，然后直接做，不等确认；下文列出的需要用户同意的事项除外。
 - 不要擅自扩大需求。发现无关问题时，说明问题而不是顺手重构。
 
 ## 2. 架构与修改范围
@@ -65,7 +65,8 @@
 - `main` 目前没有必需的状态检查，`gh pr merge --auto` 会立刻合并。所以开 PR 后不要开自动合并。
 - 合并的前提有两个：PR 自己的 Development Verification 跑绿；至少一个独立 reviewer（不是写代码的那个 agent）给出 PASS。自己的审查、测试和 CI 都不算独立审查。
 - 合并用 `gh pr merge <n> --squash --match-head-commit <审查过的 head>`，合并后看 `main` 上那次 Development Verification。
-- 生产部署（`Production` 环境审批）、批量内容发布（`production-batch`）、强推共享分支、删除数据：每次都要用户在对话里明确同意。
+- 以上合并流程只用于你在本次对话里自己开的 PR。
+- 下面这些每次都要用户在对话里明确同意：合并别人的 PR；生产部署（`Production` 环境审批）；批量内容发布（`production-batch`）；强推共享分支；删除数据；改 GitHub 仓库设置、分支保护、环境或密钥。
 
 ## UI 与内容
 
@@ -86,8 +87,9 @@
 
 The `pstack` plugin (`pstack@pstack-claude`) is enabled for this project in `.claude/settings.json`. Its SessionStart hook routes tasks to `poteto-mode`, which picks a pstack workflow. Follow that workflow: its playbooks, review gates (`/deslop`, `/no-comments`, an independent reviewer), and verification on the real artifact.
 
-This file adds project facts pstack cannot know. Where the two disagree, this file wins only on those facts: the shared checkout and worktrees, merge and deploy gates, language, and the UI rules above.
+This file adds project facts pstack cannot know. Where the two disagree, this file wins on every rule in sections 1–8 and 「UI 与内容」 above, including the shared checkout and worktrees, no `git stash`, merge and deploy gates, the actions that need the user's consent, language, and the UI and data rules.
 
+- Commit messages and PR text are Chinese. Apply `/unslop` to them (short declarative sentences, no filler). The English STE vocabulary rules in `/technical-writing` apply only to English text.
 - Todo checklists and decision trails go in `.audit/<task-slug>.todo.md` and `.audit/<task-slug>.tsv`. `.audit/` is git-ignored.
 - Project playbooks in `.agents/playbooks/` extend pstack's: `landing-a-pr.md` (the merge gate) and `ui-layout.md` (mockup before layout code). After a pstack upgrade, run its `skills/poteto-mode/scripts/check-playbooks.mjs` from the repo root.
 - There is no project `verify` skill yet. For the mobile app, verify with the e2e suite (`apps/mobile/tests`, see `apps/mobile/README.md`) and the Expo web build.
