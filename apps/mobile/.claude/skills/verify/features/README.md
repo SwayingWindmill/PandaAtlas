@@ -18,7 +18,7 @@ This directory is the maintained source for verifying what a user can see and do
 
 ## Proof and skip reporting
 
-- A passing journey is the proof. Record the `file:line` you ran and the trace path under `apps/mobile/.e2e/results/`.
+- A passing journey is the proof. Run it with `--trace on`, and record the `file:line` you ran and the trace path under `apps/mobile/.e2e/results/`.
 - A live look adds a screenshot and an accessibility-tree read of the state after the action.
 - A write is proven by reading it back from a second screen.
 - Report an entry point you could not reach with the command you tried and the unmet precondition. Never count it as verified through a different entry point.

@@ -28,4 +28,4 @@ Preconditions:
 ## Gotchas
 
 - The delete confirmation moves screen-reader focus with an API that exists only on native, so it is skipped on web. Native focus behavior is not covered by a web run.
-- The confirmation replaces the screen, so its `删除合集` is the only one. Before it opens, there are two.
+- The confirmation replaces the screen, so its `删除合集` is the only one on screen.

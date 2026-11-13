@@ -34,14 +34,33 @@ try {
   check("dependencies", false, "node_modules is missing; run npm ci at the repo root");
 }
 
-function free(port) {
+/** Whether anything accepts connections on the port. Expo listens on `::`, which a bind test on
+ * 127.0.0.1 does not see on Windows, so ask by connecting on both loopbacks. */
+function answers(port, host) {
+  return new Promise((resolve) => {
+    const socket = net.connect({ port, host });
+    socket.setTimeout(1000);
+    const done = (answered) => {
+      socket.destroy();
+      resolve(answered);
+    };
+    socket.once("connect", () => done(true));
+    socket.once("error", () => done(false));
+    socket.once("timeout", () => done(false));
+  });
+}
+/** Whether the port can be bound. This catches a port Windows has reserved, where nothing listens. */
+function bindable(port) {
   return new Promise((resolve) => {
     const server = net.createServer();
     server.once("error", () => resolve(false));
     server.listen(port, "127.0.0.1", () => server.close(() => resolve(true)));
   });
 }
-/** The process listening on a port, as "pid <n>: <command line>", so a leftover can be told apart. */
+async function free(port) {
+  return (await bindable(port)) && !(await answers(port, "127.0.0.1")) && !(await answers(port, "::1"));
+}
+/** The process listening on a port, as "pid <n>: <command line>", to report to the user. */
 function holder(port) {
   try {
     if (process.platform === "win32") {
