@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, type HostInstance, Pressable, TextInput, View } from "react-native";
+import { AccessibilityInfo, type HostInstance, Platform, Pressable, TextInput, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useCSSVariable } from "uniwind";
 
@@ -201,7 +201,8 @@ export default function CollectionScreen() {
   // The confirmation replaces the button a screen-reader user just pressed, so their focus would land
   // nowhere. Move it to the question, which reads the heading and the consequence in one stop.
   useEffect(() => {
-    if (mode !== "confirmDelete") return;
+    // react-native-web has no sendAccessibilityEvent; calling it there crashes the screen.
+    if (mode !== "confirmDelete" || Platform.OS === "web") return;
     if (confirmHeading.current) AccessibilityInfo.sendAccessibilityEvent(confirmHeading.current, "focus");
   }, [mode]);
 
