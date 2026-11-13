@@ -95,7 +95,7 @@ This file adds project facts pstack cannot know. Where the two disagree, this fi
 - Commit messages and PR text are Chinese. Apply `/unslop` to them (short declarative sentences, no filler). The English STE vocabulary rules in `/technical-writing` apply only to English text.
 - Todo checklists and decision trails go in `.audit/<task-slug>.todo.md` and `.audit/<task-slug>.tsv`. `.audit/` is git-ignored.
 - Project playbooks in `.agents/playbooks/` extend pstack's: `landing-a-pr.md` (the merge gate) and `ui-layout.md` (mockup before layout code). After a pstack upgrade, run its `skills/poteto-mode/scripts/check-playbooks.mjs` from the repo root.
-- There is no project `verify` skill yet. For the mobile app, verify with the e2e suite (`apps/mobile/tests`, see `apps/mobile/README.md`) and the Expo web build.
+- The mobile app's driver skill is `apps/mobile/.claude/skills/verify/` (`verify`): doctor, launch (local stack or production preview), drive, evidence, cleanup, and a feature map. Use it for any change a user can see in `apps/mobile`. Keep its `features/` map current when a feature changes (`/maintain-verification-skill`).
 
 ## Matt Pocock 技能与 Issue 工作流
 
