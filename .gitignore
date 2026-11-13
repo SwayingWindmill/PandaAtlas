@@ -57,6 +57,10 @@ infra/collector/data/
 .claude/*
 # Shared project plugins (pstack) live in the committed project settings.
 !.claude/settings.json
+# A project verify skill is shared too.
+!.claude/skills/
+# pstack todo checklists and decision trails.
+.audit/
 .ai-bridge/
 .codegraph/
 .codex/
