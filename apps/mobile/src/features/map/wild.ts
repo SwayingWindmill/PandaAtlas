@@ -12,6 +12,7 @@ export const WILD_SOURCE = {
   parkTotal: 1340,
   nationalTotal: 1864,
   nationalSourceUrl: "http://env.people.com.cn/n/2015/0301/c1010-26615131.html",
+  note: "只算大熊猫国家公园里的部分。地图上的范围是示意，不是真实边界。",
 } as const;
 
 type Province = "四川" | "陕西" | "甘肃";
@@ -160,10 +161,8 @@ function areaOf(range: WildRange): WildArea {
 
 export const WILD_AREAS: WildArea[] = WILD_RANGES.map(areaOf);
 
-/** A venue within this many outline units of a wild area's centre (about 200 km) counts as near it. */
 const NEAR_WILD = 6;
 
-/** The items within reach of a wild area's centre, nearest first. */
 export function venuesNear<T extends { point: { x: number; y: number } | null }>(area: WildArea, items: readonly T[]): T[] {
   const distance = (item: T) => (item.point ? Math.hypot(item.point.x - area.label.x, item.point.y - area.label.y) : Infinity);
   return items.filter((item) => distance(item) < NEAR_WILD).sort((a, b) => distance(a) - distance(b));

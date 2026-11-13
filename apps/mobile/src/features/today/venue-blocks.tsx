@@ -65,7 +65,7 @@ function HalfCard({ children, onPress, label }: { children: React.ReactNode; onP
 function ViewingCard({ spot }: { spot: ViewingSpot }) {
   const best = spot.viewing.active[0]!;
   return (
-    <HalfCard label={`观猫时机，${spot.name}，${hoursLabel(best)}`} onPress={() => router.push({ pathname: "/institutions/[slug]", params: { slug: spot.slug } })}>
+    <HalfCard label={`观猫时机，${spot.name}，${hoursLabel(best)}`} onPress={() => router.push({ pathname: "/institutions/[slug]", params: { slug: spot.slug, tab: "guide" } })}>
       <View className="flex-row items-center gap-1.5">
         <Icon icon={Sun} size="footnote" tone="tint" />
         <Text variant="footnote" className="font-semibold text-muted-foreground">

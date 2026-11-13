@@ -54,8 +54,6 @@ export interface TimeWindow {
   end: string;
 }
 
-export type { FormerResident };
-
 export interface InstitutionDetail {
   slug: string;
   name: string;
@@ -68,7 +66,6 @@ export interface InstitutionDetail {
   facilities: Facility[];
   residents: PandaListItem[];
   former: FormerResident[];
-  /** Pandas, living here or not, whose first stay here began on the day they were born. */
   bornHere: number;
 }
 
@@ -177,6 +174,15 @@ export function hasGuide(facility: Facility): boolean {
     facility.viewing !== null ||
     facility.coordinates !== null
   );
+}
+
+export function isFreeEntry(facilities: Facility[]): boolean {
+  const tickets = facilities.flatMap((facility) => facility.guide.filter((row) => row.label === "门票"));
+  return tickets.length > 0 && tickets.every((row) => row.value.startsWith("免费"));
+}
+
+export function addressOf(facility: Facility): string | undefined {
+  return facility.guide.find((row) => row.label === "地址")?.value;
 }
 
 /** The most recent day any of these guides was checked, so the section can say how fresh it is. */

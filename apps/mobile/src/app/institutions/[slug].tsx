@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { Link, router, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Linking, Platform, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
@@ -32,6 +32,7 @@ import { StatTile } from "@/components/stat-tile";
 import { SourceBadge } from "@/components/source-badge";
 import { TimeBand } from "@/components/time-band";
 import { LoadFailed } from "@/components/load-failed";
+import { PandaThumb } from "@/components/panda-thumb";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { Scrim } from "@/components/scrim";
@@ -43,17 +44,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { semantic } from "@/design/tokens";
 import { useInstitutionHero } from "@/features/institutions/institution-hero";
-import { setFollowingVenue, useFollowedVenues } from "@/features/engagement/followed-venues";
+import { useFollowVenue } from "@/features/engagement/followed-venues";
 import {
   type Facility,
-  type FormerResident,
   type InstitutionDetail,
+  addressOf,
   guideVerifiedOn,
   hasGuide,
   hostname,
+  isFreeEntry,
   loadInstitution,
   unseenResidents,
 } from "@/features/institutions/institutions";
+import type { FormerResident } from "@/features/institutions/residents";
 import { loadSeenIds } from "@/features/engagement/seen";
 import { useSession } from "@/features/session/session";
 import { openPanda } from "@/features/pandas/panda-row";
@@ -62,15 +65,12 @@ import { longDate } from "@/features/pandas/profile";
 import { VenueNewsSection } from "@/features/venue-news/venue-news-section";
 import { FacilityVisits } from "@/features/visits/facility-visits";
 import { usePandaCover } from "@/lib/covers";
-import { tapHaptic } from "@/lib/haptics";
-import { HAIRLINE, RADIUS } from "@/lib/surface";
+import { HAIRLINE, RADIUS, pageColumn } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
 /** Under a resident's photo while it loads, dark enough that the white name already reads. */
 const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
-const GUTTER = semantic.spacing.gutter.value;
 const GAP = semantic.spacing.row.value;
-/** A resident's face in the 概况 row. */
 const FACE = 72;
 
 function openMaps(name: string, { latitude, longitude }: NonNullable<Facility["coordinates"]>) {
@@ -80,6 +80,22 @@ function openMaps(name: string, { latitude, longitude }: NonNullable<Facility["c
     default: `geo:${latitude},${longitude}?q=${latitude},${longitude}(${label})`,
   });
   void Linking.openURL(url);
+}
+
+function NavigateCell({ facility, detail }: { facility: Facility; detail?: string }) {
+  const coordinates = facility.coordinates;
+  if (!coordinates) return null;
+  return (
+    <ListCell
+      icon={Navigation}
+      label="导航过去"
+      detail={detail}
+      tone="tint"
+      accessibilityLabel={`在地图中导航到${facility.name}`}
+      onPress={() => openMaps(facility.name, coordinates)}
+      last
+    />
+  );
 }
 
 /** A resident as a portrait photograph with its name in white over the scrim, as Music lays out artists. */
@@ -121,7 +137,7 @@ function Residents({ pandas }: { pandas: PandaListItem[] }) {
   const { width } = useWindowDimensions();
   // Two large tiles a row, one at the largest sizes or in a narrow window, where the name needs the width.
   const columns = useSingleColumn() ? 1 : 2;
-  const tile = Math.floor((Math.min(width, 700) - GUTTER * 2 - GAP * (columns - 1)) / columns);
+  const tile = Math.floor((pageColumn(width) - GAP * (columns - 1)) / columns);
   return (
     <View className="gap-1.5">
       <SectionTitle title={`住在这里的熊猫　${pandas.length} 只`} icon={PawPrint} />
@@ -134,7 +150,6 @@ function Residents({ pandas }: { pandas: PandaListItem[] }) {
   );
 }
 
-/** "2000–2023", "2015 年起" or nothing, from the years a former resident's stays here cover. */
 function spanOf({ from, to }: FormerResident): string | undefined {
   if (from !== null && to !== null) return from === to ? `${from}` : `${from}–${to}`;
   if (to !== null) return `${to} 年离开`;
@@ -158,20 +173,10 @@ function Former({ pandas }: { pandas: FormerResident[] }) {
   );
 }
 
-/** A resident's face over its name, for the 概况 row that leads to the 熊猫 tab. */
 function ResidentFace({ panda }: { panda: PandaListItem }) {
-  const photo = usePandaCover(panda.id);
   return (
     <PressScale role="link" accessibilityLabel={panda.name} onPress={() => openPanda(panda.slug)} className="items-center gap-1.5" style={{ width: FACE }}>
-      <View className="items-center justify-center overflow-hidden rounded-full bg-secondary" style={{ width: FACE, height: FACE }}>
-        {photo ? (
-          <Image source={photo} style={{ width: "100%", height: "100%" }} contentFit="cover" transition={200} accessible={false} />
-        ) : (
-          <Text variant="title" className="text-muted-foreground">
-            {panda.name.slice(0, 1)}
-          </Text>
-        )}
-      </View>
+      <PandaThumb pandaId={panda.id} name={panda.name} size={FACE} shape="round" />
       <Text variant="subheadline" className="font-semibold" numberOfLines={1}>
         {panda.name}
       </Text>
@@ -199,21 +204,24 @@ function ResidentFaces({ pandas, onAll }: { pandas: PandaListItem[]; onAll: () =
   );
 }
 
-/** Free entry, a live camera and how many live here, as capsules under the hero; 关注 at the end. */
 function Badges({ institution }: { institution: InstitutionDetail }) {
-  const free = institution.facilities.some((facility) =>
-    facility.guide.some((row) => row.label === "门票" && row.value.startsWith("免费")),
-  );
+  const count = institution.residents.length;
   const badges = [
-    free ? { icon: Ticket, label: "免费" } : null,
-    institution.liveCamUrl ? { icon: Video, label: "直播" } : null,
-    institution.residents.length > 0 ? { icon: PawPrint, label: `${institution.residents.length} 只` } : null,
+    isFreeEntry(institution.facilities) ? { icon: Ticket, label: "免费", spoken: "免费参观" } : null,
+    institution.liveCamUrl ? { icon: Video, label: "直播", spoken: "有官方直播" } : null,
+    count > 0 ? { icon: PawPrint, label: `${count} 只`, spoken: `住着 ${count} 只熊猫` } : null,
   ].filter((badge) => badge !== null);
   return (
     <View className="flex-row items-center gap-stack-tight">
       <View className="min-w-0 flex-1 flex-row flex-wrap gap-stack-tight">
         {badges.map((badge) => (
-          <View key={badge.label} className="flex-row items-center gap-hair-gap rounded-pill bg-secondary px-row" style={{ height: 32 }}>
+          <View
+            key={badge.label}
+            accessible
+            accessibilityLabel={badge.spoken}
+            className="flex-row items-center gap-hair-gap rounded-pill bg-secondary px-row"
+            style={{ height: 32 }}
+          >
             <Icon icon={badge.icon} size="footnote" tone="label" />
             <Text variant="subheadline" className="font-semibold">
               {badge.label}
@@ -226,20 +234,13 @@ function Badges({ institution }: { institution: InstitutionDetail }) {
   );
 }
 
-/** 关注 the venue: signed out it opens sign-in; signed in it toggles, quiet while followed. */
 function FollowButton({ slug, name }: { slug: string; name: string }) {
-  const { state } = useSession();
-  const followed = useFollowedVenues();
-  const following = followed?.has(slug) ?? false;
+  const { following, toggle } = useFollowVenue(slug);
   return (
     <Pressable
       role="button"
       accessibilityLabel={following ? `已关注${name}，点按取消` : `关注${name}`}
-      onPress={() => {
-        tapHaptic();
-        if (state.status !== "signedIn") router.push("/sign-in");
-        else void setFollowingVenue(state.accountId, slug, !following);
-      }}
+      onPress={toggle}
       hitSlop={6}
       className={cn("items-center justify-center rounded-pill px-section active:opacity-80", following ? "bg-highlight-soft" : "bg-button")}
       style={{ height: 32 }}
@@ -251,7 +252,9 @@ function FollowButton({ slug, name }: { slug: string; name: string }) {
   );
 }
 
-type Tab = "overview" | "pandas" | "guide";
+const TABS = ["overview", "pandas", "guide"] as const;
+type Tab = (typeof TABS)[number];
+const isTab = (value: string | undefined): value is Tab => TABS.some((tab) => tab === value);
 
 function Overview({ institution, onPandas }: { institution: InstitutionDetail; onPandas: () => void }) {
   const counts = [
@@ -260,7 +263,6 @@ function Overview({ institution, onPandas }: { institution: InstitutionDetail; o
     { label: "在这里出生", value: institution.bornHere },
   ].filter((count) => count.value > 0);
   const location = institution.facilities.find((facility) => facility.coordinates);
-  const address = location?.guide.find((row) => row.label === "地址")?.value;
   return (
     <>
       {institution.summary ? <Text variant="body">{institution.summary}</Text> : null}
@@ -273,17 +275,9 @@ function Overview({ institution, onPandas }: { institution: InstitutionDetail; o
       ) : null}
       {institution.residents.length > 0 ? <ResidentFaces pandas={institution.residents} onAll={onPandas} /> : null}
       <VenueNewsSection institutionSlug={institution.slug} />
-      {location?.coordinates ? (
+      {location ? (
         <ListSection title="位置" titleIcon={MapPin}>
-          <ListCell
-            icon={Navigation}
-            label="导航过去"
-            detail={address}
-            tone="tint"
-            accessibilityLabel={`在地图中导航到${location.name}`}
-            onPress={() => openMaps(location.name, location.coordinates!)}
-            last
-          />
+          <NavigateCell facility={location} detail={addressOf(location)} />
         </ListSection>
       ) : null}
       {institution.liveCamUrl ? (
@@ -316,11 +310,6 @@ const GUIDE_ICON: Record<string, LucideIcon> = {
   提示: Info,
 };
 
-/**
- * One 参观攻略 fact, the way Maps lays out a place card: a footnote label over the value, in a
- * grouped card with inset separators. The value wraps freely, so it reads at every text size.
- * The icon sits on the label's line, not centred on a long value.
- */
 /** "09:00–17:00" as one span, or null when the hours are seasonal, several, or free text. */
 function singleSpan(value: string): { open: string; close: string } | null {
   const spans = [...value.matchAll(/(\d{1,2}:\d{2})\s*[-–—~至到]\s*(\d{1,2}:\d{2})/g)];
@@ -371,16 +360,7 @@ function FacilityGuide({ facility, title }: { facility: Facility; title?: string
           last={index === rows.length - 1 && !coordinates}
         />
       ))}
-      {coordinates ? (
-        <ListCell
-          icon={Navigation}
-          label="导航过去"
-          tone="tint"
-          accessibilityLabel={`在地图中导航到${facility.name}`}
-          onPress={() => openMaps(facility.name, coordinates)}
-          last
-        />
-      ) : null}
+      <NavigateCell facility={facility} />
     </ListSection>
   );
 }
@@ -547,10 +527,11 @@ function PlateHero({ institution, pending }: { institution: InstitutionDetail; p
 }
 
 export default function InstitutionScreen() {
-  const { slug } = useLocalSearchParams<{ slug: string }>();
+  const params = useLocalSearchParams<{ slug: string; tab?: string }>();
+  const slug = params.slug;
   const [institution, setInstitution] = useState<InstitutionDetail | null>(null);
   const [failed, setFailed] = useState(false);
-  const [tab, setTab] = useState<Tab>("overview");
+  const [tab, setTab] = useState<Tab>(isTab(params.tab) ? params.tab : "overview");
   const hero = useInstitutionHero(institution?.residents ?? null);
   const { state } = useSession();
   const signedIn = state.status === "signedIn";
@@ -603,11 +584,9 @@ export default function InstitutionScreen() {
   }
 
   const unseen = signedIn && seen ? unseenResidents(institution.residents, seen) : null;
-  // A tab with nothing in it is left out; 概况 always has the badges and sources.
   const tabs = [
     { value: "overview" as const, label: "概况" },
     institution.residents.length + institution.former.length > 0 ? { value: "pandas" as const, label: "熊猫" } : null,
-    // 攻略 also holds 记下到访, which every facility offers, so any facility earns the tab.
     institution.facilities.length > 0 || institution.websiteUrl ? { value: "guide" as const, label: "攻略" } : null,
   ].filter((option) => option !== null);
   const shown = tabs.some((option) => option.value === tab) ? tab : "overview";
