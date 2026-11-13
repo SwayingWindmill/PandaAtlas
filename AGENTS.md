@@ -53,8 +53,8 @@
 
 ## 7. Git 与交付
 
-- `E:\Code\PandaAtlas` 是多个会话共用的检出，别的会话会在里面切分支。每个任务在自己的 git worktree 里开分支、提交；不要在共用检出里提交或切分支。`.githooks/pre-commit` 会拒绝 agent（`CLAUDECODE` 已设置）在共用检出里提交。
-- 不要用 `git stash`：所有 worktree 共用一个 stash 列表，会拿错别人的修改。`.claude/settings.json` 里的 PreToolUse hook 会拦下它。
+- `E:\Code\PandaAtlas` 是多个会话共用的检出，别的会话会在里面切分支。每个任务在自己的 git worktree 里开分支、提交；不要在共用检出里提交或切分支。共用检出的 `.git` 里有标记文件 `pandaatlas-shared-checkout`，`.githooks/pre-commit` 据此拒绝 Claude Code agent（`CLAUDECODE` 已设置）在那里提交；别的克隆和手工提交不受影响。
+- 不要用 `git stash`：所有 worktree 共用一个 stash 列表，会拿错别人的修改。`.claude/settings.json` 里的 PreToolUse hook 会在 Claude Code 里拦下它。其他 agent 没有这两道 hook，照文字规则做。
 - 不覆盖用户已有的未提交修改；遇到冲突或不确定的修改来源时先说明情况。
 - 提交信息和 PR 用中文，提交信息用 Conventional Commits 前缀（如 `fix(mobile): …`）。PR 正文按 `.github/PULL_REQUEST_TEMPLATE.md` 的小节写，`## Why` 开头写用户的目标。
 - 不要提交本地调试时对 `apps/mobile/package.json` 做的临时改动。
@@ -62,9 +62,9 @@
 
 ### 合并与上线
 
-- `main` 有规则集「main: CI must pass」：Development Verification 的三个检查必须通过，没有人能绕过。所以 GitHub 会挡住 CI 没跑完或没通过的合并。
+- `main` 有规则集「main: CI must pass」：Development Verification 的三个检查必须通过，没有人能绕过。它是兜底：GitHub 会挡住 CI 没跑完或没通过的合并。
 - GitHub 管不了的那一半由 agent 自己守：合并前至少一个独立 reviewer（不是写代码的那个 agent）给出 PASS。自己的审查、测试和 CI 都不算独立审查。
-- 独立审查 PASS 之后，用 `gh pr merge <n> --squash --auto --match-head-commit <审查过的 head>` 合并，GitHub 等 CI 跑绿再合；合并后看 `main` 上那次 Development Verification。
+- 不要开自动合并：规则集只管 CI，不管审查，有写权限的人再推一次也不会取消自动合并，没审查过的提交就可能合进去。等 PR 的 CI 跑绿、独立审查 PASS 之后，用 `gh pr merge <n> --squash --match-head-commit <审查过的 head>` 当场合并；合并后看 `main` 上那次 Development Verification。
 - 以上合并流程只用于你在本次对话里自己开的 PR。其他 PR，包括以前对话里开的，都按下面「每次都要用户在对话里明确同意」那一条处理。
 - 合并前确认 PR 的目标分支是 `main`（`gh pr view <n> --json baseRefName`）。叠在别的分支上的 PR 会合进那个分支，而不是 `main`；不是 `main` 就停下来问用户。
 - 下面这些每次都要用户在对话里明确同意：合并本次对话以外开的 PR；生产部署（`Production` 环境审批）；批量内容发布（`production-batch`）；强推共享分支；删除数据；改 GitHub 仓库设置、分支保护、环境或密钥。

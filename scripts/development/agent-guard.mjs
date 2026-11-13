@@ -4,7 +4,10 @@ import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
 // All worktrees share one stash list, so a stash or pop can take another session's changes.
-const GIT_STASH = /\bgit(?:\s+-C\s+(?:"[^"]*"|'[^']*'|\S+)|\s+-c\s+\S+)*\s+stash\b/;
+// Only a git invocation at the start of a command counts, so "git stash" quoted in a commit
+// message or a search pattern is left alone.
+const GIT_STASH =
+  /(?:^|[;&|\n(])\s*git(?:\.exe)?(?:\s+(?:-[Cc]\s+(?:"[^"]*"|'[^']*'|\S+)|--[\w-]+(?:=\S+)?))*\s+stash\b/;
 
 export function blockedReason(command) {
   if (GIT_STASH.test(command)) {

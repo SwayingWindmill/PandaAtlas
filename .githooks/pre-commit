@@ -1,11 +1,10 @@
 #!/bin/sh
-# E:\Code\PandaAtlas is shared by several agent sessions that switch branches in it, so an agent
-# commits only from its own worktree. People committing by hand are not affected.
+# E:\Code\PandaAtlas is shared by several agent sessions that switch branches in it, so a Claude Code
+# agent commits only from its own worktree. The shared checkout is marked by the file
+# .git/pandaatlas-shared-checkout; other clones and people committing by hand are not affected.
 [ -n "$CLAUDECODE" ] || exit 0
-git_dir=$(git rev-parse --path-format=absolute --git-dir)
-common_dir=$(git rev-parse --path-format=absolute --git-common-dir)
-if [ "$git_dir" = "$common_dir" ]; then
-  echo "pre-commit: agents commit only from their own git worktree, not the shared main checkout." >&2
-  echo "Create one with: git worktree add ../PandaAtlas-<task> -b <branch> origin/main, then npm ci in it." >&2
-  exit 1
-fi
+git_dir=$(git rev-parse --path-format=absolute --git-dir) || exit 0
+[ -f "$git_dir/pandaatlas-shared-checkout" ] || exit 0
+echo "pre-commit: agents commit only from their own git worktree, not the shared checkout." >&2
+echo "Create one with: git worktree add ../PandaAtlas-<task> -b <branch> origin/main, then npm ci in it." >&2
+exit 1
