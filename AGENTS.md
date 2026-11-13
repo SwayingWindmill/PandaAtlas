@@ -2,11 +2,13 @@
 
 本文件规定 AI 编程助手在本项目中的工作方式。目标是：**理解现有实现、进行最小必要修改、保持代码简单、验证真实结果**。项目已有的规范、配置和测试要求优先；不要凭习惯替换现有技术方案。
 
+工作流程以 pstack 为准（见下方「pstack」一节）。本文件只补充 pstack 不知道的项目事实和约束。
+
 ## 1. 开始任务前
 
 - 先阅读与任务相关的 README、项目配置、现有实现和测试；不要在不了解上下文时直接改代码。
 - 优先沿用项目已经采用的目录结构、命名方式、依赖和设计模式。
-- 确定修改范围和潜在影响；复杂任务先给出简短计划，再实施。
+- 确定修改范围和潜在影响。开工时先说清用户的目标和预期的最小改动，然后直接做，不等确认；下文列出的需要用户同意的事项除外。
 - 不要擅自扩大需求。发现无关问题时，说明问题而不是顺手重构。
 
 ## 2. 架构与修改范围
@@ -29,7 +31,7 @@
 - 尽量保持函数职责清晰；复杂逻辑可以拆分，但不要为了拆分而拆分。
 - 优先使用清晰的命名、提前返回和不可变变量；仅在确有需要时使用可变状态。
 - 删除无用代码、无用导入和调试输出；不要保留没有价值的兼容分支。
-- 注释应解释**为什么**这样做以及重要约束，而不是重复代码表面含义。
+- 注释只写代码本身看不出的原因或外部约束，不复述代码。提交前跑 `/deslop`，请人审查前跑 `/no-comments`。
 - 对 TypeScript 项目：避免 `any`，优先利用类型推断；在公共接口和重要边界处明确类型。
 
 ## 5. 数据、错误与安全
@@ -51,10 +53,27 @@
 
 ## 7. Git 与交付
 
-- 不要未经要求创建提交、推送分支、重写 Git 历史或修改远程仓库。
+- `E:\Code\PandaAtlas` 是多个会话共用的检出，别的会话会在里面切分支。每个任务在自己的 git worktree 里开分支、提交；不要在共用检出里提交或切分支。
+- 不要用 `git stash`：所有 worktree 共用一个 stash 列表，会拿错别人的修改。
 - 不覆盖用户已有的未提交修改；遇到冲突或不确定的修改来源时先说明情况。
-- 提交信息应简洁、描述实际变更；如项目已有 Commit/PR 规范，优先遵守。
+- 提交信息和 PR 用中文，提交信息用 Conventional Commits 前缀（如 `fix(mobile): …`）。PR 正文按 `.github/PULL_REQUEST_TEMPLATE.md` 的小节写，`## Why` 开头写用户的目标。
+- 不要提交本地调试时对 `apps/mobile/package.json` 做的临时改动。
 - 完成后简要说明：**修改了什么、为什么这样改、执行了哪些验证、还有哪些风险或限制**。
+
+### 合并与上线
+
+- `main` 目前没有必需的状态检查，`gh pr merge --auto` 会立刻合并。所以开 PR 后不要开自动合并。
+- 合并的前提有两个：PR 自己的 Development Verification 跑绿；至少一个独立 reviewer（不是写代码的那个 agent）给出 PASS。自己的审查、测试和 CI 都不算独立审查。
+- 合并用 `gh pr merge <n> --squash --match-head-commit <审查过的 head>`，合并后看 `main` 上那次 Development Verification。
+- 以上合并流程只用于你在本次对话里自己开的 PR。
+- 下面这些每次都要用户在对话里明确同意：合并别人的 PR；生产部署（`Production` 环境审批）；批量内容发布（`production-batch`）；强推共享分支；删除数据；改 GitHub 仓库设置、分支保护、环境或密钥。
+
+## UI 与内容
+
+- 改界面布局前先出效果图，用户批准后再写代码。
+- 图标直接放，不要放进有底色的方块或圆里。
+- 示例、占位数据不能上线。
+- 组件选型见 `docs/design/ui-component-sourcing-policy.md`，前端审查见 `docs/agents/frontend-review.md`。
 
 ## 8. 决策原则
 
@@ -66,7 +85,14 @@
 
 ## pstack
 
-The `pstack` plugin (`pstack@pstack-claude`) is enabled for this project in `.claude/settings.json`. Its SessionStart hook routes tasks to `poteto-mode`, which picks a pstack workflow. Where a pstack skill and this file disagree, this file wins.
+The `pstack` plugin (`pstack@pstack-claude`) is enabled for this project in `.claude/settings.json`. Its SessionStart hook routes tasks to `poteto-mode`, which picks a pstack workflow. Follow that workflow: its playbooks, review gates (`/deslop`, `/no-comments`, an independent reviewer), and verification on the real artifact.
+
+This file adds project facts pstack cannot know. Where the two disagree, this file wins on every rule in sections 1–8 and 「UI 与内容」 above, including the shared checkout and worktrees, no `git stash`, merge and deploy gates, the actions that need the user's consent, language, and the UI and data rules.
+
+- Commit messages and PR text are Chinese. Apply `/unslop` to them (short declarative sentences, no filler). The English STE vocabulary rules in `/technical-writing` apply only to English text.
+- Todo checklists and decision trails go in `.audit/<task-slug>.todo.md` and `.audit/<task-slug>.tsv`. `.audit/` is git-ignored.
+- Project playbooks in `.agents/playbooks/` extend pstack's: `landing-a-pr.md` (the merge gate) and `ui-layout.md` (mockup before layout code). After a pstack upgrade, run its `skills/poteto-mode/scripts/check-playbooks.mjs` from the repo root.
+- There is no project `verify` skill yet. For the mobile app, verify with the e2e suite (`apps/mobile/tests`, see `apps/mobile/README.md`) and the Expo web build.
 
 ## Matt Pocock 技能与 Issue 工作流
 
@@ -76,7 +102,7 @@ Matt Pocock skills are tracked under `.agents/skills/` as the synced release (v1
 
 Work is tracked in GitHub Issues for `SwayingWindmill/PandaAtlas`. For project-status or next-work questions, use live `main` plus GitHub state as described in `docs/agents/issue-tracker.md`.
 
-For issue implementation, create a branch in the existing `E:\Code\PandaAtlas` checkout. Create a worktree only when the user explicitly requests parallel work.
+For issue implementation, create a branch in your own worktree (see 「Git 与交付」).
 
 ### Issue completion
 
@@ -85,3 +111,7 @@ When an issue is merged and closed, report it and its verification to the user. 
 ### Triage labels
 
 Use the repository's five canonical triage roles. See `docs/agents/triage-labels.md`.
+
+### Other agent docs
+
+`docs/agents/domain.md` (glossary and ADRs), `docs/agents/codegraph.md` (optional CodeGraph MCP).
