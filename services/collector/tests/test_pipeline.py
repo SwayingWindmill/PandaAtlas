@@ -211,6 +211,21 @@ async def test_aihot_paused_source_is_retried_later(store: Store) -> None:
     assert [a["kind"] for a in await store.query("SELECT kind FROM alerts")] == ["push_failed"]
 
 
+async def test_backoff_caps_at_six_hours_for_long_failing_rows(store: Store) -> None:
+    t = make_target("rss", "f")
+    await store.sync_targets([t])
+    await store.save_page(t, Page([item("1")]), tagger)
+    # Rows the old code retried every minute already carry attempt counts far past 2^37 minutes.
+    await store.query("UPDATE outbox SET attempts = 1100 RETURNING item_id")
+    [row] = await store.query("SELECT item_id, version FROM outbox")
+    await store.mark_push_failed([(row["item_id"], row["version"])], "HTTP 409")
+    [after] = await store.query(
+        "SELECT attempts, next_attempt_at - now() BETWEEN interval '5 hours 59 minutes' "
+        "AND interval '6 hours' AS capped FROM outbox"
+    )
+    assert after == {"attempts": 1101, "capped": True}
+
+
 async def test_push_preserves_backlogged_version_bodies(store: Store) -> None:
     t = make_target("rss", "f")
     await store.sync_targets([t])

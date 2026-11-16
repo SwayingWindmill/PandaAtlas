@@ -412,7 +412,10 @@ class Store:
     # Outbox --------------------------------------------------------------------------------
 
     async def claim_outbox(
-        self, limit: int, lease: timedelta = timedelta(minutes=10)
+        # Longer than a worst-case push: 10 batches with a 60 s timeout each.
+        self,
+        limit: int,
+        lease: timedelta = timedelta(minutes=15),
     ) -> list[dict[str, Any]]:
         async with self.pool.connection() as conn:
             cur = await conn.execute(
@@ -456,8 +459,10 @@ class Store:
         async with self.pool.connection() as conn:
             await conn.execute(
                 "UPDATE outbox SET attempts = attempts + 1, last_error = %s, lease_until = NULL, "
-                "next_attempt_at = now() + least(interval '1 minute' * power(2, attempts + 1), "
-                "interval '6 hours') "
+                # Cap the exponent, not the product: least() evaluates both sides, and
+                # 2^37 minutes already overflows an interval. 2^9 minutes is past 6 hours.
+                "next_attempt_at = now() + least("
+                "interval '1 minute' * power(2, least(attempts + 1, 9)), interval '6 hours') "
                 "WHERE (item_id, version) IN (SELECT * FROM unnest(%s::bigint[], %s::int[]))",
                 (error, [k[0] for k in keys], [k[1] for k in keys]),
             )
