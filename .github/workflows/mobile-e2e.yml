@@ -1,0 +1,72 @@
+name: Mobile E2E
+
+# The app's e2e journeys against a local Supabase on a Linux runner, where Windows port reservations do not
+# apply. A pull request that touches the app or what it talks to runs every journey; a manual run can pick
+# one with `gh workflow run mobile-e2e.yml -f journey=tests/map.e2e.ts:60`. Traces are kept for every run
+# and uploaded as the `mobile-e2e-results` artifact.
+on:
+  pull_request:
+    paths:
+      - "apps/mobile/**"
+      - "services/api/**"
+      - "packages/api-client/**"
+      - "infra/supabase/**"
+      - "package-lock.json"
+      - ".github/workflows/mobile-e2e.yml"
+  workflow_dispatch:
+    inputs:
+      journey:
+        description: "One journey as tests/<file>.e2e.ts:<line>, or empty for all"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Run mobile e2e against local Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Install Chromium and its system libraries
+        run: npx playwright-core install --with-deps --only-shell chromium
+
+      - name: Start pinned local Supabase foundation
+        run: npm run infra:start
+
+      - name: Run journeys
+        working-directory: apps/mobile
+        env:
+          JOURNEY: ${{ inputs.journey }}
+        run: npx e2e run $JOURNEY --trace on
+
+      - name: Upload traces and logs
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: mobile-e2e-results
+          include-hidden-files: true
+          retention-days: 14
+          path: apps/mobile/.e2e/
+          if-no-files-found: warn
+
+      - name: Stop local Supabase foundation
+        if: always()
+        run: npm run infra:stop
