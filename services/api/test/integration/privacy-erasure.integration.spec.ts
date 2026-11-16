@@ -9,10 +9,7 @@ import {
   contributorSubjectHash,
   deidentifiedSubjectHash,
 } from "../../src/modules/contribution/application/contribution-erasure.js";
-import {
-  AUTH_USER_DELETION,
-  type AuthUserDeletion,
-} from "../../src/modules/identity/application/auth-user-deletion.js";
+import { AUTH_USER_DELETION, type AuthUserDeletion } from "../../src/modules/identity/application/auth-user-deletion.js";
 import { PrivacyRequestProcessorService } from "../../src/modules/privacy/infrastructure/privacy-request-processor.service.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 import { DATABASE_URL } from "./api-source.js";
@@ -24,21 +21,10 @@ let server: Server;
 let pool: pg.Pool;
 
 async function removeAuthUser(userId: string): Promise<boolean> {
-  const found = await pool.query("select 1 from auth.users where id = $1", [
-    userId,
-  ]);
+  const found = await pool.query("select 1 from auth.users where id = $1", [userId]);
   if (found.rowCount === 0) return false;
-  for (const table of [
-    "auth.sessions",
-    "auth.refresh_tokens",
-    "auth.mfa_factors",
-    "auth.identities",
-    "auth.one_time_tokens",
-  ]) {
-    const reg = await pool.query<{ name: string | null }>(
-      "select to_regclass($1) as name",
-      [table],
-    );
+  for (const table of ["auth.sessions", "auth.refresh_tokens", "auth.mfa_factors", "auth.identities", "auth.one_time_tokens"]) {
+    const reg = await pool.query<{ name: string | null }>("select to_regclass($1) as name", [table]);
     if (!reg.rows[0]?.name) continue;
     const columns = await pool.query<{ column_name: string }>(
       "select column_name from information_schema.columns where table_schema = 'auth' and table_name = $1 and column_name = 'user_id'",
@@ -65,23 +51,13 @@ beforeAll(async () => {
       void (async () => {
         if (failAuthDeletion.has(userId)) {
           response.statusCode = 500;
-          response.end(
-            JSON.stringify({
-              code: "unexpected_failure",
-              message: "Auth deletion failed",
-            }),
-          );
+          response.end(JSON.stringify({ code: "unexpected_failure", message: "Auth deletion failed" }));
           return;
         }
         const removed = await removeAuthUser(userId);
         if (!removed) {
           response.statusCode = 404;
-          response.end(
-            JSON.stringify({
-              code: "user_not_found",
-              message: "User not found",
-            }),
-          );
+          response.end(JSON.stringify({ code: "user_not_found", message: "User not found" }));
           return;
         }
         response.statusCode = 200;
@@ -97,8 +73,7 @@ beforeAll(async () => {
   });
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
   const address = server.address();
-  if (address === null || typeof address === "string")
-    throw new Error("Auth mock did not bind a port");
+  if (address === null || typeof address === "string") throw new Error("Auth mock did not bind a port");
 
   process.env.APP_ENV = "test";
   process.env.CORS_ALLOW_ORIGINS = "http://localhost:3000";
@@ -111,9 +86,7 @@ beforeAll(async () => {
 afterAll(async () => {
   await app.close();
   await pool.end();
-  await new Promise<void>((resolve, reject) =>
-    server.close((error) => (error === undefined ? resolve() : reject(error))),
-  );
+  await new Promise<void>((resolve, reject) => server.close((error) => (error === undefined ? resolve() : reject(error))));
 });
 
 async function seedAccount(accountId: string, email: string): Promise<void> {
@@ -130,16 +103,12 @@ async function seedAccount(accountId: string, email: string): Promise<void> {
   `.execute(database.db);
 }
 
-async function seedCorrection(
-  accountId: string,
-): Promise<{ submissionId: string; reviewerHash: string }> {
+async function seedCorrection(accountId: string): Promise<{ submissionId: string; reviewerHash: string }> {
   const database = app.get(DatabaseService);
   const submissionId = randomUUID();
   const reviewerHash = contributorSubjectHash(randomUUID());
   const content = JSON.stringify({
-    assertions: [
-      { assertionKey: "assertion-1", fieldKey: "name", value: "圆圆" },
-    ],
+    assertions: [{ assertionKey: "assertion-1", fieldKey: "name", value: "圆圆" }],
   });
   await sql`
     insert into community_intake.submissions (
@@ -211,12 +180,7 @@ async function fileDeletion(accountId: string): Promise<void> {
       ${randomUUID()}, ${randomUUID()}::uuid, '1970-01-01'
     )
   `.execute(database.db);
-  for (const participant of [
-    "engagement",
-    "game",
-    "notification",
-    "identity",
-  ]) {
+  for (const participant of ["engagement", "game", "notification", "identity"]) {
     await sql`
       insert into privacy.subject_request_steps (request_id, participant_key)
       values (${requestId}::uuid, ${participant})
@@ -231,9 +195,7 @@ describe("account deletion de-identifies corrections and removes the auth user",
     const { submissionId, reviewerHash } = await seedCorrection(accountId);
     await fileDeletion(accountId);
 
-    const result = await app
-      .get(PrivacyRequestProcessorService)
-      .processBatch(1);
+    const result = await app.get(PrivacyRequestProcessorService).processBatch(1);
     expect(result).toMatchObject({ completed: 1, failed: 0 });
 
     const database = app.get(DatabaseService);
@@ -251,38 +213,21 @@ describe("account deletion de-identifies corrections and removes the auth user",
     `.execute(database.db);
     const row = submission.rows[0]!;
     expect(row.account_id).toBeNull();
-    expect(row.contributor_subject_hash).toBe(
-      deidentifiedSubjectHash(submissionId),
-    );
-    expect(row.contributor_subject_hash).not.toBe(
-      contributorSubjectHash(accountId),
-    );
-    const stored =
-      typeof row.content === "string"
-        ? (JSON.parse(row.content) as typeof row.content)
-        : row.content;
+    expect(row.contributor_subject_hash).toBe(deidentifiedSubjectHash(submissionId));
+    expect(row.contributor_subject_hash).not.toBe(contributorSubjectHash(accountId));
+    const stored = typeof row.content === "string" ? JSON.parse(row.content) as typeof row.content : row.content;
     expect(stored.assertions[0]?.value).toBe("圆圆");
     expect(row.contributor_status).toBe("accepted");
 
-    const events = await sql<{
-      actor_subject_hash: string;
-      source_context: string;
-      user_visible_reason: string | null;
-    }>`
+    const events = await sql<{ actor_subject_hash: string; source_context: string; user_visible_reason: string | null }>`
       select actor_subject_hash, source_context, user_visible_reason
       from community_intake.contributor_status_events
       where submission_id = ${submissionId}::uuid
       order by source_context
     `.execute(database.db);
-    const contributor = events.rows.find(
-      (event) => event.source_context === "contributor",
-    );
-    const review = events.rows.find(
-      (event) => event.source_context === "review",
-    );
-    expect(contributor?.actor_subject_hash).toBe(
-      deidentifiedSubjectHash(submissionId),
-    );
+    const contributor = events.rows.find((event) => event.source_context === "contributor");
+    const review = events.rows.find((event) => event.source_context === "review");
+    expect(contributor?.actor_subject_hash).toBe(deidentifiedSubjectHash(submissionId));
     expect(review?.actor_subject_hash).toBe(reviewerHash);
     expect(review?.user_visible_reason).toBe("已核对来源");
 
@@ -290,23 +235,15 @@ describe("account deletion de-identifies corrections and removes the auth user",
       select original_filename, state from community_intake.attachments
       where submission_id = ${submissionId}::uuid
     `.execute(database.db);
-    expect(attachment.rows[0]).toMatchObject({
-      original_filename: "[deleted]",
-      state: "deleted",
-    });
+    expect(attachment.rows[0]).toMatchObject({ original_filename: "[deleted]", state: "deleted" });
 
     const account = await sql<{ email: string | null; state: string }>`
       select email, state from identity.accounts where account_id = ${accountId}::uuid
     `.execute(database.db);
     expect(account.rows[0]).toEqual({ email: null, state: "deleted" });
-    expect(
-      (await pool.query("select 1 from auth.users where id = $1", [accountId]))
-        .rowCount,
-    ).toBe(0);
+    expect((await pool.query("select 1 from auth.users where id = $1", [accountId])).rowCount).toBe(0);
 
-    await expect(
-      app.get<AuthUserDeletion>(AUTH_USER_DELETION).deleteUser(accountId),
-    ).resolves.toBeUndefined();
+    await expect(app.get<AuthUserDeletion>(AUTH_USER_DELETION).deleteUser(accountId)).resolves.toBeUndefined();
   });
 
   it("keeps the request processing when auth deletion fails and finishes it on the next cycle", async () => {
@@ -318,35 +255,22 @@ describe("account deletion de-identifies corrections and removes the auth user",
 
     const database = app.get(DatabaseService);
     try {
-      await expect(
-        app.get(PrivacyRequestProcessorService).processBatch(1),
-      ).rejects.toThrow(/waiting on Auth user deletion.*"failed":1/);
+      await expect(app.get(PrivacyRequestProcessorService).processBatch(1)).rejects.toThrow(
+        /waiting on Auth user deletion.*"failed":1/,
+      );
 
-      const submission = await sql<{
-        account_id: string | null;
-        contributor_subject_hash: string;
-      }>`
+      const submission = await sql<{ account_id: string | null; contributor_subject_hash: string }>`
         select account_id, contributor_subject_hash from community_intake.submissions
         where submission_id = ${submissionId}::uuid
       `.execute(database.db);
       expect(submission.rows[0]?.account_id).toBeNull();
-      expect(submission.rows[0]?.contributor_subject_hash).toBe(
-        deidentifiedSubjectHash(submissionId),
-      );
-      expect(submission.rows[0]?.contributor_subject_hash).not.toBe(
-        contributorSubjectHash(accountId),
-      );
+      expect(submission.rows[0]?.contributor_subject_hash).toBe(deidentifiedSubjectHash(submissionId));
+      expect(submission.rows[0]?.contributor_subject_hash).not.toBe(contributorSubjectHash(accountId));
       const account = await sql<{ state: string; email: string | null }>`
         select state, email from identity.accounts where account_id = ${accountId}::uuid
       `.execute(database.db);
       expect(account.rows[0]).toEqual({ state: "deleted", email: null });
-      expect(
-        (
-          await pool.query("select 1 from auth.users where id = $1", [
-            accountId,
-          ])
-        ).rowCount,
-      ).toBe(1);
+      expect((await pool.query("select 1 from auth.users where id = $1", [accountId])).rowCount).toBe(1);
       const request = await sql<{ state: string }>`
         select state from privacy.subject_requests where account_id = ${accountId}::uuid
       `.execute(database.db);
@@ -356,9 +280,9 @@ describe("account deletion de-identifies corrections and removes the auth user",
       const otherId = randomUUID();
       await seedAccount(otherId, `other-${otherId}@example.test`);
       await fileDeletion(otherId);
-      await expect(
-        app.get(PrivacyRequestProcessorService).processBatch(1),
-      ).rejects.toThrow(/"completed":1,"failed":1/);
+      await expect(app.get(PrivacyRequestProcessorService).processBatch(1)).rejects.toThrow(
+        /"completed":1,"failed":1/,
+      );
       const other = await sql<{ state: string }>`
         select state from privacy.subject_requests where account_id = ${otherId}::uuid
       `.execute(database.db);
@@ -367,17 +291,12 @@ describe("account deletion de-identifies corrections and removes the auth user",
       // Let later tests finish this request instead of tripping over it.
       failAuthDeletion.delete(accountId);
     }
-    const retried = await app
-      .get(PrivacyRequestProcessorService)
-      .processBatch(1);
+    const retried = await app.get(PrivacyRequestProcessorService).processBatch(1);
     expect(retried).toMatchObject({ completed: 1 });
     const completedRequest = await sql<{ state: string }>`
       select state from privacy.subject_requests where account_id = ${accountId}::uuid
     `.execute(database.db);
     expect(completedRequest.rows[0]?.state).toBe("completed");
-    expect(
-      (await pool.query("select 1 from auth.users where id = $1", [accountId]))
-        .rowCount,
-    ).toBe(0);
+    expect((await pool.query("select 1 from auth.users where id = $1", [accountId])).rowCount).toBe(0);
   });
 });
