@@ -1,6 +1,9 @@
 import { sql } from "kysely";
 import type { JsonObject } from "../../../platform/database/database.privacy.generated.js";
-import type { DatabaseService, DatabaseTransaction } from "../../../platform/database/database.service.js";
+import type {
+  DatabaseService,
+  DatabaseTransaction,
+} from "../../../platform/database/database.service.js";
 import type { IntegrationOutboxService } from "../../../platform/integration/integration-outbox.service.js";
 import type { ContributionPrivacyPort } from "../../contribution/application/contribution-privacy.port.js";
 import type { EngagementPrivacyPort } from "../../engagement/application/engagement-privacy.port.js";
@@ -14,14 +17,21 @@ class PrivacyParticipantFailure extends Error {
     public readonly participantKey: string,
     cause: unknown,
   ) {
-    super(cause instanceof Error ? cause.message : "Privacy participant failed");
+    super(
+      cause instanceof Error ? cause.message : "Privacy participant failed",
+    );
     this.name = "PrivacyParticipantFailure";
   }
 }
 
 class AuthDeletionPending extends Error {
   public constructor(cause: unknown) {
-    super(cause instanceof Error ? cause.message : "Auth user deletion failed", { cause });
+    super(
+      cause instanceof Error
+        ? cause.message
+        : "Finishing an erased account deletion failed",
+      { cause },
+    );
     this.name = "AuthDeletionPending";
   }
 }
@@ -47,22 +57,31 @@ export class PrivacyRequestProcessorService {
 
   public async processBatch(limit = 5): Promise<PrivacyProcessorResult> {
     if (!Number.isInteger(limit) || limit < 1 || limit > 20) {
-      throw new Error("Privacy processor limit must be an integer between 1 and 20");
+      throw new Error(
+        "Privacy processor limit must be an integer between 1 and 20",
+      );
     }
-    const rows = await this.database.db
-      .selectFrom("privacy.subject_requests")
-      .select("request_id")
-      .where((eb) =>
-        eb.or([
-          eb("state", "=", "pending"),
-          eb.and([eb("state", "=", "processing"), eb("kind", "=", "account_deletion")]),
-        ]),
-      )
-      .orderBy("requested_at")
-      .orderBy("request_id")
-      .limit(limit)
-      .execute();
-    const result: PrivacyProcessorResult = { selected: rows.length, completed: 0, failed: 0, skipped: 0 };
+    // Erased deletions waiting on Auth get their own budget: if they shared one with pending
+    // requests, a few that keep failing would hold every slot and starve new requests.
+    const due = (state: "pending" | "processing") =>
+      this.database.db
+        .selectFrom("privacy.subject_requests")
+        .select("request_id")
+        .where("state", "=", state)
+        .$if(state === "processing", (query) =>
+          query.where("kind", "=", "account_deletion"),
+        )
+        .orderBy("requested_at")
+        .orderBy("request_id")
+        .limit(limit)
+        .execute();
+    const rows = [...(await due("pending")), ...(await due("processing"))];
+    const result: PrivacyProcessorResult = {
+      selected: rows.length,
+      completed: 0,
+      failed: 0,
+      skipped: 0,
+    };
     let stalled: unknown;
     for (const row of rows) {
       try {
@@ -73,127 +92,178 @@ export class PrivacyRequestProcessorService {
         if (error instanceof AuthDeletionPending) stalled ??= error;
       }
     }
-    // An erased account whose Auth user survives stays processing and retries each cycle. Failing
+    // An erased account not yet finished (Auth user or completion) stays processing and retries each cycle. Failing
     // the stage stops the async heartbeat, so a deletion that keeps failing reaches /health/async.
     if (stalled !== undefined) {
-      throw new Error(`Privacy erasure is waiting on Auth user deletion (${JSON.stringify(result)})`, {
-        cause: stalled,
-      });
+      throw new Error(
+        `Privacy erasure is waiting on Auth user deletion (${JSON.stringify(result)})`,
+        {
+          cause: stalled,
+        },
+      );
     }
     return result;
   }
 
   private async processRequest(requestId: string): Promise<boolean> {
-    const outcome = await this.database.transaction(async (transaction) => {
-      const request = await transaction
-        .selectFrom("privacy.subject_requests")
-        .selectAll()
-        .where("request_id", "=", requestId)
-        .forUpdate()
-        .executeTakeFirst();
-      if (request === undefined) return false;
-      if (request.state === "processing" && request.kind === "account_deletion") return request;
-      if (request.state !== "pending") return false;
+    const outcome = await this.database
+      .transaction(async (transaction) => {
+        const request = await transaction
+          .selectFrom("privacy.subject_requests")
+          .selectAll()
+          .where("request_id", "=", requestId)
+          .forUpdate()
+          .executeTakeFirst();
+        if (request === undefined) return false;
+        if (
+          request.state === "processing" &&
+          request.kind === "account_deletion"
+        )
+          return request;
+        if (request.state !== "pending") return false;
 
-      const processingAt = new Date();
-      await transaction
-        .updateTable("privacy.subject_requests")
-        .set({ state: "processing", updated_at: processingAt })
-        .where("request_id", "=", requestId)
-        .executeTakeFirstOrThrow();
-      await transaction
-        .insertInto("privacy.subject_request_events")
-        .values({
-          request_id: requestId,
-          event_type: "privacy.request.processing",
-          previous_state: "pending",
-          next_state: "processing",
-          correlation_id: request.correlation_id,
-        })
-        .execute();
-
-      if (request.kind === "access_export") {
-        const identity = await this.runParticipant("identity", () =>
-          this.identity.exportPrivacySubject(transaction, request.account_id),
-        );
-        await this.completeStep(transaction, requestId, "identity");
-        const engagement = await this.runParticipant("engagement", () =>
-          this.engagement.exportPrivacySubject(transaction, request.account_id),
-        );
-        await this.completeStep(transaction, requestId, "engagement");
-        const game = await this.runParticipant("game", () =>
-          this.game.exportPrivacySubject(transaction, request.account_id),
-        );
-        await this.completeStep(transaction, requestId, "game");
-        const notification = await this.runParticipant("notification", () =>
-          this.notification.exportPrivacySubject(transaction, request.account_id),
-        );
-        await this.completeStep(transaction, requestId, "notification");
+        const processingAt = new Date();
         await transaction
-          .insertInto("privacy.export_snapshots")
+          .updateTable("privacy.subject_requests")
+          .set({ state: "processing", updated_at: processingAt })
+          .where("request_id", "=", requestId)
+          .executeTakeFirstOrThrow();
+        await transaction
+          .insertInto("privacy.subject_request_events")
           .values({
             request_id: requestId,
-            account_id: request.account_id,
-            payload: { identity, engagement, game, notification } as JsonObject,
+            event_type: "privacy.request.processing",
+            previous_state: "pending",
+            next_state: "processing",
+            correlation_id: request.correlation_id,
           })
           .execute();
-      } else if (request.kind === "account_deletion") {
-        await this.identity.beginPrivacyErasure(transaction, request.account_id, requestId, request.correlation_id);
-        await this.contribution.erasePrivacySubject(transaction, request.account_id);
-        await this.runParticipant("engagement", () =>
-          this.engagement.erasePrivacySubject(transaction, request.account_id),
-        );
-        await this.completeStep(transaction, requestId, "engagement");
-        await this.runParticipant("game", () => this.game.erasePrivacySubject(transaction, request.account_id));
-        await this.completeStep(transaction, requestId, "game");
-        await this.runParticipant("notification", () =>
-          this.notification.erasePrivacySubject(transaction, request.account_id),
-        );
-        await this.completeStep(transaction, requestId, "notification");
-        await this.runParticipant("identity", () =>
-          this.identity.erasePrivacySubject(transaction, request.account_id, requestId, request.correlation_id),
-        );
-        await this.completeStep(transaction, requestId, "identity");
-        return request;
-      } else {
-        throw new Error(`Unsupported privacy request kind ${request.kind}`);
-      }
 
-      await this.completeRequest(transaction, request);
-      return true;
-    }).catch(async (error: unknown) => {
-      await this.markFailed(requestId, error);
-      throw error;
-    });
+        if (request.kind === "access_export") {
+          const identity = await this.runParticipant("identity", () =>
+            this.identity.exportPrivacySubject(transaction, request.account_id),
+          );
+          await this.completeStep(transaction, requestId, "identity");
+          const engagement = await this.runParticipant("engagement", () =>
+            this.engagement.exportPrivacySubject(
+              transaction,
+              request.account_id,
+            ),
+          );
+          await this.completeStep(transaction, requestId, "engagement");
+          const game = await this.runParticipant("game", () =>
+            this.game.exportPrivacySubject(transaction, request.account_id),
+          );
+          await this.completeStep(transaction, requestId, "game");
+          const notification = await this.runParticipant("notification", () =>
+            this.notification.exportPrivacySubject(
+              transaction,
+              request.account_id,
+            ),
+          );
+          await this.completeStep(transaction, requestId, "notification");
+          await transaction
+            .insertInto("privacy.export_snapshots")
+            .values({
+              request_id: requestId,
+              account_id: request.account_id,
+              payload: {
+                identity,
+                engagement,
+                game,
+                notification,
+              } as JsonObject,
+            })
+            .execute();
+        } else if (request.kind === "account_deletion") {
+          await this.identity.beginPrivacyErasure(
+            transaction,
+            request.account_id,
+            requestId,
+            request.correlation_id,
+          );
+          await this.contribution.erasePrivacySubject(
+            transaction,
+            request.account_id,
+          );
+          await this.runParticipant("engagement", () =>
+            this.engagement.erasePrivacySubject(
+              transaction,
+              request.account_id,
+            ),
+          );
+          await this.completeStep(transaction, requestId, "engagement");
+          await this.runParticipant("game", () =>
+            this.game.erasePrivacySubject(transaction, request.account_id),
+          );
+          await this.completeStep(transaction, requestId, "game");
+          await this.runParticipant("notification", () =>
+            this.notification.erasePrivacySubject(
+              transaction,
+              request.account_id,
+            ),
+          );
+          await this.completeStep(transaction, requestId, "notification");
+          await this.runParticipant("identity", () =>
+            this.identity.erasePrivacySubject(
+              transaction,
+              request.account_id,
+              requestId,
+              request.correlation_id,
+            ),
+          );
+          await this.completeStep(transaction, requestId, "identity");
+          return request;
+        } else {
+          throw new Error(`Unsupported privacy request kind ${request.kind}`);
+        }
+
+        await this.completeRequest(transaction, request);
+        return true;
+      })
+      .catch(async (error: unknown) => {
+        await this.markFailed(requestId, error);
+        throw error;
+      });
     if (typeof outcome === "boolean") return outcome;
 
     try {
       await this.authUsers.deleteUser(outcome.account_id);
+      return await this.database.transaction(async (transaction) => {
+        const request = await transaction
+          .selectFrom("privacy.subject_requests")
+          .selectAll()
+          .where("request_id", "=", requestId)
+          .forUpdate()
+          .executeTakeFirst();
+        if (request === undefined || request.state !== "processing")
+          return false;
+        await this.completeRequest(transaction, request);
+        return true;
+      });
     } catch (error) {
       throw new AuthDeletionPending(error);
     }
-    return this.database.transaction(async (transaction) => {
-      const request = await transaction
-        .selectFrom("privacy.subject_requests")
-        .selectAll()
-        .where("request_id", "=", requestId)
-        .forUpdate()
-        .executeTakeFirst();
-      if (request === undefined || request.state !== "processing") return false;
-      await this.completeRequest(transaction, request);
-      return true;
-    });
   }
 
   private async completeRequest(
     transaction: DatabaseTransaction,
-    request: { request_id: string; account_id: string; correlation_id: string; kind: string },
+    request: {
+      request_id: string;
+      account_id: string;
+      correlation_id: string;
+      kind: string;
+    },
   ): Promise<void> {
     const requestId = request.request_id;
     const completedAt = new Date();
     await transaction
       .updateTable("privacy.subject_requests")
-      .set({ state: "completed", completed_at: completedAt, updated_at: completedAt })
+      .set({
+        state: "completed",
+        completed_at: completedAt,
+        updated_at: completedAt,
+      })
       .where("request_id", "=", requestId)
       .executeTakeFirstOrThrow();
     await transaction
@@ -227,8 +297,14 @@ export class PrivacyRequestProcessorService {
         .forUpdate()
         .executeTakeFirst();
       if (request === undefined || request.state !== "pending") return;
-      const participantKey = error instanceof PrivacyParticipantFailure ? error.participantKey : undefined;
-      const failureCode = participantKey === undefined ? "privacy_processing_failed" : `privacy_${participantKey}_failed`;
+      const participantKey =
+        error instanceof PrivacyParticipantFailure
+          ? error.participantKey
+          : undefined;
+      const failureCode =
+        participantKey === undefined
+          ? "privacy_processing_failed"
+          : `privacy_${participantKey}_failed`;
       const failedAt = new Date();
       if (participantKey !== undefined) {
         await transaction
@@ -245,7 +321,12 @@ export class PrivacyRequestProcessorService {
       }
       await transaction
         .updateTable("privacy.subject_requests")
-        .set({ state: "failed", failed_at: failedAt, failure_code: failureCode, updated_at: failedAt })
+        .set({
+          state: "failed",
+          failed_at: failedAt,
+          failure_code: failureCode,
+          updated_at: failedAt,
+        })
         .where("request_id", "=", requestId)
         .executeTakeFirstOrThrow();
       await transaction
@@ -267,7 +348,12 @@ export class PrivacyRequestProcessorService {
         idempotencyKey: `request-failed:${requestId}`,
         correlationId: request.correlation_id,
         occurredAt: failedAt,
-        payload: { requestId, accountId: request.account_id, kind: request.kind, failureCode },
+        payload: {
+          requestId,
+          accountId: request.account_id,
+          kind: request.kind,
+          failureCode,
+        },
       });
     });
   }
@@ -279,13 +365,21 @@ export class PrivacyRequestProcessorService {
   ): Promise<void> {
     await transaction
       .updateTable("privacy.subject_request_steps")
-      .set({ state: "completed", attempts: sql<number>`attempts + 1`, last_error_code: null, updated_at: new Date() })
+      .set({
+        state: "completed",
+        attempts: sql<number>`attempts + 1`,
+        last_error_code: null,
+        updated_at: new Date(),
+      })
       .where("request_id", "=", requestId)
       .where("participant_key", "=", participantKey)
       .executeTakeFirstOrThrow();
   }
 
-  private async runParticipant<T>(participantKey: string, work: () => Promise<T>): Promise<T> {
+  private async runParticipant<T>(
+    participantKey: string,
+    work: () => Promise<T>,
+  ): Promise<T> {
     try {
       return await work();
     } catch (error) {
