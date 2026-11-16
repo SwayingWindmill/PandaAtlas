@@ -49,7 +49,7 @@
 - 修复 Bug 时，条件允许应增加能复现问题的回归测试；新增功能应覆盖关键路径和合理的边界情况。
 - 先查看项目提供的测试、Lint、类型检查和构建命令，再使用对应命令；不要臆造脚本。
 - 优先运行与修改范围直接相关的检查；必要时再扩大到完整项目。`npm run verify:dev` 只看未提交的改动，提交之后要加 `-- --base origin/main`。
-- Windows 上 Hyper-V 会占掉一段端口，本地 Supabase 的 543xx 可能起不来。`npm run infra:start` 会先检查，并打印需要用户用管理员权限执行的修复命令；那是系统设置，agent 不要自己改。
+- Windows 上 Hyper-V 会占掉一段端口，本地 Supabase 的 543xx 可能起不来。`npm run infra:start` 会先检查，并打印需要用户用管理员权限执行的修复命令；那是系统设置，agent 不要自己改。本机跑不了时，移动端 e2e 改用 GitHub Actions 的 `Mobile E2E` 工作流跑（见 verify skill 的 On CI）。
 - 不得声称未运行的测试已通过。受环境限制无法验证时，明确说明未验证的内容和原因。
 
 ## 7. Git 与交付
@@ -95,7 +95,7 @@ This file adds project facts pstack cannot know. Where the two disagree, this fi
 - Commit messages and PR text are Chinese. Apply `/unslop` to them (short declarative sentences, no filler). The English STE vocabulary rules in `/technical-writing` apply only to English text.
 - Todo checklists and decision trails go in `.audit/<task-slug>.todo.md` and `.audit/<task-slug>.tsv`. `.audit/` is git-ignored.
 - Project playbooks in `.agents/playbooks/` extend pstack's: `landing-a-pr.md` (the merge gate) and `ui-layout.md` (mockup before layout code). After a pstack upgrade, run its `skills/poteto-mode/scripts/check-playbooks.mjs` from the repo root.
-- The mobile app's driver skill is `apps/mobile/.claude/skills/verify/` (`verify`): doctor, launch (local stack or production preview), drive, evidence, cleanup, and a feature map. Use it for any change a user can see in `apps/mobile`. Keep its `features/` map current when a feature changes (`/maintain-verification-skill`).
+- The mobile app's driver skill is `apps/mobile/.claude/skills/verify/` (`verify`): doctor, launch (local stack, the same journeys on CI, or production preview), drive, evidence, cleanup, and a feature map. Use it for any change a user can see in `apps/mobile`. Keep its `features/` map current when a feature changes (`/maintain-verification-skill`).
 
 ## Matt Pocock 技能与 Issue 工作流
 
