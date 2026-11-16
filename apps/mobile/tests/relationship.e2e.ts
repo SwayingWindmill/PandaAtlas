@@ -27,7 +27,7 @@ test("from 找熊猫, two picked pandas show as parent and child", async ({ app,
   const father = `选项丁${runSuffix()}`;
   const halfSister = `选项乙${runSuffix()}`;
   await app.open("/find");
-  await screen.getByRole("button", "查两只熊猫的关系").tap();
+  await screen.getByRole("button", "查关系").tap();
 
   await screen.getByLabel("搜索要选的熊猫").fill(panda.name);
   await screen.getByRole("button", `选${panda.name}`).tap();

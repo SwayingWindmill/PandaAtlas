@@ -1,18 +1,19 @@
 ---
 name: verify
-description: Launch and drive the 吱熊猫 mobile app (apps/mobile, Expo) through its web build to prove a change works on the real app. Use after changing anything a user can see or do in apps/mobile, to reproduce a bug there before fixing it, or when a playbook asks for the driver skill. Two launches, the local stack with seeded data and sign-in (e2e journeys), or a read-only preview against production data.
+description: Launch and drive the 吱熊猫 mobile app (apps/mobile, Expo) through its web build to prove a change works on the real app. Use after changing anything a user can see or do in apps/mobile, to reproduce a bug there before fixing it, or when a playbook asks for the driver skill. Three launches: the local stack with seeded data and sign-in (e2e journeys), the same journeys on CI when the machine cannot run the stack, or a read-only preview against production data.
 ---
 
 # Verify the 吱熊猫 mobile app
 
 The surface is the Expo app in `apps/mobile`, driven through its web build in a 390×844 browser. Native iOS and Android builds are not covered here. A web pass does not prove native-only code (haptics, SecureStore, `AccessibilityInfo.sendAccessibilityEvent`, maps intents), so name what it leaves unproven.
 
-There are two launches. Pick by what the change needs.
+There are three launches. Pick by what the change needs.
 
 | Launch | Data | Sign-in | Use it for |
 |---|---|---|---|
 | Local stack (`e2e`) | A fresh fixture per run on local Supabase | Yes, codes come from Mailpit | Anything that writes, anything signed in, and every proof that ends in a test |
 | Production preview | Production's public API and photos, read only | No | How a screen looks with real content |
+| On CI | The same fixture, on a GitHub Actions runner | Yes | Local-stack journeys when this machine cannot run the stack |
 
 All commands below run from the repo root unless they say `apps/mobile`. Paths in `features/` are app routes.
 
@@ -37,13 +38,21 @@ A busy port line shows the pid and command line of the process holding it. End i
 
 ### Local stack
 
-1. `npm run infra:start` once. It checks the Windows port reservations first. If it stops with a `netsh` command, give that command to the user to run. It is a system setting, so never change it yourself.
+1. `npm run infra:start` once. It checks the Windows port reservations first. If it stops with a `netsh` command, that is a system setting, so never change it yourself. Run the journeys [on CI](#on-ci) instead, and mention the command to the user as an option.
 2. From `apps/mobile`, run one journey: `npx e2e run tests/<file>.e2e.ts:<line> --trace on`, where `<line>` is the line its `test(` opens on. Without `--trace on`, e2e keeps a trace page only for failures, and a passing run leaves nothing to quote. e2e starts `tests/support/stack.ts` itself. That builds the API, seeds this run's fixture through the API's own modules, then serves the API on 3101 and the app on 8792.
 3. It is ready when the run prints `✓ target "mobile-web" command ready`. The first start takes about two minutes, because it builds the API and bundles the app.
 
 Only one local stack can run per machine. The ports are fixed and every run shares the one local database. If the doctor reports 3101 or 8792 busy, wait for the other run, do not start a second.
 
 To look at a screen live rather than through a journey, start the same stack by hand: `node tests/support/stack.ts 8792` from `apps/mobile`. Open `http://localhost:8792/<route>` in the browser pane. It is ready when `http://127.0.0.1:3101/health` answers 200 and the page renders.
+
+### On CI
+
+When this machine cannot run the local stack (the doctor reports Windows-reserved Supabase ports, or there is no Docker), run journeys on GitHub Actions instead. The `Mobile E2E` workflow (`.github/workflows/mobile-e2e.yml`) starts local Supabase on a Linux runner and runs the same `npx e2e run ... --trace on`.
+
+- A pull request that touches `apps/mobile`, `services/api`, `packages/api-client` or `infra/supabase` runs every journey on its own.
+- For one journey on a pushed branch: `gh workflow run mobile-e2e.yml --ref <branch> -f journey=tests/<file>.e2e.ts:<line>`, then `gh run watch <run id>`.
+- The evidence is the run's `mobile-e2e-results` artifact, which holds the same `.e2e/` tree as a local run: `gh run download <run id> -n mobile-e2e-results -D apps/mobile/.e2e/ci-<run id>`. Quote the run URL, the pass line and the trace path.
 
 ### Production preview
 
