@@ -411,32 +411,46 @@ class Store:
 
     # Outbox --------------------------------------------------------------------------------
 
-    async def pending_outbox(self, limit: int) -> list[dict[str, Any]]:
+    async def claim_outbox(
+        # Longer than a worst-case push: 10 batches with a 60 s timeout each.
+        self,
+        limit: int,
+        lease: timedelta = timedelta(minutes=15),
+    ) -> list[dict[str, Any]]:
         async with self.pool.connection() as conn:
             cur = await conn.execute(
                 """
+                WITH claimed AS (
+                  UPDATE outbox SET lease_until = now() + %s
+                  WHERE (item_id, version) IN (
+                    SELECT item_id, version FROM outbox
+                    WHERE pushed_at IS NULL AND next_attempt_at <= now()
+                      AND (lease_until IS NULL OR lease_until < now())
+                    ORDER BY attempts, created_at, item_id, version
+                    LIMIT %s
+                    FOR UPDATE SKIP LOCKED)
+                  RETURNING *)
                 SELECT o.item_id, o.version, o.target_id, t.label AS target_label,
-                       t.tier AS target_tier, i.platform, i.platform_item_id, i.url, i.title,
-                       i.body, i.author_id, i.author_name, v.raw AS item_raw, i.published_at,
-                       i.media, i.metrics, i.panda_slugs, i.first_seen_at,
+                       t.tier AS target_tier, i.platform, i.platform_item_id, i.url, v.title,
+                       v.body, i.author_id, i.author_name, v.raw AS item_raw, i.published_at,
+                       v.media, i.metrics, i.panda_slugs, i.first_seen_at,
                        (v.version > 1) AS is_revision
-                FROM outbox o
+                -- Rows a paused AIHOT source keeps refusing sink behind fresh ones.
+                FROM claimed o
                 JOIN items i ON i.id = o.item_id
                 JOIN item_versions v ON v.item_id = o.item_id AND v.version = o.version
                 JOIN targets t ON t.id = o.target_id
-                WHERE o.pushed_at IS NULL
-                -- Rows a paused AIHOT source keeps refusing sink behind fresh ones.
-                ORDER BY o.attempts, o.created_at
-                LIMIT %s
+                ORDER BY o.attempts, o.created_at, o.item_id, o.version
                 """,
-                (limit,),
+                (lease, limit),
             )
             return await cur.fetchall()
 
     async def mark_pushed(self, keys: list[tuple[int, int]]) -> None:
         async with self.pool.connection() as conn:
             await conn.execute(
-                "UPDATE outbox SET pushed_at = now(), attempts = attempts + 1, last_error = NULL "
+                "UPDATE outbox SET pushed_at = now(), attempts = attempts + 1, "
+                "last_error = NULL, lease_until = NULL "
                 "WHERE (item_id, version) IN (SELECT * FROM unnest(%s::bigint[], %s::int[]))",
                 ([k[0] for k in keys], [k[1] for k in keys]),
             )
@@ -444,9 +458,21 @@ class Store:
     async def mark_push_failed(self, keys: list[tuple[int, int]], error: str) -> None:
         async with self.pool.connection() as conn:
             await conn.execute(
-                "UPDATE outbox SET attempts = attempts + 1, last_error = %s "
+                "UPDATE outbox SET attempts = attempts + 1, last_error = %s, lease_until = NULL, "
+                # Cap the exponent, not the product: least() evaluates both sides, and
+                # 2^37 minutes already overflows an interval. 2^9 minutes is past 6 hours.
+                "next_attempt_at = now() + least("
+                "interval '1 minute' * power(2, least(attempts + 1, 9)), interval '6 hours') "
                 "WHERE (item_id, version) IN (SELECT * FROM unnest(%s::bigint[], %s::int[]))",
                 (error, [k[0] for k in keys], [k[1] for k in keys]),
+            )
+
+    async def release_outbox(self, keys: list[tuple[int, int]]) -> None:
+        async with self.pool.connection() as conn:
+            await conn.execute(
+                "UPDATE outbox SET lease_until = NULL "
+                "WHERE (item_id, version) IN (SELECT * FROM unnest(%s::bigint[], %s::int[]))",
+                ([k[0] for k in keys], [k[1] for k in keys]),
             )
 
     async def query(self, sql: str, params: tuple[Any, ...] = ()) -> list[dict[str, Any]]:
