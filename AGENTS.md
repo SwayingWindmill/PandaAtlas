@@ -64,7 +64,7 @@
 
 ### 合并与上线
 
-- `main` 有规则集「main: CI must pass」：Development Verification 的三个检查必须通过，没有人能绕过。它是兜底：GitHub 会挡住 CI 没跑完或没通过的合并。
+- `main` 有规则集「main: CI must pass」：Development Verification 的三个检查和 Mobile E2E 的两个检查必须通过，没有人能绕过。它是兜底：GitHub 会挡住 CI 没跑完或没通过的合并。
 - GitHub 管不了的那一半由 agent 自己守：合并前至少一个独立 reviewer（不是写代码的那个 agent）给出 PASS。自己的审查、测试和 CI 都不算独立审查。
 - 不要开自动合并：规则集只管 CI，不管审查，有写权限的人再推一次也不会取消自动合并，没审查过的提交就可能合进去。等 PR 的 CI 跑绿、独立审查 PASS 之后，用 `gh pr merge <n> --squash --match-head-commit <审查过的 head>` 当场合并；合并后看 `main` 上那次 Development Verification。
 - 以上合并流程只用于你在本次对话里自己开的 PR。其他 PR，包括以前对话里开的，都按下面「每次都要用户在对话里明确同意」那一条处理。
