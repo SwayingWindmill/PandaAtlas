@@ -101,7 +101,10 @@ CREATE TABLE IF NOT EXISTS outbox (
   last_error text,
   PRIMARY KEY (item_id, version)
 );
-CREATE INDEX IF NOT EXISTS outbox_pending_idx ON outbox (created_at) WHERE pushed_at IS NULL;
+ALTER TABLE outbox ADD COLUMN IF NOT EXISTS lease_until timestamptz;
+ALTER TABLE outbox ADD COLUMN IF NOT EXISTS next_attempt_at timestamptz NOT NULL DEFAULT now();
+DROP INDEX IF EXISTS outbox_pending_idx;
+CREATE INDEX IF NOT EXISTS outbox_due_idx ON outbox (next_attempt_at) WHERE pushed_at IS NULL;
 
 CREATE TABLE IF NOT EXISTS alerts (
   id          bigserial PRIMARY KEY,

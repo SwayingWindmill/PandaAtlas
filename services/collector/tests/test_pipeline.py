@@ -189,7 +189,7 @@ async def test_push_to_aihot_batches_per_source_and_marks_pushed(store: Store) -
     assert first["raw"]["pandaSlugs"] == ["fu-bao"] and first["raw"]["_aihot"]["backfill"] is False
     assert first["raw"]["externalId"] == "weibo:0" and first["bodyText"] == "福宝在吃竹子"
     assert first["raw"]["author"] == {"platform": "weibo", "accountId": "1", "name": "基地"}
-    assert (await store.pending_outbox(10)) == []
+    assert (await store.claim_outbox(10)) == []
 
 
 async def test_aihot_paused_source_is_retried_later(store: Store) -> None:
@@ -201,9 +201,60 @@ async def test_aihot_paused_source_is_retried_later(store: Store) -> None:
         transport=httpx.MockTransport(lambda r: httpx.Response(409, json={"ok": False}))
     ) as client:
         assert await aihot.push(store, client, "http://aihot", "token-token-token") == 0
-    [row] = await store.query("SELECT attempts, last_error, pushed_at FROM outbox")
+    [row] = await store.query(
+        "SELECT attempts, last_error, pushed_at, lease_until, next_attempt_at > now() AS delayed "
+        "FROM outbox"
+    )
     assert row["attempts"] == 1 and row["pushed_at"] is None and "409" in row["last_error"]
+    assert row["delayed"] is True and row["lease_until"] is None
+    assert await store.claim_outbox(10) == []
     assert [a["kind"] for a in await store.query("SELECT kind FROM alerts")] == ["push_failed"]
+
+
+async def test_push_preserves_backlogged_version_bodies(store: Store) -> None:
+    t = make_target("rss", "f")
+    await store.sync_targets([t])
+    await store.save_page(t, Page([item("1", body="version one body")]), tagger)
+    await store.save_page(t, Page([item("1", body="version two body")]), tagger)
+    sent: list[dict[str, Any]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        sent.extend(json.loads(request.content)["items"])
+        return httpx.Response(200, json={"ok": True})
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        assert await aihot.push(store, client, "http://aihot", "token-token-token") == 2
+    assert [(r["raw"]["collector"]["version"], r["bodyText"]) for r in sent] == [
+        (1, "version one body"),
+        (2, "version two body"),
+    ]
+
+
+async def test_outbox_claim_excludes_leased_rows_until_expiry(store: Store) -> None:
+    t = make_target("rss", "f")
+    await store.sync_targets([t])
+    await store.save_page(t, Page([item("1")]), tagger)
+    [first] = await store.claim_outbox(10)
+    assert await store.claim_outbox(10) == []
+    await store.query(
+        "UPDATE outbox SET lease_until = now() - interval '1 second' RETURNING item_id"
+    )
+    [reclaimed] = await store.claim_outbox(10)
+    assert (reclaimed["item_id"], reclaimed["version"]) == (first["item_id"], first["version"])
+
+
+async def test_aihot_rate_limit_releases_without_backoff(store: Store) -> None:
+    t = make_target("rss", "f")
+    await store.sync_targets([t])
+    await store.save_page(t, Page([item("1")]), tagger)
+
+    async with httpx.AsyncClient(
+        transport=httpx.MockTransport(lambda r: httpx.Response(429))
+    ) as client:
+        assert await aihot.push(store, client, "http://aihot", "token-token-token") == 0
+    [row] = await store.query("SELECT attempts, lease_until FROM outbox")
+    assert row == {"attempts": 0, "lease_until": None}
+    assert len(await store.claim_outbox(10)) == 1
 
 
 async def test_report_counts_latency_from_first_run(store: Store) -> None:
