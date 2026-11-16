@@ -821,7 +821,7 @@ export default function MapScreen() {
         </FloatingButton>
       </View>
       {viewport && view ? (
-        <View className="absolute right-gutter items-end gap-stack-tight" style={{ top: insets.top + 8 }}>
+        <View className="absolute right-gutter items-end gap-stack-tight" style={{ top: insets.top + 8 }} pointerEvents="box-none">
           <LayerToggle
             venues={layers.venues}
             wild={layers.wild}
