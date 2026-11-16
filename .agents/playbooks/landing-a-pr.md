@@ -5,7 +5,7 @@ when: Opening, merging, or landing a PR you opened in this conversation in Swayi
 
 ### PandaAtlas: opening and landing a PR
 
-`main` has the ruleset "main: CI must pass": the three Development Verification checks are required and nobody can bypass them. GitHub enforces CI as a backstop. It does not enforce review, and a push by someone with write access does not cancel auto-merge, so an armed auto-merge could land an unreviewed head. These steps keep the review on the exact head that lands.
+`main` has the ruleset "main: CI must pass": the three Development Verification checks and the two Mobile E2E checks are required, and nobody can bypass them. GitHub enforces CI as a backstop. It does not enforce review, and a push by someone with write access does not cancel auto-merge, so an armed auto-merge could land an unreviewed head. These steps keep the review on the exact head that lands.
 
 - **After** "Commit bodies don't restate the subject." Write commit subjects, commit bodies, PR titles, and PR bodies in Chinese. Keep the Conventional Commits `type(scope):` prefix in English. Fill the sections of `.github/PULL_REQUEST_TEMPLATE.md`.
 - **Replace** "Post the URL and keep building." Post the URL. Do not run `gh pr merge --auto` and do not turn on auto-merge in the app. Then land the PR this way:
