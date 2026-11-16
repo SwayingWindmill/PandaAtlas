@@ -9,9 +9,13 @@ on:
     paths:
       - "apps/mobile/**"
       - "services/api/**"
-      - "packages/api-client/**"
+      - "packages/**"
+      - "data/curation/learning/**"
       - "infra/supabase/**"
+      - "scripts/development/**"
+      - "package.json"
       - "package-lock.json"
+      - "tsconfig.base.json"
       - ".github/workflows/mobile-e2e.yml"
   workflow_dispatch:
     inputs:
@@ -24,8 +28,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: mobile-e2e-${{ github.ref }}
-  cancel-in-progress: true
+  # A new push replaces a pull request's run; manual runs of different journeys on one branch each finish.
+  group: mobile-e2e-${{ github.ref }}-${{ inputs.journey }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   e2e:

@@ -50,8 +50,8 @@ To look at a screen live rather than through a journey, start the same stack by 
 
 When this machine cannot run the local stack (the doctor reports Windows-reserved Supabase ports, or there is no Docker), run journeys on GitHub Actions instead. The `Mobile E2E` workflow (`.github/workflows/mobile-e2e.yml`) starts local Supabase on a Linux runner and runs the same `npx e2e run ... --trace on`.
 
-- A pull request that touches `apps/mobile`, `services/api`, `packages/api-client` or `infra/supabase` runs every journey on its own.
-- For one journey on a pushed branch: `gh workflow run mobile-e2e.yml --ref <branch> -f journey=tests/<file>.e2e.ts:<line>`, then `gh run watch <run id>`.
+- A pull request that touches the app or anything its journeys run on (`apps/mobile`, `services/api`, `packages`, `infra/supabase`, the dev scripts, the root package files) runs every journey on its own.
+- For one journey on a pushed branch: `gh workflow run mobile-e2e.yml --ref <branch> -f journey=tests/<file>.e2e.ts:<line>`. Find its run id with `gh run list --workflow mobile-e2e.yml --branch <branch> -L 1`, then `gh run watch <run id>`.
 - The evidence is the run's `mobile-e2e-results` artifact, which holds the same `.e2e/` tree as a local run: `gh run download <run id> -n mobile-e2e-results -D apps/mobile/.e2e/ci-<run id>`. Quote the run URL, the pass line and the trace path.
 
 ### Production preview
