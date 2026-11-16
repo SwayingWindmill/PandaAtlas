@@ -246,26 +246,42 @@ describe("account deletion de-identifies corrections and removes the auth user",
     await expect(app.get<AuthUserDeletion>(AUTH_USER_DELETION).deleteUser(accountId)).resolves.toBeUndefined();
   });
 
-  it("rolls the panda-side cleanup back when auth deletion fails", async () => {
+  it("keeps the request processing when auth deletion fails and finishes it on the next cycle", async () => {
     const accountId = randomUUID();
     failAuthDeletion.add(accountId);
     await seedAccount(accountId, `fail-${accountId}@example.test`);
     const { submissionId } = await seedCorrection(accountId);
     await fileDeletion(accountId);
 
-    const result = await app.get(PrivacyRequestProcessorService).processBatch(1);
-    expect(result).toMatchObject({ completed: 0, failed: 1 });
+    await expect(app.get(PrivacyRequestProcessorService).processBatch(1)).rejects.toThrow(
+      /waiting on Auth user deletion.*"failed":1/,
+    );
 
     const database = app.get(DatabaseService);
-    const submission = await sql<{ account_id: string | null }>`
-      select account_id from community_intake.submissions where submission_id = ${submissionId}::uuid
+    const submission = await sql<{ account_id: string | null; contributor_subject_hash: string }>`
+      select account_id, contributor_subject_hash from community_intake.submissions
+      where submission_id = ${submissionId}::uuid
     `.execute(database.db);
-    expect(submission.rows[0]?.account_id).toBe(accountId);
+    expect(submission.rows[0]?.account_id).toBeNull();
+    expect(submission.rows[0]?.contributor_subject_hash).toBe(deidentifiedSubjectHash(submissionId));
+    expect(submission.rows[0]?.contributor_subject_hash).not.toBe(contributorSubjectHash(accountId));
     const account = await sql<{ state: string; email: string | null }>`
       select state, email from identity.accounts where account_id = ${accountId}::uuid
     `.execute(database.db);
-    expect(account.rows[0]).toMatchObject({ state: "active", email: `fail-${accountId}@example.test` });
+    expect(account.rows[0]).toEqual({ state: "deleted", email: null });
     expect((await pool.query("select 1 from auth.users where id = $1", [accountId])).rowCount).toBe(1);
+    const request = await sql<{ state: string }>`
+      select state from privacy.subject_requests where account_id = ${accountId}::uuid
+    `.execute(database.db);
+    expect(request.rows[0]?.state).toBe("processing");
+
     failAuthDeletion.delete(accountId);
+    const retried = await app.get(PrivacyRequestProcessorService).processBatch(1);
+    expect(retried).toMatchObject({ completed: 1 });
+    const completedRequest = await sql<{ state: string }>`
+      select state from privacy.subject_requests where account_id = ${accountId}::uuid
+    `.execute(database.db);
+    expect(completedRequest.rows[0]?.state).toBe("completed");
+    expect((await pool.query("select 1 from auth.users where id = $1", [accountId])).rowCount).toBe(0);
   });
 });
