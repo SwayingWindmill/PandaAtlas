@@ -47,6 +47,22 @@ beforeAll(async () => {
       return;
     }
     const userId = url.match(/^\/auth\/v1\/admin\/users\/([^/?]+)/)?.[1];
+    // supabase-js 2.119 reads the user before deleting it, so the mock answers that read as GoTrue does.
+    if (request.method === "GET" && userId) {
+      void pool.query("select 1 from auth.users where id = $1", [userId]).then((found) => {
+        response.setHeader("content-type", "application/json");
+        if (found.rowCount === 0) {
+          response.statusCode = 404;
+          response.end(JSON.stringify({ code: "user_not_found", message: "User not found" }));
+          return;
+        }
+        response.end(JSON.stringify({ id: userId }));
+      }, (error: unknown) => {
+        response.statusCode = 500;
+        response.end(error instanceof Error ? error.message : "read failed");
+      });
+      return;
+    }
     if (request.method === "DELETE" && userId) {
       void (async () => {
         if (failAuthDeletion.has(userId)) {

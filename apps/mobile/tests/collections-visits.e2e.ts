@@ -15,7 +15,7 @@ test("a fan puts a panda in a new collection, finds it in 我的, renames, empti
   await expect(screen.getByRole("button", { name: "最喜欢", pressed: true })).toBeVisible();
 
   await app.open("/me");
-  await screen.getByRole("button", "我的合集").tap();
+  await screen.getByRole("button", "我的合集，1").tap();
   await screen.getByRole("button", "最喜欢，1 只").tap();
   await expect(screen.getByRole("heading", "最喜欢")).toBeVisible();
   await expect(screen.getByRole("button", new RegExp(`^${panda.name}`))).toBeVisible();
