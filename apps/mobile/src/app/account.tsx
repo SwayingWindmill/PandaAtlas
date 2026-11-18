@@ -28,7 +28,7 @@ import {
   saveExport,
 } from "@/features/account/requests";
 import { shortDay } from "@/features/engagement/seen";
-import { loadAssurance } from "@/features/session/mfa";
+import { useSession } from "@/features/session/session";
 import { Verification } from "@/features/session/verification";
 
 function StatusCell({ request, last }: { request: PrivacyRequest; last?: boolean }) {
@@ -167,33 +167,31 @@ function DeletionSection({
   );
 }
 
-type Gate =
-  { status: "checking" } | { status: "verify"; factorId: string | null } | { status: "open" } | { status: "failed" };
+type Gate = { status: "checking" } | { status: "verify" } | { status: "open" } | { status: "failed" };
 
 export default function AccountScreen() {
+  const { state: session } = useSession();
+  const email = session.status === "signedIn" ? session.email : null;
   const [gate, setGate] = useState<Gate>({ status: "checking" });
   const [requests, setRequests] = useState<PrivacyRequest[] | null>(null);
+  const pendingAction = useRef<(() => Promise<void>) | null>(null);
 
-  // Privacy requests need a recent two-step verification; the API says when it has lapsed.
-  const verify = useCallback(() => {
-    setGate({ status: "checking" });
-    loadAssurance()
-      .then((assurance) => setGate({ status: "verify", factorId: assurance.factorId }))
-      .catch(() => setGate({ status: "failed" }));
-  }, []);
-
+  // Privacy requests require recent email-code authentication on a live session; the API says when it lapses.
   const load = useCallback(() => {
-    loadAssurance()
-      .then(async (assurance) => {
-        if (assurance.level !== "aal2") {
-          setGate({ status: "verify", factorId: assurance.factorId });
-          return;
-        }
-        setRequests(await loadPrivacyRequests());
+    loadPrivacyRequests()
+      .then((items) => {
+        setRequests(items);
         setGate({ status: "open" });
       })
-      .catch((error: unknown) => (error instanceof VerificationRequired ? verify() : setGate({ status: "failed" })));
-  }, [verify]);
+      .catch((error: unknown) => {
+        if (error instanceof VerificationRequired) {
+          pendingAction.current = null;
+          setGate({ status: "verify" });
+          return;
+        }
+        setGate({ status: "failed" });
+      });
+  }, []);
   useEffect(load, [load]);
 
   function reload() {
@@ -204,14 +202,22 @@ export default function AccountScreen() {
   // One key per request the fan means to file, kept across retries until it succeeds.
   const keys = useRef<Partial<Record<PrivacyKind, string>>>({});
 
+  async function performRequest(kind: PrivacyKind, written = "") {
+    const key = (keys.current[kind] ??= newRequestKey());
+    const created = await createPrivacyRequest(kind, requestReason(kind, written), key);
+    delete keys.current[kind];
+    setRequests((current) => [created, ...(current ?? []).filter((item) => item.requestId !== created.requestId)]);
+  }
+
   async function request(kind: PrivacyKind, written = "") {
     try {
-      const key = (keys.current[kind] ??= newRequestKey());
-      const created = await createPrivacyRequest(kind, requestReason(kind, written), key);
-      delete keys.current[kind];
-      setRequests((current) => [created, ...(current ?? []).filter((item) => item.requestId !== created.requestId)]);
+      await performRequest(kind, written);
     } catch (error) {
-      if (error instanceof VerificationRequired) verify();
+      if (error instanceof VerificationRequired) {
+        pendingAction.current = () => performRequest(kind, written);
+        setGate({ status: "verify" });
+        return;
+      }
       throw error;
     }
   }
@@ -220,8 +226,30 @@ export default function AccountScreen() {
     try {
       await saveExport(requestId);
     } catch (error) {
-      if (error instanceof VerificationRequired) verify();
+      if (error instanceof VerificationRequired) {
+        pendingAction.current = () => saveExport(requestId);
+        setGate({ status: "verify" });
+        return;
+      }
       throw error;
+    }
+  }
+
+  async function handleVerified() {
+    setGate({ status: "checking" });
+    const pending = pendingAction.current;
+    pendingAction.current = null;
+    try {
+      if (pending) await pending();
+      setRequests(await loadPrivacyRequests());
+      setGate({ status: "open" });
+    } catch (error) {
+      if (error instanceof VerificationRequired) {
+        pendingAction.current = pending;
+        setGate({ status: "verify" });
+        return;
+      }
+      setGate({ status: "failed" });
     }
   }
 
@@ -233,7 +261,7 @@ export default function AccountScreen() {
       {gate.status === "checking" ? (
         <Skeleton className="h-48 w-full rounded-card" accessibilityLabel="正在加载" />
       ) : null}
-      {gate.status === "verify" ? <Verification factorId={gate.factorId} onVerified={reload} /> : null}
+      {gate.status === "verify" ? <Verification email={email} onVerified={() => void handleVerified()} /> : null}
       {gate.status === "open" && requests ? (
         <Animated.View entering={PAGE_ENTER} className="gap-section">
           <ExportSection

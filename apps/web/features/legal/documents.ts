@@ -81,7 +81,7 @@ const terms: Record<PublicLocale, LegalDocument> = {
         paragraphs: [
           "登录使用邮箱验证码。验证码发到你填写的邮箱。第一次用这个邮箱登录时会创建账号。验证码由认证服务 Supabase Auth 发送，吱熊猫的资料库不保存验证码本身。",
           "登录之后可以设置显示名。账号上还有一段简介栏位。",
-          "导出数据或注销账号之前，需要先在验证器应用中设置一次性码（TOTP），并完成一次最近的验证。这是这两项操作当前的要求。",
+          "导出数据或注销账号之前，需要先用账号邮箱完成一次最近的验证码验证。这是这两项操作当前的要求。",
           "网站把登录状态放在浏览器的 Cookie 里。App 把登录状态放在设备的安全存储里。App 的网页预览没有这套安全存储，改用浏览器自己的存储。",
         ],
       },
@@ -154,7 +154,7 @@ const terms: Record<PublicLocale, LegalDocument> = {
         paragraphs: [
           "You sign in with a code sent to the email address you enter. The first time that address is used, an account is created. Supabase Auth sends the code. ZhiPanda's database does not keep the code itself.",
           "You can set a display name. The account also has a short introduction field.",
-          "Before a data export or account deletion, you set up a one-time code in an authenticator app (TOTP) and complete a recent verification. That step is required for those two actions today.",
+          "Before a data export or account deletion, you complete a recent verification with a code sent to your account email address. That step is required for those two actions today.",
           "The website keeps the sign-in session in a browser cookie. The app keeps it in the device's secure storage. A web preview of the app has no secure storage and uses the browser's own storage instead.",
         ],
       },
@@ -222,7 +222,6 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         paragraphs: [
           "邮箱地址。用来接收登录验证码。你打开邮件通知之后，也用来发送通知邮件。",
           "登录会话。Supabase Auth 保存会话。网站把会话放在浏览器 Cookie 里。App 把会话放在设备的安全存储里。网页预览改用浏览器存储。",
-          "验证器。只有在你为导出或注销设置一次性码（TOTP）时，认证服务才会保存这个验证器。",
           "显示名，以及账号上的简介栏位。账号状态和创建时间。",
           "登录验证码由 Supabase Auth 发送。资料库不保存验证码本身。",
         ],
@@ -281,7 +280,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         heading: "谁在处理这些数据",
         paragraphs: [
           "Cloudflare 托管网站和接口。网站是 www.zhipanda.com，接口是 api.zhipanda.com。Cloudflare 也提供网站访问统计（Web Analytics），以及问问熊猫用到的 Workers AI 和资料检索。",
-          "Supabase 提供登录（邮箱验证码、会话、验证器）和存放账号与上述记录的数据库。",
+          "Supabase 提供登录（邮箱验证码、会话）和存放账号与上述记录的数据库。",
           "Resend 在邮件通知已配置、且你打开了对应邮件开关时发送通知邮件。没有配置时，邮件不会发出。",
           "你写给 hello@zhipanda.com 的邮件，由 Cloudflare Email Routing 转发到运营方的 Gmail 邮箱（Google 提供）；我们从这个地址的回信经 Resend 发出。邮件内容留在这两个邮箱服务里，不进吱熊猫的资料库。",
         ],
@@ -298,11 +297,11 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         id: "export-deletion",
         heading: "导出和注销",
         paragraphs: [
-          "在 App 的「账号与数据」里，完成验证器验证之后，可以申请导出或注销。",
+          "在 App 的「账号与数据」里，完成最近的邮箱验证码确认之后，可以申请导出或注销。",
           "导出是一份 JSON。里面有账号标识、邮箱、账号状态、时间、显示名和简介，关注、合集、去过的地点、见过，猜熊猫作答、图鉴和每日熊猫结果，问问熊猫每天的提问次数（不含问题），以及通知偏好和通知内容。导出文件可下载 24 小时，到期后这份副本失效。申请记录会留下。",
           "注销完成时：关注、合集、去过的地点和见过会被删除。猜熊猫作答、图鉴、每日熊猫结果和问问熊猫的提问次数会被删除。通知偏好会被删除。通知正文会被换成一条已清除的标记，类别和时间可能还在，尚未发出的通知邮件不再发送。显示名和简介会被删除。账号上的邮箱会被清空，账号标记为已注销。账号的内部标识，以及一条记下这次注销的状态记录，会留下。你在申请里写的原因，会留在这条申请记录里。",
           "已提交的纠错会留在审核记录里。纠错的内容和审核过程都保留。提交人的账号关联，以及能把纠错认回这个人的标识，会被去掉。",
-          "用来登录的邮箱、会话和验证器保存在 Supabase Auth。账号资料清除完成之后，这条登录记录会被删除。",
+          "用来登录的邮箱和会话保存在 Supabase Auth。账号资料清除完成之后，这条登录记录会被删除。",
         ],
       },
       {
@@ -360,7 +359,6 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         paragraphs: [
           "Email address. It receives the sign-in code and, if you turn email notices on, notification email.",
           "Sign-in session. Supabase Auth stores the session. The website keeps it in a browser cookie. The app keeps it in the device's secure storage. A web preview uses browser storage instead.",
-          "Authenticator. Supabase Auth stores an authenticator (TOTP) only if you set one up for export or deletion.",
           "Display name, and the account's introduction field. Account state and the time the account was created.",
           "Supabase Auth sends the sign-in code. The panda database does not keep the code itself.",
         ],
@@ -419,7 +417,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         heading: "Who processes this",
         paragraphs: [
           "Cloudflare hosts the website and the API. The website is www.zhipanda.com. The API is api.zhipanda.com. Cloudflare also provides the website visit statistics (Web Analytics), and the Workers AI and search that Ask Panda uses.",
-          "Supabase provides sign-in (email codes, sessions, and authenticators) and the database that stores accounts and the records above.",
+          "Supabase provides sign-in (email codes and sessions) and the database that stores accounts and the records above.",
           "Resend sends notification email when email delivery is configured and you have turned that email notice on. If it is not configured, the email is not sent.",
           "Mail you send to hello@zhipanda.com is forwarded by Cloudflare Email Routing to the operator's Gmail mailbox (provided by Google); our replies from that address are sent through Resend. That mail stays with those email services and is not stored in ZhiPanda's database.",
         ],
@@ -436,11 +434,11 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         id: "export-deletion",
         heading: "Export and deletion",
         paragraphs: [
-          "In the app, under Account and data, you can request an export or deletion after you verify with your authenticator.",
+          "In the app, under Account and data, you can request an export or deletion after a recent email-code verification.",
           "The export is a JSON file. It includes the account id, email, account state, times, display name and introduction, follows, collections, visits, seen marks, Guess Panda answers, panda-book entries, Daily Panda results, Ask Panda daily question counts (without the questions), notification preferences, and notification content. The file can be downloaded for 24 hours. After that, this copy expires. The request record remains.",
           "When deletion finishes: follows, collections, visits, and seen marks are deleted. Guess Panda answers, panda-book entries, Daily Panda results, and Ask Panda question counts are deleted. Notification preferences are deleted. Notification text is replaced with an erased marker. The category and time may remain, and notification email that has not been sent is not sent. The display name and introduction are deleted. The email on the panda account is cleared and the account is marked deleted. The internal account id remains, along with a state record of this deletion. A reason you wrote on the request stays on that request record.",
           "Submitted corrections stay in the review records. The correction and its review history are kept. The link to the account, and the identifiers that could tie the correction back to the person, are removed.",
-          "The email, session, and authenticator used to sign in are stored by Supabase Auth. After the panda account data has been cleared, that sign-in record is deleted.",
+          "The email and session used to sign in are stored by Supabase Auth. After the panda account data has been cleared, that sign-in record is deleted.",
         ],
       },
       {

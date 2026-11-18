@@ -1,17 +1,42 @@
+import type { Browser } from "@e2e-dev/web";
 import type { Screen } from "e2e";
 import { expect } from "e2e";
-import { TOTP } from "otpauth";
 
-import { runScheduledCycles, takeDownAndRestore } from "./support/backend.ts";
+import { ageInteractiveAuth, runScheduledCycles, takeDownAndRestore } from "./support/backend.ts";
 import { fixture } from "./support/fixture.ts";
-import { signIn, testEmail } from "./support/session.ts";
+import { mailCount, nextCode, signIn, testEmail } from "./support/session.ts";
 import { test } from "./support/test.ts";
 
-/** Sets up an authenticator the way a fan would, reading the secret the app shows, and verifies a code. */
-async function setUpTwoStep(screen: Screen): Promise<void> {
-  await screen.getByRole("button", "开始设置").tap();
-  const secret = (await screen.getByLabel("两步验证密钥").textContent())?.trim() ?? "";
-  await screen.getByLabel("认证器验证码").fill(new TOTP({ secret }).generate());
+/** Backdates interactive auth claims and expires the cached access token so Supabase refreshes a stale-auth JWT. */
+async function expireRecentAuth(browser: Browser, email: string): Promise<void> {
+  await ageInteractiveAuth(email);
+  const updated = (await browser.evaluate(() => {
+    const expiredAt = Math.floor(Date.now() / 1000) - 60;
+    let count = 0;
+    for (let index = 0; index < localStorage.length; index += 1) {
+      const key = localStorage.key(index);
+      if (!key || !key.endsWith("-auth-token")) continue;
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      const parsed = JSON.parse(raw) as Record<string, unknown>;
+      parsed.expires_at = expiredAt;
+      localStorage.setItem(key, JSON.stringify(parsed));
+      count += 1;
+    }
+    return count;
+  })) as number;
+  if (updated === 0) throw new Error("Missing Supabase auth token in localStorage.");
+}
+
+/** Proves the verification card does not auto-mail on mount, then completes user-triggered email OTP re-verification. */
+async function reverifyByEmail(screen: Screen, email: string, priorMailCount: number): Promise<void> {
+  await expect(screen.getByRole("button", "发送验证码")).toBeVisible();
+  // Clears GoTrue's 1s resend cooldown while proving mounting Verification sends nothing automatically.
+  await new Promise((resolve) => setTimeout(resolve, 1_100));
+  expect(await mailCount(email)).toBe(priorMailCount);
+
+  await screen.getByRole("button", "发送验证码").tap();
+  await screen.getByLabel("邮箱验证码").fill(await nextCode(email, priorMailCount));
   await screen.getByRole("button", "验证").tap();
 }
 
@@ -55,10 +80,18 @@ test("notification preferences save to the account", async ({ app, screen, brows
   await expect(screen.getByRole("switch", "资料更新，邮件")).toBeChecked();
 });
 
-test("after two-step verification, a data export is requested, processed and downloaded", async ({ app, screen, browser }) => {
-  await signIn(app, screen, testEmail("export"));
+test("when recent auth has lapsed, email-code verification unlocks data export and downloads the file", async ({
+  app,
+  screen,
+  browser,
+}) => {
+  const email = testEmail("export");
+  await signIn(app, screen, email);
+  await expireRecentAuth(browser, email);
+
   await app.open("/account");
-  await setUpTwoStep(screen);
+  await reverifyByEmail(screen, email, 1);
+
   await screen.getByRole("button", "申请导出").tap();
   await expect(screen.getByText("已提交，等待处理")).toBeVisible();
 
@@ -69,10 +102,16 @@ test("after two-step verification, a data export is requested, processed and dow
   expect(file.suggestedFilename).toMatch(/^zhipanda-export-\d{4}-\d{2}-\d{2}\.json$/);
 });
 
-test("account deletion asks for confirmation before it is requested", async ({ app, screen }) => {
-  await signIn(app, screen, testEmail("delete"));
+test("account deletion asks for confirmation, re-verifies when recent auth lapses, and retries the request", async ({
+  app,
+  screen,
+  browser,
+}) => {
+  const email = testEmail("delete");
+  await signIn(app, screen, email);
   await app.open("/account");
-  await setUpTwoStep(screen);
+  await expect(screen.getByRole("button", "申请注销账号")).toBeVisible();
+
   await screen.getByRole("button", "申请注销账号").tap();
   await expect(screen.getByText("确定要注销吗？")).toBeVisible();
   await screen.getByRole("button", "取消").tap();
@@ -80,7 +119,11 @@ test("account deletion asks for confirmation before it is requested", async ({ a
 
   await screen.getByRole("button", "申请注销账号").tap();
   await screen.getByLabel("注销原因").fill("测试账号，用完了");
+  await expireRecentAuth(browser, email);
+
   await screen.getByRole("button", "确认注销").tap();
+  await reverifyByEmail(screen, email, 1);
+
   await expect(screen.getByText("已提交，等待处理")).toBeVisible();
   await expect(screen.getByRole("button", "申请注销账号")).toHaveCount(0);
 });
