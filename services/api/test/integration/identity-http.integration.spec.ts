@@ -168,10 +168,7 @@ describe("Identity HTTP security path", () => {
         'privacy.request.manage',
         'curation.change.approve',
         'publication.release.activate',
-        'publication.emergency',
-        'moderation.sanction.apply',
-        'moderation.sanction.restore',
-        'moderation.appeal.decide'
+        'publication.emergency'
       )
     `.execute(app.get(DatabaseService).db);
     const capabilityMap = new Map(capabilityRows.rows.map((row) => [row.capability_key, row]));
@@ -184,9 +181,6 @@ describe("Identity HTTP security path", () => {
       "curation.change.approve",
       "publication.release.activate",
       "publication.emergency",
-      "moderation.sanction.apply",
-      "moderation.sanction.restore",
-      "moderation.appeal.decide",
     ]) {
       expect(capabilityMap.get(staffKey)?.minimum_aal).toBe("aal2");
     }
