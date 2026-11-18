@@ -32,24 +32,10 @@ export interface UpdateEvidenceVerificationInput {
   contentSha256?: string;
 }
 
-export interface EvidenceAttachment {
-  attachmentId: string;
-  sourceId: string;
-  storageBucket: string;
-  storageKey: string;
-  objectVersion: string;
-  contentSha256: string;
-  byteSize: number;
-  mediaType: string;
-}
-
-export type CreateEvidenceAttachmentInput = Omit<EvidenceAttachment, "attachmentId">;
-
 export interface EvidenceRepository {
   createSource(input: CreateEvidenceSourceInput): Promise<EvidenceSource>;
   getSource(sourceId: string): Promise<EvidenceSource | undefined>;
   updateVerification(input: UpdateEvidenceVerificationInput): Promise<EvidenceSource>;
-  addAttachment(input: CreateEvidenceAttachmentInput): Promise<EvidenceAttachment>;
 }
 
 export type EvidencePort = EvidenceRepository;
@@ -70,9 +56,5 @@ export class EvidenceApplication implements EvidencePort {
 
   public updateVerification(input: UpdateEvidenceVerificationInput): Promise<EvidenceSource> {
     return this.repository.updateVerification(input);
-  }
-
-  public addAttachment(input: CreateEvidenceAttachmentInput): Promise<EvidenceAttachment> {
-    return this.repository.addAttachment(input);
   }
 }
