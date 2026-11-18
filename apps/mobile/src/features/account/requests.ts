@@ -8,17 +8,17 @@ import { downloadOnWeb } from "@/lib/download";
 
 import { type PrivacyKind, type PrivacyRequest, exportFileName } from "./privacy";
 
-/** The API wants a recent two-step verification (AAL2) before privacy requests. */
+/** The API wants a recent email-code verification before privacy requests. */
 export class VerificationRequired extends Error {
   public constructor() {
-    super("Two-step verification required");
+    super("Recent verification required");
     this.name = "VerificationRequired";
   }
 }
 
 function throwIfUnverified(error: unknown): void {
   const code = (error as { code?: unknown } | undefined)?.code;
-  if (code === "auth.aalRequired" || code === "auth.recentAuthRequired") throw new VerificationRequired();
+  if (code === "auth.recentAuthRequired") throw new VerificationRequired();
 }
 
 export async function loadPrivacyRequests(): Promise<PrivacyRequest[]> {

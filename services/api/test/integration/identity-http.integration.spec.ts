@@ -155,29 +155,71 @@ describe("Identity HTTP security path", () => {
     });
   });
 
-  it("lists the member's own privacy requests, newest first, after two-step verification", async () => {
+  it("allows privacy requests on a live AAL1 session with recent email-OTP auth and rejects stale OTP", async () => {
+    const capabilityRows = await sql<{
+      capability_key: string;
+      minimum_aal: string;
+      requires_recent_auth: boolean;
+      requires_live_session: boolean;
+    }>`
+      select capability_key, minimum_aal, requires_recent_auth, requires_live_session
+      from identity.capabilities
+      where capability_key in (
+        'privacy.request.manage',
+        'publication.release.activate',
+        'publication.emergency'
+      )
+    `.execute(app.get(DatabaseService).db);
+    const capabilityMap = new Map(capabilityRows.rows.map((row) => [row.capability_key, row]));
+    expect(capabilityMap.get("privacy.request.manage")).toMatchObject({
+      minimum_aal: "aal1",
+      requires_recent_auth: true,
+      requires_live_session: true,
+    });
+    for (const staffKey of [
+      "publication.release.activate",
+      "publication.emergency",
+    ]) {
+      expect(capabilityMap.get(staffKey)?.minimum_aal).toBe("aal2");
+    }
+
     const sessionId = randomUUID();
     await sql`
       insert into auth.sessions (id, user_id, created_at, updated_at, aal)
-      values (${sessionId}::uuid, ${ACCOUNT_ID}::uuid, now(), now(), 'aal2')
+      values (${sessionId}::uuid, ${ACCOUNT_ID}::uuid, now(), now(), 'aal1')
     `.execute(app.get(DatabaseService).db);
-    const weak = await injectHttp(app, {
+
+    const staleHeaders = {
+      authorization: `Bearer ${await signTestToken(ACCOUNT_ID, sessionId, "aal1", 1_200)}`,
+    };
+    const staleGet = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/me/privacy/requests",
-      headers: { authorization: `Bearer ${token}` },
+      headers: staleHeaders,
     });
-    expect(weak.statusCode).toBe(403);
-    expect(weak.json()).toMatchObject({ code: "auth.aalRequired" });
+    expect(staleGet.statusCode).toBe(403);
+    expect(staleGet.json()).toMatchObject({ code: "auth.recentAuthRequired" });
 
-    const headers = { authorization: `Bearer ${await signTestToken(ACCOUNT_ID, sessionId, "aal2")}` };
+    const stalePost = await injectHttp(app, {
+      method: "POST",
+      url: "/api/v2/me/privacy/requests",
+      headers: staleHeaders,
+      payload: { kind: "access_export", reason: "Export my data", idempotencyKey: randomUUID() },
+    });
+    expect(stalePost.statusCode).toBe(403);
+    expect(stalePost.json()).toMatchObject({ code: "auth.recentAuthRequired" });
+
+    const freshHeaders = {
+      authorization: `Bearer ${await signTestToken(ACCOUNT_ID, sessionId, "aal1", 10)}`,
+    };
     const created = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/me/privacy/requests",
-      headers,
+      headers: freshHeaders,
       payload: { kind: "access_export", reason: "Export my data", idempotencyKey: randomUUID() },
     });
     expect(created.statusCode).toBe(201);
-    const listed = await injectHttp(app, { method: "GET", url: "/api/v2/me/privacy/requests", headers });
+    const listed = await injectHttp(app, { method: "GET", url: "/api/v2/me/privacy/requests", headers: freshHeaders });
     expect(listed.statusCode).toBe(200);
     const { items } = listed.json<{ items: { requestId: string }[] }>();
     expect(items[0]?.requestId).toBe(created.json<{ requestId: string }>().requestId);

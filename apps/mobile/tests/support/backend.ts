@@ -41,6 +41,56 @@ async function runCycles(app: Application, cycles: number): Promise<void> {
   }
 }
 
+interface PgModule {
+  default: {
+    Pool: new (config: { connectionString: string }) => {
+      query(sql: string, params?: unknown[]): Promise<{ rowCount: number | null }>;
+      end(): Promise<void>;
+    };
+  };
+}
+
+/** Backdates a fan's Supabase Auth interactive authentication claims so privacy routes require fresh OTP verification. */
+export async function ageInteractiveAuth(email: string, minutes = 20): Promise<void> {
+  const connectionString = fixture().apiEnv.DATABASE_URL;
+  if (!connectionString) throw new Error("Missing DATABASE_URL in mobile e2e fixture.");
+  const { default: pg } = (await import(
+    pathToFileURL(path.resolve(import.meta.dirname, "../../../../node_modules/pg/esm/index.mjs")).href
+  )) as PgModule;
+  const pool = new pg.Pool({ connectionString });
+  try {
+    const agedAt = new Date(Date.now() - minutes * 60_000).toISOString();
+    const sessions = await pool.query(
+      `
+        update auth.sessions s
+        set created_at = $2::timestamptz,
+            updated_at = $2::timestamptz
+        from auth.users u
+        where s.user_id = u.id
+          and lower(u.email) = lower($1)
+      `,
+      [email, agedAt],
+    );
+    if (!sessions.rowCount) {
+      throw new Error(`No auth session found for ${email}.`);
+    }
+    await pool.query(
+      `
+        update auth.mfa_amr_claims amr
+        set created_at = $2::timestamptz,
+            updated_at = $2::timestamptz
+        from auth.sessions s
+        join auth.users u on u.id = s.user_id
+        where amr.session_id = s.id
+          and lower(u.email) = lower($1)
+      `,
+      [email, agedAt],
+    );
+  } finally {
+    await pool.end();
+  }
+}
+
 /** Runs the scheduled async cycle a few times, enough for queued work to settle. */
 export async function runScheduledCycles(cycles = 4): Promise<void> {
   await withApplication((app) => runCycles(app, cycles));
