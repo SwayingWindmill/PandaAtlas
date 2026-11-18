@@ -49,7 +49,6 @@ export class PostgresContributionRepository implements ContributionRepository {
           target_id: input.targetPandaId,
           public_version_seen: input.publicVersionSeen,
           state: "submitted",
-          draft_content: sql`${contentJson}::jsonb`,
           latest_revision_number: 1,
           submitted_at: submittedAt,
           contributor_status: "submitted",

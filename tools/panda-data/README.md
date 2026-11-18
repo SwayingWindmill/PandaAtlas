@@ -6,7 +6,6 @@
 
 - curation CSV validation
 - media processing and offline artifact construction
-- technical pipeline job/attempt/artifact bookkeeping
 
 The code lives under `src/panda_data` and never imports the NestJS API.
 
@@ -14,13 +13,7 @@ Content collection moved to [`services/collector`](../../services/collector/) (A
 
 ## Authority boundary
 
-NestJS business modules remain authoritative. `panda-data` may:
-
-1. read module-owned versioned export views exposed specifically to the pipeline role;
-2. write only the private `pipeline` technical schema;
-3. exchange typed jobs/results through PGMQ/Outbox and immutable content-addressed R2 artifacts.
-
-It must not insert, update, or delete authoritative `evidence`, `panda`, `lineage`, `place`, `life_history`, `media`, `identity`, `engagement`, `game`, `publication`, or other business tables. PostgreSQL grants for the `zhipanda_pipeline` group role enforce this boundary.
+NestJS business modules remain authoritative. `panda-data` validates curation sources, processes media assets locally, and builds immutable content-addressed R2 artifact manifests. It never accesses or modifies authoritative `evidence`, `panda`, `lineage`, `place`, `life_history`, `media`, `identity`, `engagement`, `game`, `publication`, or other database tables.
 
 ## Contracts
 
@@ -40,7 +33,7 @@ uv run --directory tools/panda-data panda-data artifact manifest <path> --bucket
 
 The root scripts `npm run check:panda-curation`, `npm run process:panda-media` and `npm run test:panda-data` wrap the common ones.
 
-Database-backed commands use `PANDA_DATA_DATABASE_URL`, whose login should be a member of `zhipanda_pipeline`. R2 artifact producers use immutable object keys derived from content SHA-256; replacing an object at an existing artifact key is not a supported workflow.
+R2 artifact producers use immutable object keys derived from content SHA-256; replacing an object at an existing artifact key is not a supported workflow.
 
 ## Out of scope
 

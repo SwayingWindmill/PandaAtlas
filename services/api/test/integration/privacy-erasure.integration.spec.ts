@@ -129,11 +129,11 @@ async function seedCorrection(accountId: string): Promise<{ submissionId: string
   await sql`
     insert into community_intake.submissions (
       submission_id, account_id, contributor_subject_hash, submission_type, target_id,
-      public_version_seen, state, submitted_at, latest_revision_number, draft_content
+      public_version_seen, state, submitted_at, latest_revision_number
     )
     values (
       ${submissionId}::uuid, ${accountId}::uuid, ${contributorSubjectHash(accountId)},
-      'correction', ${randomUUID()}, '2026.10.26.1', 'submitted', now(), 1, ${content}::jsonb
+      'correction', ${randomUUID()}, '2026.10.26.1', 'submitted', now(), 1
     )
   `.execute(database.db);
   await sql`
@@ -170,16 +170,6 @@ async function seedCorrection(accountId: string): Promise<{ submissionId: string
     set current_status_event_id = ${contributorEvent.rows[0]!.status_event_id}::uuid,
         contributor_status = 'accepted'
     where submission_id = ${submissionId}::uuid
-  `.execute(database.db);
-  await sql`
-    insert into community_intake.attachments (
-      submission_id, bound_revision_number, storage_object_key, object_version, original_filename,
-      media_type, byte_size, content_sha256, upload_completed_at
-    )
-    values (
-      ${submissionId}::uuid, 1, ${`object/${submissionId}`}, '1', 'fan-note.jpg',
-      'image/jpeg', 1200, ${contributorSubjectHash("file")}, now()
-    )
   `.execute(database.db);
   return { submissionId, reviewerHash };
 }
@@ -246,12 +236,6 @@ describe("account deletion de-identifies corrections and removes the auth user",
     expect(contributor?.actor_subject_hash).toBe(deidentifiedSubjectHash(submissionId));
     expect(review?.actor_subject_hash).toBe(reviewerHash);
     expect(review?.user_visible_reason).toBe("已核对来源");
-
-    const attachment = await sql<{ original_filename: string; state: string }>`
-      select original_filename, state from community_intake.attachments
-      where submission_id = ${submissionId}::uuid
-    `.execute(database.db);
-    expect(attachment.rows[0]).toMatchObject({ original_filename: "[deleted]", state: "deleted" });
 
     const account = await sql<{ email: string | null; state: string }>`
       select email, state from identity.accounts where account_id = ${accountId}::uuid

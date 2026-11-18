@@ -1,9 +1,7 @@
 import type { DatabaseService } from "../../../platform/database/database.service.js";
 import type {
-  CreateEvidenceAttachmentInput,
   CreateEvidenceSourceInput,
   EvidenceAccessState,
-  EvidenceAttachment,
   EvidenceRepository,
   EvidenceSource,
   UpdateEvidenceVerificationInput,
@@ -62,32 +60,6 @@ export class PostgresEvidenceRepository implements EvidenceRepository {
       .returningAll()
       .executeTakeFirstOrThrow();
     return this.mapSource(row);
-  }
-
-  public async addAttachment(input: CreateEvidenceAttachmentInput): Promise<EvidenceAttachment> {
-    const row = await this.database.db
-      .insertInto("evidence.attachments")
-      .values({
-        source_id: input.sourceId,
-        storage_bucket: input.storageBucket,
-        storage_key: input.storageKey,
-        object_version: input.objectVersion,
-        content_sha256: input.contentSha256,
-        byte_size: input.byteSize,
-        media_type: input.mediaType,
-      })
-      .returningAll()
-      .executeTakeFirstOrThrow();
-    return {
-      attachmentId: row.attachment_id,
-      sourceId: row.source_id,
-      storageBucket: row.storage_bucket,
-      storageKey: row.storage_key,
-      objectVersion: row.object_version,
-      contentSha256: row.content_sha256,
-      byteSize: Number(row.byte_size),
-      mediaType: row.media_type,
-    };
   }
 
   private mapSource(row: {
