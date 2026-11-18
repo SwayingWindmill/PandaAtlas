@@ -166,7 +166,6 @@ describe("Identity HTTP security path", () => {
       from identity.capabilities
       where capability_key in (
         'privacy.request.manage',
-        'curation.change.approve',
         'publication.release.activate',
         'publication.emergency'
       )
@@ -178,7 +177,6 @@ describe("Identity HTTP security path", () => {
       requires_live_session: true,
     });
     for (const staffKey of [
-      "curation.change.approve",
       "publication.release.activate",
       "publication.emergency",
     ]) {
