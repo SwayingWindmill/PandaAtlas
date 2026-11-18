@@ -18,7 +18,7 @@ import type { Database } from "./platform/database/database.types.js";
 // DATABASE_URL after production-batch approval.
 
 const REPORT_DIRECTORY = ".batch-work/learning";
-const COLLECTIONS = ["articles", "cards", "topics", "terms", "faceGuides", "challenges", "monthThemes"] as const;
+const COLLECTIONS = ["articles", "terms", "faceGuides", "challenges", "monthThemes"] as const;
 
 @Module({ imports: [ConfigModule, DatabaseModule] })
 class LearningCommandModule {}

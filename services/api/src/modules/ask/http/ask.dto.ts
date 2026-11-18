@@ -21,7 +21,7 @@ export class AskReferenceDto {
 }
 
 export class AskLinkDto {
-  @ApiProperty({ enum: ["article", "card", "topic", "term", "faceGuide", "challenge", "panda", "learn"] })
+  @ApiProperty({ enum: ["article", "term", "faceGuide", "challenge", "panda", "learn"] })
   public kind!: string;
 
   @ApiProperty()

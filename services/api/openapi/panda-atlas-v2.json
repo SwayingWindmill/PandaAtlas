@@ -182,47 +182,6 @@
         ]
       }
     },
-    "/api/v2/contributions/{submissionId}/attachments": {
-      "post": {
-        "operationId": "registerContributionAttachment",
-        "parameters": [
-          {
-            "name": "submissionId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterContributionAttachmentDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ContributionAttachmentDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Contributions"
-        ]
-      }
-    },
     "/api/v2/review/cases": {
       "post": {
         "operationId": "openReviewCase",
@@ -2344,7 +2303,7 @@
             "description": "The stored learning catalog is missing or invalid."
           }
         },
-        "summary": "Published 科普 cards, topics, terms, face guides and face challenges",
+        "summary": "Published 科普 articles, terms, face guides, face challenges and month themes",
         "tags": [
           "Learning"
         ]
@@ -3201,71 +3160,6 @@
           "items"
         ]
       },
-      "RegisterContributionAttachmentDto": {
-        "type": "object",
-        "properties": {
-          "storageObjectKey": {
-            "type": "string"
-          },
-          "objectVersion": {
-            "type": "string"
-          },
-          "originalFilename": {
-            "type": "string"
-          },
-          "mediaType": {
-            "type": "string",
-            "enum": [
-              "application/pdf",
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ]
-          },
-          "byteSize": {
-            "type": "number",
-            "minimum": 1,
-            "maximum": 10485760
-          },
-          "contentSha256": {
-            "type": "string",
-            "pattern": "^[0-9a-f]{64}$"
-          }
-        },
-        "required": [
-          "storageObjectKey",
-          "objectVersion",
-          "originalFilename",
-          "mediaType",
-          "byteSize",
-          "contentSha256"
-        ]
-      },
-      "ContributionAttachmentDto": {
-        "type": "object",
-        "properties": {
-          "attachmentId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "mediaType": {
-            "type": "string"
-          },
-          "byteSize": {
-            "type": "number",
-            "minimum": 1
-          },
-          "state": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "attachmentId",
-          "mediaType",
-          "byteSize",
-          "state"
-        ]
-      },
       "OpenReviewCaseDto": {
         "type": "object",
         "properties": {
@@ -3552,12 +3446,6 @@
             "items": {
               "$ref": "#/components/schemas/ContributionReviewSourceDto"
             }
-          },
-          "attachments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ContributionAttachmentDto"
-            }
           }
         },
         "required": [
@@ -3566,8 +3454,7 @@
           "revisionNumber",
           "publicVersionSeen",
           "assertions",
-          "sources",
-          "attachments"
+          "sources"
         ]
       },
       "ReviewCaseSurfaceDto": {
@@ -6170,91 +6057,6 @@
           "citedOn"
         ]
       },
-      "LearningCardDto": {
-        "type": "object",
-        "properties": {
-          "slug": {
-            "type": "string"
-          },
-          "title": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "summary": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "body": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "sources": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LearningSourceDto"
-            }
-          }
-        },
-        "required": [
-          "slug",
-          "title",
-          "summary",
-          "body",
-          "sources"
-        ]
-      },
-      "LearningTopicSectionDto": {
-        "type": "object",
-        "properties": {
-          "heading": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "body": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          }
-        },
-        "required": [
-          "heading",
-          "body"
-        ]
-      },
-      "LearningTopicDto": {
-        "type": "object",
-        "properties": {
-          "slug": {
-            "type": "string"
-          },
-          "title": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "summary": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "sections": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LearningTopicSectionDto"
-            }
-          },
-          "cardSlugs": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "sources": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LearningSourceDto"
-            }
-          }
-        },
-        "required": [
-          "slug",
-          "title",
-          "summary",
-          "sections",
-          "cardSlugs",
-          "sources"
-        ]
-      },
       "LearningTermDto": {
         "type": "object",
         "properties": {
@@ -6443,18 +6245,6 @@
               "$ref": "#/components/schemas/LearningArticleDto"
             }
           },
-          "cards": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LearningCardDto"
-            }
-          },
-          "topics": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LearningTopicDto"
-            }
-          },
           "terms": {
             "type": "array",
             "items": {
@@ -6484,8 +6274,6 @@
         "required": [
           "version",
           "articles",
-          "cards",
-          "topics",
           "terms",
           "faceGuides",
           "challenges",
@@ -6818,8 +6606,6 @@
             "type": "string",
             "enum": [
               "article",
-              "card",
-              "topic",
               "term",
               "faceGuide",
               "challenge",

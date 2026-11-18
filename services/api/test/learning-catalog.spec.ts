@@ -11,9 +11,9 @@ function entry(status: "draft" | "published", slug: string) {
   return {
     slug,
     status,
-    title: text,
-    summary: text,
-    body: text,
+    term: text,
+    definition: text,
+    relatedSlugs: [],
     sources: [source],
   };
 }
@@ -22,9 +22,7 @@ function document(status: "draft" | "published" = "published") {
   return {
     version: "2026.10.29.1",
     articles: [],
-    cards: [entry("draft", "draft-card"), entry(status, "black-eye-patches")],
-    topics: [],
-    terms: [],
+    terms: [entry("draft", "draft-term"), entry(status, "eye-patch")],
     faceGuides: [],
     challenges: [],
   };
@@ -35,8 +33,6 @@ describe("publishedCatalog", () => {
     expect(publishedCatalog(null)).toEqual({
       version: "",
       articles: [],
-      cards: [],
-      topics: [],
       terms: [],
       faceGuides: [],
       challenges: [],
@@ -47,16 +43,72 @@ describe("publishedCatalog", () => {
   it("drops draft entries and the status field", () => {
     const catalog = publishedCatalog({ version: "2026.10.29.1", document: document() });
     expect(catalog.version).toBe("2026.10.29.1");
-    expect(catalog.cards).toEqual([
+    expect(catalog.terms).toEqual([
       {
-        slug: "black-eye-patches",
-        title: text,
-        summary: text,
-        body: text,
+        slug: "eye-patch",
+        term: text,
+        definition: text,
+        relatedSlugs: [],
         sources: [source],
       },
     ]);
-    expect(catalog.cards[0]).not.toHaveProperty("status");
+    expect(catalog.terms[0]).not.toHaveProperty("status");
+  });
+
+  it("ignores legacy cards, topics, and article source slugs stored in older database rows", () => {
+    const legacy = {
+      ...document(),
+      articles: [
+        {
+          slug: "zh-card-article",
+          status: "published",
+          category: "外形与识别",
+          sourceCardSlug: "legacy-card",
+          title: text,
+          dek: text,
+          pullQuote: text,
+          body: { sections: [{ heading: text, paragraphs: [{ text, refs: ["ref"] }] }] },
+          keyFacts: [{ text, refs: ["ref"] }],
+          images: [{ role: "hero", type: "wanted", pandaSlug: null, caption: text, shot: text }],
+          references: [{ id: "ref", title: "基地官网", publisher: "基地", url: source.url, citedOn: source.citedOn }],
+          relatedArticles: [],
+          stats: {},
+          glossaryTerms: [],
+        },
+        {
+          slug: "zh-topic-article",
+          status: "published",
+          category: "外形与识别",
+          sourceTopicSlug: "legacy-topic",
+          title: text,
+          dek: text,
+          pullQuote: text,
+          body: { sections: [{ heading: text, paragraphs: [{ text, refs: ["ref"] }] }] },
+          keyFacts: [{ text, refs: ["ref"] }],
+          images: [{ role: "hero", type: "wanted", pandaSlug: null, caption: text, shot: text }],
+          references: [{ id: "ref", title: "基地官网", publisher: "基地", url: source.url, citedOn: source.citedOn }],
+          relatedArticles: [],
+          stats: {},
+          glossaryTerms: [],
+        },
+      ],
+      cards: [{ slug: "legacy-card", status: "published", title: text, summary: text, body: text, sources: [source] }],
+      topics: [
+        {
+          slug: "legacy-topic",
+          status: "published",
+          title: text,
+          summary: text,
+          sections: [{ heading: text, body: text }],
+          cardSlugs: ["legacy-card"],
+          sources: [source],
+        },
+      ],
+    };
+    const catalog = publishedCatalog({ version: "2026.10.29.1", document: legacy });
+    expect(catalog).not.toHaveProperty("cards");
+    expect(catalog).not.toHaveProperty("topics");
+    expect(catalog.articles.map((item) => item.slug)).toEqual(["zh-card-article", "zh-topic-article"]);
   });
 
   it("serves published month themes and reads a catalog stored before they existed", () => {
@@ -96,7 +148,6 @@ describe("publishedCatalog", () => {
             slug: "zh-article",
             status: "published",
             category: "外形与识别",
-            sourceCardSlug: "zh-card",
             title: zh,
             dek: zh,
             pullQuote: zh,
@@ -107,18 +158,6 @@ describe("publishedCatalog", () => {
             relatedArticles: [],
             stats: {},
             glossaryTerms: [],
-          },
-        ],
-        cards: [{ slug: "zh-card", status: "published", title: zh, summary: zh, body: zh, sources: [source] }],
-        topics: [
-          {
-            slug: "zh-topic",
-            status: "published",
-            title: zh,
-            summary: zh,
-            sections: [{ heading: zh, body: zh }],
-            cardSlugs: ["zh-card"],
-            sources: [source],
           },
         ],
         terms: [{ slug: "zh-term", status: "published", term: zh, definition: zh, relatedSlugs: [], sources: [source] }],
@@ -146,24 +185,21 @@ describe("publishedCatalog", () => {
       },
     });
     const article = catalog.articles[0];
-    const topic = catalog.topics[0];
     const term = catalog.terms[0];
     const guide = catalog.faceGuides[0];
     const challenge = catalog.challenges[0];
     const paragraph = article?.body.sections[0]?.paragraphs[0];
     const tip = guide?.tips[0];
-    if (article === undefined || topic === undefined || term === undefined || guide === undefined || challenge === undefined) {
+    if (article === undefined || term === undefined || guide === undefined || challenge === undefined) {
       throw new Error("fixture");
     }
     if (paragraph === undefined || tip === undefined) throw new Error("fixture");
     expect(catalog.articles.map((item) => item.slug)).toEqual(["zh-article"]);
     expect(article.title).toEqual(blank);
     expect(paragraph.text).toEqual(blank);
-    expect(catalog.cards).toEqual([{ slug: "zh-card", title: blank, summary: blank, body: blank, sources: [blankSource] }]);
-    expect(topic.title).toEqual(blank);
-    expect(topic.sections[0]).toEqual({ heading: blank, body: blank });
     expect(term.term).toEqual(blank);
     expect(term.definition).toEqual(blank);
+    expect(term.sources).toEqual([blankSource]);
     expect(guide.title).toEqual(blank);
     expect(tip).toEqual({ key: "shape", label: blank, body: blank });
     expect(challenge.prompt).toEqual(blank);
@@ -172,15 +208,15 @@ describe("publishedCatalog", () => {
 
   it("still refuses a text field whose English value is not a string", () => {
     const broken = document();
-    const published = broken.cards[1];
+    const published = broken.terms[1];
     if (published === undefined) throw new Error("fixture");
-    published.title = { zh: "黑眼圈", en: 1 as unknown as string };
+    published.term = { zh: "黑眼圈", en: 1 as unknown as string };
     expect(() => publishedCatalog({ version: "2026.10.29.1", document: broken })).toThrow(LearningCatalogError);
   });
 
   it("fails closed when a published entry has no https source", () => {
     const broken = document();
-    const published = broken.cards[1];
+    const published = broken.terms[1];
     if (published === undefined) throw new Error("fixture");
     const citation = published.sources[0];
     if (citation === undefined) throw new Error("fixture");

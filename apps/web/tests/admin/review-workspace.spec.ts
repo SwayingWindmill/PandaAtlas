@@ -63,7 +63,6 @@ const reviewSurface = {
         publisher: "Example Zoo",
       },
     ],
-    attachments: [],
   },
 };
 

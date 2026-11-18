@@ -100,22 +100,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/contributions/{submissionId}/attachments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["registerContributionAttachment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v2/review/cases": {
         parameters: {
             query?: never;
@@ -947,7 +931,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Published 科普 cards, topics, terms, face guides and face challenges */
+        /** Published 科普 articles, terms, face guides, face challenges and month themes */
         get: operations["getLearningCatalog"];
         put?: never;
         post?: never;
@@ -1292,22 +1276,6 @@ export interface components {
         ContributionListDto: {
             items: components["schemas"]["ContributionRecordDto"][];
         };
-        RegisterContributionAttachmentDto: {
-            storageObjectKey: string;
-            objectVersion: string;
-            originalFilename: string;
-            /** @enum {string} */
-            mediaType: "application/pdf" | "image/jpeg" | "image/png" | "image/webp";
-            byteSize: number;
-            contentSha256: string;
-        };
-        ContributionAttachmentDto: {
-            /** Format: uuid */
-            attachmentId: string;
-            mediaType: string;
-            byteSize: number;
-            state: string;
-        };
         OpenReviewCaseDto: {
             /** Format: uuid */
             submissionId: string;
@@ -1387,7 +1355,6 @@ export interface components {
             publicVersionSeen: string;
             assertions: components["schemas"]["ContributionReviewAssertionDto"][];
             sources: components["schemas"]["ContributionReviewSourceDto"][];
-            attachments: components["schemas"]["ContributionAttachmentDto"][];
         };
         ReviewCaseSurfaceDto: {
             reviewCase: components["schemas"]["ReviewCaseDto"];
@@ -2115,25 +2082,6 @@ export interface components {
             /** Format: date */
             citedOn: string;
         };
-        LearningCardDto: {
-            slug: string;
-            title: components["schemas"]["LearningTextDto"];
-            summary: components["schemas"]["LearningTextDto"];
-            body: components["schemas"]["LearningTextDto"];
-            sources: components["schemas"]["LearningSourceDto"][];
-        };
-        LearningTopicSectionDto: {
-            heading: components["schemas"]["LearningTextDto"];
-            body: components["schemas"]["LearningTextDto"];
-        };
-        LearningTopicDto: {
-            slug: string;
-            title: components["schemas"]["LearningTextDto"];
-            summary: components["schemas"]["LearningTextDto"];
-            sections: components["schemas"]["LearningTopicSectionDto"][];
-            cardSlugs: string[];
-            sources: components["schemas"]["LearningSourceDto"][];
-        };
         LearningTermDto: {
             slug: string;
             term: components["schemas"]["LearningTextDto"];
@@ -2176,8 +2124,6 @@ export interface components {
             /** @example 2026.10.29.2 */
             version: string;
             articles: components["schemas"]["LearningArticleDto"][];
-            cards: components["schemas"]["LearningCardDto"][];
-            topics: components["schemas"]["LearningTopicDto"][];
             terms: components["schemas"]["LearningTermDto"][];
             faceGuides: components["schemas"]["LearningFaceGuideDto"][];
             challenges: components["schemas"]["LearningChallengeDto"][];
@@ -2281,7 +2227,7 @@ export interface components {
         };
         AskLinkDto: {
             /** @enum {string} */
-            kind: "article" | "card" | "topic" | "term" | "faceGuide" | "challenge" | "panda" | "learn";
+            kind: "article" | "term" | "faceGuide" | "challenge" | "panda" | "learn";
             title: string;
             /** @description A path inside the app, such as /learn/articles/bamboo. */
             appPath: string;
@@ -2560,31 +2506,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ContributionRecordDto"];
-                };
-            };
-        };
-    };
-    registerContributionAttachment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                submissionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RegisterContributionAttachmentDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ContributionAttachmentDto"];
                 };
             };
         };

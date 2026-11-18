@@ -15,7 +15,7 @@ export class LearningController {
   @Public()
   @ApiOperation({
     operationId: "getLearningCatalog",
-    summary: "Published 科普 cards, topics, terms, face guides and face challenges",
+    summary: "Published 科普 articles, terms, face guides, face challenges and month themes",
   })
   @ApiOkResponse({ type: LearningCatalogDto })
   @ApiServiceUnavailableResponse({ description: "The stored learning catalog is missing or invalid." })

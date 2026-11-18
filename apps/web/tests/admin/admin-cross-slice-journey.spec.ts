@@ -49,7 +49,6 @@ test("staff follows a Review audit event from the dashboard into the governed Re
           certainty: "confirmed", lastVerifiedOn: "2026-10-08", sourceIds: [sourceId] }],
         sources: [{ sourceId, sourceKind: "url", title: "Institutional evidence",
           locator: "https://example.org/panda", publisher: "Example Zoo" }],
-        attachments: [],
       },
     }),
   }));

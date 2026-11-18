@@ -28,8 +28,6 @@ const challenge = (answer: string, decoys: string[], tip = "提示文字"): Cata
 const catalog = (faceGuides: CatalogFaceGuide[], challenges: CatalogChallenge[] = []): LearningCatalog => ({
   version: "test",
   articles: [],
-  cards: [],
-  topics: [],
   terms: [],
   faceGuides,
   challenges,

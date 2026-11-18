@@ -11,10 +11,8 @@ import {
   type ContributionPort,
 } from "../application/contribution.application.js";
 import {
-  ContributionAttachmentDto,
   ContributionListDto,
   ContributionRecordDto,
-  RegisterContributionAttachmentDto,
   SubmitContributionDto,
 } from "./contribution.dto.js";
 
@@ -89,30 +87,5 @@ export class ContributionController {
       throw new ProblemException(404, "contribution.notFound", "The contribution does not exist.");
     }
     return contribution;
-  }
-
-  @Post("contributions/:submissionId/attachments")
-  @RequireCapabilities("contribution.manage")
-  @ApiOperation({ operationId: "registerContributionAttachment" })
-  @ApiCreatedResponse({ type: ContributionAttachmentDto })
-  public async registerAttachment(
-    @Req() request: HttpRequest,
-    @Param("submissionId", ParseUUIDPipe) submissionId: string,
-    @Body() input: RegisterContributionAttachmentDto,
-  ) {
-    const attachment = await this.contribution.registerAttachment({
-      accountId: accountId(request),
-      submissionId,
-      storageObjectKey: input.storageObjectKey,
-      objectVersion: input.objectVersion,
-      originalFilename: input.originalFilename,
-      mediaType: input.mediaType,
-      byteSize: input.byteSize,
-      contentSha256: input.contentSha256,
-    });
-    if (attachment === undefined) {
-      throw new ProblemException(404, "contribution.notFound", "The contribution does not exist.");
-    }
-    return attachment;
   }
 }

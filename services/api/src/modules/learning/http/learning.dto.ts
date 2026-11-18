@@ -23,51 +23,6 @@ export class LearningSourceDto {
   public declare citedOn: string;
 }
 
-export class LearningCardDto {
-  @ApiProperty()
-  public declare slug: string;
-
-  @ApiProperty({ type: LearningTextDto })
-  public declare title: LearningTextDto;
-
-  @ApiProperty({ type: LearningTextDto })
-  public declare summary: LearningTextDto;
-
-  @ApiProperty({ type: LearningTextDto })
-  public declare body: LearningTextDto;
-
-  @ApiProperty({ type: [LearningSourceDto] })
-  public declare sources: LearningSourceDto[];
-}
-
-export class LearningTopicSectionDto {
-  @ApiProperty({ type: LearningTextDto })
-  public declare heading: LearningTextDto;
-
-  @ApiProperty({ type: LearningTextDto })
-  public declare body: LearningTextDto;
-}
-
-export class LearningTopicDto {
-  @ApiProperty()
-  public declare slug: string;
-
-  @ApiProperty({ type: LearningTextDto })
-  public declare title: LearningTextDto;
-
-  @ApiProperty({ type: LearningTextDto })
-  public declare summary: LearningTextDto;
-
-  @ApiProperty({ type: [LearningTopicSectionDto] })
-  public declare sections: LearningTopicSectionDto[];
-
-  @ApiProperty({ type: [String] })
-  public declare cardSlugs: string[];
-
-  @ApiProperty({ type: [LearningSourceDto] })
-  public declare sources: LearningSourceDto[];
-}
-
 export class LearningTermDto {
   @ApiProperty()
   public declare slug: string;
@@ -254,12 +209,6 @@ export class LearningCatalogDto {
 
   @ApiProperty({ type: [LearningArticleDto] })
   public declare articles: LearningArticleDto[];
-
-  @ApiProperty({ type: [LearningCardDto] })
-  public declare cards: LearningCardDto[];
-
-  @ApiProperty({ type: [LearningTopicDto] })
-  public declare topics: LearningTopicDto[];
 
   @ApiProperty({ type: [LearningTermDto] })
   public declare terms: LearningTermDto[];
