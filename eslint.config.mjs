@@ -10,10 +10,7 @@ export default tseslint.config(
       "**/coverage/**",
       "apps/web/**",
       "apps/mobile/**",
-      "services/worker-api/**",
-      "services/api/app/**",
-      "services/api/scripts/**",
-      "services/api/tests/**"
+      "services/api/scripts/**"
     ],
   },
   js.configs.recommended,
@@ -40,6 +37,8 @@ export default tseslint.config(
         {
           patterns: [
             "@nestjs/*",
+            "@nestjs/platform-express",
+            "express",
             "fastify",
             "kysely",
             "pg",
@@ -60,6 +59,8 @@ export default tseslint.config(
         {
           patterns: [
             "@nestjs/*",
+            "@nestjs/platform-express",
+            "express",
             "fastify",
             "kysely",
             "pg",
