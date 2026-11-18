@@ -32,34 +32,10 @@ def text(status: str, zh: str, en: str) -> dict:
     return {"zh": zh, "en": en}
 
 
-def card(status: str = "draft") -> dict:
-    return {
-        "slug": "black-eye-patches",
-        "status": status,
-        "title": text(status, "黑眼圈", "Eye patches"),
-        "summary": text(status, "摘要", "Summary"),
-        "body": text(status, "正文", "Body"),
-        "sources": [source(status)],
-    }
-
-
 def document(status: str = "draft") -> dict:
-    sample = card(status)
     return {
         "version": "2026.10.29.1",
         "articles": [],
-        "cards": [sample],
-        "topics": [
-            {
-                "slug": "telling-faces-apart",
-                "status": status,
-                "title": text(status, "怎么认脸", "Faces"),
-                "summary": text(status, "摘要", "Summary"),
-                "sections": [{"heading": text(status, "形状", "Shape"), "body": text(status, "正文", "Body")}],
-                "cardSlugs": ["black-eye-patches"],
-                "sources": [source(status)],
-            }
-        ],
         "terms": [
             {
                 "slug": "eye-patch",
@@ -123,13 +99,13 @@ class ValidateLearningContentTests(unittest.TestCase):
 
     def test_unmarked_drafts_are_allowed_and_published_text_must_not_look_like_a_draft(self) -> None:
         content = document()
-        content["cards"][0]["title"] = {"zh": "黑眼圈", "en": "Eye patches"}
+        content["terms"][0]["term"] = {"zh": "黑眼圈", "en": "Eye patches"}
         self.assertEqual(BUILDER.validate_content(content, PANDAS, PUBLISHED), [])
-        self.assert_error(lambda c: c["cards"][0]["body"].update(en="[draft] A real fact."), "draft mark", "published")
+        self.assert_error(lambda c: c["terms"][0]["definition"].update(en="[draft] A real fact."), "draft mark", "published")
 
     def test_published_sources_need_an_https_citation(self) -> None:
-        self.assert_error(lambda c: c["cards"][0]["sources"][0].update(url="http://example.test/a"), "https", "published")
-        self.assert_error(lambda c: c["cards"][0]["sources"][0].update(url="https://example.test/a"), "citedOn", "draft")
+        self.assert_error(lambda c: c["terms"][0]["sources"][0].update(url="http://example.test/a"), "https", "published")
+        self.assert_error(lambda c: c["terms"][0]["sources"][0].update(url="https://example.test/a"), "citedOn", "draft")
 
     def test_a_face_tip_body_may_be_empty(self) -> None:
         content = document()
@@ -144,18 +120,18 @@ class ValidateLearningContentTests(unittest.TestCase):
 
     def test_published_english_may_be_blank(self) -> None:
         content = document("published")
-        for field in ("title", "summary", "body"):
-            content["cards"][0][field]["en"] = ""
-        content["cards"][0]["sources"][0]["title"]["en"] = "   "
+        for field in ("term", "definition"):
+            content["terms"][0][field]["en"] = ""
+        content["terms"][0]["sources"][0]["title"]["en"] = "   "
         content["faceGuides"][0]["tips"][0]["body"] = {"zh": "两颊圆润。"}
         self.assertEqual(BUILDER.validate_content(content, PANDAS, PUBLISHED), [])
 
     def test_a_written_english_string_still_has_a_length_limit(self) -> None:
-        self.assert_error(lambda c: c["cards"][0]["title"].update(en="x" * 49), "title.en", "published")
+        self.assert_error(lambda c: c["terms"][0]["term"].update(en="x" * 41), "term.en", "published")
         self.assert_error(lambda c: c["challenges"][0]["prompt"].update(en="x" * 81), "prompt.en", "published")
 
     def test_chinese_is_still_required_when_english_is_omitted(self) -> None:
-        self.assert_error(lambda c: c["cards"][0]["title"].pop("zh"), "must include zh", "published")
+        self.assert_error(lambda c: c["terms"][0]["term"].pop("zh"), "must include zh", "published")
         self.assert_error(lambda c: c["terms"][0]["definition"].pop("zh"), "must include zh", "published")
 
     def test_face_tips_and_real_pandas(self) -> None:
@@ -164,7 +140,7 @@ class ValidateLearningContentTests(unittest.TestCase):
         self.assert_error(lambda c: c["challenges"][0]["decoyPandaSlugs"].append("bao-li"), "three different")
 
     def test_rejects_unknown_fields_and_self_links(self) -> None:
-        self.assert_error(lambda c: c["cards"][0].update(extra=True), "unexpected fields")
+        self.assert_error(lambda c: c["terms"][0].update(extra=True), "unexpected fields")
         self.assert_error(lambda c: c["terms"][0]["relatedSlugs"].append("eye-patch"), "itself")
 
     def test_challenge_options_must_be_published_pandas(self) -> None:
@@ -201,7 +177,6 @@ def minimal_article() -> dict:
         "slug": "zh-only-article",
         "status": "published",
         "category": "外形与识别",
-        "sourceCardSlug": "black-eye-patches",
         "title": copy("只有中文"),
         "dek": copy("导语"),
         "pullQuote": copy("引语"),

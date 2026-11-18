@@ -5,7 +5,7 @@ import type { PublicLearningCatalog, LearningSource, LearningText } from "../../
 // published pandas. Each document is one citable passage with the app page it came from and the
 // outside sources behind it. Links shown to people always come from here, never from the model.
 
-export type AskDocumentKind = "article" | "card" | "topic" | "term" | "faceGuide" | "challenge" | "panda";
+export type AskDocumentKind = "article" | "term" | "faceGuide" | "challenge" | "panda";
 
 export interface AskSourceLink {
   title: string;
@@ -83,7 +83,6 @@ function document(input: Omit<AskDocument, "titleEn" | "text"> & { titleEn: stri
 
 export function learningDocuments(catalog: PublicLearningCatalog): AskDocument[] {
   const documents: AskDocument[] = [];
-  const articleSlugs = new Set(catalog.articles.map((article) => article.slug));
 
   for (const article of catalog.articles) {
     const title = textOf(article.title);
@@ -123,36 +122,6 @@ export function learningDocuments(catalog: PublicLearningCatalog): AskDocument[]
         }),
       );
     }
-  }
-
-  for (const card of catalog.cards) {
-    const title = textOf(card.title);
-    documents.push(
-      document({
-        key: key("card", card.slug),
-        kind: "card",
-        titleZh: title.zh,
-        titleEn: title.en,
-        appPath: articleSlugs.has(card.slug) ? `/learn/articles/${card.slug}` : "/learn",
-        body: [bilingual(card.summary), bilingual(card.body)],
-        sources: learningSources(card.sources),
-      }),
-    );
-  }
-
-  for (const topic of catalog.topics) {
-    const title = textOf(topic.title);
-    documents.push(
-      document({
-        key: key("topic", topic.slug),
-        kind: "topic",
-        titleZh: title.zh,
-        titleEn: title.en,
-        appPath: "/learn",
-        body: [bilingual(topic.summary), ...topic.sections.map((section) => `${bilingual(section.heading)}\n${bilingual(section.body)}`)],
-        sources: learningSources(topic.sources),
-      }),
-    );
   }
 
   for (const term of catalog.terms) {

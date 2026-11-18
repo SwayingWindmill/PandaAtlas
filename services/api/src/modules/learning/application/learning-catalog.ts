@@ -17,23 +17,6 @@ export interface LearningSource {
   citedOn: string;
 }
 
-export interface PublicLearningCard {
-  slug: string;
-  title: LearningText;
-  summary: LearningText;
-  body: LearningText;
-  sources: LearningSource[];
-}
-
-export interface PublicLearningTopic {
-  slug: string;
-  title: LearningText;
-  summary: LearningText;
-  sections: { heading: LearningText; body: LearningText }[];
-  cardSlugs: string[];
-  sources: LearningSource[];
-}
-
 export interface PublicLearningTerm {
   slug: string;
   term: LearningText;
@@ -96,8 +79,6 @@ export interface PublicLearningArticle {
 export interface PublicLearningCatalog {
   version: string;
   articles: PublicLearningArticle[];
-  cards: PublicLearningCard[];
-  topics: PublicLearningTopic[];
   terms: PublicLearningTerm[];
   faceGuides: PublicLearningFaceGuide[];
   challenges: PublicLearningChallenge[];
@@ -107,8 +88,6 @@ export interface PublicLearningCatalog {
 export const EMPTY_LEARNING_CATALOG: PublicLearningCatalog = {
   version: "",
   articles: [],
-  cards: [],
-  topics: [],
   terms: [],
   faceGuides: [],
   challenges: [],
@@ -188,47 +167,11 @@ function list(value: unknown, label: string): unknown[] {
 export function publishedCatalog(row: LearningCatalogRow | null): PublicLearningCatalog {
   if (row === null) return EMPTY_LEARNING_CATALOG;
   const document = record(row.document, "document");
-  // monthThemes came later: a stored catalog written before it has none.
-  const collections = ["articles", "cards", "topics", "terms", "faceGuides", "challenges", ...(Object.hasOwn(document, "monthThemes") ? ["monthThemes"] : [])];
-  exactKeys(document, ["version", ...collections], "document");
+  // monthThemes came later; legacy cards and topics may remain in a stored row until the next curation.learning batch runs.
+  const required = ["version", "articles", "terms", "faceGuides", "challenges"];
+  const optional = ["cards", "topics", "monthThemes"].filter((key) => Object.hasOwn(document, key));
+  exactKeys(document, [...required, ...optional], "document");
   if (document.version !== row.version || typeof document.version !== "string") fail("document version does not match the catalog");
-
-  const cards = list(document.cards, "cards").flatMap((item, index): PublicLearningCard[] => {
-    const card = record(item, `cards[${index}]`);
-    exactKeys(card, ["slug", "status", "title", "summary", "body", "sources"], `cards[${index}]`);
-    const status = statusOf(card, `cards[${index}]`);
-    const projected = {
-      slug: slug(card.slug, `cards[${index}].slug`),
-      title: text(card.title, `cards[${index}].title`),
-      summary: text(card.summary, `cards[${index}].summary`),
-      body: text(card.body, `cards[${index}].body`),
-      sources: sources(card.sources, `cards[${index}].sources`, status === "published"),
-    };
-    return status === "published" ? [projected] : [];
-  });
-
-  const topics = list(document.topics, "topics").flatMap((item, index): PublicLearningTopic[] => {
-    const topic = record(item, `topics[${index}]`);
-    exactKeys(topic, ["slug", "status", "title", "summary", "sections", "cardSlugs", "sources"], `topics[${index}]`);
-    const status = statusOf(topic, `topics[${index}]`);
-    const sections = list(topic.sections, `topics[${index}].sections`).map((section, sectionIndex) => {
-      const fields = record(section, `topics[${index}].sections[${sectionIndex}]`);
-      exactKeys(fields, ["heading", "body"], `topics[${index}].sections[${sectionIndex}]`);
-      return {
-        heading: text(fields.heading, `topics[${index}].sections[${sectionIndex}].heading`),
-        body: text(fields.body, `topics[${index}].sections[${sectionIndex}].body`),
-      };
-    });
-    const projected = {
-      slug: slug(topic.slug, `topics[${index}].slug`),
-      title: text(topic.title, `topics[${index}].title`),
-      summary: text(topic.summary, `topics[${index}].summary`),
-      sections,
-      cardSlugs: slugs(topic.cardSlugs, `topics[${index}].cardSlugs`),
-      sources: sources(topic.sources, `topics[${index}].sources`, status === "published"),
-    };
-    return status === "published" ? [projected] : [];
-  });
 
   const terms = list(document.terms, "terms").flatMap((item, index): PublicLearningTerm[] => {
     const term = record(item, `terms[${index}]`);
@@ -311,7 +254,7 @@ export function publishedCatalog(row: LearningCatalogRow | null): PublicLearning
     return status === "published" ? [projected] : [];
   });
 
-  return { version: row.version, articles, cards, topics, terms, faceGuides, challenges, monthThemes };
+  return { version: row.version, articles, terms, faceGuides, challenges, monthThemes };
 }
 
 const ARTICLE_KEYS = [
@@ -332,9 +275,9 @@ const ARTICLE_KEYS = [
 
 function projectArticle(item: unknown, index: number): PublicLearningArticle[] {
   const article = record(item, `articles[${index}]`);
-  const sourceKey = ["sourceCardSlug", "sourceTopicSlug"].filter((key) => Object.hasOwn(article, key));
-  if (sourceKey.length !== 1) fail(`articles[${index}] needs one source slug`);
-  exactKeys(article, [...ARTICLE_KEYS, sourceKey[0] ?? ""], `articles[${index}]`);
+  const sourceKeys = ["sourceCardSlug", "sourceTopicSlug"].filter((key) => Object.hasOwn(article, key));
+  if (sourceKeys.length > 1) fail(`articles[${index}] cannot have both source slugs`);
+  exactKeys(article, [...ARTICLE_KEYS, ...sourceKeys], `articles[${index}]`);
   const status = statusOf(article, `articles[${index}]`);
   if (typeof article.category !== "string") fail(`articles[${index}].category must be a string`);
   const projected: PublicLearningArticle = {

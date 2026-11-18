@@ -66,13 +66,6 @@ export interface ContributionSourceRecord extends Omit<ContributionSourceInput, 
   sourceId: string;
 }
 
-export interface ContributionAttachmentRecord {
-  attachmentId: string;
-  mediaType: string;
-  byteSize: number;
-  state: string;
-}
-
 export interface ContributionReviewSurface {
   submissionId: string;
   contributorAccountId?: string;
@@ -81,18 +74,6 @@ export interface ContributionReviewSurface {
   publicVersionSeen: string;
   assertions: ContributionReviewAssertion[];
   sources: ContributionSourceRecord[];
-  attachments: ContributionAttachmentRecord[];
-}
-
-export interface RegisterContributionAttachmentInput {
-  accountId: string;
-  submissionId: string;
-  storageObjectKey: string;
-  objectVersion: string;
-  originalFilename: string;
-  mediaType: "application/pdf" | "image/jpeg" | "image/png" | "image/webp";
-  byteSize: number;
-  contentSha256: string;
 }
 
 export interface ContributionRepository {
@@ -100,7 +81,6 @@ export interface ContributionRepository {
   listOwn(accountId: string): Promise<ContributionRecord[]>;
   getOwn(accountId: string, submissionId: string): Promise<ContributionRecord | undefined>;
   getReviewSurface(submissionId: string): Promise<ContributionReviewSurface | undefined>;
-  registerAttachment(input: RegisterContributionAttachmentInput): Promise<ContributionAttachmentRecord | undefined>;
 }
 
 export interface ContributionReviewPort {
@@ -193,9 +173,5 @@ export class ContributionApplication implements ContributionPort, ContributionRe
 
   public getReviewSurface(submissionId: string): Promise<ContributionReviewSurface | undefined> {
     return this.repository.getReviewSurface(submissionId);
-  }
-
-  public registerAttachment(input: RegisterContributionAttachmentInput): Promise<ContributionAttachmentRecord | undefined> {
-    return this.repository.registerAttachment(input);
   }
 }

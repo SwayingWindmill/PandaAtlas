@@ -52,7 +52,7 @@ describe("ask guard", () => {
 
 describe("ask answer checks", () => {
   const passages: AskPassage[] = [
-    { label: "S1", itemKey: "card/black-eye-patches", text: "大熊猫的耳朵、眼斑、口鼻、四肢和肩部是黑色，身体其余部分是白色。" },
+    { label: "S1", itemKey: "article/black-eye-patches/s1", text: "大熊猫的耳朵、眼斑、口鼻、四肢和肩部是黑色，身体其余部分是白色。" },
     { label: "S2", itemKey: "term/eye-patch", text: "The black fur patches around a giant panda's eyes." },
   ];
 
@@ -71,7 +71,7 @@ describe("ask answer checks", () => {
 
   it("accepts verbatim quotes and refuses anything else", () => {
     const ok = checkCitations({ answer: "耳朵和眼斑是黑色的。", citations: [{ source: "S1", quote: "耳朵 眼斑 口鼻" }], refused: false }, passages);
-    expect(ok).toEqual({ ok: true, answer: "耳朵和眼斑是黑色的。", itemKeys: ["card/black-eye-patches"] });
+    expect(ok).toEqual({ ok: true, answer: "耳朵和眼斑是黑色的。", itemKeys: ["article/black-eye-patches/s1"] });
     expect(checkCitations({ answer: "a", citations: [{ source: "S9", quote: "耳朵、眼斑、口鼻" }], refused: false }, passages)).toMatchObject({ reason: "unknownSource" });
     expect(checkCitations({ answer: "a", citations: [{ source: "S1", quote: "尾巴是黑色的尾巴" }], refused: false }, passages)).toMatchObject({ reason: "quoteMismatch" });
     expect(checkCitations({ answer: "a", citations: [{ source: "S1", quote: "耳朵" }], refused: false }, passages)).toMatchObject({ reason: "quoteMismatch" });
@@ -93,7 +93,7 @@ describe("ask corpus", () => {
   it("turns every published learning entry into passages that link back into the app", () => {
     const documents = learningDocuments(catalog);
     const kinds = new Set(documents.map((document) => document.kind));
-    expect(kinds).toEqual(new Set(["article", "card", "topic", "term", "faceGuide", "challenge"]));
+    expect(kinds).toEqual(new Set(["article", "term", "faceGuide", "challenge"]));
     for (const document of documents) {
       expect(document.key.length).toBeLessThanOrEqual(128);
       // AI Search rejects uploads whose name has no supported extension.
@@ -269,9 +269,9 @@ function application(options: {
 }
 
 describe("ask application", () => {
-  const card = learningDocuments(catalog).find((document) => document.key === "card/black-eye-patches.md")!;
-  const chunk = { itemKey: card.key, text: card.text, score: 0.8 };
-  const quote = card.text.replace(/\s+/gu, " ").slice(0, 20);
+  const article = learningDocuments(catalog).find((document) => document.key === "article/black-eye-patches/s1.md")!;
+  const chunk = { itemKey: article.key, text: article.text, score: 0.8 };
+  const quote = article.text.replace(/\s+/gu, " ").slice(0, 20);
 
   it("answers with sources when every citation checks out", async () => {
     const { app, calls, traces } = application({

@@ -33,7 +33,7 @@ COMMONS_ASSET_PREFIXES = ("https://commons.wikimedia.org/wiki/Special:Redirect/f
 FREE_LICENSE = re.compile(r"^(CC BY(-SA)? \d\.\d( [a-z]{2})?|CC0 1\.0|Public domain)$")
 STATUSES = {"draft", "published"}
 FACE_TIP_KEYS = ("shape", "leftRight", "eyePatches", "ears")
-COLLECTIONS = ("articles", "cards", "topics", "terms", "faceGuides", "challenges", "monthThemes")
+COLLECTIONS = ("articles", "terms", "faceGuides", "challenges", "monthThemes")
 # Mirrors MONTH_TASK_KINDS in services/api/src/modules/learning/application/learning-catalog.ts.
 MONTH_TASK_KINDS = {"daily", "guess", "learn", "checkin", "collections", "compare"}
 MONTH = re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
@@ -49,9 +49,6 @@ BLOCK_TYPES = {"heading", "paragraph", "pullQuote", "figure", "factBox", "termRe
 LIMITS = {
     "title": (24, 48),
     "summary": (80, 160),
-    "topic.summary": (120, 240),
-    "body": (400, 800),
-    "heading": (24, 48),
     "term": (16, 40),
     "definition": (200, 400),
     "label": (16, 40),
@@ -212,52 +209,6 @@ def validate_content(
     comment = content.get("$comment")
     if comment is not None and not isinstance(comment, str):
         errors.append("$comment: must be a string")
-
-    cards: dict = {}
-    for index, card in enumerate(content.get("cards") or []):
-        label = f"cards[{index}]"
-        if not isinstance(card, dict) or set(card) != {"slug", "status", "title", "summary", "body", "sources"}:
-            errors.append(f"{label}: unexpected fields")
-            continue
-        slug = require_slug(card.get("slug"), f"{label}.slug", set(cards), errors)
-        status = require_status(card, label, errors)
-        cards[slug] = card
-        validate_text(card.get("title"), f"{label}.title", "title", status, errors)
-        validate_text(card.get("summary"), f"{label}.summary", "summary", status, errors)
-        validate_text(card.get("body"), f"{label}.body", "body", status, errors)
-        validate_sources(card.get("sources"), f"{label}.sources", status, errors)
-    if not isinstance(content.get("cards"), list):
-        errors.append("cards: must be a list")
-
-    topics: set[str] = set()
-    topic_rows = content.get("topics")
-    if not isinstance(topic_rows, list):
-        errors.append("topics: must be a list")
-        topic_rows = []
-    for index, topic in enumerate(topic_rows):
-        label = f"topics[{index}]"
-        fields = {"slug", "status", "title", "summary", "sections", "cardSlugs", "sources"}
-        if not isinstance(topic, dict) or set(topic) != fields:
-            errors.append(f"{label}: unexpected fields")
-            continue
-        slug = require_slug(topic.get("slug"), f"{label}.slug", topics, errors)
-        status = require_status(topic, label, errors)
-        validate_text(topic.get("title"), f"{label}.title", "title", status, errors)
-        validate_text(topic.get("summary"), f"{label}.summary", "topic.summary", status, errors)
-        sections = topic.get("sections")
-        if not isinstance(sections, list) or not sections:
-            errors.append(f"{label}.sections: needs at least one section")
-        else:
-            for section_index, section in enumerate(sections):
-                section_label = f"{label}.sections[{section_index}]"
-                if not isinstance(section, dict) or set(section) != {"heading", "body"}:
-                    errors.append(f"{section_label}: must have heading and body")
-                    continue
-                validate_text(section.get("heading"), f"{section_label}.heading", "heading", status, errors)
-                validate_text(section.get("body"), f"{section_label}.body", "body", status, errors)
-        validate_known_slugs(topic.get("cardSlugs"), f"{label}.cardSlugs", set(cards), errors)
-        validate_sources(topic.get("sources"), f"{label}.sources", status, errors)
-        _ = slug
 
     terms: set[str] = set()
     term_rows = content.get("terms")
@@ -433,8 +384,7 @@ def validate_articles(rows: object, terms: set[str], pandas: set[str], errors: l
         if not isinstance(article, dict):
             errors.append(f"{label}: must be an object")
             continue
-        source_keys = {"sourceCardSlug", "sourceTopicSlug"} & set(article)
-        if len(source_keys) != 1 or set(article) - ARTICLE_FIELDS - source_keys:
+        if set(article) != ARTICLE_FIELDS:
             errors.append(f"{label}: unexpected fields")
             continue
         slug_value = require_slug(article.get("slug"), f"{label}.slug", slugs, errors)
@@ -455,9 +405,6 @@ def validate_articles(rows: object, terms: set[str], pandas: set[str], errors: l
         validate_article_images(article.get("images"), label, status, pandas, assets, reference_ids, errors)
         validate_stats(article.get("stats"), f"{label}.stats", errors)
         validate_glossary_terms(article.get("glossaryTerms"), f"{label}.glossaryTerms", terms, errors)
-        pointer = article.get(next(iter(source_keys)))
-        if not isinstance(pointer, str) or not SLUG.match(pointer):
-            errors.append(f"{label}.{next(iter(source_keys))}: must be a slug")
         parsed.append(article)
         _ = slug_value
     known = {article.get("slug") for article in parsed}

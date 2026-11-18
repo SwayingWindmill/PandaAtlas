@@ -2,13 +2,11 @@ import { createHash, randomUUID } from "node:crypto";
 import { sql } from "kysely";
 import type { DatabaseService } from "../../../platform/database/database.service.js";
 import type {
-  ContributionAttachmentRecord,
   ContributionRecord,
   ContributionRepository,
   ContributionReviewAssertion,
   ContributionReviewSurface,
   ContributionSourceRecord,
-  RegisterContributionAttachmentInput,
   SubmitContributionInput,
 } from "../application/contribution.application.js";
 
@@ -159,14 +157,6 @@ export class PostgresContributionRepository implements ContributionRepository {
       .where("revision_number", "=", revisionNumber)
       .orderBy("created_at")
       .execute();
-    const attachmentRows = await this.database.db
-      .selectFrom("community_intake.attachments")
-      .select(["attachment_id", "media_type", "byte_size", "state"])
-      .where("submission_id", "=", submissionId)
-      .where("bound_revision_number", "=", revisionNumber)
-      .where("state", "!=", "deleted")
-      .orderBy("created_at")
-      .execute();
 
     const sources: ContributionSourceRecord[] = sourceRows.map((source) => ({
       sourceId: source.source_id,
@@ -175,12 +165,6 @@ export class PostgresContributionRepository implements ContributionRepository {
       locator: source.locator,
       ...(source.publisher === null ? {} : { publisher: source.publisher }),
       ...(source.published_on === null ? {} : { publishedOn: source.published_on }),
-    }));
-    const attachments: ContributionAttachmentRecord[] = attachmentRows.map((attachment) => ({
-      attachmentId: attachment.attachment_id,
-      mediaType: attachment.media_type,
-      byteSize: Number(attachment.byte_size),
-      state: attachment.state,
     }));
 
     return {
@@ -191,47 +175,6 @@ export class PostgresContributionRepository implements ContributionRepository {
       publicVersionSeen: revision.public_version_seen,
       assertions: assertionsFromContent(revision.content),
       sources,
-      attachments,
-    };
-  }
-
-  public async registerAttachment(
-    input: RegisterContributionAttachmentInput,
-  ): Promise<ContributionAttachmentRecord | undefined> {
-    const submission = await this.database.db
-      .selectFrom("community_intake.submissions")
-      .select(["account_id", "latest_revision_number"])
-      .where("submission_id", "=", input.submissionId)
-      .executeTakeFirst();
-    if (
-      submission === undefined ||
-      submission.account_id !== input.accountId ||
-      submission.latest_revision_number === 0
-    ) {
-      return undefined;
-    }
-
-    const row = await this.database.db
-      .insertInto("community_intake.attachments")
-      .values({
-        submission_id: input.submissionId,
-        bound_revision_number: submission.latest_revision_number,
-        storage_bucket: "community-intake-private",
-        storage_object_key: input.storageObjectKey,
-        object_version: input.objectVersion,
-        original_filename: input.originalFilename,
-        media_type: input.mediaType,
-        byte_size: input.byteSize,
-        content_sha256: input.contentSha256,
-        upload_completed_at: new Date(),
-      })
-      .returning(["attachment_id", "media_type", "byte_size", "state"])
-      .executeTakeFirstOrThrow();
-    return {
-      attachmentId: row.attachment_id,
-      mediaType: row.media_type,
-      byteSize: Number(row.byte_size),
-      state: row.state,
     };
   }
 

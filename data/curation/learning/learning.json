@@ -1,12 +1,11 @@
 {
-  "$comment": "科普文章、知识卡、专题、名词解释、认脸指南和认脸挑战。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, run python scripts/curation/validate_learning_content.py, and after merging write it to the database with the curation.learning batch operation (new version for changed content). Every entry is published as of 2026.11.01 (PR #765). An entry set back to draft stays in the database and is left out of GET /api/v2/learning. 2026.11.04.2 adds published Chinese-only entries (articles endangered-to-vulnerable, back-to-the-wild, captive-breeding, qinling-pandas; cards conservation-status, reintroduction, captive-breeding, qinling-pandas; topic panda-conservation; 8 terms); English is deferred by owner decision. Conflicting figures now follow official sources (release count, brown-panda records, first captive birth, newborn weight, estrus window, daily bamboo) in new and existing entries. 2026.11.04.3 新增习性专题 panda-behavior、4 张知识卡、6 篇文章和 8 个名词（只有中文）。",
-  "version": "2026.11.05.1",
+  "$comment": "科普文章、名词解释、认脸指南、认脸挑战和月度主题。文章沿用撰稿稿的结构，见 ARTICLE_SCHEMA.md。Edit this file, run python scripts/curation/validate_learning_content.py, and after merging write it to the database with the curation.learning batch operation (new version for changed content). Every entry is published as of 2026.11.01 (PR #765). An entry set back to draft stays in the database and is left out of GET /api/v2/learning. 2026.11.18.1 removes retired cards and topics subtypes whose content is already covered in articles and terms.",
+  "version": "2026.11.18.1",
   "articles": [
     {
       "slug": "black-eye-patches",
       "status": "published",
       "category": "外形与识别",
-      "sourceCardSlug": "black-eye-patches",
       "title": {
         "zh": "黑眼圈不是熬夜熬的：大熊猫眼斑从哪来、有什么用"
       },
@@ -385,7 +384,6 @@
       "slug": "bamboo",
       "status": "published",
       "category": "食性",
-      "sourceCardSlug": "bamboo",
       "title": {
         "zh": "不只是“箭竹”：大熊猫吃的竹子有哪些门道"
       },
@@ -745,7 +743,6 @@
       "slug": "cubs",
       "status": "published",
       "category": "繁殖与成长",
-      "sourceCardSlug": "cubs",
       "title": {
         "zh": "从“一块黄油”到小大熊猫：幼仔成长时间线"
       },
@@ -1204,7 +1201,6 @@
       "slug": "telling-faces-apart",
       "status": "published",
       "category": "外形与识别",
-      "sourceTopicSlug": "telling-faces-apart",
       "title": {
         "zh": "怎么认出是哪只熊猫？跟着饲养员学“认脸”"
       },
@@ -1701,7 +1697,6 @@
       "slug": "what-pandas-eat",
       "status": "published",
       "category": "食性",
-      "sourceTopicSlug": "what-pandas-eat",
       "title": {
         "zh": "食肉动物的肠胃，近乎吃素的一生：大熊猫每天吃什么"
       },
@@ -2081,7 +2076,6 @@
       "slug": "endangered-to-vulnerable",
       "status": "published",
       "category": "保护",
-      "sourceCardSlug": "conservation-status",
       "title": {
         "zh": "从“濒危”到“易危”：大熊猫保护等级这十年"
       },
@@ -2403,7 +2397,6 @@
       "slug": "back-to-the-wild",
       "status": "published",
       "category": "保护",
-      "sourceCardSlug": "reintroduction",
       "title": {
         "zh": "回到山林：圈养大熊猫的野化放归"
       },
@@ -2708,7 +2701,6 @@
       "slug": "captive-breeding",
       "status": "published",
       "category": "繁殖与成长",
-      "sourceCardSlug": "captive-breeding",
       "title": {
         "zh": "攻克“三难”：圈养大熊猫是怎么繁殖起来的"
       },
@@ -3048,7 +3040,6 @@
       "slug": "qinling-pandas",
       "status": "published",
       "category": "外形与识别",
-      "sourceCardSlug": "qinling-pandas",
       "title": {
         "zh": "秦岭的大熊猫：圆脸、棕胸，还有棕色的七仔"
       },
@@ -3324,7 +3315,6 @@
       "slug": "solitary-and-home-range",
       "status": "published",
       "category": "繁殖与成长",
-      "sourceCardSlug": "solitary-life",
       "title": {
         "zh": "独来独往，却不孤单：大熊猫的独居与领地"
       },
@@ -3634,7 +3624,6 @@
       "slug": "scent-marking-pandas",
       "status": "published",
       "category": "繁殖与成长",
-      "sourceCardSlug": "scent-marking",
       "title": {
         "zh": "树干上的“留言板”：大熊猫怎样做气味标记"
       },
@@ -3902,7 +3891,6 @@
       "slug": "panda-vocal-communication",
       "status": "published",
       "category": "繁殖与成长",
-      "sourceCardSlug": "panda-calls",
       "title": {
         "zh": "咩叫、吠声和鸟叫：大熊猫怎样用声音交流"
       },
@@ -4179,7 +4167,6 @@
       "slug": "seasonal-migration-bamboo",
       "status": "published",
       "category": "食性",
-      "sourceCardSlug": "seasonal-migration",
       "title": {
         "zh": "不冬眠的大熊猫：跟着竹子上山下山"
       },
@@ -4435,7 +4422,6 @@
       "slug": "lifespan-and-health",
       "status": "published",
       "category": "保护",
-      "sourceTopicSlug": "panda-behavior",
       "title": {
         "zh": "大熊猫能活多久，又会生什么病"
       },
@@ -4703,7 +4689,6 @@
       "slug": "field-survey-methods",
       "status": "published",
       "category": "保护",
-      "sourceTopicSlug": "panda-behavior",
       "title": {
         "zh": "从一堆粪便数大熊猫：野外调查怎么做"
       },
@@ -4930,920 +4915,6 @@
         "sectionCount": 5,
         "referenceCount": 2
       }
-    }
-  ],
-  "cards": [
-    {
-      "slug": "black-eye-patches",
-      "status": "published",
-      "title": {
-        "zh": "黑眼圈",
-        "en": "Eye patches"
-      },
-      "summary": {
-        "zh": "大熊猫眼周的黑斑叫眼斑。研究认为，它可能帮助大熊猫相互辨认，或向对手表示攻击性。",
-        "en": "The black marks around a giant panda's eyes may help pandas recognize one another or signal aggression to rivals."
-      },
-      "body": {
-        "zh": "大熊猫的耳朵、眼斑、口鼻、四肢和肩部是黑色，身体其余部分是白色。2017年发表在《行为生态学》上的一项研究，把大熊猫各部位的毛色与195种其他食肉动物和39个熊亚种比较。研究认为，头部的深色斑纹不用于伪装，而用于交流：黑耳朵可能传达凶猛的警告，黑眼斑可能帮助大熊猫相互辨认，或向竞争对手表示攻击性。2008年的一项实验中，两只幼年大熊猫学会了分辨形状只有细微差别的眼斑图案，6个月和12个月后再测试时仍然记得。",
-        "en": "A giant panda has black fur on its ears, eye patches, muzzle, legs and shoulders; the rest of its coat is white. A 2017 study in Behavioral Ecology compared the fur of each body region with 195 other carnivore species and 39 bear subspecies. It concluded that the dark head markings are not camouflage but communication: dark ears may convey ferocity as a warning, and dark eye patches may help pandas recognize each other or signal aggression toward competitors. In a 2008 experiment, two juvenile giant pandas learned to tell apart eye-patch shapes that differed only subtly, and still remembered them when tested again six and twelve months later."
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "加州大学戴维斯分校：大熊猫为什么是黑白的",
-            "en": "UC Davis: Why Pandas Are Black and White"
-          },
-          "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "史密森尼国家动物园：大熊猫",
-            "en": "Smithsonian's National Zoo: Giant Panda"
-          },
-          "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "亚特兰大动物园：熊猫动态（11月6日）",
-            "en": "Zoo Atlanta: Panda Updates – Friday, November 6"
-          },
-          "url": "https://zooatlanta.org/panda-updates-friday-november-6/",
-          "citedOn": "2026-10-31"
-        }
-      ]
-    },
-    {
-      "slug": "bamboo",
-      "status": "published",
-      "title": {
-        "zh": "竹子",
-        "en": "Bamboo"
-      },
-      "summary": {
-        "zh": "大熊猫的食物几乎全是竹子。竹子营养很少，它每天要吃竹叶约10～14公斤，或竹笋约23～40公斤。",
-        "en": "Giant pandas eat almost nothing but bamboo. Bamboo has little nutritional value, so a panda eats about 10–14 kg of leaves or 23–40 kg of shoots a day."
-      },
-      "body": {
-        "zh": "大熊猫每天的食物几乎全部是多种竹子的叶、茎和笋。竹子营养价值很低，据成都大熊猫繁育研究基地，大熊猫每天要吃竹叶约10～14公斤，或竹秆约17公斤，或竹笋约23～40公斤，才能满足能量需要。约1%的食物是其他植物甚至肉类，它偶尔会捕食鼠兔等小动物。大熊猫的消化系统更接近食肉动物，吃下的食物有很多未经消化就排出，因此每天要花10～16小时觅食和进食。它通常坐着吃，用腕骨延长形成的“伪拇指”握住竹竿，再用有力的颌和牙齿把竹子咬碎。",
-        "en": "A giant panda's daily diet consists almost entirely of the leaves, stems and shoots of various bamboo species. Bamboo has very little nutritional value, so, according to the Chengdu Research Base of Giant Panda Breeding, a panda must eat about 10–14 kg of leaves, about 17 kg of culms or 23–40 kg of shoots every day to meet its energy needs. About 1% of its diet is other plants and even meat; pandas sometimes hunt pikas and other small animals. Its digestive system is closer to a carnivore's, so much of what it eats passes through undigested, and it spends 10 to 16 hours a day foraging and eating. A panda usually eats sitting upright, grasping stems with a \"pseudo thumb\" formed by an elongated wrist bone, and crushes the bamboo with powerful jaws and teeth."
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "世界自然基金会：大熊猫吃什么",
-            "en": "WWF: What do pandas eat?"
-          },
-          "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "史密森尼国家动物园：大熊猫",
-            "en": "Smithsonian's National Zoo: Giant Panda"
-          },
-          "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "成都大熊猫繁育研究基地：【熊猫知识】进食",
-            "en": "Chengdu Research Base of Giant Panda Breeding: Panda Knowledge – Feeding"
-          },
-          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8786.html",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "slug": "cubs",
-      "status": "published",
-      "title": {
-        "zh": "幼仔",
-        "en": "Cubs"
-      },
-      "summary": {
-        "zh": "刚出生的大熊猫平均约120克，只有母亲体重的千分之一，一岁半时离开母亲独立生活。",
-        "en": "A newborn giant panda weighs about 120 g on average, one-thousandth of its mother's weight, and lives on its own at 18 months."
-      },
-      "body": {
-        "zh": "初生幼仔体重只有母亲的千分之一，平均约120克，最轻51克，最重225克。它粉色的皮肤上长着白毛，眼睛和耳朵还没有发育完全。出生一到两周，肩带、四肢和耳朵渐渐变黑；一个月时长出黑白相间的毛，体重1～2公斤，还不能行走；六到八周睁眼；三个月能慢慢爬动；半岁能自由行走，开始学吃竹子；一岁开始长恒牙；一岁半离开母亲，独立生活。",
-        "en": "A newborn cub weighs one-thousandth of its mother's weight, about 120 g on average, ranging from 51 g to 225 g. It has white hair on pink skin, and its eyes and ears are not fully developed. At one to two weeks, its shoulder band, limbs and ears gradually turn black. At one month it has black-and-white fur and weighs 1–2 kg, but cannot walk. Its eyes open at six to eight weeks, and it can crawl slowly at three months. At six months it walks freely and starts learning to eat bamboo. Permanent teeth begin to grow at one year, and at 18 months it leaves its mother to live on its own."
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "成都大熊猫繁育研究基地：大熊猫生长发育",
-            "en": "Chengdu Panda Base: Giant panda growth and development"
-          },
-          "url": "https://www.panda.org.cn/cn/education/database/kpzs/2023-07-03/370.html",
-          "citedOn": "2026-10-31"
-        }
-      ]
-    },
-    {
-      "slug": "conservation-status",
-      "status": "published",
-      "title": {
-        "zh": "保护等级",
-        "en": ""
-      },
-      "summary": {
-        "zh": "2016年IUCN把大熊猫从“濒危”调为“易危”；2021年中国按国内评估同样调为“易危”。",
-        "en": ""
-      },
-      "body": {
-        "zh": "2016年9月，世界自然保护联盟（IUCN）发布红色名录更新，把大熊猫从“濒危”改列为“易危”，理由是森林保护和植树造林让种群增长；红色名录记录的成熟个体为500～1000只。国家林业局当时回应，降低保护等级为时过早，因为野外种群被分割成33个局域种群，其中18个不足10只。2021年7月，生态环境部宣布野外种群达到1800多只，受威胁程度等级由“濒危”降为“易危”。",
-        "en": ""
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "Four out of six great apes one step away from extinction – IUCN Red List（2016-09-04）",
-            "en": ""
-          },
-          "url": "https://iucn.org/news/species/201609/four-out-six-great-apes-one-step-away-extinction-%E2%80%93-iucn-red-list",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "Giant Panda – Ailuropoda melanoleuca（2016年评估）",
-            "en": ""
-          },
-          "url": "https://www.iucnredlist.org/species/712/121745669",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "国家林业局：大熊猫仍是濒危物种 降低保护等级为时过早（2016-09-05）",
-            "en": ""
-          },
-          "url": "https://www.chinanews.com/sh/2016/09-05/7994780.shtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "由濒危降为易危！国宝大熊猫野外种群数量达到1800多只（2021-07-07）",
-            "en": ""
-          },
-          "url": "https://news.cctv.com/2021/07/07/ARTIwyRwXUkyxUXpdC8Bnpbl210707.shtml",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "slug": "reintroduction",
-      "status": "published",
-      "title": {
-        "zh": "野化放归",
-        "en": ""
-      },
-      "summary": {
-        "zh": "把经过野化训练的圈养大熊猫放回野外，给孤立的小种群补充个体和基因。",
-        "en": ""
-      },
-      "body": {
-        "zh": "1997年我国形成圈养大熊猫野化放归的科研共识，2003年启动首只大熊猫的野化培训。2006年放归的祥祥后来在打斗中坠崖死亡；2010年起改用母兽带仔的方法，2012年放归的淘淘在野外存活至今。2024年3月，现场影像结合DNA证据首次证实放归个体参与了交配繁殖。截至2026年6月，中国大熊猫保护研究中心累计放归人工繁育大熊猫11只，存活9只，7只融入小相岭、2只融入岷山的野生种群。",
-        "en": ""
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "归野向山林！我国大熊猫野化放归研究不断突破（2026-06-08，来源人民政协报微信公众号）",
-            "en": ""
-          },
-          "url": "https://www.chinanews.com.cn/sh/2026/06-08/10636304.shtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "经过近三年野化训练 大熊猫“祥祥”今放归大自然（2006-04-28）",
-            "en": ""
-          },
-          "url": "https://www.chinanews.com.cn/news/2006/2006-04-28/8/724079.shtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "全球首只人工繁育放归大熊猫“淘淘”野外生存5年多状况良好（2018-01-03）",
-            "en": ""
-          },
-          "url": "https://www.chinanews.com.cn/sh/2018/01-03/8415623.shtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "美丽中国行丨9只野化放归成活大熊猫已有自己的领地（2026-06-06）",
-            "en": ""
-          },
-          "url": "https://www.stdaily.com/web/gdxw/2026-06/06/content_528646.html",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "slug": "captive-breeding",
-      "status": "published",
-      "title": {
-        "zh": "圈养繁育",
-        "en": ""
-      },
-      "summary": {
-        "zh": "1963年第一只圈养繁殖的大熊猫出生，本世纪初突破“三难”，圈养种群2025年达808只。",
-        "en": ""
-      },
-      "body": {
-        "zh": "1963年9月9日，明明在北京动物园出生，是圈养状态下繁殖的第一只大熊猫；1978年，元晶成为世界上第一只人工授精诞生的大熊猫。早期繁育面临发情难、受孕难、存活难的“三难”。如今，中国大熊猫保护研究中心以自然交配为主、人工授精为辅，借助激素监测判断配种时间，自然交配受孕率在90%以上。全国统一谱系、每年制定配对方案，排除3代以内有血缘关系的个体配对。",
-        "en": ""
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "认识大熊猫（十）（2023-07-27，来源中国绿色时报）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/zhzs/514552.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "世界第一只人工授精繁殖的大熊猫在北京诞生（2025-09-08，来源科普江苏）",
-            "en": ""
-          },
-          "url": "https://www.kepuchina.cn/article/articleinfo?ar_id=632635&business_type=100&classify=0",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "专治大熊猫不孕不育的“专科大夫”（2023-11-22，来源中国绿色时报）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/dzwzbh/533129.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "四川和秦岭的大熊猫“打电话”方式不一样（2024-06-22，来源中国经营网）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/kp/572411.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "国家林草局：大熊猫圈养种群数量达808只（2025-11-21，来源新华社）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/dzwzbh/650741.jhtml",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "slug": "qinling-pandas",
-      "status": "published",
-      "title": {
-        "zh": "秦岭大熊猫",
-        "en": ""
-      },
-      "summary": {
-        "zh": "秦岭亚种头圆吻短、臼齿更大，胸斑多呈暗棕色；秦岭还出现过罕见的棕白色大熊猫。",
-        "en": ""
-      },
-      "body": {
-        "zh": "据报道，大熊猫分为四川指名亚种和秦岭亚种。秦岭大熊猫头骨偏小、臼齿更大，头圆吻短，胸斑多呈暗棕色，腹部带棕黄色调；四川大熊猫头部狭长，胸斑纯黑。第四次全国调查显示秦岭有野生大熊猫345只。秦岭还出现过棕白色大熊猫，据陕西省林业局2024年通报，已是第11次发现野生个体的踪迹；研究发现其毛色源于Bace2基因的隐性突变。",
-        "en": ""
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "陕西大熊猫，更像猫！（2026-09-20，来源中国环境网）",
-            "en": ""
-          },
-          "url": "https://xaqlbhj.xa.gov.cn/xwdt/gzdt/2101558327065481217.html",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "迄今已发现10次！“宝中之宝”秦岭棕色大熊猫的前世今生（2021-10-11）",
-            "en": ""
-          },
-          "url": "https://www.news.cn/politics/2021-10/11/c_1127946984.htm",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "秦岭再次发现棕色大熊猫（2024-05-15，来源新华社）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/zhzs/562569.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "魏辅文研究团队揭示棕色大熊猫毛色变异的遗传机制（2024-03-07）",
-            "en": ""
-          },
-          "url": "https://ioz.cas.cn/gb2018/xwdt/kyjz/202403/t20240307_7019225.html",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "slug": "solitary-life",
-      "status": "published",
-      "title": {
-        "zh": "独来独往的大熊猫",
-        "en": ""
-      },
-      "summary": {
-        "zh": "成年大熊猫大多独自生活，靠气味、叫声和偶尔相遇保持联系。",
-        "en": ""
-      },
-      "body": {
-        "zh": "成年大熊猫通常独来独往。它们并非毫无往来：史密森尼国家动物园介绍，研究发现局部种群里 7 到 15 只大熊猫可能组成一个“群体”，共用一片领地，雄性的家域几乎完全重叠，雌性重叠得少。幼仔会跟着妈妈生活一年半到三年。",
-        "en": ""
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
-            "en": ""
-          },
-          "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "slug": "scent-marking",
-      "status": "published",
-      "title": {
-        "zh": "气味标记",
-        "en": ""
-      },
-      "summary": {
-        "zh": "大熊猫靠涂抹肛周腺分泌物和尿液来“留言”，雄性有时还会倒立着标记。",
-        "en": ""
-      },
-      "body": {
-        "zh": "在雾气弥漫的竹林里彼此看不见，大熊猫大多数交流靠气味。它们把肛周腺分泌物和尿液涂在树干、石头和常走的路上。非发情季节，陌生的气味会让来者走开；发情季节，雌性的气味会吸引雄性。雄性还会倒立在树干上做标记。",
-        "en": ""
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "【熊猫知识】气味标记（2025-06-05）",
-            "en": ""
-          },
-          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
-            "en": ""
-          },
-          "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "Giant panda（亚特兰大动物园动物介绍页）",
-            "en": ""
-          },
-          "url": "https://zooatlanta.org/animal/giant-panda/",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "slug": "panda-calls",
-      "status": "published",
-      "title": {
-        "zh": "大熊猫的叫声",
-        "en": ""
-      },
-      "summary": {
-        "zh": "大熊猫平时安静，发情季节和相遇时会发出咩叫、吠声、鸟叫等多种声音。",
-        "en": ""
-      },
-      "body": {
-        "zh": "大熊猫独处或玩耍时多半不出声。到了发情季节，它们会用丰富的叫声表达从示好到发怒的情绪。国家林草局科普列出的叫声包括牛叫声、羊叫声、呻吟声、吠声、唧唧声、嗥叫、鸟叫和吱吱叫等。",
-        "en": ""
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "【熊猫知识】气味标记（2025-06-05）",
-            "en": ""
-          },
-          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
-            "en": ""
-          },
-          "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "slug": "seasonal-migration",
-      "status": "published",
-      "title": {
-        "zh": "跟着竹子搬家",
-        "en": ""
-      },
-      "summary": {
-        "zh": "大熊猫不冬眠，而是随季节在高低海拔之间往返，找当季能吃的竹子。",
-        "en": ""
-      },
-      "body": {
-        "zh": "竹子四季常绿，大熊猫不用冬眠。国家林草局科普介绍，冬季它们通常从高海拔迁到气温较高、食物较足的中低海拔。一项历时 12 年的 GPS 项圈研究发现，大熊猫每年会回到相同或相近的冬季和夏季活动区，像是记住了哪里有可靠的食物。",
-        "en": ""
-      },
-      "sources": [
-        {
-          "title": {
-            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "Stable seasonal migration patterns in giant pandas（2023）",
-            "en": ""
-          },
-          "url": "https://doi.org/10.24272/j.issn.2095-8137.2022.421",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    }
-  ],
-  "topics": [
-    {
-      "slug": "telling-faces-apart",
-      "status": "published",
-      "title": {
-        "zh": "怎么认脸",
-        "en": "Telling faces apart"
-      },
-      "summary": {
-        "zh": "饲养员区分大熊猫，会看脸颊、眼斑、口鼻斑纹和耳朵。两只熊猫之间的差别往往很细微，要逐处对照。",
-        "en": "Keepers tell giant pandas apart by their cheeks, eye patches, muzzle markings and ears. The differences between two pandas are often subtle, so compare one feature at a time."
-      },
-      "sections": [
-        {
-          "heading": {
-            "zh": "脸型和左右差别",
-            "en": "Face shape and left-right differences"
-          },
-          "body": {
-            "zh": "脸型因个体而异：史密森尼国家动物园指出，宝力的两颊不如青宝蓬松；亚特兰大动物园称伦伦以圆润蓬松的脸颊出名。同一只熊猫的左右眼斑也不一定一样：亚特兰大动物园描述，喜伦右眼斑的顶部明显向下垂。",
-            "en": "Face shape varies between individuals. Smithsonian's National Zoo notes that Bao Li's cheeks are not as fluffy as Qing Bao's, and Zoo Atlanta says Lun Lun is known for her round, fluffy cheeks. A panda's left and right eye patches are not always the same: Zoo Atlanta describes Xi Lun's right eye patch as having a dramatic drop downward at the top."
-          }
-        },
-        {
-          "heading": {
-            "zh": "看照片",
-            "en": "Reading a photo"
-          },
-          "body": {
-            "zh": "看照片时可以逐处对照。眼斑：看宽窄和尖端朝向，例如宝力的眼斑较宽，尖端向外翘。口鼻：喜伦的口鼻上有一条横贯的线，雅伦的则更像一个点。耳朵：洋洋的耳朵被称为“雷达耳”，游客常凭它在远处区分洋洋和伦伦。照片拍到背部时，还可以看从前腿绕过背部的黑带粗细。",
-            "en": "Compare one feature at a time. Eye patches: check their width and the direction of the tips; Bao Li's patches are wide, with pointy tips that flare out. Muzzle: Xi Lun has a line all the way across her snout, while Ya Lun's is more of a dot. Ears: Yang Yang's are known as \"radar ears\", and visitors often use them to tell him from Lun Lun at a distance. If the photo shows the back, check how thick the black band is that runs from the front legs across the back."
-          }
-        },
-        {
-          "heading": {
-            "zh": "“小背心”和颜色标记",
-            "en": "\"Vests\" and colour marks"
-          },
-          "body": {
-            "zh": "香港海洋公园的办法是先看“小背心”，也就是肩背上的黑色背带：盈盈是深V，乐乐是圆领，安安像梯形，可可是蝴蝶型；再看眼圈，盈盈的像“8”字，乐乐的是圆形。幼仔的特征变化很快，海洋公园助理馆长胡绮琪提醒，大熊猫“每日都可能有变化”。另据人民日报客户端的科普，饲养员有时会在熊猫身上涂不同颜色的标记来区分。",
-            "en": "Ocean Park Hong Kong suggests starting with the \"vest\", the black band across the shoulders and back: Ying Ying's is a deep V, Le Le's a round neck, An An's a trapezoid and Ke Ke's a butterfly. Then check the eye patches: Ying Ying's look like the number 8, Le Le's are round. Cubs change quickly; an Ocean Park assistant curator noted that a growing panda \"may change every day\". According to a People's Daily app explainer, keepers sometimes paint different coloured marks on pandas to tell them apart."
-          }
-        },
-        {
-          "heading": {
-            "zh": "“小背心”和颜色标记",
-            "en": "\"Vests\" and colour marks"
-          },
-          "body": {
-            "zh": "香港海洋公园的办法是先看“小背心”，也就是肩背上的黑色背带：盈盈是深V，乐乐是圆领，安安像梯形，可可是蝴蝶型；再看眼圈，盈盈的像“8”字，乐乐的是圆形。幼仔的特征变化很快，海洋公园助理馆长胡绮琪提醒，大熊猫“每日都可能有变化”。另据人民日报客户端的科普，饲养员有时会在熊猫身上涂不同颜色的标记来区分。",
-            "en": "Ocean Park Hong Kong suggests starting with the \"vest\", the black band across the shoulders and back: Ying Ying's is a deep V, Le Le's a round neck, An An's a trapezoid and Ke Ke's a butterfly. Then check the eye patches: Ying Ying's look like the number 8, Le Le's are round. Cubs change quickly; an Ocean Park assistant curator noted that a growing panda \"may change every day\". According to a People's Daily app explainer, keepers sometimes paint different coloured marks on pandas to tell them apart."
-          }
-        }
-      ],
-      "cardSlugs": [
-        "black-eye-patches"
-      ],
-      "sources": [
-        {
-          "title": {
-            "zh": "史密森尼国家动物园：怎样区分两只大熊猫",
-            "en": "Smithsonian's National Zoo: How Can You Tell the Giant Pandas Apart?"
-          },
-          "url": "https://nationalzoo.si.edu/animals/news/how-can-you-tell-giant-pandas-apart",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "亚特兰大动物园：伦伦",
-            "en": "Zoo Atlanta: Lun Lun"
-          },
-          "url": "https://zooatlanta.org/animal-legend/lun-lun/",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "亚特兰大动物园：熊猫动态（12月13日）",
-            "en": "Zoo Atlanta: Panda Updates – Monday, December 13"
-          },
-          "url": "https://zooatlanta.org/panda-updates-monday-december-13/",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "亚特兰大动物园：熊猫动态（12月27日）",
-            "en": "Zoo Atlanta: Panda Updates – Wednesday, December 27"
-          },
-          "url": "https://zooatlanta.org/panda-updates-wednesday-december-27/",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "北京日报：香港海洋公园推出“熊猫辨认大法”",
-            "en": "Beijing Daily: Ocean Park Hong Kong's guide to telling its pandas apart"
-          },
-          "url": "https://xinwen.bjd.com.cn/content/s6728d460e4b0e1ace8a7ea0f.html",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "香港文汇报：熊猫姊弟两个月大",
-            "en": "Wen Wei Po: The panda twins at two months"
-          },
-          "url": "https://www.wenweipo.com/a/202410/15/AP670d7dc4e4b0ee6b0e8a7dca.html",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "人民日报客户端：技术帖！如何分辨大熊猫",
-            "en": "People's Daily app: How to tell giant pandas apart"
-          },
-          "url": "https://www.peopleapp.com/column/30038828372-500003827733",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "北京日报：香港海洋公园推出“熊猫辨认大法”",
-            "en": "Beijing Daily: Ocean Park Hong Kong's guide to telling its pandas apart"
-          },
-          "url": "https://xinwen.bjd.com.cn/content/s6728d460e4b0e1ace8a7ea0f.html",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "香港文汇报：熊猫姊弟两个月大",
-            "en": "Wen Wei Po: The panda twins at two months"
-          },
-          "url": "https://www.wenweipo.com/a/202410/15/AP670d7dc4e4b0ee6b0e8a7dca.html",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "人民日报客户端：技术帖！如何分辨大熊猫",
-            "en": "People's Daily app: How to tell giant pandas apart"
-          },
-          "url": "https://www.peopleapp.com/column/30038828372-500003827733",
-          "citedOn": "2026-10-31"
-        }
-      ]
-    },
-    {
-      "slug": "what-pandas-eat",
-      "status": "published",
-      "title": {
-        "zh": "吃什么",
-        "en": "What pandas eat"
-      },
-      "summary": {
-        "zh": "野生大熊猫的食物约99%是竹子，其余是其他植物和少量肉类。在动物园里，它们还吃营养饼干和果蔬。",
-        "en": "About 99% of a wild giant panda's diet is bamboo; the rest is other plants and a little meat. In zoos, pandas also eat nutritious biscuits, fruit and vegetables."
-      },
-      "sections": [
-        {
-          "heading": {
-            "zh": "主食",
-            "en": "Staple food"
-          },
-          "body": {
-            "zh": "大熊猫的主食是竹子，吃的是多种竹子的叶、茎和笋，每天要吃竹叶约10～14公斤，或竹笋约23～40公斤。约1%的食物是其他植物甚至肉类，它偶尔会捕食鼠兔等小动物。在史密森尼国家动物园，大熊猫除竹子外还吃营养丰富的饼干、胡萝卜和苹果。",
-            "en": "Bamboo is the giant panda's staple food: the leaves, stems and shoots of various bamboo species, about 10–14 kg of leaves or 23–40 kg of shoots a day. About 1% of its diet is other plants and even meat, and it sometimes hunts pikas and other small animals. At Smithsonian's National Zoo, pandas are fed highly nutritious biscuits, carrots and apples as well as bamboo."
-          }
-        },
-        {
-          "heading": {
-            "zh": "两个常见误会",
-            "en": "Two common misconceptions"
-          },
-          "body": {
-            "zh": "“熊猫很懒”：大熊猫每天要花10～16小时觅食。它休息得多，是因为竹子营养低，让它攒不下足够的脂肪去蛰伏，只能全年保持活动。“熊猫只吃竹子”：野外大熊猫约1%的食物是其他植物甚至肉类；动物园还会补充饼干、水果和蔬菜。",
-            "en": "\"Pandas are lazy\": a giant panda spends 10 to 16 hours a day foraging. It rests a lot because bamboo is so low in nutrients that it cannot store enough fat to go dormant, so it has to stay active year-round. \"Pandas eat only bamboo\": about 1% of a wild panda's diet is other plants and even meat, and zoos add biscuits, fruit and vegetables."
-          }
-        }
-      ],
-      "cardSlugs": [
-        "bamboo"
-      ],
-      "sources": [
-        {
-          "title": {
-            "zh": "世界自然基金会：大熊猫吃什么",
-            "en": "WWF: What do pandas eat?"
-          },
-          "url": "https://wwf.panda.org/discover/our_focus/wildlife_practice/profiles/mammals/giant_panda/panda/what_do_pandas_they_eat/",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "史密森尼国家动物园：大熊猫常见问题",
-            "en": "Smithsonian's National Zoo: Giant Panda FAQs"
-          },
-          "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "史密森尼国家动物园：大熊猫",
-            "en": "Smithsonian's National Zoo: Giant Panda"
-          },
-          "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "加州大学戴维斯分校：大熊猫为什么是黑白的",
-            "en": "UC Davis: Why Pandas Are Black and White"
-          },
-          "url": "https://www.ucdavis.edu/news/why-pandas-are-black-and-white-answered",
-          "citedOn": "2026-10-31"
-        },
-        {
-          "title": {
-            "zh": "成都大熊猫繁育研究基地：【熊猫知识】进食",
-            "en": "Chengdu Research Base of Giant Panda Breeding: Panda Knowledge – Feeding"
-          },
-          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8786.html",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "slug": "panda-conservation",
-      "status": "published",
-      "title": {
-        "zh": "保护大熊猫",
-        "en": ""
-      },
-      "summary": {
-        "zh": "大熊猫的保护等级在2016年和2021年先后下调，但栖息地碎片化和小种群仍是难题。国家公园和野化放归是两项主要应对办法。",
-        "en": ""
-      },
-      "sections": [
-        {
-          "heading": {
-            "zh": "保护等级",
-            "en": ""
-          },
-          "body": {
-            "zh": "IUCN在2016年把大熊猫调为“易危”，国家林业局当时认为为时过早；2021年中国按本国标准也调为“易危”。第四次全国调查显示，截至2013年底野生大熊猫1864只；2024年国家林草局的说法是近1900只。",
-            "en": ""
-          }
-        },
-        {
-          "heading": {
-            "zh": "国家公园",
-            "en": ""
-          },
-          "body": {
-            "zh": "大熊猫国家公园2021年设立，跨四川、陕西、甘肃三省，总面积2.2万平方公里，庇护全国七成以上的野生大熊猫；原有73个自然保护地被整合，13个局域栖息地被打通。四川片区8个重点监测区域的野生大熊猫从178只增至191只。",
-            "en": ""
-          }
-        },
-        {
-          "heading": {
-            "zh": "野化放归",
-            "en": ""
-          },
-          "body": {
-            "zh": "野化放归把受过训练的圈养大熊猫送回野外，给小种群补充个体和基因。2010年起的母兽带仔培训让野化培训成效“实现质的飞跃”，2024年首次证实放归个体参与了野外交配繁殖。",
-            "en": ""
-          }
-        }
-      ],
-      "cardSlugs": [
-        "conservation-status",
-        "reintroduction"
-      ],
-      "sources": [
-        {
-          "title": {
-            "zh": "Four out of six great apes one step away from extinction – IUCN Red List（2016-09-04）",
-            "en": ""
-          },
-          "url": "https://iucn.org/news/species/201609/four-out-six-great-apes-one-step-away-extinction-%E2%80%93-iucn-red-list",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "国家林业局：大熊猫仍是濒危物种 降低保护等级为时过早（2016-09-05）",
-            "en": ""
-          },
-          "url": "https://www.chinanews.com/sh/2016/09-05/7994780.shtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "由濒危降为易危！国宝大熊猫野外种群数量达到1800多只（2021-07-07）",
-            "en": ""
-          },
-          "url": "https://news.cctv.com/2021/07/07/ARTIwyRwXUkyxUXpdC8Bnpbl210707.shtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "全国第四次大熊猫调查主要结果（2011-2014年）（2015-03-02）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/lczy/38173.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "四川和秦岭的大熊猫“打电话”方式不一样（2024-06-22，来源中国经营网）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/kp/572411.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "见证！大熊猫国家公园五年成长述评（2026-10-21，来源中国绿色时报）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/lyj/1/zrgjgy/20261021/693762.html",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "国家林草局：大熊猫圈养种群数量达808只（2025-11-21，来源新华社）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/dzwzbh/650741.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "野生大熊猫数量增长7.3% 栖息地修复34万余亩 背后做对了什么？（2026-10-12，来源人民网）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/lyj/1/dzwzbh/20261012/691599.html",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "归野向山林！我国大熊猫野化放归研究不断突破（2026-06-08，来源人民政协报微信公众号）",
-            "en": ""
-          },
-          "url": "https://www.chinanews.com.cn/sh/2026/06-08/10636304.shtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "全球首只人工繁育放归大熊猫“淘淘”野外生存5年多状况良好（2018-01-03）",
-            "en": ""
-          },
-          "url": "https://www.chinanews.com.cn/sh/2018/01-03/8415623.shtml",
-          "citedOn": "2026-11-04"
-        }
-      ]
-    },
-    {
-      "slug": "panda-behavior",
-      "status": "published",
-      "title": {
-        "zh": "大熊猫的习性",
-        "en": ""
-      },
-      "summary": {
-        "zh": "大熊猫独来独往，却并不孤僻：它们用气味和叫声交流，随季节在山间上下迁移，靠竹子过完一生。",
-        "en": ""
-      },
-      "sections": [
-        {
-          "heading": {
-            "zh": "独居与交流",
-            "en": ""
-          },
-          "body": {
-            "zh": "成年大熊猫大多独自生活，但会通过气味标记、叫声和偶尔相遇互相联系。竹林茂密、视线受阻，所以气味比表情更管用。",
-            "en": ""
-          }
-        },
-        {
-          "heading": {
-            "zh": "季节性迁移",
-            "en": ""
-          },
-          "body": {
-            "zh": "大熊猫不冬眠。冬季下到中低海拔，天暖后上到高海拔，每年常回到相同的冬夏活动区。",
-            "en": ""
-          }
-        },
-        {
-          "heading": {
-            "zh": "寿命与健康",
-            "en": ""
-          },
-          "body": {
-            "zh": "史密森尼国家动物园估计野生大熊猫约活 15 到 20 年，人工照料下约 30 年。野外最常见的是寄生虫病和胃肠道疾病，圈养种群最怕犬瘟热。",
-            "en": ""
-          }
-        }
-      ],
-      "cardSlugs": [
-        "solitary-life",
-        "scent-marking",
-        "panda-calls",
-        "seasonal-migration"
-      ],
-      "sources": [
-        {
-          "title": {
-            "zh": "Giant panda（史密森尼国家动物园动物介绍页）",
-            "en": ""
-          },
-          "url": "https://nationalzoo.si.edu/animals/giant-panda",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "【熊猫知识】气味标记（2025-06-05）",
-            "en": ""
-          },
-          "url": "https://www.panda.org.cn/yd/education/database/kpzs/2025-06-05/8779.html",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "认识大熊猫（三）（2023-06-21，节选自《大熊猫201问》）",
-            "en": ""
-          },
-          "url": "https://www.forestry.gov.cn/c/www/zhzs/507415.jhtml",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "Stable seasonal migration patterns in giant pandas（2023）",
-            "en": ""
-          },
-          "url": "https://doi.org/10.24272/j.issn.2095-8137.2022.421",
-          "citedOn": "2026-11-04"
-        },
-        {
-          "title": {
-            "zh": "疾病防治",
-            "en": ""
-          },
-          "url": "https://www.panda.org.cn/cn/animal/preventionandcure/",
-          "citedOn": "2026-11-04"
-        }
-      ]
     }
   ],
   "terms": [
