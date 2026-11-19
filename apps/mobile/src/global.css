@@ -84,30 +84,6 @@
   --text-reading-caption: 13px;
   --text-reading-caption--line-height: 20px;
 
-  /* Deprecated sizes: kept for screens not yet redesigned. See DESIGN.md › Deprecated. */
-  --text-large-title: 34px;
-  --text-large-title--line-height: 41px;
-  --text-title1: 28px;
-  --text-title1--line-height: 36px;
-  --text-title2: 22px;
-  --text-title2--line-height: 28px;
-  --text-title3: 20px;
-  --text-title3--line-height: 26px;
-  --text-callout: 16px;
-  --text-callout--line-height: 24px;
-  --text-subhead: 15px;
-  --text-subhead--line-height: 22px;
-  --text-caption: 12px;
-  --text-caption--line-height: 16px;
-  --text-base: 17px;
-  --text-base--line-height: 26px;
-  --text-xs: 12px;
-  --text-xs--line-height: 16px;
-  --text-sm: 15px;
-  --text-sm--line-height: 22px;
-  --text-xl: 22px;
-  --text-xl--line-height: 28px;
-
   /* Rounded figures (`font-rounded`). This is the web stack; iOS and Android override it below. */
   --font-rounded: ui-rounded, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", system-ui, sans-serif;
 

@@ -103,12 +103,9 @@ export function classifyDevelopmentScopes(paths) {
       changedPath.startsWith("scripts/release/") ||
       changedPath.startsWith("scripts/development/") ||
       changedPath.startsWith("scripts/batch/") ||
-      changedPath.startsWith("scripts/research/") ||
       changedPath === "contracts/batch-operations.v1.json" ||
       changedPath === "apps/web/cloudflare.config.ts" ||
-      changedPath === "services/api/cloudflare.config.ts" ||
-      changedPath.startsWith("data/research-batches/") ||
-      changedPath === "contracts/research-batch.v1.json"
+      changedPath === "services/api/cloudflare.config.ts"
     ) addScope(scopes, "release");
 
     if (changedPath.startsWith("apps/web/")) addScope(scopes, "web");

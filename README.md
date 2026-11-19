@@ -5,7 +5,9 @@ PandaAtlas powers ZhiPanda, a panda-fan product for exploring individual pandas,
 ## Current system
 
 - Web: `apps/web`, Next-compatible App Router source running on vinext + Vite as Cloudflare Worker `zhipanda-v2-web`.
+- Mobile app: `apps/mobile`, Expo / React Native app for iOS, Android, and web review builds.
 - API: `services/api`, NestJS 12 on the Express adapter running as Cloudflare Worker `zhipanda-v2-api`.
+- Collector: `services/collector`, standalone Python acquisition service running on its own host (see [ADR 0004](docs/architecture/adr-0004-continuous-collector.md)).
 - Business data and identity: Supabase PostgreSQL/PostGIS and Supabase Auth.
 - Production database transport: Cloudflare Hyperdrive.
 - Public media: Cloudflare R2.
@@ -41,3 +43,7 @@ Live `main` plus GitHub issues and pull requests are the project-status source o
 - [Domain glossary map](docs/agents/domain.md)
 - [Web runtime](apps/web/README.md)
 - [Web browser-test contract](apps/web/tests/README.md)
+- [Mobile app](apps/mobile/README.md)
+- [Mobile product brief](PRODUCT.md)
+- [Mobile design specification](DESIGN.md)
+- [Collector service](services/collector/README.md)

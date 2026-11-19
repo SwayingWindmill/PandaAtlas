@@ -11,10 +11,10 @@ import { Input } from "@/components/ui/input";
 import { requestJson } from "@/lib/api/request";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
-const SAFE_APP_PATH = /^\/(?:admin(?:\/.*)?|(zh|en)\/(?:(?:pandas|places)\/[a-z0-9-]+|contribute|games\/guess|me(?:\/(?:passport|feed|inbox|collections|memories|game-history|submissions(?:\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})?))?))$/;
+const SAFE_APP_PATH = /^\/(?:admin(?:\/.*)?|(zh|en)\/(?:(?:pandas|places|institutions)\/[a-z0-9-]+|contribute|games\/(?:guess|daily)|me(?:\/(?:passport|feed|inbox|collections|memories|game-history|panda-book|submissions(?:\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})?))?))$/;
 
 function safeNextPath(value: string | null): string {
-  const fallback = "/admin";
+  const fallback = "/zh/me";
   const base = "https://panda-atlas.invalid";
   if (
     !value

@@ -1,6 +1,6 @@
 # Bounded batch workflow interfaces
 
-- Status: Current; five operations are ready, the rest planned
+- Status: Current; six operations are ready, three planned
 - Managed-only principle: [ADR 0002](adr-0002-managed-cloud-deployment-target.md)
 - Operation catalog: [`contracts/batch-operations.v1.json`](../../contracts/batch-operations.v1.json)
 - Manual workflow: [`.github/workflows/batch-operations.yml`](../../.github/workflows/batch-operations.yml)
@@ -16,8 +16,6 @@ The workflow is manual-only. Its default behavior is to validate the catalog and
 
 | Operation | Current status | Effect | Approval |
 |---|---|---|---|
-| `research.validate` | Ready | Read-only | No |
-| `research.build` | Planned | Generated output | No |
 | `curation.validate` | Ready | Read-only | No |
 | `curation.apply` | Planned | Authoritative write | `production-batch` |
 | `curation.guess-questions` | Ready | Production write | `production-batch` |
@@ -52,7 +50,6 @@ Every plan writes `.batch-work/plan.json`. Execution additionally writes `.batch
 
 The ready adapters:
 
-- `research.validate` runs the research-script policy checker;
 - `curation.validate` validates reviewed curation records;
 - `media.process` creates isolated local media derivatives with network access disabled by default;
 - `curation.learning` runs `services/api/dist/learning-command.js` with `data/curation/learning/learning.json` as its manifest and writes it into `learning.catalog`, refusing a document the API could not read or changed content under an unchanged version. The procedure is in the [production release runbook](../runbooks/production-release.md#update-科普-content).
@@ -80,7 +77,7 @@ Secrets must be read only by the protected job and only after environment approv
 ```bash
 npm run check:batch-workflow-interface
 node --test scripts/release/tests/batch-workflow-interface.test.mjs
-npm run batch:plan -- --operation research.validate --json
+npm run batch:plan -- --operation curation.validate --json
 ```
 
 Changes to the workflow, catalog, runner, or checker select the `release` development scope. Generic build, apply, publish and recovery adapters remain separate reviewed work.

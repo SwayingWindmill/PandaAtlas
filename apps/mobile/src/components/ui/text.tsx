@@ -18,7 +18,6 @@ import { Platform, Text as RNText, type Role } from 'react-native';
 // The 科普 reading column has its own set (reading*), used only there.
 // Hierarchy inside a size comes from weight and color, not from a size in between. Other numbers
 // that should read as figures (a day mark, a badge count) add `font-rounded tabular-nums`.
-// Everything under "Deprecated" stays for screens that have not been redesigned yet; see DESIGN.md.
 const BALANCE = Platform.select({ web: 'text-balance' });
 
 const textVariants = cva(
@@ -46,33 +45,6 @@ const textVariants = cva(
         readingLead: 'text-reading-lead text-muted-foreground',
         readingBody: 'text-reading-body',
         readingCaption: 'text-reading-caption text-muted-foreground',
-        // Deprecated: kept so older screens render. Replacement in brackets.
-        /** @deprecated Use `display`. */
-        largeTitle: cn('text-large-title font-bold', BALANCE),
-        /** @deprecated Use `display`, or `readingTitle` in 科普. */
-        title1: cn('text-title1 font-bold', BALANCE),
-        /** @deprecated Use `title`. */
-        title2: cn('text-title2 font-bold', BALANCE),
-        /** @deprecated Use `title` or `headline`. */
-        title3: 'text-title3 font-semibold',
-        /** @deprecated Use `body`. */
-        callout: 'text-callout',
-        /** @deprecated Use `subheadline`. */
-        subhead: 'text-subhead',
-        /** @deprecated Use `footnote`; 12pt is too small for Chinese. */
-        caption: 'text-caption',
-        /** @deprecated Use `display`. */
-        h1: cn('text-large-title font-bold', BALANCE),
-        /** @deprecated Use `title`. */
-        h2: cn('text-title2 font-bold', BALANCE),
-        /** @deprecated Use `headline`. */
-        h3: 'text-headline font-semibold',
-        /** @deprecated Use `body`. */
-        p: 'text-body',
-        /** @deprecated Use `footnote` with `text-muted-foreground`. */
-        muted: 'text-footnote text-muted-foreground',
-        /** @deprecated Use `footnote`. */
-        small: 'text-caption',
       },
     },
     defaultVariants: {
@@ -90,13 +62,6 @@ const ROLE: Partial<Record<TextVariant, Role>> = {
   title: 'heading',
   readingTitle: 'heading',
   readingHeading: 'heading',
-  largeTitle: 'heading',
-  title1: 'heading',
-  title2: 'heading',
-  title3: 'heading',
-  h1: 'heading',
-  h2: 'heading',
-  h3: 'heading',
 };
 
 const ARIA_LEVEL: Partial<Record<TextVariant, string>> = {
@@ -104,13 +69,6 @@ const ARIA_LEVEL: Partial<Record<TextVariant, string>> = {
   title: '2',
   readingTitle: '1',
   readingHeading: '2',
-  largeTitle: '1',
-  title1: '2',
-  h1: '1',
-  title2: '2',
-  h2: '2',
-  title3: '3',
-  h3: '3',
 };
 
 const TextClassContext = React.createContext<string | undefined>(undefined);

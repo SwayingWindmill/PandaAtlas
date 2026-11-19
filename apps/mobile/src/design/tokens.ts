@@ -315,24 +315,6 @@ const reading = {
 
 export type ReadingStyleName = keyof typeof reading;
 
-/**
- * Deprecated sizes, kept so screens that have not been redesigned keep rendering. Do not use on a
- * new or redesigned screen; each names its replacement. Removed once the four tabs are redone.
- */
-const legacyText = {
-  "large-title": { size: 34, lineHeight: 41, replacement: "display" },
-  title1: { size: 28, lineHeight: 36, replacement: "display, or reading-title in 科普" },
-  title2: { size: 22, lineHeight: 28, replacement: "title" },
-  title3: { size: 20, lineHeight: 26, replacement: "title" },
-  callout: { size: 16, lineHeight: 24, replacement: "body" },
-  subhead: { size: 15, lineHeight: 22, replacement: "subheadline" },
-  caption: { size: 12, lineHeight: 16, replacement: "footnote" },
-  base: { size: 17, lineHeight: 26, replacement: "body" },
-  xs: { size: 12, lineHeight: 16, replacement: "footnote" },
-  sm: { size: 15, lineHeight: 22, replacement: "subheadline" },
-  xl: { size: 22, lineHeight: 28, replacement: "title" },
-} as const;
-
 /** Spacing roles on the 4pt scale. */
 const spacing = {
   hairGap: { value: space[1], use: "Between an icon and its label, a value and its unit." },
@@ -376,7 +358,6 @@ export const semantic = {
   scrim,
   text,
   reading,
-  legacyText,
   spacing,
   radius: radii,
   motion,

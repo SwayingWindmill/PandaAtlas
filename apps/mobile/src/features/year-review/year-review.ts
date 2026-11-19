@@ -111,6 +111,10 @@ export function yearReview({ year, today, games, seen, visits, checkins }: YearI
   };
 }
 
+export function yearReviewQueryKey(accountId: string | null, year: number, today: string) {
+  return ["private", accountId ?? "", "year-review", year, today] as const;
+}
+
 /** "03.14", as the 第一次 timeline dates a day. */
 export function monthDot(date: string): string {
   return `${date.slice(5, 7)}.${date.slice(8, 10)}`;

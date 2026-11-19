@@ -6,27 +6,6 @@
   "artifact_directory": ".batch-work",
   "operations": [
     {
-      "id": "research.validate",
-      "status": "ready",
-      "effect": "read-only",
-      "approval_required": false,
-      "manifest_required": false,
-      "idempotency": "Read-only validation; repeated runs inspect the same repository state.",
-      "command": [
-        "node",
-        "scripts/release/check-research-script-policy.mjs"
-      ]
-    },
-    {
-      "id": "research.build",
-      "status": "planned",
-      "effect": "generated-output",
-      "approval_required": false,
-      "manifest_required": true,
-      "idempotency": "A future generic runner must derive deterministic candidate output from one immutable research manifest.",
-      "blocked_reason": "No generic research batch runner is committed yet."
-    },
-    {
       "id": "curation.validate",
       "status": "ready",
       "effect": "read-only",
@@ -89,12 +68,13 @@
         "run",
         "--isolated",
         "--directory",
-        "services/api",
+        "tools/panda-data",
         "--frozen",
         "--extra",
-        "dev",
-        "python",
-        "../../scripts/curation/process_panda_media.py",
+        "media",
+        "panda-data",
+        "media",
+        "process",
         "--output-dir",
         "../../.batch-work/media"
       ],

@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { type Owners, type Update, followedChanges } from "./changes";
+import {
+  type Owners,
+  type Update,
+  followedChanges,
+  followedChangesViewState,
+  shouldLoadFollowedChanges,
+} from "./changes";
 
 const update = (publishedAt: string, targets: Update["targets"]): Update => ({
   updateId: publishedAt,
@@ -66,5 +72,27 @@ describe("followedChanges", () => {
       ]),
     ];
     expect(followedChanges(updates, new Set(["cub"]), owners)).toEqual([]);
+  });
+
+  it("loads remote sources only when signed in with followed pandas and still shows empty before any load", () => {
+    expect(shouldLoadFollowedChanges("signedOut", null)).toBe(false);
+    expect(shouldLoadFollowedChanges("signedIn", 0)).toBe(false);
+    expect(shouldLoadFollowedChanges("signedIn", 1)).toBe(true);
+
+    expect(
+      followedChangesViewState({ sessionStatus: "signedOut", followedCount: null, hasSources: false, failed: false }),
+    ).toBe("signedOut");
+    expect(
+      followedChangesViewState({ sessionStatus: "signedIn", followedCount: 0, hasSources: false, failed: false }),
+    ).toBe("empty");
+    expect(
+      followedChangesViewState({ sessionStatus: "signedIn", followedCount: 1, hasSources: false, failed: false }),
+    ).toBe("pending");
+    expect(
+      followedChangesViewState({ sessionStatus: "signedIn", followedCount: 1, hasSources: false, failed: true }),
+    ).toBe("failed");
+    expect(
+      followedChangesViewState({ sessionStatus: "signedIn", followedCount: 1, hasSources: true, failed: false }),
+    ).toBe("ready");
   });
 });
