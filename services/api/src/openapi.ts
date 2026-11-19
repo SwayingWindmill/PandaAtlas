@@ -2,14 +2,11 @@ import type { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule, type OpenAPIObject } from "@nestjs/swagger";
 import { AskModule } from "./modules/ask/ask.module.js";
 import { AuditModule } from "./modules/audit/audit.module.js";
+import { CatalogModule } from "./modules/catalog/catalog.module.js";
 import { ContributionModule } from "./modules/contribution/contribution.module.js";
 import { EngagementModule } from "./modules/engagement/engagement.module.js";
 import { GameModule } from "./modules/game/game.module.js";
-import { LearningModule } from "./modules/learning/learning.module.js";
-import { OverseasStatusModule } from "./modules/overseas-status/overseas-status.module.js";
 import { PopularityModule } from "./modules/popularity/popularity.module.js";
-import { ComparisonsModule } from "./modules/comparisons/comparisons.module.js";
-import { VenueNewsModule } from "./modules/venue-news/venue-news.module.js";
 import { IdentityModule } from "./modules/identity/identity.module.js";
 import { NotificationModule } from "./modules/notification/notification.module.js";
 import { PrivacyModule } from "./modules/privacy/privacy.module.js";
@@ -56,11 +53,8 @@ export function createV2OpenApiDocument(app: INestApplication): OpenAPIObject {
       ReviewModule,
       EngagementModule,
       GameModule,
-      LearningModule,
-      OverseasStatusModule,
+      CatalogModule,
       PopularityModule,
-      VenueNewsModule,
-      ComparisonsModule,
       AskModule,
       PublicationModule,
       UpdatesModule,

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { PublicLearningCatalog, LearningSource, LearningText } from "../../learning/application/learning-catalog.js";
+import type { PublicLearningCatalog, LearningSource, LearningText } from "../../catalog/application/learning-catalog.js";
 
 // The knowledge 问问熊猫 may answer from: published learning entries and the sourced core facts of
 // published pandas. Each document is one citable passage with the app page it came from and the

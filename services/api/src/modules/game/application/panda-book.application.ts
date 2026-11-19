@@ -42,9 +42,6 @@ export interface PandaBookRepository {
   saveDailyPandaResult(accountId: string, record: DailyPandaResultRecord): Promise<boolean>;
 }
 
-export const PANDA_BOOK_REPOSITORY = Symbol("PANDA_BOOK_REPOSITORY");
-export const PANDA_BOOK_PORT = Symbol("PANDA_BOOK_PORT");
-
 export class PandaBookApplication {
   public constructor(
     private readonly repository: PandaBookRepository,

@@ -3,25 +3,10 @@ import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { PUBLIC_READ_PORT, type PublicReadPort } from "../publication/application/public-read.application.js";
 import { PublicationModule } from "../publication/publication.module.js";
-import {
-  DAILY_PANDA_PORT,
-  DAILY_PANDA_REPOSITORY,
-  DailyPandaApplication,
-  type DailyPandaRepository,
-} from "./application/daily-panda.application.js";
-import {
-  PANDA_BOOK_PORT,
-  PANDA_BOOK_REPOSITORY,
-  PandaBookApplication,
-  type PandaBookRepository,
-} from "./application/panda-book.application.js";
+import { DailyPandaApplication } from "./application/daily-panda.application.js";
+import { PandaBookApplication } from "./application/panda-book.application.js";
 import { GAME_PRIVACY_PORT } from "./application/game-privacy.port.js";
-import {
-  GAME_PORT,
-  GAME_REPOSITORY,
-  GameApplication,
-  type GameRepository,
-} from "./application/game.application.js";
+import { GAME_PORT } from "./application/game.application.js";
 import {
   DailyPandaController,
   GameAttemptController,
@@ -38,37 +23,21 @@ import { PostgresPandaBookRepository } from "./infrastructure/postgres-panda-boo
   controllers: [GameController, DailyPandaController, GameAttemptController, PandaBookController],
   providers: [
     {
-      provide: GAME_REPOSITORY,
+      provide: GAME_PORT,
       useFactory: (database: DatabaseService) => new PostgresGameRepository(database),
       inject: [DatabaseService],
     },
     {
-      provide: GameApplication,
-      useFactory: (repository: GameRepository) => new GameApplication(repository),
-      inject: [GAME_REPOSITORY],
-    },
-    { provide: GAME_PORT, useExisting: GameApplication },
-    {
-      provide: DAILY_PANDA_REPOSITORY,
-      useFactory: (database: DatabaseService) => new PostgresDailyPandaRepository(database),
-      inject: [DatabaseService],
+      provide: DailyPandaApplication,
+      useFactory: (database: DatabaseService, publicRead: PublicReadPort) =>
+        new DailyPandaApplication(new PostgresDailyPandaRepository(database), publicRead),
+      inject: [DatabaseService, PUBLIC_READ_PORT],
     },
     {
-      provide: DAILY_PANDA_PORT,
-      useFactory: (repository: DailyPandaRepository, publicRead: PublicReadPort) =>
-        new DailyPandaApplication(repository, publicRead),
-      inject: [DAILY_PANDA_REPOSITORY, PUBLIC_READ_PORT],
-    },
-    {
-      provide: PANDA_BOOK_REPOSITORY,
-      useFactory: (database: DatabaseService) => new PostgresPandaBookRepository(database),
-      inject: [DatabaseService],
-    },
-    {
-      provide: PANDA_BOOK_PORT,
-      useFactory: (repository: PandaBookRepository, dailyPanda: DailyPandaApplication, publicRead: PublicReadPort) =>
-        new PandaBookApplication(repository, dailyPanda, publicRead),
-      inject: [PANDA_BOOK_REPOSITORY, DAILY_PANDA_PORT, PUBLIC_READ_PORT],
+      provide: PandaBookApplication,
+      useFactory: (database: DatabaseService, dailyPanda: DailyPandaApplication, publicRead: PublicReadPort) =>
+        new PandaBookApplication(new PostgresPandaBookRepository(database), dailyPanda, publicRead),
+      inject: [DatabaseService, DailyPandaApplication, PUBLIC_READ_PORT],
     },
     { provide: GAME_PRIVACY_PORT, useFactory: () => new PostgresGamePrivacyQuery() },
   ],

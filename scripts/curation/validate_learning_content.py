@@ -34,7 +34,7 @@ FREE_LICENSE = re.compile(r"^(CC BY(-SA)? \d\.\d( [a-z]{2})?|CC0 1\.0|Public dom
 STATUSES = {"draft", "published"}
 FACE_TIP_KEYS = ("shape", "leftRight", "eyePatches", "ears")
 COLLECTIONS = ("articles", "terms", "faceGuides", "challenges", "monthThemes")
-# Mirrors MONTH_TASK_KINDS in services/api/src/modules/learning/application/learning-catalog.ts.
+# Mirrors MONTH_TASK_KINDS in services/api/src/modules/catalog/application/learning-catalog.ts.
 MONTH_TASK_KINDS = {"daily", "guess", "learn", "checkin", "collections", "compare"}
 MONTH = re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
 CATEGORIES = {

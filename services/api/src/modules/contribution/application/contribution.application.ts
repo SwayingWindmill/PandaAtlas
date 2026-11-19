@@ -109,7 +109,6 @@ export interface ContributionReviewParticipant {
 
 export type ContributionPort = ContributionRepository;
 
-export const CONTRIBUTION_REPOSITORY = Symbol("CONTRIBUTION_REPOSITORY");
 export const CONTRIBUTION_PORT = Symbol("CONTRIBUTION_PORT");
 export const CONTRIBUTION_REVIEW_PORT = Symbol("CONTRIBUTION_REVIEW_PORT");
 export const CONTRIBUTION_REVIEW_PARTICIPANT = Symbol("CONTRIBUTION_REVIEW_PARTICIPANT");

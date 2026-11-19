@@ -3,12 +3,7 @@ import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { ENGAGEMENT_NOTIFICATION_AUDIENCE_PORT } from "./application/engagement-notification.port.js";
 import { ENGAGEMENT_PRIVACY_PORT } from "./application/engagement-privacy.port.js";
-import {
-  ENGAGEMENT_PORT,
-  ENGAGEMENT_REPOSITORY,
-  EngagementApplication,
-  type EngagementRepository,
-} from "./application/engagement.application.js";
+import { ENGAGEMENT_PORT, EngagementApplication } from "./application/engagement.application.js";
 import { EngagementController } from "./http/engagement.controller.js";
 import { PostgresEngagementNotificationQuery } from "./infrastructure/postgres-engagement-notification.query.js";
 import { PostgresEngagementPrivacyQuery } from "./infrastructure/postgres-engagement-privacy.query.js";
@@ -19,14 +14,9 @@ import { PostgresEngagementRepository } from "./infrastructure/postgres-engageme
   controllers: [EngagementController],
   providers: [
     {
-      provide: ENGAGEMENT_REPOSITORY,
-      useFactory: (database: DatabaseService) => new PostgresEngagementRepository(database),
-      inject: [DatabaseService],
-    },
-    {
       provide: EngagementApplication,
-      useFactory: (repository: EngagementRepository) => new EngagementApplication(repository),
-      inject: [ENGAGEMENT_REPOSITORY],
+      useFactory: (database: DatabaseService) => new EngagementApplication(new PostgresEngagementRepository(database)),
+      inject: [DatabaseService],
     },
     { provide: ENGAGEMENT_PORT, useExisting: EngagementApplication },
     {

@@ -5,7 +5,7 @@ import { type Kysely, sql } from "kysely";
 import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { assertVerifiedDatabase } from "./batch-database.js";
-import { type PublicLearningCatalog, publishedCatalog } from "./modules/learning/application/learning-catalog.js";
+import { type PublicLearningCatalog, publishedCatalog } from "./modules/catalog/application/learning-catalog.js";
 import { ConfigModule } from "./platform/config/config.module.js";
 import { DatabaseModule } from "./platform/database/database.module.js";
 import { DatabaseService } from "./platform/database/database.service.js";

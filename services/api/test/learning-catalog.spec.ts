@@ -1,7 +1,7 @@
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import { afterEach, describe, expect, it } from "vitest";
 import { createApplication } from "../src/bootstrap.js";
-import { LearningCatalogError, publishedCatalog } from "../src/modules/learning/application/learning-catalog.js";
+import { LearningCatalogError, publishedCatalog } from "../src/modules/catalog/application/learning-catalog.js";
 import { injectHttp } from "./inject-http.js";
 
 const text = { zh: "黑眼圈", en: "Eye patches" };

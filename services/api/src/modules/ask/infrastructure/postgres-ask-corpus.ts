@@ -1,5 +1,5 @@
 import type { DatabaseService } from "../../../platform/database/database.service.js";
-import type { LearningApplication } from "../../learning/application/learning.application.js";
+import type { PublicLearningCatalog } from "../../catalog/application/learning-catalog.js";
 import type { PublicPandaSummary, PublicReadPort } from "../../publication/application/public-read.application.js";
 import {
   type AskIndexedDocument,
@@ -37,7 +37,7 @@ function stringFact(value: unknown): string | null {
 export class PostgresAskCorpus implements AskCorpusSource {
   public constructor(
     private readonly database: DatabaseService,
-    private readonly learning: Pick<LearningApplication, "published">,
+    private readonly learning: { published(): Promise<PublicLearningCatalog> },
     private readonly publicRead: Pick<PublicReadPort, "listPandas" | "listLineage" | "listResidencies" | "listPlaces">,
   ) {}
 

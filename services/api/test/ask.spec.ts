@@ -16,7 +16,7 @@ import type {
   RetrievedChunk,
 } from "../src/modules/ask/application/ask.ports.js";
 import { modelText } from "../src/modules/ask/infrastructure/cloudflare-ask-runtime.js";
-import type { PublicLearningCatalog } from "../src/modules/learning/application/learning-catalog.js";
+import type { PublicLearningCatalog } from "../src/modules/catalog/application/learning-catalog.js";
 
 const catalog = JSON.parse(
   readFileSync(new URL("./ask-eval/learning-catalog.2026.11.01.2.json", import.meta.url), "utf8"),

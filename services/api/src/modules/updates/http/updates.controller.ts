@@ -1,13 +1,13 @@
 import { Controller, DefaultValuePipe, Get, Inject, ParseIntPipe, Query } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Public } from "../../../platform/auth/public.decorator.js";
-import { UPDATES_PORT, type UpdatesPort } from "../application/updates.application.js";
+import { UpdatesApplication } from "../application/updates.application.js";
 import { UpdateItemDto } from "./updates.dto.js";
 
 @ApiTags("Updates")
 @Controller("updates")
 export class UpdatesController {
-  public constructor(@Inject(UPDATES_PORT) private readonly updates: UpdatesPort) {}
+  public constructor(@Inject(UpdatesApplication) private readonly updates: UpdatesApplication) {}
 
   @Get()
   @Public()

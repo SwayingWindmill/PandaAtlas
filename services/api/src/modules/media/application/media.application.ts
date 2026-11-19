@@ -46,7 +46,6 @@ export interface MediaRepository {
 
 export type MediaPort = MediaRepository;
 
-export const MEDIA_REPOSITORY = Symbol("MEDIA_REPOSITORY");
 export const MEDIA_PORT = Symbol("MEDIA_PORT");
 
 export class MediaApplication implements MediaPort {

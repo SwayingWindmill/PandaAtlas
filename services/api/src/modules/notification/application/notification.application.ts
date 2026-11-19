@@ -33,7 +33,6 @@ export interface NotificationRepository {
 }
 
 export type NotificationPort = NotificationRepository;
-export const NOTIFICATION_REPOSITORY = Symbol("NOTIFICATION_REPOSITORY");
 export const NOTIFICATION_PORT = Symbol("NOTIFICATION_PORT");
 
 export class NotificationApplication implements NotificationPort {

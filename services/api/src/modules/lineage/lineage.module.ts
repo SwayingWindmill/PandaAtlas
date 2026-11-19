@@ -6,9 +6,7 @@ import { PandaModule } from "../panda/panda.module.js";
 import { LINEAGE_PUBLICATION_PORT } from "./application/lineage-publication.application.js";
 import {
   LINEAGE_PORT,
-  LINEAGE_REPOSITORY,
   LineageApplication,
-  type LineageRepository,
 } from "./application/lineage.application.js";
 import { PostgresLineagePublicationQuery } from "./infrastructure/postgres-lineage-publication.query.js";
 import { PostgresLineageRepository } from "./infrastructure/postgres-lineage.repository.js";
@@ -17,15 +15,10 @@ import { PostgresLineageRepository } from "./infrastructure/postgres-lineage.rep
   imports: [DatabaseModule, PandaModule],
   providers: [
     {
-      provide: LINEAGE_REPOSITORY,
-      useFactory: (database: DatabaseService) => new PostgresLineageRepository(database),
-      inject: [DatabaseService],
-    },
-    {
       provide: LINEAGE_PORT,
-      useFactory: (repository: LineageRepository, pandas: PandaReferencePort) =>
-        new LineageApplication(repository, pandas),
-      inject: [LINEAGE_REPOSITORY, PANDA_REFERENCE_PORT],
+      useFactory: (database: DatabaseService, pandas: PandaReferencePort) =>
+        new LineageApplication(new PostgresLineageRepository(database), pandas),
+      inject: [DatabaseService, PANDA_REFERENCE_PORT],
     },
     { provide: LINEAGE_PUBLICATION_PORT, useFactory: () => new PostgresLineagePublicationQuery() },
   ],

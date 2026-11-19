@@ -63,7 +63,6 @@ export interface PlaceReferencePort {
   exists(placeId: string): Promise<boolean>;
 }
 
-export const PLACES_REPOSITORY = Symbol("PLACES_REPOSITORY");
 export const PLACES_PORT = Symbol("PLACES_PORT");
 export const PLACE_REFERENCE_PORT = Symbol("PLACE_REFERENCE_PORT");
 

@@ -40,21 +40,4 @@ export interface EvidenceRepository {
 
 export type EvidencePort = EvidenceRepository;
 
-export const EVIDENCE_REPOSITORY = Symbol("EVIDENCE_REPOSITORY");
 export const EVIDENCE_PORT = Symbol("EVIDENCE_PORT");
-
-export class EvidenceApplication implements EvidencePort {
-  public constructor(private readonly repository: EvidenceRepository) {}
-
-  public createSource(input: CreateEvidenceSourceInput): Promise<EvidenceSource> {
-    return this.repository.createSource(input);
-  }
-
-  public getSource(sourceId: string): Promise<EvidenceSource | undefined> {
-    return this.repository.getSource(sourceId);
-  }
-
-  public updateVerification(input: UpdateEvidenceVerificationInput): Promise<EvidenceSource> {
-    return this.repository.updateVerification(input);
-  }
-}
