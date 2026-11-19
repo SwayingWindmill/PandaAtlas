@@ -65,7 +65,7 @@ function statIcon(stat: Stat, deceased: boolean): LucideIcon {
   return deceased ? Flower : MapPin;
 }
 
-export function ProfileStatTile({
+function ProfileStatTile({
   stat,
   confirmed,
   onPress,

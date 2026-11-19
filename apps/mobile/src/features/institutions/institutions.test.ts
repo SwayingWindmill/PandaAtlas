@@ -19,14 +19,15 @@ afterEach(() => {
 
 describe("institution & seen query caching", () => {
   it("reuses shared residencies and caches institution details per slug", async () => {
-    publicApi.GET.mockImplementation(async (path: string) => {
+    publicApi.GET.mockImplementation(async (path: string, init?: { params?: { path?: { slug?: string } } }) => {
       if (path === "/api/v2/institutions/{slug}") {
+        const slug = init?.params?.path?.slug ?? "chengdu";
         return {
           data: {
             institution: {
-              slug: "chengdu",
-              nameZh: "成都基地",
-              nameEn: "Chengdu Base",
+              slug,
+              nameZh: slug === "wolong" ? "卧龙基地" : "成都基地",
+              nameEn: slug === "wolong" ? "Wolong Base" : "Chengdu Base",
               countryCode: "CN",
               profile: null,
             },
@@ -48,12 +49,14 @@ describe("institution & seen query caching", () => {
 
     const first = await loadInstitution("chengdu");
     const second = await queryClient.fetchQuery(institutionQueryOptions("chengdu"));
+    const other = await loadInstitution("wolong");
     expect(first.slug).toBe("chengdu");
     expect(second.name).toBe("成都基地");
+    expect(other.name).toBe("卧龙基地");
 
     const institutionFetches = publicApi.GET.mock.calls.filter(([p]) => p === "/api/v2/institutions/{slug}");
     const residencyFetches = publicApi.GET.mock.calls.filter(([p]) => p === "/api/v2/residencies");
-    expect(institutionFetches).toHaveLength(1);
+    expect(institutionFetches).toHaveLength(2);
     expect(residencyFetches).toHaveLength(1);
   });
 

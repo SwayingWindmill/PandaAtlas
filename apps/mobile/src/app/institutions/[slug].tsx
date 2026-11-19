@@ -36,7 +36,8 @@ const isTab = (value: string | undefined): value is Tab => TABS.some((tab) => ta
 export default function InstitutionScreen() {
   const params = useLocalSearchParams<{ slug: string; tab?: string }>();
   const slug = params.slug;
-  const { data: institution, isError: failed, refetch } = useQuery(institutionQueryOptions(slug));
+  const { data: institution, isError, isFetching, refetch } = useQuery(institutionQueryOptions(slug));
+  const failed = !institution && isError && !isFetching;
   const [tab, setTab] = useState<Tab>(isTab(params.tab) ? params.tab : "overview");
   const hero = useInstitutionHero(institution?.residents ?? null);
   const { state } = useSession();

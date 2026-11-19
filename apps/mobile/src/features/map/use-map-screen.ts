@@ -16,7 +16,7 @@ import { WILD_AREAS, type WildArea, venuesNear } from "@/features/map/wild";
 const SHEET_SHARE = 0.5;
 const PLAY_STEP_MS = 700;
 
-export type MapSelection = { kind: "place"; id: string } | { kind: "wild"; id: string } | null;
+type MapSelection = { kind: "place"; id: string } | { kind: "wild"; id: string } | null;
 
 export function useMapScreen(insetsTop: number, windowWidth: number, windowHeight: number) {
   const { data: view, isError: failed, refetch } = useQuery(mapViewQueryOptions());
@@ -174,7 +174,6 @@ export function useMapScreen(insetsTop: number, windowWidth: number, windowHeigh
     layers,
     toggleVenues,
     toggleWild,
-    selection,
     clearSelection: () => setSelection(null),
     viewport,
     camera,

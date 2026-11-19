@@ -28,9 +28,13 @@ export async function loadSeenIds(): Promise<Set<string>> {
   return new Set(data.items.map((item) => item.pandaId));
 }
 
+export function seenIdsQueryKey(accountId: string) {
+  return ["private", accountId, "seen-ids"] as const;
+}
+
 export function seenIdsQueryOptions(accountId: string) {
   return queryOptions({
-    queryKey: ["private", accountId, "seen-ids"],
+    queryKey: seenIdsQueryKey(accountId),
     staleTime: 60_000,
     queryFn: loadSeenIds,
   });
