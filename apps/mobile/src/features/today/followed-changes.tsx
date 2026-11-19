@@ -1,6 +1,7 @@
+import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { router, useFocusEffect } from "expo-router";
-import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { router } from "expo-router";
+import { type ReactNode, useMemo } from "react";
 import { Pressable, View } from "react-native";
 
 import { BellRing } from "@/components/icons";
@@ -16,6 +17,7 @@ import { api } from "@/lib/api";
 import { fetchLifeEvents, fetchLineage, fetchResidencies } from "@/lib/public-data";
 import { usePandaCover } from "@/lib/covers";
 import { HAIRLINE } from "@/lib/surface";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 import {
   type Owners,
@@ -102,33 +104,16 @@ function Thumb({ pandaId, name }: { pandaId: string; name: string }) {
 export function FollowedChanges() {
   const { state } = useSession();
   const followed = useFollowed();
-  const [sources, setSources] = useState<Sources | null>(null);
-  const [failed, setFailed] = useState(false);
   const followedCount = followed?.size ?? null;
   const shouldLoad = shouldLoadFollowedChanges(state.status, followedCount);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (!shouldLoad) {
-        setSources(null);
-        setFailed(false);
-        return;
-      }
-      let active = true;
-      loadSources()
-        .then((loaded) => {
-          if (!active) return;
-          setSources(loaded);
-          setFailed(false);
-        })
-        .catch(() => {
-          if (active) setFailed(true);
-        });
-      return () => {
-        active = false;
-      };
-    }, [shouldLoad]),
-  );
+  const { data: sources = null, isError: failed, refetch } = useQuery({
+    queryKey: ["public", "followed-changes"],
+    queryFn: loadSources,
+    enabled: shouldLoad,
+    staleTime: 0,
+    networkMode: "always",
+  });
+  useRefetchOnFocus(refetch, shouldLoad);
 
   const changes = useMemo(
     () => (sources && followed ? followedChanges(sources.updates, followed, sources.owners) : []),

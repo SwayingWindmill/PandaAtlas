@@ -1,5 +1,4 @@
 import { loadPandaIndex, loadPlaces, placeName } from "@/features/pandas/pandas";
-import { localToday } from "@/features/engagement/seen";
 import type { Evidence } from "@/features/timeline/timeline";
 import { loadVisits } from "@/features/visits/visits";
 import { api, authedApi } from "@/lib/api";
@@ -42,12 +41,6 @@ async function loadPersonal(): Promise<PersonalRecords> {
     loadVisits().catch(() => []),
   ]);
   return { recognized: book, seen, visits };
-}
-
-/** Today's memories. */
-export async function loadMemories({ signedIn, today = localToday() }: { signedIn: boolean; today?: string }): Promise<Memory[]> {
-  const [day] = await loadMemoryDays({ signedIn, days: [today] });
-  return day!.memories;
 }
 
 /**

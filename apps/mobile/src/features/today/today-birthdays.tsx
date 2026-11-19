@@ -1,5 +1,5 @@
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
 
 import { PandaTile } from "@/components/panda-tile";
@@ -36,34 +36,30 @@ function monthDay(date: string) {
  */
 export function TodayBirthdays() {
   const { width, fontScale } = useWindowDimensions();
-  const [shelf, setShelf] = useState<Shelf | null>(null);
   const prefs = useMemoryPrefs();
   const onThisDay = prefs ? !prefs.off : null;
+  const { data } = useQuery({
+    queryKey: ["public", "calendar-sources"],
+    queryFn: loadCalendarSources,
+    staleTime: 300_000,
+    networkMode: "always",
+  });
 
-  useFocusEffect(
-    useCallback(() => {
-      if (onThisDay === null) return;
-      const today = localToday();
-      const year = Number(today.slice(0, 4));
-      const month = Number(today.slice(5, 7));
-      loadCalendarSources()
-        .then(({ pandas, events }) => {
-          const next = shiftMonth(year, month, 1);
-          const days = [
-            ...calendarMonth(pandas, events, year, month),
-            ...calendarMonth(pandas, events, next.year, next.month),
-          ];
-          const todays = days.find((day) => day.date === today)?.entries.filter(isBirthday) ?? [];
-          if (todays.length > 0 && !onThisDay) {
-            setShelf({ today: true, entries: todays });
-            return;
-          }
-          const upcoming = days.filter((day) => day.date > today).flatMap((day) => day.entries.filter(isBirthday));
-          setShelf({ today: false, entries: upcoming });
-        })
-        .catch(() => setShelf(null));
-    }, [onThisDay]),
-  );
+  const shelf = useMemo<Shelf | null>(() => {
+    if (onThisDay === null || !data) return null;
+    const today = localToday();
+    const year = Number(today.slice(0, 4));
+    const month = Number(today.slice(5, 7));
+    const next = shiftMonth(year, month, 1);
+    const days = [
+      ...calendarMonth(data.pandas, data.events, year, month),
+      ...calendarMonth(data.pandas, data.events, next.year, next.month),
+    ];
+    const todays = days.find((day) => day.date === today)?.entries.filter(isBirthday) ?? [];
+    if (todays.length > 0 && !onThisDay) return { today: true, entries: todays };
+    const upcoming = days.filter((day) => day.date > today).flatMap((day) => day.entries.filter(isBirthday));
+    return { today: false, entries: upcoming };
+  }, [data, onThisDay]);
 
   if (!shelf || shelf.entries.length === 0) return null;
   // About two and a half tiles show, so the next one peeks in; they widen at large text sizes.

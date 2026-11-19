@@ -1,9 +1,10 @@
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useCallback, useMemo } from "react";
 
 import { localToday } from "@/features/engagement/seen";
 import { useSession } from "@/features/session/session";
 import type { Evidence } from "@/features/timeline/timeline";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 import { type MemoryDay, loadFirstSources, loadMemoryDays } from "./load";
 import type { Memory } from "./on-this-day";
@@ -18,46 +19,69 @@ export interface MemoriesState {
   reload: () => void;
 }
 
+const EMPTY_SOURCES = new Map<string, Evidence>();
+
 /**
- * The memories of `days` (today when none are given), read again each time the screen comes into focus (the
- * day may have turned), with the fan's own records once the session says who they are, and each memory's
- * first readable source. `days` is a dependency: pass a stable key, such as the range it was made from.
+ * The memories of `days` (today when none are given), loaded with React Query and refreshed on screen focus
+ * (the day may have turned), with the fan's own records once signed in, and each memory's first readable
+ * source. `days` is a dependency: pass a stable key, such as the range it was made from.
  */
 export function useMemories(days?: (today: string) => string[], key = "today"): MemoriesState {
   const { state } = useSession();
-  const [loaded, setLoaded] = useState<MemoryDay[] | null>(null);
-  const [sources, setSources] = useState<Map<string, Evidence>>(new Map());
-  const [failed, setFailed] = useState(false);
   const signedIn = state.status === "signedIn";
   const waiting = state.status === "loading";
+  const accountId = state.status === "signedIn" ? state.accountId : null;
+  const today = localToday();
+  const requestedDays = days ? days(today) : [today];
 
-  const load = useCallback(() => {
-    if (waiting) return undefined;
-    let live = true;
-    const today = localToday();
-    loadMemoryDays({ signedIn, days: days ? days(today) : [today] })
-      .then((next) => {
-        if (!live) return;
-        setFailed(false);
-        setLoaded(next);
-        void loadFirstSources(next.flatMap((day) => day.memories)).then((found) => live && setSources(found));
-      })
-      .catch(() => {
-        if (live) setFailed(true);
-      });
-    return () => {
-      live = false;
-    };
-    // `days` is a function made on each render; `key` says when it asks for other days.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signedIn, waiting, key]);
+  const queryKey =
+    accountId !== null
+      ? (["private", accountId, "memories", key, today] as const)
+      : (["public", "memories", key, today] as const);
 
-  useFocusEffect(load);
+  const daysQuery = useQuery({
+    queryKey,
+    queryFn: () => loadMemoryDays({ signedIn, days: requestedDays }),
+    enabled: !waiting,
+    networkMode: "always",
+  });
+  useRefetchOnFocus(daysQuery.refetch, !waiting);
 
+  const loadedDays = daysQuery.data ?? null;
+  const flatMemories = useMemo(
+    () => (loadedDays ? loadedDays.flatMap((day) => day.memories) : null),
+    [loadedDays],
+  );
+  const memorySourcesKey = useMemo(
+    () =>
+      flatMemories
+        ? flatMemories
+            .filter((memory) => memory.sourceIds.length > 0)
+            .map((memory) => `${memory.key}:${memory.sourceIds.join("|")}`)
+            .sort()
+            .join(",")
+        : "",
+    [flatMemories],
+  );
+
+  const sourcesQuery = useQuery({
+    queryKey: ["public", "memory-sources", memorySourcesKey],
+    queryFn: () => loadFirstSources(flatMemories ?? []),
+    enabled: flatMemories !== null && memorySourcesKey.length > 0,
+    staleTime: 300_000,
+    networkMode: "always",
+  });
+
+  const refetchDays = daysQuery.refetch;
   const reload = useCallback(() => {
-    setFailed(false);
-    load();
-  }, [load]);
+    void refetchDays();
+  }, [refetchDays]);
 
-  return { memories: loaded ? loaded.flatMap((day) => day.memories) : null, days: loaded, sources, failed, reload };
+  return {
+    memories: flatMemories,
+    days: loadedDays,
+    sources: sourcesQuery.data ?? EMPTY_SOURCES,
+    failed: !loadedDays && daysQuery.isError && !daysQuery.isFetching,
+    reload,
+  };
 }

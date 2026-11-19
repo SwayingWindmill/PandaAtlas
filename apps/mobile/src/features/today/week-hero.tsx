@@ -1,6 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useMemo } from "react";
 import { View } from "react-native";
 
 import { useStacked } from "@/components/grouped-list";
@@ -28,52 +28,57 @@ import { WEEK_DAYS, type WeekMemory, weekMemory } from "./week-memory";
 
 const WEEKDAY = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
 
+async function loadWeekMemorySources() {
+  const [pandas, places, events, residencies] = await Promise.all([
+    loadPandaIndex(),
+    loadPlaces().catch(() => new Map()),
+    loadLifeEvents().catch(() => []),
+    loadResidencies().catch(() => []),
+  ]);
+  return { pandas, places, events, residencies };
+}
+
 /**
- * The week's nearest public anniversary, loaded on focus: undefined while loading, null when the week has none.
+ * The week's nearest public anniversary: undefined while loading, null when failed or the week has none.
  * With 那年今天 off only birthdays are left; 少显示 and 里程碑 apply as on the 那年今天 page.
  */
 export function useWeekMemory(): WeekMemory | null | undefined {
   const prefs = useMemoryPrefs();
   const milestonesOn = useMilestonesOn();
-  const [hero, setHero] = useState<WeekMemory | null | undefined>(undefined);
-  useFocusEffect(
-    useCallback(() => {
-      if (!prefs) return;
-      const today = localToday();
-      Promise.all([
-        loadPandaIndex(),
-        loadPlaces().catch(() => new Map()),
-        loadLifeEvents().catch(() => []),
-        loadResidencies().catch(() => []),
-      ])
-        .then(([pandas, places, events, residencies]) => {
-          const where = memoryPlaces(places);
-          const days = Array.from({ length: WEEK_DAYS }, (_, index) => {
-            const date = addDays(today, index);
-            const memories = visibleMemories(
-              memoriesOn({
-                today: date,
-                pandas,
-                events,
-                residencies,
-                places: where,
-              }),
-              prefs,
-              milestonesOn,
-            );
-            return {
-              date,
-              memories: prefs.off
-                ? memories.filter((memory) => memory.kind === "birthday")
-                : memories,
-            };
-          });
-          setHero(weekMemory(days));
-        })
-        .catch(() => setHero(null));
-    }, [prefs, milestonesOn]),
-  );
-  return hero;
+  const { data, isError } = useQuery({
+    queryKey: ["public", "week-memory-sources"],
+    queryFn: loadWeekMemorySources,
+    staleTime: 300_000,
+    networkMode: "always",
+  });
+
+  return useMemo(() => {
+    if (isError && !data) return null;
+    if (!prefs || !data) return undefined;
+    const today = localToday();
+    const where = memoryPlaces(data.places);
+    const days = Array.from({ length: WEEK_DAYS }, (_, index) => {
+      const date = addDays(today, index);
+      const memories = visibleMemories(
+        memoriesOn({
+          today: date,
+          pandas: data.pandas,
+          events: data.events,
+          residencies: data.residencies,
+          places: where,
+        }),
+        prefs,
+        milestonesOn,
+      );
+      return {
+        date,
+        memories: prefs.off
+          ? memories.filter((memory) => memory.kind === "birthday")
+          : memories,
+      };
+    });
+    return weekMemory(days);
+  }, [data, isError, milestonesOn, prefs]);
 }
 
 /** "11.8", the anniversary's day. */

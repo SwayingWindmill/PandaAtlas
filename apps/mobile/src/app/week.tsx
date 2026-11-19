@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -11,25 +12,17 @@ import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { PandaRow } from "@/features/pandas/panda-row";
 import type { DigestGroup } from "@/features/today/week";
-import { type Week, loadWeek } from "@/features/today/week-data";
+import { type Week, weekQueryOptions } from "@/features/today/week-data";
 
 /** Rows a group shows before 显示全部: a bulk import of hundreds would bury the births under it. */
 const ROWS_SHOWN = 8;
 
 export default function WeekScreen() {
-  const [week, setWeek] = useState<Week | null>(null);
-  const [failed, setFailed] = useState(false);
-
-  const load = useCallback(() => {
-    loadWeek()
-      .then(setWeek)
-      .catch(() => setFailed(true));
-  }, []);
-  useEffect(load, [load]);
+  const { data: week, isError, isFetching, refetch } = useQuery(weekQueryOptions());
+  const failed = !week && isError && !isFetching;
 
   function retry() {
-    setFailed(false);
-    load();
+    void refetch();
   }
 
   if (!week) {
