@@ -1,7 +1,4 @@
 import { Module } from "@nestjs/common";
-import { APP_GUARD } from "@nestjs/core";
-import { AuthModule } from "../../platform/auth/auth.module.js";
-import { SupabaseAuthGuard } from "../../platform/auth/supabase-auth.guard.js";
 import { ConfigModule } from "../../platform/config/config.module.js";
 import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
@@ -16,7 +13,7 @@ import { MeController } from "./http/me.controller.js";
 import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.repository.js";
 
 @Module({
-  imports: [AuthModule, ConfigModule, DatabaseModule, RequestContextModule],
+  imports: [ConfigModule, DatabaseModule, RequestContextModule],
   controllers: [MeController],
   providers: [
     {
@@ -39,15 +36,12 @@ import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.r
     ApplicationAccessGuard,
     SupabaseAuthUserDeletion,
     { provide: AUTH_USER_DELETION, useExisting: SupabaseAuthUserDeletion },
-    {
-      provide: APP_GUARD,
-      useExisting: SupabaseAuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useExisting: ApplicationAccessGuard,
-    },
   ],
-  exports: [IDENTITY_NOTIFICATION_CONTACT_PORT, IDENTITY_PRIVACY_PORT, AUTH_USER_DELETION],
+  exports: [
+    ApplicationAccessGuard,
+    IDENTITY_NOTIFICATION_CONTACT_PORT,
+    IDENTITY_PRIVACY_PORT,
+    AUTH_USER_DELETION,
+  ],
 })
 export class IdentityModule {}

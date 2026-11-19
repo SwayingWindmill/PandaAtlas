@@ -24,12 +24,7 @@ import {
   type NotificationPrivacyPort,
 } from "../notification/application/notification-privacy.port.js";
 import { NotificationModule } from "../notification/notification.module.js";
-import {
-  PRIVACY_PORT,
-  PRIVACY_REPOSITORY,
-  PrivacyApplication,
-  type PrivacyRepository,
-} from "./application/privacy.application.js";
+import { PRIVACY_PORT } from "./application/privacy.application.js";
 import { PrivacyController } from "./http/privacy.controller.js";
 import { PostgresPrivacyRepository } from "./infrastructure/postgres-privacy.repository.js";
 import { PrivacyRequestProcessorService } from "./infrastructure/privacy-request-processor.service.js";
@@ -48,15 +43,10 @@ import { PrivacyRequestProcessorService } from "./infrastructure/privacy-request
   controllers: [PrivacyController],
   providers: [
     {
-      provide: PRIVACY_REPOSITORY,
+      provide: PRIVACY_PORT,
       useFactory: (database: DatabaseService, outbox: IntegrationOutboxService) =>
         new PostgresPrivacyRepository(database, outbox),
       inject: [DatabaseService, IntegrationOutboxService],
-    },
-    {
-      provide: PRIVACY_PORT,
-      useFactory: (repository: PrivacyRepository) => new PrivacyApplication(repository),
-      inject: [PRIVACY_REPOSITORY],
     },
     {
       provide: PrivacyRequestProcessorService,

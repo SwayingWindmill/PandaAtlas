@@ -2,13 +2,13 @@ import { Controller, Get, Inject } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { Public } from "../../../platform/auth/public.decorator.js";
-import { POPULARITY_PORT, type PopularityApplication } from "../application/popularity.application.js";
+import { PopularityApplication } from "../application/popularity.application.js";
 import { PopularPandasDto } from "./popularity.dto.js";
 
 @ApiTags("Popularity")
 @Controller("popular-pandas")
 export class PopularityController {
-  public constructor(@Inject(POPULARITY_PORT) private readonly popularity: PopularityApplication) {}
+  public constructor(@Inject(PopularityApplication) private readonly popularity: PopularityApplication) {}
 
   @Get()
   @Public()

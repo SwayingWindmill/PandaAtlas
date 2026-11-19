@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   OverseasStatusCatalogError,
   publishedOverseasStatus,
-} from "../src/modules/overseas-status/application/overseas-status-catalog.js";
+} from "../src/modules/catalog/application/overseas-status-catalog.js";
 
 function item(overrides: Record<string, unknown> = {}) {
   return {

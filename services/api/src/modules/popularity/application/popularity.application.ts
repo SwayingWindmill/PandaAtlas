@@ -6,9 +6,6 @@ export interface PopularityRepository {
   followCounts(since: Date): Promise<FollowCount[]>;
 }
 
-export const POPULARITY_REPOSITORY = Symbol("POPULARITY_REPOSITORY");
-export const POPULARITY_PORT = Symbol("POPULARITY_PORT");
-
 export interface PopularPandas {
   windowDays: number;
   items: PopularPanda[];

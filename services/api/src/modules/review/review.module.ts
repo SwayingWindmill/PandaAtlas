@@ -15,12 +15,7 @@ import {
 import { ContributionModule } from "../contribution/contribution.module.js";
 import { PANDA_FACT_PARTICIPANT, type PandaFactParticipant } from "../panda/application/panda.application.js";
 import { PandaModule } from "../panda/panda.module.js";
-import {
-  REVIEW_PORT,
-  REVIEW_REPOSITORY,
-  ReviewApplication,
-  type ReviewRepository,
-} from "./application/review.application.js";
+import { REVIEW_PORT, ReviewApplication } from "./application/review.application.js";
 import { ReviewController } from "./http/review.controller.js";
 import { PostgresReviewRepository } from "./infrastructure/postgres-review.repository.js";
 
@@ -36,20 +31,28 @@ import { PostgresReviewRepository } from "./infrastructure/postgres-review.repos
   controllers: [ReviewController],
   providers: [
     {
-      provide: REVIEW_REPOSITORY,
+      provide: ReviewApplication,
       useFactory: (
         database: DatabaseService,
         outbox: IntegrationOutboxService,
         pandas: PandaFactParticipant,
         contributions: ContributionReviewParticipant,
-      ) => new PostgresReviewRepository(database, outbox, pandas, contributions),
-      inject: [DatabaseService, IntegrationOutboxService, PANDA_FACT_PARTICIPANT, CONTRIBUTION_REVIEW_PARTICIPANT],
-    },
-    {
-      provide: ReviewApplication,
-      useFactory: (repository: ReviewRepository, contributions: ContributionReviewPort, evidence: EvidencePort) =>
-        new ReviewApplication(repository, contributions, evidence),
-      inject: [REVIEW_REPOSITORY, CONTRIBUTION_REVIEW_PORT, EVIDENCE_PORT],
+        contributionReview: ContributionReviewPort,
+        evidence: EvidencePort,
+      ) =>
+        new ReviewApplication(
+          new PostgresReviewRepository(database, outbox, pandas, contributions),
+          contributionReview,
+          evidence,
+        ),
+      inject: [
+        DatabaseService,
+        IntegrationOutboxService,
+        PANDA_FACT_PARTICIPANT,
+        CONTRIBUTION_REVIEW_PARTICIPANT,
+        CONTRIBUTION_REVIEW_PORT,
+        EVIDENCE_PORT,
+      ],
     },
     { provide: REVIEW_PORT, useExisting: ReviewApplication },
   ],

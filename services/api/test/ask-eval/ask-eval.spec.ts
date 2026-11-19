@@ -11,7 +11,7 @@ import { type AskPassage, buildMessages, checkCitations, isRetryableCitationFail
 import { type AskDocument, type AskPandaFacts, learningDocuments, pandaDocument } from "../../src/modules/ask/application/ask-corpus.js";
 import { checkQuestion, isIdentificationQuestion, looksLikePromptInjection } from "../../src/modules/ask/application/ask-guard.js";
 import { ASK_MAX_PASSAGES } from "../../src/modules/ask/application/ask-policy.js";
-import type { PublicLearningCatalog } from "../../src/modules/learning/application/learning-catalog.js";
+import type { PublicLearningCatalog } from "../../src/modules/catalog/application/learning-catalog.js";
 
 interface EvalItem {
   id: string;

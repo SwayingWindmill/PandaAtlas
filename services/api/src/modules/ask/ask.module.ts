@@ -5,8 +5,9 @@ import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { ObservabilityModule } from "../../platform/observability/observability.module.js";
 import { StructuredLoggerService } from "../../platform/observability/structured-logger.service.js";
-import { LearningApplication } from "../learning/application/learning.application.js";
-import { PostgresLearningRepository } from "../learning/infrastructure/postgres-learning.repository.js";
+import { publishedCatalog } from "../catalog/application/learning-catalog.js";
+import { CatalogModule } from "../catalog/catalog.module.js";
+import { PostgresJsonCatalogStore } from "../catalog/infrastructure/postgres-json-catalog.store.js";
 import { PUBLIC_READ_PORT, type PublicReadPort } from "../publication/application/public-read.application.js";
 import { PublicationModule } from "../publication/publication.module.js";
 import { AskIndexSync } from "./application/ask-index-sync.js";
@@ -19,7 +20,7 @@ import { PostgresAskIndexRepository } from "./infrastructure/postgres-ask-index.
 import { PostgresAskQuotaRepository } from "./infrastructure/postgres-ask-quota.repository.js";
 
 @Module({
-  imports: [ConfigModule, DatabaseModule, ObservabilityModule, PublicationModule],
+  imports: [ConfigModule, DatabaseModule, ObservabilityModule, CatalogModule, PublicationModule],
   controllers: [AskController],
   providers: [
     AskRuntimeService,
@@ -39,16 +40,26 @@ import { PostgresAskQuotaRepository } from "./infrastructure/postgres-ask-quota.
     },
     {
       provide: AskIndexSyncService,
-      useFactory: (database: DatabaseService, publicRead: PublicReadPort, runtime: AskRuntimeService, logger: StructuredLoggerService) =>
+      useFactory: (
+        database: DatabaseService,
+        catalogs: PostgresJsonCatalogStore,
+        publicRead: PublicReadPort,
+        runtime: AskRuntimeService,
+        logger: StructuredLoggerService,
+      ) =>
         new AskIndexSyncService(
           new AskIndexSync(
-            new PostgresAskCorpus(database, new LearningApplication(new PostgresLearningRepository(database)), publicRead),
+            new PostgresAskCorpus(
+              database,
+              { published: async () => publishedCatalog(await catalogs.current("learning.catalog")) },
+              publicRead,
+            ),
             new PostgresAskIndexRepository(database),
           ),
           runtime,
           logger,
         ),
-      inject: [DatabaseService, PUBLIC_READ_PORT, AskRuntimeService, StructuredLoggerService],
+      inject: [DatabaseService, PostgresJsonCatalogStore, PUBLIC_READ_PORT, AskRuntimeService, StructuredLoggerService],
     },
   ],
   exports: [AskRuntimeService, AskIndexSyncService],

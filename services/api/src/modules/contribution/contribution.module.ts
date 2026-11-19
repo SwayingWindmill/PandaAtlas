@@ -4,11 +4,9 @@ import { DatabaseService } from "../../platform/database/database.service.js";
 import { RequestContextModule } from "../../platform/request-context/request-context.module.js";
 import {
   CONTRIBUTION_PORT,
-  CONTRIBUTION_REPOSITORY,
   CONTRIBUTION_REVIEW_PARTICIPANT,
   CONTRIBUTION_REVIEW_PORT,
   ContributionApplication,
-  type ContributionRepository,
 } from "./application/contribution.application.js";
 import { PANDA_REFERENCE_PORT, type PandaReferencePort } from "../panda/application/panda.application.js";
 import { PandaModule } from "../panda/panda.module.js";
@@ -23,15 +21,10 @@ import { PostgresContributionRepository } from "./infrastructure/postgres-contri
   controllers: [ContributionController],
   providers: [
     {
-      provide: CONTRIBUTION_REPOSITORY,
-      useFactory: (database: DatabaseService) => new PostgresContributionRepository(database),
-      inject: [DatabaseService],
-    },
-    {
       provide: ContributionApplication,
-      useFactory: (repository: ContributionRepository, pandas: PandaReferencePort) =>
-        new ContributionApplication(repository, pandas),
-      inject: [CONTRIBUTION_REPOSITORY, PANDA_REFERENCE_PORT],
+      useFactory: (database: DatabaseService, pandas: PandaReferencePort) =>
+        new ContributionApplication(new PostgresContributionRepository(database), pandas),
+      inject: [DatabaseService, PANDA_REFERENCE_PORT],
     },
     { provide: CONTRIBUTION_PORT, useExisting: ContributionApplication },
     { provide: CONTRIBUTION_REVIEW_PORT, useExisting: ContributionApplication },

@@ -17,12 +17,7 @@ import {
   type IdentityNotificationContactPort,
 } from "../identity/application/identity-notification.port.js";
 import { IdentityModule } from "../identity/identity.module.js";
-import {
-  NOTIFICATION_PORT,
-  NOTIFICATION_REPOSITORY,
-  NotificationApplication,
-  type NotificationRepository,
-} from "./application/notification.application.js";
+import { NOTIFICATION_PORT, NotificationApplication } from "./application/notification.application.js";
 import {
   NOTIFICATION_PROVIDER_PORT,
   type NotificationProviderPort,
@@ -40,14 +35,9 @@ import { ResendNotificationProvider } from "./infrastructure/resend-notification
   controllers: [NotificationController],
   providers: [
     {
-      provide: NOTIFICATION_REPOSITORY,
-      useFactory: (database: DatabaseService) => new PostgresNotificationRepository(database),
-      inject: [DatabaseService],
-    },
-    {
       provide: NOTIFICATION_PORT,
-      useFactory: (repository: NotificationRepository) => new NotificationApplication(repository),
-      inject: [NOTIFICATION_REPOSITORY],
+      useFactory: (database: DatabaseService) => new NotificationApplication(new PostgresNotificationRepository(database)),
+      inject: [DatabaseService],
     },
     {
       provide: NOTIFICATION_PROVIDER_PORT,

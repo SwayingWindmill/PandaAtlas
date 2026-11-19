@@ -23,11 +23,7 @@ export interface UpdatesRepository {
   list(limit: number): Promise<UpdateItem[]>;
 }
 
-export type UpdatesPort = UpdatesRepository;
-export const UPDATES_REPOSITORY = Symbol("UPDATES_REPOSITORY");
-export const UPDATES_PORT = Symbol("UPDATES_PORT");
-
-export class UpdatesApplication implements UpdatesPort {
+export class UpdatesApplication {
   public constructor(private readonly repository: UpdatesRepository) {}
 
   public list(limit = 30): Promise<UpdateItem[]> {

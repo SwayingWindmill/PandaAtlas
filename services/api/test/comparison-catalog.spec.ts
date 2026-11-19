@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ComparisonCatalogError, publishedComparisons } from "../src/modules/comparisons/application/comparison-catalog.js";
+import { ComparisonCatalogError, publishedComparisons } from "../src/modules/catalog/application/comparison-catalog.js";
 
 function item(overrides: Record<string, unknown> = {}) {
   return {

@@ -1,13 +1,22 @@
 import type { DatabaseService } from "../../../platform/database/database.service.js";
-import type { LearningCatalogRow } from "../application/learning-catalog.js";
-import type { LearningRepository } from "../application/learning.application.js";
 
-export class PostgresLearningRepository implements LearningRepository {
+export type JsonCatalogTable =
+  | "learning.catalog"
+  | "place.comparison_catalog"
+  | "place.overseas_status_catalog"
+  | "place.venue_news_catalog";
+
+export interface JsonCatalogRow {
+  version: string;
+  document: unknown;
+}
+
+export class PostgresJsonCatalogStore {
   public constructor(private readonly database: DatabaseService) {}
 
-  public async current(): Promise<LearningCatalogRow | null> {
+  public async current(table: JsonCatalogTable): Promise<JsonCatalogRow | null> {
     const row = await this.database.db
-      .selectFrom("learning.catalog")
+      .selectFrom(table)
       .select(["version", "document"])
       .where("catalog_id", "=", 1)
       .executeTakeFirst();

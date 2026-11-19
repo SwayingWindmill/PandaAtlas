@@ -5,9 +5,9 @@ import { Public } from "../../../platform/auth/public.decorator.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
-import { DAILY_PANDA_PORT, type DailyPandaApplication } from "../application/daily-panda.application.js";
+import { DailyPandaApplication } from "../application/daily-panda.application.js";
 import { GAME_PORT, type GamePort } from "../application/game.application.js";
-import { PANDA_BOOK_PORT, type PandaBookApplication } from "../application/panda-book.application.js";
+import { PandaBookApplication } from "../application/panda-book.application.js";
 import {
   DailyPandaGuessesDto,
   DailyPandaGuessResultDto,
@@ -96,7 +96,7 @@ function dailyPandaGuessProblem(kind: "unknown_panda" | "too_many_guesses" | "un
 @ApiTags("Games")
 @Controller("games/daily-panda")
 export class DailyPandaController {
-  public constructor(@Inject(DAILY_PANDA_PORT) private readonly dailyPanda: DailyPandaApplication) {}
+  public constructor(@Inject(DailyPandaApplication) private readonly dailyPanda: DailyPandaApplication) {}
 
   @Get()
   @Public()
@@ -147,7 +147,7 @@ export class GameAttemptController {
 @ApiTags("Games")
 @Controller("me")
 export class PandaBookController {
-  public constructor(@Inject(PANDA_BOOK_PORT) private readonly pandaBook: PandaBookApplication) {}
+  public constructor(@Inject(PandaBookApplication) private readonly pandaBook: PandaBookApplication) {}
 
   @Get("panda-book")
   @RequireCapabilities("game.attempt.read")

@@ -61,9 +61,6 @@ export interface DailyPandaRepository {
   choosePanda(puzzleDate: string, pandaId: string): Promise<string>;
 }
 
-export const DAILY_PANDA_REPOSITORY = Symbol("DAILY_PANDA_REPOSITORY");
-export const DAILY_PANDA_PORT = Symbol("DAILY_PANDA_PORT");
-
 type PandaFacts = PublicPandaSummary["facts"];
 
 // Only structured facts that are not disputed become clues.

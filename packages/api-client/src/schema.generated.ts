@@ -958,23 +958,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/popular-pandas": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 大家常看: published pandas most fans began following in the last 30 days, at least five fans each */
-        get: operations["listPopularPandas"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v2/venue-news": {
         parameters: {
             query?: never;
@@ -1001,6 +984,23 @@ export interface paths {
         };
         /** Published 比一比: pairs of pandas the team compares side by side, newest first */
         get: operations["listComparisons"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/popular-pandas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 大家常看: published pandas most fans began following in the last 30 days, at least five fans each */
+        get: operations["listPopularPandas"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2159,16 +2159,6 @@ export interface components {
             version: string;
             items: components["schemas"]["OverseasStatusItemDto"][];
         };
-        PopularPandaDto: {
-            pandaId: string;
-            slug: string;
-        };
-        PopularPandasDto: {
-            /** @description How many days back the follows are counted. */
-            windowDays: number;
-            /** @description Most new followers first. No counts are published. */
-            items: components["schemas"]["PopularPandaDto"][];
-        };
         VenueNewsItemDto: {
             id: string;
             institutionSlug: string;
@@ -2209,6 +2199,16 @@ export interface components {
         ComparisonsDto: {
             version: string;
             items: components["schemas"]["ComparisonDto"][];
+        };
+        PopularPandaDto: {
+            pandaId: string;
+            slug: string;
+        };
+        PopularPandasDto: {
+            /** @description How many days back the follows are counted. */
+            windowDays: number;
+            /** @description Most new followers first. No counts are published. */
+            items: components["schemas"]["PopularPandaDto"][];
         };
         AskStatusDto: {
             enabled: boolean;
@@ -4084,25 +4084,6 @@ export interface operations {
             };
         };
     };
-    listPopularPandas: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PopularPandasDto"];
-                };
-            };
-        };
-    };
     listVenueNews: {
         parameters: {
             query?: {
@@ -4155,6 +4136,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    listPopularPandas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PopularPandasDto"];
+                };
             };
         };
     };

@@ -36,25 +36,4 @@ export interface PrivacyRepository {
 }
 
 export type PrivacyPort = PrivacyRepository;
-export const PRIVACY_REPOSITORY = Symbol("PRIVACY_REPOSITORY");
 export const PRIVACY_PORT = Symbol("PRIVACY_PORT");
-
-export class PrivacyApplication implements PrivacyPort {
-  public constructor(private readonly repository: PrivacyRepository) {}
-
-  public create(accountId: string, input: CreatePrivacyRequestInput) {
-    return this.repository.create(accountId, input);
-  }
-
-  public get(accountId: string, requestId: string) {
-    return this.repository.get(accountId, requestId);
-  }
-
-  public list(accountId: string) {
-    return this.repository.list(accountId);
-  }
-
-  public getExport(accountId: string, requestId: string) {
-    return this.repository.getExport(accountId, requestId);
-  }
-}

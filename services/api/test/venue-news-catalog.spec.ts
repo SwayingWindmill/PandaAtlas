@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { VenueNewsCatalogError, publishedVenueNews } from "../src/modules/venue-news/application/venue-news-catalog.js";
+import { VenueNewsCatalogError, publishedVenueNews } from "../src/modules/catalog/application/venue-news-catalog.js";
 
 function item(overrides: Record<string, unknown> = {}) {
   return {

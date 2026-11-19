@@ -9,12 +9,7 @@ import {
   type PublicationChangePort,
 } from "../publication/application/publication-change.port.js";
 import { PublicationModule } from "../publication/publication.module.js";
-import {
-  UPDATES_PORT,
-  UPDATES_REPOSITORY,
-  UpdatesApplication,
-  type UpdatesRepository,
-} from "./application/updates.application.js";
+import { UpdatesApplication } from "./application/updates.application.js";
 import { UpdatesController } from "./http/updates.controller.js";
 import { PostgresUpdatesRepository } from "./infrastructure/postgres-updates.repository.js";
 import { UpdatesEventConsumerService } from "./infrastructure/updates-event-consumer.service.js";
@@ -24,14 +19,9 @@ import { UpdatesEventConsumerService } from "./infrastructure/updates-event-cons
   controllers: [UpdatesController],
   providers: [
     {
-      provide: UPDATES_REPOSITORY,
-      useFactory: (database: DatabaseService) => new PostgresUpdatesRepository(database),
+      provide: UpdatesApplication,
+      useFactory: (database: DatabaseService) => new UpdatesApplication(new PostgresUpdatesRepository(database)),
       inject: [DatabaseService],
-    },
-    {
-      provide: UPDATES_PORT,
-      useFactory: (repository: UpdatesRepository) => new UpdatesApplication(repository),
-      inject: [UPDATES_REPOSITORY],
     },
     {
       provide: UpdatesEventConsumerService,
@@ -43,6 +33,6 @@ import { UpdatesEventConsumerService } from "./infrastructure/updates-event-cons
       inject: [IntegrationEventConsumer, IntegrationOutboxService, PUBLICATION_CHANGE_PORT],
     },
   ],
-  exports: [UPDATES_PORT, UpdatesEventConsumerService],
+  exports: [UpdatesEventConsumerService],
 })
 export class UpdatesModule {}

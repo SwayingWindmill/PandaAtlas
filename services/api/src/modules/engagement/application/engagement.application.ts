@@ -107,7 +107,6 @@ export interface EngagementPort extends Omit<EngagementRepository, "listDailyChe
   cancelDailyLeave(accountId: string, day: string, today: string): Promise<DailyCheckinResult>;
 }
 
-export const ENGAGEMENT_REPOSITORY = Symbol("ENGAGEMENT_REPOSITORY");
 export const ENGAGEMENT_PORT = Symbol("ENGAGEMENT_PORT");
 
 export class EngagementApplication implements EngagementPort {

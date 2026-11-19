@@ -71,7 +71,6 @@ export interface LifeHistoryRepository {
 
 export type LifeHistoryPort = LifeHistoryRepository;
 
-export const LIFE_HISTORY_REPOSITORY = Symbol("LIFE_HISTORY_REPOSITORY");
 export const LIFE_HISTORY_PORT = Symbol("LIFE_HISTORY_PORT");
 
 export class LifeHistoryApplication implements LifeHistoryPort {
