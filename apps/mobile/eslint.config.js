@@ -58,12 +58,6 @@ module.exports = defineConfig([
     rules: { "no-restricted-syntax": ["error", ...TOKEN_RULES, ...DEPRECATED_CLASS_RULES] },
   },
   {
-    // The Text component defines the deprecated variants (kept so nothing old breaks); only its
-    // callers are held to the v2 names.
-    files: ["src/components/ui/text.tsx"],
-    rules: { "no-restricted-syntax": ["error", ...TOKEN_RULES] },
-  },
-  {
     ignores: [".expo/*", "dist/*"],
   },
 ]);

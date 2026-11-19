@@ -38,7 +38,7 @@ describe("tokens", () => {
     }
     expect(contrast(c.buttonLabel, c.button)).toBeGreaterThanOrEqual(4.5);
     expect(contrast(c.tint, c.highlightSoft)).toBeGreaterThanOrEqual(4.5);
-    // A check on a graphic fill (Stepper) and graphics themselves need the 3:1 non-text bar.
+    // Graphic fills and graphics themselves need the 3:1 non-text bar.
     expect(contrast(c.buttonLabel, c.graphic)).toBeGreaterThanOrEqual(3);
     for (const ground of [c.groupedBackground, c.card]) {
       expect(contrast(c.graphic, ground)).toBeGreaterThanOrEqual(3);

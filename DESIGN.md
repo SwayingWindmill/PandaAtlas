@@ -453,7 +453,7 @@ More space sits above a section heading than between the heading and the group. 
 ### Page templates
 - **Tab root:** system large title (in the column on web), grouped-background page, sections separated by `section`. 今天 draws its own header in the column: the date as a semibold secondary footnote line over 今天 in display, with the monogram avatar at the right; then the week hero (or the featured card), the quick entries and the rest.
 - **Hero detail** (a panda, an institution): a full-bleed stretchy hero under the status bar with back/share in a transparent system bar on iOS 26+ (the page title moves into the bar once it scrolls under it) and floating glass-fallback buttons elsewhere, then the content column at `inset`, entering with `enter`.
-- **List / directory:** inset grouped `ListSection` + `ListCell` (or `NavRow`) at `inset`. A long result list (找熊猫) may run full-bleed.
+- **List / directory:** inset grouped `ListSection` + `ListCell` at `inset`. A long result list (找熊猫) may run full-bleed.
 - **Reading column** (科普): `paper` ground, a lead photograph with its caption below (never text on it), the reading set, large title kept in the column.
 - **Photo card:** one photograph, continuous corners (`card` or `tile`), media placeholder, bottom scrim, on-media title, photo stroke, press scale.
 - **Stat block:** three elevated tiles in a row, `tile` radius, footnote label with a tint glyph over a `stat` value; stacks past font scale 1.35. A tile that counts a list opens it (`StatTile href`).
@@ -498,7 +498,7 @@ Resting groups are a tone step, not a shadow. Every photograph with rounded corn
 On iOS the stack leaves the bar background unset so the system can draw Liquid Glass. A solid `headerStyle` background disables that, and a solid large-title bar hides the title on iOS 26 (`lib/screen-options.ts`).
 
 ### Named Rules
-**The System Material Rule.** Blur and glass belong to the tab bar, the navigation bar, and the back and share buttons over a full-bleed hero. Where Liquid Glass is available (iOS 26+, `isLiquidGlassAvailable()`) those are system bar items (`components/hero-header.tsx`: a transparent native bar with `Stack.Toolbar`); on earlier iOS, Android and web they float as the glass-fallback disc (`components/glass-button.tsx`). A card does not get its own glass.
+**The System Material Rule.** Blur and glass belong to the tab bar, the navigation bar, and the back and share buttons over a full-bleed hero. Where Liquid Glass is available (iOS 26+, `isLiquidGlassAvailable()`) those are system bar items (`components/hero-header.tsx`: a transparent native bar with `Stack.Toolbar`); on earlier iOS, Android and web they float as bare white glyphs. A card does not get its own glass.
 
 ## Shapes
 
@@ -525,13 +525,12 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 ### Inventory
 | Component | File | Purpose | Don't use for | Variants / states | A11y |
 |---|---|---|---|---|---|
-| `Text` | `ui/text.tsx` | Every string | Sizing by className | The six styles, `stat`, reading set; deprecated variants | `display`/`title` get heading role and level; `role="heading"` on a footnote gets level 2, on a headline level 3 |
+| `Text` | `ui/text.tsx` | Every string | Sizing by className | The six styles, `stat`, reading set | `display`/`title` get heading role and level; `role="heading"` on a footnote gets level 2, on a headline level 3 |
 | `Button` | `ui/button.tsx` | One decision | Navigation (use a row) | primary, tinted, plain, secondary; pressed, disabled, focus ring | label is the action verb, ≥44 tall |
-| `ListSection` / `ListCell` / `NavRow` | `grouped-list.tsx`, `nav-row.tsx` | Facts and destinations | A photo grid | label, detail, meta, icon, chevron, tint (action), destructive; pressed | row is the button; hint for destinations |
+| `ListSection` / `ListCell` | `grouped-list.tsx` | Facts and destinations | A photo grid | label, detail, meta, icon, chevron, tint (action), destructive; pressed | row is the button; hint for destinations |
 | `PressScale` | `press-scale.tsx` | Press feedback on photo cards, tiles, stat blocks, chips | Grouped rows (system highlight) | pressed; reduced motion dims | inherits Pressable role |
 | `StoryCard` | `features/today/story-card.tsx` | 今天 cards | Lists | featured (card radius, display), small (tile radius, title) | one label: title and panda |
 | `StretchyHero` + `HeroHeader` | `stretchy-hero.tsx`, `hero-header.tsx` | The plate on a detail page | Cards inside a page | with or without overlay; zoom target; no scroll drift under Reduce Motion; the bar title appears once the page title has scrolled under the bar | photo labelled; back and share labelled 返回/分享 (system bar items on iOS 26+, floating buttons rendered before the scroll view elsewhere so they are read first) |
-| `GlassButton` | `glass-button.tsx` | Back/share over a photo without Liquid Glass (Android, web, iOS < 26) | Anything not over media; iOS 26+ (system bar items there) | fallback disc, blurred on web | 44 circle, label required |
 | `Scrim` | `scrim.tsx` | Make on-media text legible | Darkening a photo for mood | height | decorative |
 | `PhotoOutline` | `photo-outline.tsx` | Edge on rounded photos | Square plates | radius | decorative |
 | `Icon` | `icon.tsx`, `icons.ts` | A category or destination glyph | Buttons, titles, running text | sizes footnote 15, subhead 18, body 22, title3 24, chevron 17; tones secondary, tint, tertiary, label, onMedia | always hidden; the holder carries the name |
@@ -574,7 +573,7 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 One set: Lucide (`lucide-react-native` on `react-native-svg`), same glyphs on every platform, each exported from `components/icons.ts` and drawn through `components/icon.tsx`.
 - **Size** follows the text beside it (sizes above). **Stroke** 1.75; chevrons and toolbar glyphs 2–2.25.
 - **Color:** secondary label. Tint only on an action row (官网, 看官方直播, 导航过去), a stat tile's label glyph, or the selected tab. Tertiary label for the chevron. On media: white, or label inside Liquid Glass.
-- **Bare glyphs only (v2.15).** An icon is never set inside a square, rounded tile or circle ground. A glyph-only control (返回, 分享, the 设置 gear, the 日历 and 打卡 toolbar buttons) is a control, not an icon tile, and keeps its 44 glass circle; selection marks (the welcome check, a Stepper's done disc) are marks, not icons.
+- **Bare glyphs only (v2.15).** An icon is never set inside a square, rounded tile or circle ground. A glyph-only control (返回, 分享, the 设置 gear, the 日历 and 打卡 toolbar buttons) is a control, not an icon tile, and keeps its 44 glass circle; selection marks (the welcome check) are marks, not icons.
 - **Use one** where Settings, Health or Maps would: a leading glyph on a section header, a stat tile, a settings row, or a row naming a fixed category or destination (父母, 看家谱, 查关系, 所在机构, every 去之前 fact, 到访, 看官方直播, 官网, 导航过去), or a footnote-size glyph beside a stat label.
 - **One meaning per glyph** (`MapPin` place, `Clock` hours, `CalendarCheck` visit, `Ellipsis` more actions on a row). **All or none in a group.** No icon on a data row (a relative, an event, a source).
 - **Don't** put an icon on a button with a text label (the 关注 / 见过 pair is the one exception), a card title, beside a large title, in running text, in any square, tile or circle ground, or fill a glyph to fake selection. A glyph-only toolbar button (返回, 分享, the 设置 gear on 我的) is a 44 circle with an accessible name.
@@ -634,7 +633,7 @@ Follows `animate-expo` and `make-interfaces-feel-better` (declared in `skills-lo
 
 ## Governance
 
-- **Lint (error):** `apps/mobile/eslint.config.js` fails `npm run lint` (and CI) on hex and `rgba()/hsl()` literals, numeric `fontSize`, arbitrary Tailwind values, the deprecated `Text` variants, the deprecated type-size and numeric-radius classes in the table under Deprecated, and motion tokens imported from `stretchy-hero.tsx`, everywhere in `apps/mobile/src` (tokens and theme excluded; `components/ui/text.tsx` may define the old variants).
+- **Lint (error):** `apps/mobile/eslint.config.js` fails `npm run lint` (and CI) on hex and `rgba()/hsl()` literals, numeric `fontSize`, arbitrary Tailwind values, the deprecated `Text` variants, the deprecated type-size and numeric-radius classes in the table under Deprecated, and motion tokens imported from `stretchy-hero.tsx`, everywhere in `apps/mobile/src` (tokens and theme excluded).
 - **Sync check:** `src/design/tokens.test.ts` runs in `npm test` and fails if `global.css` or this front matter is stale; it also checks contrast (AA for text roles and the accent) and the 4pt grid.
 - **Lint this file:** `npx -y -p @google/design.md designmd lint DESIGN.md`.
 - **Adding a token:** add it to `tokens.ts` (primitive first, then a role), run `npm run design:tokens -w @zhipanda/mobile`, document the role here, and show it on `/dev/design-system`.
@@ -642,7 +641,7 @@ Follows `animate-expo` and `make-interfaces-feel-better` (declared in `skills-lo
 
 ## Deprecated
 
-No screen uses these since v2.8; the `Text` variants stay defined so nothing old breaks, and the lint rejects every row below.
+The deprecated `Text` variants and `legacyText` CSS tokens have been removed from `components/ui/text.tsx` and `tokens.ts`; `apps/mobile/eslint.config.js` continues to reject every deprecated variant, class, and token below.
 
 | Deprecated | Use instead |
 |---|---|

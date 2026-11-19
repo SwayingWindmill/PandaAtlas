@@ -82,11 +82,6 @@ export function renderCssBlock(): string {
   for (const [name, style] of Object.entries(semantic.text)) lines.push(...textVars(name, style));
   lines.push("", "  /* 科普 reading column. */");
   for (const [name, style] of Object.entries(semantic.reading)) lines.push(...textVars(name, style));
-  lines.push("", "  /* Deprecated sizes: kept for screens not yet redesigned. See DESIGN.md › Deprecated. */");
-  for (const [name, style] of Object.entries(semantic.legacyText)) {
-    if (name in semantic.text) continue;
-    lines.push(...textVars(name, style));
-  }
 
   lines.push(
     "",
