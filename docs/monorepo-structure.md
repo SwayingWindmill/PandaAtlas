@@ -13,8 +13,8 @@ PandaAtlas/
   tools/
     panda-data/             # offline Python acquisition/curation/media tooling (uv)
   infra/
-    supabase/               # PostgreSQL migrations, seeds and local Supabase config
-  scripts/                  # development operations, release checks, curation and research tooling
+    supabase/               # PostgreSQL migrations and local Supabase config
+  scripts/                  # development operations, release checks and curation tooling
   contracts/                # data and process contracts that code reads
   data/                     # curated inputs, reviewed batches and public release data
   docs/

@@ -413,15 +413,6 @@ const commands = [
     effect: "read-only",
   },
   {
-    id: "release.check-research-script-policy",
-    category: "verification",
-    description: "Enforce reusable research modules and declarative batch manifests.",
-    command: "node",
-    args: ["scripts/release/check-research-script-policy.mjs"],
-    requires: ["git", "node"],
-    effect: "read-only",
-  },
-  {
     id: "release.check-batch-workflow-interface",
     category: "verification",
     description: "Validate bounded batch operation and GitHub Actions safety contracts.",
@@ -440,10 +431,8 @@ const commands = [
       "scripts/release/tests/batch-workflow-interface.test.mjs",
       "scripts/release/tests/cloudflare-production-surface.test.mjs",
       "scripts/release/tests/doc-references.test.mjs",
-        "scripts/release/tests/export-public-release.test.mjs",
-      "scripts/release/tests/gate-core.test.mjs",
+      "scripts/release/tests/export-public-release.test.mjs",
       "scripts/release/tests/repository-hygiene.test.mjs",
-      "scripts/release/tests/research-script-policy.test.mjs",
       "scripts/development/tests/agent-guard.test.mjs",
       "scripts/development/tests/check-local-ports.test.mjs",
       "scripts/development/tests/dev-processes.test.mjs",
@@ -518,7 +507,6 @@ if (commandById.size !== commands.length) {
 export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
   release: [
     "release.check-batch-workflow-interface",
-    "release.check-research-script-policy",
     "release.test-development",
   ],
   web: ["web.lint", "web.typecheck", "web.test-worker", "web.test-unit"],

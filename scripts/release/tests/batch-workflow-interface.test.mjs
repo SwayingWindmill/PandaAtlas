@@ -24,10 +24,10 @@ const workflowPath = path.join(repoRoot, ".github", "workflows", "batch-operatio
 test("batch catalog exposes the standard operations", () => {
   const catalog = loadBatchCatalog();
   assert.deepEqual(validateBatchCatalog(catalog), []);
-  assert.equal(catalog.operations.length, 11);
+  assert.equal(catalog.operations.length, 9);
   assert.deepEqual(
     catalog.operations.filter((item) => item.status === "ready").map((item) => item.id),
-    ["research.validate", "curation.validate", "curation.guess-questions", "curation.learning", "curation.content", "media.process", "release.publish"],
+    ["curation.validate", "curation.guess-questions", "curation.learning", "curation.content", "media.process", "release.publish"],
   );
 });
 
@@ -57,7 +57,7 @@ test("database adapters are approval-gated production writes that need the built
 
 test("ready commands cannot drift through catalog-only changes", () => {
   const catalog = structuredClone(loadBatchCatalog());
-  catalog.operations.find((item) => item.id === "research.validate").command.push("--version");
+  catalog.operations.find((item) => item.id === "curation.validate").command.push("--version");
   assert.ok(
     validateBatchCatalog(catalog).some((item) => item.includes("code-level allowlist")),
   );
@@ -113,7 +113,7 @@ test("ready adapters execute without a shell and record results", async () => {
     const calls = [];
     const outcome = executeBatchOperation({
       catalog,
-      operationId: "research.validate",
+      operationId: "curation.validate",
       repositoryRoot: root,
       spawn(command, args, options) {
         calls.push({ command, args, options });
@@ -121,12 +121,12 @@ test("ready adapters execute without a shell and record results", async () => {
       },
     });
     assert.equal(outcome.status, "passed");
-    assert.equal(calls[0].command, "node");
+    assert.equal(calls[0].command, "python");
     assert.equal(calls[0].options.shell, false);
     const result = JSON.parse(
       await readFile(path.join(root, ".batch-work", "result.json"), "utf8"),
     );
-    assert.equal(result.operation, "research.validate");
+    assert.equal(result.operation, "curation.validate");
   } finally {
     await rm(root, { force: true, recursive: true });
   }
@@ -137,14 +137,14 @@ test("approval execution requires change reference and protected environment", a
   try {
     await writeFile(path.join(root, "manifest.json"), "{}\n", "utf8");
     const catalog = structuredClone(loadBatchCatalog());
-    const operation = catalog.operations.find((item) => item.id === "research.validate");
+    const operation = catalog.operations.find((item) => item.id === "curation.validate");
     operation.effect = "production-write";
     operation.approval_required = true;
     operation.manifest_required = true;
     assert.throws(
       () => createBatchPlan({
         catalog,
-        operationId: "research.validate",
+        operationId: "curation.validate",
         manifestPath: "manifest.json",
         executeRequested: true,
         repositoryRoot: root,
@@ -154,7 +154,7 @@ test("approval execution requires change reference and protected environment", a
     assert.throws(
       () => executeBatchOperation({
         catalog,
-        operationId: "research.validate",
+        operationId: "curation.validate",
         manifestPath: "manifest.json",
         repositoryRoot: root,
         changeReference: "issue-123",
@@ -169,8 +169,8 @@ test("approval execution requires change reference and protected environment", a
 
 test("tracked workflow passes and unsafe mutations fail", async () => {
   assert.deepEqual(checkBatchWorkflowInterface({ repositoryRoot: repoRoot, quiet: true }), {
-    operations: 11,
-    ready: 7,
+    operations: 9,
+    ready: 6,
   });
   const catalog = loadBatchCatalog();
   const workflowText = await readFile(workflowPath, "utf8");

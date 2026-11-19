@@ -611,7 +611,7 @@ Navigation is Expo Router's `native-tabs` and native stack (the SDK 58 way to th
 
 ## Motion & Haptics
 
-Follows `.agents/skills/animate-expo` and `make-interfaces-feel-better`. Durations and curves are tokens (`src/design/motion.ts`). UI motion never eases in.
+Follows `animate-expo` and `make-interfaces-feel-better` (declared in `skills-lock.json`). Durations and curves are tokens (`src/design/motion.ts`). UI motion never eases in.
 
 **Signature: 竹 bamboo.** A bamboo stalk bends past its mark and springs back without wobbling. Spring `mass 1, stiffness 170, damping 22` (damping ratio ≈ 0.84, about 3% overshoot, settled in ~0.5s); for CSS/keyframes `cubic-bezier(0.3, 1.15, 0.5, 1)`: 280ms for `enter`, which plays on every page open, and 480ms for `hero`, the rare signature moment. Use it for arrivals: a page's content entering, a photo or card growing into place. **Not** for presses, exits, opacity or color on its own, scrolling, anything repeated in a list, or anything the fan drags (use `snappy`).
 
@@ -638,7 +638,7 @@ Follows `.agents/skills/animate-expo` and `make-interfaces-feel-better`. Duratio
 - **Sync check:** `src/design/tokens.test.ts` runs in `npm test` and fails if `global.css` or this front matter is stale; it also checks contrast (AA for text roles and the accent) and the 4pt grid.
 - **Lint this file:** `npx -y -p @google/design.md designmd lint DESIGN.md`.
 - **Adding a token:** add it to `tokens.ts` (primitive first, then a role), run `npm run design:tokens -w @zhipanda/mobile`, document the role here, and show it on `/dev/design-system`.
-- **Skill review (visual changes):** a PR that changes how a screen looks or moves (a redesign, a new component, a token or motion change) in `apps/mobile` or the website UI runs `impeccable` (critique + audit) and `break-ui` (long names, large Dynamic Type, empty / error / loading, dark mode, small screens, Reduce Motion) from `.agents/skills`, plus `review-animations` when motion changes. Real findings are fixed in the same PR or listed as out of scope, summarised in the PR description. Logic, data and bug-fix PRs that keep the visuals rest on the lint and tests above.
+- **Skill review (visual changes):** a PR that changes how a screen looks or moves (a redesign, a new component, a token or motion change) in `apps/mobile` or the website UI runs `impeccable` (critique + audit) and `break-ui` (long names, large Dynamic Type, empty / error / loading, dark mode, small screens, Reduce Motion) from the installed skill set, plus `review-animations` when motion changes. Real findings are fixed in the same PR or listed as out of scope, summarised in the PR description. Logic, data and bug-fix PRs that keep the visuals rest on the lint and tests above.
 
 ## Deprecated
 

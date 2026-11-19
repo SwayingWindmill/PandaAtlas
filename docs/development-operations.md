@@ -125,13 +125,12 @@ Every `verify:dev` run checks repository hygiene, and every run that executes sc
 ```powershell
 npm run check:repository-hygiene
 npm run check:doc-references
-npm run check:research-script-policy
 ```
 
 Bounded batch work uses `contracts/batch-operations.v1.json` and the `batch-operations.yml` workflow:
 
 ```powershell
-npm run batch:plan -- --operation research.validate --json
+npm run batch:plan -- --operation curation.validate --json
 npm run check:batch-workflow-interface
 ```
 

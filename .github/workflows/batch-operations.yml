@@ -8,8 +8,6 @@ on:
         required: true
         type: choice
         options:
-          - research.validate
-          - research.build
           - curation.validate
           - curation.apply
           - curation.guess-questions

@@ -199,10 +199,6 @@ test("root package exposes the current canonical development interface", async (
     "node scripts/development/operations.mjs run release.check-repository-hygiene",
   );
   assert.equal(
-    packageJson.scripts["check:research-script-policy"],
-    "node scripts/development/operations.mjs run release.check-research-script-policy",
-  );
-  assert.equal(
     packageJson.scripts["check:batch-workflow-interface"],
     "node scripts/development/operations.mjs run release.check-batch-workflow-interface",
   );

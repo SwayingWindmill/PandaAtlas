@@ -6,8 +6,7 @@ Important tracked areas include:
 
 - [`collector`](collector/) for the collector's targets and panda nicknames (`services/collector`);
 - [`curation`](curation/) for source-backed working records;
-- [`release-manifests`](release-manifests/) for reviewed intents to publish or roll back a database public release, governed by [`contracts/release-manifest.v1.json`](../contracts/release-manifest.v1.json) and run by the `release.publish` batch operation;
-- [`research-batches`](research-batches/) for declarative research inputs governed by [`contracts/research-batch.v1.json`](../contracts/research-batch.v1.json).
+- [`release-manifests`](release-manifests/) for reviewed intents to publish or roll back a database public release, governed by [`contracts/release-manifest.v1.json`](../contracts/release-manifest.v1.json) and run by the `release.publish` batch operation.
 
 The ignored `local-panda-research/` workspace may hold original responses, intermediate imports, caches, temporary query output, audit scratch files, and media binaries. Promote only reviewed, bounded material into a governed tracked area; do not force-add the local workspace wholesale. It is backed up to private R2 instead ([runbook](../docs/runbooks/research-backup.md)).
 

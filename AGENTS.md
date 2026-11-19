@@ -99,7 +99,7 @@ This file adds project facts pstack cannot know. Where the two disagree, this fi
 
 ## Matt Pocock 技能与 Issue 工作流
 
-Matt Pocock skills are tracked under `.agents/skills/` as the synced release (v1.3.1) for agents without the plugin. The installed `mattpocock-skills` plugin of the same release is equivalent; use whichever your harness loads.
+External skills (including Matt Pocock skills v1.3.1) are recorded in `skills-lock.json` rather than vendored in the repository; load them through the installed harness plugins (such as `mattpocock-skills`).
 
 ### Issue tracker
 
