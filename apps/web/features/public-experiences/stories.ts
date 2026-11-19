@@ -3,19 +3,18 @@ import {
   TRUSTED_FAMILY_STORIES,
   TRUSTED_PROFILE_COHORT,
 } from "@/features/public-experiences/curated-stories";
+import type { PublicLocale } from "@/lib/locales";
 import type {
   LocalizedEditorialContent,
   PublicFamilyStoryRecord,
   PublicProfileCohortRecord,
 } from "@/lib/types";
 
-export type PublicExperienceLocale = "zh" | "en";
-
 export const publicExperienceRelease = PUBLIC_EXPERIENCE_RELEASE;
 
 export function localizedEditorial(
   content: LocalizedEditorialContent[],
-  locale: PublicExperienceLocale,
+  locale: PublicLocale,
 ): LocalizedEditorialContent {
   const preferred = locale === "zh" ? "zh-CN" : "en";
   return content.find((item) => item.locale === preferred)

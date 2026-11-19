@@ -1,6 +1,6 @@
 import { clusterWorldPoints, projectToWorld } from "@zhipanda/world-map";
 import type { PublicMapEntry } from "@/features/public-content/public-v2";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 export interface PandaMapItem {
   id: string;

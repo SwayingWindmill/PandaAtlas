@@ -2,10 +2,8 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import FooterMinimal from "@/components/blocks/marketing/footers/minimal";
 import { Navbar1 } from "@/components/navbar-1";
-import { isCommunityIntakeUiEnabled } from "@/features/contribute/config";
-import { isNotificationCenterEnabled } from "@/features/notification-center/config";
-import { loadSiteNavigation } from "@/features/site-shell/site-navigation";
-import { parsePublicLocale, PUBLIC_LOCALES, publicLanguageTag } from "@/foundation/content/locales";
+import { isCommunityIntakeUiEnabled, isNotificationCenterEnabled } from "@/lib/feature-flags";
+import { parsePublicLocale, PUBLIC_LOCALES, publicLanguageTag } from "@/lib/locales";
 import { QueryProvider } from "@/lib/query/provider";
 
 interface PublicLocaleLayoutProps {
@@ -21,7 +19,6 @@ export default async function PublicLocaleLayout({ children, params }: PublicLoc
   const { locale: rawLocale } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
-  const navigation = await loadSiteNavigation(locale);
 
   return (
     <div lang={publicLanguageTag(locale)} className="pa-public-register">
@@ -30,7 +27,6 @@ export default async function PublicLocaleLayout({ children, params }: PublicLoc
       </a>
       <Navbar1
         locale={locale}
-        searchResults={navigation.searchResults}
         notificationsEnabled={isNotificationCenterEnabled()}
       />
       <QueryProvider>{children}</QueryProvider>

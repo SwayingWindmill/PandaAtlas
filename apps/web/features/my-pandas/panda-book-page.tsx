@@ -12,7 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { pandaBookQueryOptions } from "@/features/fan/api/queries";
 import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 import type { PandaBookEntry } from "@/features/fan/api/types";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 export interface PandaBookPanda {
   id: string;

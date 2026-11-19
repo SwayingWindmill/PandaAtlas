@@ -1,15 +1,14 @@
 import type { Route } from "next";
 import Link from "next/link";
 
-import { publicShellClassName } from "@/components/patterns/public-shell";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 import type { LegalDocument } from "./documents";
 
 export function LegalDocumentPage({ locale, document }: { locale: PublicLocale; document: LegalDocument }) {
   return (
     <main id="main-content" className="text-[var(--pa-color-ink)]">
-      <article className={`${publicShellClassName} py-10 sm:py-14`}>
+      <article className="pa-shell py-10 sm:py-14">
         <div className="grid max-w-[42rem] gap-10">
           <header className="grid gap-5">
             <h1>{document.title}</h1>

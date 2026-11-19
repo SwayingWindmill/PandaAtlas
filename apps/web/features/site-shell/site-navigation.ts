@@ -4,7 +4,7 @@ import { cache } from "react";
 
 import type { ArchiveSearchResult } from "@/components/command-menu-04";
 import { loadV2SiteSearchIndex } from "@/features/public-content/public-v2";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 export interface SiteNavigationModel {
   searchResults: ArchiveSearchResult[];

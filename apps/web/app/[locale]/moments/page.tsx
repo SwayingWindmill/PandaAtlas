@@ -4,10 +4,9 @@ import { notFound } from "next/navigation";
 
 import { PandaCalendarPage } from "@/features/calendar/panda-calendar-page";
 import type { PublicMomentOccurrence } from "@/features/public-experiences/moments";
-import type { PublicExperienceLocale } from "@/features/public-experiences/stories";
 import { filterV2PublicMoments, loadV2PublicMomentDataset } from "@/features/public-content/public-v2";
 import styles from "@/features/public-experiences/public-experiences.module.css";
-import { parsePublicLocale } from "@/foundation/content/locales";
+import { parsePublicLocale, type PublicLocale } from "@/lib/locales";
 
 
 interface MomentsPageProps {
@@ -121,11 +120,11 @@ function integer(value: string | undefined, minimum: number, maximum: number): n
   return Number.isInteger(parsed) && parsed >= minimum && parsed <= maximum ? parsed : undefined;
 }
 
-function eventLabel(locale: PublicExperienceLocale, type: string): string {
+function eventLabel(locale: PublicLocale, type: string): string {
   return eventLabels[locale][type as keyof typeof eventLabels.zh] ?? type.replaceAll("_", " ");
 }
 
-function participantName(locale: PublicExperienceLocale, occurrence: PublicMomentOccurrence): string {
+function participantName(locale: PublicLocale, occurrence: PublicMomentOccurrence): string {
   return occurrence.participants
     .map((panda) => locale === "zh" ? panda.name_zh : panda.name_en ?? panda.name_zh)
     .join(locale === "zh" ? "、" : ", ");

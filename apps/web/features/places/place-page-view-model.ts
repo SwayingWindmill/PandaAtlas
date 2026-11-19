@@ -1,9 +1,9 @@
-import type { PublicEntityPageViewModel } from "@/components/patterns/public-entity-page";
+import type { PublicEntityPageViewModel } from "@/features/places/public-entity-page";
 import type {
   PublicContentEnvelope,
   PublicPlaceRecord,
 } from "@/features/public-content/public-release";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import type { PandaDetail, PublicEntityName } from "@/lib/types";
 
 function localizedName(names: PublicEntityName[], locale: PublicLocale): { display: string; alternate: string | null } {

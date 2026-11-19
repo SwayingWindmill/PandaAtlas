@@ -8,7 +8,7 @@ import { useState } from "react";
 
 import { fanMutationOptions, favoritesQueryOptions } from "@/features/fan/api/queries";
 import { beginSignIn, privateReadStatus, redirectedToSignIn, useFanSession } from "@/features/fan/api/session";
-import { isEngagementUiEnabled } from "@/lib/engagement/config";
+import { isEngagementUiEnabled } from "@/lib/feature-flags";
 
 interface PandaFavoriteControlProps {
   stableId: string;

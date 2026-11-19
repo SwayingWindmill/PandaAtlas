@@ -1,20 +1,20 @@
 import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { PublicEntityPage } from "@/components/patterns/public-entity-page";
-import { PlaceCheckinControl } from "@/components/places/place-checkin-control";
+import { PublicEntityPage } from "@/features/places/public-entity-page";
+import { PlaceCheckinControl } from "@/features/places/place-checkin-control";
 import { buildPlacePageViewModel } from "@/features/places/place-page-view-model";
 import {
   loadV2PublicPlace,
   resolveV2InstitutionSlugForPlace,
   resolveV2PublicPlaceReference,
 } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 import { readPublicMetadata } from "@/lib/server/public-read";
 import {
   localizedPublicDestination,
   type PublicSearchParams,
-} from "@/foundation/routing/public-redirects";
+} from "@/lib/public-redirects";
 
 interface PlacePageProps {
   params: Promise<{ locale: string; slug: string }>;

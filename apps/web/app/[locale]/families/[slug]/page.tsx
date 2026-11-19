@@ -8,7 +8,7 @@ import {
   localizedEditorial,
 } from "@/features/public-experiences/stories";
 import styles from "@/features/public-experiences/public-experiences.module.css";
-import { parsePublicLocale, PUBLIC_LOCALES } from "@/foundation/content/locales";
+import { parsePublicLocale, PUBLIC_LOCALES } from "@/lib/locales";
 import type { PandaDetail, PublicParentageAssertionSummary } from "@/lib/types";
 
 interface FamilyStoryPageProps {

@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import { ActivityTimeline } from "@/features/feed/activity-timeline";
 import type { ActivityPageData } from "@/features/feed/types";
 import type { PandaDetail, PandaListItem } from "@/lib/types";

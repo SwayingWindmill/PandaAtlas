@@ -1,5 +1,5 @@
 import type { PublicAtlasDataset } from "@/features/public-content/public-release";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import type { PandaDetail } from "@/lib/types";
 
 export interface MyPandasProfileSummary {

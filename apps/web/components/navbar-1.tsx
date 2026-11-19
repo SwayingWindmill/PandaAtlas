@@ -40,7 +40,7 @@ export function Navbar1({
   notificationsEnabled = false,
 }: {
   locale: "zh" | "en";
-  searchResults: ArchiveSearchResult[];
+  searchResults?: ArchiveSearchResult[];
   notificationsEnabled?: boolean;
 }) {
   const zh = locale === "zh";

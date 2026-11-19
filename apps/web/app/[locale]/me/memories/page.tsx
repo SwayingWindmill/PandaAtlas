@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { publicShellClassName } from "@/components/patterns/public-shell";
 import { FanMemoriesPage } from "@/features/my-pandas/fan-memories-page";
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface MemoriesPageProps {
   params: Promise<{ locale: string }>;
@@ -58,7 +57,7 @@ export default async function MemoriesPage({ params }: MemoriesPageProps) {
   return (
     <>
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
-        <div className={publicShellClassName}>
+        <div className="pa-shell">
           <FanMemoriesPage locale={locale} pandas={pandas} places={places} />
         </div>
       </main>

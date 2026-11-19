@@ -3,7 +3,7 @@ import { connection } from "next/server";
 import { notFound, redirect } from "next/navigation";
 
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
+import { parsePublicLocale } from "@/lib/locales";
 
 export const dynamic = "force-dynamic";
 

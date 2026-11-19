@@ -1,18 +1,17 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, Database, ShieldCheck } from "lucide-react";
-import { publicShellClassName } from "@/components/patterns/public-shell";
-import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
-import { isCommunityIntakeUiEnabled } from "@/features/contribute/config";
-import { isFeedUiEnabled } from "@/features/feed/config";
-import { isNotificationCenterEnabled } from "@/features/notification-center/config";
+import { PublicDeliveryNotice } from "@/features/public-content/public-delivery-notice";
+import { isCommunityIntakeUiEnabled } from "@/lib/feature-flags";
+import { isFeedUiEnabled } from "@/lib/feature-flags";
+import { isNotificationCenterEnabled } from "@/lib/feature-flags";
 import { MyPandasPassportIsland } from "@/features/my-pandas/my-pandas-passport-island";
 import type { MyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
 import type {
   PublicAtlasDataset,
   PublicContentEnvelope,
 } from "@/features/public-content/public-release";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 interface MyPandasPageProps {
   locale: PublicLocale;
@@ -29,7 +28,7 @@ export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
   return (
     <>
       <main id="main-content" className="my-pandas-page" data-testid="my-pandas-page">
-        <section className={`${publicShellClassName} my-pandas-delivery`}>
+        <section className="pa-shell my-pandas-delivery">
           <PublicDeliveryNotice
             locale={locale}
             release={envelope.release}
@@ -40,7 +39,7 @@ export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
         </section>
 
         <section className="my-pandas-hero">
-          <div className={`${publicShellClassName} my-pandas-hero-grid`}>
+          <div className="pa-shell my-pandas-hero-grid">
             <div>
               <p className="my-pandas-eyebrow">{copy.eyebrow}</p>
               <h1>{copy.title}</h1>
@@ -97,7 +96,7 @@ export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
           </div>
         </section>
 
-        <section className={`${publicShellClassName} my-pandas-privacy`} aria-labelledby="my-pandas-privacy-title">
+        <section className="pa-shell my-pandas-privacy" aria-labelledby="my-pandas-privacy-title">
           <div className="my-pandas-privacy-heading">
             <ShieldCheck aria-hidden="true" />
             <div>
@@ -111,7 +110,7 @@ export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
           </ul>
         </section>
 
-        <div className={publicShellClassName}>
+        <div className="pa-shell">
           <noscript>
             <section className="my-pandas-noscript" aria-labelledby="my-pandas-noscript-title">
               <h2 id="my-pandas-noscript-title">{copy.noJsTitle}</h2>

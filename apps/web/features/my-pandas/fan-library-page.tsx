@@ -11,7 +11,7 @@ import { collectionsQueryOptions, fanMutationOptions, favoritesQueryOptions } fr
 import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 import type { FanCollection } from "@/features/fan/api/types";
 import type { MyPandasProfileSummary } from "@/features/my-pandas/my-pandas-view-model";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import { ApiRequestError } from "@/lib/api/request";
 
 const copy = {

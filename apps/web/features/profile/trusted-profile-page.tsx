@@ -1,18 +1,18 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
-import { PandaFavoriteControl } from "@/components/pandas/panda-favorite-control";
-import { PandaSeenControl } from "@/components/pandas/panda-seen-control";
+import { PandaFavoriteControl } from "@/features/profile/panda-favorite-control";
+import { PandaSeenControl } from "@/features/profile/panda-seen-control";
 import { PublicPandaActivity } from "@/features/feed/public-panda-activity";
 import type { ActivityPageData } from "@/features/feed/types";
 import { ProfileVisitRecorder } from "@/features/preferences/profile-visit-recorder";
 import { familyStoriesForPanda, localizedEditorial } from "@/features/public-experiences/stories";
 import { TrustedProfileMediaGallery } from "@/features/profile/trusted-profile-media-gallery";
-import { publicShellClassName } from "@/components/patterns/public-shell";
-import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
-import { LicensedMediaFigure } from "@/components/patterns/licensed-media-figure";
+import { PublicDeliveryNotice } from "@/features/public-content/public-delivery-notice";
+import { LicensedMediaFigure } from "@/features/profile/licensed-media-figure";
 import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
-import { buildPandaStructuredData, serializeStructuredData } from "@/foundation/metadata/panda-structured-data";
+import { buildPandaStructuredData, serializeStructuredData } from "@/features/profile/panda-structured-data";
+import type { PublicLocale } from "@/lib/locales";
 import type { PandaListItem } from "@/lib/types";
 import type {
   TrustedProfileFactViewModel,
@@ -22,10 +22,8 @@ import type {
 
 import styles from "./trusted-profile-page.module.css";
 
-export type PublicProfileLocale = "zh" | "en";
-
 interface TrustedProfilePageProps {
-  locale: PublicProfileLocale;
+  locale: PublicLocale;
   profile: TrustedProfilePageViewModel;
   envelope: PublicContentEnvelope<PublicProfileRecord>;
   activity?: ActivityPageData;
@@ -114,7 +112,7 @@ const copy = {
 
 function dateLabel(
   value: string | null,
-  locale: PublicProfileLocale,
+  locale: PublicLocale,
   precision: "day" | "month" | "year" = "day",
 ): string {
   if (!value) return copy[locale].unknown;
@@ -129,7 +127,7 @@ function dateLabel(
 }
 
 /** Settled records need no label; only open or contested ones say so. */
-function pendingLabel(status: string, locale: PublicProfileLocale): string | null {
+function pendingLabel(status: string, locale: PublicLocale): string | null {
   const t = copy[locale];
   if (status === "tentative") return t.tentative;
   if (status === "provisional") return t.provisional;
@@ -142,7 +140,7 @@ function pendingLabel(status: string, locale: PublicProfileLocale): string | nul
 
 function eventKindLabel(
   kind: TrustedProfilePageViewModel["timeline"]["items"][number]["kind"],
-  locale: PublicProfileLocale,
+  locale: PublicLocale,
 ): string {
   const labels = {
     zh: {
@@ -175,7 +173,7 @@ function eventKindLabel(
   return labels[locale][kind];
 }
 
-function factValue(fact: TrustedProfileFactViewModel, profile: TrustedProfilePageViewModel, locale: PublicProfileLocale): string {
+function factValue(fact: TrustedProfileFactViewModel, profile: TrustedProfilePageViewModel, locale: PublicLocale): string {
   const t = copy[locale];
   if (fact.field === "life_status") {
     return fact.value === "alive" ? t.alive : fact.value === "deceased" ? t.deceased : t.unknown;
@@ -185,7 +183,7 @@ function factValue(fact: TrustedProfileFactViewModel, profile: TrustedProfilePag
   return profile.currentPlace.label || t.unknown;
 }
 
-function Pending({ status, locale }: { status: string; locale: PublicProfileLocale }) {
+function Pending({ status, locale }: { status: string; locale: PublicLocale }) {
   const label = pendingLabel(status, locale);
   return label ? <span className={styles.pending}>{label}</span> : null;
 }
@@ -198,7 +196,7 @@ function RelationList({
 }: {
   title: string;
   items: TrustedProfileRelationViewModel[];
-  locale: PublicProfileLocale;
+  locale: PublicLocale;
   testId?: string;
 }) {
   if (!items.length) return null;
@@ -259,7 +257,6 @@ export function TrustedProfilePage({
     summary: profile.summary,
     coverImageUrl: envelope.data.panda.cover_image_url,
   }));
-  const shell = publicShellClassName;
   // A stale, partial or untranslated delivery is a warning the reader needs before the facts;
   // live, reviewed data needs no notice at all.
   const deliveryNotice = (
@@ -294,15 +291,15 @@ export function TrustedProfilePage({
         className={styles.page}
         data-testid="trusted-panda-profile"
       >
-        {deliveryIsLive ? null : <div className={`${shell} ${styles.alert}`}>{deliveryNotice}</div>}
+        {deliveryIsLive ? null : <div className={`pa-shell ${styles.alert}`}>{deliveryNotice}</div>}
 
-        <nav className={`${shell} ${styles.crumbs}`} aria-label={locale === "zh" ? "位置" : "Breadcrumb"}>
+        <nav className={`pa-shell ${styles.crumbs}`} aria-label={locale === "zh" ? "位置" : "Breadcrumb"}>
           <Link href={profile.atlasHref as Route}>{t.back}</Link>
           <span aria-hidden="true">/</span>
           <span aria-current="page">{profile.displayName}</span>
         </nav>
 
-        <section id="overview" className={`${shell} ${styles.hero}`} data-testid="identity-first-card">
+        <section id="overview" className={`pa-shell ${styles.hero}`} data-testid="identity-first-card">
           <div className={styles.heroMedia}>
             <LicensedMediaFigure
               locale={locale}
@@ -373,7 +370,7 @@ export function TrustedProfilePage({
         </section>
 
         {activity || activityUnavailable ? (
-          <div className={`${shell} ${styles.section}`}>
+          <div className={`pa-shell ${styles.section}`}>
             <PublicPandaActivity
               locale={locale}
               panda={envelope.data.panda}
@@ -385,7 +382,7 @@ export function TrustedProfilePage({
         ) : null}
 
         {storyParagraphs.length ? (
-          <section id="story" className={`${shell} ${styles.section}`} data-testid="reviewed-story">
+          <section id="story" className={`pa-shell ${styles.section}`} data-testid="reviewed-story">
             <h2 className={styles.sectionTitle}>{t.about}</h2>
             <div className={styles.story}>
               {storyParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
@@ -393,7 +390,7 @@ export function TrustedProfilePage({
           </section>
         ) : null}
 
-        <div className={`${shell} ${styles.section} ${styles.two}`}>
+        <div className={`pa-shell ${styles.section} ${styles.two}`}>
           <section id="timeline" aria-labelledby="profile-timeline">
             <h2 id="profile-timeline" className={styles.sectionTitle}>{t.timeline}</h2>
             {profile.timeline.items.length ? (
@@ -428,7 +425,7 @@ export function TrustedProfilePage({
           </section>
         </div>
 
-        <section id="footprint" className={`${shell} ${styles.section}`} aria-labelledby="profile-footprint">
+        <section id="footprint" className={`pa-shell ${styles.section}`} aria-labelledby="profile-footprint">
           <h2 id="profile-footprint" className={styles.sectionTitle}>{t.footprint}</h2>
           {profile.footprint.stops.length ? (
             <ol className={styles.stops} data-testid="footprint-text-view">
@@ -446,7 +443,7 @@ export function TrustedProfilePage({
         </section>
 
         {profile.media.state === "unavailable" ? null : (
-          <section id="media" className={`${shell} ${styles.section}`} aria-labelledby="profile-media">
+          <section id="media" className={`pa-shell ${styles.section}`} aria-labelledby="profile-media">
             <h2 id="profile-media" className={styles.sectionTitle}>{t.media}</h2>
             {profile.media.state === "gallery" ? <TrustedProfileMediaGallery locale={locale} media={profile.media} /> : null}
             {profile.media.state === "no_licensed_media" ? (
@@ -466,7 +463,7 @@ export function TrustedProfilePage({
         )}
 
         {profile.revision.summary ? (
-          <footer className={`${shell} ${styles.footnote}`} data-testid="revision-summary">
+          <footer className={`pa-shell ${styles.footnote}`} data-testid="revision-summary">
             <p>{profile.revision.summary}</p>
           </footer>
         ) : null}

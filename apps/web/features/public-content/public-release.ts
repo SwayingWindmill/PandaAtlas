@@ -7,7 +7,7 @@ import type {
   PublicPlaceSummary,
   PublicSourceSummary,
 } from "@/lib/types";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 export type PublicDeliveryState = "live" | "cached" | "partial" | "unavailable";
 export type PublicCoverageState = "complete" | "partial" | "none";
@@ -20,7 +20,7 @@ export interface PublicReleaseIdentity {
 
 export interface PublicDelivery {
   state: PublicDeliveryState;
-  label: "versioned-local-public-release" | "generated-v2-public-read";
+  label: "generated-v2-public-read";
   lastSuccessfulAt: string | null;
 }
 
@@ -45,13 +45,6 @@ export interface PublicContentEnvelope<T> {
 }
 
 export interface PublicAtlasDataset {
-  pandas: PandaDetail[];
-  facilities: PublicFacilitySummary[];
-  institutions: PublicInstitutionSummary[];
-  places: PublicPlaceSummary[];
-}
-
-export interface PublicMapDataset {
   pandas: PandaDetail[];
   facilities: PublicFacilitySummary[];
   institutions: PublicInstitutionSummary[];

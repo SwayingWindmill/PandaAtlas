@@ -1,15 +1,14 @@
 import type { Route } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { publicShellClassName } from "@/components/patterns/public-shell";
-import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
+import { PublicDeliveryNotice } from "@/features/public-content/public-delivery-notice";
 import type {
   PublicCoverage,
   PublicDelivery,
   PublicLocaleDelivery,
   PublicReleaseIdentity,
 } from "@/features/public-content/public-release";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 export interface PublicEntityLinkViewModel {
   id: string;
@@ -141,7 +140,7 @@ export function PublicEntityPage({
   return (
     <>
       <main id="main-content" className="pb-20 pt-8" data-testid={`${entity.kind}-entity-page`}>
-        <div className={`${publicShellClassName} grid min-w-0 gap-8 [&>*]:min-w-0`}>
+        <div className="pa-shell grid min-w-0 gap-8 [&>*]:min-w-0">
           <header className="rounded-[var(--pa-radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-sm md:p-10">
             <p className="pa-eyebrow">{t.evidence} · {isInstitution ? t.institution : t.place}</p>
             <h1 className="mt-3 break-words text-4xl font-semibold tracking-tight [overflow-wrap:anywhere] md:text-6xl">{entity.displayName}</h1>

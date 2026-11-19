@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { publicShellClassName } from "@/components/patterns/public-shell";
 import { GameHubPage } from "@/features/games/game-hub-page";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface GamesPageProps {
   params: Promise<{ locale: string }>;
@@ -37,7 +36,7 @@ export default async function GamesPage({ params }: GamesPageProps) {
   return (
     <>
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
-        <div className={publicShellClassName}>
+        <div className="pa-shell">
           <GameHubPage locale={locale} />
         </div>
       </main>

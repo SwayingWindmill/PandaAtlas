@@ -19,8 +19,8 @@ import {
 } from "@/features/lineage/lineage-query";
 import { StructuredLineagePage } from "@/features/lineage/structured-lineage-page";
 import { buildStructuredLineageViewModel } from "@/features/lineage/lineage-view-model";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface FamiliesPageProps {
   params: Promise<{ locale: string }>;

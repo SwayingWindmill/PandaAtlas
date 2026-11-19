@@ -1,4 +1,4 @@
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import { ActivityCard } from "@/features/feed/activity-card";
 import type { ActivityItem, FeedItemData } from "@/features/feed/types";
 import type { PandaListItem } from "@/lib/types";

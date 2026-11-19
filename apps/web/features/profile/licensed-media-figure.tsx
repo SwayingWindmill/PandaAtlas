@@ -6,7 +6,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { ExternalLink, ImageOff } from "lucide-react";
 import { useState } from "react";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 interface LicensedMediaFigureProps {
   locale: PublicLocale;

@@ -3,9 +3,9 @@ import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 
 import { ContributionEditor } from "@/features/contribute/contribution-editor";
-import { isCommunityIntakeUiEnabled } from "@/features/contribute/config";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { isCommunityIntakeUiEnabled } from "@/lib/feature-flags";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 import { createServerV2Client } from "@/lib/server/v2-api";
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 

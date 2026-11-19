@@ -2,10 +2,9 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import { publicShellClassName } from "@/components/patterns/public-shell";
 import type { PandaMapItem, PandaMapViewModel } from "@/features/map/panda-map-view-model";
 import { PandaWorldMap, type MapCover } from "@/features/map/panda-world-map";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 import styles from "./panda-map-page.module.css";
 
@@ -71,18 +70,18 @@ export function PandaMapPage({ locale, view, covers }: PandaMapPageProps) {
 
   return (
     <main id="main-content" className={styles.page} data-testid="panda-map-page">
-      <header className={`${publicShellClassName} ${styles.head}`}>
+      <header className={`pa-shell ${styles.head}`}>
         <h1>{t.title}</h1>
         {view.livingPlaces ? <p>{t.summary(view.livingPlaces, view.livingPlacesOverseas)}</p> : null}
       </header>
 
       {view.clusters.length ? (
-        <div className={publicShellClassName}>
+        <div className="pa-shell">
           <PandaWorldMap locale={locale} clusters={view.clusters} covers={covers} />
         </div>
       ) : null}
 
-      <div id="map-places" className={publicShellClassName}>
+      <div id="map-places" className="pa-shell">
         {groups.length ? groups.map((group) => (
           <section key={group.id} className={styles.section} aria-labelledby={`map-group-${group.id}`}>
             <div className={styles.sectionHead}>

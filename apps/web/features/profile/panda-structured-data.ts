@@ -1,5 +1,5 @@
-import { localizedPath, type PublicLocale } from "@/foundation/content/locales";
-import { ZHIPANDA_PUBLIC_ORIGIN } from "@/foundation/metadata/public-metadata";
+import { localizedPath, type PublicLocale } from "@/lib/locales";
+import { ZHIPANDA_PUBLIC_ORIGIN } from "@/lib/public-metadata";
 
 interface PandaStructuredDataInput {
   locale: PublicLocale;

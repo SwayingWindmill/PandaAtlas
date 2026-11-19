@@ -1,17 +1,11 @@
 import type { components } from "@zhipanda/api-client";
 
+import type { DailyPandaClue } from "@/features/fan/api/types";
 import { publicMediaUrl } from "@/lib/media/public-media";
 
-type ApiClue = components["schemas"]["DailyPandaClueDto"];
+export type { DailyPandaClue } from "@/features/fan/api/types";
 
-// Clues as the browser shows them, in reveal order. The photo clue carries a ready image URL.
-export type DailyPandaClue =
-  | { kind: "sex"; value: "female" | "male" }
-  | { kind: "birth_year"; value: number }
-  | { kind: "life_status"; value: "alive" | "deceased" }
-  | { kind: "birthplace"; value: string }
-  | { kind: "name_initial"; value: string }
-  | { kind: "photo"; imageUrl: string };
+type ApiClue = components["schemas"]["DailyPandaClueDto"];
 
 export function toDailyPandaClue(clue: ApiClue): DailyPandaClue[] {
   switch (clue.kind) {
