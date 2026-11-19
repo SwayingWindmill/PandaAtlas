@@ -40,7 +40,7 @@ async def cmd_sync(settings: Settings, _: argparse.Namespace) -> None:
 
 
 def _scheduler(settings: Settings, store: Store, client: httpx.AsyncClient) -> Scheduler:
-    lexicon = Lexicon.load(settings.pandas_csv, settings.aliases_file)
+    lexicon = Lexicon.load(settings.pandas_source, settings.aliases_file)
     adapters = build_adapters(settings, client)
     log.info("adapters on this host: %s", ", ".join(sorted(adapters)))
     return Scheduler(store, adapters, lexicon.tag, concurrency={"rss": settings.rss_concurrency})
@@ -170,7 +170,7 @@ async def cmd_resume(settings: Settings, args: argparse.Namespace) -> None:
 
 
 def cmd_tag(settings: Settings, args: argparse.Namespace) -> None:
-    lexicon = Lexicon.load(settings.pandas_csv, settings.aliases_file)
+    lexicon = Lexicon.load(settings.pandas_source, settings.aliases_file)
     print(", ".join(lexicon.slugs(args.text)) or "(no panda names)")
 
 

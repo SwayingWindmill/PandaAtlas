@@ -144,8 +144,8 @@ export function classifyDevelopmentScopes(paths) {
       changedPath.startsWith("services/collector/") ||
       changedPath.startsWith("data/collector/") ||
       changedPath.startsWith("infra/collector/") ||
-      // The collector tags items with names from the panda archive.
-      changedPath === "data/curation/pandas/pandas.csv"
+      // The collector tags items with names from the published panda release snapshot.
+      changedPath === "data/curation/learning/published-pandas.json"
     ) addScope(scopes, "collector");
 
     if (

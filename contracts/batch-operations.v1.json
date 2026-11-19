@@ -13,18 +13,16 @@
       "manifest_required": false,
       "idempotency": "Read-only validation; repeated runs inspect the same curation records.",
       "command": [
-        "python",
-        "scripts/curation/validate_panda_curation.py"
+        "uv",
+        "run",
+        "--isolated",
+        "--directory",
+        "tools/panda-data",
+        "--frozen",
+        "panda-data",
+        "curation",
+        "validate"
       ]
-    },
-    {
-      "id": "curation.apply",
-      "status": "planned",
-      "effect": "authoritative-write",
-      "approval_required": true,
-      "manifest_required": true,
-      "idempotency": "A future generic patch applier must use an immutable patch identity and reject replay with different content.",
-      "blocked_reason": "Current apply scripts are cohort-specific and cannot be exposed as one generic write entrypoint."
     },
     {
       "id": "curation.guess-questions",
@@ -83,15 +81,6 @@
       ]
     },
     {
-      "id": "media.publish",
-      "status": "planned",
-      "effect": "external-write",
-      "approval_required": true,
-      "manifest_required": true,
-      "idempotency": "A future publisher must address immutable objects by checksum and verify the remote object after upload.",
-      "blocked_reason": "Current upload scripts are source-specific and require explicit remote verification."
-    },
-    {
       "id": "release.publish",
       "status": "ready",
       "effect": "production-write",
@@ -100,15 +89,6 @@
       "idempotency": "Builds, seals and activates the release a data/release-manifests manifest names, or moves the pointer back to an older sealed release; versions are unique and a step that already happened is reported, not repeated.",
       "command": ["node", "services/api/dist/release-command.js", "publish"],
       "artifact_paths": [".batch-work/release"]
-    },
-    {
-      "id": "recovery.drill",
-      "status": "planned",
-      "effect": "isolated-state",
-      "approval_required": false,
-      "manifest_required": true,
-      "idempotency": "The drill must target an isolated environment and produce a new evidence package without mutating production.",
-      "blocked_reason": "The existing drills use separate environment-specific commands and need one explicit drill manifest."
     }
   ],
   "rules": {

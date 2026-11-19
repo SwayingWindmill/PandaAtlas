@@ -17,7 +17,7 @@ MediaCrawler ──────┘     （仅第一阶段对照）
 | `adapters/` | 每个平台一个适配器：取一页，给出下一次的游标 |
 | `scheduler.py` | 到期目标按适配器分组运行；失败退避；登录失效、限流、验证码时整个适配器暂停并告警 |
 | `store.py` + `schema.sql` | 目标即任务队列；原始内容、历史版本、运行记录、告警、outbox |
-| `lexicon.py` | 用 `data/curation/pandas/pandas.csv` 和 `data/collector/aliases.yaml` 给内容标出提到的熊猫 |
+| `lexicon.py` | 用 `data/curation/learning/published-pandas.json` 和 `data/collector/aliases.yaml` 给内容标出提到的熊猫 |
 | `aihot.py` | 把新内容和修订推给 AIHOT，一个采集目标对应 AIHOT 里的一个信源 |
 | `report.py` | 第一阶段的采集器对比报告 |
 

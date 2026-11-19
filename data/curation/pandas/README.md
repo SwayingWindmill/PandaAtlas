@@ -21,7 +21,7 @@ New pandas and facts start here, are validated, and are then written to the data
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/curation/validate_panda_curation.ps1
 ```
 
-The Python entry point is available at `scripts/curation/validate_panda_curation.py`.
+Or run the CLI directly through `npm run check:panda-curation` (`tools/panda-data/src/panda_data/cli.py`).
 
 ## Evidence Rules
 

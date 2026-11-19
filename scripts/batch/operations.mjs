@@ -33,17 +33,27 @@ const APPROVAL_EFFECTS = new Set([
 const ALLOWED_EXECUTABLES = new Set(["node", "python", "uv"]);
 const EXPECTED_OPERATION_IDS = new Set([
   "curation.validate",
-  "curation.apply",
   "curation.guess-questions",
   "curation.learning",
   "curation.content",
   "media.process",
-  "media.publish",
   "release.publish",
-  "recovery.drill",
 ]);
 const EXPECTED_READY_COMMANDS = new Map([
-  ["curation.validate", ["python", "scripts/curation/validate_panda_curation.py"]],
+  [
+    "curation.validate",
+    [
+      "uv",
+      "run",
+      "--isolated",
+      "--directory",
+      "tools/panda-data",
+      "--frozen",
+      "panda-data",
+      "curation",
+      "validate",
+    ],
+  ],
   [
     "media.process",
     [

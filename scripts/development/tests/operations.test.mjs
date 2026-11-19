@@ -13,6 +13,9 @@ import {
   listDevelopmentCommands,
 } from "../catalog.mjs";
 import {
+  resolveCommandInvocation,
+} from "../command-runner.mjs";
+import {
   renderDevelopmentCommand,
   resolveDevelopmentInvocation,
 } from "../operations.mjs";
@@ -85,7 +88,7 @@ test("changed-path routing stays centralized in the development scope classifier
   assert.deepEqual(classifyDevelopmentScopes(["contracts/panda-data/pipeline-job.v1.schema.json"]), ["curation", "data"]);
   assert.deepEqual(classifyDevelopmentScopes(["services/collector/src/collector/store.py"]), ["collector"]);
   assert.deepEqual(classifyDevelopmentScopes(["data/collector/targets.yaml"]), ["collector"]);
-  assert.deepEqual(classifyDevelopmentScopes(["data/curation/pandas/pandas.csv"]), ["curation", "collector"]);
+  assert.deepEqual(classifyDevelopmentScopes(["data/curation/learning/published-pandas.json"]), ["curation", "collector"]);
   // Documentation and ignore-rule changes run the release scope, whose verification checks doc references.
   assert.deepEqual(classifyDevelopmentScopes(["docs/architecture/example.md"]), ["release"]);
   assert.deepEqual(classifyDevelopmentScopes(["README.md"]), ["release"]);
@@ -128,6 +131,30 @@ test("Windows npm and npx commands run through the Node CLI without a shell", ()
         nodeExecutable,
       }),
     /requires npm_execpath/,
+  );
+  assert.deepEqual(
+    resolveCommandInvocation("npm", ["run", "lint"], {
+      platform: "win32",
+      npmExecPath,
+      nodeExecutable,
+    }),
+    {
+      executable: nodeExecutable,
+      args: [npmExecPath, "run", "lint"],
+      shell: false,
+    },
+  );
+  assert.deepEqual(
+    resolveCommandInvocation("npm", ["run", "lint", "-w", "@zhipanda/api"], {
+      platform: "win32",
+      npmExecPath: "",
+      comSpec: "C:\\Windows\\System32\\cmd.exe",
+    }),
+    {
+      executable: "C:\\Windows\\System32\\cmd.exe",
+      args: ["/d", "/s", "/c", "npm run lint -w @zhipanda/api"],
+      shell: false,
+    },
   );
 });
 

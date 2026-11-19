@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import pytest
+import yaml
 
 from collector.config import REPO_ROOT, ConfigError, load_targets
 from collector.lexicon import Lexicon
@@ -75,6 +76,37 @@ def test_lexicon_maps_names_and_aliases_to_every_slug(tmp_path: Path) -> None:
     lexicon = Lexicon.load(csv, aliases)
     assert lexicon.slugs("花花和乐乐，还有福宝") == ["fu-bao", "he-hua", "le-le-a", "le-le-b"]
     assert lexicon.slugs("宝") == []  # one-character names are ignored
+
+
+def test_lexicon_loads_published_snapshot_json(tmp_path: Path) -> None:
+    snapshot = tmp_path / "published-pandas.json"
+    snapshot.write_text(
+        json.dumps(
+            {
+                "slugs": ["fu-bao", "he-hua-chengdu"],
+                "pandas": [
+                    {"slug": "fu-bao", "namesZh": ["福宝"]},
+                    {"slug": "he-hua-chengdu", "namesZh": ["和花"]},
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    aliases = tmp_path / "aliases.yaml"
+    aliases.write_text("he-hua-chengdu: [花花]\n", encoding="utf-8")
+    lexicon = Lexicon.load(snapshot, aliases)
+    assert lexicon.slugs("花花和福宝") == ["fu-bao", "he-hua-chengdu"]
+
+
+def test_repository_aliases_align_with_published_pandas() -> None:
+    snapshot_path = REPO_ROOT / "data/curation/learning/published-pandas.json"
+    aliases_path = REPO_ROOT / "data/collector/aliases.yaml"
+    published_slugs = set(json.loads(snapshot_path.read_text(encoding="utf-8"))["slugs"])
+    aliases = yaml.safe_load(aliases_path.read_text(encoding="utf-8")) or {}
+    assert set(aliases) <= published_slugs
+    lexicon = Lexicon.load(snapshot_path, aliases_path)
+    assert "he-hua-chengdu" in lexicon.slugs("花花今天吃竹笋")
 
 
 def test_role_and_institution_are_loaded(tmp_path: Path) -> None:
