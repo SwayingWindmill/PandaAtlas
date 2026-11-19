@@ -7,7 +7,7 @@ import { useSession } from "@/features/session/session";
 import { loadVisits } from "@/features/visits/visits";
 import { authedApi } from "@/lib/api";
 
-import { type YearReview, yearReview } from "./year-review";
+import { type YearReview, yearReview, yearReviewQueryKey } from "./year-review";
 
 export interface YearReviewData {
   review: YearReview;
@@ -50,7 +50,7 @@ export function useYearReview(year: number) {
   const accountId = state.status === "signedIn" ? state.accountId : null;
   const today = localToday();
   return useQuery({
-    queryKey: ["year-review", accountId ?? "", year, today],
+    queryKey: yearReviewQueryKey(accountId, year, today),
     queryFn: () => loadYearReview(year, today),
     enabled: accountId !== null,
   });

@@ -23,11 +23,14 @@ async function returnPathSentFromLogin(page: Page, next: string): Promise<string
 
 for (const next of [
   "/zh/games/guess",
+  "/zh/games/daily",
   "/en/me",
   "/zh/me/collections",
   "/en/me/memories",
   "/zh/me/game-history",
+  "/zh/me/panda-book",
   "/en/places/zoo-atlanta",
+  "/en/institutions/zoo-atlanta",
   "/zh/pandas/mei-xiang",
   "/en/me/inbox",
 ]) {
@@ -46,6 +49,6 @@ for (const next of [
   "/en/places/Zoo_Atlanta",
 ]) {
   test(`email sign-in refuses the return path ${next}`, async ({ page }) => {
-    expect(await returnPathSentFromLogin(page, next)).toBe("/admin");
+    expect(await returnPathSentFromLogin(page, next)).toBe("/zh/me");
   });
 }

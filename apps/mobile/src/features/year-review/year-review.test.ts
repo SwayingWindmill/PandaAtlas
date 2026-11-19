@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { monthDot, parseYear, reviewYears, yearReview } from "./year-review";
+import { monthDot, parseYear, reviewYears, yearReview, yearReviewQueryKey } from "./year-review";
 
 const base = {
   year: 2026,
@@ -69,5 +69,22 @@ describe("year review", () => {
     expect(parseYear("2025", "2026-11-04")).toBe(2025);
     expect(parseYear("2019", "2026-11-04")).toBe(2026);
     expect(monthDot("2026-03-14")).toBe("03.14");
+  });
+
+  it("scopes year review queries under the private prefix so sign-out clears them", () => {
+    expect(yearReviewQueryKey("acc-1", 2026, "2026-11-04")).toEqual([
+      "private",
+      "acc-1",
+      "year-review",
+      2026,
+      "2026-11-04",
+    ]);
+    expect(yearReviewQueryKey(null, 2026, "2026-11-04")).toEqual([
+      "private",
+      "",
+      "year-review",
+      2026,
+      "2026-11-04",
+    ]);
   });
 });

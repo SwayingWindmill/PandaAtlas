@@ -98,16 +98,29 @@ export function FollowedChanges() {
   const followed = useFollowed();
   const [sources, setSources] = useState<Sources | null>(null);
   const [failed, setFailed] = useState(false);
+  const shouldLoad = state.status === "signedIn" && followed !== null && followed.size > 0;
 
   useFocusEffect(
     useCallback(() => {
+      if (!shouldLoad) {
+        setSources(null);
+        setFailed(false);
+        return;
+      }
+      let active = true;
       loadSources()
         .then((loaded) => {
+          if (!active) return;
           setSources(loaded);
           setFailed(false);
         })
-        .catch(() => setFailed(true));
-    }, []),
+        .catch(() => {
+          if (active) setFailed(true);
+        });
+      return () => {
+        active = false;
+      };
+    }, [shouldLoad]),
   );
 
   const changes = useMemo(
