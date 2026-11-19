@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-$validator = Join-Path $root "scripts\curation\validate_panda_curation.py"
+$pandaDataDir = Join-Path $root "tools\panda-data"
 
-python $validator
+uv run --isolated --directory $pandaDataDir --frozen panda-data curation validate
 exit $LASTEXITCODE

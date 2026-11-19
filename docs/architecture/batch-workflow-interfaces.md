@@ -1,6 +1,6 @@
 # Bounded batch workflow interfaces
 
-- Status: Current; six operations are ready, three planned
+- Status: Current; six operations are ready
 - Managed-only principle: [ADR 0002](adr-0002-managed-cloud-deployment-target.md)
 - Operation catalog: [`contracts/batch-operations.v1.json`](../../contracts/batch-operations.v1.json)
 - Manual workflow: [`.github/workflows/batch-operations.yml`](../../.github/workflows/batch-operations.yml)
@@ -17,15 +17,13 @@ The workflow is manual-only. Its default behavior is to validate the catalog and
 | Operation | Current status | Effect | Approval |
 |---|---|---|---|
 | `curation.validate` | Ready | Read-only | No |
-| `curation.apply` | Planned | Authoritative write | `production-batch` |
 | `curation.guess-questions` | Ready | Production write | `production-batch` |
 | `curation.learning` | Ready | Production write | `production-batch` |
+| `curation.content` | Ready | Production write | `production-batch` |
 | `media.process` | Ready | Generated output | No |
-| `media.publish` | Planned | External write | `production-batch` |
 | `release.publish` | Ready | Production write | `production-batch` |
-| `recovery.drill` | Planned | Isolated state | No |
 
-A planned operation can produce a reviewed plan when its required JSON manifest exists, but an execution request fails closed. Changing an operation from planned to ready requires both a catalog change and a matching code-level command allowlist change in `scripts/batch/operations.mjs`.
+Changing an existing operation or introducing a planned one requires both a catalog change and a matching code-level update in `scripts/batch/operations.mjs`; an unallowlisted operation fails closed.
 
 ## Execution safety
 

@@ -1,13 +1,15 @@
 """Panda name lexicon: tags each item with the slugs of the pandas whose names it mentions.
 
-Names come from the curated archive (`data/curation/pandas/pandas.csv`) plus hand-kept nicknames
-(`data/collector/aliases.yaml`). Many pandas share a name, so a mention maps to every slug that
-carries it; telling them apart is left to AIHOT's extraction and to review.
+Names come from the published release snapshot (`data/curation/learning/published-pandas.json`) or
+an explicit CSV override, plus hand-kept nicknames (`data/collector/aliases.yaml`). Many pandas
+share a name, so a mention maps to every slug that carries it; telling them apart is left to
+AIHOT's extraction and to review.
 """
 
 from __future__ import annotations
 
 import csv
+import json
 import re
 from collections import defaultdict
 from pathlib import Path
@@ -27,12 +29,26 @@ class Lexicon:
         self.pattern = re.compile("|".join(map(re.escape, ordered))) if ordered else None
 
     @classmethod
-    def load(cls, pandas_csv: Path, aliases_yaml: Path | None) -> Lexicon:
+    def load(cls, pandas_source: Path, aliases_yaml: Path | None) -> Lexicon:
         names: dict[str, set[str]] = defaultdict(set)
-        with pandas_csv.open(encoding="utf-8-sig", newline="") as handle:
-            for row in csv.DictReader(handle):
-                if row.get("name_zh"):
-                    names[row["name_zh"].strip()].add(row["slug"])
+        if pandas_source.suffix.lower() == ".json":
+            payload = json.loads(pandas_source.read_text(encoding="utf-8"))
+            entries = payload.get("pandas") if isinstance(payload, dict) else None
+            if not isinstance(entries, list) or not entries:
+                raise ValueError(f"{pandas_source} must contain a non-empty 'pandas' list")
+            for entry in entries:
+                slug = str(entry.get("slug", "")).strip()
+                if not slug:
+                    continue
+                for name in entry.get("namesZh") or []:
+                    cleaned = str(name).strip()
+                    if cleaned:
+                        names[cleaned].add(slug)
+        else:
+            with pandas_source.open(encoding="utf-8-sig", newline="") as handle:
+                for row in csv.DictReader(handle):
+                    if row.get("name_zh"):
+                        names[row["name_zh"].strip()].add(row["slug"])
         if aliases_yaml and aliases_yaml.is_file():
             for slug, aliases in (yaml.safe_load(aliases_yaml.read_text("utf-8")) or {}).items():
                 for alias in aliases or []:

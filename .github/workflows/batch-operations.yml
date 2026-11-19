@@ -9,14 +9,11 @@ on:
         type: choice
         options:
           - curation.validate
-          - curation.apply
           - curation.guess-questions
           - curation.learning
           - curation.content
           - media.process
-          - media.publish
           - release.publish
-          - recovery.drill
       manifest_path:
         description: Repository-relative immutable manifest path when required
         required: false

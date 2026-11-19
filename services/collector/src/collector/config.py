@@ -37,7 +37,7 @@ def _path(name: str, default: Path) -> Path:
 class Settings:
     database_url: str
     targets_file: Path
-    pandas_csv: Path
+    pandas_source: Path
     aliases_file: Path
     state_dir: Path
     rsshub_url: str | None
@@ -59,11 +59,22 @@ class Settings:
     @classmethod
     def from_env(cls) -> Settings:
         weibo_dir, media_dir = _env("WEIBO_CRAWLER_DIR"), _env("MEDIACRAWLER_DIR")
+        published_pandas = _env("COLLECTOR_PUBLISHED_PANDAS")
+        pandas_csv = _env("COLLECTOR_PANDAS_CSV")
+        pandas_source = (
+            Path(published_pandas)
+            if published_pandas
+            else (
+                Path(pandas_csv)
+                if pandas_csv
+                else REPO_ROOT / "data/curation/learning/published-pandas.json"
+            )
+        )
         return cls(
             database_url=_env("COLLECTOR_DATABASE_URL")
             or "postgresql://collector:collector@localhost:55432/collector",
             targets_file=_path("COLLECTOR_TARGETS", REPO_ROOT / "data/collector/targets.yaml"),
-            pandas_csv=_path("COLLECTOR_PANDAS_CSV", REPO_ROOT / "data/curation/pandas/pandas.csv"),
+            pandas_source=pandas_source,
             aliases_file=_path("COLLECTOR_ALIASES", REPO_ROOT / "data/collector/aliases.yaml"),
             state_dir=_path("COLLECTOR_STATE_DIR", REPO_ROOT / ".collector"),
             rsshub_url=_env("RSSHUB_URL"),
