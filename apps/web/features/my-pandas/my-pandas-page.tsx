@@ -2,9 +2,11 @@ import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, Database, ShieldCheck } from "lucide-react";
 import { PublicDeliveryNotice } from "@/features/public-content/public-delivery-notice";
-import { isCommunityIntakeUiEnabled } from "@/lib/feature-flags";
-import { isFeedUiEnabled } from "@/lib/feature-flags";
-import { isNotificationCenterEnabled } from "@/lib/feature-flags";
+import {
+  isCommunityIntakeUiEnabled,
+  isFeedUiEnabled,
+  isNotificationCenterEnabled,
+} from "@/lib/feature-flags";
 import { MyPandasPassportIsland } from "@/features/my-pandas/my-pandas-passport-island";
 import type { MyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
 import type {

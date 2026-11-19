@@ -103,7 +103,7 @@ Tailwind 对应：`text-xs`（12）、`text-base`（16）、`text-xl`（20）。
 
 ### 4.1 内容宽度与页边距
 
-- 内容最大宽度 `--pa-content-max`（77.5rem），页边距 `--pa-space-page`（16–64px 随屏宽变化）。共享写法是 `publicShellClassName`。
+- 内容最大宽度 `--pa-content-max`（77.5rem），页边距 `--pa-space-page`（16–64px 随屏宽变化）。共享写法是 `.pa-shell`（`className="pa-shell"`）。
 - 区块之间 56px（3.5rem）；标题与内容之间 20–24px。
 
 ### 4.2 圆角

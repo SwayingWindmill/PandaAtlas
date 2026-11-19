@@ -21,6 +21,8 @@ test("requiresSupabaseSessionRefresh skips anonymous public pages", () => {
     "/zh/media-kit",
     "/en/contribution",
     "/api/site-search",
+    "/api/site-search/",
+    "//api/site-search",
   ]) {
     assert.equal(requiresSupabaseSessionRefresh(path), false, path);
   }

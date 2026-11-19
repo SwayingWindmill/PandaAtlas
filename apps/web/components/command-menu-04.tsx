@@ -86,6 +86,7 @@ export function ArchiveSearch({
   triggerLabel: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState<{ locale: "zh" | "en"; items: ArchiveSearchResult[] } | null>(null);
   const router = useRouter();
 
@@ -100,9 +101,14 @@ export function ArchiveSearch({
       setLoaded({ locale, items: cached });
       return;
     }
-    void loadLazySiteSearch(locale).then((items) => {
-      setLoaded({ locale, items });
-    });
+    setLoading(true);
+    void loadLazySiteSearch(locale)
+      .then((items) => {
+        setLoaded({ locale, items });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -127,6 +133,7 @@ export function ArchiveSearch({
           setOpen(false);
           router.push(result.href as Route);
         }}
+        loading={loading && resolvedResults.length === 0}
         results={resolvedResults}
       />
     </>
@@ -138,12 +145,14 @@ export function GlobalArchiveSearch({
   open,
   onOpenChange,
   onSelect,
+  loading = false,
   results,
 }: {
   locale: "zh" | "en";
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelect: (result: ArchiveSearchResult) => void;
+  loading?: boolean;
   results: ArchiveSearchResult[];
 }) {
   const zh = locale === "zh";
@@ -238,7 +247,11 @@ export function GlobalArchiveSearch({
             })}
           </div>
 
-          {needle && !matches.length ? (
+          {loading ? (
+            <p className="py-6 text-center text-base text-[var(--pa-color-ink-muted)]">
+              {zh ? "正在加载搜索…" : "Loading search…"}
+            </p>
+          ) : needle && !matches.length ? (
             <p className="py-6 text-center text-base">{zh ? `没有找到“${query}”` : `No results for “${query}”`}</p>
           ) : null}
 
