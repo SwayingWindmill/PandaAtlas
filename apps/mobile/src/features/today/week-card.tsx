@@ -1,15 +1,16 @@
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 import { Pressable, View } from "react-native";
 
 import { useStacked } from "@/components/grouped-list";
 import { Sparkles } from "@/components/icons";
 import { SectionHeader } from "@/components/section-header";
 import { Text } from "@/components/ui/text";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { cn } from "@/lib/utils";
 
 import { type DigestGroup, type WeekDigest, namesLine } from "./week";
-import { type Week, loadWeek } from "./week-data";
+import { type Week, weekQueryOptions } from "./week-data";
 
 /** Counts the card shows side by side; the rest are on 本周新鲜事. */
 const TALLIES_SHOWN = 3;
@@ -41,22 +42,12 @@ export function headline(group: DigestGroup | undefined, pandas: Week["pandas"])
  * that fails leaves 今天 as it was; the page itself says when it cannot load.
  */
 export function WeekCard() {
-  const [week, setWeek] = useState<Week | null>(null);
+  const { data: week, isError, refetch } = useQuery(weekQueryOptions());
   const stacked = useStacked();
 
-  useFocusEffect(
-    useCallback(() => {
-      let live = true;
-      loadWeek()
-        .then((next) => live && setWeek(next))
-        .catch(() => live && setWeek(null));
-      return () => {
-        live = false;
-      };
-    }, []),
-  );
+  useRefetchOnFocus(refetch);
 
-  const digest = week?.digest;
+  const digest = isError ? null : week?.digest;
   if (!week || !digest) return null;
   const shown = tallies(digest).slice(0, TALLIES_SHOWN);
   const names = headline(digest.groups[0], week.pandas);

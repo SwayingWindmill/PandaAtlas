@@ -1,5 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { createStoredPref } from "@/lib/stored-pref";
 
 // 里程碑's one switch, kept on this device like 那年今天's: a viewing preference that needs no account and no
 // server change. Off hides every milestone: the 我的 row and its page, the 图鉴 marks, 那年今天's 满月 and
@@ -9,12 +8,7 @@ export interface MilestonePrefs {
   off: boolean;
 }
 
-const KEY = "milestones";
 const DEFAULT: MilestonePrefs = { off: false };
-let current: MilestonePrefs | undefined;
-let reading: Promise<MilestonePrefs> | undefined;
-let pendingWrite = Promise.resolve();
-const listeners = new Set<(prefs: MilestonePrefs) => void>();
 
 export function parseMilestonePrefs(stored: string | null): MilestonePrefs {
   if (!stored) return DEFAULT;
@@ -26,34 +20,16 @@ export function parseMilestonePrefs(stored: string | null): MilestonePrefs {
   }
 }
 
-function read(): Promise<MilestonePrefs> {
-  reading ??= AsyncStorage.getItem(KEY)
-    .catch(() => null)
-    .then((stored) => {
-      current ??= parseMilestonePrefs(stored);
-      return current;
-    });
-  return reading;
-}
+const pref = createStoredPref<MilestonePrefs>({
+  key: "milestones",
+  parse: parseMilestonePrefs,
+  serialize: (next) => JSON.stringify(next),
+});
 
-export function setMilestonePrefs(next: MilestonePrefs): void {
-  current = next;
-  for (const listener of listeners) listener(next);
-  pendingWrite = pendingWrite.then(() => AsyncStorage.setItem(KEY, JSON.stringify(next))).catch(() => undefined);
-}
+export const setMilestonePrefs = pref.set;
 
 /** The stored switch; null until read, so nothing flashes in and out. */
-export function useMilestonePrefs(): MilestonePrefs | null {
-  const [prefs, setPrefs] = useState<MilestonePrefs | null>(current ?? null);
-  useEffect(() => {
-    listeners.add(setPrefs);
-    if (current === undefined) void read().then(setPrefs);
-    return () => {
-      listeners.delete(setPrefs);
-    };
-  }, []);
-  return prefs;
-}
+export const useMilestonePrefs = pref.useValue;
 
 /** True once read and switched on. */
 export function useMilestonesOn(): boolean {

@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useCallback, useMemo } from "react";
 
-import { loadPandaIndex } from "@/features/pandas/pandas";
+import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
 
 import { type LearningCatalog, type LearningPanda } from "./catalog";
 import { loadLearningCatalog } from "./load";
@@ -11,36 +12,31 @@ export type CatalogLoad =
   | { status: "failed" };
 
 export function useLearningCatalog(): { state: CatalogLoad; reload: () => void } {
-  const [state, setState] = useState<CatalogLoad>({ status: "loading" });
-  const load = useCallback(() => {
-    loadLearningCatalog()
-      .then((catalog) => setState({ status: "ready", catalog }))
-      .catch(() => setState({ status: "failed" }));
-  }, []);
+  const { data, isError, isFetching, refetch } = useQuery({
+    queryKey: ["public", "learning-catalog"],
+    queryFn: loadLearningCatalog,
+    staleTime: 300_000,
+    networkMode: "always",
+  });
+  const state: CatalogLoad = data
+    ? { status: "ready", catalog: data }
+    : isError && !isFetching
+      ? { status: "failed" }
+      : { status: "loading" };
   const reload = useCallback(() => {
-    setState({ status: "loading" });
-    load();
-  }, [load]);
-  useEffect(() => {
-    load();
-  }, [load]);
+    void refetch();
+  }, [refetch]);
   return { state, reload };
 }
 
 export function useLearningPandas(): { pandas: LearningPanda[] | null; failed: boolean; reload: () => void } {
-  const [pandas, setPandas] = useState<LearningPanda[] | null>(null);
-  const [failed, setFailed] = useState(false);
-  const load = useCallback(() => {
-    loadPandaIndex()
-      .then((items) => setPandas(items.map((item) => ({ id: item.id, slug: item.slug, name: item.name }))))
-      .catch(() => setFailed(true));
-  }, []);
+  const { data, isError, isFetching, refetch } = useQuery(pandaIndexQueryOptions());
+  const pandas = useMemo(
+    () => (data ? data.map((item) => ({ id: item.id, slug: item.slug, name: item.name })) : null),
+    [data],
+  );
   const reload = useCallback(() => {
-    setFailed(false);
-    load();
-  }, [load]);
-  useEffect(() => {
-    load();
-  }, [load]);
-  return { pandas, failed, reload };
+    void refetch();
+  }, [refetch]);
+  return { pandas, failed: !data && isError && !isFetching, reload };
 }

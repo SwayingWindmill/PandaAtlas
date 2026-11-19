@@ -1,6 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useCallback } from "react";
 
+import { useSession } from "@/features/session/session";
 import { authedApi } from "@/lib/api";
+import { queryClient } from "@/lib/query-client";
 
 export const NICKNAME_MAX = 40;
 
@@ -8,6 +11,8 @@ export interface Profile {
   nickname: string;
   bio: string;
 }
+
+const profileKey = (accountId: string) => ["private", accountId, "profile"] as const;
 
 /** The name a profile header shows: the nickname, else the address, else a friendly default. */
 export function displayName(profile: Profile | null, email: string | null): string {
@@ -20,27 +25,33 @@ export function initial(name: string): string {
 }
 
 /**
- * The signed-in fan's profile from `/api/v2/me/profile`, read once on mount, and a `rename` that
- * writes a new nickname and resolves to whether the server took it.
+ * The signed-in fan's profile from `/api/v2/me/profile`, shared across Today, Me and Settings via React Query,
+ * plus a `rename` that updates cached readers when the server accepts the new nickname.
  */
 export function useProfile(): { profile: Profile | null; rename: (nickname: string) => Promise<boolean> } {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  useEffect(() => {
-    void authedApi.GET("/api/v2/me/profile").then(({ data }) => {
-      if (data) setProfile({ nickname: data.nickname, bio: data.bio });
-    });
-  }, []);
+  const { state } = useSession();
+  const accountId = state.status === "signedIn" ? state.accountId : null;
+  const { data: profile = null } = useQuery({
+    queryKey: profileKey(accountId ?? ""),
+    enabled: accountId !== null,
+    staleTime: 300_000,
+    queryFn: async (): Promise<Profile> => {
+      const { data } = await authedApi.GET("/api/v2/me/profile");
+      if (!data) throw new Error("Profile unavailable");
+      return { nickname: data.nickname, bio: data.bio };
+    },
+  });
   const rename = useCallback(
     async (nickname: string) => {
-      if (!profile) return false;
+      if (!accountId || !profile) return false;
       const { data } = await authedApi.PUT("/api/v2/me/profile", {
         body: { nickname: nickname.trim(), bio: profile.bio },
       });
       if (!data) return false;
-      setProfile({ nickname: data.nickname, bio: data.bio });
+      queryClient.setQueryData<Profile>(profileKey(accountId), { nickname: data.nickname, bio: data.bio });
       return true;
     },
-    [profile],
+    [accountId, profile],
   );
   return { profile, rename };
 }

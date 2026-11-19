@@ -8,7 +8,7 @@ import type { MonthThemeEntry } from "./challenge";
 // Development builds preview the working file, drafts included, as the 科普 screens do. Production builds
 // show only what GET /api/v2/learning publishes.
 function bundledThemes(): MonthThemeEntry[] {
-  return (bundledLearningDocument() as { monthThemes?: MonthThemeEntry[] }).monthThemes ?? [];
+  return (bundledLearningDocument() as { monthThemes?: MonthThemeEntry[] } | null)?.monthThemes ?? [];
 }
 
 export async function loadMonthThemes(): Promise<MonthThemeEntry[]> {

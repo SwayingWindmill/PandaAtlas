@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -30,13 +31,14 @@ import {
 import { localToday } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
 import { LitCard } from "@/features/book/lit-card";
-import { type PandaListItem, loadPandaIndex, loadPlaces, placeName } from "@/features/pandas/pandas";
+import { type PandaListItem, loadPandaIndex, loadPlaces, pandaIndexQueryOptions, placeName } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
 import { LockedPhotoTile, StoryPhotoTile } from "@/features/today/story-photo-tile";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { loadVisits } from "@/features/visits/visits";
 import { authedApi } from "@/lib/api";
 import { RADIUS, pageColumn } from "@/lib/surface";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 const GAP = 12;
 /** Tiles the grid shows before 显示全部: three rows of four. */
@@ -260,25 +262,20 @@ function Loading() {
 }
 
 /** Keyed by account, so another fan signing in on this device starts from a fresh load. */
-function SignedIn() {
-  const [book, setBook] = useState<Book | null>(null);
-  const [failed, setFailed] = useState(false);
+function SignedIn({ accountId }: { accountId: string }) {
+  const { data: book, isError, isFetching, refetch } = useQuery({
+    queryKey: ["private", accountId, "book"],
+    queryFn: loadBook,
+  });
+  useRefetchOnFocus(refetch);
   const [filter, setFilter] = useState<Filter>("all");
 
-  const load = useCallback(() => {
-    loadBook()
-      .then(setBook)
-      .catch(() => setFailed(true));
-  }, []);
-  useEffect(load, [load]);
-
-  if (failed) {
+  if (!book && isError && !isFetching) {
     return (
       <LoadFailed
         message="图鉴暂时打不开。"
         onRetry={() => {
-          setFailed(false);
-          load();
+          void refetch();
         }}
       />
     );
@@ -333,12 +330,8 @@ function isOpenTile(index: number, columns: number) {
 function SignedOut() {
   const { columns, tile } = useGrid();
   const photos = useStoryPhotos(localToday(), columns * 2);
-  const [published, setPublished] = useState<number | null>(null);
-  useEffect(() => {
-    loadPandaIndex()
-      .then((pandas) => setPublished(pandas.length))
-      .catch(() => setPublished(null));
-  }, []);
+  const { data: pandaIndex } = useQuery(pandaIndexQueryOptions());
+  const published = pandaIndex?.length ?? null;
   const tiles = useMemo(() => Array.from({ length: columns * 2 }, (_, index) => index), [columns]);
   return (
     <>
@@ -378,7 +371,7 @@ export default function BookScreen() {
   const { state } = useSession();
   return (
     <Page title="图鉴" back={false}>
-      {state.status === "signedIn" ? <SignedIn key={state.accountId} /> : null}
+      {state.status === "signedIn" ? <SignedIn key={state.accountId} accountId={state.accountId} /> : null}
       {state.status === "signedOut" ? <SignedOut /> : null}
       {state.status === "loading" ? <Loading /> : null}
       {state.status === "unavailable" ? (
