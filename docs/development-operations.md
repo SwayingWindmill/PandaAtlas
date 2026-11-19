@@ -101,7 +101,7 @@ npm run infra:stop
 
 `npm run ops -- run api.contract` regenerates the Nest OpenAPI document and generated TypeScript client, then fails if either generated output changed from its pre-check contents. A failing check leaves the regenerated files in place for review.
 
-`api.db-types` runs the existing Kysely generator against the pinned local Supabase database and applies the same drift rule to `database.*.generated.ts` outputs.
+`api.db-types` runs the existing Kysely generator and `scripts/development/dump-db-schema.mjs` against the pinned local Supabase database and applies the same drift rule to `database.*.generated.ts` and `infra/supabase/schema.current.sql` outputs.
 
 Web checks:
 
