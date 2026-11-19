@@ -2,7 +2,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, LockKeyhole } from "lucide-react";
 
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import { ActivityTimeline } from "@/features/feed/activity-timeline";
 import type { FeedPageData } from "@/features/feed/types";
 import type { PandaDetail } from "@/lib/types";

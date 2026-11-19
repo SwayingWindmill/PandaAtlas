@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import type { PandaMapCluster } from "@/features/map/panda-map-view-model";
 import { WORLD_CHINA_SHARE, WORLD_HEIGHT, WORLD_LAND_PATH, WORLD_WIDTH } from "@zhipanda/world-map";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 import styles from "./panda-map-page.module.css";
 

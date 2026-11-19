@@ -3,8 +3,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { Clock, ExternalLink, Info, MapPin, Route as RouteIcon, Video } from "lucide-react";
-import { publicShellClassName } from "@/components/patterns/public-shell";
-import { PlaceCheckinControl } from "@/components/places/place-checkin-control";
+import { PlaceCheckinControl } from "@/features/places/place-checkin-control";
 import {
   listSeparator,
   type InstitutionPageViewModel,
@@ -12,7 +11,7 @@ import {
   type VisitTipTopic,
 } from "@/features/institutions/institution-page-view-model";
 import type { PandaCoverMedia } from "@/features/public-content/public-v2";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 import styles from "./institution-page.module.css";
 
@@ -127,7 +126,6 @@ interface InstitutionPageProps {
 
 export function InstitutionPage({ locale, view, covers }: InstitutionPageProps) {
   const t = copy[locale];
-  const shell = publicShellClassName;
   // Regions are published in English only, so the Chinese page names the country alone.
   const where = locale === "zh" ? view.country : [view.region, view.country].filter(Boolean).join(", ");
   const eyebrow = [view.kind ? t.kinds[view.kind] : null, where]
@@ -141,13 +139,13 @@ export function InstitutionPage({ locale, view, covers }: InstitutionPageProps) 
 
   return (
     <main id="main-content" className={styles.page} data-testid="institution-page">
-      <nav className={`${shell} ${styles.crumbs}`} aria-label={t.crumbs}>
+      <nav className={`pa-shell ${styles.crumbs}`} aria-label={t.crumbs}>
         <Link href={`/${locale}/map` as Route}>{t.map}</Link>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{view.name}</span>
       </nav>
 
-      <header className={`${shell} ${styles.hero}`} data-photos={heroPhotos.length ? "true" : "false"}>
+      <header className={`pa-shell ${styles.hero}`} data-photos={heroPhotos.length ? "true" : "false"}>
         <div className={styles.heroCopy}>
           {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
           <h1>{view.name}</h1>
@@ -179,7 +177,7 @@ export function InstitutionPage({ locale, view, covers }: InstitutionPageProps) 
         ) : null}
       </header>
 
-      <section className={`${shell} ${styles.section}`} aria-labelledby="institution-residents">
+      <section className={`pa-shell ${styles.section}`} aria-labelledby="institution-residents">
         <div className={styles.sectionHead}>
           <h2 id="institution-residents">{t.residents}</h2>
           {view.residents.length ? <span className={styles.meta}>{t.residentCount(view.residents.length)}</span> : null}
@@ -195,7 +193,7 @@ export function InstitutionPage({ locale, view, covers }: InstitutionPageProps) 
         )}
       </section>
 
-      <section className={`${shell} ${styles.section}`} aria-labelledby="institution-visit" data-testid="institution-visit-guide">
+      <section className={`pa-shell ${styles.section}`} aria-labelledby="institution-visit" data-testid="institution-visit-guide">
         <div className={styles.sectionHead}>
           <h2 id="institution-visit">{t.visit}</h2>
         </div>
@@ -245,7 +243,7 @@ export function InstitutionPage({ locale, view, covers }: InstitutionPageProps) 
       </section>
 
       {view.formerResidents.length ? (
-        <section className={`${shell} ${styles.section}`} aria-labelledby="institution-history">
+        <section className={`pa-shell ${styles.section}`} aria-labelledby="institution-history">
           <div className={styles.sectionHead}>
             <h2 id="institution-history">{t.history}</h2>
           </div>
@@ -262,7 +260,7 @@ export function InstitutionPage({ locale, view, covers }: InstitutionPageProps) 
       ) : null}
 
       {view.profileVerifiedOn ? (
-        <footer className={`${shell} ${styles.footnote}`}>
+        <footer className={`pa-shell ${styles.footnote}`}>
           <Provenance checked={t.about(view.profileVerifiedOn)} urls={view.profileSourceUrls} label={t.sources} locale={locale} />
         </footer>
       ) : null}

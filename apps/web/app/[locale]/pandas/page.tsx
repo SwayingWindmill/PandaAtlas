@@ -5,13 +5,12 @@ import type { Route } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, ArrowRight, ChevronDown, MapPin, Search, Shuffle } from "lucide-react";
-import { publicShellClassName } from "@/components/patterns/public-shell";
-import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
+import { PublicDeliveryNotice } from "@/features/public-content/public-delivery-notice";
 import { atlasHref, parseAtlasQuery, type AtlasQueryState } from "@/features/atlas/atlas-query";
 import { buildAtlasSearchViewModel } from "@/features/atlas/atlas-search";
 import { loadV2PandaCovers, loadV2PublicAtlasDataset, pandaCoverMedia } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 import styles from "./pandas-page.module.css";
 
@@ -189,7 +188,7 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
   return (
     <main id="main-content" className={styles.page} data-testid="localized-pandas-page">
       <form role="search" aria-label={t.searchLabel} action={`/${locale}/pandas`} method="get" data-testid="atlas-discovery-form">
-        <section className={`${publicShellClassName} ${styles.top}`}>
+        <section className={`pa-shell ${styles.top}`}>
           <div className={styles.heading}>
             <h1>{t.heading}<span>{t.count(view.totalPublished)}</span></h1>
             <Link href={`/${locale}/games/random` as Route} prefetch={false} className={styles.gallery}>
@@ -206,7 +205,7 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
 
         <fieldset className={styles.filters}>
           <legend className="sr-only">{t.filters}</legend>
-          <div className={publicShellClassName}>
+          <div className="pa-shell">
             <label className={styles.select}>
               <span>{t.status}</span>
               <select name="status" defaultValue={canonicalState.status}>
@@ -252,7 +251,7 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
         </fieldset>
       </form>
 
-      <section className={`${publicShellClassName} ${styles.results}`}>
+      <section className={`pa-shell ${styles.results}`}>
         {deliveryIsLive ? null : <div className={styles.alert}>{deliveryNotice}</div>}
         {entityMatches.length ? (
           <section className={styles.entities} aria-labelledby="atlas-entity-results-heading" data-testid="atlas-entity-results">

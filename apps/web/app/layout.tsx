@@ -6,7 +6,7 @@ import {
   ZHIPANDA_APPLICATION_NAME,
   ZHIPANDA_PUBLIC_ORIGIN,
   ZHIPANDA_PUBLISHER,
-} from "@/foundation/metadata/public-metadata";
+} from "@/lib/public-metadata";
 import "./globals.css";
 
 export const metadata: Metadata = {

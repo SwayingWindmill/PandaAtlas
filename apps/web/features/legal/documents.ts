@@ -1,4 +1,4 @@
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 // Draft user agreement and privacy policy. Every sentence is limited to what the
 // website and app actually do. Bracketed fields are unfilled on purpose.

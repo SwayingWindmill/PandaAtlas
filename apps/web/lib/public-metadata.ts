@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import {
   localizedPath,
   type PublicLocale,
-} from "@/foundation/content/locales";
+} from "@/lib/locales";
 
 export const ZHIPANDA_PUBLIC_ORIGIN = new URL("https://www.zhipanda.com");
 export const ZHIPANDA_APPLICATION_NAME = "吱熊猫 ZhiPanda";

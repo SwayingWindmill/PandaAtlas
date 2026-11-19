@@ -1,5 +1,5 @@
 import type { ArchiveSearchKind, ArchiveSearchResult } from "@/components/command-menu-04";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import type { PandaDetail, PublicEntityName, PublicFacilitySummary, PublicFamilyStoryRecord } from "@/lib/types";
 import { localizedEditorial } from "@/features/public-experiences/stories";
 

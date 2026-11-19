@@ -1,4 +1,4 @@
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import type { PandaDetail, PublicPandaMediaAsset } from "@/lib/types";
 
 export interface GamePanda {

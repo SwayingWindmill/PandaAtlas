@@ -9,8 +9,8 @@ import {
   loadV2PublicMapOverview,
   pandaCoverMedia,
 } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface LocalizedMapPageProps {
   params: Promise<{ locale: string }>;

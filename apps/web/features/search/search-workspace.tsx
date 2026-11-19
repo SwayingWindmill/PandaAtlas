@@ -9,7 +9,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 
 import { ArchiveResultRow, type ArchiveSearchResult } from "@/components/command-menu-04";
 import { Command, CommandGroup, CommandList } from "@/components/ui/command";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import { cn } from "@/lib/utils";
 
 import {

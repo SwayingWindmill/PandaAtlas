@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { checkinsQueryOptions, fanMutationOptions } from "@/features/fan/api/queries";
 import { beginSignIn, privateReadStatus, redirectedToSignIn, useFanSession } from "@/features/fan/api/session";
-import { isEngagementUiEnabled } from "@/lib/engagement/config";
+import { isEngagementUiEnabled } from "@/lib/feature-flags";
 
 interface PlaceCheckinControlProps {
   placeId: string;

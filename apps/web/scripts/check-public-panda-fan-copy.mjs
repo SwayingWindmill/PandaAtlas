@@ -24,7 +24,7 @@ const checks = [
     banned: ["结构化熊猫谱系", "图形不是完成任务的前提", "打开可信档案", "Structured panda lineage", "A graph is not required to finish the task", "Open trusted profile"],
   },
   {
-    path: "components/patterns/public-entity-page.tsx",
+    path: "features/places/public-entity-page.tsx",
     required: ["熊猫机构", "熊猫生活地点", "现在生活在这里的熊猫", "在熊猫地图中查看", "Panda institution", "Pandas living here now", "View on the panda map", "最后核实", "Last verified"],
     banned: ["机构实体", "场所实体", "可信公开实体", "在结构化地图中查看", "Institution entity", "Place entity", "Trusted public entity", "Open in the structured map"],
   },

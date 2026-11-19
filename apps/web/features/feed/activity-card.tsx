@@ -2,7 +2,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { AlertTriangle, History, Pin, RotateCcw, Sparkles } from "lucide-react";
 
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import type { ActivityItem, FeedAttribution } from "@/features/feed/types";
 import type { PandaListItem } from "@/lib/types";
 

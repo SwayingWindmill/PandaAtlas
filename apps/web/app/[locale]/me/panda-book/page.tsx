@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { publicShellClassName } from "@/components/patterns/public-shell";
 import { buildGamePandas } from "@/features/games/game-panda";
 import { PandaBookPage } from "@/features/my-pandas/panda-book-page";
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface PandaBookRouteProps {
   params: Promise<{ locale: string }>;
@@ -54,7 +53,7 @@ export default async function PandaBookRoute({ params }: PandaBookRouteProps) {
   return (
     <>
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
-        <div className={publicShellClassName}>
+        <div className="pa-shell">
           <PandaBookPage locale={locale} pandas={pandas} />
         </div>
       </main>

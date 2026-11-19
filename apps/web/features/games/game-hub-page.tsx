@@ -2,7 +2,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { CalendarDays, Dices, FileQuestion, Sparkles } from "lucide-react";
 
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 const copy = {
   zh: {

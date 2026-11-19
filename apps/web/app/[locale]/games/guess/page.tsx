@@ -2,10 +2,9 @@ import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { publicShellClassName } from "@/components/patterns/public-shell";
 import { GuessPandaGame } from "@/features/games/guess-panda-game";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface GuessPandaPageProps {
   params: Promise<{ locale: string }>;
@@ -52,7 +51,7 @@ export default async function GuessPandaPage({ params }: GuessPandaPageProps) {
   return (
     <>
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
-        <div className={`${publicShellClassName} grid gap-8 py-10 sm:py-14`}>
+        <div className="pa-shell grid gap-8 py-10 sm:py-14">
           <header className="max-w-3xl">
             <p className="text-sm font-semibold text-[var(--accent)]">{t.eyebrow}</p>
             <h1 className="mt-3 text-4xl font-semibold sm:text-6xl" style={{ fontFamily: "var(--font-display)" }}>{t.heading}</h1>

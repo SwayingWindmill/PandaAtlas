@@ -10,13 +10,12 @@ import type {
   PublicContentEnvelope,
   PublicCoverage,
   PublicLineageDataset,
-  PublicMapDataset,
   PublicPlaceRecord,
   PublicProfileRecord,
 } from "@/features/public-content/public-release";
 import { findPlaceByReference } from "@/features/public-content/place-reference";
 import type { MomentQuery, PublicMomentOccurrence } from "@/features/public-experiences/moments";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import { publicMediaUrl } from "@/lib/media/public-media";
 import { readPublicResource, requirePublicCollection, settlePublicRead } from "@/lib/server/public-read";
 import { createServerV2Client } from "@/lib/server/v2-api";
@@ -454,10 +453,6 @@ export const loadV2PublicAtlasDataset = cache(async (locale: PublicLocale): Prom
     locale,
   );
 });
-
-export async function loadV2PublicMapDataset(locale: PublicLocale): Promise<PublicContentEnvelope<PublicMapDataset>> {
-  return loadV2PublicAtlasDataset(locale);
-}
 
 export interface V2SiteSearchIndex {
   pandas: { id: string; slug: string; nameZh: string; nameEn: string | null; birthYear: string | null }[];

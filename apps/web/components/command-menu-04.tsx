@@ -51,17 +51,65 @@ const kindIcons: Record<ArchiveSearchKind, LucideIcon> = {
   collection: Library,
 };
 
+const siteSearchCache = new Map<"zh" | "en", ArchiveSearchResult[]>();
+const siteSearchInFlight = new Map<"zh" | "en", Promise<ArchiveSearchResult[]>>();
+
+async function loadLazySiteSearch(locale: "zh" | "en"): Promise<ArchiveSearchResult[]> {
+  const cached = siteSearchCache.get(locale);
+  if (cached) return cached;
+  let pending = siteSearchInFlight.get(locale);
+  if (!pending) {
+    pending = fetch(`/api/site-search?locale=${locale}`)
+      .then(async (response) => {
+        if (!response.ok) return [] as ArchiveSearchResult[];
+        const payload = (await response.json()) as { searchResults?: ArchiveSearchResult[] };
+        const items = Array.isArray(payload.searchResults) ? payload.searchResults : [];
+        siteSearchCache.set(locale, items);
+        return items;
+      })
+      .catch(() => [] as ArchiveSearchResult[])
+      .finally(() => {
+        siteSearchInFlight.delete(locale);
+      });
+    siteSearchInFlight.set(locale, pending);
+  }
+  return pending;
+}
+
 export function ArchiveSearch({
   locale,
   results,
   triggerLabel,
 }: {
   locale: "zh" | "en";
-  results: ArchiveSearchResult[];
+  results?: ArchiveSearchResult[];
   triggerLabel: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState<{ locale: "zh" | "en"; items: ArchiveSearchResult[] } | null>(null);
   const router = useRouter();
+
+  const resolvedResults =
+    results ?? (loaded?.locale === locale ? loaded.items : siteSearchCache.get(locale) ?? []);
+
+  const handleOpen = () => {
+    setOpen(true);
+    if (results !== undefined) return;
+    const cached = siteSearchCache.get(locale);
+    if (cached) {
+      setLoaded({ locale, items: cached });
+      return;
+    }
+    setLoading(true);
+    void loadLazySiteSearch(locale)
+      .then((items) => {
+        setLoaded({ locale, items });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <>
@@ -69,7 +117,7 @@ export function ArchiveSearch({
         type="button"
         variant="outline"
         size="sm"
-        onClick={() => setOpen(true)}
+        onClick={handleOpen}
         className="h-11 min-w-11 gap-2 rounded-full border-0 bg-[var(--pa-color-surface-subtle)] px-3 text-[var(--pa-color-ink)] shadow-none hover:bg-[var(--pa-color-surface-hover)] xl:px-4"
         aria-label={triggerLabel}
       >
@@ -85,7 +133,8 @@ export function ArchiveSearch({
           setOpen(false);
           router.push(result.href as Route);
         }}
-        results={results}
+        loading={loading && resolvedResults.length === 0}
+        results={resolvedResults}
       />
     </>
   );
@@ -96,12 +145,14 @@ export function GlobalArchiveSearch({
   open,
   onOpenChange,
   onSelect,
+  loading = false,
   results,
 }: {
   locale: "zh" | "en";
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelect: (result: ArchiveSearchResult) => void;
+  loading?: boolean;
   results: ArchiveSearchResult[];
 }) {
   const zh = locale === "zh";
@@ -196,7 +247,11 @@ export function GlobalArchiveSearch({
             })}
           </div>
 
-          {needle && !matches.length ? (
+          {loading ? (
+            <p className="py-6 text-center text-base text-[var(--pa-color-ink-muted)]">
+              {zh ? "正在加载搜索…" : "Loading search…"}
+            </p>
+          ) : needle && !matches.length ? (
             <p className="py-6 text-center text-base">{zh ? `没有找到“${query}”` : `No results for “${query}”`}</p>
           ) : null}
 

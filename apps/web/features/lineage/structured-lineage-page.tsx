@@ -1,15 +1,14 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, GitBranch, Network, SearchCheck } from "lucide-react";
-import { publicShellClassName } from "@/components/patterns/public-shell";
-import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
+import { PublicDeliveryNotice } from "@/features/public-content/public-delivery-notice";
 import type {
   PublicCoverage,
   PublicDelivery,
   PublicLocaleDelivery,
   PublicReleaseIdentity,
 } from "@/features/public-content/public-release";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import { familyLineageHref, type LineageQueryState } from "./lineage-query";
 import type {
   StructuredLineageRelation,
@@ -274,7 +273,7 @@ export function StructuredLineagePage({
   return (
     <>
       <main id="main-content" className="pa-public-main" data-testid="structured-lineage-page">
-        <section className={`${publicShellClassName} pa-lineage-hero`}>
+        <section className="pa-shell pa-lineage-hero">
           <p className="pa-eyebrow">ZhiPanda / Family relationships</p>
           <h1>{t.title}</h1>
           <p className="pa-lede">{t.description}</p>
@@ -307,7 +306,7 @@ export function StructuredLineagePage({
           </form>
         </section>
 
-        <section className={`${publicShellClassName} pa-section pa-lineage-content`}>
+        <section className="pa-shell pa-section pa-lineage-content">
           <PublicDeliveryNotice
             locale={locale}
             release={release}

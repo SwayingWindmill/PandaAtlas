@@ -5,12 +5,12 @@ import { loadV2PublicPandaProfile } from "@/features/public-content/public-v2";
 import { readPublicMetadata } from "@/lib/server/public-read";
 import { buildTrustedProfilePageViewModel } from "@/features/profile/profile-page-view-model";
 import { TrustedProfilePage } from "@/features/profile/trusted-profile-page";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 import {
   localizedPublicDestination,
   type PublicSearchParams,
-} from "@/foundation/routing/public-redirects";
+} from "@/lib/public-redirects";
 
 interface LocalizedPandaPageProps {
   params: Promise<{ locale: string; slug: string }>;

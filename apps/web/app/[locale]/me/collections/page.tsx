@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { publicShellClassName } from "@/components/patterns/public-shell";
 import { FanLibraryPage } from "@/features/my-pandas/fan-library-page";
 import { buildMyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface CollectionsPageProps {
   params: Promise<{ locale: string }>;
@@ -48,7 +47,7 @@ export default async function CollectionsPage({ params }: CollectionsPageProps) 
   return (
     <>
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
-        <div className={publicShellClassName}>
+        <div className="pa-shell">
           <FanLibraryPage locale={locale} profiles={view.profiles} />
         </div>
       </main>

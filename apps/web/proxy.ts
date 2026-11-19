@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { resolvePreferredPublicLocale } from "@/foundation/content/locales";
+import { resolvePreferredPublicLocale } from "@/lib/locales";
 import { isAdminPath, isAdminShellEnabled } from "@/lib/server/admin-shell";
 import { refreshSupabaseSession } from "@/lib/supabase/middleware";
+import { requiresSupabaseSessionRefresh } from "@/lib/supabase/session-refresh-policy";
 
 // Unlocalized paths, including retired aliases, and the localized route each one now lives at.
 const UNLOCALIZED_ROUTES = new Map([
@@ -68,7 +69,9 @@ export async function proxy(request: NextRequest) {
   const language = pathname === "/en" || pathname.startsWith("/en/") ? "en" : "zh-CN";
   requestHeaders.set("x-panda-page-language", language);
   const response = NextResponse.next({ request: { headers: requestHeaders } });
-  const refreshedResponse = await refreshSupabaseSession(request, response);
+  const refreshedResponse = requiresSupabaseSessionRefresh(pathname)
+    ? await refreshSupabaseSession(request, response)
+    : response;
   const isPrivateContributionPath =
     /^\/(zh|en)\/contribute$/.test(pathname) ||
     /^\/(zh|en)\/me\/submissions(?:\/|$)/.test(pathname);

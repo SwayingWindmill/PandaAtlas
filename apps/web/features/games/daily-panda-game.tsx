@@ -11,8 +11,8 @@ import { fanMutationOptions } from "@/features/fan/api/queries";
 import { beginSignIn, signInRequired } from "@/features/fan/api/session";
 import type { DailyPandaGuessFeedback, DailyPandaGuessResult, DailyPandaPuzzle } from "@/features/fan/api/types";
 import type { DailyPandaClue } from "@/features/games/daily-panda-clues";
-import type { PublicLocale } from "@/foundation/content/locales";
-import { isEngagementUiEnabled } from "@/lib/engagement/config";
+import type { PublicLocale } from "@/lib/locales";
+import { isEngagementUiEnabled } from "@/lib/feature-flags";
 
 export interface DailyPandaOption {
   id: string;

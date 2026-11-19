@@ -4,18 +4,16 @@ import { cache } from "react";
 
 import type { ArchiveSearchResult } from "@/components/command-menu-04";
 import { loadV2SiteSearchIndex } from "@/features/public-content/public-v2";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 export interface SiteNavigationModel {
   searchResults: ArchiveSearchResult[];
 }
 
-// Search is chrome on every public page, including pages that do not otherwise read the API.
-// A failed index leaves the menu empty. A failed page read is not caught here: that read throws
-// an uncached 503 instead of a not-found page.
+// Search index backs /api/site-search; propagate upstream failures so the route returns
+// an uncached 503 instead of caching an empty list at the edge.
 export const loadSiteNavigation = cache(async (locale: PublicLocale): Promise<SiteNavigationModel> => {
-  const index = await loadV2SiteSearchIndex().catch(() => null);
-  if (!index) return { searchResults: [] };
+  const index = await loadV2SiteSearchIndex();
   const zh = locale === "zh";
 
   const pandas = index.pandas.map((panda) => {

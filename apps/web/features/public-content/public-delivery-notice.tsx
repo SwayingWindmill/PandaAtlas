@@ -5,7 +5,7 @@ import type {
   PublicLocaleDelivery,
   PublicReleaseIdentity,
 } from "@/features/public-content/public-release";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 interface PublicDeliveryNoticeProps {
   locale: PublicLocale;

@@ -40,7 +40,7 @@ export function Navbar1({
   notificationsEnabled = false,
 }: {
   locale: "zh" | "en";
-  searchResults: ArchiveSearchResult[];
+  searchResults?: ArchiveSearchResult[];
   notificationsEnabled?: boolean;
 }) {
   const zh = locale === "zh";
@@ -106,6 +106,7 @@ export function Navbar1({
 
         <div className="ml-auto flex items-center gap-2">
           <ArchiveSearch
+            key={locale}
             locale={locale}
             results={searchResults}
             triggerLabel={zh ? "搜索" : "Search"}
