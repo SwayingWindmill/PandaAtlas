@@ -33,11 +33,11 @@ Fans use the Expo app on a phone, in Chinese. Writers draft 科普 in `data/cura
 
 ## Capabilities and Constraints
 
-- Shipped surfaces: individual pandas, institutions, a map, and the learning screens (home, article, term, face guide, face challenge). Knowledge-card and topic routes are not in the app. Their records stay in the catalog and the API.
+- Shipped surfaces: individual pandas, institutions, a map, and the learning screens (home, article, term, face guide, face challenge). Retired `knowledge-card` and `topic` subtypes were removed from both the catalog (`2026.11.18.1`) and the API.
 - Learning copy is Chinese-first. English fields exist in the catalog and are not the UI.
 - Face tips use the keys `shape`, `leftRight`, `eyePatches`, `ears`. The shape label is 「脸型」. A tip whose body is empty is not shown.
 - The face quiz asks which photo is a named panda when that panda has only one published photo. Choice photos show no names until the answer. A second, different published photo may be used as the question image. The writer's tip text is unchanged.
-- iOS uses the system tab bar, the system stack (large titles on the four tab roots, inline titles on pushed screens, the system back gesture) and system colors. Android uses Material tabs and a toolbar in the same colors. The web build is for review.
+- iOS uses the system tab bar, the system stack (five tab roots: `今天`, `发现`, `找熊猫`, `图鉴`, `我的`, inline titles on pushed screens, the system back gesture) and system colors. Android uses Material tabs and a toolbar in the same colors. The web build is for review.
 - Do not invent panda facts. Draft learning text is the writer's, kept as draft until the owner publishes it.
 - App color and type tokens are shared by every screen, including 科普. The website keeps its own tokens.
 
@@ -51,7 +51,7 @@ Fans use the Expo app on a phone, in Chinese. Writers draft 科普 in `data/cura
 
 ## Evidence on Hand
 
-- Draft catalog: `data/curation/learning/learning.json` (version 2026.10.29.1). Every entry is `status: draft`.
+- Catalog: `data/curation/learning/learning.json` (version `2026.11.18.1`; 40 published entries: 15 articles, 21 terms, 2 face guides, 2 challenges; 0 drafts).
 - Writer brief: `docs/learning-content-brief.md`.
 - Published panda photographs already in the media catalog. The quiz and face guides use those URLs. Do not generate substitute pandas.
 - Design rules: `docs/design/zhipanda-design-system.md`.
