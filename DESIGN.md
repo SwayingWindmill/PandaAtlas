@@ -452,7 +452,7 @@ More space sits above a section heading than between the heading and the group. 
 
 ### Page templates
 - **Tab root:** system large title (in the column on web), grouped-background page, sections separated by `section`. 今天 draws its own header in the column: the date as a semibold secondary footnote line over 今天 in display, with the monogram avatar at the right; then the week hero (or the featured card), the quick entries and the rest.
-- **Hero detail** (a panda, an institution): a full-bleed stretchy hero under the status bar with back/share in a transparent system bar on iOS 26+ (the page title moves into the bar once it scrolls under it) and floating glass-fallback buttons elsewhere, then the content column at `inset`, entering with `enter`.
+- **Hero detail** (a panda, an institution): a full-bleed stretchy hero under the status bar with back/share in a transparent system bar on iOS 26+ (the page title moves into the bar once it scrolls under it) and floating bare white glyphs elsewhere, then the content column at `inset`, entering with `enter`.
 - **List / directory:** inset grouped `ListSection` + `ListCell` at `inset`. A long result list (找熊猫) may run full-bleed.
 - **Reading column** (科普): `paper` ground, a lead photograph with its caption below (never text on it), the reading set, large title kept in the column.
 - **Photo card:** one photograph, continuous corners (`card` or `tile`), media placeholder, bottom scrim, on-media title, photo stroke, press scale.
@@ -588,7 +588,7 @@ One set: Lucide (`lucide-react-native` on `react-native-svg`), same glyphs on ev
 - **Offline:** `OfflineBanner`; cached content stays on screen.
 
 ### Sourcing
-Navigation is Expo Router's `native-tabs` and native stack (the SDK 58 way to the system tabs and Liquid Glass). Liquid Glass comes from the system bars themselves; the app draws no `GlassView` of its own, and only asks `expo-glass-effect`'s `isLiquidGlassAvailable()` whether a hero's back and share can go in the system bar. Buttons, switches and skeletons are React Native Reusables in `src/components/ui/`, recolored to these roles. Grouped lists have no maintained component (RN has no UITableView), so `grouped-list.tsx` fills that one gap. See `docs/design/ui-component-sourcing-policy.md`.
+Navigation is Expo Router's `native-tabs` and native stack (the SDK 58 way to the system tabs and Liquid Glass). Liquid Glass comes from the system bars themselves; the app draws no `GlassView` of its own, and only asks `expo-glass-effect`'s `isLiquidGlassAvailable()` whether a hero's back and share can go in the system bar. Buttons, toggles and skeletons are React Native Reusables in `src/components/ui/`, recolored to these roles. Grouped lists have no maintained component (RN has no UITableView), so `grouped-list.tsx` fills that one gap. See `docs/design/ui-component-sourcing-policy.md`.
 
 ## Do's and Don'ts
 

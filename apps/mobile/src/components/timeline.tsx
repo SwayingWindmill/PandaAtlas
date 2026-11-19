@@ -14,7 +14,7 @@ export interface TimelineItem {
   /** A word after the date: what kind of event it was (迁居, 出生). */
   meta?: string;
   detail?: string;
-  /** A trailing mark on the title line: a SourceBadge, a ConfirmedMark. */
+  /** A trailing mark on the title line, such as a SourceBadge. */
   trailing?: React.ReactNode;
   icon?: LucideIcon;
   /** A death: a small grey dot and grey text, never the vivid newest dot, with no glyph (DECEASED_POLICY). */

@@ -4,7 +4,7 @@ Bounded contexts in the current V2 system (`services/api/src/modules/`):
 
 ## Trusted Archive
 
-Owns stable panda identities, structured names, sourced assertions, parentage assertions (`lineage`), places and institutions (`places`), residency/life-event history (`life-history`), source evidence (`evidence`), reviewed media metadata (`media`), publication readiness, and the Mei Xiang family golden dataset.
+Owns stable panda identities (`panda`), structured names, sourced assertions, parentage assertions (`lineage`), places and institutions (`places`), residency/life-event history (`life-history`), source evidence (`evidence`), reviewed media metadata (`media`), publication readiness, and the Mei Xiang family golden dataset.
 
 Glossary: [`contracts/golden-dataset/GLOSSARY.md`](contracts/golden-dataset/GLOSSARY.md)
 

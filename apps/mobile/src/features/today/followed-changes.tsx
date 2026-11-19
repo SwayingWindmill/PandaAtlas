@@ -17,7 +17,13 @@ import { fetchLifeEvents, fetchLineage, fetchResidencies } from "@/lib/public-da
 import { usePandaCover } from "@/lib/covers";
 import { HAIRLINE } from "@/lib/surface";
 
-import { type Owners, type Update, followedChanges } from "./changes";
+import {
+  type Owners,
+  type Update,
+  followedChanges,
+  followedChangesViewState,
+  shouldLoadFollowedChanges,
+} from "./changes";
 
 interface Sources {
   updates: Update[];
@@ -98,7 +104,8 @@ export function FollowedChanges() {
   const followed = useFollowed();
   const [sources, setSources] = useState<Sources | null>(null);
   const [failed, setFailed] = useState(false);
-  const shouldLoad = state.status === "signedIn" && followed !== null && followed.size > 0;
+  const followedCount = followed?.size ?? null;
+  const shouldLoad = shouldLoadFollowedChanges(state.status, followedCount);
 
   useFocusEffect(
     useCallback(() => {
@@ -128,7 +135,14 @@ export function FollowedChanges() {
     [sources, followed],
   );
 
-  if (state.status === "signedOut") {
+  const viewState = followedChangesViewState({
+    sessionStatus: state.status,
+    followedCount,
+    hasSources: sources !== null,
+    failed,
+  });
+
+  if (viewState === "signedOut") {
     return (
       <Section>
         <Note action={{ label: "登录", onPress: () => router.push("/sign-in") }}>
@@ -137,8 +151,8 @@ export function FollowedChanges() {
       </Section>
     );
   }
-  if (state.status !== "signedIn" || followed === null || (sources === null && !failed)) return null;
-  if (followed.size === 0) {
+  if (viewState === "pending") return null;
+  if (viewState === "empty") {
     return (
       <Section>
         <Note action={{ label: "找熊猫", onPress: () => router.push("/find") }}>
@@ -147,7 +161,7 @@ export function FollowedChanges() {
       </Section>
     );
   }
-  if (failed || !sources) {
+  if (viewState === "failed" || !sources) {
     return (
       <Section>
         <Note>最近的变化暂时打不开。</Note>
