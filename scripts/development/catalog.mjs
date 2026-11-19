@@ -276,7 +276,7 @@ const commands = [
   {
     id: "api.db-types",
     category: "verification",
-    description: "Regenerate Kysely database types against local Supabase and fail when tracked outputs drift.",
+    description: "Regenerate Kysely database types and schema snapshot against local Supabase and fail when tracked outputs drift.",
     command: "node",
     args: ["scripts/development/check-api-db-types.mjs"],
     requires: ["node_modules", "docker"],

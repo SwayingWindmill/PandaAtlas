@@ -19,6 +19,7 @@ import {
   renderDevelopmentCommand,
   resolveDevelopmentInvocation,
 } from "../operations.mjs";
+import { formatSchemaSnapshot } from "../dump-db-schema.mjs";
 import { classifyDevelopmentScopes, createPlanForScopes, developmentPlanOutputs } from "../verify.mjs";
 
 const repoRoot = fileURLToPath(new URL("../../../", import.meta.url));
@@ -73,7 +74,9 @@ test("command rendering exposes the executable interface", () => {
 test("API client and Supabase foundation changes select the API verification scope", () => {
   assert.deepEqual(classifyDevelopmentScopes(["packages/api-client/src/schema.generated.ts"]), ["api"]);
   assert.deepEqual(classifyDevelopmentScopes(["infra/supabase/migrations/20260101000000_example.sql"]), ["release", "api"]);
+  assert.deepEqual(classifyDevelopmentScopes(["infra/supabase/schema.current.sql"]), ["release", "api"]);
   assert.deepEqual(classifyDevelopmentScopes(["scripts/development/check-api-db-types.mjs"]), ["release", "api"]);
+  assert.deepEqual(classifyDevelopmentScopes(["scripts/development/dump-db-schema.mjs"]), ["release", "api"]);
 });
 
 test("changed-path routing stays centralized in the development scope classifier", () => {
@@ -262,4 +265,27 @@ test("Python-only scopes still install workspace dependencies for documentation 
   assert.equal(outputs.requires_python, "true");
   assert.equal(outputs.requires_uv, "true");
   assert.equal(developmentPlanOutputs(createPlanForScopes([])).requires_node_modules, "false");
+});
+
+test("formatSchemaSnapshot strips undeclared public extension ACL noise while preserving user functions and grants", () => {
+  const raw = [
+    'CREATE SCHEMA IF NOT EXISTS "identity";\r',
+    '\r',
+    '\r',
+    '\r',
+    'CREATE OR REPLACE FUNCTION "public"."set_updated_at"() RETURNS "trigger" AS $$ BEGIN RETURN NEW; END; $$ LANGUAGE plpgsql;\r',
+    'REVOKE ALL ON FUNCTION "public"."set_updated_at"() FROM PUBLIC;\r',
+    'GRANT ALL ON FUNCTION "public"."st_area"("geom" "public"."geometry") TO "anon";\r',
+    'REVOKE ALL ON FUNCTION "public"."postgis_version"() FROM PUBLIC;\r',
+    'GRANT ALL ON FUNCTION "identity"."auth_email_status"("requested_account_id" "uuid") TO "zhipanda_app";\r',
+    '\r',
+  ].join("\n");
+
+  const formatted = formatSchemaSnapshot(raw);
+  assert.doesNotMatch(formatted, /\r/u);
+  assert.doesNotMatch(formatted, /\n{3,}/u);
+  assert.doesNotMatch(formatted, /st_area|postgis_version/u);
+  assert.match(formatted, /CREATE OR REPLACE FUNCTION "public"\."set_updated_at"/u);
+  assert.match(formatted, /REVOKE ALL ON FUNCTION "public"\."set_updated_at"/u);
+  assert.match(formatted, /GRANT ALL ON FUNCTION "identity"\."auth_email_status"/u);
 });
