@@ -1,3 +1,5 @@
+import { queryOptions } from "@tanstack/react-query";
+
 import { authedApi } from "@/lib/api";
 
 // 见过: the day a signed-in fan saw a panda in person. One record per panda; marking again replaces the day.
@@ -24,6 +26,18 @@ export async function loadSeenIds(): Promise<Set<string>> {
   const { data } = await authedApi.GET("/api/v2/me/seen-pandas");
   if (!data) throw new Error("Seen pandas unavailable");
   return new Set(data.items.map((item) => item.pandaId));
+}
+
+export function seenIdsQueryKey(accountId: string) {
+  return ["private", accountId, "seen-ids"] as const;
+}
+
+export function seenIdsQueryOptions(accountId: string) {
+  return queryOptions({
+    queryKey: seenIdsQueryKey(accountId),
+    staleTime: 60_000,
+    queryFn: loadSeenIds,
+  });
 }
 
 export async function markSeen(pandaId: string, seenOn: string): Promise<boolean> {

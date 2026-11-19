@@ -8,7 +8,7 @@ import { useStacked } from "@/components/grouped-list";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { setFollowing, useFollowed } from "@/features/engagement/favorites";
-import { loadSeen, localToday, markSeen, shortDay, unmarkSeen } from "@/features/engagement/seen";
+import { loadSeen, localToday, markSeen, seenIdsQueryKey, shortDay, unmarkSeen } from "@/features/engagement/seen";
 import { useSession } from "@/features/session/session";
 import { selectionHaptic, successHaptic, tapHaptic } from "@/lib/haptics";
 
@@ -55,6 +55,7 @@ export function PandaActions({
       if (record) successHaptic();
       else selectionHaptic();
       queryClient.setQueryData(key, record);
+      void queryClient.invalidateQueries({ queryKey: seenIdsQueryKey(accountId) });
     },
   });
 
