@@ -4,6 +4,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { type FormerResident, residentsOf } from "@/features/institutions/residents";
 import { api } from "@/lib/api";
+import { loadResidencies } from "@/lib/public-data";
 import { queryClient } from "@/lib/query-client";
 
 type Schemas = components["schemas"];
@@ -132,34 +133,45 @@ function facilityOf(place: Place): Facility {
   };
 }
 
-export async function loadInstitution(slug: string): Promise<InstitutionDetail> {
-  const [detail, residencies, pandas] = await Promise.all([
-    api.GET("/api/v2/institutions/{slug}", { params: { path: { slug } } }),
-    api.GET("/api/v2/residencies"),
-    loadPandaIndex(),
-  ]);
-  if (!detail.data || !residencies.data) throw new Error(`Institution ${slug} unavailable`);
-  const { institution, places } = detail.data;
-  const placeIds = new Set(places.map((place) => place.placeId));
-  const pandasById = new Map(pandas.map((panda) => [panda.id, panda]));
-  const here = residencies.data.items.filter((residency) => placeIds.has(residency.placeId));
-  const { residents, former, bornHere } = residentsOf(here, pandasById);
-  const profile = institution.profile;
+export function institutionQueryOptions(slug: string) {
+  return queryOptions({
+    queryKey: ["public", "institution", slug],
+    staleTime: 300_000,
+    networkMode: "always",
+    queryFn: async (): Promise<InstitutionDetail> => {
+      const [detail, residencies, pandas] = await Promise.all([
+        api.GET("/api/v2/institutions/{slug}", { params: { path: { slug } } }),
+        loadResidencies(),
+        loadPandaIndex(),
+      ]);
+      if (!detail.data) throw new Error(`Institution ${slug} unavailable`);
+      const { institution, places } = detail.data;
+      const placeIds = new Set(places.map((place) => place.placeId));
+      const pandasById = new Map(pandas.map((panda) => [panda.id, panda]));
+      const here = residencies.filter((residency) => placeIds.has(residency.placeId));
+      const { residents, former, bornHere } = residentsOf(here, pandasById);
+      const profile = institution.profile;
 
-  return {
-    slug: institution.slug,
-    name: nameOf(institution),
-    meta: metaOf(institution),
-    summary: profile?.summary?.zh ?? null,
-    liveCamUrl: profile?.liveCamUrl ?? null,
-    websiteUrl: profile?.websiteUrl ?? null,
-    verifiedOn: profile?.verifiedOn ?? null,
-    sources: profile?.sourceUrls ?? [],
-    facilities: places.map(facilityOf),
-    residents,
-    former,
-    bornHere,
-  };
+      return {
+        slug: institution.slug,
+        name: nameOf(institution),
+        meta: metaOf(institution),
+        summary: profile?.summary?.zh ?? null,
+        liveCamUrl: profile?.liveCamUrl ?? null,
+        websiteUrl: profile?.websiteUrl ?? null,
+        verifiedOn: profile?.verifiedOn ?? null,
+        sources: profile?.sourceUrls ?? [],
+        facilities: places.map(facilityOf),
+        residents,
+        former,
+        bornHere,
+      };
+    },
+  });
+}
+
+export function loadInstitution(slug: string): Promise<InstitutionDetail> {
+  return queryClient.fetchQuery(institutionQueryOptions(slug));
 }
 
 /** "https://www.panda.org.cn/about" → "panda.org.cn", for naming a source in one line. */
