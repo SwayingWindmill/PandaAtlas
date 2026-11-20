@@ -1686,6 +1686,16 @@ export interface components {
             lastVerifiedOn: string;
             conclusionVersion: number;
         };
+        PublicPandaCurrentPlaceSummaryDto: {
+            /** Format: uuid */
+            placeId: string;
+            slug: string;
+            placeType: string;
+            nameZh?: string;
+            nameEn?: string;
+            countryCode?: string;
+            region?: string;
+        };
         PublicPandaSummaryDto: {
             /** Format: uuid */
             pandaId: string;
@@ -1693,6 +1703,8 @@ export interface components {
             legacySlugs: string[];
             names: components["schemas"]["PublicPandaNameDto"][];
             facts: components["schemas"]["PublicPandaFactDto"][];
+            currentPlace?: components["schemas"]["PublicPandaCurrentPlaceSummaryDto"];
+            hasFullBleedCover?: boolean;
         };
         PublicPandaListDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
@@ -1758,6 +1770,7 @@ export interface components {
             attributionText?: string;
             /** Format: date-time */
             takenAt?: string;
+            fullBleedReady?: boolean;
         };
         PublicEvidenceSummaryDto: {
             sourceId: string;
@@ -1887,11 +1900,20 @@ export interface components {
             release: components["schemas"]["PublicReadReleaseDto"];
             items: components["schemas"]["PublicInstitutionSummaryDto"][];
         };
+        PublicFormerResidentSummaryDto: {
+            panda: components["schemas"]["PublicPandaSummaryDto"];
+            fromYear?: number;
+            toYear?: number;
+            bornHere: boolean;
+        };
         PublicInstitutionDetailDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
             institution: components["schemas"]["PublicInstitutionSummaryDto"];
             /** @description The institution's deliverable facilities. */
             places: components["schemas"]["PublicPlaceSummaryDto"][];
+            residents: components["schemas"]["PublicPandaSummaryDto"][];
+            former: components["schemas"]["PublicFormerResidentSummaryDto"][];
+            bornHereCount: number;
         };
         PublicLineageListDto: {
             release: components["schemas"]["PublicReadReleaseDto"];

@@ -139,6 +139,15 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "web.photo-keys-check",
+    category: "verification",
+    description: "Validate the published R2 photo key allowlist formatting, uniqueness, and sort order.",
+    command: "node",
+    args: ["scripts/release/published-photo-keys.mjs", "--check"],
+    requires: ["node"],
+    effect: "read-only",
+  },
+  {
     id: "web.build",
     category: "verification",
     description: "Build the production vinext/Vite Web application.",
@@ -422,6 +431,7 @@ const commands = [
       "scripts/release/tests/cloudflare-production-surface.test.mjs",
       "scripts/release/tests/doc-references.test.mjs",
       "scripts/release/tests/export-public-release.test.mjs",
+      "scripts/release/tests/published-photo-keys.test.mjs",
       "scripts/release/tests/repository-hygiene.test.mjs",
       "scripts/development/tests/agent-guard.test.mjs",
       "scripts/development/tests/check-local-ports.test.mjs",
@@ -499,7 +509,7 @@ export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
     "release.check-batch-workflow-interface",
     "release.test-development",
   ],
-  web: ["web.lint", "web.typecheck", "web.test-worker", "web.test-unit"],
+  web: ["web.lint", "web.typecheck", "web.test-worker", "web.test-unit", "web.photo-keys-check"],
   mobile: ["mobile.lint", "mobile.typecheck", "mobile.test"],
   api: ["api.lint", "api.typecheck", "api.client-typecheck", "api.test", "api.contract"],
   curation: [

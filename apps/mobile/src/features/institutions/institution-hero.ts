@@ -16,7 +16,9 @@ export interface HeroPhoto {
  * while the covers are still being looked up; null when no resident has one or the call failed,
  * so the page sets its name on a plain plate instead.
  */
-export function useInstitutionHero(residents: { id: string; name: string }[] | null): HeroPhoto | null | undefined {
+export function useInstitutionHero(
+  residents: { id: string; name: string; hasFullBleedCover?: boolean }[] | null,
+): HeroPhoto | null | undefined {
   const [found, setFound] = useState<{ ids: string; hero: HeroPhoto | null } | null>(null);
   const candidates = heroCandidates(residents ?? []);
   const ids = candidates.map((panda) => panda.id).join(",");

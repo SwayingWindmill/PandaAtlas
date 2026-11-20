@@ -36,8 +36,63 @@ function facts(birthDate, sex, status = "alive") {
 
 // Mirrors the API: the list and profile relatives carry listing facts only.
 const listingFactKeys = new Set(["sex", "life_status", "birth_date", "death_date"]);
+function currentPlaceForPanda(pandaId) {
+  const open = residencies.filter((item) => item.pandaId === pandaId && !item.endOn);
+  const chosen = open.find((item) => item.residencyType === "primary") ?? open[0];
+  if (!chosen) return undefined;
+  const place = places.find((item) => item.placeId === chosen.placeId);
+  if (!place) return undefined;
+  return {
+    placeId: place.placeId,
+    slug: place.slug,
+    placeType: place.placeType,
+    ...(place.nameZh ? { nameZh: place.nameZh } : {}),
+    ...(place.nameEn ? { nameEn: place.nameEn } : {}),
+    ...(place.countryCode ? { countryCode: place.countryCode } : {}),
+    ...(place.region ? { region: place.region } : {}),
+  };
+}
+
 function listing(panda) {
-  return { ...panda, facts: panda.facts.filter((fact) => listingFactKeys.has(fact.fieldKey)) };
+  const currentPlace = currentPlaceForPanda(panda.pandaId);
+  return {
+    ...panda,
+    facts: panda.facts.filter((fact) => listingFactKeys.has(fact.fieldKey)),
+    ...(currentPlace ? { currentPlace } : {}),
+  };
+}
+
+function institutionResidentsSummary(institutionPlaces) {
+  const placeIds = new Set(institutionPlaces.map((place) => place.placeId));
+  const pandasById = new Map(pandas.map((panda) => [panda.pandaId, listing(panda)]));
+  const byPanda = new Map();
+  for (const stay of residencies) {
+    if (!placeIds.has(stay.placeId)) continue;
+    byPanda.set(stay.pandaId, [...(byPanda.get(stay.pandaId) ?? []), stay]);
+  }
+  const residents = [];
+  const former = [];
+  let bornHereCount = 0;
+  for (const [pandaId, stays] of byPanda) {
+    const panda = pandasById.get(pandaId);
+    if (!panda) continue;
+    const birthDate = panda.facts.find((fact) => fact.fieldKey === "birth_date")?.value;
+    const bornHere = typeof birthDate === "string" && stays.some((stay) => stay.startPrecision === "day" && stay.startOn === birthDate);
+    if (bornHere) bornHereCount += 1;
+    if (stays.some((stay) => !stay.endOn)) {
+      residents.push(panda);
+      continue;
+    }
+    const starts = stays.map((stay) => (stay.startOn ? Number(stay.startOn.slice(0, 4)) : null)).filter((y) => y !== null);
+    const ends = stays.map((stay) => (stay.endOn ? Number(stay.endOn.slice(0, 4)) : null)).filter((y) => y !== null);
+    former.push({
+      panda,
+      ...(starts.length > 0 ? { fromYear: Math.min(...starts) } : {}),
+      ...(ends.length > 0 ? { toYear: Math.max(...ends) } : {}),
+      bornHere,
+    });
+  }
+  return { residents, former, bornHereCount };
 }
 
 const pandas = [
@@ -373,10 +428,12 @@ const server = http.createServer((request, response) => {
       sendJson(response, 404, { title: "Not Found", status: 404 });
       return;
     }
+    const institutionPlaces = places.filter((place) => place.institutionId === institution.institutionId);
     sendJson(response, 200, {
       release,
       institution,
-      places: places.filter((place) => place.institutionId === institution.institutionId),
+      places: institutionPlaces,
+      ...institutionResidentsSummary(institutionPlaces),
     });
     return;
   }

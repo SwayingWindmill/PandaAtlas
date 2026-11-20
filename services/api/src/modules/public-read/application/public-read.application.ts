@@ -18,6 +18,16 @@ export interface PublicFactSummary {
   conclusionVersion: number;
 }
 
+export interface PublicPandaCurrentPlaceSummary {
+  placeId: string;
+  slug: string;
+  placeType: string;
+  nameZh?: string;
+  nameEn?: string;
+  countryCode?: string;
+  region?: string;
+}
+
 export interface PublicPandaSummary {
   pandaId: string;
   canonicalSlug: string;
@@ -29,6 +39,8 @@ export interface PublicPandaSummary {
     isPrimary: boolean;
   }>;
   facts: PublicFactSummary[];
+  currentPlace?: PublicPandaCurrentPlaceSummary;
+  hasFullBleedCover?: boolean;
 }
 
 export interface PublicPandaFactBundle {
@@ -68,11 +80,21 @@ export interface PublicInstitutionSummary {
   profile?: InstitutionProfile;
 }
 
+export interface PublicFormerResidentSummary {
+  panda: PublicPandaSummary;
+  fromYear?: number;
+  toYear?: number;
+  bornHere: boolean;
+}
+
 export interface PublicInstitutionDetail {
   release: PublicReadRelease;
   institution: PublicInstitutionSummary;
   /** The institution's deliverable facilities, each with its own visit guide. */
   places: PublicPlaceSummary[];
+  residents: PublicPandaSummary[];
+  former: PublicFormerResidentSummary[];
+  bornHereCount: number;
 }
 
 export interface PublicEvidenceSummary {
@@ -103,6 +125,7 @@ export interface PublicMediaSummary {
   license?: string;
   attributionText?: string;
   takenAt?: string;
+  fullBleedReady?: boolean;
 }
 
 export interface PublicLineageSummary {

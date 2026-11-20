@@ -1,11 +1,17 @@
 import type { components } from "@zhipanda/api-client";
 import { queryOptions } from "@tanstack/react-query";
 
-import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
-import { type FormerResident, residentsOf } from "@/features/institutions/residents";
+import { comparePandas } from "@/features/pandas/order";
+import { type PandaListItem, toPandaListItem } from "@/features/pandas/pandas";
 import { api } from "@/lib/api";
-import { loadResidencies } from "@/lib/public-data";
 import { queryClient } from "@/lib/query-client";
+
+export interface FormerResident {
+  panda: PandaListItem;
+  from: number | null;
+  to: number | null;
+  bornHere: boolean;
+}
 
 type Schemas = components["schemas"];
 type Institution = Schemas["PublicInstitutionSummaryDto"];
@@ -139,17 +145,9 @@ export function institutionQueryOptions(slug: string) {
     staleTime: 300_000,
     networkMode: "always",
     queryFn: async (): Promise<InstitutionDetail> => {
-      const [detail, residencies, pandas] = await Promise.all([
-        api.GET("/api/v2/institutions/{slug}", { params: { path: { slug } } }),
-        loadResidencies(),
-        loadPandaIndex(),
-      ]);
-      if (!detail.data) throw new Error(`Institution ${slug} unavailable`);
-      const { institution, places } = detail.data;
-      const placeIds = new Set(places.map((place) => place.placeId));
-      const pandasById = new Map(pandas.map((panda) => [panda.id, panda]));
-      const here = residencies.filter((residency) => placeIds.has(residency.placeId));
-      const { residents, former, bornHere } = residentsOf(here, pandasById);
+      const { data } = await api.GET("/api/v2/institutions/{slug}", { params: { path: { slug } } });
+      if (!data) throw new Error(`Institution ${slug} unavailable`);
+      const { institution, places, residents = [], former = [], bornHereCount = 0 } = data;
       const profile = institution.profile;
 
       return {
@@ -162,9 +160,14 @@ export function institutionQueryOptions(slug: string) {
         verifiedOn: profile?.verifiedOn ?? null,
         sources: profile?.sourceUrls ?? [],
         facilities: places.map(facilityOf),
-        residents,
-        former,
-        bornHere,
+        residents: residents.map(toPandaListItem).sort(comparePandas),
+        former: former.map((item) => ({
+          panda: toPandaListItem(item.panda),
+          from: item.fromYear ?? null,
+          to: item.toYear ?? null,
+          bornHere: item.bornHere,
+        })),
+        bornHere: bornHereCount,
       };
     },
   });

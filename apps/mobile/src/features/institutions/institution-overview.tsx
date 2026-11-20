@@ -20,12 +20,12 @@ import { semantic } from "@/design/tokens";
 import { useFollowVenue } from "@/features/engagement/followed-venues";
 import { NavigateCell } from "@/features/institutions/institution-guide";
 import {
+  type FormerResident,
   type InstitutionDetail,
   addressOf,
   hostname,
   isFreeEntry,
 } from "@/features/institutions/institutions";
-import type { FormerResident } from "@/features/institutions/residents";
 import { openPanda } from "@/features/pandas/panda-row";
 import type { PandaListItem } from "@/features/pandas/pandas";
 import { longDate } from "@/features/pandas/profile";

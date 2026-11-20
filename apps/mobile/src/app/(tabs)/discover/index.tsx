@@ -19,7 +19,6 @@ import { useLearningCatalog } from "@/features/learning/use-catalog";
 import { loadOverseasStatus } from "@/features/overseas/overseas-status";
 import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { StoryCard } from "@/features/today/story-card";
-import { hasCuratedCover } from "@/features/today/story-order";
 import { useStoryPhotos } from "@/features/today/story-photos";
 import { loadVenueNews } from "@/features/venue-news/venue-news";
 import { useBottomClearance } from "@/lib/bottom-clearance";
@@ -69,7 +68,7 @@ export default function DiscoverScreen() {
   const pandaOf = (article: (typeof articles)[number]) => {
     const slug = articleHero(article)?.pandaSlug;
     const panda = slug ? pandas?.find((item) => item.slug === slug) : undefined;
-    return panda && hasCuratedCover(panda.id) ? panda : undefined;
+    return panda && panda.hasFullBleedCover ? panda : undefined;
   };
   const illustrated = articles.filter((article) => pandaOf(article));
   const { lead, rail } = arrangeDiscover(illustrated, hasContent, today);
