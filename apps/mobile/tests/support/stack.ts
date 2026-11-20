@@ -1,9 +1,10 @@
 import { type ChildProcess, execFileSync, spawn } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
+import { seedFixture } from "./backend.ts";
 import { type Fixture, statePath } from "./fixture.ts";
-import { seed } from "./seed.ts";
 
 // The app under test, as e2e.config.ts starts it (`app.command`): the NestJS API on the local Supabase
 // database, this run's fixture data, and the Expo web build. e2e has no global setup or second web server, so
@@ -24,6 +25,9 @@ const status = JSON.parse(
 // The Data API is off locally, so status omits API_URL; Auth answers on the gateway port (infra/supabase/config.toml).
 const supabaseUrl = status.API_URL ?? "http://127.0.0.1:54321";
 
+const fixtureToken = randomBytes(24).toString("hex");
+const apiBaseUrl = `http://127.0.0.1:${apiPort}`;
+
 const apiEnv = {
   APP_ENV: "development",
   HOST: "127.0.0.1",
@@ -32,6 +36,7 @@ const apiEnv = {
   SUPABASE_URL: supabaseUrl,
   SUPABASE_SECRET_KEY: status.SECRET_KEY,
   CORS_ALLOW_ORIGINS: appOrigin,
+  E2E_FIXTURE_TOKEN: fixtureToken,
 };
 
 const children: ChildProcess[] = [];
@@ -72,15 +77,18 @@ async function waitForApi(): Promise<void> {
   throw new Error(`The API did not answer on port ${apiPort}.`);
 }
 
-// The seed and backend.ts load the API's compiled modules, so build them first.
+// Build the API first, boot the dev/test E2E fixture server, seed via HTTP, then serve the Expo web bundle.
 execFileSync("npm", ["run", "build:local", "-w", "@zhipanda/api"], { cwd: repoRoot, stdio: "inherit", shell: true });
-Object.assign(process.env, apiEnv);
-const data = await seed();
-const state: Fixture = { ...data, mailpitUrl: status.MAILPIT_URL, apiEnv };
-await writeFile(statePath, JSON.stringify(state), "utf8");
-
-start("dist/cli.js", [], path.join(repoRoot, "services/api"), apiEnv);
-await waitForApi();
+start("dist/e2e-fixture-server.js", [], path.join(repoRoot, "services/api"), apiEnv);
+try {
+  await waitForApi();
+  const data = await seedFixture(apiBaseUrl, fixtureToken);
+  const state: Fixture = { ...data, mailpitUrl: status.MAILPIT_URL, apiBaseUrl, fixtureToken };
+  await writeFile(statePath, JSON.stringify(state), "utf8");
+} catch (error) {
+  console.error(error instanceof Error ? error.stack ?? error.message : String(error));
+  stop(1);
+}
 start(path.join(repoRoot, "node_modules/expo/bin/cli"), ["start", "--web", "--port", String(appPort)], mobileRoot, {
   CI: "1",
   BROWSER: "none",

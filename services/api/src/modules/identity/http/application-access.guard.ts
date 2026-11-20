@@ -3,6 +3,7 @@ import {
   type ExecutionContext,
   Inject,
   Injectable,
+  Optional,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import type { IncomingMessage as HttpRequest } from "node:http";
@@ -10,6 +11,7 @@ import { AppConfig } from "../../../platform/config/app-config.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { IS_PUBLIC } from "../../../platform/auth/public.decorator.js";
+import { RECENT_AUTH_CUTOFF, type RecentAuthCutoff } from "../../../platform/auth/recent-auth-cutoff.js";
 import { getVerifiedIdentity } from "../../../platform/auth/request-auth.js";
 import type { AssuranceLevel, CapabilityPolicy } from "../application/identity-access.types.js";
 import { IDENTITY_PORT, type IdentityPort } from "../application/identity.port.js";
@@ -49,6 +51,7 @@ export class ApplicationAccessGuard implements CanActivate {
     @Inject(IDENTITY_PORT) private readonly identity: IdentityPort,
     private readonly config: AppConfig,
     private readonly requestContext: RequestContextService,
+    @Optional() @Inject(RECENT_AUTH_CUTOFF) private readonly recentAuthCutoff?: RecentAuthCutoff,
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -129,10 +132,12 @@ export class ApplicationAccessGuard implements CanActivate {
     if (requiresRecentAuth) {
       const authenticatedAt = verifiedIdentity.authenticatedAt;
       const recentWindowMs = this.config.recentAuthWindowSeconds * 1_000;
+      const cutoffMs = this.recentAuthCutoff?.(verifiedIdentity.accountId);
       if (
         authenticatedAt === undefined ||
         Date.now() - authenticatedAt.getTime() < 0 ||
-        Date.now() - authenticatedAt.getTime() > recentWindowMs
+        Date.now() - authenticatedAt.getTime() > recentWindowMs ||
+        (cutoffMs !== undefined && authenticatedAt.getTime() <= cutoffMs)
       ) {
         throw new ProblemException(
           403,

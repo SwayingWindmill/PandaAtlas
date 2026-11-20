@@ -6,6 +6,7 @@ import type { AppConfig } from "../src/platform/config/app-config.js";
 import { ProblemException } from "../src/platform/http/problem.exception.js";
 import { RequestContextService } from "../src/platform/request-context/request-context.service.js";
 import { setVerifiedIdentity } from "../src/platform/auth/request-auth.js";
+import type { RecentAuthCutoff } from "../src/platform/auth/recent-auth-cutoff.js";
 import type { IdentityPort } from "../src/modules/identity/application/identity.port.js";
 import {
   ALLOW_UNPROVISIONED,
@@ -23,6 +24,7 @@ function createGuard(options: {
   aal: "aal1" | "aal2";
   liveSession: boolean;
   routine?: boolean;
+  recentAuthCutoff?: RecentAuthCutoff;
 }): { guard: ApplicationAccessGuard; context: ExecutionContext } {
   const request = { headers: {} } as HttpRequest;
   setVerifiedIdentity(request, {
@@ -80,6 +82,7 @@ function createGuard(options: {
     identity,
     config,
     new RequestContextService(),
+    options.recentAuthCutoff,
   );
   const context = {
     getHandler: () => createGuard,
@@ -132,5 +135,37 @@ describe("ApplicationAccessGuard sensitive policy", () => {
       expect(error).toBeInstanceOf(ProblemException);
       expect((error as ProblemException).code).toBe(code);
     }
+  });
+
+  it("enforces an injected fail-strict recent-auth cutoff for that account only", async () => {
+    const issuedMs = Date.now() - 5_000;
+    const store = new Map<string, number>([[ACCOUNT_ID, issuedMs]]);
+    const cutoff: RecentAuthCutoff = (accountId) => store.get(accountId);
+
+    const blocked = createGuard({
+      authenticatedAt: new Date(issuedMs),
+      aal: "aal2",
+      liveSession: true,
+      recentAuthCutoff: cutoff,
+    });
+    await expect(blocked.guard.canActivate(blocked.context)).rejects.toMatchObject({
+      code: "auth.recentAuthRequired",
+    });
+
+    const fresh = createGuard({
+      authenticatedAt: new Date(issuedMs + 1_000),
+      aal: "aal2",
+      liveSession: true,
+      recentAuthCutoff: cutoff,
+    });
+    await expect(fresh.guard.canActivate(fresh.context)).resolves.toBe(true);
+
+    const otherAccountOnly = createGuard({
+      authenticatedAt: new Date(issuedMs),
+      aal: "aal2",
+      liveSession: true,
+      recentAuthCutoff: (accountId) => (accountId === ACCOUNT_ID ? undefined : Date.now()),
+    });
+    await expect(otherAccountOnly.guard.canActivate(otherAccountOnly.context)).resolves.toBe(true);
   });
 });
