@@ -10,8 +10,10 @@ export interface Fixture {
   zoo: { slug: string; name: string; facility: string };
   /** Supabase's local mail catcher, where sign-in codes arrive. */
   mailpitUrl: string;
-  /** The API's configuration, for steps that run through its compiled modules (backend.ts). */
-  apiEnv: Record<string, string>;
+  /** Loopback URL of the API started with dev/test-only E2E fixture endpoints. */
+  apiBaseUrl: string;
+  /** Per-run shared secret required by `/api/_test/e2e/*`. */
+  fixtureToken: string;
 }
 
 export const statePath = path.join(import.meta.dirname, ".state.json");

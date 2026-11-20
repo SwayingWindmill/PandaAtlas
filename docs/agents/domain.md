@@ -21,6 +21,7 @@ PandaAtlas uses the following domain documentation structure:
 ├── GLOSSARY-MAP.md
 ├── docs/
 │   └── architecture/
+│       └── GLOSSARY.md
 └── contracts/
     └── golden-dataset/
         └── GLOSSARY.md
@@ -28,17 +29,17 @@ PandaAtlas uses the following domain documentation structure:
 
 The primary contexts are:
 
-- **Trusted Archive** — stable identities, sourced assertions, relationships, residencies, domain events, publication readiness, and the golden dataset
-- **Curation Intake** — incomplete or contradictory working records awaiting review
-- **Public Projection** — reviewed, versioned, public-safe data consumed by the public API, snapshots, and browser experiences
+- **Trusted Archive**: stable identities, sourced assertions, relationships, residencies, domain events, publication readiness, and the golden dataset
+- **Curation Intake**: incomplete or contradictory working records awaiting review
+- **Public Projection & Fan Product**: reviewed, versioned, public-safe data consumed by the public API, snapshots, and fan experiences
 
-The root `GLOSSARY-MAP.md` should describe relationships and ownership boundaries between these contexts.
+The root `GLOSSARY-MAP.md` describes relationships and ownership boundaries across all bounded contexts.
 
 ## Vocabulary
 
-When issues, tests, specifications, or refactor proposals name domain concepts, use the terminology defined by the relevant `GLOSSARY.md`.
+When issues, tests, specifications, or refactor proposals name domain concepts, use the frozen canonical terminology defined by `docs/architecture/GLOSSARY.md` and `contracts/golden-dataset/GLOSSARY.md`.
 
-Avoid introducing synonyms for concepts that already have canonical names.
+Avoid introducing new synonyms for concepts that already have canonical names (for example, do not introduce `venue`/`site` for `Place`, `favorite`/`bookmark` for `Follow`, or reuse bare `checkin` across `Place Visit` and `Daily Check-in`).
 
 When required terminology is missing, treat that as a potential domain-modeling gap.
 

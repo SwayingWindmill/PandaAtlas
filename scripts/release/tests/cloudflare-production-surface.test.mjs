@@ -80,3 +80,11 @@ test("the production Web Worker does not expose an admin shell flag", () => {
     else process.env.ADMIN_SHELL_ENABLED = previous;
   }
 });
+
+test("the production API excludes E2E fixture endpoints and tokens", () => {
+  const workerEntry = readFileSync(new URL("../../../services/api/worker/index.mjs", import.meta.url), "utf8");
+  const appModule = readFileSync(new URL("../../../services/api/src/app.module.ts", import.meta.url), "utf8");
+  assert.doesNotMatch(workerEntry, /e2e-fixture/u);
+  assert.doesNotMatch(appModule, /e2e-fixture/u);
+  assert.equal("E2E_FIXTURE_TOKEN" in workers.api.env, false);
+});

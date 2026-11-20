@@ -1,31 +1,46 @@
+import { Buffer } from "node:buffer";
 import type { Browser } from "@e2e-dev/web";
 import type { Screen } from "e2e";
 import { expect } from "e2e";
 
-import { ageInteractiveAuth, runScheduledCycles, takeDownAndRestore } from "./support/backend.ts";
+import {
+  expireRecentAuth as expireRecentAuthOnServer,
+  runScheduledCycles,
+  takeDownAndRestore,
+} from "./support/backend.ts";
 import { fixture } from "./support/fixture.ts";
 import { mailCount, nextCode, signIn, testEmail } from "./support/session.ts";
 import { test } from "./support/test.ts";
 
-/** Backdates interactive auth claims and expires the cached access token so Supabase refreshes a stale-auth JWT. */
-async function expireRecentAuth(browser: Browser, email: string): Promise<void> {
-  await ageInteractiveAuth(email);
-  const updated = (await browser.evaluate(() => {
-    const expiredAt = Math.floor(Date.now() / 1000) - 60;
-    let count = 0;
+function latestInteractiveAmrSeconds(accessToken: string): number | undefined {
+  const parts = accessToken.split(".");
+  if (parts.length !== 3 || !parts[1]) return undefined;
+  const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString("utf8")) as {
+    amr?: Array<{ timestamp?: unknown }>;
+  };
+  const timestamps = (payload.amr ?? [])
+    .map((entry) => entry.timestamp)
+    .filter((value): value is number => typeof value === "number" && Number.isFinite(value));
+  return timestamps.length > 0 ? Math.max(...timestamps) : undefined;
+}
+
+/** Expires the current session's recent interactive auth watermark on the test API so privacy routes require fresh OTP verification. */
+async function expireRecentAuth(browser: Browser): Promise<void> {
+  const session = (await browser.evaluate(() => {
     for (let index = 0; index < localStorage.length; index += 1) {
       const key = localStorage.key(index);
       if (!key || !key.endsWith("-auth-token")) continue;
       const raw = localStorage.getItem(key);
       if (!raw) continue;
-      const parsed = JSON.parse(raw) as Record<string, unknown>;
-      parsed.expires_at = expiredAt;
-      localStorage.setItem(key, JSON.stringify(parsed));
-      count += 1;
+      const parsed = JSON.parse(raw) as { access_token?: unknown; user?: { id?: unknown } };
+      if (typeof parsed.user?.id === "string" && typeof parsed.access_token === "string") {
+        return { accountId: parsed.user.id, accessToken: parsed.access_token };
+      }
     }
-    return count;
-  })) as number;
-  if (updated === 0) throw new Error("Missing Supabase auth token in localStorage.");
+    return null;
+  })) as { accountId: string; accessToken: string } | null;
+  if (!session) throw new Error("Missing Supabase auth session in localStorage.");
+  await expireRecentAuthOnServer(session.accountId, latestInteractiveAmrSeconds(session.accessToken));
 }
 
 /** Proves the verification card does not auto-mail on mount, then completes user-triggered email OTP re-verification. */
@@ -87,7 +102,7 @@ test("when recent auth has lapsed, email-code verification unlocks data export a
 }) => {
   const email = testEmail("export");
   await signIn(app, screen, email);
-  await expireRecentAuth(browser, email);
+  await expireRecentAuth(browser);
 
   await app.open("/account");
   await reverifyByEmail(screen, email, 1);
@@ -119,7 +134,7 @@ test("account deletion asks for confirmation, re-verifies when recent auth lapse
 
   await screen.getByRole("button", "申请注销账号").tap();
   await screen.getByLabel("注销原因").fill("测试账号，用完了");
-  await expireRecentAuth(browser, email);
+  await expireRecentAuth(browser);
 
   await screen.getByRole("button", "确认注销").tap();
   await reverifyByEmail(screen, email, 1);

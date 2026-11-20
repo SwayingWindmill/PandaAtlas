@@ -2,7 +2,7 @@
 
 - **状态：** 当前生效。网站公开页面以第 1–9 节为准。App 以根目录 `DESIGN.md` 为准（第 10 节只留链接）。
 - **生效日期：** 2026-10-29（App 改为 iOS 26 系统语义；网站仍用 Radix）
-- **适用范围：** `apps/web` 的公开页面和共享组件，以及 `apps/mobile`（App，写法见根目录 `DESIGN.md`）；Admin 有自己的作用域样式，不受本文约束。
+- **适用范围：** `apps/web` 的公开页面和共享组件，以及 `apps/mobile`（App，写法见根目录 `DESIGN.md`）。
 - **取值来源：** 网站的数值在 `apps/web/styles/tokens.css`。App 的数值在 `apps/mobile/src/design/tokens.ts`，由它生成 `apps/mobile/src/global.css` 和 `DESIGN.md` 的 front matter。两份不再共用色阶和字号。本文和对应 token 文件不一致时以 token 文件为准，并修正本文。
 - **样板页面：** 网站是首页 `features/home/`、熊猫列表 `app/[locale]/pandas/`、熊猫资料页 `features/profile/`；App 是家谱 `apps/mobile/src/app/pandas/[slug]/family.tsx`。新页面先照着样板的写法做。
 

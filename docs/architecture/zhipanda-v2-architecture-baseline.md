@@ -261,7 +261,7 @@ The Web imports the generated client package; it never imports Nest DTO/domain s
 
 The OpenAPI document is generated from the NestJS controllers and DTOs, and frontend transport types come from `@zhipanda/api-client`, generated from it; types the Web app composes from several operations are the only hand-written ones.
 
-Browser requests reach the API through the Web app's forwarding module, `apps/web/lib/server/v2-forwarding.ts`, which holds the route table and the policy of that boundary. Six routes compose several operations and keep their own handlers, applying the module's state-change rule: `engagement/passport`, `games/guess/question`, `games/guess/answer`, `admin/publication/releases/[releaseId]/actions`, `notification/inbox`, `auth/email-otp/start`.
+Browser requests reach the API through the Web app's forwarding module, `apps/web/lib/server/v2-forwarding.ts`, which holds the route table and the policy of that boundary. Dedicated handlers outside the catch-all handle request composition or Web-local lookups (`engagement/passport`, `games/daily-panda`, `games/daily-panda/guesses`, `games/guess/question`, `games/guess/answer`, `notification/inbox`, `auth/email-otp/start`, `site-search`), with every state-changing handler enforcing the module's `refuseStateChange` rule.
 
 ## 10. Identity, authentication, and authorization
 
