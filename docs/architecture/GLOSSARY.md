@@ -53,7 +53,7 @@ Date-matched panda birthdays and published historical milestones (`/on-this-day`
 ## Games and Grounded Q&A
 
 - **Guess Panda** (猜熊猫): Multiple-choice photo identification challenge using published panda photos (`/api/v2/games/guess/*`, `/guess`).
-- **Daily Panda** (每日一只): Daily clue-based panda deduction puzzle and guess history (`/api/v2/games/daily-panda*`, `/daily`).
+- **Daily Panda** (每日一猫): Daily clue-based panda deduction puzzle and guess history (`/api/v2/games/daily-panda*`, `/daily`).
 - **Ask Panda** (问问熊猫): Grounded question-answering over published panda facts and learning articles (`/api/v2/ask*`, `/learn/ask`).
 
 ## Contribution and Review Case
@@ -77,4 +77,4 @@ Date-matched panda birthdays and published historical milestones (`/on-this-day`
 | `Follow` | 关注 (Mobile) / 收藏 (Web) | `/api/v2/me/favorites`, `favorite` | `favorite`, `bookmark`, `subscribe` |
 | `Place Visit` | 到访 | `/api/v2/me/checkins` | bare `checkin` |
 | `Daily Check-in` | 打卡 | `/api/v2/me/daily-checkins` | sharing `checkin` with `Place Visit` |
-| `Public Update` | 动态 / 最近更新 | `activity` (`feed-api`) | `feed` (for release diffs in backend) |
+| `Public Update` | 动态 / 最近更新 | `activity` | `feed` (for release diffs in backend) |

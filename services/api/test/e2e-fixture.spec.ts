@@ -180,6 +180,30 @@ describe("E2E fixture HTTP wiring", () => {
     await expect(createE2eFixtureApplication()).rejects.toThrow();
   });
 
+  it("boots the full E2eFixtureAppModule in test mode and guards /api/_test/e2e/* requests", async () => {
+    app = await createE2eFixtureApplication();
+
+    const forbidden = await injectHttp(app, {
+      method: "POST",
+      url: "/api/_test/e2e/auth/expire-recent",
+      headers: { "content-type": "application/json" },
+      payload: JSON.stringify({ accountId: ACCOUNT_ID, afterEpochSeconds: 1_000 }),
+    });
+    expect(forbidden.statusCode).toBe(403);
+
+    const allowed = await injectHttp(app, {
+      method: "POST",
+      url: "/api/_test/e2e/auth/expire-recent",
+      headers: {
+        "content-type": "application/json",
+        [E2E_FIXTURE_HEADER]: FIXTURE_TOKEN,
+      },
+      payload: JSON.stringify({ accountId: ACCOUNT_ID, afterEpochSeconds: 1_000 }),
+    });
+    expect(allowed.statusCode).toBe(200);
+    expect(allowed.json()).toEqual({ accountId: ACCOUNT_ID, cutoffMs: 1_000_000 });
+  });
+
   it("wires @Global E2eFixtureModule cutoff into ApplicationAccessGuard and rejects unauthenticated fixture calls", async () => {
     const t1 = Math.floor(Date.now() / 1_000) - 30;
     const t2 = t1 + 5;
