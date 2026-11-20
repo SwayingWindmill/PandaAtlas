@@ -22,20 +22,7 @@ function route<P extends ApiPath>(web: string, api: P, ...methods: ApiMethod<P>[
 
 // The first matching entry wins, so a literal segment is listed before a parameter at the same place.
 const ROUTES: readonly ForwardedRoute[] = [
-  route("/api/admin/session", "/api/v2/me", "GET"),
   route("/api/identity/session", "/api/v2/me", "GET"),
-  route("/api/admin/audit/evidence", "/api/v2/audit/evidence", "GET"),
-  route("/api/admin/publication/releases", "/api/v2/publication/releases", "GET", "POST"),
-  route("/api/admin/publication/releases/:releaseId", "/api/v2/publication/releases/{releaseId}/inspection", "GET"),
-  route("/api/admin/review/cases", "/api/v2/review/cases", "GET", "POST"),
-  route("/api/admin/review/cases/:reviewCaseId/surface", "/api/v2/review/cases/{reviewCaseId}/surface", "GET"),
-  route("/api/admin/review/cases/:reviewCaseId/claim", "/api/v2/review/cases/{reviewCaseId}/claim", "POST"),
-  route(
-    "/api/admin/review/cases/:reviewCaseId/source-verifications",
-    "/api/v2/review/cases/{reviewCaseId}/source-verifications",
-    "POST",
-  ),
-  route("/api/admin/review/cases/:reviewCaseId/decision", "/api/v2/review/cases/{reviewCaseId}/decision", "POST"),
   route("/api/community-intake/submissions", "/api/v2/me/contributions", "GET"),
   route("/api/community-intake/submissions", "/api/v2/contributions", "POST"),
   route("/api/community-intake/submissions/:submissionId", "/api/v2/me/contributions/{submissionId}", "GET"),

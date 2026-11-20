@@ -117,7 +117,7 @@ async function localSupabaseStatus() {
     child.stdout.on("data", chunk => { output += chunk; });
     child.once("error", reject);
     child.once("exit", code => {
-      if (code !== 0) return reject(new Error("Local Supabase is not ready. Start it with npm run dev:admin"));
+      if (code !== 0) return reject(new Error("Local Supabase is not ready. Start it with npm run infra:start"));
       try { resolve(JSON.parse(output.slice(output.indexOf("{")))); }
       catch { reject(new Error("Could not read local Supabase status")); }
     });

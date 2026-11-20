@@ -170,9 +170,9 @@ test("operations CLI lists and describes catalog commands", () => {
   assert.equal(listed.status, 0, listed.stderr);
   assert.match(listed.stdout, /web\.dev/);
   assert.match(listed.stdout, /api\.dev/);
-  assert.match(listed.stdout, /admin\.dev/);
-  assert.match(listed.stdout, /admin\.status/);
-  assert.match(listed.stdout, /admin\.stop/);
+  assert.doesNotMatch(listed.stdout, /admin\.dev/);
+  assert.doesNotMatch(listed.stdout, /admin\.status/);
+  assert.doesNotMatch(listed.stdout, /admin\.stop/);
   assert.match(listed.stdout, /admin\.bootstrap/);
   assert.doesNotMatch(listed.stdout, /worker\./);
 
@@ -204,18 +204,9 @@ test("root package exposes the current canonical development interface", async (
     packageJson.scripts["dev:api"],
     "node scripts/development/operations.mjs run api.dev",
   );
-  assert.equal(
-    packageJson.scripts["dev:admin"],
-    "node scripts/development/operations.mjs run admin.dev",
-  );
-  assert.equal(
-    packageJson.scripts["status:admin"],
-    "node scripts/development/operations.mjs run admin.status",
-  );
-  assert.equal(
-    packageJson.scripts["stop:admin"],
-    "node scripts/development/operations.mjs run admin.stop",
-  );
+  assert.equal(packageJson.scripts["dev:admin"], undefined);
+  assert.equal(packageJson.scripts["status:admin"], undefined);
+  assert.equal(packageJson.scripts["stop:admin"], undefined);
   assert.equal(
     packageJson.scripts["bootstrap:admin"],
     "node scripts/development/operations.mjs run admin.bootstrap",

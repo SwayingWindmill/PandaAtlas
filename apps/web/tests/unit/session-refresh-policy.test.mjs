@@ -23,20 +23,20 @@ test("requiresSupabaseSessionRefresh skips anonymous public pages", () => {
     "/api/site-search",
     "/api/site-search/",
     "//api/site-search",
+    "/admin",
+    "/admin/review",
   ]) {
     assert.equal(requiresSupabaseSessionRefresh(path), false, path);
   }
 });
 
-test("requiresSupabaseSessionRefresh matches private, auth, admin, and API paths", () => {
+test("requiresSupabaseSessionRefresh matches private, auth, and API paths", () => {
   for (const path of [
     "/api",
     "/api/engagement/favorites",
     "/auth",
     "/auth/login",
     "/auth/callback",
-    "/admin",
-    "/admin/review",
     "/zh/me",
     "/en/me",
     "/zh/me/collections",

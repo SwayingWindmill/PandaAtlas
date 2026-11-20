@@ -37,8 +37,10 @@ test("a request without a session is refused before anything is forwarded", asyn
 test("only listed paths and methods are forwarded", async () => {
   const { dependencies, upstream } = harness();
   assert.equal((await forwardToV2(request("GET", "/api/v2/pandas"), dependencies)).status, 404);
-  assert.equal((await forwardToV2(request("GET", "/api/admin/review/cases/abc/claim"), dependencies)).status, 405);
-  assert.equal((await forwardToV2(request("DELETE", "/api/admin/review/cases"), dependencies)).status, 405);
+  assert.equal((await forwardToV2(request("GET", "/api/admin/session"), dependencies)).status, 404);
+  assert.equal((await forwardToV2(request("POST", "/api/admin/review/cases"), dependencies)).status, 404);
+  assert.equal((await forwardToV2(request("GET", "/api/engagement/daily-panda-results"), dependencies)).status, 405);
+  assert.equal((await forwardToV2(request("DELETE", "/api/engagement/favorites"), dependencies)).status, 405);
   assert.deepEqual(upstream, []);
 });
 
@@ -59,7 +61,7 @@ test("a state-changing request from another site is refused", async () => {
 
 test("a body that is not JSON is refused", async () => {
   const { dependencies, upstream } = harness();
-  const form = request("POST", "/api/admin/review/cases", {
+  const form = request("POST", "/api/community-intake/submissions", {
     headers: { "sec-fetch-site": "same-origin", "content-type": "application/x-www-form-urlencoded" },
     body: "submissionId=1",
   });
@@ -89,8 +91,8 @@ test("a write without a body is forwarded without one, and a parameter fills the
   assert.equal(upstream[0].request.headers.has("content-type"), false);
   assert.equal(upstream[0].body, "");
 
-  await forwardToV2(request("GET", "/api/admin/publication/releases/r-1"), dependencies);
-  assert.equal(upstream[1].request.url, "https://api.example.test/api/v2/publication/releases/r-1/inspection");
+  await forwardToV2(request("GET", "/api/community-intake/submissions/sub-1"), dependencies);
+  assert.equal(upstream[1].request.url, "https://api.example.test/api/v2/me/contributions/sub-1");
 });
 
 test("refusals are Problem Details with a code", async () => {
@@ -110,12 +112,12 @@ test("a listed GET is forwarded with the bearer token, a correlation id and its 
   const { dependencies, upstream } = harness({
     reply: () => new Response('{"items":[]}', { status: 200, headers: { "content-type": "application/json" } }),
   });
-  const response = await forwardToV2(request("GET", "/api/admin/review/cases?limit=25&state=new"), dependencies);
+  const response = await forwardToV2(request("GET", "/api/community-intake/submissions?limit=25&state=new"), dependencies);
 
   assert.equal(upstream.length, 1);
   const forwarded = upstream[0].request;
   assert.equal(forwarded.method, "GET");
-  assert.equal(forwarded.url, "https://api.example.test/api/v2/review/cases?limit=25&state=new");
+  assert.equal(forwarded.url, "https://api.example.test/api/v2/me/contributions?limit=25&state=new");
   assert.equal(forwarded.headers.get("authorization"), "Bearer session-token");
   assert.match(forwarded.headers.get("x-correlation-id"), UUID);
   assert.equal(response.status, 200);

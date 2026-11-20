@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { requestJson } from "@/lib/api/request";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
-const SAFE_APP_PATH = /^\/(?:admin(?:\/.*)?|(zh|en)\/(?:(?:pandas|places|institutions)\/[a-z0-9-]+|contribute|games\/(?:guess|daily)|me(?:\/(?:passport|feed|inbox|collections|memories|game-history|panda-book|submissions(?:\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})?))?))$/;
+const SAFE_APP_PATH = /^\/(zh|en)\/(?:(?:pandas|places|institutions)\/[a-z0-9-]+|contribute|games\/(?:guess|daily)|me(?:\/(?:passport|feed|inbox|collections|memories|game-history|panda-book|submissions(?:\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})?))?)$/;
 
 function safeNextPath(value: string | null): string {
   const fallback = "/zh/me";
@@ -49,7 +49,6 @@ const copy = {
     verifying: "正在验证…",
     changeEmail: "更换邮箱",
     invalidOtp: "验证码不正确，请检查后重试。",
-    magicLinkFailed: "登录链接无效或已过期，请重新登录。",
     consentBefore: "登录即表示同意",
     terms: "《用户协议》",
     consentBetween: "和",
@@ -71,7 +70,6 @@ const copy = {
     verifying: "Verifying…",
     changeEmail: "Use another email",
     invalidOtp: "That verification code is not correct. Check it and try again.",
-    magicLinkFailed: "That sign-in link is invalid or expired. Sign in again.",
     consentBefore: "Signing in means you agree to the ",
     terms: "Terms",
     consentBetween: " and the ",
@@ -82,15 +80,6 @@ const copy = {
 
 function localeFromPath(path: string): "zh" | "en" {
   return path.startsWith("/en/") ? "en" : "zh";
-}
-
-async function destinationAfterStaffSignIn(destination: string): Promise<string> {
-  if (!destination.startsWith("/admin")) return destination;
-  const { data, error } = await getSupabaseBrowserClient().auth.mfa.getAuthenticatorAssuranceLevel();
-  if (!error && data.currentLevel === "aal1" && data.nextLevel === "aal2") {
-    return `/admin/security/mfa?next=${encodeURIComponent(destination)}`;
-  }
-  return destination;
 }
 
 export function EmailOtpLogin() {
@@ -110,7 +99,6 @@ export function EmailOtpLogin() {
     searchParams.get("reason") === "session-expired" ? t.expiredSession : null
   ));
   const [messageKind, setMessageKind] = useState<MessageKind>("status");
-  const adminAuthRestoreStartedRef = useRef(false);
   const otpInputRef = useRef<HTMLInputElement | null>(null);
   const messageRef = useRef<HTMLParagraphElement | null>(null);
 
@@ -121,49 +109,6 @@ export function EmailOtpLogin() {
   useEffect(() => {
     if (messageKind === "error" && message) messageRef.current?.focus();
   }, [message, messageKind]);
-
-  useEffect(() => {
-    if (!destination.startsWith("/admin")) return;
-    if (adminAuthRestoreStartedRef.current) return;
-
-    const currentUrl = new URL(window.location.href);
-    const authCode = currentUrl.searchParams.get("code");
-    const fragment = new URLSearchParams(window.location.hash.slice(1));
-    const accessToken = fragment.get("access_token");
-    const refreshToken = fragment.get("refresh_token");
-    if (!authCode && (!accessToken || !refreshToken)) return;
-
-    adminAuthRestoreStartedRef.current = true;
-    async function restoreMagicLinkSession() {
-      const client = getSupabaseBrowserClient();
-      const result = authCode
-        ? await client.auth.exchangeCodeForSession(authCode)
-        : await client.auth.setSession({
-            access_token: accessToken as string,
-            refresh_token: refreshToken as string,
-          });
-      if (result.error) {
-        adminAuthRestoreStartedRef.current = false;
-        setMessage(copy[localeFromPath(destination)].magicLinkFailed);
-        setMessageKind("error");
-        return;
-      }
-
-      const cleanedUrl = new URL(window.location.href);
-      cleanedUrl.searchParams.delete("code");
-      cleanedUrl.hash = "";
-      history.replaceState(null, "", `${cleanedUrl.pathname}${cleanedUrl.search}`);
-      const adminSession = await requestJson("/api/admin/session").then(() => true, () => false);
-      if (!adminSession) {
-        adminAuthRestoreStartedRef.current = false;
-        setMessage(copy[localeFromPath(destination)].magicLinkFailed);
-        setMessageKind("error");
-        return;
-      }
-      window.location.replace(await destinationAfterStaffSignIn(destination));
-    }
-    void restoreMagicLinkSession();
-  }, [destination]);
 
   async function requestOtp(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -200,7 +145,7 @@ export function EmailOtpLogin() {
       setOtp("");
       return;
     }
-    window.location.replace(await destinationAfterStaffSignIn(destination));
+    window.location.replace(destination);
   }
 
   return (

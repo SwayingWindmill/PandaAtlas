@@ -4,7 +4,6 @@
  * 1. Brand primitives: Radix Colors olive (neutrals), amber (warning) and red (danger), plus fonts.
  * 2. Public semantic tokens (--pa-*): what public pages and the navigation read.
  * 3. shadcn/ui semantic tokens: read through Tailwind's @theme mapping in app/globals.css.
- * 4. Admin context: the staff console's dense palette, scoped to .pa-admin-shell.
  */
 
 :root {
@@ -110,47 +109,8 @@
   --input: var(--pa-color-line);
   --ring: var(--pa-color-accent);
   --destructive: var(--pa-color-danger);
-  --sidebar: var(--pa-color-surface);
-  --sidebar-foreground: var(--pa-color-ink);
-  --sidebar-primary: var(--pa-color-accent);
-  --sidebar-primary-foreground: var(--pa-color-on-accent);
-  --sidebar-accent: var(--pa-color-accent-soft);
-  --sidebar-accent-foreground: var(--pa-color-ink);
-  --sidebar-border: var(--pa-color-line);
-  --sidebar-ring: var(--pa-color-accent);
 }
 
 html[lang="zh-CN"] {
   --font-display: var(--zp-font-display-cjk);
-}
-
-/* 4. Admin context: shared across every authorized Admin route. */
-.pa-admin-shell {
-  --background: #f8fafc;
-  --foreground: #192733;
-  --primary: #176b5a;
-  --primary-foreground: #fff;
-  --secondary: #f1f5f6;
-  --secondary-foreground: #20303c;
-  --muted-ui: #f3f6f7;
-  --muted-foreground: #526474;
-  --accent-ui: #e8f5f0;
-  --accent-foreground: #135949;
-  --card: #fff;
-  --card-foreground: #192733;
-  --popover: #fff;
-  --popover-foreground: #192733;
-  --border: #dde6e8;
-  --input: #d8e2e4;
-  --ring: #227a68;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #415363;
-  --sidebar-primary: #176b5a;
-  --sidebar-primary-foreground: #fff;
-  --sidebar-accent: #e9f5f1;
-  --sidebar-accent-foreground: #135949;
-  --sidebar-border: #e6eced;
-  --sidebar-ring: #227a68;
-  background: #f3f6f8;
-  color: var(--foreground);
 }
