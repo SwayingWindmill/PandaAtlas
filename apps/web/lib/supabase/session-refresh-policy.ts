@@ -8,8 +8,6 @@ export function requiresSupabaseSessionRefresh(pathname: string): boolean {
     normalized.startsWith("/api/") ||
     normalized === "/auth" ||
     normalized.startsWith("/auth/") ||
-    normalized === "/admin" ||
-    normalized.startsWith("/admin/") ||
     PRIVATE_LOCALIZED_PATH_PATTERN.test(normalized)
   );
 }

@@ -4,7 +4,7 @@ const config = {
     {
       name: "no-circular-web-dependencies",
       severity: "error",
-      from: { path: "^(app|components|features|lib|hooks|proxy\\.ts)" },
+      from: { path: "^(app|components|features|lib|proxy\\.ts)" },
       to: { circular: true },
     },
     {
@@ -18,7 +18,7 @@ const config = {
     doNotFollow: { path: "node_modules" },
     tsPreCompilationDeps: true,
     tsConfig: { fileName: "tsconfig.json" },
-    includeOnly: "^(app|components|features|lib|hooks|proxy\\.ts)",
+    includeOnly: "^(app|components|features|lib|proxy\\.ts)",
     enhancedResolveOptions: {
       exportsFields: ["exports"],
       conditionNames: ["import", "require", "node", "default"],

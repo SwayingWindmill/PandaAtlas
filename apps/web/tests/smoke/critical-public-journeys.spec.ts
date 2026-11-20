@@ -32,7 +32,7 @@ test("redirects the legacy global distribution route to the panda map", async ({
   await expect(page.getByTestId("panda-map-page")).toBeVisible();
 });
 
-test("does not expose the staff console or its API while the admin shell is disabled", async ({ request }) => {
+test("returns 404 for retired staff console and admin API paths", async ({ request }) => {
   const paths = [
     "/admin",
     "/admin/reviews",
@@ -49,7 +49,7 @@ test("does not expose the staff console or its API while the admin shell is disa
 
     expect(response.status(), path).toBe(404);
   }
-  // The gate's no-store header shows the 404 came from the admin-shell gate, not a missing route.
+  // Unforwarded /api/* paths return 404 with no-store, private from lib/server/v2-forwarding.ts.
   const write = await request.post("/api/admin/review/cases", { maxRedirects: 0 });
   expect(write.status(), "review case intake").toBe(404);
   expect(write.headers()["cache-control"]).toBe("no-store, private");

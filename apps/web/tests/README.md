@@ -11,7 +11,6 @@ A browser test that needs data outside the default fixture must own an explicit 
 ## Suites
 
 - `tests/smoke/`: current public/private browser contract; run with `npm run smoke` in this workspace or `npm run smoke:web` from the repository root.
-- `tests/admin/`: retained V2 Admin shell/audit behavior; run with `npm run test:admin-shell` in this workspace.
 - accessibility and browser-matrix suites are separate acceptance surfaces; do not duplicate their assertions into smoke merely to increase coverage counts.
 
 The default suites may mock identity or feature APIs at the browser boundary, but production responses must never silently fall back to these fixtures.

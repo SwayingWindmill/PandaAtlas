@@ -5,9 +5,6 @@ The repository exposes one canonical interface for routine development work:
 ```powershell
 npm run ops -- list
 npm run ops -- describe verify.dev
-npm run dev:admin
-npm run status:admin
-npm run stop:admin
 npm run ops -- run web.dev
 npm run ops -- run api.typecheck
 npm run ops -- run verify.dev --scope web --scope api
@@ -29,46 +26,9 @@ Cloudflare deployment belongs to the `web` and `api` scopes.
 
 `web.*` commands target the vinext/Vite Web workspace (Next remains development-only route-type tooling). `api.*` commands target the NestJS workspace and use npm/Node only. Offline Python acquisition and curation run through `tools/panda-data` or bounded scripts under `scripts/curation`.
 
-## Local admin runtime
+## Local processes and memory
 
-Use one command for the complete local staff-console stack:
-
-```powershell
-npm run dev:admin
-```
-
-`admin.dev` owns local admin startup and records enough process state for deterministic cleanup:
-
-1. reads the pinned Supabase local configuration and starts the foundation when it is not already healthy;
-2. starts NestJS on `http://127.0.0.1:3001` with the local PostgreSQL and Supabase Auth endpoints;
-3. starts Web on `http://127.0.0.1:3400` with `ADMIN_SHELL_ENABLED=true` and the matching API/Auth configuration;
-4. waits for the API health endpoint and `/admin` to respond before reporting readiness;
-5. prints the actual staff-console URLs; and
-6. records the Web/API process roots in ignored local state so an interrupted session can be cleaned deterministically.
-
-The Web root remains the public product and redirects to a localized public route. The staff console is:
-
-```text
-http://127.0.0.1:3400/admin
-```
-
-Do not use `http://127.0.0.1:3400/` as an admin preview URL.
-
-Check the complete local stack without starting anything:
-
-```powershell
-npm run status:admin
-```
-
-Stop the complete local stack, including an interrupted Web/API process tree and the local Supabase foundation:
-
-```powershell
-npm run stop:admin
-```
-
-Ctrl+C normally stops the foreground Web/API process group. `stop:admin` is the canonical cleanup command and is safe to run after a terminal, tool session, or parent process was interrupted; it uses the runtime state recorded by `admin.dev` instead of relying on ad-hoc port/process commands.
-
-`status:admin` probes only the stack that `admin.dev` recorded. To find any PandaAtlas node/workerd process still running (an earlier session's dev server, a leftover workerd), with its ports, start time and memory, run:
+To find any PandaAtlas node/workerd process still running (an earlier session's dev server, a leftover workerd), with its ports, start time and memory, run:
 
 ```powershell
 npm run ops -- run dev.processes
@@ -76,7 +36,7 @@ npm run ops -- run dev.processes
 
 Reuse or stop what it lists deliberately before starting another runtime; a stale dev server can hold more than a gigabyte. Builds need no `NODE_OPTIONS` heap override: `npm run build:cloudflare` peaks at about 1.5 GB in one process, below Node's default limit, and caps at or under 1.5 GB have caused heap out-of-memory failures.
 
-`web.dev`, `api.dev`, and the `foundation.*` commands remain available when a task intentionally needs only one layer. Routine admin UI work should use `admin.dev` so Web, API, Auth, and database configuration cannot drift apart.
+`web.dev`, `api.dev`, and the `foundation.*` commands remain available when a task needs individual local runtime layers.
 
 ## Verification
 

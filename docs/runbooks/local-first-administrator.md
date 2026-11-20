@@ -4,8 +4,8 @@ PandaAtlas keeps authentication in Supabase and all application roles in the pri
 
 ## Initial setup
 
-1. Start the local stack from Windows in `E:\Code\PandaAtlas`: `npm run dev:admin`. Confirm `npm run status:admin` reports Supabase, NestJS, Web ready.
-2. Register the future operator using the normal `http://127.0.0.1:3400/auth/login?next=%2Fadmin` email OTP flow. Read the OTP at `http://127.0.0.1:54324` (Mailpit); local mail is **not** sent to the real email provider.
+1. Start the local Supabase foundation and API from Windows in `E:\Code\PandaAtlas`: run `npm run infra:start`, confirm readiness with `npm run infra:status`, and start the API when needed with `npm run dev:api`.
+2. Register the future operator through the Web email OTP flow (`/auth/login`) or local Supabase Auth, then read the OTP at `http://127.0.0.1:54324` (Mailpit); local mail is **not** sent to the real email provider.
 3. From the **local** Supabase Auth user record, find the verified user's immutable **UUID**. Do not use an email address as a capability or bootstrap selector. For example, query the local `auth.users` table read-only using a trusted operator database session. Confirm `email_confirmed_at` is populated.
 4. From a trusted local operator terminal, execute:
 
@@ -13,14 +13,14 @@ PandaAtlas keeps authentication in Supabase and all application roles in the pri
    npm run bootstrap:admin -- --account-id <verified-supabase-user-uuid>
    ```
 
-   For an isolated **developer workstation** that needs to inspect Review, Publication and Audit, the operator may instead explicitly opt into:
+   For an isolated **developer workstation** that needs to test Review, Publication and Audit API endpoints, the operator may instead explicitly opt into:
 
    ```powershell
    npm run bootstrap:admin -- --account-id <verified-supabase-user-uuid> --workspace-access
    ```
 
    Ordinary bootstrap grants `member` and `administrator`. Local workspace access adds the existing `reviewer` and `senior_archive_editor` roles. These capabilities do **not** bypass recent authentication, AAL2, ownership or business-domain rules.
-5. Login again with a **fresh OTP**. Verify `/admin` renders the Chinese shell; `/api/admin/session` and NestJS `GET /api/v2/me` should return `admin.shell.access`. For the ordinary role, `identity.role.manage` is present, but its high-risk commands require AAL2/recent reauthentication.
+5. Sign in again and verify NestJS `GET /api/v2/me` directly with the account's bearer token returns `admin.shell.access` in the resolved capability snapshot. For the ordinary role, `identity.role.manage` is present, but its high-risk commands require AAL2/recent reauthentication. The Web `/admin` UI is retired and no longer served.
 
 ## Safety and verification
 
@@ -29,7 +29,7 @@ PandaAtlas keeps authentication in Supabase and all application roles in the pri
 - The role assignment, authorization audit and integration outbox event must all commit together. A failure rolls the transaction back.
 - A previously revoked first-admin grant is not silently reissued. The first admin is not permitted to create or approve their own sensitive data operations merely by having the role.
 - Check transaction-level tests **before** bootstrapping a persistent workstation admin: `node --test scripts/development/tests/first-admin-bootstrap.test.mjs`. These particular tests require a **fresh local instance with no existing first administrator**, and roll back all test actors. Run this suite on disposable CI Supabase, not against an already bootstrapped developer database.
-- Stop the entire stack using `npm run stop:admin`.
+- Stop the local Supabase foundation using `npm run infra:stop`.
 
 ## Recovery
 

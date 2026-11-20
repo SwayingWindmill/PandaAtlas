@@ -66,9 +66,7 @@ jobs:
       - name: Run current Web browser acceptance
         env:
           RELEASE_GATE_USE_SYSTEM_EDGE: "0"
-        run: |
-          npm run smoke:web
-          npm run test:admin-shell -w web
+        run: npm run smoke:web
 
       - name: Build current Cloudflare Web and API artifacts
         run: npm run build:cloudflare
