@@ -17,7 +17,7 @@ import type {
   PublicPandaDetail,
   PublicPandaSummary,
   PublicReadPort,
-} from "../src/modules/publication/application/public-read.application.js";
+} from "../src/modules/public-read/application/public-read.application.js";
 
 const RELEASE = { releaseId: "release-1", version: "2026.10.22.1" };
 

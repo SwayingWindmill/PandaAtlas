@@ -1,6 +1,5 @@
-import type { DatabaseService } from "../../../platform/database/database.service.js";
 import type { PublicLearningCatalog } from "../../catalog/application/learning-catalog.js";
-import type { PublicPandaSummary, PublicReadPort } from "../../publication/application/public-read.application.js";
+import type { PublicPandaSummary, PublicReadPort } from "../../public-read/application/public-read.application.js";
 import {
   type AskIndexedDocument,
   type AskPandaFacts,
@@ -8,8 +7,8 @@ import {
   learningDocuments,
   pandaDocument,
   withContentHash,
-} from "../application/ask-corpus.js";
-import type { AskCorpusSource } from "../application/ask.ports.js";
+} from "./ask-corpus.js";
+import type { AskCorpusSource } from "./ask.ports.js";
 
 // Only these facts are indexed. The many local.* facts carry curation notes, not answers.
 const CORE_FACTS = [
@@ -33,12 +32,14 @@ function stringFact(value: unknown): string | null {
   return typeof value === "string" && value.trim() !== "" ? value.trim() : null;
 }
 
-/** Builds the 问问熊猫 corpus from published learning entries and deliverable panda facts. */
-export class PostgresAskCorpus implements AskCorpusSource {
+/** Builds the 问问熊猫 corpus through owner ports without cross-schema queries. */
+export class PublicReadAskCorpus implements AskCorpusSource {
   public constructor(
-    private readonly database: DatabaseService,
     private readonly learning: { published(): Promise<PublicLearningCatalog> },
-    private readonly publicRead: Pick<PublicReadPort, "listPandas" | "listLineage" | "listResidencies" | "listPlaces">,
+    private readonly publicRead: Pick<
+      PublicReadPort,
+      "listPandas" | "listLineage" | "listResidencies" | "listPlaces" | "getDeliverableCorpusSources"
+    >,
   ) {}
 
   public async documents(): Promise<AskIndexedDocument[]> {
@@ -49,38 +50,53 @@ export class PostgresAskCorpus implements AskCorpusSource {
   }
 
   private async pandaDocuments() {
-    const [pandas, lineage, residencies, places] = await Promise.all([
+    const [pandas, lineage, residencies, places, corpus] = await Promise.all([
       this.publicRead.listPandas(),
       this.publicRead.listLineage(),
       this.publicRead.listResidencies(),
       this.publicRead.listPlaces(),
+      this.publicRead.getDeliverableCorpusSources(),
     ]);
     // A suspended or missing release leaves no panda passages; the sync then removes them.
-    if (pandas.kind !== "ok" || lineage.kind !== "ok" || residencies.kind !== "ok" || places.kind !== "ok") return [];
+    if (
+      pandas.kind !== "ok" ||
+      lineage.kind !== "ok" ||
+      residencies.kind !== "ok" ||
+      places.kind !== "ok" ||
+      corpus.kind !== "ok"
+    ) {
+      return [];
+    }
     const releaseId = pandas.value.release.releaseId;
+    if (
+      lineage.value.release.releaseId !== releaseId ||
+      residencies.value.release.releaseId !== releaseId ||
+      places.value.release.releaseId !== releaseId ||
+      corpus.value.release.releaseId !== releaseId
+    ) {
+      return [];
+    }
+
     const deliverable = new Map(pandas.value.items.map((panda) => [panda.pandaId, panda]));
     const placeById = new Map(places.value.items.map((place) => [place.placeId, place]));
+    const evidence = new Map<string, AskSourceLink>(
+      corpus.value.evidence
+        .filter((source) => /^https?:\/\//u.test(source.url))
+        .map((source) => [source.sourceId, { title: source.title, publisher: source.publisher, url: source.url }]),
+    );
 
-    const rows = await this.database.db
-      .selectFrom("public_read.pandas")
-      .select(["panda_id", "facts", "evidence_source_ids"])
-      .where("release_id", "=", releaseId)
-      .execute();
-    const evidence = await this.deliverableEvidence(releaseId);
-
-    return rows.flatMap((row) => {
-      const panda = deliverable.get(row.panda_id);
+    return corpus.value.pandas.flatMap((bundle) => {
+      const panda = deliverable.get(bundle.pandaId);
       if (panda === undefined) return [];
       const facts = new Map<string, { value: unknown; status: string }>();
-      for (const fact of (Array.isArray(row.facts) ? row.facts : []) as { fieldKey?: unknown; value?: unknown; status?: unknown }[]) {
-        if (typeof fact.fieldKey !== "string" || !CORE_FACTS.includes(fact.fieldKey)) continue;
-        if (typeof fact.status !== "string" || !SHOWN_STATUSES.has(fact.status)) continue;
+      for (const fact of bundle.facts) {
+        if (!CORE_FACTS.includes(fact.fieldKey) || !SHOWN_STATUSES.has(fact.status)) continue;
         facts.set(fact.fieldKey, { value: fact.value, status: fact.status });
       }
-      const parents = lineage.value.items.filter((item) => item.childId === row.panda_id);
-      const offspring = lineage.value.items.filter((item) => item.parentId === row.panda_id);
-      const homes = residencies.value.items.filter((item) => item.pandaId === row.panda_id);
-      const sourceIds = new Set<string>(row.evidence_source_ids);
+      const parents = lineage.value.items.filter((item) => item.childId === bundle.pandaId);
+      const offspring = lineage.value.items.filter((item) => item.parentId === bundle.pandaId);
+      const homes = residencies.value.items.filter((item) => item.pandaId === bundle.pandaId);
+      const sourceIds = new Set<string>(bundle.evidenceSourceIds);
       for (const item of [...parents, ...offspring]) for (const id of item.sourceIds) sourceIds.add(id);
       for (const item of homes) for (const id of item.sourceIds) sourceIds.add(id);
       const sources = [...sourceIds].flatMap((id) => {
@@ -120,33 +136,5 @@ export class PostgresAskCorpus implements AskCorpusSource {
       const document = pandaDocument(facts_);
       return document === null ? [] : [document];
     });
-  }
-
-  // Evidence sources of the release minus those under a current takedown.
-  private async deliverableEvidence(releaseId: string): Promise<Map<string, AskSourceLink>> {
-    const [rows, controls] = await Promise.all([
-      this.database.db
-        .selectFrom("public_read.evidence_sources")
-        .select(["source_id", "publisher", "title", "url", "access_state"])
-        .where("release_id", "=", releaseId)
-        .execute(),
-      this.database.db
-        .selectFrom("publication.delivery_control_events")
-        .select(["resource_id", "action"])
-        .where("control_kind", "=", "resource_takedown")
-        .where("resource_kind", "=", "evidence")
-        .orderBy("occurred_at", "desc")
-        .orderBy("control_event_id", "desc")
-        .execute(),
-    ]);
-    const latest = new Map<string, string>();
-    for (const control of controls) {
-      if (control.resource_id !== null && !latest.has(control.resource_id)) latest.set(control.resource_id, control.action);
-    }
-    return new Map(
-      rows
-        .filter((row) => latest.get(row.source_id) !== "apply" && /^https?:\/\//u.test(row.url))
-        .map((row) => [row.source_id, { title: row.title, publisher: row.publisher, url: row.url }]),
-    );
   }
 }

@@ -3,7 +3,7 @@ import { sql } from "kysely";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createApplication } from "../../src/bootstrap.js";
-import { PublicCacheConsumerService } from "../../src/modules/publication/infrastructure/public-cache-consumer.service.js";
+import { PublicCacheConsumerService } from "../../src/modules/public-read/infrastructure/public-cache-consumer.service.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 import { IntegrationOutboxService } from "../../src/platform/integration/integration-outbox.service.js";
 import { OutboxDispatcherService } from "../../src/platform/integration/outbox-dispatcher.service.js";

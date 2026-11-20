@@ -10,6 +10,14 @@ export interface PublicReadRelease {
 // carries every published fact.
 export const LISTING_FACT_KEYS = ["sex", "life_status", "birth_date", "death_date"] as const;
 
+export interface PublicFactSummary {
+  fieldKey: string;
+  value?: JsonValue;
+  status: string;
+  lastVerifiedOn: string;
+  conclusionVersion: number;
+}
+
 export interface PublicPandaSummary {
   pandaId: string;
   canonicalSlug: string;
@@ -20,13 +28,19 @@ export interface PublicPandaSummary {
     value: string;
     isPrimary: boolean;
   }>;
-  facts: Array<{
-    fieldKey: string;
-    value?: JsonValue;
-    status: string;
-    lastVerifiedOn: string;
-    conclusionVersion: number;
-  }>;
+  facts: PublicFactSummary[];
+}
+
+export interface PublicPandaFactBundle {
+  pandaId: string;
+  facts: PublicFactSummary[];
+  evidenceSourceIds: string[];
+}
+
+export interface PublicDeliverableCorpusSources {
+  release: PublicReadRelease;
+  pandas: PublicPandaFactBundle[];
+  evidence: PublicEvidenceSummary[];
 }
 
 export interface PublicPlaceSummary {
@@ -168,6 +182,7 @@ export interface PublicReadPort {
   listLifeEvents(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicLifeEventSummary[] }>>;
   getEvidence(sourceId: string): Promise<PublicReadResult<{ release: PublicReadRelease; source: PublicEvidenceSummary }>>;
   stats(): Promise<PublicReadResult<{ release: PublicReadRelease; stats: PublicStats }>>;
+  getDeliverableCorpusSources(): Promise<PublicReadResult<PublicDeliverableCorpusSources>>;
 }
 
 export const PUBLIC_READ_PORT = Symbol("PUBLIC_READ_PORT");

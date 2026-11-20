@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { rankPopular } from "../src/modules/popularity/application/popular-pandas.js";
 import { PopularityApplication } from "../src/modules/popularity/application/popularity.application.js";
-import type { PublicReadPort } from "../src/modules/publication/application/public-read.application.js";
+import type { PublicReadPort } from "../src/modules/public-read/application/public-read.application.js";
 
 const published = new Map([
   ["a", "panda-a"],

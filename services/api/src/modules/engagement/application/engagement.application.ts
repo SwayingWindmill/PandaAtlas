@@ -1,15 +1,3 @@
-import {
-  acceptsToday,
-  decideCancelLeave,
-  decideLeave,
-  decideVisit,
-  summarizeDailyCheckins,
-  type DailyCheckinDecision,
-  type DailyCheckinRecord,
-  type DailyCheckinRefusal,
-  type DailyCheckinSummary,
-} from "./daily-checkin.js";
-
 export interface VenueFollowRecord {
   institutionSlug: string;
   followedAt: Date;
@@ -59,11 +47,7 @@ export interface SaveSeenPandaInput {
   note: string | null;
 }
 
-export type DailyCheckinResult =
-  | { ok: true; summary: DailyCheckinSummary }
-  | { ok: false; refusal: DailyCheckinRefusal };
-
-export interface EngagementRepository {
+export interface EngagementPort {
   listFavorites(accountId: string): Promise<FavoriteRecord[]>;
   favorite(accountId: string, pandaId: string): Promise<FavoriteRecord>;
   unfavorite(accountId: string, pandaId: string): Promise<boolean>;
@@ -88,78 +72,6 @@ export interface EngagementRepository {
   getSeenPanda(accountId: string, pandaId: string): Promise<SeenPandaRecord | undefined>;
   saveSeenPanda(accountId: string, input: SaveSeenPandaInput): Promise<SeenPandaRecord>;
   deleteSeenPanda(accountId: string, pandaId: string): Promise<boolean>;
-
-  listDailyCheckins(accountId: string): Promise<DailyCheckinRecord[]>;
-  /**
-   * Serializes one member's check-in edits: reads their days, lets `decide`
-   * choose a change, applies it and returns the days after the change.
-   */
-  editDailyCheckins(
-    accountId: string,
-    decide: (records: DailyCheckinRecord[]) => DailyCheckinDecision,
-  ): Promise<{ decision: DailyCheckinDecision; records: DailyCheckinRecord[] }>;
-}
-
-export interface EngagementPort extends Omit<EngagementRepository, "listDailyCheckins" | "editDailyCheckins"> {
-  dailyCheckins(accountId: string, today: string): Promise<DailyCheckinResult>;
-  recordDailyVisit(accountId: string, today: string): Promise<DailyCheckinResult>;
-  takeDailyLeave(accountId: string, day: string, today: string): Promise<DailyCheckinResult>;
-  cancelDailyLeave(accountId: string, day: string, today: string): Promise<DailyCheckinResult>;
 }
 
 export const ENGAGEMENT_PORT = Symbol("ENGAGEMENT_PORT");
-
-export class EngagementApplication implements EngagementPort {
-  public constructor(
-    private readonly repository: EngagementRepository,
-    private readonly now: () => Date = () => new Date(),
-  ) {}
-
-  public listFavorites(accountId: string) { return this.repository.listFavorites(accountId); }
-  public favorite(accountId: string, pandaId: string) { return this.repository.favorite(accountId, pandaId); }
-  public unfavorite(accountId: string, pandaId: string) { return this.repository.unfavorite(accountId, pandaId); }
-  public listFollowedVenues(accountId: string) { return this.repository.listFollowedVenues(accountId); }
-  public followVenue(accountId: string, institutionSlug: string) { return this.repository.followVenue(accountId, institutionSlug); }
-  public unfollowVenue(accountId: string, institutionSlug: string) { return this.repository.unfollowVenue(accountId, institutionSlug); }
-  public listCollections(accountId: string) { return this.repository.listCollections(accountId); }
-  public createCollection(accountId: string, name: string) { return this.repository.createCollection(accountId, name); }
-  public renameCollection(accountId: string, collectionId: string, name: string) { return this.repository.renameCollection(accountId, collectionId, name); }
-  public deleteCollection(accountId: string, collectionId: string) { return this.repository.deleteCollection(accountId, collectionId); }
-  public addPandaToCollection(accountId: string, collectionId: string, pandaId: string) { return this.repository.addPandaToCollection(accountId, collectionId, pandaId); }
-  public removePandaFromCollection(accountId: string, collectionId: string, pandaId: string) { return this.repository.removePandaFromCollection(accountId, collectionId, pandaId); }
-  public listCheckins(accountId: string) { return this.repository.listCheckins(accountId); }
-  public createCheckin(accountId: string, input: CreateCheckinInput) { return this.repository.createCheckin(accountId, input); }
-  public deleteCheckin(accountId: string, checkinId: string) { return this.repository.deleteCheckin(accountId, checkinId); }
-  public listSeenPandas(accountId: string) { return this.repository.listSeenPandas(accountId); }
-  public getSeenPanda(accountId: string, pandaId: string) { return this.repository.getSeenPanda(accountId, pandaId); }
-  public saveSeenPanda(accountId: string, input: SaveSeenPandaInput) { return this.repository.saveSeenPanda(accountId, input); }
-  public deleteSeenPanda(accountId: string, pandaId: string) { return this.repository.deleteSeenPanda(accountId, pandaId); }
-
-  public async dailyCheckins(accountId: string, today: string): Promise<DailyCheckinResult> {
-    if (!acceptsToday(today, this.now())) return { ok: false, refusal: "todayOutOfRange" };
-    return { ok: true, summary: summarizeDailyCheckins(await this.repository.listDailyCheckins(accountId), today) };
-  }
-
-  public recordDailyVisit(accountId: string, today: string): Promise<DailyCheckinResult> {
-    return this.editDailyCheckins(accountId, today, (records) => decideVisit(records, today));
-  }
-
-  public takeDailyLeave(accountId: string, day: string, today: string): Promise<DailyCheckinResult> {
-    return this.editDailyCheckins(accountId, today, (records) => decideLeave(records, day, today));
-  }
-
-  public cancelDailyLeave(accountId: string, day: string, today: string): Promise<DailyCheckinResult> {
-    return this.editDailyCheckins(accountId, today, (records) => decideCancelLeave(records, day, today));
-  }
-
-  private async editDailyCheckins(
-    accountId: string,
-    today: string,
-    decide: (records: DailyCheckinRecord[]) => DailyCheckinDecision,
-  ): Promise<DailyCheckinResult> {
-    if (!acceptsToday(today, this.now())) return { ok: false, refusal: "todayOutOfRange" };
-    const { decision, records } = await this.repository.editDailyCheckins(accountId, decide);
-    if (!decision.ok) return { ok: false, refusal: decision.refusal };
-    return { ok: true, summary: summarizeDailyCheckins(records, today) };
-  }
-}

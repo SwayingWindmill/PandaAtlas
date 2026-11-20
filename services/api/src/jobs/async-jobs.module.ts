@@ -6,8 +6,8 @@ import { NotificationProviderWorkerService } from "../modules/notification/infra
 import { NotificationModule } from "../modules/notification/notification.module.js";
 import { PrivacyRequestProcessorService } from "../modules/privacy/infrastructure/privacy-request-processor.service.js";
 import { PrivacyModule } from "../modules/privacy/privacy.module.js";
-import { PublicCacheConsumerService } from "../modules/publication/infrastructure/public-cache-consumer.service.js";
-import { PublicationModule } from "../modules/publication/publication.module.js";
+import { PublicCacheConsumerService } from "../modules/public-read/infrastructure/public-cache-consumer.service.js";
+import { PublicReadModule } from "../modules/public-read/public-read.module.js";
 import { UpdatesEventConsumerService } from "../modules/updates/infrastructure/updates-event-consumer.service.js";
 import { UpdatesModule } from "../modules/updates/updates.module.js";
 import { ConfigModule } from "../platform/config/config.module.js";
@@ -19,7 +19,7 @@ import { StructuredLoggerService } from "../platform/observability/structured-lo
 import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.js";
 
 @Module({
-  imports: [ConfigModule, IntegrationModule, ObservabilityModule, UpdatesModule, NotificationModule, PrivacyModule, AuditModule, PublicationModule],
+  imports: [ConfigModule, IntegrationModule, ObservabilityModule, UpdatesModule, NotificationModule, PrivacyModule, AuditModule, PublicReadModule],
   providers: [
     {
       provide: AsyncDownstreamRunnerService,

@@ -1,4 +1,4 @@
-import type { PublicReadPort } from "../../publication/application/public-read.application.js";
+import type { PublicReadPort } from "../../public-read/application/public-read.application.js";
 import type { DailyPandaApplication, DailyPandaGuessResult } from "./daily-panda.application.js";
 
 export type PandaBookGame = "guess_panda" | "daily_panda";

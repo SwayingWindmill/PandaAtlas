@@ -65,6 +65,11 @@ export class CachingPublicReadRepository implements PublicReadPort {
     return this.remember("stats", () => this.inner.stats());
   }
 
+  public getDeliverableCorpusSources() {
+    // Full facts corpus is large and only synced on demand; avoid pinning it in isolate memory.
+    return this.inner.getDeliverableCorpusSources();
+  }
+
   private remember<T>(key: string, load: () => Promise<PublicReadResult<T>>): Promise<PublicReadResult<T>> {
     return this.cache.remember(key, load, (result) => result.kind !== "unavailable");
   }

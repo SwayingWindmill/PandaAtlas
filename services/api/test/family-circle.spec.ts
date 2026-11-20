@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { familyCircleIds } from "../src/modules/publication/application/family-circle.js";
+import { familyCircleIds } from "../src/modules/public-read/application/family-circle.js";
 
 // grandma -> mom -> {focus, sister}; dad -> focus; focus -> cub; unrelated stays out.
 const edges = [

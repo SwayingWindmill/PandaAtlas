@@ -9,15 +9,18 @@ import {
   summarizeDailyCheckins,
   type DailyCheckinDecision,
   type DailyCheckinRecord,
-} from "../src/modules/engagement/application/daily-checkin.js";
-import { EngagementApplication, type EngagementRepository } from "../src/modules/engagement/application/engagement.application.js";
+} from "../src/modules/daily-checkin/application/daily-checkin.js";
+import {
+  DailyCheckinApplication,
+  type DailyCheckinRepository,
+} from "../src/modules/daily-checkin/application/daily-checkin.application.js";
 
 const visit = (day: string): DailyCheckinRecord => ({ day, kind: "visit", retroactive: false });
 const leave = (day: string, retroactive = false): DailyCheckinRecord => ({ day, kind: "leave", retroactive });
 
 function memoryRepository(initial: DailyCheckinRecord[] = []) {
   let records = [...initial];
-  const repository = {
+  const repository: DailyCheckinRepository = {
     listDailyCheckins: () => Promise.resolve([...records]),
     editDailyCheckins: (_accountId: string, decide: (current: DailyCheckinRecord[]) => DailyCheckinDecision) => {
       const decision = decide([...records]);
@@ -31,7 +34,7 @@ function memoryRepository(initial: DailyCheckinRecord[] = []) {
       }
       return Promise.resolve({ decision, records: [...records] });
     },
-  } as unknown as EngagementRepository;
+  };
   return { repository, records: () => records };
 }
 
@@ -126,12 +129,12 @@ describe("daily check-in rules", () => {
   });
 });
 
-describe("EngagementApplication daily check-ins", () => {
+describe("DailyCheckinApplication daily check-ins", () => {
   const now = () => new Date("2026-10-30T14:00:00Z");
 
   it("records a visit once and returns the summary", async () => {
     const memory = memoryRepository([visit("2026-10-28")]);
-    const app = new EngagementApplication(memory.repository, now);
+    const app = new DailyCheckinApplication(memory.repository, now);
     const first = await app.recordDailyVisit("account", "2026-10-30");
     const again = await app.recordDailyVisit("account", "2026-10-30");
     expect(first.ok && first.summary.totalVisitDays).toBe(2);
@@ -140,13 +143,13 @@ describe("EngagementApplication daily check-ins", () => {
   });
 
   it("refuses a local date far from the server date", async () => {
-    const app = new EngagementApplication(memoryRepository().repository, now);
+    const app = new DailyCheckinApplication(memoryRepository().repository, now);
     expect(await app.dailyCheckins("account", "2026-11-05")).toEqual({ ok: false, refusal: "todayOutOfRange" });
   });
 
   it("takes, refuses and cancels leave", async () => {
     const memory = memoryRepository([visit("2026-10-27")]);
-    const app = new EngagementApplication(memory.repository, now);
+    const app = new DailyCheckinApplication(memory.repository, now);
     const retro = await app.takeDailyLeave("account", "2026-10-29", "2026-10-30");
     expect(retro.ok && retro.summary.thisMonth).toMatchObject({ leaveDays: 1, leaveLeft: 1, retroLeft: 0 });
     const planned = await app.takeDailyLeave("account", "2026-10-31", "2026-10-30");
