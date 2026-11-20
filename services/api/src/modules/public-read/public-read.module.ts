@@ -3,7 +3,6 @@ import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { IntegrationModule } from "../../platform/integration/integration.module.js";
 import { PgmqService } from "../../platform/integration/pgmq.service.js";
-import { RequestContextModule } from "../../platform/request-context/request-context.module.js";
 import { PUBLIC_READ_PORT } from "./application/public-read.application.js";
 import { PublicReadController } from "./http/public-read.controller.js";
 import { CachingPublicReadRepository } from "./infrastructure/caching-public-read.repository.js";
@@ -12,7 +11,7 @@ import { PublicCacheConsumerService } from "./infrastructure/public-cache-consum
 import { PublicReadCache } from "./infrastructure/public-read-cache.js";
 
 @Module({
-  imports: [DatabaseModule, IntegrationModule, RequestContextModule],
+  imports: [DatabaseModule, IntegrationModule],
   controllers: [PublicReadController],
   providers: [
     {

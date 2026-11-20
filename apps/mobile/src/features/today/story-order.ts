@@ -1,6 +1,5 @@
 // Pure picking logic for 今天's story-card photos, kept free of React Native so it is unit tested.
 import type { PandaListItem } from "@/features/pandas/pandas";
-import { CURATED_COVERS } from "./curated-covers";
 
 export interface StoryPhoto {
   pandaId: string;
@@ -36,20 +35,6 @@ export function storyCandidates(pandas: PandaListItem[], day: string): PandaList
   return items;
 }
 
-/** Pandas whose current cover was cleared for full-bleed use; see curated-covers.ts. */
-export function hasCuratedCover(pandaId: string, curated: ReadonlyMap<string, string> = CURATED_COVERS): boolean {
-  return curated.has(pandaId);
-}
-
-/** True when the cover the API returns is the very photo that was reviewed, not a newer one. */
-export function isCuratedCover(
-  cover: { pandaId: string; contentSha256: string },
-  curated: ReadonlyMap<string, string> = CURATED_COVERS,
-): boolean {
-  const hash = curated.get(cover.pandaId);
-  return hash !== undefined && cover.contentSha256.startsWith(hash);
-}
-
 /** The first `count` candidates that have a cover, each a different panda and a different photo. */
 export function pickStoryPhotos(candidates: PandaListItem[], covers: Map<string, string>, count: number): StoryPhoto[] {
   const used = new Set<string>();
@@ -62,16 +47,4 @@ export function pickStoryPhotos(candidates: PandaListItem[], covers: Map<string,
     if (picks.length === count) break;
   }
   return picks;
-}
-
-/**
- * Sources whose pictures carry a burned-in mark: 新华网 in a corner, or Pandapia's logo along the
- * bottom of its small square crops. A full-bleed card or hero puts its title over the whole photo,
- * so a cover credited to one of them is left out of 今天's cards and institution heroes. The credit
- * is the only signal the API gives; the photo stays on the panda's own page and in lists.
- */
-const WATERMARKED_CREDIT = /xinhua|新华|pandapia/i;
-
-export function hasBurnedInMark(cover: { creator?: string | null; attributionText?: string | null }): boolean {
-  return WATERMARKED_CREDIT.test(`${cover.creator ?? ""} ${cover.attributionText ?? ""}`);
 }

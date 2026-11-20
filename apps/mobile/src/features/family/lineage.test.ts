@@ -8,7 +8,20 @@ import { buildLineage } from "./lineage";
 type Link = components["schemas"]["PublicLineageSummaryDto"];
 
 function panda(id: string, sex: "male" | "female" | null, extra: Partial<PandaListItem> = {}): PandaListItem {
-  return { id, slug: id, name: id, sex, birthDate: null, deceased: false, place: null, placeId: null, area: null, terms: [], ...extra };
+  return {
+    id,
+    slug: id,
+    name: id,
+    sex,
+    birthDate: null,
+    deceased: false,
+    place: null,
+    placeId: null,
+    area: null,
+    hasFullBleedCover: false,
+    terms: [],
+    ...extra,
+  };
 }
 
 const link = (childId: string, parentId: string, parentRole: Link["parentRole"], sourceIds = ["src"]): Link => ({

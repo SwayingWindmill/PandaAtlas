@@ -3,13 +3,14 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { areaOf } from "@/features/pandas/areas";
 import { api } from "@/lib/api";
-import { loadResidencies } from "@/lib/public-data";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
 import { queryClient } from "@/lib/query-client";
 import { comparePandas } from "./order";
 
 type Schemas = components["schemas"];
+type PandaSummary = Schemas["PublicPandaSummaryDto"];
 type Place = Schemas["PublicPlaceSummaryDto"];
+type PlaceNameInput = Pick<Place, "nameZh" | "nameEn">;
 type Residency = Schemas["PublicResidencySummaryDto"];
 
 export interface PandaListItem {
@@ -24,6 +25,7 @@ export interface PandaListItem {
   placeId: string | null;
   /** The 找熊猫 area chip it falls under: a base area in China, or 海外. */
   area: string | null;
+  hasFullBleedCover: boolean;
   /** Slug, every name and the current place, normalized for matching. */
   terms: string[];
 }
@@ -38,7 +40,7 @@ export function normalizeTerm(value: string): string {
 }
 
 /** Chinese names only: coarse locations carry English text, except the country-level "China". */
-export function placeName(place: Place | undefined): string | null {
+export function placeName(place: PlaceNameInput | undefined): string | null {
   if (!place) return null;
   if (place.nameZh) return place.nameZh;
   return place.nameEn === "China" ? "中国" : null;
@@ -63,33 +65,29 @@ export function loadPlaces(): Promise<Map<string, Place>> {
   });
 }
 
-async function buildIndex(): Promise<PandaListItem[]> {
-  const [pandas, residencies, placesById] = await Promise.all([api.GET("/api/v2/pandas"), loadResidencies(), loadPlaces()]);
-  if (!pandas.data) throw new Error("Panda list unavailable");
-  const residenciesByPanda = new Map<string, Residency[]>();
-  for (const residency of residencies) {
-    residenciesByPanda.set(residency.pandaId, [...(residenciesByPanda.get(residency.pandaId) ?? []), residency]);
-  }
+export function toPandaListItem(panda: PandaSummary): PandaListItem {
+  const placeRecord = panda.currentPlace;
+  const place = placeName(placeRecord);
+  const names = [panda.canonicalSlug, ...panda.legacySlugs, ...panda.names.map((name) => name.value)];
+  return {
+    id: panda.pandaId,
+    slug: panda.canonicalSlug,
+    name: displayName(panda),
+    sex: pandaSex(panda),
+    birthDate: pandaBirthDate(panda),
+    deceased: pandaIsDeceased(panda),
+    place,
+    placeId: placeRecord?.placeId ?? null,
+    area: areaOf(placeRecord),
+    hasFullBleedCover: Boolean(panda.hasFullBleedCover),
+    terms: (place ? [...names, place] : names).map(normalizeTerm),
+  };
+}
 
-  const items = pandas.data.items.map((panda) => {
-    const placeId = currentPlaceId(residenciesByPanda.get(panda.pandaId) ?? []);
-    const placeRecord = placeId ? placesById.get(placeId) : undefined;
-    const place = placeName(placeRecord);
-    const names = [panda.canonicalSlug, ...panda.legacySlugs, ...panda.names.map((name) => name.value)];
-    return {
-      id: panda.pandaId,
-      slug: panda.canonicalSlug,
-      name: displayName(panda),
-      sex: pandaSex(panda),
-      birthDate: pandaBirthDate(panda),
-      deceased: pandaIsDeceased(panda),
-      place,
-      placeId,
-      area: areaOf(placeRecord),
-      terms: (place ? [...names, place] : names).map(normalizeTerm),
-    };
-  });
-  return items.sort(comparePandas);
+async function buildIndex(): Promise<PandaListItem[]> {
+  const { data } = await api.GET("/api/v2/pandas");
+  if (!data) throw new Error("Panda list unavailable");
+  return data.items.map(toPandaListItem).sort(comparePandas);
 }
 
 /** Every published panda, shared across screens while the result is fresh. */

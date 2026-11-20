@@ -1,16 +1,7 @@
-// Covers cleared for full-bleed use: 今天's story cards, 发现's photo cards and 图鉴/我的 previews.
-//
-// The API gives no size, colour or overlay data, and about half of the remaining covers are not
-// fit to sit under a title: thumbnails smaller than 600px on the short side (blurry when stretched,
-// some with the panda's name and a grey frame baked in), newspaper and Weibo marks in a corner,
-// strong colour casts, crowds, signs, clippings and black-and-white archive shots. Each cover here
-// was looked at by hand on 2026-10-29 and is keyed by panda id and the first 16 hex digits of its
-// content hash, so a replaced photo drops out until someone reviews it. Everywhere else (the panda's
-// own page, lists, avatars) still shows whatever cover the panda has.
-//
-// To review new covers: fetch /api/v2/panda-covers, download each objectKey, skip anything under
-// 600px on the short side, and add the clean ones here.
-export const CURATED_COVERS: ReadonlyMap<string, string> = new Map([
+// Covers cleared for full-bleed use in card stacks and institution heroes. Each entry was
+// reviewed against the image's resolution, margins and colour cast on 2026-10-29 and keyed by the
+// first 16 hex digits of contentSha256 so a replaced photo drops out until reviewed again.
+export const CURATED_COVER_HASH_PREFIXES: ReadonlyMap<string, string> = new Map([
   ["00893b59-81d9-50ff-9156-7e47bcd10036", "a5e1dd9e75722038"],
   ["01878819-1eda-5d9c-96ab-bab66d3b0b09", "4b927e58fc38d974"],
   ["0763e236-5276-59eb-b6f2-b378b00cb83c", "3ad57a52edd3486c"],
@@ -159,3 +150,24 @@ export const CURATED_COVERS: ReadonlyMap<string, string> = new Map([
   ["fd785987-86c5-5d06-9df4-f7517b7c3931", "13016c9ffdb64adc"],
   ["fdd2746a-ded6-5570-96b1-13469f9f498e", "6cfc9c1d13c6ba2c"],
 ]);
+
+// Card titles sit over the full-bleed photo, so covers credited to agencies that stamp a mark
+// are excluded from full-bleed cards and institution heroes while still shown on profile pages.
+const WATERMARKED_CREDIT = /xinhua|新华|pandapia/iu;
+
+export function hasBurnedInMark(cover: { creator?: string | null; attributionText?: string | null }): boolean {
+  return WATERMARKED_CREDIT.test(`${cover.creator ?? ""} ${cover.attributionText ?? ""}`);
+}
+
+export function isFullBleedCoverReady(
+  cover: {
+    pandaId: string;
+    contentSha256: string;
+    creator?: string | null;
+    attributionText?: string | null;
+  },
+  curated: ReadonlyMap<string, string> = CURATED_COVER_HASH_PREFIXES,
+): boolean {
+  const prefix = curated.get(cover.pandaId);
+  return prefix !== undefined && cover.contentSha256.startsWith(prefix) && !hasBurnedInMark(cover);
+}

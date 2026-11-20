@@ -18,7 +18,7 @@ afterEach(() => {
 });
 
 describe("institution & seen query caching", () => {
-  it("reuses shared residencies and caches institution details per slug", async () => {
+  it("loads institution summary in one request and caches per slug", async () => {
     publicApi.GET.mockImplementation(async (path: string, init?: { params?: { path?: { slug?: string } } }) => {
       if (path === "/api/v2/institutions/{slug}") {
         const slug = init?.params?.path?.slug ?? "chengdu";
@@ -32,17 +32,33 @@ describe("institution & seen query caching", () => {
               profile: null,
             },
             places: [],
+            residents: [
+              {
+                pandaId: "p-1",
+                canonicalSlug: "hua-hua",
+                legacySlugs: [],
+                names: [{ languageTag: "zh-Hans", nameKind: "official", value: "和花", isPrimary: true }],
+                facts: [{ fieldKey: "sex", value: "female", status: "confirmed", lastVerifiedOn: "2026-10-28", conclusionVersion: 1 }],
+                hasFullBleedCover: true,
+              },
+            ],
+            former: [
+              {
+                panda: {
+                  pandaId: "p-2",
+                  canonicalSlug: "mei-xiang",
+                  legacySlugs: [],
+                  names: [{ languageTag: "zh-Hans", nameKind: "official", value: "美香", isPrimary: true }],
+                  facts: [],
+                },
+                fromYear: 2000,
+                toYear: 2023,
+                bornHere: true,
+              },
+            ],
+            bornHereCount: 1,
           },
         };
-      }
-      if (path === "/api/v2/residencies") {
-        return { data: { items: [] } };
-      }
-      if (path === "/api/v2/pandas") {
-        return { data: { items: [] } };
-      }
-      if (path === "/api/v2/places") {
-        return { data: { items: [] } };
       }
       return { data: undefined };
     });
@@ -51,13 +67,16 @@ describe("institution & seen query caching", () => {
     const second = await queryClient.fetchQuery(institutionQueryOptions("chengdu"));
     const other = await loadInstitution("wolong");
     expect(first.slug).toBe("chengdu");
+    expect(first.residents.map((panda) => ({ id: panda.id, hasFullBleedCover: panda.hasFullBleedCover }))).toEqual([
+      { id: "p-1", hasFullBleedCover: true },
+    ]);
+    expect(first.former).toMatchObject([{ from: 2000, to: 2023, bornHere: true, panda: { slug: "mei-xiang" } }]);
+    expect(first.bornHere).toBe(1);
     expect(second.name).toBe("成都基地");
     expect(other.name).toBe("卧龙基地");
 
-    const institutionFetches = publicApi.GET.mock.calls.filter(([p]) => p === "/api/v2/institutions/{slug}");
-    const residencyFetches = publicApi.GET.mock.calls.filter(([p]) => p === "/api/v2/residencies");
-    expect(institutionFetches).toHaveLength(2);
-    expect(residencyFetches).toHaveLength(1);
+    expect(publicApi.GET).toHaveBeenCalledTimes(2);
+    expect(publicApi.GET.mock.calls.every(([path]) => path === "/api/v2/institutions/{slug}")).toBe(true);
   });
 
   it("scopes seen-ids under the private query namespace", async () => {

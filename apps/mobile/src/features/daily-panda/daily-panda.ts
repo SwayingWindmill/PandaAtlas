@@ -28,6 +28,7 @@ export interface PandaChoice {
   slug: string;
   name: string;
   alternateName: string | null;
+  hasFullBleedCover: boolean;
 }
 
 function clueOf(clue: Schemas["DailyPandaClueDto"]): DailyPandaClue[] {
@@ -121,6 +122,12 @@ export async function loadPandaChoices(): Promise<PandaChoice[]> {
   return data.items.map((panda) => {
     const zh = displayChineseName(panda);
     const en = englishName(panda);
-    return { id: panda.pandaId, slug: panda.canonicalSlug, name: zh ?? en ?? panda.canonicalSlug, alternateName: zh ? en : null };
+    return {
+      id: panda.pandaId,
+      slug: panda.canonicalSlug,
+      name: zh ?? en ?? panda.canonicalSlug,
+      alternateName: zh ? en : null,
+      hasFullBleedCover: Boolean(panda.hasFullBleedCover),
+    };
   });
 }

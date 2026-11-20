@@ -45,6 +45,7 @@ export interface MapPandaInput {
   id: string;
   slug: string;
   name: string;
+  hasFullBleedCover: boolean;
 }
 
 export interface MapItem {

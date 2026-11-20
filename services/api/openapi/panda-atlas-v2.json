@@ -4580,6 +4580,38 @@
           "conclusionVersion"
         ]
       },
+      "PublicPandaCurrentPlaceSummaryDto": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "placeType": {
+            "type": "string"
+          },
+          "nameZh": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "placeId",
+          "slug",
+          "placeType"
+        ]
+      },
       "PublicPandaSummaryDto": {
         "type": "object",
         "properties": {
@@ -4607,6 +4639,12 @@
             "items": {
               "$ref": "#/components/schemas/PublicPandaFactDto"
             }
+          },
+          "currentPlace": {
+            "$ref": "#/components/schemas/PublicPandaCurrentPlaceSummaryDto"
+          },
+          "hasFullBleedCover": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -4825,6 +4863,9 @@
           "takenAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "fullBleedReady": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -5276,6 +5317,27 @@
           "items"
         ]
       },
+      "PublicFormerResidentSummaryDto": {
+        "type": "object",
+        "properties": {
+          "panda": {
+            "$ref": "#/components/schemas/PublicPandaSummaryDto"
+          },
+          "fromYear": {
+            "type": "number"
+          },
+          "toYear": {
+            "type": "number"
+          },
+          "bornHere": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "panda",
+          "bornHere"
+        ]
+      },
       "PublicInstitutionDetailDto": {
         "type": "object",
         "properties": {
@@ -5291,12 +5353,31 @@
             "items": {
               "$ref": "#/components/schemas/PublicPlaceSummaryDto"
             }
+          },
+          "residents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicPandaSummaryDto"
+            }
+          },
+          "former": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicFormerResidentSummaryDto"
+            }
+          },
+          "bornHereCount": {
+            "type": "number",
+            "minimum": 0
           }
         },
         "required": [
           "release",
           "institution",
-          "places"
+          "places",
+          "residents",
+          "former",
+          "bornHereCount"
         ]
       },
       "PublicLineageListDto": {

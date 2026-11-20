@@ -12,6 +12,7 @@ import type {
   PublicPandaFactBundle,
   PublicInstitutionDetail,
   PublicInstitutionSummary,
+  PublicPandaCurrentPlaceSummary,
   PublicPandaSummary,
   PublicPlaceSummary,
   PublicReadPort,
@@ -20,7 +21,9 @@ import type {
   PublicResidencySummary,
   PublicStats,
 } from "../application/public-read.application.js";
+import { isFullBleedCoverReady } from "../application/curated-covers.js";
 import { familyCircleIds } from "../application/family-circle.js";
+import { buildInstitutionResidents } from "../application/institution-residents.js";
 import type { FacilityVisitGuide, InstitutionProfile } from "../../places/application/visitor-content.js";
 import type { PublicReadCache } from "./public-read-cache.js";
 
@@ -53,6 +56,52 @@ interface PublicReadLineageRow {
   source_ids: string[];
 }
 
+function pickCurrentPlaces(
+  residencies: readonly { panda_id: string; place_id: string; residency_type: string }[],
+  placesById: ReadonlyMap<string, PublicPandaCurrentPlaceSummary>,
+): Map<string, PublicPandaCurrentPlaceSummary> {
+  const selected = new Map<string, { place: PublicPandaCurrentPlaceSummary; primary: boolean }>();
+  for (const stay of residencies) {
+    const place = placesById.get(stay.place_id);
+    if (place === undefined) continue;
+    const isPrimary = stay.residency_type === "primary";
+    const existing = selected.get(stay.panda_id);
+    if (existing === undefined || (isPrimary && !existing.primary)) {
+      selected.set(stay.panda_id, { place, primary: isPrimary });
+    }
+  }
+  return new Map([...selected].map(([pandaId, entry]) => [pandaId, entry.place]));
+}
+
+function fullBleedReadyPandas(
+  mediaRows: readonly {
+    asset_id: string;
+    panda_id: string;
+    content_sha256: string;
+    creator: string | null;
+    attribution_text: string | null;
+  }[],
+  controls: DeliveryControls,
+): Set<string> {
+  const seen = new Set<string>();
+  const ready = new Set<string>();
+  for (const row of mediaRows) {
+    if (seen.has(row.panda_id) || controls.panda.has(row.panda_id) || controls.media.has(row.asset_id)) continue;
+    seen.add(row.panda_id);
+    if (
+      isFullBleedCoverReady({
+        pandaId: row.panda_id,
+        contentSha256: row.content_sha256,
+        creator: row.creator,
+        attributionText: row.attribution_text,
+      })
+    ) {
+      ready.add(row.panda_id);
+    }
+  }
+  return ready;
+}
+
 export class PostgresPublicReadRepository implements PublicReadPort {
   public constructor(
     private readonly database: DatabaseService,
@@ -70,17 +119,50 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     const snapshot = await this.snapshot();
     if (snapshot === undefined) return { kind: "unavailable" };
     const { release, controls } = snapshot;
-    const rows = await this.database.db
-      .selectFrom("public_read.pandas")
-      .select(listingPandaColumns)
-      .where("release_id", "=", release.releaseId)
-      .orderBy("canonical_slug")
-      .execute();
+    const [rows, openResidencies, placeRows, mediaRows] = await Promise.all([
+      this.database.db
+        .selectFrom("public_read.pandas")
+        .select(listingPandaColumns)
+        .where("release_id", "=", release.releaseId)
+        .orderBy("canonical_slug")
+        .execute(),
+      this.database.db
+        .selectFrom("public_read.residencies")
+        .select(["panda_id", "place_id", "residency_type"])
+        .where("release_id", "=", release.releaseId)
+        .where("end_on", "is", null)
+        .orderBy("panda_id")
+        .orderBy("residency_id")
+        .execute(),
+      this.database.db
+        .selectFrom("public_read.places")
+        .select(["place_id", "slug", "place_type", "name_zh", "name_en", "country_code", "region"])
+        .where("release_id", "=", release.releaseId)
+        .execute(),
+      this.database.db
+        .selectFrom("public_read.media")
+        .select(["asset_id", "panda_id", "content_sha256", "creator", "attribution_text"])
+        .where("release_id", "=", release.releaseId)
+        .where("media_type", "like", "image/%")
+        .orderBy("panda_id")
+        .orderBy("display_order")
+        .orderBy("asset_id")
+        .execute(),
+    ]);
+    const placesById = new Map(
+      placeRows
+        .filter((place) => !controls.place.has(place.place_id))
+        .map((place) => [place.place_id, this.mapCurrentPlace(place)]),
+    );
+    const currentPlaces = pickCurrentPlaces(openResidencies, placesById);
+    const fullBleedPandas = fullBleedReadyPandas(mediaRows, controls);
     return {
       kind: "ok",
       value: {
         release,
-        items: rows.filter((row) => !controls.panda.has(row.panda_id)).map((row) => this.mapPanda(row)),
+        items: rows
+          .filter((row) => !controls.panda.has(row.panda_id))
+          .map((row) => this.mapPanda(row, currentPlaces.get(row.panda_id), fullBleedPandas.has(row.panda_id))),
       },
     };
   }
@@ -295,12 +377,79 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       .where("institution_id", "=", row.institution_id)
       .orderBy("slug")
       .execute();
+    const deliverablePlaceRows = placeRows.filter((place) => !controls.place.has(place.place_id));
+    const places = deliverablePlaceRows.map((place) => this.mapPlace(place));
+    const emptySummary = {
+      release,
+      institution: this.mapInstitution(row),
+      places,
+      residents: [],
+      former: [],
+      bornHereCount: 0,
+    };
+    if (deliverablePlaceRows.length === 0) return { kind: "ok", value: emptySummary };
+
+    const stayRows = await this.database.db
+      .selectFrom("public_read.residencies")
+      .select(["residency_id", "panda_id", "place_id", "residency_type", "start_on", "start_precision", "end_on"])
+      .where("release_id", "=", release.releaseId)
+      .where("place_id", "in", deliverablePlaceRows.map((place) => place.place_id))
+      .orderBy("panda_id")
+      .orderBy("start_on")
+      .orderBy("residency_id")
+      .execute();
+    const deliverableStays = stayRows.filter((stay) => !controls.panda.has(stay.panda_id));
+    const pandaIds = [...new Set(deliverableStays.map((stay) => stay.panda_id))];
+    if (pandaIds.length === 0) return { kind: "ok", value: emptySummary };
+
+    const [pandaRows, mediaRows] = await Promise.all([
+      this.database.db
+        .selectFrom("public_read.pandas")
+        .select(listingPandaColumns)
+        .where("release_id", "=", release.releaseId)
+        .where("panda_id", "in", pandaIds)
+        .orderBy("canonical_slug")
+        .execute(),
+      this.database.db
+        .selectFrom("public_read.media")
+        .select(["asset_id", "panda_id", "content_sha256", "creator", "attribution_text"])
+        .where("release_id", "=", release.releaseId)
+        .where("panda_id", "in", pandaIds)
+        .where("media_type", "like", "image/%")
+        .orderBy("panda_id")
+        .orderBy("display_order")
+        .orderBy("asset_id")
+        .execute(),
+    ]);
+    const placesById = new Map(deliverablePlaceRows.map((place) => [place.place_id, this.mapCurrentPlace(place)]));
+    const currentPlaces = pickCurrentPlaces(
+      deliverableStays.filter((stay) => stay.end_on === null),
+      placesById,
+    );
+    const fullBleedPandas = fullBleedReadyPandas(mediaRows, controls);
+    const pandasById = new Map(
+      pandaRows.map((panda) => [
+        panda.panda_id,
+        this.mapPanda(panda, currentPlaces.get(panda.panda_id), fullBleedPandas.has(panda.panda_id)),
+      ]),
+    );
+    const summary = buildInstitutionResidents(
+      deliverableStays.map((stay) => ({
+        pandaId: stay.panda_id,
+        ...(stay.start_on === null ? {} : { startOn: stay.start_on }),
+        startPrecision: stay.start_precision,
+        ...(stay.end_on === null ? {} : { endOn: stay.end_on }),
+      })),
+      pandasById,
+    );
+
     return {
       kind: "ok",
       value: {
         release,
         institution: this.mapInstitution(row),
-        places: placeRows.filter((place) => !controls.place.has(place.place_id)).map((place) => this.mapPlace(place)),
+        places,
+        ...summary,
       },
     };
   }
@@ -558,14 +707,18 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     return { release: { releaseId: row.release_id, version: row.version }, controls };
   }
 
-  private mapPanda(row: {
-    panda_id: string;
-    canonical_slug: string;
-    legacy_slugs: string[];
-    names: unknown;
-    facts?: unknown;
-    listing_facts?: unknown;
-  }): PublicPandaSummary {
+  private mapPanda(
+    row: {
+      panda_id: string;
+      canonical_slug: string;
+      legacy_slugs: string[];
+      names: unknown;
+      facts?: unknown;
+      listing_facts?: unknown;
+    },
+    currentPlace?: PublicPandaCurrentPlaceSummary,
+    hasFullBleedCover?: boolean,
+  ): PublicPandaSummary {
     return {
       pandaId: row.panda_id,
       canonicalSlug: row.canonical_slug,
@@ -573,6 +726,28 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       names: row.names as PublicPandaSummary["names"],
       // Detail reads select every fact. Lists and relatives select listing_facts only.
       facts: (row.facts ?? row.listing_facts) as PublicPandaSummary["facts"],
+      ...(currentPlace === undefined ? {} : { currentPlace }),
+      ...(hasFullBleedCover ? { hasFullBleedCover: true } : {}),
+    };
+  }
+
+  private mapCurrentPlace(row: {
+    place_id: string;
+    slug: string;
+    place_type: string;
+    name_zh: string | null;
+    name_en: string | null;
+    country_code: string | null;
+    region: string | null;
+  }): PublicPandaCurrentPlaceSummary {
+    return {
+      placeId: row.place_id,
+      slug: row.slug,
+      placeType: row.place_type,
+      ...(row.name_zh === null ? {} : { nameZh: row.name_zh }),
+      ...(row.name_en === null ? {} : { nameEn: row.name_en }),
+      ...(row.country_code === null ? {} : { countryCode: row.country_code }),
+      ...(row.region === null ? {} : { region: row.region }),
     };
   }
 
@@ -693,6 +868,14 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       ...(row.license === null ? {} : { license: row.license }),
       ...(row.attribution_text === null ? {} : { attributionText: row.attribution_text }),
       ...(row.taken_at === null ? {} : { takenAt: row.taken_at.toISOString() }),
+      ...(isFullBleedCoverReady({
+        pandaId: row.panda_id,
+        contentSha256: row.content_sha256,
+        creator: row.creator,
+        attributionText: row.attribution_text,
+      })
+        ? { fullBleedReady: true }
+        : {}),
     };
   }
 

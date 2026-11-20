@@ -2,22 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import { heroCandidates, pickInstitutionHero } from "./hero-pick";
 
-const curated = new Map([
-  ["a", "aaaa"],
-  ["b", "bbbb"],
-  ["c", "cccc"],
-]);
-const resident = (id: string) => ({ id, name: id });
-const cover = (pandaId: string, contentSha256: string, creator: string | null = "Zoo") => ({
-  pandaId,
-  contentSha256,
-  creator,
-  attributionText: null,
-});
+const resident = (id: string, hasFullBleedCover = true) => ({ id, name: id, hasFullBleedCover });
+const cover = (pandaId: string, fullBleedReady = true) => ({ pandaId, fullBleedReady });
 
 describe("heroCandidates", () => {
-  it("keeps only residents with a reviewed cover, in page order", () => {
-    expect(heroCandidates([resident("x"), resident("b"), resident("a")], curated).map((panda) => panda.id)).toEqual([
+  it("keeps only residents with a full-bleed cover flag, in page order", () => {
+    expect(heroCandidates([resident("x", false), resident("b"), resident("a")]).map((panda) => panda.id)).toEqual([
       "b",
       "a",
     ]);
@@ -25,34 +15,21 @@ describe("heroCandidates", () => {
 });
 
 describe("pickInstitutionHero", () => {
-  it("takes the first resident whose cover is the reviewed photo", () => {
-    const pick = pickInstitutionHero(
-      [resident("a"), resident("b")],
-      [cover("b", "bbbb0000"), cover("a", "aaaa0000")],
-      curated,
-    );
+  it("takes the first resident whose cover is ready for full-bleed use", () => {
+    const pick = pickInstitutionHero([resident("a"), resident("b")], [cover("b"), cover("a")]);
     expect(pick?.panda.id).toBe("a");
   });
 
-  it("skips a cover that was replaced since review", () => {
-    const pick = pickInstitutionHero(
-      [resident("a"), resident("b")],
-      [cover("a", "ffff0000"), cover("b", "bbbb0000")],
-      curated,
-    );
+  it("skips a resident whose cover is not full-bleed ready", () => {
+    const pick = pickInstitutionHero([resident("a"), resident("b")], [cover("a", false), cover("b", true)]);
     expect(pick?.panda.id).toBe("b");
   });
 
-  it("skips a resident whose cover is not curated at all", () => {
-    expect(pickInstitutionHero([resident("x")], [cover("x", "aaaa0000")], curated)).toBeNull();
-  });
-
-  it("skips a curated cover credited to a watermarking agency", () => {
-    const pick = pickInstitutionHero([resident("c")], [cover("c", "cccc0000", "新华社")], curated);
-    expect(pick).toBeNull();
+  it("returns null when no cover qualifies", () => {
+    expect(pickInstitutionHero([resident("a")], [cover("a", false)])).toBeNull();
   });
 
   it("returns null with no covers, so the page falls back to its plate", () => {
-    expect(pickInstitutionHero([resident("a")], [], curated)).toBeNull();
+    expect(pickInstitutionHero([resident("a")], [])).toBeNull();
   });
 });

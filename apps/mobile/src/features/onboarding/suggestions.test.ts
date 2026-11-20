@@ -12,6 +12,7 @@ const panda = (id: string, birthDate: string | null, place: string | null, decea
   place,
   placeId: null,
   area: null,
+  hasFullBleedCover: false,
   terms: [],
 });
 

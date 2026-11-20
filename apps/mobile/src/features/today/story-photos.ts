@@ -3,9 +3,6 @@ import { useEffect, useState } from "react";
 import { loadPandaIndex } from "@/features/pandas/pandas";
 import {
   type StoryPhoto,
-  hasBurnedInMark,
-  hasCuratedCover,
-  isCuratedCover,
   pickStoryPhotos,
   storyCandidates,
 } from "@/features/today/story-order";
@@ -19,8 +16,7 @@ const LOOKAHEAD = 50;
 
 /**
  * Full-bleed photos for story cards, explore cards and the signed-out previews: one different panda
- * per card, drawn only from covers reviewed by hand (no thumbnails, burned-in marks or colour casts).
- * Empty while loading or offline.
+ * per card, drawn only from covers cleared for full-bleed use by the API. Empty while loading or offline.
  */
 export function useStoryPhotos(day: string, count: number): StoryPhoto[] {
   const [photos, setPhotos] = useState<StoryPhoto[]>([]);
@@ -29,7 +25,7 @@ export function useStoryPhotos(day: string, count: number): StoryPhoto[] {
     loadPandaIndex()
       .then(async (pandas) => {
         const candidates = storyCandidates(pandas, day)
-          .filter((panda) => hasCuratedCover(panda.id))
+          .filter((panda) => panda.hasFullBleedCover)
           .slice(0, LOOKAHEAD);
         // With no reviewed cover among today's pandas there is nothing to ask for (the API refuses no ids).
         if (candidates.length === 0) {
@@ -41,7 +37,7 @@ export function useStoryPhotos(day: string, count: number): StoryPhoto[] {
         });
         const covers = new Map(
           (data?.items ?? [])
-            .filter((cover) => isCuratedCover(cover) && !hasBurnedInMark(cover))
+            .filter((cover) => cover.fullBleedReady === true)
             .map((cover) => [cover.pandaId, publicMediaUrl(cover.objectKey)]),
         );
         if (active) setPhotos(pickStoryPhotos(candidates, covers, count));

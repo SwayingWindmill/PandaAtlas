@@ -56,6 +56,29 @@ export class PublicPandaFactDto {
   public declare conclusionVersion: number;
 }
 
+export class PublicPandaCurrentPlaceSummaryDto {
+  @ApiProperty({ format: "uuid" })
+  public declare placeId: string;
+
+  @ApiProperty()
+  public declare slug: string;
+
+  @ApiProperty()
+  public declare placeType: string;
+
+  @ApiPropertyOptional()
+  public declare nameZh?: string;
+
+  @ApiPropertyOptional()
+  public declare nameEn?: string;
+
+  @ApiPropertyOptional()
+  public declare countryCode?: string;
+
+  @ApiPropertyOptional()
+  public declare region?: string;
+}
+
 export class PublicPandaSummaryDto {
   @ApiProperty({ format: "uuid" })
   public declare pandaId: string;
@@ -71,6 +94,12 @@ export class PublicPandaSummaryDto {
 
   @ApiProperty({ type: () => PublicPandaFactDto, isArray: true })
   public declare facts: PublicPandaFactDto[];
+
+  @ApiPropertyOptional({ type: () => PublicPandaCurrentPlaceSummaryDto })
+  public declare currentPlace?: PublicPandaCurrentPlaceSummaryDto;
+
+  @ApiPropertyOptional()
+  public declare hasFullBleedCover?: boolean;
 }
 
 export class LocalizedTextDto {
@@ -297,6 +326,9 @@ export class PublicMediaSummaryDto {
 
   @ApiPropertyOptional({ format: "date-time" })
   public declare takenAt?: string;
+
+  @ApiPropertyOptional()
+  public declare fullBleedReady?: boolean;
 }
 
 export class PandaCoversQueryDto {
@@ -462,6 +494,20 @@ export class PublicInstitutionListDto {
   public declare items: PublicInstitutionSummaryDto[];
 }
 
+export class PublicFormerResidentSummaryDto {
+  @ApiProperty({ type: () => PublicPandaSummaryDto })
+  public declare panda: PublicPandaSummaryDto;
+
+  @ApiPropertyOptional()
+  public declare fromYear?: number;
+
+  @ApiPropertyOptional()
+  public declare toYear?: number;
+
+  @ApiProperty()
+  public declare bornHere: boolean;
+}
+
 export class PublicInstitutionDetailDto {
   @ApiProperty({ type: () => PublicReadReleaseDto })
   public declare release: PublicReadReleaseDto;
@@ -471,6 +517,15 @@ export class PublicInstitutionDetailDto {
 
   @ApiProperty({ type: () => PublicPlaceSummaryDto, isArray: true, description: "The institution's deliverable facilities." })
   public declare places: PublicPlaceSummaryDto[];
+
+  @ApiProperty({ type: () => PublicPandaSummaryDto, isArray: true })
+  public declare residents: PublicPandaSummaryDto[];
+
+  @ApiProperty({ type: () => PublicFormerResidentSummaryDto, isArray: true })
+  public declare former: PublicFormerResidentSummaryDto[];
+
+  @ApiProperty({ minimum: 0 })
+  public declare bornHereCount: number;
 }
 
 export class PublicLineageListDto {
