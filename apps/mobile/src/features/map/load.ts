@@ -7,7 +7,12 @@ import { loadLifeEvents, loadResidencies } from "@/lib/public-data";
 import { type MapView, type PlacePage, buildMapView, buildPlacePage } from "./model";
 
 function pandasOf(items: PandaListItem[]) {
-  return items.map((panda) => ({ id: panda.id, slug: panda.slug, name: panda.name }));
+  return items.map((panda) => ({
+    id: panda.id,
+    slug: panda.slug,
+    name: panda.name,
+    hasFullBleedCover: panda.hasFullBleedCover,
+  }));
 }
 
 /** The map, from the release-wide lists the public client keeps for offline use. */

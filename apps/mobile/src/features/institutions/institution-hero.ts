@@ -17,7 +17,7 @@ export interface HeroPhoto {
  * so the page sets its name on a plain plate instead.
  */
 export function useInstitutionHero(
-  residents: { id: string; name: string; hasFullBleedCover?: boolean }[] | null,
+  residents: { id: string; name: string; hasFullBleedCover: boolean }[] | null,
 ): HeroPhoto | null | undefined {
   const [found, setFound] = useState<{ ids: string; hero: HeroPhoto | null } | null>(null);
   const candidates = heroCandidates(residents ?? []);

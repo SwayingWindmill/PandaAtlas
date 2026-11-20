@@ -9,8 +9,8 @@ export interface CandidateCover {
 const LOOKUP = 24;
 
 /** The residents worth asking the API about: those cleared for full-bleed cover use, in page order. */
-export function heroCandidates<T extends { id: string; hasFullBleedCover?: boolean }>(residents: readonly T[]): T[] {
-  return residents.filter((panda) => panda.hasFullBleedCover === true).slice(0, LOOKUP);
+export function heroCandidates<T extends { id: string; hasFullBleedCover: boolean }>(residents: readonly T[]): T[] {
+  return residents.filter((panda) => panda.hasFullBleedCover).slice(0, LOOKUP);
 }
 
 /**

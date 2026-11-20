@@ -87,8 +87,11 @@ export function useDailyPanda() {
 
   // The answer's cover is asked for only once the day is over, and only from the reviewed list.
   const answerId = state?.finished ? state.answer?.pandaId : undefined;
+  const answerChoice = answerId ? pandasById.get(answerId) : undefined;
   const answerPhoto = useInstitutionHero(
-    answerId ? [{ id: answerId, name: pandasById.get(answerId)?.name ?? "今天的熊猫" }] : null,
+    answerId
+      ? [{ id: answerId, name: answerChoice?.name ?? "今天的熊猫", hasFullBleedCover: answerChoice?.hasFullBleedCover ?? false }]
+      : null,
   );
   const answer = state?.answer ? pandasById.get(state.answer.pandaId) : undefined;
 
