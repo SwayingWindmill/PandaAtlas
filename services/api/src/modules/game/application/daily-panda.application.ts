@@ -1,7 +1,7 @@
 import type {
   PublicPandaSummary,
   PublicReadPort,
-} from "../../publication/application/public-read.application.js";
+} from "../../public-read/application/public-read.application.js";
 
 export const DAILY_PANDA_MAX_GUESSES = 6;
 // A panda chosen for one day is not chosen again within this many days.

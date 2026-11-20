@@ -10,7 +10,7 @@ import { MEDIA_PORT, type MediaPort } from "../../src/modules/media/application/
 import { PANDA_PORT, type PandaPort } from "../../src/modules/panda/application/panda.application.js";
 import { PLACES_PORT, type PlacesPort } from "../../src/modules/places/application/places.application.js";
 import { PUBLICATION_PORT, type PublicationPort } from "../../src/modules/publication/application/publication.application.js";
-import type { PublicPandaDetail, PublicReadRelease } from "../../src/modules/publication/application/public-read.application.js";
+import type { PublicPandaDetail, PublicReadRelease } from "../../src/modules/public-read/application/public-read.application.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 import { injectHttp } from "../inject-http.js";
 

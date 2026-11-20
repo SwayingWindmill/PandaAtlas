@@ -2,7 +2,9 @@ import { sql } from "kysely";
 import type { JsonObject } from "../../../platform/database/database.privacy.generated.js";
 import type { DatabaseService, DatabaseTransaction } from "../../../platform/database/database.service.js";
 import type { IntegrationOutboxService } from "../../../platform/integration/integration-outbox.service.js";
+import type { AskPrivacyPort } from "../../ask/application/ask-privacy.port.js";
 import type { ContributionPrivacyPort } from "../../contribution/application/contribution-privacy.port.js";
+import type { DailyCheckinPrivacyPort } from "../../daily-checkin/application/daily-checkin-privacy.port.js";
 import type { EngagementPrivacyPort } from "../../engagement/application/engagement-privacy.port.js";
 import type { GamePrivacyPort } from "../../game/application/game-privacy.port.js";
 import type { AuthUserDeletion } from "../../identity/application/auth-user-deletion.js";
@@ -39,6 +41,8 @@ export class PrivacyRequestProcessorService {
     private readonly outbox: IntegrationOutboxService,
     private readonly identity: IdentityPrivacyPort,
     private readonly engagement: EngagementPrivacyPort,
+    private readonly dailyCheckin: DailyCheckinPrivacyPort,
+    private readonly ask: AskPrivacyPort,
     private readonly game: GamePrivacyPort,
     private readonly notification: NotificationPrivacyPort,
     private readonly contribution: ContributionPrivacyPort,
@@ -117,9 +121,18 @@ export class PrivacyRequestProcessorService {
           this.identity.exportPrivacySubject(transaction, request.account_id),
         );
         await this.completeStep(transaction, requestId, "identity");
-        const engagement = await this.runParticipant("engagement", () =>
-          this.engagement.exportPrivacySubject(transaction, request.account_id),
-        );
+        const engagement = await this.runParticipant<Record<string, unknown>>("engagement", async () => {
+          const [base, dailyCheckins, askQuestionCounts] = await Promise.all([
+            this.engagement.exportPrivacySubject(transaction, request.account_id),
+            this.dailyCheckin.exportPrivacySubject(transaction, request.account_id),
+            this.ask.exportPrivacySubject(transaction, request.account_id),
+          ]);
+          return {
+            ...base,
+            dailyCheckins,
+            askQuestionCounts,
+          };
+        });
         await this.completeStep(transaction, requestId, "engagement");
         const game = await this.runParticipant("game", () =>
           this.game.exportPrivacySubject(transaction, request.account_id),
@@ -140,9 +153,11 @@ export class PrivacyRequestProcessorService {
       } else if (request.kind === "account_deletion") {
         await this.identity.beginPrivacyErasure(transaction, request.account_id, requestId, request.correlation_id);
         await this.contribution.erasePrivacySubject(transaction, request.account_id);
-        await this.runParticipant("engagement", () =>
-          this.engagement.erasePrivacySubject(transaction, request.account_id),
-        );
+        await this.runParticipant("engagement", async () => {
+          await this.engagement.erasePrivacySubject(transaction, request.account_id);
+          await this.dailyCheckin.erasePrivacySubject(transaction, request.account_id);
+          await this.ask.erasePrivacySubject(transaction, request.account_id);
+        });
         await this.completeStep(transaction, requestId, "engagement");
         await this.runParticipant("game", () => this.game.erasePrivacySubject(transaction, request.account_id));
         await this.completeStep(transaction, requestId, "game");

@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
-import { PUBLIC_READ_PORT, type PublicReadPort } from "../publication/application/public-read.application.js";
-import { PublicationModule } from "../publication/publication.module.js";
+import { PUBLIC_READ_PORT, type PublicReadPort } from "../public-read/application/public-read.application.js";
+import { PublicReadModule } from "../public-read/public-read.module.js";
 import { DailyPandaApplication } from "./application/daily-panda.application.js";
 import { PandaBookApplication } from "./application/panda-book.application.js";
 import { GAME_PRIVACY_PORT } from "./application/game-privacy.port.js";
@@ -19,7 +19,7 @@ import { PostgresGameRepository } from "./infrastructure/postgres-game.repositor
 import { PostgresPandaBookRepository } from "./infrastructure/postgres-panda-book.repository.js";
 
 @Module({
-  imports: [DatabaseModule, PublicationModule],
+  imports: [DatabaseModule, PublicReadModule],
   controllers: [GameController, DailyPandaController, GameAttemptController, PandaBookController],
   providers: [
     {

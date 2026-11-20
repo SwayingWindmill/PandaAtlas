@@ -1,4 +1,4 @@
-import type { PublicCachePort } from "../modules/publication/application/public-cache.port.js";
+import type { PublicCachePort } from "../modules/public-read/application/public-cache.port.js";
 
 interface ServiceBinding {
   fetch(request: Request): Promise<Response>;

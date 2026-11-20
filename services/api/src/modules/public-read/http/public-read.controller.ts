@@ -28,7 +28,7 @@ import {
   PublicReadReleaseDto,
   PublicResidencyListDto,
   PublicStatsResponseDto,
-} from "./publication.dto.js";
+} from "./public-read.dto.js";
 
 function publicResult<T>(result: PublicReadResult<T>, notFoundDetail: string): T {
   if (result.kind === "unavailable") {

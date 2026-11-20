@@ -9,7 +9,6 @@ import {
   Patch,
   Post,
   Put,
-  Query,
   Req,
 } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -19,7 +18,6 @@ import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import {
   ENGAGEMENT_PORT,
-  type DailyCheckinResult,
   type EngagementPort,
 } from "../application/engagement.application.js";
 import {
@@ -29,8 +27,6 @@ import {
   CollectionListDto,
   CollectionNameDto,
   CreateCheckinDto,
-  DailyCheckinSummaryDto,
-  DailyCheckinTodayDto,
   DeletedCheckinDto,
   DeletedCollectionDto,
   DeletedSeenPandaDto,
@@ -57,32 +53,11 @@ function collectionNotFound(): never {
   throw new ProblemException(404, "engagement.collectionNotFound", "The collection does not exist.");
 }
 
-const DAY_PARAM = /^\d{4}-\d{2}-\d{2}$/;
-
-function dailyCheckinSummary(result: DailyCheckinResult) {
-  if (result.ok) return result.summary;
-  switch (result.refusal) {
-    case "todayOutOfRange":
-      throw new ProblemException(422, "engagement.todayOutOfRange", "The local date is more than a day away from the server date.");
-    case "quotaUsed":
-      throw new ProblemException(409, "engagement.leaveQuotaUsed", "This month's leave days are already used.");
-    case "dayClosed":
-      throw new ProblemException(409, "engagement.leaveDayClosed", "Leave cannot change for this day.");
-  }
-}
-
 const VENUE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function venueSlug(slug: string): string {
   if (!VENUE_SLUG.test(slug)) throw new ProblemException(400, "request.invalid", "The venue must be a slug.");
   return slug;
-}
-
-function leaveDay(day: string): string {
-  if (!DAY_PARAM.test(day)) {
-    throw new ProblemException(400, "request.invalid", "The day must be a YYYY-MM-DD date.");
-  }
-  return day;
 }
 
 @ApiTags("Engagement")
@@ -309,45 +284,5 @@ export class EngagementController {
       throw new ProblemException(404, "engagement.seenPandaNotFound", "The seen-panda entry does not exist.");
     }
     return { pandaId, deleted: true as const };
-  }
-
-  @Get("daily-checkins")
-  @RequireCapabilities("engagement.read")
-  @ApiOperation({ operationId: "getDailyCheckins" })
-  @ApiOkResponse({ type: DailyCheckinSummaryDto })
-  public async dailyCheckins(@Req() request: HttpRequest, @Query() query: DailyCheckinTodayDto) {
-    return dailyCheckinSummary(await this.engagement.dailyCheckins(accountId(request), query.today));
-  }
-
-  @Post("daily-checkins")
-  @RequireCapabilities("engagement.manage")
-  @ApiOperation({ operationId: "recordDailyCheckin" })
-  @ApiCreatedResponse({ type: DailyCheckinSummaryDto })
-  public async recordDailyCheckin(@Req() request: HttpRequest, @Body() input: DailyCheckinTodayDto) {
-    return dailyCheckinSummary(await this.engagement.recordDailyVisit(accountId(request), input.today));
-  }
-
-  @Put("daily-checkins/leave/:day")
-  @RequireCapabilities("engagement.manage")
-  @ApiOperation({ operationId: "takeDailyLeave" })
-  @ApiOkResponse({ type: DailyCheckinSummaryDto })
-  public async takeDailyLeave(
-    @Req() request: HttpRequest,
-    @Param("day") day: string,
-    @Body() input: DailyCheckinTodayDto,
-  ) {
-    return dailyCheckinSummary(await this.engagement.takeDailyLeave(accountId(request), leaveDay(day), input.today));
-  }
-
-  @Delete("daily-checkins/leave/:day")
-  @RequireCapabilities("engagement.manage")
-  @ApiOperation({ operationId: "cancelDailyLeave" })
-  @ApiOkResponse({ type: DailyCheckinSummaryDto })
-  public async cancelDailyLeave(
-    @Req() request: HttpRequest,
-    @Param("day") day: string,
-    @Query() query: DailyCheckinTodayDto,
-  ) {
-    return dailyCheckinSummary(await this.engagement.cancelDailyLeave(accountId(request), leaveDay(day), query.today));
   }
 }

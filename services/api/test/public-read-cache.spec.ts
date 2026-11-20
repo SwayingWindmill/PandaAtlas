@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import type { PublicReadPort } from "../src/modules/publication/application/public-read.application.js";
-import { CachingPublicReadRepository } from "../src/modules/publication/infrastructure/caching-public-read.repository.js";
-import { PostgresPublicReadRepository } from "../src/modules/publication/infrastructure/postgres-public-read.repository.js";
-import { PublicReadCache } from "../src/modules/publication/infrastructure/public-read-cache.js";
+import type { PublicReadPort } from "../src/modules/public-read/application/public-read.application.js";
+import { CachingPublicReadRepository } from "../src/modules/public-read/infrastructure/caching-public-read.repository.js";
+import { PostgresPublicReadRepository } from "../src/modules/public-read/infrastructure/postgres-public-read.repository.js";
+import { PublicReadCache } from "../src/modules/public-read/infrastructure/public-read-cache.js";
 
 const RELEASE = { releaseId: "release-1", version: "2026.10.28.1" };
 
@@ -135,6 +135,22 @@ describe("CachingPublicReadRepository", () => {
     expect(details).toBe(1);
     expect(releases).toBe(2);
   });
+
+  it("delegates corpus source reads directly without pinning the full corpus in isolate memory", async () => {
+    let corpusReads = 0;
+    const inner = {
+      getDeliverableCorpusSources: () => {
+        corpusReads += 1;
+        return Promise.resolve({ kind: "ok", value: { release: RELEASE, pandas: [], evidence: [] } });
+      },
+    } as unknown as PublicReadPort;
+    const repository = new CachingPublicReadRepository(inner, new PublicReadCache());
+
+    await repository.getDeliverableCorpusSources();
+    await repository.getDeliverableCorpusSources();
+
+    expect(corpusReads).toBe(2);
+  });
 });
 
 describe("PostgresPublicReadRepository snapshot", () => {
@@ -236,5 +252,118 @@ describe("PostgresPublicReadRepository snapshot", () => {
         }],
       },
     });
+  });
+
+  it("returns deliverable corpus sources filtered by panda and evidence takedowns", async () => {
+    const db = chain((table, many) => {
+      if (table.startsWith("publication.current_release")) {
+        return { release_id: RELEASE.releaseId, version: RELEASE.version, lifecycle_state: "sealed" };
+      }
+      if (table === "publication.delivery_control_events") {
+        return [
+          { control_kind: "resource_takedown", resource_kind: "panda", resource_id: "panda-hidden", action: "apply" },
+          { control_kind: "resource_takedown", resource_kind: "evidence", resource_id: "src-hidden", action: "apply" },
+        ];
+      }
+      if (table === "public_read.pandas") {
+        return [
+          { panda_id: "panda-hidden", facts: [], evidence_source_ids: ["src-shown"] },
+          {
+            panda_id: "panda-shown",
+            facts: [
+              {
+                fieldKey: "sex",
+                value: "female",
+                status: "confirmed",
+                lastVerifiedOn: "2026-10-28",
+                conclusionVersion: 1,
+              },
+            ],
+            evidence_source_ids: ["src-shown", "src-hidden"],
+          },
+        ];
+      }
+      if (table === "public_read.evidence_sources") {
+        return [
+          {
+            source_id: "src-hidden",
+            publisher: "Pub",
+            title: "Hidden",
+            url: "https://example.com/hidden",
+            published_on: null,
+            last_verified_on: "2026-10-28",
+            language_tag: "zh",
+            access_state: "public",
+            evidence_tier: null,
+            public_summary: null,
+          },
+          {
+            source_id: "src-shown",
+            publisher: "Pub",
+            title: "Shown",
+            url: "https://example.com/shown",
+            published_on: "2026-10-01",
+            last_verified_on: "2026-10-28",
+            language_tag: "zh",
+            access_state: "public",
+            evidence_tier: "primary",
+            public_summary: "Summary",
+          },
+        ];
+      }
+      return many ? [] : undefined;
+    });
+    const repository = new PostgresPublicReadRepository({ db } as never, new PublicReadCache());
+
+    await expect(repository.getDeliverableCorpusSources()).resolves.toEqual({
+      kind: "ok",
+      value: {
+        release: RELEASE,
+        pandas: [
+          {
+            pandaId: "panda-shown",
+            facts: [
+              {
+                fieldKey: "sex",
+                value: "female",
+                status: "confirmed",
+                lastVerifiedOn: "2026-10-28",
+                conclusionVersion: 1,
+              },
+            ],
+            evidenceSourceIds: ["src-shown", "src-hidden"],
+          },
+        ],
+        evidence: [
+          {
+            sourceId: "src-shown",
+            publisher: "Pub",
+            title: "Shown",
+            url: "https://example.com/shown",
+            publishedOn: "2026-10-01",
+            lastVerifiedOn: "2026-10-28",
+            languageTag: "zh",
+            accessState: "public",
+            evidenceTier: "primary",
+            publicSummary: "Summary",
+          },
+        ],
+      },
+    });
+  });
+
+  it("returns unavailable for deliverable corpus sources when release suspension applies", async () => {
+    const db = chain((table, many) => {
+      if (table.startsWith("publication.current_release")) {
+        return { release_id: RELEASE.releaseId, version: RELEASE.version, lifecycle_state: "sealed" };
+      }
+      if (table === "publication.delivery_control_events") {
+        return [{ control_kind: "release_suspension", resource_kind: null, resource_id: null, action: "apply" }];
+      }
+      return many ? [] : undefined;
+    });
+    const repository = new PostgresPublicReadRepository({ db } as never, new PublicReadCache());
+
+    await expect(repository.getDeliverableCorpusSources()).resolves.toEqual({ kind: "unavailable" });
   });
 });

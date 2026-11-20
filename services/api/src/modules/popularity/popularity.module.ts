@@ -1,22 +1,23 @@
 import { Module } from "@nestjs/common";
-
-import { DatabaseModule } from "../../platform/database/database.module.js";
-import { DatabaseService } from "../../platform/database/database.service.js";
-import { PUBLIC_READ_PORT, type PublicReadPort } from "../publication/application/public-read.application.js";
-import { PublicationModule } from "../publication/publication.module.js";
+import {
+  ENGAGEMENT_FOLLOW_COUNT_PORT,
+  type EngagementFollowCountPort,
+} from "../engagement/application/engagement-follow-count.port.js";
+import { EngagementModule } from "../engagement/engagement.module.js";
+import { PUBLIC_READ_PORT, type PublicReadPort } from "../public-read/application/public-read.application.js";
+import { PublicReadModule } from "../public-read/public-read.module.js";
 import { PopularityApplication } from "./application/popularity.application.js";
 import { PopularityController } from "./http/popularity.controller.js";
-import { PostgresPopularityRepository } from "./infrastructure/postgres-popularity.repository.js";
 
 @Module({
-  imports: [DatabaseModule, PublicationModule],
+  imports: [EngagementModule, PublicReadModule],
   controllers: [PopularityController],
   providers: [
     {
       provide: PopularityApplication,
-      useFactory: (database: DatabaseService, publicRead: PublicReadPort) =>
-        new PopularityApplication(new PostgresPopularityRepository(database), publicRead),
-      inject: [DatabaseService, PUBLIC_READ_PORT],
+      useFactory: (followCounts: EngagementFollowCountPort, publicRead: PublicReadPort) =>
+        new PopularityApplication(followCounts, publicRead),
+      inject: [ENGAGEMENT_FOLLOW_COUNT_PORT, PUBLIC_READ_PORT],
     },
   ],
 })

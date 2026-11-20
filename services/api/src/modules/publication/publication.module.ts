@@ -3,7 +3,6 @@ import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { IntegrationModule } from "../../platform/integration/integration.module.js";
 import { IntegrationOutboxService } from "../../platform/integration/integration-outbox.service.js";
-import { PgmqService } from "../../platform/integration/pgmq.service.js";
 import { RequestContextModule } from "../../platform/request-context/request-context.module.js";
 import { EVIDENCE_PUBLICATION_PORT, type EvidencePublicationPort } from "../evidence/application/evidence-publication.application.js";
 import { EvidenceModule } from "../evidence/evidence.module.js";
@@ -17,7 +16,8 @@ import { PANDA_PUBLICATION_PORT, type PandaPublicationPort } from "../panda/appl
 import { PandaModule } from "../panda/panda.module.js";
 import { PLACES_PUBLICATION_PORT, type PlacesPublicationPort } from "../places/application/places-publication.application.js";
 import { PlacesModule } from "../places/places.module.js";
-import { PUBLIC_READ_PORT } from "./application/public-read.application.js";
+import { PublicReadCache } from "../public-read/infrastructure/public-read-cache.js";
+import { PublicReadModule } from "../public-read/public-read.module.js";
 import {
   PUBLICATION_CHANGE_PORT,
   type PublicationChangePort,
@@ -32,21 +32,17 @@ import {
   PublicationApplication,
   type PublicationCoordinator,
 } from "./application/publication.application.js";
-import { PublicReadController } from "./http/public-read.controller.js";
 import { PublicationController } from "./http/publication.controller.js";
-import { CachingPublicReadRepository } from "./infrastructure/caching-public-read.repository.js";
-import { PostgresPublicReadRepository } from "./infrastructure/postgres-public-read.repository.js";
-import { PublicReadCache } from "./infrastructure/public-read-cache.js";
 import { PostgresPublicationChangeQuery } from "./infrastructure/postgres-publication-change.query.js";
 import { PostgresPublicationCoordinator } from "./infrastructure/postgres-publication.coordinator.js";
 import { PostgresPublicationInspectionQuery } from "./infrastructure/postgres-publication-inspection.query.js";
-import { PublicCacheConsumerService } from "./infrastructure/public-cache-consumer.service.js";
 
 @Module({
   imports: [
     DatabaseModule,
     IntegrationModule,
     RequestContextModule,
+    PublicReadModule,
     EvidenceModule,
     PandaModule,
     PlacesModule,
@@ -54,7 +50,7 @@ import { PublicCacheConsumerService } from "./infrastructure/public-cache-consum
     LineageModule,
     MediaModule,
   ],
-  controllers: [PublicReadController, PublicationController],
+  controllers: [PublicationController],
   providers: [
     {
       provide: PUBLICATION_COORDINATOR,
@@ -86,16 +82,6 @@ import { PublicCacheConsumerService } from "./infrastructure/public-cache-consum
       useFactory: (coordinator: PublicationCoordinator) => new PublicationApplication(coordinator),
       inject: [PUBLICATION_COORDINATOR],
     },
-    {
-      provide: PublicReadCache,
-      useFactory: () => new PublicReadCache(),
-    },
-    {
-      provide: PUBLIC_READ_PORT,
-      useFactory: (database: DatabaseService, cache: PublicReadCache) =>
-        new CachingPublicReadRepository(new PostgresPublicReadRepository(database, cache), cache),
-      inject: [DatabaseService, PublicReadCache],
-    },
     { provide: PUBLICATION_CHANGE_PORT, useFactory: () => new PostgresPublicationChangeQuery() },
     {
       provide: PUBLICATION_INSPECTION_PORT,
@@ -103,13 +89,7 @@ import { PublicCacheConsumerService } from "./infrastructure/public-cache-consum
         new PostgresPublicationInspectionQuery(database, changes),
       inject: [DatabaseService, PUBLICATION_CHANGE_PORT],
     },
-    {
-      provide: PublicCacheConsumerService,
-      useFactory: (database: DatabaseService, pgmq: PgmqService, cache: PublicReadCache) =>
-        new PublicCacheConsumerService(database, pgmq, cache),
-      inject: [DatabaseService, PgmqService, PublicReadCache],
-    },
   ],
-  exports: [PUBLICATION_PORT, PUBLIC_READ_PORT, PUBLICATION_CHANGE_PORT, PublicCacheConsumerService],
+  exports: [PUBLICATION_PORT, PUBLICATION_CHANGE_PORT, PUBLICATION_INSPECTION_PORT],
 })
 export class PublicationModule {}

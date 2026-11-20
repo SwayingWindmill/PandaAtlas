@@ -2,11 +2,14 @@ import { sql, type Kysely } from "kysely";
 import type { Database } from "../../../platform/database/database.types.js";
 import type { DatabaseService } from "../../../platform/database/database.service.js";
 import type {
+  PublicDeliverableCorpusSources,
   PublicEvidenceSummary,
+  PublicFactSummary,
   PublicLifeEventSummary,
   PublicLineageSummary,
   PublicMediaSummary,
   PublicPandaDetail,
+  PublicPandaFactBundle,
   PublicInstitutionDetail,
   PublicInstitutionSummary,
   PublicPandaSummary,
@@ -425,6 +428,38 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     };
   }
 
+  public async getDeliverableCorpusSources(): Promise<PublicReadResult<PublicDeliverableCorpusSources>> {
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
+    const [pandaRows, evidenceRows] = await Promise.all([
+      this.database.db
+        .selectFrom("public_read.pandas")
+        .select(["panda_id", "facts", "evidence_source_ids"])
+        .where("release_id", "=", release.releaseId)
+        .orderBy("canonical_slug")
+        .execute(),
+      this.database.db
+        .selectFrom("public_read.evidence_sources")
+        .selectAll()
+        .where("release_id", "=", release.releaseId)
+        .orderBy("source_id")
+        .execute(),
+    ]);
+    return {
+      kind: "ok",
+      value: {
+        release,
+        pandas: pandaRows
+          .filter((row) => !controls.panda.has(row.panda_id))
+          .map((row) => this.mapCorpusPanda(row)),
+        evidence: evidenceRows
+          .filter((row) => !controls.evidence.has(row.source_id))
+          .map((row) => this.mapEvidence(row)),
+      },
+    };
+  }
+
   // Release pointer, suspension and takedowns are one cached snapshot. Every list
   // and detail read in this generation reuses it instead of repeating those queries.
   private snapshot(): Promise<PublicSnapshot | undefined> {
@@ -538,6 +573,18 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       names: row.names as PublicPandaSummary["names"],
       // Detail reads select every fact. Lists and relatives select listing_facts only.
       facts: (row.facts ?? row.listing_facts) as PublicPandaSummary["facts"],
+    };
+  }
+
+  private mapCorpusPanda(row: {
+    panda_id: string;
+    facts: unknown;
+    evidence_source_ids: string[];
+  }): PublicPandaFactBundle {
+    return {
+      pandaId: row.panda_id,
+      facts: Array.isArray(row.facts) ? (row.facts as PublicFactSummary[]) : [],
+      evidenceSourceIds: row.evidence_source_ids,
     };
   }
 

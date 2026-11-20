@@ -1,10 +1,6 @@
-import type { PublicReadPort } from "../../publication/application/public-read.application.js";
-import { type FollowCount, POPULAR_WINDOW_DAYS, type PopularPanda, rankPopular } from "./popular-pandas.js";
-
-export interface PopularityRepository {
-  /** Distinct new followers per panda since `since`. */
-  followCounts(since: Date): Promise<FollowCount[]>;
-}
+import type { EngagementFollowCountPort } from "../../engagement/application/engagement-follow-count.port.js";
+import type { PublicReadPort } from "../../public-read/application/public-read.application.js";
+import { POPULAR_WINDOW_DAYS, type PopularPanda, rankPopular } from "./popular-pandas.js";
 
 export interface PopularPandas {
   windowDays: number;
@@ -13,7 +9,7 @@ export interface PopularPandas {
 
 export class PopularityApplication {
   public constructor(
-    private readonly repository: PopularityRepository,
+    private readonly followCounts: EngagementFollowCountPort,
     private readonly publicRead: PublicReadPort,
     private readonly now: () => Date = () => new Date(),
   ) {}
@@ -23,7 +19,7 @@ export class PopularityApplication {
     const pandas = await this.publicRead.listPandas();
     if (pandas.kind !== "ok") return { windowDays: POPULAR_WINDOW_DAYS, items: [] };
     const since = new Date(this.now().getTime() - POPULAR_WINDOW_DAYS * 86_400_000);
-    const counts = await this.repository.followCounts(since);
+    const counts = await this.followCounts.followCounts(since);
     const published = new Map(pandas.value.items.map((panda) => [panda.pandaId, panda.canonicalSlug]));
     return { windowDays: POPULAR_WINDOW_DAYS, items: rankPopular(counts, published) };
   }

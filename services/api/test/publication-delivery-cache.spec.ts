@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { PostgresPublicationCoordinator } from "../src/modules/publication/infrastructure/postgres-publication.coordinator.js";
-import type { PublicReadCache } from "../src/modules/publication/infrastructure/public-read-cache.js";
+import type { PublicReadCache } from "../src/modules/public-read/infrastructure/public-read-cache.js";
 
 const context = {
   actor: { kind: "system" as const, systemKey: "test" },
