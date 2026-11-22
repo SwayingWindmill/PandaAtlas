@@ -53,7 +53,14 @@ The 科普 catalog is `data/curation/learning/learning.json`, validated in CI by
 
 ### Update venue, venue news and overseas status content
 
-The owner enters this content alone, as [content entry](content-entry.md) describes: edit `data/curation/institutions/institutions.json`, `data/curation/venue-news/venue-news.json` or `data/curation/overseas-status/overseas-status.json` in a pull request, and CI validates it. After merge, run the workflow on `main` with operation `curation.content`, that file as manifest, **execute** checked and the pull request as change reference, and approve `production-batch`. Venue news and overseas status each go into their one catalog row: the same content again is reported as already current, and changed content under an unchanged version is refused. Institutions and named facility places are upserted by slug; publish a content release afterwards so the app serves them. Earlier content was shipped as `*_institution_content.sql` migrations; those stay as applied history.
+The owner enters this content alone, as [content entry](content-entry.md) describes: edit `data/curation/institutions/institutions.json`, `data/curation/panda-enrichment/top-pandas.json`, `data/curation/venue-news/venue-news.json` or `data/curation/overseas-status/overseas-status.json` in a pull request, and CI validates it. After merge, run the workflow on `main` with operation `curation.content`, that file as manifest, **execute** checked and the pull request as change reference, and approve `production-batch`. Venue news and overseas status each go into their one catalog row: the same content again is reported as already current, and changed content under an unchanged version is refused. Institutions and named facility places are upserted by slug; top panda enrichment (`data/curation/panda-enrichment/top-pandas.json`) transactionally upserts official sources, core facts, current primary residencies, and confirmed parentage by canonical slug. When updating both venues and top panda facts, run in this exact order:
+
+1. `curation.content` with `data/curation/institutions/institutions.json`
+2. `curation.content` with `data/curation/panda-enrichment/top-pandas.json`
+3. `release.publish` with the release manifest (for example `data/release-manifests/2026.11.22.1.json`)
+4. `curation.guess-questions` with the question batch manifest (for example `data/curation/guess-questions/2026.11.22.1.json`)
+
+Publish a content release afterwards so the app serves institution and top-panda updates. Earlier content was shipped as `*_institution_content.sql` migrations; those stay as applied history.
 
 ### Add 猜熊猫 questions
 

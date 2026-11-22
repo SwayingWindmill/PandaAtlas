@@ -1,0 +1,1571 @@
+{
+  "version": "2026.11.22.1",
+  "updatedAt": "2026-11-22T18:00:00+08:00",
+  "sources": [
+    {
+      "key": "samsung-2023-twins",
+      "publisher": "Samsung C&T Newsroom",
+      "title": "It's two girls! Panda twins born at Everland",
+      "url": "https://news.samsungcnt.com/en/features/resort/2023-07-its-two-girls-panda-twins-born-at-everland/",
+      "publishedOn": "2023-07-13",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "爱宝与乐宝于 2016 年来韩；2020-07-20 生育福宝（女），2023-07-07 自然交配诞下双胞胎雌性幼崽；刊发时爱宝 9 岁、乐宝 10 岁。"
+    },
+    {
+      "key": "samsung-2025-birthday",
+      "publisher": "Samsung C&T Newsroom",
+      "title": "Bamboo, Cake, and Goodbyes: A Final Birthday Bash for Everland's Twin Pandas",
+      "url": "https://news.samsungcnt.com/en/features/resort/2025-07-bamboo-cake-and-goodbyes-a-final-birthday-bash-for-everlands-twin-pandas/",
+      "publishedOn": "2025-07-15",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认瑞宝、辉宝生于 2023-07-07（雌性），爱宝生日为 7 月 13 日，福宝生日为 7 月 20 日，乐宝生日为 7 月 28 日。"
+    },
+    {
+      "key": "samsung-2026-june",
+      "publisher": "Samsung C&T Newsroom",
+      "title": "Everland Welcomes New Baby Panda as Panda Conservation Research Marks 10 Years",
+      "url": "https://news.samsungcnt.com/en/features/resort/2026-06-everland-welcomes-new-baby-panda-as-panda-conservation-research-marks-10-years/",
+      "publishedOn": "2026-06-10",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "爱宝与乐宝于 2026-06-03 在爱宝乐园熊猫世界诞下雌性幼崽（父母爱宝、乐宝）。"
+    },
+    {
+      "key": "samsung-2026-nov",
+      "publisher": "Samsung C&T Newsroom",
+      "title": "Everland's Youngest Panda, Shubao, Makes Her Public Debut at Panda World",
+      "url": "https://news.samsungcnt.com/en/features/resort/2026-11-everlands-youngest-panda-shubao-makes-her-public-debut-at-panda-world/",
+      "publishedOn": "2026-11-03",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认 2026-06-03 出生的幼崽（Shubao）健在并现居爱宝乐园熊猫世界。"
+    },
+    {
+      "key": "samsung-2026-oct",
+      "publisher": "Samsung C&T Newsroom",
+      "title": "A New Chapter Ahead: Everland's Twin Pandas Rui Bao and Hui Bao Set for December Move to China",
+      "url": "https://news.samsungcnt.com/en/features/resort/2026-10-a-new-chapter-ahead-everlands-twin-pandas-rui-bao-and-hui-bao-set-for-december-move-to-china/",
+      "publishedOn": "2026-10-20",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "截至 2026 年 11 月瑞宝、辉宝仍居住在爱宝乐园熊猫世界，预计 2026 年 12 月回国。"
+    },
+    {
+      "key": "forestry-2024-fubao",
+      "publisher": "国家林业和草原局",
+      "title": "探班神树坪基地 走近“福宝”的居家日常",
+      "url": "https://www.forestry.gov.cn/c/www/gjgysp/565544.jhtml",
+      "publishedOn": "2024-05-29",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "“福宝”自韩国回国后居住在中国大熊猫保护研究中心卧龙神树坪基地，“小奇迹”亦生活在该基地。"
+    },
+    {
+      "key": "pandapia-hehua",
+      "publisher": "Pandapia（成都大熊猫繁育研究基地官方新媒体平台）",
+      "title": "大熊猫档案：和花 / He Hua",
+      "url": "https://pandapia.com/panda/view.html?id=ODQ5",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "和花为雌性，2020-07-04 出生于成都大熊猫繁育研究基地，母亲为成功，健在。"
+    },
+    {
+      "key": "pandapia-heye",
+      "publisher": "Pandapia（成都大熊猫繁育研究基地官方新媒体平台）",
+      "title": "大熊猫档案：和叶 / He Ye",
+      "url": "https://pandapia.com/panda/view.html?id=ODUw",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "和叶为双胞胎妹妹，2020-07-04 出生于成都大熊猫繁育研究基地，母亲为成功；2024-01-24 基地公告生物样本检测确认为雌性。"
+    },
+    {
+      "key": "pandapia-menglan",
+      "publisher": "Pandapia（成都大熊猫繁育研究基地官方新媒体平台）",
+      "title": "大熊猫档案：萌兰 / Meng Lan",
+      "url": "https://pandapia.com/panda/view.html?id=MTE=",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "萌兰于 2015-07-04 出生于成都大熊猫繁育研究基地，母亲为萌萌，2017-09-21 搬家至北京动物园。"
+    },
+    {
+      "key": "pandapia-mengmeng",
+      "publisher": "Pandapia（成都大熊猫繁育研究基地官方新媒体平台）",
+      "title": "大熊猫档案：萌萌 / Meng Meng",
+      "url": "https://pandapia.com/panda/view.html?id=MjE=",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "萌萌生于 2006-09-13，2015-07-04 产下雄性幼崽萌兰，2019-10-22 回到北京动物园。"
+    },
+    {
+      "key": "forestry-2023-yaya",
+      "publisher": "国家林业和草原局",
+      "title": "旅美大熊猫“丫丫”顺利回国",
+      "url": "https://www.forestry.gov.cn/c/www/dzbhdt/504626.jhtml",
+      "publishedOn": "2023-04-28",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "“丫丫”于 2023-04-27 回国并由北京动物园团队照料接回，健在。"
+    },
+    {
+      "key": "hksar-2024-twins",
+      "publisher": "香港特别行政区政府新闻公报",
+      "title": "Giant panda Ying Ying gifted by Central Government to HKSAR gives birth to pigeon pair of cubs",
+      "url": "https://www.info.gov.hk/gia/general/202408/15/P2024081500656.htm",
+      "publishedOn": "2024-08-15",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "盈盈与乐乐（2007 年抵香港海洋公园）于 2024-08-15 诞下一对龙凤胎（姐姐雌性、弟弟雄性）。"
+    },
+    {
+      "key": "hksar-2024-anan-arrival",
+      "publisher": "香港特别行政区政府新闻公报",
+      "title": "中央政府所赠大熊猫顺利抵港",
+      "url": "https://www.info.gov.hk/gia/general/202409/26/P2024092600434.htm",
+      "publishedOn": "2024-09-26",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-HK",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "雄性大熊猫“安安”与雌性大熊猫“可可”于 2024-09-26 抵港并入住香港海洋公园。"
+    },
+    {
+      "key": "hksar-2025-six-pandas",
+      "publisher": "香港特别行政区政府新闻公报",
+      "title": "LCQ20: Developing panda tourism",
+      "url": "https://www.info.gov.hk/gia/general/202506/11/P2025061100311.htm",
+      "publishedOn": "2025-06-11",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "港产龙凤胎命名为“家姐”加加（雌性）与“细佬”得得（雄性），香港现共有 6 只大熊猫居于香港海洋公园。"
+    },
+    {
+      "key": "forestry-2024-nine-returned",
+      "publisher": "中国大熊猫保护研究中心（国家林草局）",
+      "title": "9只旅外大熊猫返回熊猫中心，健康状况良好",
+      "url": "https://www.forestry.gov.cn/c/dxm/hzjl/541176.jhtml",
+      "publishedOn": "2024-01-05",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认“香香”“梵星”“阳光”“甜甜”居住在雅安基地，“美香”“添添”居住在都江堰基地，“小奇迹”“升谊”“谊谊”居住在神树坪基地，健康状况良好。"
+    },
+    {
+      "key": "forestry-2024-bifengxia-party",
+      "publisher": "中国大熊猫保护研究中心（国家林草局）",
+      "title": "大熊猫生日季集体“开趴”",
+      "url": "https://www.forestry.gov.cn/c/dxm/dzw/586291.jhtml",
+      "publishedOn": "2024-09-19",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认“香香”“美生”“贝贝”居住在雅安碧峰峡基地海归园并健在。"
+    },
+    {
+      "key": "forestry-2023-yiyi",
+      "publisher": "中国大熊猫保护研究中心（国家林草局）",
+      "title": "旅马大熊猫“谊谊”、“升谊”平安抵达四川",
+      "url": "https://www.forestry.gov.cn/c/dxm/hzjl/521413.jhtml",
+      "publishedOn": "2023-08-31",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "旅马大熊猫“谊谊”“升谊”于 2023-08-30 抵达卧龙神树坪基地。"
+    },
+    {
+      "key": "forestry-2023-japan-return",
+      "publisher": "国家林业和草原局",
+      "title": "四只旅日大熊猫顺利回国",
+      "url": "https://www.forestry.gov.cn/c/www/dzwzbh/366644.jhtml",
+      "publishedOn": "2023-02-22",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "“香香”“永明”“樱浜”“桃浜”于 2023 年 2 月顺利回国抵达四川。"
+    },
+    {
+      "key": "tokyo-ueno-history",
+      "publisher": "Tokyo Zoological Park Society",
+      "title": "Pandas kept in captivity so far (Ueno Zoo)",
+      "url": "https://www.tokyo-zoo.net/en/ueno/panda/history/index.html",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认力力（男，2005-08-16）、真真（女）、香香（女，2017-06-12，力力与真真所生）、晓晓（男，2021-06-23）、蕾蕾（女，2021-06-23）的生卒与父母血统。"
+    },
+    {
+      "key": "tokyo-2024-riri-shinshin",
+      "publisher": "Tokyo Zoological Park Society",
+      "title": "Regarding the return of Giant Panda Ri Ri and Shin Shin",
+      "url": "https://www.tokyo-zoo.net/en/topics/news/ueno/355_28750_2024-09-29.html",
+      "publishedOn": "2024-09-29",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "力力（2005-08-16，雄性）与真真（2005-07-03，雌性）于 2024-09-29 抵达中国大熊猫保护研究中心雅安碧峰峡基地。"
+    },
+    {
+      "key": "tokyo-2026-xxll",
+      "publisher": "Tokyo Zoological Park Society",
+      "title": "Giant Panda Xiao Xiao and Lei Lei arrive at the Ya'an Base",
+      "url": "https://www.tokyo-zoo.net/en/ueno/news/5238/index.html",
+      "publishedOn": "2026-01-31",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "晓晓（雄性）与蕾蕾（雌性）于 2026-01-28 抵达中国大熊猫保护研究中心雅安基地。"
+    },
+    {
+      "key": "aws-individuals",
+      "publisher": "Adventure World Shirahama",
+      "title": "Panda Profiles | Joint Project for the Conservation of Giant Pandas",
+      "url": "https://www.aws-s.com/en/panda_breeding_and_research/en/history/individuals.html",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "白浜家族完整档案：永明（1992-09-14 至 2025-01-25）、梅梅（1994-08-31 至 2008-10-15）、良浜（2000-09-06）、樱浜/桃浜（2014-12-02）、结浜（2016-09-18）、彩浜（2018-08-14）、枫浜（2020-11-22）及父母血统。"
+    },
+    {
+      "key": "aws-return-2025",
+      "publisher": "Adventure World Shirahama",
+      "title": "The return date for our four giant pandas – Rauhin, Yuihin, Saihin, and Fuhin – has been set",
+      "url": "https://www.aws-s.com/en/panda_breeding_and_research/news/detail.php?id=31",
+      "publishedOn": "2025-05-27",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "良浜、结浜、彩浜、枫浜于 2025-06-28 返回成都。"
+    },
+    {
+      "key": "nz-beibei-departs",
+      "publisher": "Smithsonian's National Zoo",
+      "title": "Giant Panda Bei Bei Departs Smithsonian's National Zoo for China",
+      "url": "https://nationalzoo.si.edu/news/giant-panda-bei-bei-departs-smithsonians-national-zoo-for-china",
+      "publishedOn": "2019-11-19",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "贝贝于 2019-11-19 启程前往雅安碧峰峡基地。"
+    },
+    {
+      "key": "nz-2024-arrive",
+      "publisher": "Smithsonian's National Zoo",
+      "title": "Giant Pandas Arrive at Smithsonian's National Zoo and Conservation Biology Institute From China",
+      "url": "https://nationalzoo.si.edu/news/giant-pandas-arrive-smithsonians-national-zoo-and-conservation-biology-institute-china",
+      "publishedOn": "2024-10-15",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "宝力（雄性）与青宝（雌性）于 2024-10-15 抵达史密森国家动物园。"
+    },
+    {
+      "key": "nz-2026-baoli",
+      "publisher": "Smithsonian's National Zoo",
+      "title": "Happy 5th Birthday, Bao Li",
+      "url": "https://nationalzoo.si.edu/news/happy-5th-birthday-bao-li",
+      "publishedOn": "2026-08-04",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "宝力（雄性，2021-08-04 生）于史密森国家动物园庆祝 5 岁生日。"
+    },
+    {
+      "key": "nz-2026-qingbao",
+      "publisher": "Smithsonian's National Zoo",
+      "title": "Happy 5th Birthday, Qing Bao",
+      "url": "https://nationalzoo.si.edu/news/happy-5th-birthday-qing-bao",
+      "publishedOn": "2026-09-12",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "青宝（雌性，2021-09-12 生）于史密森国家动物园庆祝 5 岁生日。"
+    },
+    {
+      "key": "sandiego-debut",
+      "publisher": "San Diego Zoo Wildlife Alliance",
+      "title": "Giant Pandas Make Public Debut During Historic Day at San Diego Zoo",
+      "url": "https://sandiegozoowildlifealliance.org/PR/pandas-public-debut",
+      "publishedOn": "2024-08-08",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "云川与鑫宝于 2024-08-08 在圣地亚哥动物园公开亮相。"
+    },
+    {
+      "key": "sandiego-hub",
+      "publisher": "San Diego Zoo Wildlife Alliance",
+      "title": "Giant Pandas at the San Diego Zoo",
+      "url": "https://zoo.sandiegozoo.org/giant-pandas",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认圣地亚哥动物园现居雄性大熊猫云川与雌性大熊猫鑫宝。"
+    },
+    {
+      "key": "berlin-garden",
+      "publisher": "Zoo Berlin",
+      "title": "Panda Garden - Zoo Berlin",
+      "url": "https://www.zoo-berlin.de/en/animals/panda-garden",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "梦梦（雌性，2013-07-10 生）与娇庆（雄性，2010-07-15 生）自 2017 年 7 月居住在柏林动物园。"
+    },
+    {
+      "key": "berlin-twins-2024",
+      "publisher": "Zoo Berlin",
+      "title": "Naming Ceremony of Panda Twins at Zoo Berlin",
+      "url": "https://www.zoo-berlin.de/en/latest/news/detail/feierliche-panda-namensverkuendung-im-zoo-berlin",
+      "publishedOn": "2024-12-06",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "梦梦于 2024-08-22 在柏林动物园诞下双胞胎雌性幼崽（包括梦甜）；2019-08-31 所生“梦想”“梦圆”已于 2023 年 12 月回国。"
+    },
+    {
+      "key": "forestry-2023-berlin-return",
+      "publisher": "国家林业和草原局",
+      "title": "旅德大熊猫“梦想”和“梦圆”平安抵达成都",
+      "url": "https://www.forestry.gov.cn/c/www/lcdt/538032.jhtml",
+      "publishedOn": "2023-12-17",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "双胞胎“梦想”“梦圆”（生于 2019-08-31，父母娇庆与梦梦）于 2023-12-17 平安抵达成都。"
+    },
+    {
+      "key": "taipei-zoo-family",
+      "publisher": "台北市立动物园",
+      "title": "大猫熊家族辨别秘笈",
+      "url": "https://www.zoo.gov.tw/Giantpanda/product.html",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-Hant",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "团团（2004-09-01）、圆圆（2004-08-30）、圆仔（女，2013-07-06）、圆宝（女，2020-06-28）出生日期及亲子关系。"
+    },
+    {
+      "key": "taipei-zoo-tuantuan-autopsy",
+      "publisher": "台北市立动物园",
+      "title": "大猫熊“团团”病理解剖报告出炉",
+      "url": "https://www.zoo.gov.taipei/News_Content.aspx?n=BD065B2FA7782989&sms=72544237BBE4C5F6&s=A7C5AC279D9A82E2",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-Hant",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认“团团”于 2022-11-19 在台北市立动物园因病离世。"
+    },
+    {
+      "key": "mandai-forest",
+      "publisher": "Mandai Wildlife Reserve",
+      "title": "Pavilion Capital Giant Panda Forest - River Wonders",
+      "url": "https://www.mandai.com/en/river-wonders/animals-and-zones/giant-panda-forest.html",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认新加坡河川生态园现居雄性凯凯与雌性嘉嘉。"
+    },
+    {
+      "key": "mandai-kaikai",
+      "publisher": "Mandai Wildlife Reserve",
+      "title": "Kai Kai - Stars of Mandai",
+      "url": "https://www.mandai.com/en/discover-mandai/events/stars-of-mandai/kai-kai.html",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认凯凯（雄性）出生于 2007-09-14，与嘉嘉共同育有叻叻，现居河川生态园。"
+    },
+    {
+      "key": "forestry-2024-lele-sg",
+      "publisher": "中国大熊猫保护研究中心（国家林草局）",
+      "title": "旅新大熊猫“叻叻”平安抵达四川",
+      "url": "https://www.forestry.gov.cn/c/dxm/hzjl/543238.jhtml",
+      "publishedOn": "2024-01-17",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "zh-CN",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认“叻叻”（雄性，2021-08-14 生）为“沪宝”（嘉嘉）与“武杰”（凯凯）在新加坡诞下的幼崽，2024-01-16 回国。"
+    },
+    {
+      "key": "vienna-arrival",
+      "publisher": "Tiergarten Schönbrunn",
+      "title": "Panda-Paar ist angekommen",
+      "url": "https://www.zoovienna.at/de/news/panda-paar-ist-angekommen/",
+      "publishedOn": "2025-04-23",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "de",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "荷风（雄性）与兰韵（雌性）于 2025-04-23 抵达维也纳美泉宫动物园。"
+    },
+    {
+      "key": "vienna-species",
+      "publisher": "Tiergarten Schönbrunn",
+      "title": "Großer Panda - Tiergarten Schönbrunn",
+      "url": "https://www.zoovienna.at/tiere/saeugetiere/grosser-panda/",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "de",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "确认美泉宫动物园现居雌性“兰韵”与雄性“荷风”。"
+    },
+    {
+      "key": "madrid-arrival",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "A new pair of pandas will arrive at Zoo Aquarium Madrid at the end of April",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/a-new-pair-of-pandas-will-arrive-at-zoo-aquarium-madrid-at-the-end-of-april",
+      "publishedOn": "2024-04-24",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "金喜（雄性）与茱萸（雌性）于 2024 年 4 月底入驻马德里动物园水族馆。"
+    },
+    {
+      "key": "beauval-twins-2026",
+      "publisher": "ZooParc de Beauval",
+      "title": "Yuandudu and Huanlili will return to China on 17 December",
+      "url": "https://actus.zoobeauval.com/en/yuandudu-and-huanlili-will-return-to-china-on-17-december-the-pandas-story-continues-at-beauval/",
+      "publishedOn": "2026-10-15",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "accessible",
+      "evidenceTier": "primary",
+      "publicSummary": "圆嘟嘟与欢黎黎（雌性双胞胎）于 2021-08-02 生于博瓦勒动物园，母亲为欢欢，截至 2026 年 11 月仍在博瓦勒生活（计划 12 月 17 日回国）。"
+    },
+    {
+      "key": "zooatlanta-return-2024",
+      "publisher": "Zoo Atlanta",
+      "title": "Giant Pandas Have Arrived in China",
+      "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+      "lastVerifiedOn": "2026-11-22",
+      "languageTag": "en",
+      "accessState": "restricted",
+      "evidenceTier": "primary",
+      "publicSummary": "伦伦、洋洋、雅伦、喜伦于 2024-10-13 返回并抵达成都大熊猫繁育研究基地（官网受 Cloudflare 访问限制）。"
+    }
+  ],
+  "items": [
+    {
+      "pandaSlug": "le-bao",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2012-07-28", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins", "samsung-2025-birthday"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2026-june"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "everland",
+        "startOn": "2016-01-01",
+        "startPrecision": "year",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["samsung-2023-twins", "samsung-2026-june"]
+      }
+    },
+    {
+      "pandaSlug": "ai-bao",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2013-07-13", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins", "samsung-2025-birthday"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2026-nov"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "everland",
+        "startOn": "2016-01-01",
+        "startPrecision": "year",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["samsung-2023-twins", "samsung-2026-nov"]
+      }
+    },
+    {
+      "pandaSlug": "hui-bao",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2023-07-07", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins", "samsung-2025-birthday"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2026-oct"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "everland",
+        "startOn": "2023-07-07",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["samsung-2023-twins", "samsung-2026-oct"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "ai-bao", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins"] },
+        "father": { "parentSlug": "le-bao", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins"] }
+      }
+    },
+    {
+      "pandaSlug": "rui-bao",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2023-07-07", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins", "samsung-2025-birthday"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2026-oct"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "everland",
+        "startOn": "2023-07-07",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["samsung-2023-twins", "samsung-2026-oct"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "ai-bao", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins"] },
+        "father": { "parentSlug": "le-bao", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins"] }
+      }
+    },
+    {
+      "pandaSlug": "everland-cub-2026",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2026-06-03", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2026-june", "samsung-2026-nov"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2026-june"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2026-nov"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "everland",
+        "startOn": "2026-06-03",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["samsung-2026-june", "samsung-2026-nov"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "ai-bao", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["samsung-2026-june"] },
+        "father": { "parentSlug": "le-bao", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["samsung-2026-june"] }
+      }
+    },
+    {
+      "pandaSlug": "fu-bao",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2020-07-20", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins", "samsung-2025-birthday"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["samsung-2026-june"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-fubao"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-wolong-shenshuping-base",
+        "startOn": "2024-04-03",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2024-fubao"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "ai-bao", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins"] },
+        "father": { "parentSlug": "le-bao", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["samsung-2023-twins"] }
+      }
+    },
+    {
+      "pandaSlug": "he-hua-chengdu",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2020-07-04", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-hehua"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-hehua"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-hehua"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2020-07-04",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["pandapia-hehua"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "cheng-gong-chengdu-maternal-line", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["pandapia-hehua"] }
+      }
+    },
+    {
+      "pandaSlug": "he-ye-chengdu",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2020-07-04", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-heye"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-heye"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-heye"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2020-07-04",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["pandapia-heye"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "cheng-gong-chengdu-maternal-line", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["pandapia-heye"] }
+      }
+    },
+    {
+      "pandaSlug": "meng-lan",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2015-07-04", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-menglan", "pandapia-mengmeng"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-mengmeng"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-menglan"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "beijing-zoo",
+        "startOn": "2017-09-21",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["pandapia-menglan"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "meng-meng-beijing-2006", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["pandapia-menglan", "pandapia-mengmeng"] }
+      }
+    },
+    {
+      "pandaSlug": "meng-meng-beijing-2006",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2006-09-13", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-mengmeng"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-mengmeng"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["pandapia-mengmeng"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "beijing-zoo",
+        "startOn": "2019-10-22",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["pandapia-mengmeng"]
+      }
+    },
+    {
+      "pandaSlug": "ya-ya-memphis",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2023-yaya"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "beijing-zoo",
+        "startOn": "2023-04-27",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2023-yaya"]
+      }
+    },
+    {
+      "pandaSlug": "ying-ying-hk",
+      "facts": [
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2024-twins"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2025-six-pandas"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ocean-park-hong-kong",
+        "startOn": "2007-01-01",
+        "startPrecision": "year",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["hksar-2024-twins", "hksar-2025-six-pandas"]
+      }
+    },
+    {
+      "pandaSlug": "le-le-hk",
+      "facts": [
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2024-twins"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2025-six-pandas"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ocean-park-hong-kong",
+        "startOn": "2007-01-01",
+        "startPrecision": "year",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["hksar-2024-twins", "hksar-2025-six-pandas"]
+      }
+    },
+    {
+      "pandaSlug": "an-an-hk-2019",
+      "facts": [
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2024-anan-arrival"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2025-six-pandas"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ocean-park-hong-kong",
+        "startOn": "2024-09-26",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["hksar-2024-anan-arrival", "hksar-2025-six-pandas"]
+      }
+    },
+    {
+      "pandaSlug": "ke-ke-hk-2019",
+      "facts": [
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2024-anan-arrival"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2025-six-pandas"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ocean-park-hong-kong",
+        "startOn": "2024-09-26",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["hksar-2024-anan-arrival", "hksar-2025-six-pandas"]
+      }
+    },
+    {
+      "pandaSlug": "jia-jia-hk-2024",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2024-08-15", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2024-twins"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2024-twins", "hksar-2025-six-pandas"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2025-six-pandas"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ocean-park-hong-kong",
+        "startOn": "2024-08-15",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["hksar-2024-twins", "hksar-2025-six-pandas"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "ying-ying-hk", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["hksar-2024-twins"] },
+        "father": { "parentSlug": "le-le-hk", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["hksar-2024-twins"] }
+      }
+    },
+    {
+      "pandaSlug": "de-de-hk-2024",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2024-08-15", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2024-twins"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2024-twins", "hksar-2025-six-pandas"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["hksar-2025-six-pandas"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ocean-park-hong-kong",
+        "startOn": "2024-08-15",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["hksar-2024-twins", "hksar-2025-six-pandas"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "ying-ying-hk", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["hksar-2024-twins"] },
+        "father": { "parentSlug": "le-le-hk", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["hksar-2024-twins"] }
+      }
+    },
+    {
+      "pandaSlug": "xiang-xiang",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2017-06-12", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-ueno-history"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-ueno-history"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-bifengxia-party"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-bifengxia-base",
+        "startOn": "2024-01-05",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2024-nine-returned", "forestry-2024-bifengxia-party"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "shin-shin", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["tokyo-ueno-history"] },
+        "father": { "parentSlug": "ri-ri", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["tokyo-ueno-history"] }
+      }
+    },
+    {
+      "pandaSlug": "bei-bei",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-bifengxia-party"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-bifengxia-base",
+        "startOn": "2019-11-19",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["nz-beibei-departs", "forestry-2024-bifengxia-party"]
+      }
+    },
+    {
+      "pandaSlug": "mei-sheng",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-bifengxia-party"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-bifengxia-base",
+        "startOn": "2024-09-13",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2024-bifengxia-party"]
+      }
+    },
+    {
+      "pandaSlug": "yang-guang",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-nine-returned"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-bifengxia-base",
+        "startOn": "2024-01-05",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2024-nine-returned"]
+      }
+    },
+    {
+      "pandaSlug": "tian-tian-edinburgh",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-nine-returned"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-bifengxia-base",
+        "startOn": "2024-01-05",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2024-nine-returned"]
+      }
+    },
+    {
+      "pandaSlug": "fan-xing",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-nine-returned"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-bifengxia-base",
+        "startOn": "2024-01-05",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2024-nine-returned"]
+      }
+    },
+    {
+      "pandaSlug": "ri-ri",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2005-08-16", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-2024-riri-shinshin", "tokyo-ueno-history"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-2024-riri-shinshin", "tokyo-ueno-history"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-2024-riri-shinshin"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-bifengxia-base",
+        "startOn": "2024-09-29",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["tokyo-2024-riri-shinshin"]
+      }
+    },
+    {
+      "pandaSlug": "shin-shin",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2005-07-03", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-2024-riri-shinshin"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-2024-riri-shinshin"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-2024-riri-shinshin"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-bifengxia-base",
+        "startOn": "2024-09-29",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["tokyo-2024-riri-shinshin"]
+      }
+    },
+    {
+      "pandaSlug": "xiao-xiao",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2021-06-23", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-ueno-history"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-2026-xxll", "tokyo-ueno-history"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-2026-xxll"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-bifengxia-base",
+        "startOn": "2026-01-28",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["tokyo-2026-xxll"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "shin-shin", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["tokyo-ueno-history"] },
+        "father": { "parentSlug": "ri-ri", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["tokyo-ueno-history"] }
+      }
+    },
+    {
+      "pandaSlug": "lei-lei",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2021-06-23", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-ueno-history"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-2026-xxll", "tokyo-ueno-history"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["tokyo-2026-xxll"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-bifengxia-base",
+        "startOn": "2026-01-28",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["tokyo-2026-xxll"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "shin-shin", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["tokyo-ueno-history"] },
+        "father": { "parentSlug": "ri-ri", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["tokyo-ueno-history"] }
+      }
+    },
+    {
+      "pandaSlug": "xiao-qi-ji",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-nine-returned", "forestry-2024-fubao"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-wolong-shenshuping-base",
+        "startOn": "2024-01-05",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2024-nine-returned", "forestry-2024-fubao"]
+      }
+    },
+    {
+      "pandaSlug": "yi-yi-malaysia",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-nine-returned"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-wolong-shenshuping-base",
+        "startOn": "2023-08-30",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2023-yiyi", "forestry-2024-nine-returned"]
+      }
+    },
+    {
+      "pandaSlug": "sheng-yi",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-nine-returned"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-wolong-shenshuping-base",
+        "startOn": "2023-08-30",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2023-yiyi", "forestry-2024-nine-returned"]
+      }
+    },
+    {
+      "pandaSlug": "mei-xiang",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-nine-returned"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-dujiangyan-base",
+        "startOn": "2024-01-05",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2024-nine-returned"]
+      }
+    },
+    {
+      "pandaSlug": "tian-tian",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-nine-returned"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "ccrcgp-dujiangyan-base",
+        "startOn": "2024-01-05",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2024-nine-returned"]
+      }
+    },
+    {
+      "pandaSlug": "rauhin-shirahama",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2000-09-06", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals", "aws-return-2025"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals", "aws-return-2025"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-return-2025"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2025-06-28",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["aws-return-2025"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "meimei-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        "father": { "parentSlug": "eimei-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] }
+      }
+    },
+    {
+      "pandaSlug": "yuihin-shirahama",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2016-09-18", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals", "aws-return-2025"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-return-2025"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2025-06-28",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["aws-return-2025"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "rauhin-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        "father": { "parentSlug": "eimei-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] }
+      }
+    },
+    {
+      "pandaSlug": "saihin-shirahama",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2018-08-14", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals", "aws-return-2025"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-return-2025"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2025-06-28",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["aws-return-2025"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "rauhin-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        "father": { "parentSlug": "eimei-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] }
+      }
+    },
+    {
+      "pandaSlug": "fuhin-shirahama",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2020-11-22", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals", "aws-return-2025"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-return-2025"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2025-06-28",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["aws-return-2025"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "rauhin-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        "father": { "parentSlug": "eimei-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] }
+      }
+    },
+    {
+      "pandaSlug": "ouhin-shirahama",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2014-12-02", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2023-japan-return"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2023-02-22",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2023-japan-return"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "rauhin-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        "father": { "parentSlug": "eimei-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] }
+      }
+    },
+    {
+      "pandaSlug": "touhin-shirahama",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2014-12-02", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2023-japan-return"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2023-02-22",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2023-japan-return"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "rauhin-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        "father": { "parentSlug": "eimei-shirahama", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] }
+      }
+    },
+    {
+      "pandaSlug": "eimei-shirahama",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "1992-09-14", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        { "fieldKey": "life_status", "value": "deceased", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] },
+        { "fieldKey": "death_date", "value": "2025-01-25", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["aws-individuals"] }
+      ]
+    },
+    {
+      "pandaSlug": "meng-xiang",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2019-08-31", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2023-berlin-return", "berlin-twins-2024"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2023-berlin-return"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2023-12-17",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2023-berlin-return"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "meng-meng-berlin", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["forestry-2023-berlin-return"] },
+        "father": { "parentSlug": "jiao-qing", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["forestry-2023-berlin-return"] }
+      }
+    },
+    {
+      "pandaSlug": "meng-yuan",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2019-08-31", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2023-berlin-return", "berlin-twins-2024"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2023-berlin-return"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2023-12-17",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["forestry-2023-berlin-return"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "meng-meng-berlin", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["forestry-2023-berlin-return"] },
+        "father": { "parentSlug": "jiao-qing", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["forestry-2023-berlin-return"] }
+      }
+    },
+    {
+      "pandaSlug": "lun-lun",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["zooatlanta-return-2024"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2024-10-13",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["zooatlanta-return-2024"]
+      }
+    },
+    {
+      "pandaSlug": "yang-yang-atlanta",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["zooatlanta-return-2024"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2024-10-13",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["zooatlanta-return-2024"]
+      }
+    },
+    {
+      "pandaSlug": "xi-lun",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["zooatlanta-return-2024"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2024-10-13",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["zooatlanta-return-2024"]
+      }
+    },
+    {
+      "pandaSlug": "ya-lun",
+      "facts": [
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["zooatlanta-return-2024"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "chengdu-research-base",
+        "startOn": "2024-10-13",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["zooatlanta-return-2024"]
+      }
+    },
+    {
+      "pandaSlug": "yuan-yuan-taipei",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2004-08-30", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "taipei-zoo",
+        "startOn": "2008-01-01",
+        "startPrecision": "year",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["taipei-zoo-family"]
+      }
+    },
+    {
+      "pandaSlug": "tuan-tuan-taipei",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2004-09-01", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] },
+        { "fieldKey": "life_status", "value": "deceased", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-tuantuan-autopsy"] },
+        { "fieldKey": "death_date", "value": "2022-11-19", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-tuantuan-autopsy"] }
+      ]
+    },
+    {
+      "pandaSlug": "yuan-zai",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2013-07-06", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "taipei-zoo",
+        "startOn": "2013-07-06",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["taipei-zoo-family"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "yuan-yuan-taipei", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] },
+        "father": { "parentSlug": "tuan-tuan-taipei", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] }
+      }
+    },
+    {
+      "pandaSlug": "yuan-bao",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2020-06-28", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "taipei-zoo",
+        "startOn": "2020-06-28",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["taipei-zoo-family"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "yuan-yuan-taipei", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] },
+        "father": { "parentSlug": "tuan-tuan-taipei", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["taipei-zoo-family"] }
+      }
+    },
+    {
+      "pandaSlug": "bao-li",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2021-08-04", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["nz-2026-baoli"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["nz-2024-arrive", "nz-2026-baoli"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["nz-2026-baoli"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "smithsonian-national-zoo",
+        "startOn": "2024-10-15",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["nz-2024-arrive", "nz-2026-baoli"]
+      }
+    },
+    {
+      "pandaSlug": "qing-bao",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2021-09-12", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["nz-2026-qingbao"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["nz-2024-arrive", "nz-2026-qingbao"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["nz-2026-qingbao"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "smithsonian-national-zoo",
+        "startOn": "2024-10-15",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["nz-2024-arrive", "nz-2026-qingbao"]
+      }
+    },
+    {
+      "pandaSlug": "yun-chuan",
+      "facts": [
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["sandiego-hub"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["sandiego-debut"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "san-diego-zoo",
+        "startOn": "2024-08-08",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["sandiego-debut"]
+      }
+    },
+    {
+      "pandaSlug": "xin-bao",
+      "facts": [
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["sandiego-hub"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["sandiego-debut"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "san-diego-zoo",
+        "startOn": "2024-08-08",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["sandiego-debut"]
+      }
+    },
+    {
+      "pandaSlug": "meng-meng-berlin",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2013-07-10", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["berlin-garden"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["berlin-garden"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["berlin-garden"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "berlin-zoo",
+        "startOn": "2017-07-05",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["berlin-garden"]
+      }
+    },
+    {
+      "pandaSlug": "jiao-qing",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2010-07-15", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["berlin-garden"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["berlin-garden"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["berlin-garden"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "berlin-zoo",
+        "startOn": "2017-07-05",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["berlin-garden"]
+      }
+    },
+    {
+      "pandaSlug": "meng-tian",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2024-08-22", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["berlin-twins-2024"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["berlin-twins-2024"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["berlin-twins-2024"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "berlin-zoo",
+        "startOn": "2024-08-22",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["berlin-twins-2024"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "meng-meng-berlin", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["berlin-twins-2024"] }
+      }
+    },
+    {
+      "pandaSlug": "kai-kai-singapore",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2007-09-14", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["mandai-kaikai"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["mandai-kaikai"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["mandai-forest", "mandai-kaikai"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "river-wonders",
+        "startOn": "2012-01-01",
+        "startPrecision": "year",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["mandai-forest", "mandai-kaikai"]
+      }
+    },
+    {
+      "pandaSlug": "jia-jia-singapore",
+      "facts": [
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["mandai-forest"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["mandai-forest"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "river-wonders",
+        "startOn": "2012-01-01",
+        "startPrecision": "year",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["mandai-forest"]
+      }
+    },
+    {
+      "pandaSlug": "le-le-singapore",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2021-08-14", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-lele-sg"] },
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-lele-sg"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["forestry-2024-lele-sg"] }
+      ],
+      "lineage": {
+        "mother": { "parentSlug": "jia-jia-singapore", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["forestry-2024-lele-sg", "mandai-kaikai"] },
+        "father": { "parentSlug": "kai-kai-singapore", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["forestry-2024-lele-sg"] }
+      }
+    },
+    {
+      "pandaSlug": "he-feng-vienna",
+      "facts": [
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["vienna-arrival", "vienna-species"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["vienna-species"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "tiergarten-schonbrunn",
+        "startOn": "2025-04-23",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["vienna-arrival", "vienna-species"]
+      }
+    },
+    {
+      "pandaSlug": "lan-yun-vienna",
+      "facts": [
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["vienna-species"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["vienna-species"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "tiergarten-schonbrunn",
+        "startOn": "2025-04-23",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["vienna-arrival", "vienna-species"]
+      }
+    },
+    {
+      "pandaSlug": "jin-xi-madrid",
+      "facts": [
+        { "fieldKey": "sex", "value": "male", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["madrid-arrival"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["madrid-arrival"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "zoo-aquarium-madrid",
+        "startOn": "2024-04-01",
+        "startPrecision": "month",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["madrid-arrival"]
+      }
+    },
+    {
+      "pandaSlug": "zhu-yu-madrid",
+      "facts": [
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["madrid-arrival"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["madrid-arrival"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "zoo-aquarium-madrid",
+        "startOn": "2024-04-01",
+        "startPrecision": "month",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["madrid-arrival"]
+      }
+    },
+    {
+      "pandaSlug": "huanlili",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2021-08-02", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["beauval-twins-2026"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["beauval-twins-2026"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["beauval-twins-2026"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "zooparc-de-beauval",
+        "startOn": "2021-08-02",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["beauval-twins-2026"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "huan-huan", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["beauval-twins-2026"] }
+      }
+    },
+    {
+      "pandaSlug": "yuandudu",
+      "facts": [
+        { "fieldKey": "birth_date", "value": "2021-08-02", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["beauval-twins-2026"] },
+        { "fieldKey": "sex", "value": "female", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["beauval-twins-2026"] },
+        { "fieldKey": "life_status", "value": "alive", "certainty": "confirmed", "lastVerifiedOn": "2026-11-22", "sourceKeys": ["beauval-twins-2026"] }
+      ],
+      "currentResidency": {
+        "placeSlug": "zooparc-de-beauval",
+        "startOn": "2021-08-02",
+        "startPrecision": "day",
+        "status": "confirmed",
+        "lastVerifiedOn": "2026-11-22",
+        "sourceKeys": ["beauval-twins-2026"]
+      },
+      "lineage": {
+        "mother": { "parentSlug": "huan-huan", "status": "confirmed", "reviewedOn": "2026-11-22", "sourceKeys": ["beauval-twins-2026"] }
+      }
+    }
+  ]
+}

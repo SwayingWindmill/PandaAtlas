@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "version": "2026.11.22.1",
+  "action": "publish",
+  "reason": "在完成 B8 机构与场馆主数据（institutions.json）与 B10 头部大熊猫一手官方资料补全（top-pandas.json，65 只大熊猫档案事实、当前常驻场馆与确认血统）导入后构建并激活新的内容发布版本。"
+}
