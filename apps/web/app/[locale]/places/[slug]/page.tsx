@@ -1,5 +1,6 @@
 import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
+import { StructuredDataScript } from "@/components/structured-data-script";
 import { PublicEntityPage } from "@/features/places/public-entity-page";
 import { PlaceCheckinControl } from "@/features/places/place-checkin-control";
 import { buildPlacePageViewModel } from "@/features/places/place-page-view-model";
@@ -10,6 +11,7 @@ import {
 } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/lib/locales";
 import { buildPublicMetadata } from "@/lib/public-metadata";
+import { buildPlaceStructuredData } from "@/lib/structured-data";
 import { readPublicMetadata } from "@/lib/server/public-read";
 import {
   localizedPublicDestination,
@@ -56,22 +58,37 @@ export default async function PlacePage({ params, searchParams }: PlacePageProps
   const envelope = await loadV2PublicPlace(reference.slug, locale);
   if (!envelope) notFound();
   const entity = buildPlacePageViewModel(envelope, locale);
+  const { place } = envelope.data;
   return (
-    <PublicEntityPage
-      locale={locale}
-      entity={entity}
-      release={envelope.release}
-      delivery={envelope.delivery}
-      coverage={envelope.coverage}
-      localeDelivery={envelope.locale}
-      fanAction={(
-        <PlaceCheckinControl
-          placeId={entity.stableId}
-          slug={entity.canonicalSlug}
-          name={entity.displayName}
-          locale={locale}
-        />
-      )}
-    />
+    <>
+      <StructuredDataScript
+        testId="place-structured-data"
+        data={buildPlaceStructuredData({
+          locale,
+          stableId: entity.stableId,
+          slug: entity.canonicalSlug,
+          name: entity.displayName,
+          alternateName: entity.alternateName,
+          country: place.country_code,
+          locality: place.locality,
+        })}
+      />
+      <PublicEntityPage
+        locale={locale}
+        entity={entity}
+        release={envelope.release}
+        delivery={envelope.delivery}
+        coverage={envelope.coverage}
+        localeDelivery={envelope.locale}
+        fanAction={(
+          <PlaceCheckinControl
+            placeId={entity.stableId}
+            slug={entity.canonicalSlug}
+            name={entity.displayName}
+            locale={locale}
+          />
+        )}
+      />
+    </>
   );
 }
