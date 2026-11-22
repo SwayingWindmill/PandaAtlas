@@ -1129,6 +1129,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/me/notifications/devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List registered push notification devices */
+        get: operations["listMyNotificationDevices"];
+        put?: never;
+        /** Register or refresh an Expo push token */
+        post: operations["registerMyNotificationDevice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/notifications/devices/{tokenId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Unregister an Expo push token */
+        delete: operations["removeMyNotificationDevice"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/me/privacy/requests": {
         parameters: {
             query?: never;
@@ -2313,7 +2348,7 @@ export interface components {
             /** @enum {string} */
             category: "knowledge_update" | "correction";
             /** @enum {string} */
-            channel: "station" | "email";
+            channel: "station" | "email" | "push";
             enabled: boolean;
             version: number;
             /** Format: date-time */
@@ -2323,8 +2358,31 @@ export interface components {
             /** @enum {string} */
             category: "knowledge_update" | "correction";
             /** @enum {string} */
-            channel: "station" | "email";
+            channel: "station" | "email" | "push";
             enabled: boolean;
+        };
+        NotificationDeviceDto: {
+            /** Format: uuid */
+            deviceTokenId: string;
+            expoPushToken: string;
+            /** @enum {string} */
+            platform: "ios" | "android";
+            active: boolean;
+            /** Format: date-time */
+            lastActiveAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        NotificationDeviceInputDto: {
+            /** @example ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx] */
+            expoPushToken: string;
+            /** @enum {string} */
+            platform: "ios" | "android";
+        };
+        NotificationDeviceDeleteResultDto: {
+            /** Format: uuid */
+            deviceTokenId: string;
+            removed: boolean;
         };
         CreatePrivacyRequestDto: {
             /** @enum {string} */
@@ -4342,6 +4400,69 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotificationPreferenceDto"];
+                };
+            };
+        };
+    };
+    listMyNotificationDevices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationDeviceDto"][];
+                };
+            };
+        };
+    };
+    registerMyNotificationDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationDeviceInputDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationDeviceDto"];
+                };
+            };
+        };
+    };
+    removeMyNotificationDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tokenId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationDeviceDeleteResultDto"];
                 };
             };
         };

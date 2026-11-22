@@ -1,5 +1,5 @@
-import { Body, Controller, DefaultValuePipe, Get, Inject, Param, ParseIntPipe, ParseUUIDPipe, Patch, Put, Query, Req } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, DefaultValuePipe, Delete, Get, Inject, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, Put, Query, Req } from "@nestjs/common";
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
@@ -8,6 +8,9 @@ import { getActorContext } from "../../identity/http/request-actor.js";
 import { NOTIFICATION_PORT, type NotificationPort } from "../application/notification.application.js";
 import {
   NotificationBulkReadResultDto,
+  NotificationDeviceDeleteResultDto,
+  NotificationDeviceDto,
+  NotificationDeviceInputDto,
   NotificationMessageDto,
   NotificationPreferenceDto,
   NotificationPreferenceInputDto,
@@ -79,5 +82,38 @@ export class NotificationController {
   @ApiOkResponse({ type: NotificationPreferenceDto })
   public setPreference(@Req() request: HttpRequest, @Body() input: NotificationPreferenceInputDto) {
     return this.notifications.setPreference(accountId(request), input.category, input.channel, input.enabled);
+  }
+
+  @Get("devices")
+  @RequireCapabilities("notification.read")
+  @ApiOperation({ operationId: "listMyNotificationDevices", summary: "List registered push notification devices" })
+  @ApiOkResponse({ type: NotificationDeviceDto, isArray: true })
+  public listDevices(@Req() request: HttpRequest) {
+    return this.notifications.listDevices(accountId(request));
+  }
+
+  @Post("devices")
+  @RequireCapabilities("notification.manage")
+  @RateLimit("write")
+  @ApiOperation({ operationId: "registerMyNotificationDevice", summary: "Register or refresh an Expo push token" })
+  @ApiCreatedResponse({ type: NotificationDeviceDto })
+  public registerDevice(@Req() request: HttpRequest, @Body() input: NotificationDeviceInputDto) {
+    return this.notifications.registerDevice(accountId(request), input.expoPushToken, input.platform);
+  }
+
+  @Delete("devices/:tokenId")
+  @RequireCapabilities("notification.manage")
+  @RateLimit("write")
+  @ApiOperation({ operationId: "removeMyNotificationDevice", summary: "Unregister an Expo push token" })
+  @ApiOkResponse({ type: NotificationDeviceDeleteResultDto })
+  public async removeDevice(
+    @Req() request: HttpRequest,
+    @Param("tokenId", ParseUUIDPipe) tokenId: string,
+  ) {
+    const removed = await this.notifications.removeDevice(accountId(request), tokenId);
+    if (!removed) {
+      throw new ProblemException(404, "notification.deviceNotFound", "The notification device does not exist.");
+    }
+    return { deviceTokenId: tokenId, removed: true };
   }
 }
