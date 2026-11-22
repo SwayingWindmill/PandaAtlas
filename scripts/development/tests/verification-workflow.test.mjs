@@ -117,5 +117,7 @@ test("Mobile E2E CI sets TZ=Asia/Shanghai to match Playwright e2e.config.ts time
   ]);
 
   assert.match(config, /timezoneId:\s*["']Asia\/Shanghai["']/u);
-  assert.match(workflow, /name:\s*Run journeys[\s\S]*?TZ:\s*Asia\/Shanghai/u);
+  const stepMatch = workflow.match(/- name:\s*Run journeys\r?\n([\s\S]*?)(?=\r?\n\s*- name:|\s*$)/u);
+  assert.ok(stepMatch?.[1], "expected Run journeys step in mobile-e2e.yml");
+  assert.match(stepMatch[1], /^\s+TZ:\s*Asia\/Shanghai\s*$/mu);
 });
