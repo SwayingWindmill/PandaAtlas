@@ -2675,6 +2675,107 @@
         ]
       }
     },
+    "/api/v2/me/notifications/devices": {
+      "get": {
+        "operationId": "listMyNotificationDevices",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationDeviceDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "List registered push notification devices",
+        "tags": [
+          "Notification"
+        ]
+      },
+      "post": {
+        "operationId": "registerMyNotificationDevice",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationDeviceInputDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDeviceDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Register or refresh an Expo push token",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v2/me/notifications/devices/{tokenId}": {
+      "delete": {
+        "operationId": "removeMyNotificationDevice",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDeviceDeleteResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Unregister an Expo push token",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
     "/api/v2/me/privacy/requests": {
       "post": {
         "operationId": "createMyPrivacyRequest",
@@ -6920,7 +7021,8 @@
             "type": "string",
             "enum": [
               "station",
-              "email"
+              "email",
+              "push"
             ]
           },
           "enabled": {
@@ -6959,7 +7061,8 @@
             "type": "string",
             "enum": [
               "station",
-              "email"
+              "email",
+              "push"
             ]
           },
           "enabled": {
@@ -6970,6 +7073,80 @@
           "category",
           "channel",
           "enabled"
+        ]
+      },
+      "NotificationDeviceDto": {
+        "type": "object",
+        "properties": {
+          "deviceTokenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expoPushToken": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "ios",
+              "android"
+            ]
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "lastActiveAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "deviceTokenId",
+          "expoPushToken",
+          "platform",
+          "active",
+          "lastActiveAt",
+          "updatedAt"
+        ]
+      },
+      "NotificationDeviceInputDto": {
+        "type": "object",
+        "properties": {
+          "expoPushToken": {
+            "type": "string",
+            "example": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "ios",
+              "android"
+            ]
+          }
+        },
+        "required": [
+          "expoPushToken",
+          "platform"
+        ]
+      },
+      "NotificationDeviceDeleteResultDto": {
+        "type": "object",
+        "properties": {
+          "deviceTokenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "removed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "deviceTokenId",
+          "removed"
         ]
       },
       "CreatePrivacyRequestDto": {

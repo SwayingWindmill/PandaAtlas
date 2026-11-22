@@ -1,6 +1,13 @@
 import { DomainError } from "../../../platform/errors/domain-error.js";
 export type NotificationCategory = "knowledge_update" | "correction";
-export type NotificationChannel = "station" | "email";
+export type NotificationChannel = "station" | "email" | "push";
+export type NotificationDevicePlatform = "ios" | "android";
+
+export const EXPO_PUSH_TOKEN_PATTERN = /^(Exponent|Expo)PushToken\[[A-Za-z0-9_+./:=-]+\]$/;
+
+export function isValidExpoPushToken(token: string): boolean {
+  return token.length <= 255 && EXPO_PUSH_TOKEN_PATTERN.test(token);
+}
 
 export interface NotificationPreference {
   category: NotificationCategory;
@@ -19,6 +26,15 @@ export interface NotificationMessage {
   readAt: string | null;
 }
 
+export interface NotificationDeviceToken {
+  deviceTokenId: string;
+  expoPushToken: string;
+  platform: NotificationDevicePlatform;
+  active: boolean;
+  lastActiveAt: string;
+  updatedAt: string;
+}
+
 export interface NotificationRepository {
   listMessages(accountId: string, limit: number): Promise<NotificationMessage[]>;
   markRead(accountId: string, messageId: string): Promise<NotificationMessage | undefined>;
@@ -30,6 +46,13 @@ export interface NotificationRepository {
     channel: NotificationChannel,
     enabled: boolean,
   ): Promise<NotificationPreference>;
+  listDevices(accountId: string): Promise<NotificationDeviceToken[]>;
+  registerDevice(
+    accountId: string,
+    expoPushToken: string,
+    platform: NotificationDevicePlatform,
+  ): Promise<NotificationDeviceToken>;
+  removeDevice(accountId: string, deviceTokenId: string): Promise<boolean>;
 }
 
 export type NotificationPort = NotificationRepository;
@@ -64,5 +87,28 @@ export class NotificationApplication implements NotificationPort {
     enabled: boolean,
   ) {
     return this.repository.setPreference(accountId, category, channel, enabled);
+  }
+
+  public listDevices(accountId: string): Promise<NotificationDeviceToken[]> {
+    return this.repository.listDevices(accountId);
+  }
+
+  public async registerDevice(
+    accountId: string,
+    expoPushToken: string,
+    platform: NotificationDevicePlatform,
+  ): Promise<NotificationDeviceToken> {
+    if (!isValidExpoPushToken(expoPushToken)) {
+      throw new DomainError(
+        "invalid",
+        "notification.invalidExpoPushToken",
+        "Expo push token must match ExponentPushToken[...] or ExpoPushToken[...].",
+      );
+    }
+    return this.repository.registerDevice(accountId, expoPushToken, platform);
+  }
+
+  public removeDevice(accountId: string, deviceTokenId: string): Promise<boolean> {
+    return this.repository.removeDevice(accountId, deviceTokenId);
   }
 }

@@ -1680,11 +1680,27 @@ CREATE TABLE IF NOT EXISTS "notification"."channel_preferences" (
     "version" integer DEFAULT 1 NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     CONSTRAINT "channel_preferences_category_check" CHECK (("category" = ANY (ARRAY['knowledge_update'::"text", 'correction'::"text"]))),
-    CONSTRAINT "channel_preferences_channel_check" CHECK (("channel" = ANY (ARRAY['station'::"text", 'email'::"text"]))),
+    CONSTRAINT "channel_preferences_channel_check" CHECK (("channel" = ANY (ARRAY['station'::"text", 'email'::"text", 'push'::"text"]))),
     CONSTRAINT "channel_preferences_version_check" CHECK (("version" >= 1))
 );
 
 ALTER TABLE "notification"."channel_preferences" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "notification"."device_tokens" (
+    "device_token_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "account_id" "uuid" NOT NULL,
+    "expo_push_token" "text" NOT NULL,
+    "platform" "text" NOT NULL,
+    "active" boolean DEFAULT true NOT NULL,
+    "disabled_reason" "text",
+    "last_active_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "device_tokens_active_reason_check" CHECK ((("active" AND ("disabled_reason" IS NULL)) OR ((NOT "active") AND ("disabled_reason" IS NOT NULL)))),
+    CONSTRAINT "device_tokens_platform_check" CHECK (("platform" = ANY (ARRAY['ios'::"text", 'android'::"text"])))
+);
+
+ALTER TABLE "notification"."device_tokens" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "notification"."message_channels" (
     "message_id" "uuid" NOT NULL,
@@ -1692,7 +1708,7 @@ CREATE TABLE IF NOT EXISTS "notification"."message_channels" (
     "state" "text" NOT NULL,
     "suppression_reason" "text",
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "message_channels_channel_check" CHECK (("channel" = ANY (ARRAY['station'::"text", 'email'::"text"]))),
+    CONSTRAINT "message_channels_channel_check" CHECK (("channel" = ANY (ARRAY['station'::"text", 'email'::"text", 'push'::"text"]))),
     CONSTRAINT "message_channels_check" CHECK (((("state" = 'suppressed'::"text") AND ("suppression_reason" IS NOT NULL)) OR (("state" <> 'suppressed'::"text") AND ("suppression_reason" IS NULL)))),
     CONSTRAINT "message_channels_state_check" CHECK (("state" = ANY (ARRAY['ready'::"text", 'suppressed'::"text", 'submitted'::"text", 'dead_lettered'::"text"])))
 );
@@ -1762,7 +1778,7 @@ CREATE TABLE IF NOT EXISTS "notification"."provider_jobs" (
     "dead_lettered_at" timestamp with time zone,
     "suppressed_at" timestamp with time zone,
     CONSTRAINT "provider_jobs_attempt_count_check" CHECK (("attempt_count" >= 0)),
-    CONSTRAINT "provider_jobs_channel_check" CHECK (("channel" = 'email'::"text")),
+    CONSTRAINT "provider_jobs_channel_check" CHECK (("channel" = ANY (ARRAY['email'::"text", 'push'::"text"]))),
     CONSTRAINT "provider_jobs_check" CHECK ((("provider_message_id" IS NULL) OR ("provider" IS NOT NULL))),
     CONSTRAINT "provider_jobs_check1" CHECK ((("state" = 'submitted'::"text") = ("submitted_at" IS NOT NULL))),
     CONSTRAINT "provider_jobs_check2" CHECK ((("state" = 'dead_lettered'::"text") = ("dead_lettered_at" IS NOT NULL))),
@@ -2781,6 +2797,12 @@ ALTER TABLE ONLY "media"."panda_assets"
 ALTER TABLE ONLY "notification"."channel_preferences"
     ADD CONSTRAINT "channel_preferences_pkey" PRIMARY KEY ("account_id", "category", "channel");
 
+ALTER TABLE ONLY "notification"."device_tokens"
+    ADD CONSTRAINT "device_tokens_expo_push_token_key" UNIQUE ("expo_push_token");
+
+ALTER TABLE ONLY "notification"."device_tokens"
+    ADD CONSTRAINT "device_tokens_pkey" PRIMARY KEY ("device_token_id");
+
 ALTER TABLE ONLY "notification"."message_channels"
     ADD CONSTRAINT "message_channels_pkey" PRIMARY KEY ("message_id", "channel");
 
@@ -2800,7 +2822,7 @@ ALTER TABLE ONLY "notification"."provider_dead_letters"
     ADD CONSTRAINT "provider_dead_letters_pkey" PRIMARY KEY ("job_id");
 
 ALTER TABLE ONLY "notification"."provider_jobs"
-    ADD CONSTRAINT "provider_jobs_message_id_key" UNIQUE ("message_id");
+    ADD CONSTRAINT "provider_jobs_message_id_channel_key" UNIQUE ("message_id", "channel");
 
 ALTER TABLE ONLY "notification"."provider_jobs"
     ADD CONSTRAINT "provider_jobs_pkey" PRIMARY KEY ("job_id");
@@ -3093,6 +3115,8 @@ CREATE INDEX "idx_lineage_parentage_parent" ON "lineage"."parentage_assertions" 
 CREATE UNIQUE INDEX "idx_media_asset_object_identity" ON "media"."assets" USING "btree" ("storage_bucket", "storage_key", COALESCE("object_version", ''::"text"));
 
 CREATE UNIQUE INDEX "idx_media_one_cover_per_panda" ON "media"."panda_assets" USING "btree" ("panda_id") WHERE ("usage_role" = 'cover'::"text");
+
+CREATE INDEX "idx_notification_device_tokens_account_active" ON "notification"."device_tokens" USING "btree" ("account_id", "updated_at" DESC) WHERE "active";
 
 CREATE INDEX "idx_notification_messages_account_time" ON "notification"."messages" USING "btree" ("account_id", "created_at" DESC, "message_id" DESC);
 
@@ -3469,6 +3493,9 @@ ALTER TABLE ONLY "media"."panda_assets"
 
 ALTER TABLE ONLY "notification"."channel_preferences"
     ADD CONSTRAINT "channel_preferences_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "identity"."accounts"("account_id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "notification"."device_tokens"
+    ADD CONSTRAINT "device_tokens_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "identity"."accounts"("account_id") ON DELETE CASCADE;
 
 ALTER TABLE ONLY "notification"."message_channels"
     ADD CONSTRAINT "message_channels_message_id_fkey" FOREIGN KEY ("message_id") REFERENCES "notification"."messages"("message_id") ON DELETE CASCADE;
@@ -3895,6 +3922,8 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "media"."panda_assets" TO "zhipanda_a
 GRANT SELECT ON TABLE "media"."pipeline_asset_export_v1" TO "zhipanda_pipeline";
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "notification"."channel_preferences" TO "zhipanda_app";
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "notification"."device_tokens" TO "zhipanda_app";
 
 GRANT SELECT,INSERT,UPDATE ON TABLE "notification"."message_channels" TO "zhipanda_app";
 

@@ -81,4 +81,36 @@ describe("environment validation", () => {
       }),
     ).toThrow("OPS_ALERT_WEBHOOK_FORMAT must be feishu, wecom, or generic");
   });
+
+  it("validates EXPO_ACCESS_TOKEN and EXPO_PUSH_ENDPOINT", () => {
+    expect(validateEnvironment({ APP_ENV: "test" })).toMatchObject({
+      EXPO_ACCESS_TOKEN: undefined,
+      EXPO_PUSH_ENDPOINT: "https://exp.host/--/api/v2/push/send",
+    });
+    expect(
+      validateEnvironment({
+        APP_ENV: "test",
+        EXPO_ACCESS_TOKEN: "expo-token-123",
+        EXPO_PUSH_ENDPOINT: "http://127.0.0.1:8788/push",
+      }),
+    ).toMatchObject({
+      EXPO_ACCESS_TOKEN: "expo-token-123",
+      EXPO_PUSH_ENDPOINT: "http://127.0.0.1:8788/push",
+    });
+    expect(() =>
+      validateEnvironment({
+        APP_ENV: "production",
+        CORS_ALLOW_ORIGINS: "https://www.zhipanda.com",
+        DATABASE_URL: "postgresql://example",
+        SUPABASE_URL: "https://example.supabase.co",
+        EXPO_PUSH_ENDPOINT: "http://127.0.0.1:8788/push",
+      }),
+    ).toThrow("EXPO_PUSH_ENDPOINT must use https");
+    expect(() =>
+      validateEnvironment({
+        APP_ENV: "test",
+        EXPO_PUSH_ENDPOINT: "not-a-url",
+      }),
+    ).toThrow("EXPO_PUSH_ENDPOINT must be a valid URL");
+  });
 });

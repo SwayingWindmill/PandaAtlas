@@ -27,6 +27,8 @@ export interface EnvironmentConfig {
   LOG_LEVEL: LogLevel;
   RESEND_API_KEY: string | undefined;
   RESEND_FROM_EMAIL: string | undefined;
+  EXPO_ACCESS_TOKEN: string | undefined;
+  EXPO_PUSH_ENDPOINT: string;
   ASK_ENABLED: boolean;
   ASK_GLOBAL_DAILY_CAP: number;
   OPS_ALERT_WEBHOOK_URL: string | undefined;
@@ -86,23 +88,34 @@ function parseSupabaseUrl(value: unknown): string | undefined {
   return raw?.replace(/\/+$/, "");
 }
 
-export function parseOpsAlertWebhookUrl(value: unknown, appEnv: AppEnvironment): string | undefined {
-  const raw = optionalString(value);
-  if (raw === undefined) return undefined;
+export const DEFAULT_EXPO_PUSH_ENDPOINT = "https://exp.host/--/api/v2/push/send";
+
+function parseHttpsUrlWithLocalHttp(raw: string, envName: string, appEnv: AppEnvironment): string {
   let parsed: URL;
   try {
     parsed = new URL(raw);
   } catch {
-    throw new Error("OPS_ALERT_WEBHOOK_URL must be a valid URL");
+    throw new Error(`${envName} must be a valid URL`);
   }
   const isLocalHttp =
     parsed.protocol === "http:" &&
     (appEnv === "development" || appEnv === "test") &&
     (parsed.hostname === "127.0.0.1" || parsed.hostname === "localhost");
   if (parsed.protocol !== "https:" && !isLocalHttp) {
-    throw new Error("OPS_ALERT_WEBHOOK_URL must use https");
+    throw new Error(`${envName} must use https`);
   }
   return parsed.toString();
+}
+
+export function parseOpsAlertWebhookUrl(value: unknown, appEnv: AppEnvironment): string | undefined {
+  const raw = optionalString(value);
+  if (raw === undefined) return undefined;
+  return parseHttpsUrlWithLocalHttp(raw, "OPS_ALERT_WEBHOOK_URL", appEnv);
+}
+
+export function parseExpoPushEndpoint(value: unknown, appEnv: AppEnvironment): string {
+  const raw = optionalString(value) ?? DEFAULT_EXPO_PUSH_ENDPOINT;
+  return parseHttpsUrlWithLocalHttp(raw, "EXPO_PUSH_ENDPOINT", appEnv);
 }
 
 export function parseOpsAlertWebhookFormat(value: unknown): OpsAlertWebhookFormat {
@@ -210,6 +223,8 @@ export function validateEnvironment(
     LOG_LEVEL: rawLogLevel as LogLevel,
     RESEND_API_KEY: optionalString(input.RESEND_API_KEY),
     RESEND_FROM_EMAIL: optionalString(input.RESEND_FROM_EMAIL),
+    EXPO_ACCESS_TOKEN: optionalString(input.EXPO_ACCESS_TOKEN),
+    EXPO_PUSH_ENDPOINT: parseExpoPushEndpoint(input.EXPO_PUSH_ENDPOINT, appEnv),
     // 问问熊猫 stays off unless a deploy turns it on; the cap bounds paid model and search use.
     ASK_ENABLED: parseBoolean(input.ASK_ENABLED, false, "ASK_ENABLED"),
     ASK_GLOBAL_DAILY_CAP: parseInteger(input.ASK_GLOBAL_DAILY_CAP, 30, "ASK_GLOBAL_DAILY_CAP", 0, 10_000),
@@ -310,6 +325,14 @@ export class AppConfig {
 
   public get resendFromEmail(): string | undefined {
     return this.config.get("RESEND_FROM_EMAIL", { infer: true });
+  }
+
+  public get expoAccessToken(): string | undefined {
+    return this.config.get("EXPO_ACCESS_TOKEN", { infer: true });
+  }
+
+  public get expoPushEndpoint(): string {
+    return this.config.get("EXPO_PUSH_ENDPOINT", { infer: true });
   }
 
   public get askEnabled(): boolean {

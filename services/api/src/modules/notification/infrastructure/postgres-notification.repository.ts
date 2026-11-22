@@ -4,13 +4,15 @@ import type { DatabaseService } from "../../../platform/database/database.servic
 import type {
   NotificationCategory,
   NotificationChannel,
+  NotificationDevicePlatform,
+  NotificationDeviceToken,
   NotificationMessage,
   NotificationPreference,
   NotificationRepository,
 } from "../application/notification.application.js";
 
 const CATEGORIES: readonly NotificationCategory[] = ["knowledge_update", "correction"];
-const CHANNELS: readonly NotificationChannel[] = ["station", "email"];
+const CHANNELS: readonly NotificationChannel[] = ["station", "email", "push"];
 
 function defaultEnabled(channel: NotificationChannel): boolean {
   return channel === "station";
@@ -98,6 +100,77 @@ export class PostgresNotificationRepository implements NotificationRepository {
       channel: row.channel as NotificationChannel,
       enabled: row.enabled,
       version: row.version,
+      updatedAt: row.updated_at.toISOString(),
+    };
+  }
+
+  public async listDevices(accountId: string): Promise<NotificationDeviceToken[]> {
+    const rows = await this.database.db
+      .selectFrom("notification.device_tokens")
+      .select(["device_token_id", "expo_push_token", "platform", "active", "last_active_at", "updated_at"])
+      .where("account_id", "=", accountId)
+      .orderBy("updated_at", "desc")
+      .orderBy("device_token_id", "desc")
+      .execute();
+    return rows.map((row) => this.mapDeviceToken(row));
+  }
+
+  public async registerDevice(
+    accountId: string,
+    expoPushToken: string,
+    platform: NotificationDevicePlatform,
+  ): Promise<NotificationDeviceToken> {
+    const now = new Date();
+    const row = await this.database.db
+      .insertInto("notification.device_tokens")
+      .values({
+        account_id: accountId,
+        expo_push_token: expoPushToken,
+        platform,
+        active: true,
+        disabled_reason: null,
+        last_active_at: now,
+        updated_at: now,
+      })
+      .onConflict((conflict) =>
+        conflict.column("expo_push_token").doUpdateSet({
+          account_id: accountId,
+          platform,
+          active: true,
+          disabled_reason: null,
+          last_active_at: now,
+          updated_at: now,
+        }),
+      )
+      .returning(["device_token_id", "expo_push_token", "platform", "active", "last_active_at", "updated_at"])
+      .executeTakeFirstOrThrow();
+    return this.mapDeviceToken(row);
+  }
+
+  public async removeDevice(accountId: string, deviceTokenId: string): Promise<boolean> {
+    const deleted = await this.database.db
+      .deleteFrom("notification.device_tokens")
+      .where("device_token_id", "=", deviceTokenId)
+      .where("account_id", "=", accountId)
+      .returning("device_token_id")
+      .executeTakeFirst();
+    return deleted !== undefined;
+  }
+
+  private mapDeviceToken(row: {
+    device_token_id: string;
+    expo_push_token: string;
+    platform: string;
+    active: boolean;
+    last_active_at: Date;
+    updated_at: Date;
+  }): NotificationDeviceToken {
+    return {
+      deviceTokenId: row.device_token_id,
+      expoPushToken: row.expo_push_token,
+      platform: row.platform as NotificationDevicePlatform,
+      active: row.active,
+      lastActiveAt: row.last_active_at.toISOString(),
       updatedAt: row.updated_at.toISOString(),
     };
   }

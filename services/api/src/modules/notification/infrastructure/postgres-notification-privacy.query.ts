@@ -7,7 +7,7 @@ export class PostgresNotificationPrivacyQuery implements NotificationPrivacyPort
     transaction: DatabaseTransaction,
     accountId: string,
   ): Promise<Record<string, unknown>> {
-    const [preferences, messages] = await Promise.all([
+    const [preferences, messages, deviceTokens] = await Promise.all([
       transaction
         .selectFrom("notification.channel_preferences")
         .select(["category", "channel", "enabled", "version", "updated_at"])
@@ -21,6 +21,21 @@ export class PostgresNotificationPrivacyQuery implements NotificationPrivacyPort
         .where("account_id", "=", accountId)
         .orderBy("created_at")
         .execute(),
+      transaction
+        .selectFrom("notification.device_tokens")
+        .select([
+          "device_token_id",
+          "expo_push_token",
+          "platform",
+          "active",
+          "disabled_reason",
+          "last_active_at",
+          "created_at",
+          "updated_at",
+        ])
+        .where("account_id", "=", accountId)
+        .orderBy("created_at")
+        .execute(),
     ]);
     return {
       preferences: preferences.map((row) => ({
@@ -28,6 +43,16 @@ export class PostgresNotificationPrivacyQuery implements NotificationPrivacyPort
         channel: row.channel,
         enabled: row.enabled,
         version: row.version,
+        updatedAt: row.updated_at.toISOString(),
+      })),
+      deviceTokens: deviceTokens.map((row) => ({
+        deviceTokenId: row.device_token_id,
+        expoPushToken: row.expo_push_token,
+        platform: row.platform,
+        active: row.active,
+        disabledReason: row.disabled_reason,
+        lastActiveAt: row.last_active_at.toISOString(),
+        createdAt: row.created_at.toISOString(),
         updatedAt: row.updated_at.toISOString(),
       })),
       messages: messages.map((row) => ({
@@ -49,6 +74,7 @@ export class PostgresNotificationPrivacyQuery implements NotificationPrivacyPort
       .execute();
     const messageIds = messages.map((row) => row.message_id);
     await transaction.deleteFrom("notification.channel_preferences").where("account_id", "=", accountId).execute();
+    await transaction.deleteFrom("notification.device_tokens").where("account_id", "=", accountId).execute();
     if (messageIds.length === 0) return;
 
     const now = new Date();
@@ -72,7 +98,7 @@ export class PostgresNotificationPrivacyQuery implements NotificationPrivacyPort
       .updateTable("notification.message_channels")
       .set({ state: "suppressed", suppression_reason: "privacy_erased", updated_at: now })
       .where("message_id", "in", messageIds)
-      .where("channel", "=", "email")
+      .where("channel", "in", ["email", "push"])
       .where("state", "in", ["ready"])
       .execute();
   }
