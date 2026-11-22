@@ -21,6 +21,21 @@ import type { ReleaseManifest } from "../modules/publication/application/release
 import { DatabaseService } from "../platform/database/database.service.js";
 import { RecentAuthCutoffStore } from "./recent-auth-cutoff.store.js";
 
+const E2E_TIME_ZONE = "Asia/Shanghai";
+
+export function shanghaiMonthDay(now = new Date()): string {
+  // en-CA formats as YYYY-MM-DD; slice MM-DD so seeded birthdays match e2e.config.ts timezoneId
+  // even when e2e's ManagedProcess strips TZ from stack.ts.
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: E2E_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .format(now)
+    .slice(5);
+}
+
 export interface MobileJourneySeedResult {
   panda: { id: string; slug: string; name: string };
   notice: { id: string; slug: string; name: string };
@@ -103,8 +118,7 @@ export class E2eFixtureService {
       throw new Error("Expected three option pandas for E2E fixture seeding.");
     }
 
-    const now = new Date();
-    const today = `${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const today = shanghaiMonthDay();
     const birthdayAssertionId = `e2e-birthday:${run}`;
     const birthdayFact = { fieldKey: "birth_date", value: `2010-${today}` };
     await this.pandas.recordFactAssertion({
