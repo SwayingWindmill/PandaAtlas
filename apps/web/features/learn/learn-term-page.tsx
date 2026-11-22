@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { alternateLocale, publicLanguageTag, type PublicLocale } from "@/lib/locales";
 
-import { articleLocale, articlesUsingTerm, learningText, type LearningCatalog, type LearningTerm } from "./learning";
+import { articleLocale, articlesUsingTerm, learningText, termLocale, type LearningCatalog, type LearningTerm } from "./learning";
 
 const copy = {
   zh: { learn: "科普", terms: "词条", related: "相关词条", articles: "出现在这些文章里", sources: "出处" },
@@ -40,9 +40,9 @@ export function LearnTermPage({ locale, term, catalog }: { locale: PublicLocale;
             <h2 id="related-terms">{t.related}</h2>
             <ul className="flex flex-wrap gap-x-6">
               {related.map((item) => (
-                <li key={item.slug}>
-                  <Link href={`/${locale}/learn/terms/${item.slug}` as Route} className="inline-flex min-h-10 items-center underline decoration-[var(--pa-color-highlight)] decoration-[1.5px] underline-offset-4">
-                    {learningText(item.term, locale)}
+                <li key={item.slug} lang={publicLanguageTag(termLocale(item, locale))}>
+                  <Link href={`/${termLocale(item, locale)}/learn/terms/${item.slug}` as Route} className="inline-flex min-h-10 items-center underline decoration-[var(--pa-color-highlight)] decoration-[1.5px] underline-offset-4">
+                    {learningText(item.term, termLocale(item, locale))}
                   </Link>
                 </li>
               ))}

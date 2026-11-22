@@ -17,7 +17,7 @@
   padding: 12px 14px;
   border-radius: var(--pa-radius-lg);
   background: var(--pa-color-surface);
-  box-shadow: 0 8px 28px var(--black-a4);
+  box-shadow: var(--pa-shadow-float);
   color: var(--pa-color-ink);
   font-size: 0.875rem;
   font-weight: 400;

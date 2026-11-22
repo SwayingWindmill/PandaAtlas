@@ -115,12 +115,17 @@ export function LearnArticlePage({
           </aside>
         ) : null}
 
-        {article.body.sections.map((section) => (
+        {article.body.sections.map((section, sectionIndex) => (
           <section key={section.heading.zh} className="grid gap-4">
             <h2>{learningText(section.heading, locale)}</h2>
-            {section.paragraphs.map((paragraph) => (
+            {section.paragraphs.map((paragraph, paragraphIndex) => (
               <p key={paragraph.text.zh}>
-                <TermText source={learningText(paragraph.text, locale)} locale={locale} terms={terms} />
+                <TermText
+                  source={learningText(paragraph.text, locale)}
+                  locale={locale}
+                  terms={terms}
+                  idPrefix={`term-${sectionIndex}-${paragraphIndex}`}
+                />
                 <RefMarks refs={paragraph.refs} numbers={numbers} />
               </p>
             ))}

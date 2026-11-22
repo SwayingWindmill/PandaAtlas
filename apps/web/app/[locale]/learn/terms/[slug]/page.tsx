@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { LearnTermPage } from "@/features/learn/learn-term-page";
-import { learningText, loadLearningCatalog } from "@/features/learn/learning";
+import { learningText, loadLearningCatalog, termLocale } from "@/features/learn/learning";
 import { parsePublicLocale } from "@/lib/locales";
 import { buildPublicMetadata } from "@/lib/public-metadata";
 import { readPublicMetadata } from "@/lib/server/public-read";
@@ -16,7 +16,8 @@ async function findTerm(rawLocale: string, slug: string) {
   if (!locale) return null;
   const catalog = await loadLearningCatalog();
   const term = catalog.terms.find((item) => item.slug === slug);
-  return term ? { locale, catalog, term } : null;
+  if (!term || termLocale(term, locale) !== locale) return null;
+  return { locale, catalog, term };
 }
 
 export async function generateMetadata({ params }: TermRouteProps): Promise<Metadata> {
@@ -29,6 +30,7 @@ export async function generateMetadata({ params }: TermRouteProps): Promise<Meta
     title: `${learningText(term.term, locale)} | ${locale === "zh" ? "熊猫科普 | 吱熊猫" : "Panda terms | ZhiPanda"}`,
     description: learningText(term.definition, locale),
     path: `/learn/terms/${term.slug}`,
+    singleLocale: termLocale(term, "en") !== "en",
   });
 }
 

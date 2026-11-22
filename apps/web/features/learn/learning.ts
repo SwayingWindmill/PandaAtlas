@@ -40,6 +40,11 @@ export function articleLocale(article: LearningArticle, locale: PublicLocale): P
   return locale === "en" && article.title.en ? "en" : "zh";
 }
 
+/** A term has its own page in a locale only when its name and definition are written in that language. */
+export function termLocale(term: LearningTerm, locale: PublicLocale): PublicLocale {
+  return locale === "en" && term.term.en && term.definition.en ? "en" : "zh";
+}
+
 export type TextPiece = { kind: "text"; value: string } | { kind: "term"; slug: string; value: string };
 
 const TERM_MARK = /\[\[([a-z0-9-]+)\|([^\]]+)\]\]/gu;

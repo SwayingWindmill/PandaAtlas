@@ -5,7 +5,7 @@ import {
   loadV2PublicInstitutionSlugs,
   loadV2PublicPlaceSlugs,
 } from "@/features/public-content/public-v2";
-import { articleLocale, loadLearningCatalog } from "@/features/learn/learning";
+import { articleLocale, loadLearningCatalog, termLocale } from "@/features/learn/learning";
 import { listFamilyStories } from "@/features/public-experiences/stories";
 
 const siteUrl = (process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
@@ -40,6 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       entries.push({ url: `${siteUrl}/${locale}/learn/articles/${article.slug}`, changeFrequency: "monthly", priority: 0.7 });
     }
     for (const term of learning.terms) {
+      if (termLocale(term, locale) !== locale) continue;
       entries.push({ url: `${siteUrl}/${locale}/learn/terms/${term.slug}`, changeFrequency: "monthly", priority: 0.5 });
     }
 

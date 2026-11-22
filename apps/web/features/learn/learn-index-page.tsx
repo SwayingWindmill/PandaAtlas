@@ -12,6 +12,7 @@ import {
   LEARNING_CATEGORIES,
   learningText,
   plainText,
+  termLocale,
   type LearningCatalog,
 } from "./learning";
 
@@ -89,16 +90,19 @@ export function LearnIndexPage({ locale, catalog }: { locale: PublicLocale; cata
       <section aria-labelledby="terms" className="grid gap-4">
         <h2 id="terms" className="scroll-mt-6">{copy.terms}</h2>
         <ul className="flex flex-wrap gap-x-6 gap-y-1">
-          {catalog.terms.map((term) => (
-            <li key={term.slug}>
-              <Link
-                href={`/${locale}/learn/terms/${term.slug}` as Route}
-                className="inline-flex min-h-10 items-center underline decoration-[var(--pa-color-highlight)] decoration-[1.5px] underline-offset-4"
-              >
-                {learningText(term.term, locale)}
-              </Link>
-            </li>
-          ))}
+          {catalog.terms.map((term) => {
+            const pageLocale = termLocale(term, locale);
+            return (
+              <li key={term.slug} lang={publicLanguageTag(pageLocale)}>
+                <Link
+                  href={`/${pageLocale}/learn/terms/${term.slug}` as Route}
+                  className="inline-flex min-h-10 items-center underline decoration-[var(--pa-color-highlight)] decoration-[1.5px] underline-offset-4"
+                >
+                  {learningText(term.term, pageLocale)}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </section>
     </main>

@@ -392,7 +392,10 @@ const learningArticle = (slug, category, title, relatedArticles) => ({
   body: {
     sections: [{
       heading: { zh: "黑白配色里最显眼的一笔", en: "" },
-      paragraphs: [{ text: { zh: "提到大熊猫，几乎每个人第一个想到的都是那对[[eye-patch|黑眼圈]]。", en: "" }, refs: ["si-panda"] }],
+      paragraphs: [
+        { text: { zh: "提到大熊猫，几乎每个人第一个想到的都是那对[[eye-patch|黑眼圈]]。", en: "" }, refs: ["si-panda"] },
+        { text: { zh: "肩上那条黑毛叫[[saddle|背带]]，和[[eye-patch|眼斑]]一起用来认熊猫。", en: "" }, refs: ["si-panda"] },
+      ],
     }],
   },
   keyFacts: [{ text: { zh: "眼斑是天生的黑毛图案。", en: "" }, refs: ["si-panda"] }],
@@ -408,6 +411,7 @@ const learningCatalog = {
   ],
   terms: [
     { slug: "eye-patch", term: { zh: "黑眼圈", en: "Eye patches" }, definition: { zh: "大熊猫眼睛周围的黑色毛斑，也叫眼斑。", en: "The black fur patches around a giant panda's eyes." }, relatedSlugs: ["pseudo-thumb"], sources: [learningSource] },
+    { slug: "saddle", term: { zh: "背带", en: "" }, definition: { zh: "大熊猫肩部和前肢连成一圈的黑毛。", en: "" }, relatedSlugs: [], sources: [learningSource] },
     { slug: "pseudo-thumb", term: { zh: "伪拇指", en: "Pseudo-thumb" }, definition: { zh: "大熊猫前爪上帮助抓握竹子的结构。", en: "A structure on a giant panda's forepaw that helps it grip bamboo." }, relatedSlugs: [], sources: [learningSource] },
   ],
   faceGuides: [],

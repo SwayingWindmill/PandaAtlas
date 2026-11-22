@@ -45,6 +45,25 @@ test("English learn shows English terms and sends Chinese-only articles to the C
   await expect(page.getByRole("heading", { level: 1, name: "Eye patches" })).toBeVisible();
 });
 
+test("Chinese-only terms have no English page and are linked in Chinese from English learn", async ({ page, request }) => {
+  await page.goto("/en/learn");
+  const saddle = page.getByRole("link", { name: "背带" });
+  await expect(saddle).toHaveAttribute("href", "/zh/learn/terms/saddle");
+  await expect(page.locator("li", { has: saddle })).toHaveAttribute("lang", "zh-CN");
+  expect((await request.get("/en/learn/terms/saddle")).status()).toBe(404);
+
+  const xml = await (await request.get("/sitemap.xml")).text();
+  expect(xml).toContain("/zh/learn/terms/saddle<");
+  expect(xml).not.toContain("/en/learn/terms/saddle<");
+});
+
+test("a term used in two paragraphs gets distinct tooltip ids", async ({ page }) => {
+  await page.goto("/zh/learn/articles/black-eye-patches");
+  const ids = await page.locator("main a[aria-describedby]").evaluateAll((links) => links.map((link) => link.getAttribute("aria-describedby")));
+  expect(ids.length).toBeGreaterThanOrEqual(3);
+  expect(new Set(ids).size).toBe(ids.length);
+});
+
 test("sitemap lists about, app, learn pages, and articles only in their own language", async ({ request }) => {
   const xml = await (await request.get("/sitemap.xml")).text();
   for (const path of ["/zh/about", "/en/about", "/zh/app", "/zh/learn", "/en/learn", "/zh/learn/articles/black-eye-patches", "/en/learn/terms/eye-patch"]) {

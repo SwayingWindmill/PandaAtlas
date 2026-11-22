@@ -6,9 +6,9 @@ import type { PublicLocale } from "@/lib/locales";
 export const appPageCopy = {
   zh: {
     title: "把喜欢的熊猫装进口袋",
-    description: "关注熊猫，它们迁居、过生日、有新照片时第一时间知道。",
+    description: "关注喜欢的熊猫，它们的资料有更新时，在 App 里收到通知。",
     features: [
-      { title: "关注和动态", body: "关注的熊猫有新消息，会推送给你。" },
+      { title: "关注和动态", body: "关注的熊猫资料有更新，会在 App 里通知你，也可以选择收邮件。" },
       { title: "熊猫图鉴", body: "去动物园见过的熊猫，记进自己的图鉴。" },
       { title: "猜熊猫和每日熊猫", body: "看眼斑、认脸，每天一题。" },
       { title: "科普和词条", body: "熊猫科普文章随时读。" },
@@ -24,9 +24,9 @@ export const appPageCopy = {
   },
   en: {
     title: "Keep your favourite pandas in your pocket",
-    description: "Follow pandas and hear first when they move, have a birthday, or get new photos.",
+    description: "Follow the pandas you love and get notified in the app when their information is updated.",
     features: [
-      { title: "Follows and updates", body: "Get a notification when a panda you follow has news." },
+      { title: "Follows and updates", body: "When a panda you follow is updated, the app tells you. Email notices are optional." },
       { title: "Panda book", body: "Record the pandas you have seen at the zoo." },
       { title: "Guess Panda and Daily Panda", body: "Read the eye patches, recognise the face, one round a day." },
       { title: "Learn", body: "Read panda articles and terms any time." },

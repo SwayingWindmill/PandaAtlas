@@ -16,12 +16,13 @@ function pandaReference(locale: PublicLocale, panda: { slug: string; name: strin
   return { "@type": "Thing", "@id": `${url}#panda`, name: panda.name, url };
 }
 
-function address(country: string | null, region: string | null): StructuredData | null {
-  if (!country && !region) return null;
+function address(parts: { country?: string | null; region?: string | null; locality?: string | null }): StructuredData | null {
+  if (!parts.country && !parts.region && !parts.locality) return null;
   return {
     "@type": "PostalAddress",
-    ...(country ? { addressCountry: country } : {}),
-    ...(region ? { addressRegion: region } : {}),
+    ...(parts.country ? { addressCountry: parts.country } : {}),
+    ...(parts.region ? { addressRegion: parts.region } : {}),
+    ...(parts.locality ? { addressLocality: parts.locality } : {}),
   };
 }
 
@@ -46,7 +47,7 @@ interface InstitutionStructuredDataInput {
 
 export function buildInstitutionStructuredData(input: InstitutionStructuredDataInput): StructuredData {
   const url = publicPageUrl(input.locale, `/institutions/${input.slug}`);
-  const postalAddress = address(input.country, input.region);
+  const postalAddress = address({ country: input.country, region: input.region });
   return {
     "@context": "https://schema.org",
     "@type": input.kind ? institutionSchemaType[input.kind] : "Organization",
@@ -58,7 +59,6 @@ export function buildInstitutionStructuredData(input: InstitutionStructuredDataI
     ...(input.summary ? { description: input.summary } : {}),
     ...(input.websiteUrl ? { sameAs: [input.websiteUrl] } : {}),
     ...(postalAddress ? { address: postalAddress } : {}),
-    inLanguage: publicLanguageTag(input.locale),
   };
 }
 
@@ -74,7 +74,7 @@ interface PlaceStructuredDataInput {
 
 export function buildPlaceStructuredData(input: PlaceStructuredDataInput): StructuredData {
   const url = publicPageUrl(input.locale, `/places/${input.slug}`);
-  const postalAddress = address(input.country, input.locality);
+  const postalAddress = address({ country: input.country, locality: input.locality });
   return {
     "@context": "https://schema.org",
     "@type": "Place",
