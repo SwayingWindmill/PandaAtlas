@@ -36,6 +36,8 @@ const listingPandaColumns = [
   "listing_facts",
 ] as const;
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 interface DeliveryControls {
   panda: Set<string>;
   place: Set<string>;
@@ -195,18 +197,7 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     const snapshot = await this.snapshot();
     if (snapshot === undefined) return { kind: "unavailable" };
     const { release, controls } = snapshot;
-    const pandaRow = await this.database.db
-      .selectFrom("public_read.pandas")
-      .selectAll()
-      .where("release_id", "=", release.releaseId)
-      .where((expression) =>
-        expression.or([
-          expression("canonical_slug", "=", slug),
-          sql<boolean>`${slug} = any(legacy_slugs)`,
-          sql<boolean>`panda_id::text = ${slug}`,
-        ]),
-      )
-      .executeTakeFirst();
+    const pandaRow = await this.findPandaRow(release.releaseId, slug);
     if (pandaRow === undefined || controls.panda.has(pandaRow.panda_id)) return { kind: "not_found" };
 
     const familyRows = await this.loadFamilyLineage(release.releaseId, pandaRow.panda_id);
@@ -248,7 +239,7 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       .selectFrom("public_read.life_events")
       .selectAll()
       .where("release_id", "=", release.releaseId)
-      .where(sql<boolean>`${pandaRow.panda_id}::uuid = any(participant_ids)`)
+      .where(sql<boolean>`participant_ids @> array[${pandaRow.panda_id}]::uuid[]`)
       .orderBy("occurred_on", "desc")
       .orderBy("event_id")
       .execute();
@@ -332,14 +323,7 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     const snapshot = await this.snapshot();
     if (snapshot === undefined) return { kind: "unavailable" };
     const { release, controls } = snapshot;
-    const row = await this.database.db
-      .selectFrom("public_read.places")
-      .selectAll()
-      .where("release_id", "=", release.releaseId)
-      // A merged duplicate's slug still finds the place it was merged into.
-      .where((eb) => eb.or([eb("slug", "=", slug), sql<boolean>`${slug} = any(legacy_slugs)`]))
-      .orderBy(sql`slug = ${slug}`, "desc")
-      .executeTakeFirst();
+    const row = await this.findPlaceRow(release.releaseId, slug);
     if (row === undefined || controls.place.has(row.place_id)) return { kind: "not_found" };
     return { kind: "ok", value: { release, place: this.mapPlace(row) } };
   }
@@ -705,6 +689,52 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     }
     if (suspended) return undefined;
     return { release: { releaseId: row.release_id, version: row.version }, controls };
+  }
+
+  private async findPandaRow(releaseId: string, slug: string) {
+    const byCanonical = await this.database.db
+      .selectFrom("public_read.pandas")
+      .selectAll()
+      .where("release_id", "=", releaseId)
+      .where("canonical_slug", "=", slug)
+      .executeTakeFirst();
+    if (byCanonical !== undefined) return byCanonical;
+
+    const byLegacy = await this.database.db
+      .selectFrom("public_read.pandas")
+      .selectAll()
+      .where("release_id", "=", releaseId)
+      .where(sql<boolean>`legacy_slugs @> array[${slug}]::text[]`)
+      .orderBy("panda_id")
+      .executeTakeFirst();
+    if (byLegacy !== undefined) return byLegacy;
+
+    if (!UUID_PATTERN.test(slug)) return undefined;
+    return this.database.db
+      .selectFrom("public_read.pandas")
+      .selectAll()
+      .where("release_id", "=", releaseId)
+      .where("panda_id", "=", slug)
+      .executeTakeFirst();
+  }
+
+  private async findPlaceRow(releaseId: string, slug: string) {
+    const bySlug = await this.database.db
+      .selectFrom("public_read.places")
+      .selectAll()
+      .where("release_id", "=", releaseId)
+      .where("slug", "=", slug)
+      .executeTakeFirst();
+    if (bySlug !== undefined) return bySlug;
+
+    return this.database.db
+      .selectFrom("public_read.places")
+      .selectAll()
+      .where("release_id", "=", releaseId)
+      // A merged duplicate's slug still finds the place it was merged into.
+      .where(sql<boolean>`legacy_slugs @> array[${slug}]::text[]`)
+      .orderBy("place_id")
+      .executeTakeFirst();
   }
 
   private mapPanda(

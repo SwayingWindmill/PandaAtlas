@@ -3024,9 +3024,13 @@ CREATE INDEX "idx_engagement_collection_pandas_time" ON "engagement"."collection
 
 CREATE UNIQUE INDEX "idx_engagement_collections_account_name" ON "engagement"."collections" USING "btree" ("account_id", "lower"(TRIM(BOTH FROM "name")));
 
+CREATE INDEX "idx_engagement_collections_account_updated" ON "engagement"."collections" USING "btree" ("account_id", "updated_at" DESC, "collection_id");
+
 CREATE INDEX "idx_engagement_favorites_account_time" ON "engagement"."favorites" USING "btree" ("account_id", "favorited_at" DESC, "panda_id");
 
 CREATE INDEX "idx_engagement_favorites_panda" ON "engagement"."favorites" USING "btree" ("panda_id", "account_id");
+
+CREATE INDEX "idx_engagement_favorites_time_panda" ON "engagement"."favorites" USING "btree" ("favorited_at", "panda_id", "account_id");
 
 CREATE INDEX "idx_engagement_location_checkins_account_date" ON "engagement"."location_checkins" USING "btree" ("account_id", "visited_on" DESC, "created_at" DESC);
 
@@ -3118,6 +3122,8 @@ CREATE INDEX "idx_places_center_gist" ON "place"."places" USING "gist" ("center"
 
 CREATE INDEX "idx_places_institution" ON "place"."places" USING "btree" ("institution_id") WHERE ("institution_id" IS NOT NULL);
 
+CREATE INDEX "idx_privacy_subject_requests_account_time" ON "privacy"."subject_requests" USING "btree" ("account_id", "requested_at" DESC);
+
 CREATE INDEX "idx_privacy_subject_requests_due" ON "privacy"."subject_requests" USING "btree" ("state", "requested_at", "request_id") WHERE ("state" = ANY (ARRAY['pending'::"text", 'processing'::"text"]));
 
 CREATE UNIQUE INDEX "idx_privacy_subject_requests_one_open_kind" ON "privacy"."subject_requests" USING "btree" ("account_id", "kind") WHERE ("state" = ANY (ARRAY['pending'::"text", 'processing'::"text"]));
@@ -3140,6 +3146,8 @@ CREATE INDEX "idx_sightings_observed_at" ON "public"."sightings" USING "btree" (
 
 CREATE INDEX "idx_public_read_life_events_participants" ON "public_read"."life_events" USING "gin" ("participant_ids");
 
+CREATE INDEX "idx_public_read_life_events_release_order" ON "public_read"."life_events" USING "btree" ("release_id", "occurred_on" DESC, "event_id");
+
 CREATE INDEX "idx_public_read_lineage_child" ON "public_read"."lineage" USING "btree" ("release_id", "child_id");
 
 CREATE INDEX "idx_public_read_lineage_parent" ON "public_read"."lineage" USING "btree" ("release_id", "parent_id");
@@ -3148,9 +3156,17 @@ CREATE INDEX "idx_public_read_media_panda" ON "public_read"."media" USING "btree
 
 CREATE INDEX "idx_public_read_media_release_asset" ON "public_read"."media" USING "btree" ("release_id", "asset_id");
 
+CREATE INDEX "idx_public_read_pandas_legacy_slugs" ON "public_read"."pandas" USING "gin" ("legacy_slugs");
+
 CREATE INDEX "idx_public_read_places_institution" ON "public_read"."places" USING "btree" ("release_id", "institution_id") WHERE ("institution_id" IS NOT NULL);
 
+CREATE INDEX "idx_public_read_places_legacy_slugs" ON "public_read"."places" USING "gin" ("legacy_slugs");
+
+CREATE INDEX "idx_public_read_residencies_current" ON "public_read"."residencies" USING "btree" ("release_id", "panda_id", "residency_id") WHERE ("end_on" IS NULL);
+
 CREATE INDEX "idx_public_read_residencies_panda" ON "public_read"."residencies" USING "btree" ("release_id", "panda_id");
+
+CREATE INDEX "idx_public_read_residencies_place" ON "public_read"."residencies" USING "btree" ("release_id", "place_id", "panda_id", "start_on", "residency_id");
 
 CREATE INDEX "idx_publication_membership_resource" ON "publication"."release_memberships" USING "btree" ("resource_kind", "resource_id", "release_id");
 
