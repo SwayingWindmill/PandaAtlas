@@ -125,11 +125,6 @@ describe("curation.content", () => {
   it("applies panda enrichment idempotently, resolves conflicts, and enables hard guess questions", async () => {
     await expect(
       database.transaction().execute(async (trx) => {
-        const asDay = (value: string | Date | null): string | null => {
-          if (value === null) return null;
-          return value instanceof Date ? value.toISOString().slice(0, 10) : value.slice(0, 10);
-        };
-
         const oldPlace = await trx
           .insertInto("place.places")
           .values({
@@ -448,18 +443,23 @@ describe("curation.content", () => {
 
         const p1Residencies = await trx
           .selectFrom("life_history.residencies")
-          .select(["residency_id", "place_id", "start_on", "end_on"])
+          .select([
+            "residency_id",
+            "place_id",
+            sql<string | null>`to_char(start_on, 'YYYY-MM-DD')`.as("start_on"),
+            sql<string | null>`to_char(end_on, 'YYYY-MM-DD')`.as("end_on"),
+          ])
           .where("panda_id", "=", p1Id)
           .where("residency_type", "=", "primary")
           .execute();
         const openResidencies = p1Residencies.filter((row) => row.end_on === null);
         expect(openResidencies).toHaveLength(1);
         expect(openResidencies[0]?.place_id).toBe(newPlace.place_id);
-        expect(asDay(openResidencies[0]?.start_on ?? null)).toBe("2023-07-07");
+        expect(openResidencies[0]?.start_on).toBe("2023-07-07");
         const clampedClosed = p1Residencies.find((row) => row.residency_id === "res:seed:p1:closed-overlap");
-        expect(asDay(clampedClosed?.end_on ?? null)).toBe("2023-07-07");
+        expect(clampedClosed?.end_on).toBe("2023-07-07");
         const closedNewer = p1Residencies.find((row) => row.residency_id === "res:seed:p1:open-newer");
-        expect(asDay(closedNewer?.end_on ?? null)).toBe("2025-01-01");
+        expect(closedNewer?.end_on).toBe("2025-01-01");
 
         const p1Lineage = await trx
           .selectFrom("lineage.parentage_assertions")

@@ -238,7 +238,7 @@ function sameSortedIds(left: readonly string[], right: readonly string[]): boole
   return sortedLeft.every((value, index) => value === sortedRight[index]);
 }
 
-function isoDay(value: string | Date | null | undefined): string | null {
+function utcTimestampDay(value: string | Date | null | undefined): string | null {
   if (value === null || value === undefined) return null;
   if (value instanceof Date) return value.toISOString().slice(0, 10);
   if (/^\d{4}-\d{2}-\d{2}$/u.test(value)) return value;
@@ -425,17 +425,25 @@ async function applyEnrichmentResidency(
 ): Promise<boolean> {
   const existingRows = await trx
     .selectFrom("life_history.residencies")
-    .selectAll()
+    .select([
+      "residency_id",
+      "place_id",
+      "residency_type",
+      "start_precision",
+      "status",
+      sql<string | null>`to_char(start_on, 'YYYY-MM-DD')`.as("start_on"),
+      sql<string | null>`to_char(end_on, 'YYYY-MM-DD')`.as("end_on"),
+    ])
     .where("panda_id", "=", pandaId)
     .forUpdate()
     .execute();
-  const openPrimary = existingRows.filter((row) => row.residency_type === "primary" && isoDay(row.end_on) === null);
+  const openPrimary = existingRows.filter((row) => row.residency_type === "primary" && row.end_on === null);
   const [only] = openPrimary;
 
   if (openPrimary.length === 1 && only !== undefined) {
     if (
       only.place_id === targetPlaceId &&
-      isoDay(only.start_on) === residency.startOn &&
+      only.start_on === residency.startOn &&
       only.start_precision === residency.startPrecision &&
       only.status === residency.status
     ) {
@@ -455,8 +463,8 @@ async function applyEnrichmentResidency(
 
   for (const other of existingRows) {
     if (other.residency_type !== "primary" || other.residency_id === targetResidencyId) continue;
-    const otherStart = isoDay(other.start_on);
-    const otherEnd = isoDay(other.end_on);
+    const otherStart = other.start_on;
+    const otherEnd = other.end_on;
 
     if (otherEnd === null) {
       let closeOn: string;
@@ -548,7 +556,7 @@ async function applyEnrichmentParent(
       .select("source_id")
       .where("assertion_id", "=", matching.assertion_id)
       .execute();
-    const existingReviewed = isoDay(matching.reviewed_at);
+    const existingReviewed = utcTimestampDay(matching.reviewed_at);
     const sameReviewed = parent.reviewedOn === undefined || existingReviewed === parent.reviewedOn;
     if (sameReviewed && sameSortedIds(linked.map((row) => row.source_id), sourceIds)) {
       return false;
