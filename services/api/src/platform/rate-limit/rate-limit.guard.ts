@@ -7,7 +7,11 @@ import { StructuredLoggerService } from "../observability/structured-logger.serv
 import { RequestContextService } from "../request-context/request-context.service.js";
 import { RATE_LIMIT_METADATA_KEY } from "./rate-limit.decorator.js";
 import { RateLimitRuntimeService } from "./rate-limit-runtime.service.js";
-import type { RateLimitBinding, RateLimitRule } from "./rate-limit.types.js";
+import {
+  FORWARDED_CLIENT_IP_HEADER,
+  type RateLimitBinding,
+  type RateLimitRule,
+} from "./rate-limit.types.js";
 
 function headerString(value: string | string[] | undefined): string | undefined {
   const candidate = Array.isArray(value) ? value[0] : value;
@@ -16,7 +20,12 @@ function headerString(value: string | string[] | undefined): string | undefined 
   return trimmed === "" ? undefined : trimmed;
 }
 
-function clientIp(request: HttpRequest): string {
+function clientIp(request: HttpRequest, trustedWebClientIp: boolean): string {
+  // Only honor x-zhipanda-client-ip over the V2_API service binding when Web props authorize it.
+  if (trustedWebClientIp) {
+    const forwarded = headerString(request.headers[FORWARDED_CLIENT_IP_HEADER]);
+    if (forwarded !== undefined) return forwarded;
+  }
   return (
     headerString(request.headers["cf-connecting-ip"]) ??
     headerString(request.socket?.remoteAddress) ??
@@ -69,15 +78,31 @@ export class RateLimitGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<HttpRequest>();
     const accountId =
       getVerifiedIdentity(request)?.accountId ?? this.requestContext.current?.authentication?.actorId;
-    const keys = keysForRule(rule, clientIp(request), accountId);
+    const path = (request.url ?? "").split("?", 1)[0];
+    const keys = keysForRule(
+      rule,
+      clientIp(request, this.runtime.isTrustedWebClientIp()),
+      accountId,
+    );
 
     for (const key of keys) {
-      const outcome = await binding.limit({ key });
+      let outcome: { success: boolean };
+      try {
+        outcome = await binding.limit({ key });
+      } catch (error) {
+        this.logger.write("warn", "Rate-limit binding failed; allowing request", {
+          tier: rule.tier,
+          method: request.method,
+          path,
+          errorName: error instanceof Error ? error.name : "UnknownError",
+        });
+        return true;
+      }
       if (!outcome.success) {
         this.logger.write("warn", "Request rate-limited", {
           tier: rule.tier,
           method: request.method,
-          path: (request.url ?? "").split("?", 1)[0],
+          path,
         });
         throw new ProblemException(
           429,

@@ -17,7 +17,7 @@ test("hashEmailForRateLimit normalizes case/whitespace without leaking the raw e
   const a = await hashEmailForRateLimit("  Fan@Example.COM ");
   const b = await hashEmailForRateLimit("fan@example.com");
   assert.equal(a, b);
-  assert.match(a, /^[0-9a-f]{16}$/u);
+  assert.match(a, /^[0-9a-f]{32}$/u);
   assert.ok(!a.includes("fan"));
 });
 
@@ -45,7 +45,7 @@ test("enforceOtpRateLimit checks both IP and hashed email and stops when either 
   assert.equal(allowed, true);
   assert.equal(keys.length, 2);
   assert.equal(keys[0], "otp:ip:198.51.100.8");
-  assert.match(keys[1], /^otp:email:[0-9a-f]{16}$/u);
+  assert.match(keys[1], /^otp:email:[0-9a-f]{32}$/u);
 
   const deniedByIp = await enforceOtpRateLimit({
     limiter: {
@@ -64,6 +64,19 @@ test("enforceOtpRateLimit checks both IP and hashed email and stops when either 
     email: "fan@example.com",
   });
   assert.equal(deniedByEmail, false);
+});
+
+test("enforceOtpRateLimit fails open if the rate-limit binding throws unexpectedly", async () => {
+  const allowed = await enforceOtpRateLimit({
+    limiter: {
+      limit: async () => {
+        throw new Error("binding offline");
+      },
+    },
+    ip: "198.51.100.8",
+    email: "fan@example.com",
+  });
+  assert.equal(allowed, true);
 });
 
 test("otpRateLimitedResponse returns 429 with Retry-After and private no-store cache headers", async () => {

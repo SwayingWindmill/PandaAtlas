@@ -24,8 +24,9 @@ test("the production Web Worker serves cacheable responses from Workers Cache", 
   assert.deepEqual(workers.web.exports.PublicPages, { type: "worker", cache: { enabled: true } });
 });
 
-test("the API authorizes Web public-cache purges through its service binding props, not a secret", () => {
+test("the API authorizes Web public-cache purges and Web client-IP forwarding through service binding props", () => {
   assert.deepEqual(workers.api.env.PUBLIC_WEB, { type: "worker", worker: "zhipanda-v2-web", props: { publicCachePurge: true } });
+  assert.deepEqual(workers.web.env.V2_API, { type: "worker", worker: "zhipanda-v2-api", props: { trustedWebClientIp: true } });
   for (const key of ["PUBLIC_REVALIDATION_AUTH", "PUBLIC_WEB_BASE_URL"]) assert.equal(key in workers.api.env, false, key);
 });
 

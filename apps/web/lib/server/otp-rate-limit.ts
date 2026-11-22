@@ -12,7 +12,7 @@ export function extractClientIp(headers: Headers): string | undefined {
 export async function hashEmailForRateLimit(email: string): Promise<string> {
   const bytes = new TextEncoder().encode(email.trim().toLowerCase());
   const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(digest).subarray(0, 8), (b) => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(digest).subarray(0, 16), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 export async function enforceOtpRateLimit(input: {
@@ -26,8 +26,13 @@ export async function enforceOtpRateLimit(input: {
   keys.push(`otp:email:${await hashEmailForRateLimit(input.email)}`);
 
   for (const key of keys) {
-    const outcome = await input.limiter.limit({ key });
-    if (!outcome.success) return false;
+    try {
+      const outcome = await input.limiter.limit({ key });
+      if (!outcome.success) return false;
+    } catch {
+      // Fail open if the Cloudflare Rate Limiting binding throws so login stays available.
+      return true;
+    }
   }
   return true;
 }

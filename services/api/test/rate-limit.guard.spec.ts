@@ -4,8 +4,11 @@ import { ExpressAdapter, type NestExpressApplication } from "@nestjs/platform-ex
 import { Test } from "@nestjs/testing";
 import type { IncomingMessage } from "node:http";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { AppModule } from "../src/app.module.js";
 import { configureApplication } from "../src/bootstrap.js";
+import { IDENTITY_PORT, type IdentityPort } from "../src/modules/identity/application/identity.port.js";
 import { setVerifiedIdentity } from "../src/platform/auth/request-auth.js";
+import { SupabaseJwtVerifier } from "../src/platform/auth/supabase-jwt.verifier.js";
 import { ConfigModule } from "../src/platform/config/config.module.js";
 import { HttpPlatformModule } from "../src/platform/http/http-platform.module.js";
 import { ProblemException } from "../src/platform/http/problem.exception.js";
@@ -14,7 +17,11 @@ import { RateLimit } from "../src/platform/rate-limit/rate-limit.decorator.js";
 import { RateLimitGuard } from "../src/platform/rate-limit/rate-limit.guard.js";
 import { RateLimitModule } from "../src/platform/rate-limit/rate-limit.module.js";
 import { RateLimitRuntimeService } from "../src/platform/rate-limit/rate-limit-runtime.service.js";
-import type { RateLimitWorkerBindings } from "../src/platform/rate-limit/rate-limit.types.js";
+import {
+  FORWARDED_CLIENT_IP_HEADER,
+  type RateLimitRuntimeState,
+  type RateLimitWorkerBindings,
+} from "../src/platform/rate-limit/rate-limit.types.js";
 import { RequestContextModule } from "../src/platform/request-context/request-context.module.js";
 import { RequestContextService } from "../src/platform/request-context/request-context.service.js";
 import { injectHttp } from "./inject-http.js";
@@ -178,6 +185,144 @@ describe("RateLimitGuard", () => {
       },
     ]);
   });
+
+  it("honors x-zhipanda-client-ip only when trustedWebClientIp is true", async () => {
+    class Dummy {
+      @RateLimit("write", { keyStrategy: "ip" })
+      public guess() {
+        return "ok";
+      }
+    }
+    const keys: string[] = [];
+    const runtime = new RateLimitRuntimeService({
+      WRITE_RATE_LIMIT: {
+        limit: ({ key }) => {
+          keys.push(key);
+          return Promise.resolve({ success: true });
+        },
+      },
+    });
+    const guard = new RateLimitGuard(
+      new Reflector(),
+      runtime,
+      new RequestContextService(),
+      { write: () => undefined } as never,
+    );
+    const handler = methodHandler(Dummy.prototype, "guess");
+
+    // Untrusted external caller trying to spoof x-zhipanda-client-ip falls back to cf-connecting-ip.
+    await expect(
+      runtime.withBindings(
+        {},
+        () =>
+          guard.canActivate(
+            executionContext(
+              makeRequest({
+                "cf-connecting-ip": "198.51.100.1",
+                [FORWARDED_CLIENT_IP_HEADER]: "203.0.113.250",
+              }),
+              handler,
+            ),
+          ),
+        { trustedWebClientIp: false },
+      ),
+    ).resolves.toBe(true);
+
+    // Trusted Web Service Binding caller forwards real browser IP via x-zhipanda-client-ip.
+    await expect(
+      runtime.withBindings(
+        {},
+        () =>
+          guard.canActivate(
+            executionContext(
+              makeRequest({
+                [FORWARDED_CLIENT_IP_HEADER]: "203.0.113.77",
+              }),
+              handler,
+            ),
+          ),
+        { trustedWebClientIp: true },
+      ),
+    ).resolves.toBe(true);
+
+    expect(keys).toEqual(["write:ip:198.51.100.1", "write:ip:203.0.113.77"]);
+  });
+
+  it("fails open and logs a warning when the binding throws", async () => {
+    class Dummy {
+      @RateLimit("write", { keyStrategy: "ip" })
+      public guess() {
+        return "ok";
+      }
+    }
+    const warnings: Array<{ message: string; fields: Record<string, unknown> }> = [];
+    const runtime = new RateLimitRuntimeService({
+      WRITE_RATE_LIMIT: {
+        limit: () => Promise.reject(new Error("worker binding timeout")),
+      },
+    });
+    const guard = new RateLimitGuard(
+      new Reflector(),
+      runtime,
+      new RequestContextService(),
+      {
+        write: (_level: string, message: string, fields: Record<string, unknown>) =>
+          warnings.push({ message, fields }),
+      } as never,
+    );
+
+    await expect(
+      guard.canActivate(
+        executionContext(
+          makeRequest({ "cf-connecting-ip": "198.51.100.88" }, "/api/v2/games/guess/answer?foo=1"),
+          methodHandler(Dummy.prototype, "guess"),
+        ),
+      ),
+    ).resolves.toBe(true);
+    expect(warnings).toEqual([
+      {
+        message: "Rate-limit binding failed; allowing request",
+        fields: {
+          tier: "write",
+          method: "POST",
+          path: "/api/v2/games/guess/answer",
+          errorName: "Error",
+        },
+      },
+    ]);
+  });
+
+  it("isolates bindings and trustedWebClientIp across concurrent async requests", async () => {
+    const runtime = new RateLimitRuntimeService();
+    const seen: Array<RateLimitRuntimeState | undefined> = [];
+
+    await Promise.all([
+      runtime.withBindings(
+        { WRITE_RATE_LIMIT: { limit: () => Promise.resolve({ success: true }) } },
+        async () => {
+          await new Promise((resolve) => setTimeout(resolve, 15));
+          seen.push(runtime.current());
+        },
+        { trustedWebClientIp: true },
+      ),
+      runtime.withBindings(
+        { SENSITIVE_RATE_LIMIT: { limit: () => Promise.resolve({ success: false }) } },
+        async () => {
+          await new Promise((resolve) => setTimeout(resolve, 5));
+          seen.push(runtime.current());
+        },
+        { trustedWebClientIp: false },
+      ),
+    ]);
+
+    expect(seen).toHaveLength(2);
+    expect(seen[0]?.trustedWebClientIp).toBe(false);
+    expect(seen[0]?.WRITE_RATE_LIMIT).toBeUndefined();
+    expect(seen[0]?.SENSITIVE_RATE_LIMIT).toBeDefined();
+    expect(seen[1]?.trustedWebClientIp).toBe(true);
+    expect(seen[1]?.WRITE_RATE_LIMIT).toBeDefined();
+    expect(seen[1]?.SENSITIVE_RATE_LIMIT).toBeUndefined();
+  });
 });
 
 @Controller("test-rate-limit")
@@ -254,5 +399,70 @@ describe("RateLimitGuard HTTP integration", () => {
 
     const open = await injectHttp(app, { method: "GET", url: "/api/v2/test-rate-limit/open" });
     expect(open.statusCode).toBe(200);
+  });
+
+  it("runs after SupabaseAuthGuard and uses verified account identity in AppModule guard chain", async () => {
+    const keys: string[] = [];
+    const runtime = new RateLimitRuntimeService({
+      SENSITIVE_RATE_LIMIT: {
+        limit: ({ key }) => {
+          keys.push(key);
+          return Promise.resolve({ success: true });
+        },
+      },
+    });
+    const accountId = "11111111-1111-4111-8111-111111111111";
+    const identityPort: IdentityPort = {
+      loadAuthorizationSnapshot: () => Promise.resolve(undefined),
+      isLiveSession: () => Promise.resolve(true),
+      provisionAccount: (id) =>
+        Promise.resolve({
+          accountId: id,
+          accountState: "active",
+          capabilities: new Map(),
+        }),
+      getProfile: () => Promise.reject(new Error("not used")),
+      replaceProfile: () => Promise.reject(new Error("not used")),
+    };
+
+    const moduleRef = await Test.createTestingModule({
+      imports: [AppModule],
+    })
+      .overrideProvider(RateLimitRuntimeService)
+      .useValue(runtime)
+      .overrideProvider(SupabaseJwtVerifier)
+      .useValue({
+        verify: () => Promise.resolve(fakeIdentity(accountId)),
+      })
+      .overrideProvider(IDENTITY_PORT)
+      .useValue(identityPort)
+      .compile();
+
+    app = moduleRef.createNestApplication<NestExpressApplication>(new ExpressAdapter());
+    await configureApplication(app);
+
+    // Unauthenticated request fails 401 in SupabaseAuthGuard before reaching RateLimitGuard.
+    const unauthenticated = await injectHttp(app, {
+      method: "POST",
+      url: "/api/v2/me/account",
+      headers: { "cf-connecting-ip": "198.51.100.55" },
+    });
+    expect(unauthenticated.statusCode).toBe(401);
+    expect(keys).toEqual([]);
+
+    // @AllowUnprovisioned() authenticated request populates verified identity and keys both IP and accountId.
+    const provisioned = await injectHttp(app, {
+      method: "POST",
+      url: "/api/v2/me/account",
+      headers: {
+        authorization: "Bearer valid-test-token",
+        "cf-connecting-ip": "198.51.100.55",
+      },
+    });
+    expect(provisioned.statusCode).toBe(201);
+    expect(keys).toEqual([
+      "sensitive:ip:198.51.100.55",
+      `sensitive:account:${accountId}`,
+    ]);
   });
 });

@@ -24,12 +24,16 @@ const coldStart = createColdStartReporter(logger);
 export default {
   fetch(request, bindings, context) {
     coldStart.report("fetch", { method: request.method, path: new URL(request.url).pathname });
-    return rateLimitRuntime.withBindings(bindings, () =>
-      askRuntime.withBindings(bindings, () =>
-        database.withRequest(bindings.HYPERDRIVE.connectionString, () =>
-          bridge.fetch(request, bindings, context),
+    const trustedWebClientIp = context?.props?.trustedWebClientIp === true;
+    return rateLimitRuntime.withBindings(
+      bindings,
+      () =>
+        askRuntime.withBindings(bindings, () =>
+          database.withRequest(bindings.HYPERDRIVE.connectionString, () =>
+            bridge.fetch(request, bindings, context),
+          ),
         ),
-      ),
+      { trustedWebClientIp },
     );
   },
   scheduled(_controller, bindings, context) {
