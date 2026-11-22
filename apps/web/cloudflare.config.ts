@@ -24,7 +24,8 @@ export default defineConfig(({ mode }) => ({
     env: {
       ASSETS: bindings.assets(),
       HOME_MEDIA: bindings.r2({ name: "panda-atlas-media" }),
-      ...(mode === "production" ? { V2_API: bindings.worker({ worker: "zhipanda-v2-api" }) } : {}),
+      AUTH_OTP_RATE_LIMIT: bindings.rateLimit({ namespace: "1004", simple: { limit: 5, period: 60 } }),
+      ...(mode === "production" ? { V2_API: bindings.worker({ worker: "zhipanda-v2-api", props: { trustedWebClientIp: true } }) } : {}),
       API_TRANSPORT: bindings.text(mode === "production" ? "service-binding" : "http"),
       API_BASE_URL: bindings.text(mode === "production" ? "https://api.zhipanda.com" : (process.env.API_BASE_URL ?? "http://localhost:3001")),
       NEXT_PUBLIC_API_BASE_URL: bindings.text(mode === "production" ? "https://api.zhipanda.com" : (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001")),

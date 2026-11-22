@@ -22,12 +22,15 @@ import { SupabaseAuthGuard } from "./platform/auth/supabase-auth.guard.js";
 import { ConfigModule } from "./platform/config/config.module.js";
 import { HealthModule } from "./platform/health/health.module.js";
 import { HttpPlatformModule } from "./platform/http/http-platform.module.js";
+import { RateLimitGuard } from "./platform/rate-limit/rate-limit.guard.js";
+import { RateLimitModule } from "./platform/rate-limit/rate-limit.module.js";
 
 @Module({
   imports: [
     ConfigModule,
     AuthModule,
     HttpPlatformModule,
+    RateLimitModule,
     HealthModule,
     IdentityModule,
     ContributionModule,
@@ -49,6 +52,7 @@ import { HttpPlatformModule } from "./platform/http/http-platform.module.js";
   providers: [
     { provide: APP_GUARD, useExisting: SupabaseAuthGuard },
     { provide: APP_GUARD, useExisting: ApplicationAccessGuard },
+    { provide: APP_GUARD, useExisting: RateLimitGuard },
   ],
 })
 export class AppModule {}

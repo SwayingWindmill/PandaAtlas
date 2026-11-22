@@ -3,6 +3,7 @@ import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestj
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { getVerifiedIdentity } from "../../../platform/auth/request-auth.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { AccountProvisioningBlockedError } from "../application/identity.errors.js";
 import { IDENTITY_PORT, type IdentityPort } from "../application/identity.port.js";
@@ -25,6 +26,7 @@ export class MeController {
 
   @Post("account")
   @AllowUnprovisioned()
+  @RateLimit("sensitive", { keyStrategy: "ip_and_account" })
   @ApiOperation({ operationId: "provisionCurrentAccount" })
   @ApiCreatedResponse({ type: ProvisionedAccountDto })
   public async provisionAccount(@Req() request: HttpRequest): Promise<{
@@ -91,6 +93,7 @@ export class MeController {
 
   @Put("profile")
   @RequireCapabilities("account.profile.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "replaceCurrentProfile" })
   @ApiOkResponse({ type: FanProfileDto })
   public async replaceProfile(@Req() request: HttpRequest, @Body() input: ReplaceProfileDto) {

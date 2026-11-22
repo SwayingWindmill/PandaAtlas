@@ -14,6 +14,7 @@ import {
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import {
@@ -75,6 +76,7 @@ export class EngagementController {
 
   @Post("favorites/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "favoritePanda" })
   @ApiCreatedResponse({ type: FavoriteDto })
   public favorite(
@@ -86,6 +88,7 @@ export class EngagementController {
 
   @Delete("favorites/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "unfavoritePanda" })
   @ApiOkResponse({ type: UnfavoriteDto })
   public async unfavorite(
@@ -106,6 +109,7 @@ export class EngagementController {
 
   @Post("followed-venues/:slug")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "followVenue" })
   @ApiCreatedResponse({ type: FollowedVenueDto })
   public async followVenue(@Req() request: HttpRequest, @Param("slug") slug: string) {
@@ -116,6 +120,7 @@ export class EngagementController {
 
   @Delete("followed-venues/:slug")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "unfollowVenue" })
   @ApiOkResponse({ type: UnfollowVenueDto })
   public async unfollowVenue(@Req() request: HttpRequest, @Param("slug") slug: string) {
@@ -133,6 +138,7 @@ export class EngagementController {
 
   @Post("collections")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "createCollection" })
   @ApiCreatedResponse({ type: CollectionDto })
   public createCollection(@Req() request: HttpRequest, @Body() input: CollectionNameDto) {
@@ -141,6 +147,7 @@ export class EngagementController {
 
   @Patch("collections/:collectionId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "renameCollection" })
   @ApiOkResponse({ type: CollectionDto })
   public async renameCollection(
@@ -156,6 +163,7 @@ export class EngagementController {
 
   @Delete("collections/:collectionId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "deleteCollection" })
   @ApiOkResponse({ type: DeletedCollectionDto })
   public async deleteCollection(
@@ -170,6 +178,7 @@ export class EngagementController {
 
   @Post("collections/:collectionId/pandas/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "addPandaToCollection" })
   @ApiCreatedResponse({ type: CollectionDto })
   public async addPandaToCollection(
@@ -185,6 +194,7 @@ export class EngagementController {
 
   @Delete("collections/:collectionId/pandas/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "removePandaFromCollection" })
   @ApiOkResponse({ type: CollectionDto })
   public async removePandaFromCollection(
@@ -208,6 +218,7 @@ export class EngagementController {
 
   @Post("checkins")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "createCheckin" })
   @ApiCreatedResponse({ type: CheckinDto })
   public createCheckin(@Req() request: HttpRequest, @Body() input: CreateCheckinDto) {
@@ -220,6 +231,7 @@ export class EngagementController {
 
   @Delete("checkins/:checkinId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "deleteCheckin" })
   @ApiOkResponse({ type: DeletedCheckinDto })
   public async deleteCheckin(
@@ -257,6 +269,7 @@ export class EngagementController {
 
   @Put("seen-pandas/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "saveSeenPanda" })
   @ApiOkResponse({ type: SeenPandaDto })
   public saveSeenPanda(
@@ -274,6 +287,7 @@ export class EngagementController {
 
   @Delete("seen-pandas/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "deleteSeenPanda" })
   @ApiOkResponse({ type: DeletedSeenPandaDto })
   public async deleteSeenPanda(

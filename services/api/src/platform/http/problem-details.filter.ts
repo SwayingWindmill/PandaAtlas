@@ -122,6 +122,11 @@ export class ProblemDetailsFilter implements ExceptionFilter {
     };
 
     const { httpAdapter } = this.adapterHost;
+    if (exception instanceof ProblemException && exception.headers !== undefined) {
+      for (const [name, value] of Object.entries(exception.headers)) {
+        httpAdapter.setHeader(response, name, value);
+      }
+    }
     httpAdapter.setHeader(response, "Content-Type", "application/problem+json");
     httpAdapter.reply(response, problem, status);
   }
