@@ -19,7 +19,8 @@ RUN useradd --system --create-home --home-dir /home/collector collector \
 
 USER collector
 
-ENV COLLECTOR_TARGETS=/app/data/collector/targets.yaml \
+ENV PATH="/app/services/collector/.venv/bin:${PATH}" \
+    COLLECTOR_TARGETS=/app/data/collector/targets.yaml \
     COLLECTOR_ALIASES=/app/data/collector/aliases.yaml \
     COLLECTOR_PUBLISHED_PANDAS=/app/data/curation/learning/published-pandas.json \
     COLLECTOR_STATE_DIR=/var/lib/collector

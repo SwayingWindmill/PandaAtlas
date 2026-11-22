@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 import httpx
 import psycopg
+import yaml
 
 from collector.config import Settings, load_targets
 from collector.lexicon import Lexicon
@@ -132,7 +133,7 @@ async def _probe_http(
         if response.status_code < 500:
             return CheckResult(name, "ok", f"HTTP {response.status_code} ({root})")
         return CheckResult(name, "fail", f"HTTP {response.status_code} ({root})")
-    except httpx.HTTPError as exc:
+    except (httpx.HTTPError, httpx.InvalidURL) as exc:
         return CheckResult(name, "fail", f"request to {root} failed: {exc}")
 
 
@@ -147,7 +148,7 @@ async def run_doctor(
 
     try:
         targets = load_targets(settings.targets_file)
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, yaml.YAMLError) as exc:
         results.append(CheckResult("targets", "fail", f"failed to load targets: {exc}"))
     else:
         adapters = configured_adapters(settings)
@@ -167,7 +168,7 @@ async def run_doctor(
 
     try:
         lexicon = Lexicon.load(settings.pandas_source, settings.aliases_file)
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, yaml.YAMLError) as exc:
         results.append(CheckResult("lexicon", "fail", f"failed to load lexicon: {exc}"))
     else:
         unique_slugs = {slug for slugs in lexicon.names.values() for slug in slugs}

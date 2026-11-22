@@ -91,6 +91,14 @@ async def test_doctor_flags_config_and_alert_failures(tmp_path: Path) -> None:
     }
     assert webhook_results["alerts"].status == "fail"
 
+    broken_yaml = tmp_path / "broken.yaml"
+    broken_yaml.write_text("targets: [unclosed", encoding="utf-8")
+    yaml_results = {
+        item.name: item
+        for item in await doctor.run_doctor(_settings(targets_file=broken_yaml), offline=True)
+    }
+    assert yaml_results["targets"].status == "fail"
+
 
 async def test_doctor_warns_when_optional_keys_or_rsshub_missing() -> None:
     settings = _settings(
@@ -146,6 +154,35 @@ async def test_doctor_online_http_probes_and_db_failure(monkeypatch: pytest.Monk
     assert by_name["aihot"].status == "fail"
 
 
+async def test_doctor_warns_unmigrated_db_and_rsshub_403(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class FakeCursor:
+        async def fetchone(self) -> tuple[None]:
+            return (None,)
+
+    class FakeConn:
+        async def execute(self, _sql: str) -> FakeCursor:
+            return FakeCursor()
+
+        async def close(self) -> None:
+            return None
+
+    async def fake_connect(*_args: Any, **_kwargs: Any) -> FakeConn:
+        return FakeConn()
+
+    monkeypatch.setattr(doctor.psycopg.AsyncConnection, "connect", fake_connect)
+    async with httpx.AsyncClient(
+        transport=httpx.MockTransport(lambda _req: httpx.Response(403))
+    ) as client:
+        results = await doctor.run_doctor(_settings(), offline=False, client=client)
+
+    by_name = {item.name: item for item in results}
+    assert by_name["database"].status == "warn"
+    assert by_name["rsshub"].status == "warn"
+    assert not doctor.has_failures(results)
+
+
 async def test_doctor_database_live(store: Store) -> None:
     dsn = store.pool.conninfo
     settings = replace(_settings(rsshub_url=None), database_url=dsn)
@@ -158,11 +195,19 @@ async def test_doctor_database_live(store: Store) -> None:
 def test_cli_doctor_offline_json_and_failure_exit_code(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
+    for var in (
+        "COLLECTOR_ALERT_WEBHOOK",
+        "COLLECTOR_RSS_CONCURRENCY",
+        "COLLECTOR_TARGETS",
+        "COLLECTOR_ALIASES",
+        "COLLECTOR_PUBLISHED_PANDAS",
+        "XHS_MCP_URL",
+        "XHS_MCP_TOKEN",
+        "AIHOT_URL",
+        "AIHOT_INGEST_TOKEN",
+    ):
+        monkeypatch.delenv(var, raising=False)
     monkeypatch.setenv("COLLECTOR_ALERT_FORMAT", "feishu")
-    monkeypatch.delenv("XHS_MCP_URL", raising=False)
-    monkeypatch.delenv("XHS_MCP_TOKEN", raising=False)
-    monkeypatch.delenv("AIHOT_URL", raising=False)
-    monkeypatch.delenv("AIHOT_INGEST_TOKEN", raising=False)
 
     cli.main(["doctor", "--offline", "--json"])
     payload = json.loads(capsys.readouterr().out)
@@ -184,6 +229,8 @@ def test_minimal_compose_is_valid_yaml_without_required_env_traps() -> None:
     parsed = yaml.safe_load(raw)
     assert set(parsed["services"]) == {"postgres", "redis", "rsshub", "collector"}
     assert (REPO_ROOT / "services/collector/Dockerfile").is_file()
+    dockerfile_text = (REPO_ROOT / "services/collector/Dockerfile").read_text(encoding="utf-8")
+    assert "/app/services/collector/.venv/bin" in dockerfile_text
     assert (REPO_ROOT / "infra/collector/env.minimal.example").is_file()
     assert (REPO_ROOT / "infra/collector/zhipanda-collector.service.example").is_file()
     assert (REPO_ROOT / "docs/runbooks/collector-v1-deployment.md").is_file()
