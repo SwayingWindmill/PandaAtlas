@@ -1,5 +1,5 @@
 {
-  "$comment": "Visitor content for zoos and breeding centers. Each institution lists the existing facility places it runs, by slug, with a map point and an optional visit guide. legacySlugs lists duplicate places merged into it: the batch moves their residencies, events and check-ins here and keeps the old slug so old links resolve. Edit here; CI validates the file (scripts/curation/validate_institution_content.py), and after merge the curation.content batch writes it and release.publish serves it (docs/runbooks/content-entry.md). Hours and prices change: only record what an official page says, and update verifiedOn when you recheck.",
+  "$comment": "Visitor content for zoos and breeding centers. Each institution lists the facility places it runs, by slug, with a map point and an optional visit guide. legacySlugs lists duplicate places merged into it: the batch moves their residencies, events and check-ins here and keeps the old slug so old links resolve. Edit here; CI validates the file (scripts/curation/validate_institution_content.py), and after merge the curation.content batch upserts institutions and named facility places by slug and release.publish serves it (docs/runbooks/content-entry.md). Hours and prices change: only record what an official page says, and update verifiedOn when you recheck.",
   "institutions": [
     {
       "slug": "chengdu-research-base",
@@ -64,6 +64,41 @@
               "https://www.panda.org.cn/cn/service/transit/",
               "https://www.panda.org.cn/cn/service/notice/"
             ]
+          }
+        },
+        {
+          "slug": "chengdu-panda-valley",
+          "nameZh": "成都大熊猫繁育研究基地都江堰野放繁育研究中心（熊猫谷）",
+          "nameEn": "Chengdu Research Base Dujiangyan Field Research Center (Panda Valley)",
+          "countryCode": "CN",
+          "region": "四川都江堰",
+          "longitude": 103.5130,
+          "latitude": 30.9850,
+          "visitGuide": {
+            "address": {
+              "zh": "四川省成都市都江堰市玉堂街道环山旅游路玉堂段 408 号",
+              "en": "408 Yutang Section, Huanshan Tourism Road, Yutang Subdistrict, Dujiangyan, Sichuan"
+            },
+            "openingHours": {
+              "zh": "5 月至 10 月 7:30 至 18:00（17:00 停止入园）；11 月至次年 4 月 8:00 至 17:30（16:30 停止入园）。",
+              "en": "May to October: 07:30 to 18:00 (last entry 17:00); November to April: 08:00 to 17:30 (last entry 16:30)."
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "隶属成都大熊猫繁育研究基地，主打大熊猫野化放归研究与半散放小熊猫展区，门票与成都主基地分开预约。"
+                }
+              },
+              {
+                "topic": "best_time",
+                "text": {
+                  "zh": "分上午场与下午场实名预约入园，上午时段大熊猫户外活动更集中。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": ["https://www.panda.org.cn/"]
           }
         }
       ]
@@ -137,6 +172,37 @@
             ],
             "verifiedOn": "2026-11-04",
             "sourceUrls": ["https://www.info.gov.hk/gia/general/201605/11/P201605110928.htm"]
+          }
+        },
+        {
+          "slug": "ccrcgp-dujiangyan-base",
+          "nameZh": "中国大熊猫保护研究中心都江堰基地（中华大熊猫苑）",
+          "nameEn": "CCRCGP Dujiangyan Base (Panda Paradise)",
+          "countryCode": "CN",
+          "region": "四川都江堰",
+          "longitude": 103.6235,
+          "latitude": 31.0045,
+          "visitGuide": {
+            "address": {
+              "zh": "四川省成都市都江堰市青城山镇石桥村",
+              "en": "Shiqiao Village, Qingchengshan Town, Dujiangyan, Sichuan"
+            },
+            "openingHours": {
+              "zh": "常规参考 8:30 至 17:00（16:30 停止入园），出行前以中心及景区实时开放公告为准。"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "位于青城山镇石桥村，由香港特区政府援建，承担大熊猫救护、科研繁育及归国大熊猫隔离检疫等工作；与成都基地管理的熊猫谷分属不同园区。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.info.gov.hk/gia/general/201605/11/P201605110928.htm",
+              "https://en.wikipedia.org/wiki/China_Conservation_and_Research_Centre_for_the_Giant_Panda"
+            ]
           }
         }
       ]
@@ -359,6 +425,1016 @@
               "https://english.adnkronos.com/2026/01/25/people-bid-farewell-to-ueno-zoo-pandas-on-final-viewing-day/",
               "https://www.tokyo-zoo.net/ueno/visitor-info/access/index.html",
               "https://www.tokyo-zoo.net/ueno/news/6493/index.html"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "beijing-zoo",
+      "nameZh": "北京动物园",
+      "nameEn": "Beijing Zoo",
+      "countryCode": "CN",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "始建于 1906 年，位于北京市西城区，是中国最早向公众开放的动物园之一，也是著名大熊猫萌兰、萌大、萌二等的家园。",
+          "en": "Founded in 1906 in Beijing's Xicheng District, Beijing Zoo is one of China's oldest public zoos and home to giant pandas including Meng Lan, Meng Da and Meng Er."
+        },
+        "websiteUrl": "https://www.bjzoo.com/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.bjzoo.com/",
+          "https://en.wikipedia.org/wiki/Beijing_Zoo"
+        ]
+      },
+      "places": [
+        {
+          "slug": "beijing-zoo",
+          "nameZh": "北京动物园",
+          "nameEn": "Beijing Zoo",
+          "countryCode": "CN",
+          "region": "北京",
+          "longitude": 116.3333,
+          "latitude": 39.9386,
+          "visitGuide": {
+            "address": {
+              "zh": "北京市西城区西直门外大街 137 号",
+              "en": "137 Xizhimenwai Street, Xicheng District, Beijing"
+            },
+            "openingHours": {
+              "zh": "旺季（4 月至 10 月）7:30 至 19:00（18:00 停止入园）；淡季（11 月至次年 3 月）7:30 至 18:00（17:00 停止入园）；大熊猫馆通常提前关闭入馆。",
+              "en": "Apr-Oct: 07:30 to 19:00 (last park entry 18:00); Nov-Mar: 07:30 to 18:00 (last entry 17:00). The Panda House closes earlier than the outer park."
+            },
+            "admission": {
+              "zh": "旺季大门票 15 元、含熊猫馆联票 19 元；淡季大门票 10 元、联票 14 元。须实名预约购票。",
+              "en": "Apr-Oct: RMB 15 (RMB 19 combo with Panda House); Nov-Mar: RMB 10 (RMB 14 combo). Timed reservation required."
+            },
+            "pandaArea": {
+              "zh": "大熊猫馆",
+              "en": "Giant Panda House"
+            },
+            "tips": [
+              {
+                "topic": "getting_there",
+                "text": {
+                  "zh": "地铁 4 号线“北京动物园站”出站即达正门附近。"
+                }
+              },
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "参观大熊猫馆需购买包含熊猫馆的联票或单独购馆票。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.bjzoo.com/",
+              "https://en.wikipedia.org/wiki/Beijing_Zoo"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "chongqing-zoo",
+      "nameZh": "重庆动物园",
+      "nameEn": "Chongqing Zoo",
+      "countryCode": "CN",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "1955 年正式对外开放，位于重庆市九龙坡区，是国内饲养大熊猫数量最多、繁育谱系最为丰富的重要动物园之一。",
+          "en": "Opened in 1955 in Jiulongpo District, Chongqing, Chongqing Zoo maintains one of the largest and most established captive giant panda populations among city zoos in China."
+        },
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://zh.wikipedia.org/wiki/%E9%87%8D%E5%BA%86%E5%8A%A8%E7%89%A9%E5%9B%AD"
+        ]
+      },
+      "places": [
+        {
+          "slug": "chongqing-zoo",
+          "nameZh": "重庆动物园",
+          "nameEn": "Chongqing Zoo",
+          "countryCode": "CN",
+          "region": "重庆",
+          "longitude": 106.5060,
+          "latitude": 29.5030,
+          "visitGuide": {
+            "address": {
+              "zh": "重庆市九龙坡区西郊一村 1 号",
+              "en": "1 Xijiao Yicun, Jiulongpo District, Chongqing"
+            },
+            "openingHours": {
+              "zh": "熊猫馆常规开放 9:00 至 17:00，上午开馆后大熊猫陆续进入外场。",
+              "en": "Giant Panda House typically 09:00 to 17:00."
+            },
+            "pandaArea": {
+              "zh": "大熊猫馆",
+              "en": "Giant Panda House"
+            },
+            "tips": [
+              {
+                "topic": "getting_there",
+                "text": {
+                  "zh": "可乘重庆轨道交通 2 号线至“动物园站”下车步行入园。"
+                }
+              },
+              {
+                "topic": "best_time",
+                "text": {
+                  "zh": "上午 9:00 前后进馆最容易同时看到多位熊猫家族成员在户外啃竹活动。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://zh.wikipedia.org/wiki/%E9%87%8D%E5%BA%86%E5%8A%A8%E7%89%A9%E5%9B%AD"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "chimelong-safari-park",
+      "nameZh": "广州长隆野生动物世界",
+      "nameEn": "Chimelong Safari Park",
+      "countryCode": "CN",
+      "profile": {
+        "kind": "wildlife_park",
+        "summary": {
+          "zh": "1997 年开园，位于广州市番禺区广州长隆旅游度假区内，以大规模野生动物种群放养及全球唯一存活大熊猫三胞胎（萌萌、帅帅、酷酷）的繁育闻名。",
+          "en": "Opened in 1997 in Panyu District, Guangzhou, Chimelong Safari Park is renowned for large-scale wildlife habitats and successfully raising the world's only surviving giant panda triplets."
+        },
+        "websiteUrl": "https://www.chimelong.com/gz/safaripark/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.chimelong.com/gz/safaripark/",
+          "https://www.chimelong.com/"
+        ]
+      },
+      "places": [
+        {
+          "slug": "chimelong-safari-park",
+          "nameZh": "广州长隆野生动物世界",
+          "nameEn": "Chimelong Safari Park",
+          "countryCode": "CN",
+          "region": "广东广州",
+          "longitude": 113.3093,
+          "latitude": 23.0056,
+          "visitGuide": {
+            "address": {
+              "zh": "广东省广州市番禺区香江大道 593 号",
+              "en": "593 Xiangjiang Avenue, Panyu District, Guangzhou, Guangdong"
+            },
+            "openingHours": {
+              "zh": "常规开放 9:30 至 18:00，节假日或周末可能调整，以景区当日官网公告为准。",
+              "en": "Typically 09:30 to 18:00; check official announcements for seasonal or weekend updates."
+            },
+            "pandaArea": {
+              "zh": "熊猫乐园",
+              "en": "Panda Village"
+            },
+            "tips": [
+              {
+                "topic": "finding_pandas",
+                "text": {
+                  "zh": "大熊猫集中在步行游览区的“熊猫乐园”，含室内空调展馆与户外庭院。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.chimelong.com/gz/safaripark/",
+              "https://www.chimelong.com/"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "shanghai-wild-animal-park",
+      "nameZh": "上海野生动物园",
+      "nameEn": "Shanghai Wild Animal Park",
+      "countryCode": "CN",
+      "profile": {
+        "kind": "wildlife_park",
+        "summary": {
+          "zh": "位于上海市浦东新区，分为步行区、车入区和水域探秘等游览分区，大熊猫展示于步行区专门场馆。",
+          "en": "Located in Pudong New Area, Shanghai, the park features walking, drive-through and boat zones, with giant pandas exhibited in its walking-area pavilion."
+        },
+        "websiteUrl": "https://www.swap-shendi.com/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.swap-shendi.com/",
+          "https://zh.wikipedia.org/wiki/%E4%B8%8A%E6%B5%B7%E9%87%8E%E7%94%9F%E5%8A%A8%E7%89%A9%E5%9B%AD"
+        ]
+      },
+      "places": [
+        {
+          "slug": "shanghai-wild-animal-park",
+          "nameZh": "上海野生动物园",
+          "nameEn": "Shanghai Wild Animal Park",
+          "countryCode": "CN",
+          "region": "上海",
+          "longitude": 121.7243,
+          "latitude": 31.0548,
+          "visitGuide": {
+            "address": {
+              "zh": "上海市浦东新区南六公路 178 号",
+              "en": "178 Nanliu Highway, Pudong New Area, Shanghai"
+            },
+            "openingHours": {
+              "zh": "常规参考 9:00 至 17:00，季节或夜场活动期间有调整，以官网为准。",
+              "en": "Typically 09:00 to 17:00, subject to seasonal adjustments."
+            },
+            "pandaArea": {
+              "zh": "大熊猫馆（步行区）",
+              "en": "Giant Panda Pavilion (Walking Zone)"
+            },
+            "tips": [
+              {
+                "topic": "finding_pandas",
+                "text": {
+                  "zh": "大熊猫馆位于步行游览区内，建议按入园导览标识前往。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.swap-shendi.com/",
+              "https://zh.wikipedia.org/wiki/%E4%B8%8A%E6%B5%B7%E9%87%8E%E7%94%9F%E5%8A%A8%E7%89%A9%E5%9B%AD"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "nanjing-hongshan-zoo",
+      "nameZh": "南京红山森林动物园",
+      "nameEn": "Nanjing Hongshan Forest Zoo",
+      "countryCode": "CN",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于南京市玄武区，以生态自然栖息地营造和取消动物表演著称，园内设有中国大熊猫馆（中华大熊猫苑）。",
+          "en": "Located in Xuanwu District, Nanjing, known for naturalistic habitat design and animal welfare practices, featuring a dedicated giant panda pavilion."
+        },
+        "websiteUrl": "https://www.njhszoo.com/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.njhszoo.com/",
+          "https://en.wikipedia.org/wiki/Nanjing_Hongshan_Forest_Zoo"
+        ]
+      },
+      "places": [
+        {
+          "slug": "nanjing-hongshan-zoo",
+          "nameZh": "南京红山森林动物园",
+          "nameEn": "Nanjing Hongshan Forest Zoo",
+          "countryCode": "CN",
+          "region": "江苏南京",
+          "longitude": 118.7983,
+          "latitude": 32.0941,
+          "visitGuide": {
+            "address": {
+              "zh": "江苏省南京市玄武区和燕路 168 号",
+              "en": "168 Heyan Road, Xuanwu District, Nanjing, Jiangsu"
+            },
+            "openingHours": {
+              "zh": "日常参考 8:30 开园、16:30 停止入园，以官方公告为准。",
+              "en": "Daily 08:30 opening with last entry at 16:30 (subject to official notice)."
+            },
+            "pandaArea": {
+              "zh": "大熊猫馆",
+              "en": "Giant Panda House"
+            },
+            "tips": [
+              {
+                "topic": "getting_there",
+                "text": {
+                  "zh": "地铁 1 号线“红山动物园站”1 号口出步行可达北门，地铁 3 号线至南京站可步行前往东门/南门。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.njhszoo.com/",
+              "https://en.wikipedia.org/wiki/Nanjing_Hongshan_Forest_Zoo"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "fuzhou-panda-world",
+      "nameZh": "海峡（福州）大熊猫研究交流中心",
+      "nameEn": "Straits (Fuzhou) Giant Panda Research and Exchange Center",
+      "countryCode": "CN",
+      "profile": {
+        "kind": "breeding_center",
+        "summary": {
+          "zh": "又称福州熊猫世界，位于福州市鼓楼区大梦山麓，专注亚热带低海拔大熊猫饲养、科研与科普教育。",
+          "en": "Also known as Fuzhou Panda World, located at the foot of Dameng Mountain in Fuzhou, specializing in giant panda care, research and education in a subtropical lowland climate."
+        },
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://zh.wikipedia.org/wiki/%E6%B5%B7%E5%B3%A1%EF%BC%88%E7%A6%8F%E5%B7%9E%EF%BC%89%E5%A4%A7%E7%86%8A%E7%8C%AB%E7%A0%94%E7%A9%B6%E4%BA%A4%E6%B5%81%E4%B8%AD%E5%BF%83"
+        ]
+      },
+      "places": [
+        {
+          "slug": "fuzhou-panda-world",
+          "nameZh": "海峡（福州）大熊猫研究交流中心（福州熊猫世界）",
+          "nameEn": "Fuzhou Panda World",
+          "countryCode": "CN",
+          "region": "福建福州",
+          "longitude": 119.2798,
+          "latitude": 26.0919,
+          "visitGuide": {
+            "address": {
+              "zh": "福建省福州市鼓楼区梦山路 88 号",
+              "en": "88 Mengshan Road, Gulou District, Fuzhou, Fujian"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "位于福州西湖公园与大梦山风景区旁，开闭馆与购票信息以当地官方发布为准。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://zh.wikipedia.org/wiki/%E6%B5%B7%E5%B3%A1%EF%BC%88%E7%A6%8F%E5%B7%9E%EF%BC%89%E5%A4%A7%E7%86%8A%E7%8C%AB%E7%A0%94%E7%A9%B6%E4%BA%A4%E6%B5%81%E4%B8%AD%E5%BF%83"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "qinling-four-treasures-park",
+      "nameZh": "秦岭四宝科学公园",
+      "nameEn": "Qinling Four Rare Animals Science Park",
+      "countryCode": "CN",
+      "profile": {
+        "kind": "breeding_center",
+        "summary": {
+          "zh": "位于陕西西安周至县楼观镇，专注保护和展示“秦岭四宝”（大熊猫、朱鹮、金丝猴、羚牛），全球唯一人工圈养棕色大熊猫“七仔”生活于此。",
+          "en": "Located in Zhouzhi County, Xi'an, Shaanxi, this conservation park focuses on the four rare Qinling species and is home to Qizai, the world's only known captive brown-and-white giant panda."
+        },
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://zh.wikipedia.org/wiki/%E7%A7%A6%E5%B2%AD%E5%9B%9B%E5%AE%9D%E7%A7%91%E5%AD%A6%E5%85%AC%E5%9B%AD"
+        ]
+      },
+      "places": [
+        {
+          "slug": "qinling-four-treasures-park",
+          "nameZh": "秦岭四宝科学公园",
+          "nameEn": "Qinling Four Rare Animals Science Park",
+          "countryCode": "CN",
+          "region": "陕西西安",
+          "longitude": 108.3237,
+          "latitude": 34.0607,
+          "visitGuide": {
+            "address": {
+              "zh": "陕西省西安市周至县楼观镇温泉大道",
+              "en": "Wenquan Avenue, Louguan Town, Zhouzhi County, Xi'an, Shaanxi"
+            },
+            "openingHours": {
+              "zh": "旺季（3 至 11 月）9:00 至 17:30（16:30 停止入园）；淡季（12 至 2 月）9:30 至 16:30（16:00 停止入园）；每周一闭园（法定节假日除外）。",
+              "en": "Mar-Nov: 09:00 to 17:30 (last entry 16:30); Dec-Feb: 09:30 to 16:30 (last entry 16:00); closed Mondays except public holidays."
+            },
+            "pandaArea": {
+              "zh": "大熊猫馆",
+              "en": "Giant Panda Pavilion"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "注意每周一例行闭园休整（法定节假日正常开放），出行前记得核实当天预约。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://zh.wikipedia.org/wiki/%E7%A7%A6%E5%B2%AD%E5%9B%9B%E5%AE%9D%E7%A7%91%E5%AD%A6%E5%85%AC%E5%9B%AD"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "dalian-forest-zoo",
+      "nameZh": "大连森林动物园",
+      "nameEn": "Dalian Forest Zoo",
+      "countryCode": "CN",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "1997 年于大连白云山风景区正式开园，分为圈养与散养两大游览区，大熊猫馆生活着飞云、金虎等大熊猫。",
+          "en": "Opened in 1997 in Dalian's Baiyun Mountain scenic area, the zoo spans captive and safari zones and houses giant pandas including Fei Yun and Jin Hu."
+        },
+        "websiteUrl": "https://www.dlzoo.com/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.dlzoo.com/",
+          "https://zh.wikipedia.org/wiki/%E5%A4%A7%E8%BF%9E%E6%A3%AE%E6%9E%97%E5%8A%A8%E7%89%A9%E5%9B%AD"
+        ]
+      },
+      "places": [
+        {
+          "slug": "dalian-forest-zoo",
+          "nameZh": "大连森林动物园",
+          "nameEn": "Dalian Forest Zoo",
+          "countryCode": "CN",
+          "region": "辽宁大连",
+          "longitude": 121.6000,
+          "latitude": 38.8814,
+          "visitGuide": {
+            "address": {
+              "zh": "辽宁省大连市西岗区南石道街迎春路 60 号",
+              "en": "60 Yingchun Road, Xigang District, Dalian, Liaoning"
+            },
+            "pandaArea": {
+              "zh": "大熊猫馆（圈养区）",
+              "en": "Giant Panda House"
+            },
+            "tips": [
+              {
+                "topic": "finding_pandas",
+                "text": {
+                  "zh": "大熊猫馆位于圈养区内，具体开闭园及停售票时间随季节调整，出行前可查官网。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.dlzoo.com/",
+              "https://zh.wikipedia.org/wiki/%E5%A4%A7%E8%BF%9E%E6%A3%AE%E6%9E%97%E5%8A%A8%E7%89%A9%E5%9B%AD"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "ocean-park-hong-kong",
+      "nameZh": "香港海洋公园",
+      "nameEn": "Ocean Park Hong Kong",
+      "countryCode": "HK",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于香港岛黄竹坑的主题海洋及动物保育公园，“香港赛马会四川奇珍馆”与“大熊猫之旅”生活着盈盈、乐乐与龙凤胎等大熊猫家庭成员。",
+          "en": "A marine and wildlife conservation theme park in Hong Kong's Wong Chuk Hang, home to giant pandas Ying Ying, Le Le and their twins across Giant Panda Adventure and the Sichuan Treasures exhibit."
+        },
+        "websiteUrl": "https://www.oceanpark.com.hk/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.oceanpark.com.hk/",
+          "https://www.oceanpark.com.hk/en/park-experience/attractions/giant-panda-adventure"
+        ]
+      },
+      "places": [
+        {
+          "slug": "ocean-park-hong-kong",
+          "nameZh": "香港海洋公园",
+          "nameEn": "Ocean Park Hong Kong",
+          "countryCode": "HK",
+          "region": "香港",
+          "longitude": 114.1759,
+          "latitude": 22.2459,
+          "visitGuide": {
+            "address": {
+              "zh": "香港仔黄竹坑道 180 号",
+              "en": "180 Wong Chuk Hang Road, Aberdeen, Hong Kong"
+            },
+            "openingHours": {
+              "zh": "大熊猫之旅展馆常规开放 10:00 至 17:30（全园时间以官网每日运营日历为准）。",
+              "en": "Giant Panda Adventure is typically open 10:00 to 17:30; check daily park hours online."
+            },
+            "pandaArea": {
+              "zh": "大熊猫之旅 / 香港赛马会四川奇珍馆（海滨乐园·亚洲动物天地）",
+              "en": "Giant Panda Adventure / Hong Kong Jockey Club Sichuan Treasures"
+            },
+            "tips": [
+              {
+                "topic": "getting_there",
+                "text": {
+                  "zh": "乘港铁南港岛线至“海洋公园站”B 出口直达正门。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.oceanpark.com.hk/",
+              "https://www.oceanpark.com.hk/en/park-experience/attractions/giant-panda-adventure"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "taipei-zoo",
+      "nameZh": "台北市立动物园",
+      "nameEn": "Taipei Zoo",
+      "countryCode": "TW",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于台北市文山区木栅，设有“新光特展馆（大熊猫馆）”，是圆圆、圆仔与圆宝的生活家园。",
+          "en": "Located in Wenshan District, Taipei, Taipei Zoo operates the Giant Panda House (New Animal Conservation Exhibition), home to Yuan Yuan, Yuan Zai and Yuan Bao."
+        },
+        "websiteUrl": "https://www.zoo.gov.taipei/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.zoo.gov.taipei/",
+          "https://english.zoo.gov.taipei/",
+          "https://zh.wikipedia.org/wiki/%E8%87%BA%E5%8C%97%E5%B8%82%E7%AB%8B%E5%8B%95%E7%89%A9%E5%9C%92"
+        ]
+      },
+      "places": [
+        {
+          "slug": "taipei-zoo",
+          "nameZh": "台北市立动物园",
+          "nameEn": "Taipei Zoo",
+          "countryCode": "TW",
+          "region": "台北",
+          "longitude": 121.5842,
+          "latitude": 24.9950,
+          "visitGuide": {
+            "address": {
+              "zh": "台北市文山区新光路二段 30 号",
+              "en": "No. 30, Sec. 2, Xinguang Rd., Wenshan Dist., Taipei City"
+            },
+            "openingHours": {
+              "zh": "园区 9:00 至 17:00（16:00 停止入园）；大熊猫馆 9:00 至 16:30（部分周一轮休整备，除夕休园）。",
+              "en": "Park 09:00 to 17:00 (last entry 16:00); Giant Panda House 09:00 to 16:30 (rotating Monday maintenance)."
+            },
+            "pandaArea": {
+              "zh": "新光特展馆（大熊猫馆）",
+              "en": "Giant Panda House"
+            },
+            "tips": [
+              {
+                "topic": "getting_there",
+                "text": {
+                  "zh": "乘台北捷运文湖线至终点“动物园站”即达。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.zoo.gov.taipei/",
+              "https://english.zoo.gov.taipei/"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "san-diego-zoo",
+      "nameZh": "圣地亚哥动物园",
+      "nameEn": "San Diego Zoo",
+      "countryCode": "US",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于美国加州圣地亚哥巴尔博亚公园。新建成的大熊猫栖息区“Panda Ridge”自 2024 年起迎来大熊猫云川和鑫宝。",
+          "en": "Located in Balboa Park, San Diego, California. Its Denny Sanford Panda Ridge habitat has been home to giant pandas Yun Chuan and Xin Bao since 2024."
+        },
+        "websiteUrl": "https://zoo.sandiegozoo.org/giant-pandas",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://zoo.sandiegozoo.org/giant-pandas",
+          "https://en.wikipedia.org/wiki/San_Diego_Zoo"
+        ]
+      },
+      "places": [
+        {
+          "slug": "san-diego-zoo",
+          "nameZh": "圣地亚哥动物园",
+          "nameEn": "San Diego Zoo",
+          "countryCode": "US",
+          "region": "California",
+          "longitude": -117.1516,
+          "latitude": 32.7357,
+          "visitGuide": {
+            "address": {
+              "zh": "2920 Zoo Drive, San Diego, CA 92101",
+              "en": "2920 Zoo Drive, San Diego, CA 92101"
+            },
+            "openingHours": {
+              "zh": "通常 9:00 开园（Panda Ridge 约 9:30 后开放，闭园时间随季节变化，以官网当日时刻为准）。",
+              "en": "Typically opens at 09:00; Panda Ridge viewing opens shortly after main gates (closing varies seasonally)."
+            },
+            "pandaArea": {
+              "zh": "Denny Sanford Panda Ridge",
+              "en": "Denny Sanford Panda Ridge"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "参观 Panda Ridge 可在入园后扫码领免费当日定时票或走现场等候队列，无需另购加价票。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://zoo.sandiegozoo.org/giant-pandas",
+              "https://en.wikipedia.org/wiki/San_Diego_Zoo"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "everland",
+      "nameZh": "爱宝乐园",
+      "nameEn": "Everland",
+      "countryCode": "KR",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于韩国京畿道龙仁市，园内“熊猫世界（Panda World）”是爱宝、乐宝以及双胞胎睿宝和辉宝的家园。",
+          "en": "Located in Yongin, Gyeonggi-do, South Korea, Everland's Panda World is home to Ai Bao, Le Bao and twin cubs Rui Bao and Hui Bao."
+        },
+        "websiteUrl": "https://www.everland.com/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.everland.com/",
+          "https://en.wikipedia.org/wiki/Everland"
+        ]
+      },
+      "places": [
+        {
+          "slug": "everland",
+          "nameZh": "爱宝乐园熊猫世界",
+          "nameEn": "Everland Panda World",
+          "countryCode": "KR",
+          "region": "Gyeonggi-do",
+          "longitude": 127.2028,
+          "latitude": 37.2939,
+          "visitGuide": {
+            "address": {
+              "zh": "199 Everland-ro, Pogok-eup, Cheoin-gu, Yongin-si, Gyeonggi-do",
+              "en": "199 Everland-ro, Pogok-eup, Cheoin-gu, Yongin-si, Gyeonggi-do, South Korea"
+            },
+            "openingHours": {
+              "zh": "动物展馆“Panda World”常规开放约 10:00 至 17:30（受动物护理安排及乐园营业时间影响，以官网为准）。",
+              "en": "Panda World typically operates 10:00 to 17:30, subject to animal care and seasonal park hours."
+            },
+            "pandaArea": {
+              "zh": "熊猫世界（Panda World）",
+              "en": "Panda World"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "旺季或周末参观 Panda World 常需通过爱宝乐园官方 App 获取 Smart Queue（智能排队时段）。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.everland.com/",
+              "https://en.wikipedia.org/wiki/Everland"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "river-wonders",
+      "nameZh": "新加坡河川生态园",
+      "nameEn": "River Wonders",
+      "countryCode": "SG",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "万态野生动物世界旗下亚洲首个河川主题野生动物园，园内“大熊猫竹林（Giant Panda Forest）”生活着凯凯和嘉嘉。",
+          "en": "Asia's first river-themed wildlife park within Singapore's Mandai Wildlife Reserve, featuring the climate-controlled Giant Panda Forest home to Kai Kai and Jia Jia."
+        },
+        "websiteUrl": "https://www.mandai.com/en/river-wonders.html",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.mandai.com/en/river-wonders.html",
+          "https://en.wikipedia.org/wiki/River_Wonders"
+        ]
+      },
+      "places": [
+        {
+          "slug": "river-wonders",
+          "nameZh": "新加坡河川生态园",
+          "nameEn": "River Wonders",
+          "countryCode": "SG",
+          "region": "Mandai",
+          "longitude": 103.7941,
+          "latitude": 1.4038,
+          "visitGuide": {
+            "address": {
+              "zh": "80 Mandai Lake Road, Singapore 729826",
+              "en": "80 Mandai Lake Road, Singapore 729826"
+            },
+            "openingHours": {
+              "zh": "每日 9:00 至 18:00 开放（17:00 停止入园，大熊猫竹林一般开放至闭园前）。",
+              "en": "Daily 09:00 to 18:00 (last entry 17:00)."
+            },
+            "pandaArea": {
+              "zh": "大熊猫竹林（Pavilion Capital Giant Panda Forest）",
+              "en": "Pavilion Capital Giant Panda Forest"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "大熊猫竹林位于室内恒温冷气展馆，馆内温度偏凉，游览可随身备一件薄外套。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.mandai.com/en/river-wonders.html",
+              "https://en.wikipedia.org/wiki/River_Wonders"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "zoo-negara",
+      "nameZh": "马来西亚国家动物园",
+      "nameEn": "Zoo Negara Malaysia",
+      "countryCode": "MY",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于马来西亚雪兰莪州安邦，园内建有大熊猫保护中心（Giant Panda Conservation Centre）。",
+          "en": "Malaysia's national zoo in Ampang, Selangor, featuring the dedicated Giant Panda Conservation Centre."
+        },
+        "websiteUrl": "https://www.zoonegara.my/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.zoonegara.my/",
+          "https://en.wikipedia.org/wiki/Zoo_Negara"
+        ]
+      },
+      "places": [
+        {
+          "slug": "zoo-negara",
+          "nameZh": "马来西亚国家动物园",
+          "nameEn": "Zoo Negara Malaysia",
+          "countryCode": "MY",
+          "region": "Selangor",
+          "longitude": 101.7578,
+          "latitude": 3.2097,
+          "visitGuide": {
+            "address": {
+              "zh": "Jalan Taman Zooview, Taman Melawati, Hulu Kelang, 68000 Ampang, Selangor",
+              "en": "Jalan Taman Zooview, Taman Melawati, Hulu Kelang, 68000 Ampang, Selangor, Malaysia"
+            },
+            "openingHours": {
+              "zh": "每日 9:00 至 17:00 开放。",
+              "en": "Daily 09:00 to 17:00."
+            },
+            "pandaArea": {
+              "zh": "大熊猫保护中心（Giant Panda Conservation Centre）",
+              "en": "Giant Panda Conservation Centre"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "购买动物园标准门票通常包含大熊猫保护中心参观，旺季周末入馆可能需要领取分时时段。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.zoonegara.my/",
+              "https://en.wikipedia.org/wiki/Zoo_Negara"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "tiergarten-schonbrunn",
+      "nameZh": "维也纳美泉宫动物园",
+      "nameEn": "Tiergarten Schönbrunn",
+      "countryCode": "AT",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "始建于 1752 年，位于奥地利维也纳美泉宫皇室园林内，是世界上历史最悠久的持续运营动物园，生活着大熊猫荷风和兰韵。",
+          "en": "Founded in 1752 on the grounds of Vienna's Schönbrunn Palace, the world's oldest continuously operating zoo is home to giant pandas He Feng and Lan Yun."
+        },
+        "websiteUrl": "https://www.zoovienna.at/en/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.zoovienna.at/en/",
+          "https://en.wikipedia.org/wiki/Sch%C3%B6nbrunn_Zoo"
+        ]
+      },
+      "places": [
+        {
+          "slug": "tiergarten-schonbrunn",
+          "nameZh": "维也纳美泉宫动物园",
+          "nameEn": "Tiergarten Schönbrunn",
+          "countryCode": "AT",
+          "region": "Vienna",
+          "longitude": 16.3042,
+          "latitude": 48.1814,
+          "visitGuide": {
+            "address": {
+              "zh": "Seckendorff-Gudent-Weg, 1130 Vienna, Austria",
+              "en": "Seckendorff-Gudent-Weg, 1130 Vienna, Austria"
+            },
+            "pandaArea": {
+              "zh": "大熊猫馆（Pandapark / Panda Enclosure）",
+              "en": "Panda Enclosure"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "全年每日开放，冬季闭园早、夏季闭园晚，出发前可在官网确认当日开放时段。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.zoovienna.at/en/",
+              "https://en.wikipedia.org/wiki/Sch%C3%B6nbrunn_Zoo"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "zooparc-de-beauval",
+      "nameZh": "法国博瓦勒动物园",
+      "nameEn": "ZooParc de Beauval",
+      "countryCode": "FR",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于法国卢瓦尔-谢尔省圣艾尼昂，是法国唯一饲养大熊猫的动物园，也是法国首次人工繁育并养大双胞胎大熊猫“欢黎黎”和“圆嘟嘟”的地方。",
+          "en": "Located in Saint-Aignan in central France, ZooParc de Beauval is France's only zoo housing giant pandas, including China-loaned pandas and French-born cubs."
+        },
+        "websiteUrl": "https://www.zoobeauval.com/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.zoobeauval.com/",
+          "https://en.wikipedia.org/wiki/ZooParc_de_Beauval"
+        ]
+      },
+      "places": [
+        {
+          "slug": "zooparc-de-beauval",
+          "nameZh": "法国博瓦勒动物园",
+          "nameEn": "ZooParc de Beauval",
+          "countryCode": "FR",
+          "region": "Loir-et-Cher",
+          "longitude": 1.3506,
+          "latitude": 47.2475,
+          "visitGuide": {
+            "address": {
+              "zh": "Route du Blanc, 41110 Saint-Aignan, France",
+              "en": "Route du Blanc, 41110 Saint-Aignan, France"
+            },
+            "pandaArea": {
+              "zh": "Sur les Hauteurs de Chine（中华高地展区）",
+              "en": "Heights of China"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "位于卢瓦尔河谷，距巴黎约 2 小时车程或高铁+接驳车可达，开闭园时间按季节在官网公布。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.zoobeauval.com/",
+              "https://en.wikipedia.org/wiki/ZooParc_de_Beauval"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "berlin-zoo",
+      "nameZh": "柏林动物园",
+      "nameEn": "Zoo Berlin",
+      "countryCode": "DE",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于德国柏林蒂尔加滕，1844 年开园，是德国唯一生活着大熊猫（梦梦、娇庆与在柏林出生的幼崽）的动物园。",
+          "en": "Opened in 1844 in Berlin's Tiergarten, Zoo Berlin is the only zoo in Germany housing giant pandas, featuring Meng Meng, Jiao Qing and their Berlin-born cubs in the Panda Garden."
+        },
+        "websiteUrl": "https://www.zoo-berlin.de/",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.zoo-berlin.de/",
+          "https://en.wikipedia.org/wiki/Berlin_Zoological_Garden"
+        ]
+      },
+      "places": [
+        {
+          "slug": "berlin-zoo",
+          "nameZh": "柏林动物园",
+          "nameEn": "Zoo Berlin",
+          "countryCode": "DE",
+          "region": "Berlin",
+          "longitude": 13.3358,
+          "latitude": 52.5050,
+          "visitGuide": {
+            "address": {
+              "zh": "Hardenbergplatz 8, 10787 Berlin, Germany",
+              "en": "Hardenbergplatz 8, 10787 Berlin, Germany"
+            },
+            "openingHours": {
+              "zh": "全年每日 9:00 起开园，闭园时间随季节为 16:30 至 18:30（动物馆舍提前约 30 分钟关闭）。",
+              "en": "Open daily from 09:00; closing varies seasonally between 16:30 and 18:30 (animal houses close 30 minutes prior)."
+            },
+            "pandaArea": {
+              "zh": "Panda Garden",
+              "en": "Panda Garden"
+            },
+            "tips": [
+              {
+                "topic": "getting_there",
+                "text": {
+                  "zh": "紧邻 Zoologischer Garten 火车/地铁站，交通十分便利。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.zoo-berlin.de/",
+              "https://en.wikipedia.org/wiki/Berlin_Zoological_Garden"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "zoo-aquarium-madrid",
+      "nameZh": "马德里动物园水族馆",
+      "nameEn": "Zoo Aquarium de Madrid",
+      "countryCode": "ES",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于西班牙马德里田园之家公园内，大熊猫金喜和茱萸于 2024 年起在此生活并向公众展出。",
+          "en": "Located inside Madrid's Casa de Campo park, Zoo Aquarium de Madrid has housed giant pandas Jin Xi and Zhu Yu since 2024."
+        },
+        "websiteUrl": "https://www.zoomadrid.com/en",
+        "verifiedOn": "2026-11-22",
+        "sourceUrls": [
+          "https://www.zoomadrid.com/en",
+          "https://en.wikipedia.org/wiki/Zoo_Aquarium_de_Madrid"
+        ]
+      },
+      "places": [
+        {
+          "slug": "zoo-aquarium-madrid",
+          "nameZh": "马德里动物园水族馆",
+          "nameEn": "Zoo Aquarium de Madrid",
+          "countryCode": "ES",
+          "region": "Madrid",
+          "longitude": -3.7625,
+          "latitude": 40.4086,
+          "visitGuide": {
+            "address": {
+              "zh": "Casa de Campo, s/n, 28011 Madrid, Spain",
+              "en": "Casa de Campo, s/n, 28011 Madrid, Spain"
+            },
+            "pandaArea": {
+              "zh": "Panda Gigante（大熊猫展区）",
+              "en": "Giant Panda Exhibit"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "马德里地铁 5 号线 / 10 号线至 Casa de Campo 站后步行可达，开闭园时间按季节在官网查询。"
+                }
+              }
+            ],
+            "verifiedOn": "2026-11-22",
+            "sourceUrls": [
+              "https://www.zoomadrid.com/en",
+              "https://en.wikipedia.org/wiki/Zoo_Aquarium_de_Madrid"
             ]
           }
         }

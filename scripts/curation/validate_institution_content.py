@@ -1,11 +1,11 @@
 """Validate data/curation/institutions/institutions.json.
 
 CI runs ``--check`` on every change. The ``curation.content`` batch then writes the file into the
-database (services/api/src/content-command.ts): it upserts institutions by slug and updates existing
-facility places by slug, so a slug that is not in the database yet is skipped rather than created.
+database (services/api/src/content-command.ts): it upserts institutions by slug and upserts named
+facility places by slug (creating new facilities when a name is available), then merges legacySlugs.
 
 A place may list ``legacySlugs``: duplicate places that are the same real place. The batch merges
-each into it first (place.merge_place moves residencies, life events and check-ins, keeps the old slug
+each into it (place.merge_place moves residencies, life events and check-ins, keeps the old slug
 and deletes the duplicate). Validation refuses two places at the same map point, a former slug that is
 still a place here, and panda tags that still use a former slug. ``--live`` also compares the places
 the public API serves, by name and map point, to catch duplicates that never had a map point here.
@@ -32,6 +32,17 @@ PANDAS_PATH = ROOT / "data" / "curation" / "pandas" / "pandas.csv"
 INSTITUTION_KINDS = {"zoo", "breeding_center", "wildlife_park"}
 VISIT_TIP_TOPICS = {"best_time", "finding_pandas", "getting_there", "good_to_know"}
 GUIDE_TEXT_FIELDS = ("address", "openingHours", "admission", "pandaArea")
+ALLOWED_PLACE_KEYS = {
+    "slug",
+    "nameZh",
+    "nameEn",
+    "countryCode",
+    "region",
+    "longitude",
+    "latitude",
+    "visitGuide",
+    "legacySlugs",
+}
 MAX_TEXT = 600
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 COUNTRY = re.compile(r"^[A-Z]{2}$")
@@ -192,14 +203,29 @@ def validate_content(content: object) -> list[str]:
             errors.append(f"{label}.countryCode: must be two uppercase letters")
         validate_profile(institution.get("profile"), f"{label}.profile", errors)
         for place_index, place in enumerate(institution.get("places") or []):
-            place_slug = place.get("slug")
             place_label = f"{label}.places[{place_index}]"
+            if not isinstance(place, dict):
+                errors.append(f"{place_label}: must be an object")
+                continue
+            unknown_place_keys = set(place) - ALLOWED_PLACE_KEYS
+            if unknown_place_keys:
+                errors.append(f"{place_label}: unknown fields {sorted(unknown_place_keys)}")
+            place_slug = place.get("slug")
             if not isinstance(place_slug, str) or not SLUG.match(place_slug):
                 errors.append(f"{place_label}.slug: must be a lowercase kebab-case slug")
                 continue
             if place_slug in place_slugs:
                 errors.append(f"{place_label}.slug: place {place_slug} is listed twice")
             place_slugs.add(place_slug)
+            for text_field in ("nameZh", "nameEn", "region"):
+                if text_field in place and place[text_field] is not None:
+                    text_value = place[text_field]
+                    if not isinstance(text_value, str) or not text_value.strip() or len(text_value) > MAX_TEXT:
+                        errors.append(f"{place_label}.{text_field}: text must be between 1 and {MAX_TEXT} characters")
+            if "countryCode" in place and place["countryCode"] is not None:
+                place_country = place["countryCode"]
+                if not isinstance(place_country, str) or not COUNTRY.match(place_country):
+                    errors.append(f"{place_label}.countryCode: must be two uppercase letters")
             has_lon, has_lat = "longitude" in place, "latitude" in place
             if has_lon != has_lat:
                 errors.append(f"{place_label}: longitude and latitude go together")
