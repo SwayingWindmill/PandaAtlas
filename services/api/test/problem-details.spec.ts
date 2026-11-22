@@ -4,7 +4,10 @@ import { DomainError, type DomainErrorKind } from "../src/platform/errors/domain
 import { ProblemDetailsFilter } from "../src/platform/http/problem-details.filter.js";
 import { ProblemException } from "../src/platform/http/problem.exception.js";
 
-function render(exception: unknown) {
+function render(
+  exception: unknown,
+  opsAlert?: { notify: (event: Record<string, unknown>) => Promise<void> },
+) {
   const logs: Array<{ level: string; message: string }> = [];
   const headers: Record<string, string> = {};
   let reply: { body: Record<string, unknown>; status: number } | undefined;
@@ -21,6 +24,7 @@ function render(exception: unknown) {
       },
     } as never,
     { write: (level: string, message: string) => logs.push({ level, message }) } as never,
+    opsAlert as never,
   );
   filter.catch(exception, {
     switchToHttp: () => ({ getResponse: () => ({}), getRequest: () => ({ method: "POST", url: "/api/v2/x?y=1" }) }),
@@ -71,5 +75,38 @@ describe("ProblemDetailsFilter", () => {
     expect(rendered.headers["Retry-After"]).toBe("60");
     expect(rendered.headers["Content-Type"]).toBe("application/problem+json");
     expect(rendered.logs).toEqual([]);
+  });
+
+  it("notifies opsAlert with a stripped path and 5-minute dedupe key only on 5xx errors", () => {
+    const events: Array<Record<string, unknown>> = [];
+    const opsAlert = {
+      notify: (event: Record<string, unknown>) => {
+        events.push(event);
+        return Promise.resolve();
+      },
+    };
+
+    render(new DomainError("conflict", "example.rule", "Conflict."), opsAlert);
+    expect(events).toEqual([]);
+
+    render(new Error("boom"), opsAlert);
+    expect(events).toEqual([
+      {
+        severity: "critical",
+        category: "api_5xx",
+        title: "API 5xx 错误",
+        summary: "POST /api/v2/x (500) [system.internal]",
+        dedupeKey: "5xx:POST:/api/v2/x:system.internal",
+        cooldownMs: 300_000,
+        metadata: {
+          method: "POST",
+          path: "/api/v2/x",
+          status: 500,
+          code: "system.internal",
+          requestId: "request-1",
+          errorName: "Error",
+        },
+      },
+    ]);
   });
 });

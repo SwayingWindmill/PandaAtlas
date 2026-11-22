@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Inject, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Optional, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { OpsAlertService } from "../../../platform/observability/ops-alert.service.js";
 import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
@@ -16,6 +17,7 @@ export class PrivacyController {
   public constructor(
     @Inject(PRIVACY_PORT) private readonly privacy: PrivacyPort,
     private readonly requestContext: RequestContextService,
+    @Optional() private readonly opsAlert?: OpsAlertService,
   ) {}
 
   @Post()
@@ -23,14 +25,30 @@ export class PrivacyController {
   @RateLimit("sensitive", { keyStrategy: "ip_and_account" })
   @ApiOperation({ operationId: "createMyPrivacyRequest", summary: "Create an asynchronous privacy request" })
   @ApiCreatedResponse({ type: PrivacyRequestDto })
-  public create(@Req() request: HttpRequest, @Body() input: CreatePrivacyRequestDto) {
+  public async create(@Req() request: HttpRequest, @Body() input: CreatePrivacyRequestDto) {
     const { accountId, correlationId } = this.context(request);
-    return this.privacy.create(accountId, {
+    const created = await this.privacy.create(accountId, {
       kind: input.kind,
       reason: input.reason,
       idempotencyKey: input.idempotencyKey,
       correlationId,
     });
+    if (created.kind === "account_deletion") {
+      void this.opsAlert?.notify({
+        severity: "warning",
+        category: "account_deletion_requested",
+        title: "收到账号注销申请",
+        summary: `Account deletion request (${created.requestId})`,
+        dedupeKey: `privacy:${created.requestId}`,
+        cooldownMs: 300_000,
+        metadata: {
+          privacyRequestId: created.requestId,
+          kind: created.kind,
+          requestId: this.requestContext.current?.requestId,
+        },
+      });
+    }
+    return created;
   }
 
   @Get()

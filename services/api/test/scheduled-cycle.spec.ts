@@ -35,12 +35,21 @@ describe("runScheduledCycle", () => {
     };
 
     const logger = recordingLogger();
+    const alerts: Array<Record<string, unknown>> = [];
 
-    await expect(runScheduledCycle(database, runner, "postgres://hyperdrive", effects, logger)).resolves.toEqual({ audit: 1 });
+    await expect(
+      runScheduledCycle(database, runner, "postgres://hyperdrive", effects, logger, {
+        notify: (event) => {
+          alerts.push(event as unknown as Record<string, unknown>);
+          return Promise.resolve();
+        },
+      }),
+    ).resolves.toEqual({ audit: 1 });
     expect(calls).toEqual(["open:postgres://hyperdrive", "cycle", "close"]);
     expect(logger.entries).toEqual([
       { level: "info", message: "Async downstream cycle completed", fields: { stages: { audit: 1 } } },
     ]);
+    expect(alerts).toEqual([]);
   });
 
   it("propagates a failed cycle so the scheduled invocation fails", async () => {
@@ -52,10 +61,29 @@ describe("runScheduledCycle", () => {
     };
 
     const logger = recordingLogger();
+    const alerts: Array<Record<string, unknown>> = [];
 
-    await expect(runScheduledCycle(database, runner, "postgres://hyperdrive", effects, logger)).rejects.toThrow("outbox unavailable");
+    await expect(
+      runScheduledCycle(database, runner, "postgres://hyperdrive", effects, logger, {
+        notify: (event) => {
+          alerts.push(event as unknown as Record<string, unknown>);
+          return Promise.resolve();
+        },
+      }),
+    ).rejects.toThrow("outbox unavailable");
     expect(logger.entries).toMatchObject([
       { level: "error", message: "Async downstream cycle failed", fields: { error: { name: "Error", message: "outbox unavailable" } } },
+    ]);
+    expect(alerts).toEqual([
+      {
+        severity: "critical",
+        category: "cron_failure",
+        title: "定时任务执行失败",
+        summary: "Async downstream cycle failed (Error)",
+        dedupeKey: "cron:async_downstream_cycle",
+        cooldownMs: 300_000,
+        metadata: { errorName: "Error" },
+      },
     ]);
   });
 });

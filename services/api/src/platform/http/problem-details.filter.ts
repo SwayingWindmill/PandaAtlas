@@ -2,11 +2,13 @@ import {
   ArgumentsHost,
   Catch,
   HttpException,
+  Optional,
   type ExceptionFilter,
 } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
 import { STATUS_CODES, type IncomingMessage } from "node:http";
 import { DomainError, type DomainErrorKind } from "../errors/domain-error.js";
+import { OpsAlertService } from "../observability/ops-alert.service.js";
 import { serializeError, StructuredLoggerService } from "../observability/structured-logger.service.js";
 import { RequestContextService } from "../request-context/request-context.service.js";
 import { ProblemException } from "./problem.exception.js";
@@ -88,35 +90,55 @@ export class ProblemDetailsFilter implements ExceptionFilter {
     private readonly context: RequestContextService,
     private readonly adapterHost: HttpAdapterHost,
     private readonly logger: StructuredLoggerService,
+    @Optional() private readonly opsAlert?: OpsAlertService,
   ) {}
 
   public catch(exception: unknown, host: ArgumentsHost): void {
     const http = host.switchToHttp();
     const response = http.getResponse<unknown>();
     const status = statusOf(exception);
-    if (status >= 500) {
-      const request = http.getRequest<IncomingMessage>();
-      this.logger.write("error", "Request failed", {
-        method: request.method,
-        path: (request.url ?? "").split("?", 1)[0],
-        status,
-        error: serializeError(exception),
-      });
-    }
     const requestId = this.context.current?.requestId ?? "unavailable";
     const errors = validationErrors(exception);
     const described = exception instanceof ProblemException || exception instanceof DomainError ? exception : undefined;
+    const code =
+      described !== undefined
+        ? described.code
+        : errors === undefined
+          ? codeForStatus(status)
+          : "request.validationFailed";
+    if (status >= 500) {
+      const request = http.getRequest<IncomingMessage>();
+      const method = request.method ?? "UNKNOWN";
+      const path = (request.url ?? "").split("?", 1)[0];
+      this.logger.write("error", "Request failed", {
+        method,
+        path,
+        status,
+        error: serializeError(exception),
+      });
+      void this.opsAlert?.notify({
+        severity: "critical",
+        category: "api_5xx",
+        title: "API 5xx 错误",
+        summary: `${method} ${path} (${status}) [${code}]`,
+        dedupeKey: `5xx:${method}:${path}:${code}`,
+        cooldownMs: 300_000,
+        metadata: {
+          method,
+          path,
+          status,
+          code,
+          requestId,
+          errorName: exception instanceof Error ? exception.name : "NonError",
+        },
+      });
+    }
     const problem: ProblemDetails = {
       type: "about:blank",
       title: STATUS_CODES[status] ?? "Request failed",
       status,
       detail: described?.detail ?? safeDetail(status, exception),
-      code:
-        described !== undefined
-          ? described.code
-          : errors === undefined
-            ? codeForStatus(status)
-            : "request.validationFailed",
+      code,
       requestId,
       ...(errors === undefined ? {} : { errors }),
     };

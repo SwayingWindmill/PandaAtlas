@@ -20,13 +20,92 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: API serves traffic
+      - id: api_ready
+        name: API serves traffic
         run: curl --fail --silent --show-error --max-time 20 --retry 2 --retry-all-errors https://api.zhipanda.com/ready
 
-      - name: Async downstream is not stalled
+      - id: api_async
+        name: Async downstream is not stalled
         run: curl --fail --silent --show-error --max-time 20 --retry 2 --retry-all-errors https://api.zhipanda.com/health/async
 
       # The canonical URL hits Workers Cache. A fresh home-page render would spend a
       # public-read query budget on every probe; /ready already checks the API and database.
-      - name: Web serves the home page
+      - id: web_home
+        name: Web serves the home page
         run: curl --fail --silent --show-error --max-time 30 --retry 2 --retry-all-errors --output /dev/null "https://www.zhipanda.com/zh"
+
+      - name: Notify ops webhook on failure
+        if: failure()
+        env:
+          OPS_ALERT_WEBHOOK_URL: ${{ secrets.OPS_ALERT_WEBHOOK_URL }}
+          OPS_ALERT_WEBHOOK_FORMAT: ${{ vars.OPS_ALERT_WEBHOOK_FORMAT }}
+          API_READY_OUTCOME: ${{ steps.api_ready.outcome }}
+          API_ASYNC_OUTCOME: ${{ steps.api_async.outcome }}
+          WEB_HOME_OUTCOME: ${{ steps.web_home.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timezone
+
+          webhook_url = os.environ.get("OPS_ALERT_WEBHOOK_URL", "").strip()
+          if not webhook_url:
+            print("OPS_ALERT_WEBHOOK_URL is not configured; skipping alert delivery.")
+            sys.exit(0)
+
+          parsed = urllib.parse.urlparse(webhook_url)
+          if parsed.scheme != "https" or not parsed.netloc:
+            print("OPS_ALERT_WEBHOOK_URL is invalid (must be https); skipping alert delivery.")
+            sys.exit(0)
+
+          fmt = (os.environ.get("OPS_ALERT_WEBHOOK_FORMAT", "feishu").strip().lower() or "feishu")
+          if fmt not in {"feishu", "wecom", "generic"}:
+            fmt = "feishu"
+
+          checks = {
+            "api_ready": os.environ.get("API_READY_OUTCOME", "unknown"),
+            "api_async": os.environ.get("API_ASYNC_OUTCOME", "unknown"),
+            "web_home": os.environ.get("WEB_HOME_OUTCOME", "unknown"),
+          }
+          run_url = os.environ.get("RUN_URL", "")
+          timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+          title = "[Zhipanda CRITICAL] Production Probe Failed"
+          message = "\n".join([
+            title,
+            f"Time (UTC): {timestamp}",
+            f"Checks: api_ready={checks['api_ready']}, api_async={checks['api_async']}, web_home={checks['web_home']}",
+            f"Run: {run_url}",
+          ])
+
+          if fmt == "feishu":
+            payload = {"msg_type": "text", "content": {"text": message}}
+          elif fmt == "wecom":
+            payload = {"msgtype": "text", "text": {"content": message}}
+          else:
+            payload = {
+              "event": "production_probe_failed",
+              "severity": "critical",
+              "title": title,
+              "text": message,
+              "checks": checks,
+              "runUrl": run_url,
+              "timestampUtc": timestamp,
+            }
+
+          request = urllib.request.Request(
+            webhook_url,
+            data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+          )
+          try:
+            with urllib.request.urlopen(request, timeout=10) as response:
+              print(f"Ops alert webhook responded with HTTP {response.status}")
+          except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+            print(f"Ops alert webhook delivery failed: {type(exc).__name__}", file=sys.stderr)
+          PY
