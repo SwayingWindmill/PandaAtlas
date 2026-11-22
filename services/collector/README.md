@@ -55,7 +55,13 @@ MediaCrawler ──────┘     （仅第一阶段对照）
 
 ## 在采集主机上部署
 
-需要 Docker、[uv](https://docs.astral.sh/uv/) 和 Python 3.12。
+若先上线 **V1 最小可用采集（`bjzoo` + `weibo_rsshub`，无需扫码与外部 Cookie）**，可直接使用一键部署模板与手册：
+
+- 一键 Compose：[`infra/collector/compose.minimal.yml`](../../infra/collector/compose.minimal.yml) + [`infra/collector/env.minimal.example`](../../infra/collector/env.minimal.example)
+- 容器构建：[`Dockerfile`](Dockerfile)
+- 运维手册：[collector-v1-deployment.md](../../docs/runbooks/collector-v1-deployment.md)
+
+完整多平台主机部署需要 Docker、[uv](https://docs.astral.sh/uv/) 和 Python 3.12。
 
 **1. 起基础服务**（PostgreSQL、RSSHub、xiaohongshu-mcp）：
 
@@ -121,6 +127,7 @@ uv run collector run
 ## 日常运维
 
 ```bash
+uv run collector doctor --offline        # 部署前校验配置、词表和目标清单（加在线模式还会探库和 RSSHub）
 uv run collector status                  # 暂停的适配器、失败和空结果的目标
 uv run collector once --target <id>      # 立刻跑一个目标，调试用
 uv run collector resume xhs_mcp          # 重新登录后解除暂停，并立刻补采
