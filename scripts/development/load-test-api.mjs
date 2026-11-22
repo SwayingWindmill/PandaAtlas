@@ -15,10 +15,14 @@ const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const INTEGER_PATTERN = /^\d+$/u;
 const ALLOWED_FORMATS = new Set(["text", "markdown", "json"]);
 
+export function utcTodayIso(now = new Date()) {
+  return now.toISOString().slice(0, 10);
+}
+
 export const SCENARIOS = Object.freeze({
   "public-cached": (pandaSlug = DEFAULT_PANDA_SLUG) => [
     { route: "/api/v2/release", group: "public-cached", weight: 1 },
-    { route: "/api/v2/pandas?limit=24", group: "public-cached", weight: 2 },
+    { route: "/api/v2/pandas", group: "public-cached", weight: 2 },
     { route: `/api/v2/pandas/${pandaSlug}`, group: "public-cached", weight: 2 },
     { route: "/api/v2/places", group: "public-cached", weight: 1 },
     { route: "/api/v2/institutions", group: "public-cached", weight: 1 },
@@ -33,15 +37,15 @@ export const SCENARIOS = Object.freeze({
     { route: "/api/v2/popular-pandas", group: "public-db-uncached", weight: 1 },
     { route: "/api/v2/updates", group: "public-db-uncached", weight: 1 },
   ],
-  "authenticated-read": () => [
+  "authenticated-read": (today = utcTodayIso()) => [
     { route: "/api/v2/me", group: "authenticated-read", weight: 1 },
     { route: "/api/v2/me/profile", group: "authenticated-read", weight: 1 },
     { route: "/api/v2/me/favorites", group: "authenticated-read", weight: 1 },
     { route: "/api/v2/me/followed-venues", group: "authenticated-read", weight: 1 },
-    { route: "/api/v2/me/daily-checkins", group: "authenticated-read", weight: 1 },
+    { route: `/api/v2/me/daily-checkins?today=${today}`, group: "authenticated-read", weight: 1 },
     { route: "/api/v2/me/panda-book", group: "authenticated-read", weight: 1 },
   ],
-  "mixed-launch": (pandaSlug = DEFAULT_PANDA_SLUG, hasToken = false) => {
+  "mixed-launch": (pandaSlug = DEFAULT_PANDA_SLUG, hasToken = false, today = utcTodayIso()) => {
     const cached = expandEntries(SCENARIOS["public-cached"](pandaSlug), "public-cached");
     const uncached = expandEntries(SCENARIOS["public-db-uncached"](), "public-db-uncached");
     if (!hasToken) {
@@ -53,7 +57,7 @@ export const SCENARIOS = Object.freeze({
         32,
       );
     }
-    const authed = expandEntries(SCENARIOS["authenticated-read"](), "authenticated-read");
+    const authed = expandEntries(SCENARIOS["authenticated-read"](today), "authenticated-read");
     return smoothInterleave(
       [
         { weight: 7, items: cached },
@@ -261,8 +265,14 @@ export function parseArgs(argv, env = process.env) {
   return options;
 }
 
-export function buildSchedule(scenarioName, { pandaSlug = DEFAULT_PANDA_SLUG, hasToken = false } = {}) {
-  const entries = SCENARIOS[scenarioName](pandaSlug, hasToken);
+export function buildSchedule(
+  scenarioName,
+  { pandaSlug = DEFAULT_PANDA_SLUG, hasToken = false, today = utcTodayIso() } = {},
+) {
+  const entries =
+    scenarioName === "authenticated-read"
+      ? SCENARIOS["authenticated-read"](today)
+      : SCENARIOS[scenarioName](pandaSlug, hasToken, today);
   const schedule = [];
   for (const entry of entries) {
     const count = Math.max(1, entry.weight ?? 1);
@@ -446,6 +456,7 @@ export async function runLoadTest(options, { fetchFn = fetch } = {}) {
   const schedule = buildSchedule(options.scenario, {
     pandaSlug: options.pandaSlug,
     hasToken: Boolean(options.bearerToken),
+    today: options.today ?? utcTodayIso(),
   });
   const levels = [];
   for (let i = 0; i < options.concurrency.length; i += 1) {
@@ -496,12 +507,12 @@ export function renderMarkdownReport(report) {
       "",
       `### Per-Route Breakdown (Concurrency=${peak.concurrency})`,
       "",
-      "| Route | Requests | 2xx | 429 | 5xx | Errors | p50 (ms) | p95 (ms) | Max (ms) |",
-      "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+      "| Route | Requests | 2xx | 429 | 4xx | 5xx | Errors | p50 (ms) | p95 (ms) | Max (ms) |",
+      "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     );
     for (const r of peak.routes) {
       lines.push(
-        `| \`${r.route}\` | ${r.requests} | ${r.ok2xx} | ${r.rateLimited429} | ${r.server5xx} | ${r.networkErrors} | ${r.p50Ms} | ${r.p95Ms} | ${r.maxMs} |`,
+        `| \`${r.route}\` | ${r.requests} | ${r.ok2xx} | ${r.rateLimited429} | ${r.client4xx} | ${r.server5xx} | ${r.networkErrors} | ${r.p50Ms} | ${r.p95Ms} | ${r.maxMs} |`,
       );
     }
   }

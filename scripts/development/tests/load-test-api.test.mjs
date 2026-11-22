@@ -68,24 +68,37 @@ test("computePercentiles computes min, p50, p95, p99, max accurately", () => {
 });
 
 test("SCENARIOS mixed-launch schedule preserves public/authenticated split", () => {
-  assert.ok(SCENARIOS["authenticated-read"]().every((item) => item.route.startsWith("/api/v2/me")));
+  const authedToday = SCENARIOS["authenticated-read"]("2026-11-22");
+  assert.ok(authedToday.every((item) => item.route.startsWith("/api/v2/me")));
+  assert.ok(authedToday.some((item) => item.route === "/api/v2/me/daily-checkins?today=2026-11-22"));
+  assert.ok(buildSchedule("authenticated-read", { today: "2026-11-22" }).includes("/api/v2/me/daily-checkins?today=2026-11-22"));
+
+  const publicCachedRoutes = SCENARIOS["public-cached"]("he-hua-chengdu").map((item) => item.route);
+  assert.ok(publicCachedRoutes.includes("/api/v2/pandas"));
+  assert.ok(!publicCachedRoutes.some((route) => route.includes("limit=")));
+
   const unauthSchedule = buildSchedule("mixed-launch", { pandaSlug: "he-hua-chengdu", hasToken: false });
   assert.equal(unauthSchedule.length, 32);
   assert.ok(unauthSchedule.includes("/api/v2/pandas/he-hua-chengdu"));
   assert.ok(!unauthSchedule.some((route) => route.startsWith("/api/v2/me")));
 
-  const cachedRoutes = new Set(SCENARIOS["public-cached"]("he-hua-chengdu").map((item) => item.route));
+  const cachedRoutes = new Set(publicCachedRoutes);
   const uncachedRoutes = new Set(SCENARIOS["public-db-uncached"]().map((item) => item.route));
   const firstEight = unauthSchedule.slice(0, 8);
   assert.equal(firstEight.filter((route) => cachedRoutes.has(route)).length, 6);
   assert.equal(firstEight.filter((route) => uncachedRoutes.has(route)).length, 2);
 
-  const authSchedule = buildSchedule("mixed-launch", { pandaSlug: "he-hua-chengdu", hasToken: true });
+  const authSchedule = buildSchedule("mixed-launch", {
+    pandaSlug: "he-hua-chengdu",
+    hasToken: true,
+    today: "2026-11-22",
+  });
   const firstTenAuth = authSchedule.slice(0, 10);
-  const authedRoutes = new Set(SCENARIOS["authenticated-read"]().map((item) => item.route));
+  const authedRoutes = new Set(authedToday.map((item) => item.route));
   assert.equal(firstTenAuth.filter((route) => cachedRoutes.has(route)).length, 7);
   assert.equal(firstTenAuth.filter((route) => uncachedRoutes.has(route)).length, 2);
   assert.equal(firstTenAuth.filter((route) => authedRoutes.has(route)).length, 1);
+  assert.ok(authSchedule.includes("/api/v2/me/daily-checkins?today=2026-11-22"));
 });
 
 test("runLoadTest measures queueing latency past 5-slot DB semaphore and counts 429s against a real HTTP server", async () => {
@@ -168,6 +181,7 @@ test("runLoadTest measures queueing latency past 5-slot DB semaphore and counts 
     const markdown = renderMarkdownReport(report);
     assert.match(markdown, /Load Test Report \(public-db-uncached\)/u);
     assert.match(markdown, /Per-Route Breakdown \(Concurrency=10\)/u);
+    assert.match(markdown, /\| Route \| Requests \| 2xx \| 429 \| 4xx \| 5xx \| Errors \|/u);
   } finally {
     await new Promise((resolve, reject) => server.close((err) => (err ? reject(err) : resolve())));
   }
