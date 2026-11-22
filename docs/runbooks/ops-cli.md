@@ -95,3 +95,8 @@ node scripts/development/check-launch-readiness.mjs --offline
 # 严格模式（任何 WARN 也以退出码 1 报错；支持 --json 输出）
 node scripts/development/check-launch-readiness.mjs --strict --json
 ```
+
+## 4. API 压测与容量基线
+
+针对 Cloudflare Worker + Hyperdrive（5 origin 连接）的本地压测方法、实测拐点与扩容阈值见 [capacity-baseline.md](capacity-baseline.md)。
+
