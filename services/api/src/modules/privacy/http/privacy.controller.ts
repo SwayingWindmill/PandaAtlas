@@ -2,6 +2,7 @@ import { Body, Controller, Get, Inject, Param, ParseUUIDPipe, Post, Req } from "
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
@@ -19,6 +20,7 @@ export class PrivacyController {
 
   @Post()
   @RequireCapabilities("privacy.request.manage")
+  @RateLimit("sensitive", { keyStrategy: "ip_and_account" })
   @ApiOperation({ operationId: "createMyPrivacyRequest", summary: "Create an asynchronous privacy request" })
   @ApiCreatedResponse({ type: PrivacyRequestDto })
   public create(@Req() request: HttpRequest, @Body() input: CreatePrivacyRequestDto) {

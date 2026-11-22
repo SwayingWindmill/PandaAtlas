@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, Req } f
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import {
@@ -55,6 +56,7 @@ export class DailyCheckinController {
 
   @Post()
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "recordDailyCheckin" })
   @ApiCreatedResponse({ type: DailyCheckinSummaryDto })
   public async recordDailyCheckin(@Req() request: HttpRequest, @Body() input: DailyCheckinTodayDto) {
@@ -63,6 +65,7 @@ export class DailyCheckinController {
 
   @Put("leave/:day")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "takeDailyLeave" })
   @ApiOkResponse({ type: DailyCheckinSummaryDto })
   public async takeDailyLeave(
@@ -75,6 +78,7 @@ export class DailyCheckinController {
 
   @Delete("leave/:day")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "cancelDailyLeave" })
   @ApiOkResponse({ type: DailyCheckinSummaryDto })
   public async cancelDailyLeave(

@@ -2,6 +2,7 @@ import { Body, Controller, Get, Inject, Param, ParseUUIDPipe, Post, Req } from "
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
@@ -34,6 +35,7 @@ export class ContributionController {
 
   @Post("contributions")
   @RequireCapabilities("contribution.manage")
+  @RateLimit("sensitive", { keyStrategy: "ip_and_account" })
   @ApiOperation({ operationId: "submitContribution" })
   @ApiCreatedResponse({ type: ContributionRecordDto })
   public submit(@Req() request: HttpRequest, @Body() input: SubmitContributionDto) {

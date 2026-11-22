@@ -2,6 +2,7 @@ import { Body, Controller, DefaultValuePipe, Get, Inject, Param, ParseIntPipe, P
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import { NOTIFICATION_PORT, type NotificationPort } from "../application/notification.application.js";
@@ -40,6 +41,7 @@ export class NotificationController {
 
   @Patch(":messageId/read")
   @RequireCapabilities("notification.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "markMyNotificationRead", summary: "Mark one inbox item read" })
   @ApiOkResponse({ type: NotificationMessageDto })
   public async markRead(
@@ -55,6 +57,7 @@ export class NotificationController {
 
   @Patch("read-all")
   @RequireCapabilities("notification.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "markAllMyNotificationsRead", summary: "Mark every unread inbox item read" })
   @ApiOkResponse({ type: NotificationBulkReadResultDto })
   public async markAllRead(@Req() request: HttpRequest) {
@@ -71,6 +74,7 @@ export class NotificationController {
 
   @Put("preferences")
   @RequireCapabilities("notification.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "setMyNotificationPreference", summary: "Set one notification channel preference" })
   @ApiOkResponse({ type: NotificationPreferenceDto })
   public setPreference(@Req() request: HttpRequest, @Body() input: NotificationPreferenceInputDto) {

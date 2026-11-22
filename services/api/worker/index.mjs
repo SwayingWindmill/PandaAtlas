@@ -9,6 +9,7 @@ const { webPublicCache } = await import("../dist/jobs/web-public-cache.js");
 const { StructuredLoggerService } = await import("../dist/platform/observability/structured-logger.service.js");
 const { AskRuntimeService } = await import("../dist/modules/ask/infrastructure/cloudflare-ask-runtime.js");
 const { AskIndexSyncService } = await import("../dist/modules/ask/infrastructure/ask-index-sync.service.js");
+const { RateLimitRuntimeService } = await import("../dist/platform/rate-limit/rate-limit-runtime.service.js");
 const { createColdStartReporter } = await import("../dist/platform/observability/cold-start.js");
 const application = await createApplication();
 const database = application.get(DatabaseService);
@@ -16,15 +17,18 @@ const runner = application.get(AsyncDownstreamRunnerService);
 const logger = application.get(StructuredLoggerService);
 const askRuntime = application.get(AskRuntimeService);
 const askIndexSync = application.get(AskIndexSyncService);
+const rateLimitRuntime = application.get(RateLimitRuntimeService);
 const bridge = httpServerHandler(application.getHttpServer());
 const coldStart = createColdStartReporter(logger);
 
 export default {
   fetch(request, bindings, context) {
     coldStart.report("fetch", { method: request.method, path: new URL(request.url).pathname });
-    return askRuntime.withBindings(bindings, () =>
-      database.withRequest(bindings.HYPERDRIVE.connectionString, () =>
-        bridge.fetch(request, bindings, context),
+    return rateLimitRuntime.withBindings(bindings, () =>
+      askRuntime.withBindings(bindings, () =>
+        database.withRequest(bindings.HYPERDRIVE.connectionString, () =>
+          bridge.fetch(request, bindings, context),
+        ),
       ),
     );
   },

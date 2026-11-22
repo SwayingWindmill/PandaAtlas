@@ -88,3 +88,19 @@ test("the production API excludes E2E fixture endpoints and tokens", () => {
   assert.doesNotMatch(appModule, /e2e-fixture/u);
   assert.equal("E2E_FIXTURE_TOKEN" in workers.api.env, false);
 });
+
+test("production Workers configure distinct Cloudflare rate-limit namespaces for ask, writes, sensitive ops and OTP", () => {
+  const bindings = [
+    ["api", "ASK_RATE_LIMIT", workers.api.env.ASK_RATE_LIMIT],
+    ["api", "WRITE_RATE_LIMIT", workers.api.env.WRITE_RATE_LIMIT],
+    ["api", "SENSITIVE_RATE_LIMIT", workers.api.env.SENSITIVE_RATE_LIMIT],
+    ["web", "AUTH_OTP_RATE_LIMIT", workers.web.env.AUTH_OTP_RATE_LIMIT],
+  ];
+  const namespaces = new Set();
+  for (const [worker, name, binding] of bindings) {
+    assert.ok(binding, `${worker}.${name} must be configured`);
+    assert.equal(binding.type, "rate-limit", `${worker}.${name} must be a rateLimit binding`);
+    assert.ok(!namespaces.has(binding.namespace), `duplicate rate-limit namespace ${binding.namespace}`);
+    namespaces.add(binding.namespace);
+  }
+});
