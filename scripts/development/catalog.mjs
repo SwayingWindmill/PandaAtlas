@@ -319,6 +319,15 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "curation.panda-enrichment-check",
+    category: "verification",
+    description: "Validate top panda enrichment facts, residencies, and lineage.",
+    command: "python",
+    args: ["scripts/curation/validate_panda_enrichment.py"],
+    requires: ["python"],
+    effect: "read-only",
+  },
+  {
     id: "curation.learning-check",
     category: "verification",
     description: "Validate learning content.",
@@ -521,6 +530,7 @@ export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
     "curation.venue-news-check",
     "curation.overseas-status-check",
     "curation.comparisons-check",
+    "curation.panda-enrichment-check",
     "curation.learning-check",
     "curation.panda-data-lint",
     "curation.panda-data-test",

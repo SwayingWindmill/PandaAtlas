@@ -1,10 +1,10 @@
-import { sql, type Selectable } from "kysely";
-import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
+import { sql, type Kysely, type Selectable } from "kysely";
+import type { Database } from "../../../platform/database/database.types.js";
 import type { PandaFactConclusions } from "../../../platform/database/database.panda.generated.js";
 import type { RecordFactAssertionInput, SetFactConclusionInput } from "../application/panda.application.js";
 
 export async function recordFactAssertion(
-  transaction: DatabaseTransaction,
+  transaction: Kysely<Database>,
   input: RecordFactAssertionInput,
 ): Promise<void> {
   await transaction.insertInto("panda.fact_assertions").values({
@@ -34,7 +34,7 @@ export async function recordFactAssertion(
 
 // The conclusion becomes the field's current one; the previous current conclusion stays as history.
 export async function setCurrentFactConclusion(
-  transaction: DatabaseTransaction,
+  transaction: Kysely<Database>,
   input: SetFactConclusionInput,
 ): Promise<Selectable<PandaFactConclusions>> {
   await transaction
