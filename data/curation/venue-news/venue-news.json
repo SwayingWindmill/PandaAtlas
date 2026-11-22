@@ -2,6 +2,18 @@
   "version": "2026.11.22.1",
   "items": [
     {
+      "id": "2026-11-03-everland-shubao-debut",
+      "status": "published",
+      "institutionSlug": "everland",
+      "kind": "arrival",
+      "headline": "Everland’s Youngest Panda, Shubao, Makes Her Public Debut at Panda World",
+      "pandaSlugs": ["everland-cub-2026", "ai-bao"],
+      "sourceUrl": "https://news.samsungcnt.com/en/features/resort/2026-11-everlands-youngest-panda-shubao-makes-her-public-debut-at-panda-world/",
+      "sourcePublisher": "Samsung C&T Newsroom",
+      "publishedOn": "2026-11-03",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
       "id": "2026-10-15-beauval-twins-return",
       "status": "published",
       "institutionSlug": "zooparc-de-beauval",
@@ -11,7 +23,19 @@
       "sourceUrl": "https://actus.zoobeauval.com/en/yuandudu-and-huanlili-will-return-to-china-on-17-december-the-pandas-story-continues-at-beauval/",
       "sourcePublisher": "ZooParc de Beauval",
       "publishedOn": "2026-10-15",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "id": "2026-10-13-everland-twins-return",
+      "status": "published",
+      "institutionSlug": "everland",
+      "kind": "departure",
+      "headline": "A New Chapter Ahead: Everland’s Twin Pandas Rui Bao and Hui Bao Set for December Move to China",
+      "pandaSlugs": ["rui-bao", "hui-bao"],
+      "sourceUrl": "https://news.samsungcnt.com/en/features/resort/2026-10-a-new-chapter-ahead-everlands-twin-pandas-rui-bao-and-hui-bao-set-for-december-move-to-china/",
+      "sourcePublisher": "Samsung C&T Newsroom",
+      "publishedOn": "2026-10-13",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2026-09-17-ueno-panda-day",
@@ -23,7 +47,7 @@
       "sourceUrl": "https://www.tokyo-zoo.net/en/ueno/news/panda_day/2026/index.html",
       "sourcePublisher": "Tokyo Zoological Park Society",
       "publishedOn": "2026-09-17",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2026-08-21-berlin-twins-second-birthday",
@@ -35,7 +59,7 @@
       "sourceUrl": "https://www.zoo-berlin.de/en/latest/news/detail/panda-party-hoch-zwei",
       "sourcePublisher": "Zoo Berlin",
       "publishedOn": "2026-08-21",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2026-06-10-everland-new-cub",
@@ -43,11 +67,11 @@
       "institutionSlug": "everland",
       "kind": "arrival",
       "headline": "Everland Welcomes New Baby Panda as Panda Conservation Research Marks 10 Years",
-      "pandaSlugs": ["ai-bao", "le-bao", "rui-bao", "hui-bao"],
+      "pandaSlugs": ["ai-bao", "le-bao", "rui-bao", "hui-bao", "everland-cub-2026"],
       "sourceUrl": "https://news.samsungcnt.com/en/features/resort/2026-06-everland-welcomes-new-baby-panda-as-panda-conservation-research-marks-10-years/",
       "sourcePublisher": "Samsung C&T Newsroom",
       "publishedOn": "2026-06-10",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2026-03-05-ueno-twins-return-journey",
@@ -59,7 +83,7 @@
       "sourceUrl": "https://www.tokyo-zoo.net/en/ueno/blog/10109/index.html",
       "sourcePublisher": "Tokyo Zoological Park Society",
       "publishedOn": "2026-03-05",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2026-02-06-ueno-panda-forest-walkthrough",
@@ -71,7 +95,19 @@
       "sourceUrl": "https://www.tokyo-zoo.net/ueno/news/6493/index.html",
       "sourcePublisher": "Tokyo Zoological Park Society",
       "publishedOn": "2026-02-06",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "id": "2026-01-31-ueno-twins-arrival-yaan",
+      "status": "published",
+      "institutionSlug": "ueno-zoo",
+      "kind": "departure",
+      "headline": "Giant Panda Xiao Xiao and Lei Lei arrive at the Ya'an Base of the China Conservation and Research Center Giant Panda (Photos added of the quarantine facility at the Ya'an Base in China)",
+      "pandaSlugs": ["xiao-xiao", "lei-lei"],
+      "sourceUrl": "https://www.tokyo-zoo.net/en/ueno/news/5238/index.html",
+      "sourcePublisher": "Tokyo Zoological Park Society",
+      "publishedOn": "2026-01-31",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2025-09-22-beauval-huan-huan-yuan-zi-return",
@@ -83,7 +119,7 @@
       "sourceUrl": "https://actus.zoobeauval.com/en/the-first-giant-pandas-to-be-housed-at-beauval-huan-huan-and-yuan-zi-are-soon-to-return-to-china/",
       "sourcePublisher": "ZooParc de Beauval",
       "publishedOn": "2025-09-22",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2025-08-04-smithsonian-bao-li-birthday",
@@ -95,7 +131,7 @@
       "sourceUrl": "https://nationalzoo.si.edu/news/news/dcpandas-happy-4th-birthday-bao-li",
       "sourcePublisher": "Smithsonian's National Zoo",
       "publishedOn": "2025-08-04",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2025-04-23-vienna-new-pair-arrival",
@@ -107,7 +143,7 @@
       "sourceUrl": "https://www.zoovienna.at/de/news/panda-paar-ist-angekommen/",
       "sourcePublisher": "Tiergarten Schönbrunn",
       "publishedOn": "2025-04-23",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2025-01-24-smithsonian-debut",
@@ -119,7 +155,7 @@
       "sourceUrl": "https://nationalzoo.si.edu/news/two-new-giant-pandas-debut-smithsonians-national-zoo-and-conservation-biology-institute",
       "sourcePublisher": "Smithsonian's National Zoo",
       "publishedOn": "2025-01-24",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2024-12-06-berlin-twins-naming",
@@ -131,7 +167,7 @@
       "sourceUrl": "https://www.zoo-berlin.de/en/latest/news/detail/feierliche-panda-namensverkuendung-im-zoo-berlin",
       "sourcePublisher": "Zoo Berlin",
       "publishedOn": "2024-12-06",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2024-10-15-smithsonian-arrival",
@@ -143,7 +179,7 @@
       "sourceUrl": "https://nationalzoo.si.edu/news/giant-pandas-arrive-smithsonians-national-zoo-and-conservation-biology-institute-china",
       "sourcePublisher": "Smithsonian's National Zoo",
       "publishedOn": "2024-10-15",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2024-09-29-ueno-ri-ri-shin-shin-return",
@@ -155,7 +191,7 @@
       "sourceUrl": "https://www.tokyo-zoo.net/en/topics/news/ueno/355_28750_2024-09-29.html",
       "sourcePublisher": "Tokyo Zoological Park Society",
       "publishedOn": "2024-09-29",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2024-08-08-san-diego-panda-ridge-debut",
@@ -167,7 +203,7 @@
       "sourceUrl": "https://sandiegozoowildlifealliance.org/PR/pandas-public-debut",
       "sourcePublisher": "San Diego Zoo Wildlife Alliance",
       "publishedOn": "2024-08-08",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2024-04-24-madrid-new-pair-arrival",
@@ -179,7 +215,7 @@
       "sourceUrl": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/a-new-pair-of-pandas-will-arrive-at-zoo-aquarium-madrid-at-the-end-of-april",
       "sourcePublisher": "Zoo Aquarium Madrid",
       "publishedOn": "2024-04-24",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     },
     {
       "id": "2023-11-12-river-wonders-le-le-return",
@@ -191,7 +227,7 @@
       "sourceUrl": "https://www.mandai.com/en/about-mandai/media-centre/Giant-Panda-cub-Le-Le-to-return-to-China-in-January-2024.html",
       "sourcePublisher": "Mandai Wildlife Group",
       "publishedOn": "2023-11-12",
-      "updatedAt": "2026-11-22T16:00:00+08:00"
+      "updatedAt": "2026-11-22T17:00:00+08:00"
     }
   ]
 }
