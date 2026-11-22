@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 import { DEFAULT_PHOTO_KEYS_PATH, validatePublishedPhotoKeysText } from "../release/published-photo-keys.mjs";
 
@@ -191,6 +191,7 @@ export async function runLaunchReadinessCheck(
     ]) {
       try {
         const res = await fetchWithRetry(fetchFn, `${resolved.apiBase}${route}`, retryOptions);
+        await res.body?.cancel().catch(() => undefined);
         checks.push(
           res.ok
             ? checkItem(id, "PASS", `${route} responded HTTP ${res.status}`)
@@ -207,8 +208,14 @@ export async function runLaunchReadinessCheck(
       if (!res.ok) {
         checks.push(checkItem("online.learning-version", "FAIL", `/api/v2/learning responded HTTP ${res.status}`));
       } else {
-        const liveVersion = typeof res.body?.version === "string" ? res.body.version : "(missing)";
-        if (localLearningVersion && liveVersion !== localLearningVersion) {
+        const liveVersion = typeof res.body?.version === "string" ? res.body.version.trim() : "";
+        if (liveVersion === "") {
+          checks.push(checkItem("online.learning-version", "FAIL", "/api/v2/learning response is missing version"));
+        } else if (localLearningVersion === undefined) {
+          checks.push(
+            checkItem("online.learning-version", "WARN", `Live learning is ${liveVersion} (local version unavailable)`),
+          );
+        } else if (liveVersion !== localLearningVersion) {
           checks.push(
             checkItem("online.learning-version", "WARN", `Live learning ${liveVersion} lags local ${localLearningVersion}`),
           );
@@ -253,11 +260,17 @@ export async function runLaunchReadinessCheck(
       try {
         const res = await fetchWithRetry(fetchFn, `${resolved.webBase}${route}`, retryOptions);
         if (!res.ok) {
+          await res.body?.cancel().catch(() => undefined);
           checks.push(checkItem(id, "FAIL", `${route} responded HTTP ${res.status}`));
           continue;
         }
-        const html = checkLegalDraft ? await res.text() : "";
-        const draftHit = checkLegalDraft && (html.includes("[运营方名称]") || html.includes("这是草稿，尚未生效"));
+        if (!checkLegalDraft) {
+          await res.body?.cancel().catch(() => undefined);
+          checks.push(checkItem(id, "PASS", `${route} responded HTTP ${res.status}`));
+          continue;
+        }
+        const html = await res.text();
+        const draftHit = LEGAL_DRAFT_MARKERS.some((marker) => html.includes(marker));
         checks.push(
           draftHit
             ? checkItem(id, "WARN", `${route} responded HTTP ${res.status} (draft markers still live)`)
@@ -279,7 +292,7 @@ export async function runLaunchReadinessCheck(
   return { ok, counts, checks, apiBase: resolved.apiBase, webBase: resolved.webBase, offline: resolved.offline };
 }
 
-if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))) {
   Promise.resolve()
     .then(async () => {
       const options = parseLaunchReadinessArgs(process.argv.slice(2));

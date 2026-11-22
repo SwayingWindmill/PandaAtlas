@@ -27,15 +27,17 @@ node scripts/development/ops-moderation.mjs inspect --case-id "<REVIEW_CASE_UUID
 node scripts/development/ops-moderation.mjs claim --case-id "<REVIEW_CASE_UUID>"
 node scripts/development/ops-moderation.mjs claim --case-id "<REVIEW_CASE_UUID>" --apply
 
-# 核验或驳回投稿证据来源
+# 核验或驳回投稿证据来源（verified 须同时提供规范证据 ID 与定位 URI）
 node scripts/development/ops-moderation.mjs verify-source \
   --case-id "<REVIEW_CASE_UUID>" \
   --source-id "<SOURCE_UUID>" \
   --outcome verified \
+  --canonical-source-id "<EVIDENCE_SOURCE_ID>" \
+  --normalized-locator "https://www.panda.org.cn/cn/notice/example" \
   --reason "Confirmed against official institution notice" \
   --apply
 
-# 下达最终审核决定（accepted 须至少提供一个 assertion key）
+# 下达最终审核决定（accepted 须提供 --assertions；duplicate 须提供 --duplicate-of）
 node scripts/development/ops-moderation.mjs decide \
   --case-id "<REVIEW_CASE_UUID>" \
   --outcome accepted \

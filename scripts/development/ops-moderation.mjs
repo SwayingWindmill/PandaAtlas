@@ -1,7 +1,9 @@
+import path from "node:path";
 import process from "node:process";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
+const INTEGER_PATTERN = /^\d+$/u;
 const CASE_STATES = new Set(["new", "assigned", "closed"]);
 const VERIFY_OUTCOMES = new Set(["verified", "rejected"]);
 const DECISION_OUTCOMES = new Set(["accepted", "not_accepted", "duplicate", "out_of_scope", "abuse"]);
@@ -9,27 +11,56 @@ const ASSERTION_KEY_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$/u;
 const DEFAULT_API_BASE = "https://api.zhipanda.com";
 const REQUEST_TIMEOUT_MS = 15_000;
 
+const ALLOWED_FLAGS_BY_COMMAND = {
+  list: new Set(["--state", "--limit", "--offset", "--json"]),
+  inspect: new Set(["--case-id", "--json"]),
+  claim: new Set(["--case-id", "--apply", "--json"]),
+  "verify-source": new Set([
+    "--case-id",
+    "--source-id",
+    "--outcome",
+    "--reason",
+    "--canonical-source-id",
+    "--normalized-locator",
+    "--apply",
+    "--json",
+  ]),
+  decide: new Set([
+    "--case-id",
+    "--outcome",
+    "--explanation",
+    "--assertions",
+    "--internal-reason",
+    "--duplicate-of",
+    "--apply",
+    "--json",
+  ]),
+};
+
 export function usage() {
   return [
     "Single-operator review moderation CLI (mutating actions default to dry-run; pass --apply to write):",
     "  node scripts/development/ops-moderation.mjs list [--state new|assigned|closed] [--limit 25] [--offset 0] [--json]",
     "  node scripts/development/ops-moderation.mjs inspect --case-id <UUID> [--json]",
     "  node scripts/development/ops-moderation.mjs claim --case-id <UUID> [--apply]",
-    "  node scripts/development/ops-moderation.mjs verify-source --case-id <UUID> --source-id <UUID> --outcome verified|rejected --reason <text> [--canonical-source-id <id>] [--normalized-locator <url>] [--apply]",
+    "  node scripts/development/ops-moderation.mjs verify-source --case-id <UUID> --source-id <UUID> --outcome verified|rejected --reason <text> [--canonical-source-id <id> --normalized-locator <url>] [--apply]",
     "  node scripts/development/ops-moderation.mjs decide --case-id <UUID> --outcome accepted|not_accepted|duplicate|out_of_scope|abuse --explanation <text> [--assertions k1,k2] [--internal-reason <text>] [--duplicate-of <UUID>] [--apply]",
   ].join("\n");
 }
 
 export function normalizeApiBaseUrl(raw) {
-  const candidate = (raw ?? DEFAULT_API_BASE).trim();
+  const trimmed = typeof raw === "string" ? raw.trim() : "";
+  const candidate = trimmed === "" ? DEFAULT_API_BASE : trimmed;
   let parsed;
   try {
     parsed = new URL(candidate);
   } catch {
     throw new Error(`PANDAATLAS_API_BASE_URL must be a valid URL: ${candidate}`);
   }
-  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
-    throw new Error(`PANDAATLAS_API_BASE_URL must use http or https: ${candidate}`);
+  const isLocalHttp =
+    parsed.protocol === "http:" && (parsed.hostname === "127.0.0.1" || parsed.hostname === "localhost");
+  if (parsed.protocol !== "https:" && !isLocalHttp) {
+    throw new Error(`PANDAATLAS_API_BASE_URL must use https (http only allowed for localhost/127.0.0.1): ${candidate}`);
   }
   return parsed.toString().replace(/\/+$/u, "");
 }
@@ -50,11 +81,23 @@ function requireUuid(value, name) {
 }
 
 function parseIntFlag(raw, name, min, max) {
-  const parsed = Number(raw);
-  if (!Number.isInteger(parsed) || parsed < min || parsed > max) {
+  const trimmed = typeof raw === "string" ? raw.trim() : "";
+  if (!INTEGER_PATTERN.test(trimmed)) {
+    throw new Error(`${name} must be an integer between ${min} and ${max}`);
+  }
+  const parsed = Number(trimmed);
+  if (!Number.isSafeInteger(parsed) || parsed < min || parsed > max) {
     throw new Error(`${name} must be an integer between ${min} and ${max}`);
   }
   return parsed;
+}
+
+function normalizeTrimmedLength(raw, name, min, max) {
+  const normalized = String(raw).trim().replace(/\s+/gu, " ");
+  if (normalized.length < min || normalized.length > max) {
+    throw new Error(`${name} must be between ${min} and ${max} characters`);
+  }
+  return normalized;
 }
 
 export function parseModerationArgs(argv) {
@@ -62,34 +105,23 @@ export function parseModerationArgs(argv) {
     return { command: "help" };
   }
   const command = argv[0];
+  const allowedFlags = ALLOWED_FLAGS_BY_COMMAND[command];
+  if (allowedFlags === undefined) {
+    throw new Error(`Unknown subcommand: ${command}`);
+  }
+
   const flags = new Map();
-  const valueFlags = new Set([
-    "--state",
-    "--limit",
-    "--offset",
-    "--case-id",
-    "--source-id",
-    "--outcome",
-    "--reason",
-    "--canonical-source-id",
-    "--normalized-locator",
-    "--explanation",
-    "--assertions",
-    "--internal-reason",
-    "--duplicate-of",
-  ]);
   const boolFlags = new Set(["--json", "--apply"]);
 
   for (let index = 1; index < argv.length; index += 1) {
     const token = argv[index];
+    if (!allowedFlags.has(token)) throw new Error(`Flag ${token} is not supported for ${command}`);
     if (flags.has(token)) throw new Error(`Repeated flag: ${token}`);
     if (boolFlags.has(token)) {
       flags.set(token, true);
-    } else if (valueFlags.has(token)) {
+    } else {
       flags.set(token, readValueFlag(argv, index, token));
       index += 1;
-    } else {
-      throw new Error(`Unknown flag: ${token}`);
     }
   }
 
@@ -98,7 +130,6 @@ export function parseModerationArgs(argv) {
 
   switch (command) {
     case "list": {
-      if (apply) throw new Error("--apply is not supported for list");
       const state = flags.get("--state");
       if (state !== undefined && !CASE_STATES.has(state)) {
         throw new Error("--state must be one of new, assigned, closed");
@@ -107,22 +138,10 @@ export function parseModerationArgs(argv) {
       const offset = flags.has("--offset") ? parseIntFlag(flags.get("--offset"), "--offset", 0, 100_000) : 0;
       return { command, state, limit, offset, json };
     }
-    case "inspect": {
-      if (apply) throw new Error("--apply is not supported for inspect");
-      return {
-        command,
-        caseId: requireUuid(flags.get("--case-id"), "--case-id"),
-        json,
-      };
-    }
-    case "claim": {
-      return {
-        command,
-        caseId: requireUuid(flags.get("--case-id"), "--case-id"),
-        apply,
-        json,
-      };
-    }
+    case "inspect":
+      return { command, caseId: requireUuid(flags.get("--case-id"), "--case-id"), json };
+    case "claim":
+      return { command, caseId: requireUuid(flags.get("--case-id"), "--case-id"), apply, json };
     case "verify-source": {
       const caseId = requireUuid(flags.get("--case-id"), "--case-id");
       const sourceId = requireUuid(flags.get("--source-id"), "--source-id");
@@ -130,12 +149,16 @@ export function parseModerationArgs(argv) {
       if (!VERIFY_OUTCOMES.has(outcome)) {
         throw new Error("--outcome must be verified or rejected");
       }
-      const reason = String(flags.get("--reason") ?? "").trim().replace(/\s+/gu, " ");
-      if (reason.length < 3 || reason.length > 2000) {
-        throw new Error("--reason must be between 3 and 2000 characters");
+      const reason = normalizeTrimmedLength(flags.get("--reason") ?? "", "--reason", 3, 2000);
+      const canonicalSourceId = flags.has("--canonical-source-id")
+        ? normalizeTrimmedLength(flags.get("--canonical-source-id"), "--canonical-source-id", 1, 255)
+        : undefined;
+      const normalizedLocator = flags.has("--normalized-locator")
+        ? normalizeTrimmedLength(flags.get("--normalized-locator"), "--normalized-locator", 3, 2000)
+        : undefined;
+      if (outcome === "verified" && (canonicalSourceId === undefined || normalizedLocator === undefined)) {
+        throw new Error("--canonical-source-id and --normalized-locator are required when --outcome is verified");
       }
-      const canonicalSourceId = flags.get("--canonical-source-id");
-      const normalizedLocator = flags.get("--normalized-locator");
       return {
         command,
         caseId,
@@ -154,10 +177,12 @@ export function parseModerationArgs(argv) {
       if (!DECISION_OUTCOMES.has(outcome)) {
         throw new Error("--outcome must be accepted, not_accepted, duplicate, out_of_scope, or abuse");
       }
-      const userVisibleExplanation = String(flags.get("--explanation") ?? "").trim().replace(/\s+/gu, " ");
-      if (userVisibleExplanation.length < 10 || userVisibleExplanation.length > 2000) {
-        throw new Error("--explanation must be between 10 and 2000 characters");
-      }
+      const userVisibleExplanation = normalizeTrimmedLength(
+        flags.get("--explanation") ?? "",
+        "--explanation",
+        10,
+        2000,
+      );
       const rawAssertions = String(flags.get("--assertions") ?? "").trim();
       const selectedAssertionKeys = rawAssertions === ""
         ? []
@@ -170,13 +195,18 @@ export function parseModerationArgs(argv) {
       if (outcome === "accepted" && selectedAssertionKeys.length === 0) {
         throw new Error("--assertions must include at least one key when --outcome is accepted");
       }
-      const internalReason = flags.get("--internal-reason")?.trim().replace(/\s+/gu, " ");
-      if (internalReason !== undefined && (internalReason.length < 3 || internalReason.length > 4000)) {
-        throw new Error("--internal-reason must be between 3 and 4000 characters");
-      }
+      const internalReason = flags.has("--internal-reason")
+        ? normalizeTrimmedLength(flags.get("--internal-reason"), "--internal-reason", 3, 4000)
+        : undefined;
       const duplicateOfReviewCaseId = flags.has("--duplicate-of")
         ? requireUuid(flags.get("--duplicate-of"), "--duplicate-of")
         : undefined;
+      if (outcome === "duplicate" && duplicateOfReviewCaseId === undefined) {
+        throw new Error("--duplicate-of <UUID> is required when --outcome is duplicate");
+      }
+      if (duplicateOfReviewCaseId !== undefined && duplicateOfReviewCaseId === caseId) {
+        throw new Error("--duplicate-of must differ from --case-id");
+      }
       return {
         command,
         caseId,
@@ -257,14 +287,18 @@ function formatProblemDetails(response, payload) {
   const retryAfter = response.headers.get("retry-after");
   const code = typeof payload?.code === "string" ? payload.code : "http_error";
   const detail = typeof payload?.detail === "string" ? payload.detail : response.statusText || "Request failed";
+  const errors = Array.isArray(payload?.errors)
+    ? payload.errors.map((item) => item?.message).filter((item) => typeof item === "string")
+    : [];
+  const errorsSuffix = errors.length > 0 ? ` [${errors.join("; ")}]` : "";
   const retrySuffix = retryAfter ? ` (Retry-After: ${retryAfter}s)` : "";
-  return `API ${response.status} [${code}]: ${detail}${retrySuffix}`;
+  return `API ${response.status} [${code}]: ${detail}${errorsSuffix}${retrySuffix}`;
 }
 
 export async function executeModerationCommand(
   parsed,
   {
-    apiBase = normalizeApiBaseUrl(process.env.PANDAATLAS_API_BASE_URL),
+    apiBase,
     token = process.env.PANDAATLAS_STAFF_ACCESS_TOKEN,
     fetchFn = fetch,
   } = {},
@@ -273,7 +307,7 @@ export async function executeModerationCommand(
     return { help: usage() };
   }
 
-  const base = normalizeApiBaseUrl(apiBase);
+  const base = normalizeApiBaseUrl(apiBase ?? process.env.PANDAATLAS_API_BASE_URL);
   const spec = buildRequestSpec(parsed, base);
 
   if (spec.mutating && !parsed.apply) {
@@ -354,7 +388,7 @@ function printModerationResult(parsed, result) {
   console.log(JSON.stringify(result, null, 2));
 }
 
-if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))) {
   Promise.resolve()
     .then(async () => {
       const parsed = parseModerationArgs(process.argv.slice(2));

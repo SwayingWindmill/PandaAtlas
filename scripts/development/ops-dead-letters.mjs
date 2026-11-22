@@ -1,8 +1,27 @@
+import path from "node:path";
 import process from "node:process";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import pg from "pg";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
+const INTEGER_PATTERN = /^\d+$/u;
+const STRICT_REMOTE_SSLMODES = new Set(["require", "verify-ca", "verify-full"]);
+const SSL_QUERY_KEYS = new Set([
+  "ssl",
+  "sslmode",
+  "sslcert",
+  "sslkey",
+  "sslrootcert",
+  "sslpassword",
+  "uselibpqcompat",
+]);
+
+const ALLOWED_FLAGS_BY_COMMAND = {
+  list: new Set(["--limit", "--json"]),
+  inspect: new Set(["--id", "--json"]),
+  replay: new Set(["--id", "--apply", "--json"]),
+  discard: new Set(["--id", "--apply", "--json"]),
+};
 
 export function usage() {
   return [
@@ -30,8 +49,12 @@ function requireUuid(value, name) {
 }
 
 function parseIntFlag(raw, name, min, max) {
-  const parsed = Number(raw);
-  if (!Number.isInteger(parsed) || parsed < min || parsed > max) {
+  const trimmed = typeof raw === "string" ? raw.trim() : "";
+  if (!INTEGER_PATTERN.test(trimmed)) {
+    throw new Error(`${name} must be an integer between ${min} and ${max}`);
+  }
+  const parsed = Number(trimmed);
+  if (!Number.isSafeInteger(parsed) || parsed < min || parsed > max) {
     throw new Error(`${name} must be an integer between ${min} and ${max}`);
   }
   return parsed;
@@ -42,20 +65,23 @@ export function parseDeadLetterArgs(argv) {
     return { command: "help" };
   }
   const command = argv[0];
+  const allowedFlags = ALLOWED_FLAGS_BY_COMMAND[command];
+  if (allowedFlags === undefined) {
+    throw new Error(`Unknown subcommand: ${command}`);
+  }
+
   const flags = new Map();
-  const valueFlags = new Set(["--limit", "--id"]);
   const boolFlags = new Set(["--json", "--apply"]);
 
   for (let index = 1; index < argv.length; index += 1) {
     const token = argv[index];
+    if (!allowedFlags.has(token)) throw new Error(`Flag ${token} is not supported for ${command}`);
     if (flags.has(token)) throw new Error(`Repeated flag: ${token}`);
     if (boolFlags.has(token)) {
       flags.set(token, true);
-    } else if (valueFlags.has(token)) {
+    } else {
       flags.set(token, readValueFlag(argv, index, token));
       index += 1;
-    } else {
-      throw new Error(`Unknown flag: ${token}`);
     }
   }
 
@@ -64,21 +90,30 @@ export function parseDeadLetterArgs(argv) {
 
   switch (command) {
     case "list": {
-      if (apply) throw new Error("--apply is not supported for list");
       const limit = flags.has("--limit") ? parseIntFlag(flags.get("--limit"), "--limit", 1, 200) : 50;
       return { command, limit, json };
     }
-    case "inspect": {
-      if (apply) throw new Error("--apply is not supported for inspect");
+    case "inspect":
       return { command, id: requireUuid(flags.get("--id"), "--id"), json };
-    }
     case "replay":
-    case "discard": {
+    case "discard":
       return { command, id: requireUuid(flags.get("--id"), "--id"), apply, json };
-    }
     default:
       throw new Error(`Unknown subcommand: ${command}`);
   }
+}
+
+function parseDatabaseUrl(raw) {
+  let parsed;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    throw new Error("Database connection URL is malformed");
+  }
+  if (parsed.protocol !== "postgres:" && parsed.protocol !== "postgresql:") {
+    throw new Error("Database connection URL must use postgres or postgresql");
+  }
+  return parsed;
 }
 
 export function resolveDatabaseTarget(env = process.env) {
@@ -86,24 +121,25 @@ export function resolveDatabaseTarget(env = process.env) {
   const iamUrl = env.PANDAATLAS_IAM_OPERATOR_DATABASE_URL?.trim();
   const testUrl = env.TEST_DATABASE_URL?.trim();
 
-  let connectionString = opsUrl || iamUrl;
-  let host;
-  if (connectionString) {
-    host = new URL(connectionString).hostname;
+  let parsedUrl;
+  if (opsUrl) {
+    parsedUrl = parseDatabaseUrl(opsUrl);
+  } else if (iamUrl) {
+    parsedUrl = parseDatabaseUrl(iamUrl);
   } else if (testUrl) {
-    const parsed = new URL(testUrl);
-    if (parsed.hostname === "127.0.0.1" || parsed.hostname === "localhost") {
-      connectionString = testUrl;
-      host = parsed.hostname;
+    const candidate = parseDatabaseUrl(testUrl);
+    if (candidate.hostname === "127.0.0.1" || candidate.hostname === "localhost") {
+      parsedUrl = candidate;
     }
   }
 
-  if (!connectionString || !host) {
+  if (!parsedUrl || !parsedUrl.hostname) {
     throw new Error(
       "PANDAATLAS_OPS_DATABASE_URL (or PANDAATLAS_IAM_OPERATOR_DATABASE_URL, or localhost TEST_DATABASE_URL) is required",
     );
   }
 
+  const host = parsedUrl.hostname;
   const isLocal = host === "127.0.0.1" || host === "localhost";
   const ca = (env.PANDAATLAS_OPS_DATABASE_SSL_CA_CERT || env.PANDAATLAS_IAM_DATABASE_SSL_CA_CERT || "").trim();
   if (!isLocal && ca === "") {
@@ -112,9 +148,28 @@ export function resolveDatabaseTarget(env = process.env) {
     );
   }
 
+  // Strip SSL query params after validation because pg overwrites client.ssl from connectionString query options.
+  for (const [key, value] of [...parsedUrl.searchParams.entries()]) {
+    const lowerKey = key.toLowerCase();
+    if (!SSL_QUERY_KEYS.has(lowerKey)) continue;
+    if (!isLocal) {
+      const lowerValue = value.trim().toLowerCase();
+      if (lowerKey === "sslmode" && !STRICT_REMOTE_SSLMODES.has(lowerValue)) {
+        throw new Error(`Insecure remote sslmode "${value}" is not allowed`);
+      }
+      if (lowerKey === "ssl" && lowerValue !== "1" && lowerValue !== "true") {
+        throw new Error(`Insecure remote ssl="${value}" parameter is not allowed`);
+      }
+      if (lowerKey === "uselibpqcompat" || lowerKey === "sslrootcert" || lowerKey === "sslcert" || lowerKey === "sslkey") {
+        throw new Error(`Database query parameter "${key}" is not allowed on remote connections`);
+      }
+    }
+    parsedUrl.searchParams.delete(key);
+  }
+
   return {
     host,
-    connectionString,
+    connectionString: parsedUrl.toString(),
     ssl: isLocal ? undefined : { ca: ca.replace(/\\n/gu, "\n"), rejectUnauthorized: true },
   };
 }
@@ -265,7 +320,7 @@ function printDeadLetterResult(parsed, result) {
   }
 }
 
-if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))) {
   Promise.resolve()
     .then(async () => {
       const parsed = parseDeadLetterArgs(process.argv.slice(2));
