@@ -35,22 +35,26 @@ test("learn index links an article whose term opens the term page", async ({ pag
   await expect(page.getByRole("link", { name: /黑眼圈不是熬夜熬的/ })).toBeVisible();
 });
 
-test("English learn shows English terms and sends Chinese-only articles to the Chinese page", async ({ page, request }) => {
+test("English learn shows English terms and redirects Chinese-only articles to the Chinese page", async ({ page, request }) => {
   await page.goto("/en/learn");
   await expect(page.getByRole("link", { name: "Eye patches" })).toHaveAttribute("href", "/en/learn/terms/eye-patch");
   await expect(page.getByRole("link", { name: /黑眼圈不是熬夜熬的/ })).toHaveAttribute("href", "/zh/learn/articles/black-eye-patches");
-  expect((await request.get("/en/learn/articles/black-eye-patches")).status()).toBe(404);
+  const english = await request.get("/en/learn/articles/black-eye-patches", { maxRedirects: 0 });
+  expect(english.status()).toBe(308);
+  expect(english.headers().location).toMatch(/\/zh\/learn\/articles\/black-eye-patches$/);
 
   await page.goto("/en/learn/terms/eye-patch");
   await expect(page.getByRole("heading", { level: 1, name: "Eye patches" })).toBeVisible();
 });
 
-test("Chinese-only terms have no English page and are linked in Chinese from English learn", async ({ page, request }) => {
+test("Chinese-only terms redirect from English and are linked in Chinese from English learn", async ({ page, request }) => {
   await page.goto("/en/learn");
   const saddle = page.getByRole("link", { name: "背带" });
   await expect(saddle).toHaveAttribute("href", "/zh/learn/terms/saddle");
   await expect(page.locator("li", { has: saddle })).toHaveAttribute("lang", "zh-CN");
-  expect((await request.get("/en/learn/terms/saddle")).status()).toBe(404);
+  const english = await request.get("/en/learn/terms/saddle", { maxRedirects: 0 });
+  expect(english.status()).toBe(308);
+  expect(english.headers().location).toMatch(/\/zh\/learn\/terms\/saddle$/);
 
   const xml = await (await request.get("/sitemap.xml")).text();
   expect(xml).toContain("/zh/learn/terms/saddle<");

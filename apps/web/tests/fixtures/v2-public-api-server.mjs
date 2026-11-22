@@ -394,7 +394,7 @@ const learningArticle = (slug, category, title, relatedArticles) => ({
       heading: { zh: "黑白配色里最显眼的一笔", en: "" },
       paragraphs: [
         { text: { zh: "提到大熊猫，几乎每个人第一个想到的都是那对[[eye-patch|黑眼圈]]。", en: "" }, refs: ["si-panda"] },
-        { text: { zh: "肩上那条黑毛叫[[saddle|背带]]，和[[eye-patch|眼斑]]一起用来认熊猫。", en: "" }, refs: ["si-panda"] },
+        { text: { zh: "那对[[eye-patch|眼斑]]和肩上的[[saddle|背带]]，都能用来认熊猫。", en: "" }, refs: ["si-panda"] },
       ],
     }],
   },

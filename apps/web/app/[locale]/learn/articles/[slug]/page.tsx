@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import type { Route } from "next";
+import { notFound, permanentRedirect } from "next/navigation";
 
 import { StructuredDataScript } from "@/components/structured-data-script";
 import { OpenInAppBar } from "@/features/app-download/open-in-app-bar";
@@ -29,14 +30,14 @@ async function findArticle(rawLocale: string, slug: string) {
   if (!locale) return null;
   const catalog = await loadLearningCatalog();
   const article = catalog.articles.find((item) => item.slug === slug);
-  if (!article || articleLocale(article, locale) !== locale) return null;
+  if (!article) return null;
   return { locale, catalog, article };
 }
 
 export async function generateMetadata({ params }: ArticleRouteProps): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const found = await readPublicMetadata(() => findArticle(rawLocale, slug));
-  if (!found) return {};
+  if (!found || articleLocale(found.article, found.locale) !== found.locale) return {};
   const { locale, article } = found;
   const hero = articleHero(article);
   return buildPublicMetadata({
@@ -65,6 +66,8 @@ export default async function ArticleRoute({ params }: ArticleRouteProps) {
   const found = await findArticle(rawLocale, slug);
   if (!found) notFound();
   const { locale, catalog, article } = found;
+  const pageLocale = articleLocale(article, locale);
+  if (pageLocale !== locale) permanentRedirect(`/${pageLocale}/learn/articles/${article.slug}` as Route);
   const pandas = await articlePandas(article, locale);
   const hero = articleHero(article);
   return (
