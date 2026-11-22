@@ -40,4 +40,45 @@ describe("environment validation", () => {
   it("rejects an unclear ask switch", () => {
     expect(() => validateEnvironment({ APP_ENV: "test", ASK_ENABLED: "yes" })).toThrow("ASK_ENABLED must be true or false");
   });
+
+  it("validates OPS_ALERT_WEBHOOK_URL and OPS_ALERT_WEBHOOK_FORMAT", () => {
+    expect(validateEnvironment({ APP_ENV: "test" })).toMatchObject({
+      OPS_ALERT_WEBHOOK_URL: undefined,
+      OPS_ALERT_WEBHOOK_FORMAT: "feishu",
+    });
+    expect(
+      validateEnvironment({
+        APP_ENV: "production",
+        CORS_ALLOW_ORIGINS: "https://www.zhipanda.com",
+        DATABASE_URL: "postgresql://example",
+        SUPABASE_URL: "https://example.supabase.co",
+        OPS_ALERT_WEBHOOK_URL: "https://open.feishu.cn/open-apis/bot/v2/hook/abc",
+        OPS_ALERT_WEBHOOK_FORMAT: "wecom",
+      }),
+    ).toMatchObject({
+      OPS_ALERT_WEBHOOK_URL: "https://open.feishu.cn/open-apis/bot/v2/hook/abc",
+      OPS_ALERT_WEBHOOK_FORMAT: "wecom",
+    });
+    expect(
+      validateEnvironment({
+        APP_ENV: "test",
+        OPS_ALERT_WEBHOOK_URL: "http://127.0.0.1:8787/hook",
+      }).OPS_ALERT_WEBHOOK_URL,
+    ).toBe("http://127.0.0.1:8787/hook");
+    expect(() =>
+      validateEnvironment({
+        APP_ENV: "production",
+        CORS_ALLOW_ORIGINS: "https://www.zhipanda.com",
+        DATABASE_URL: "postgresql://example",
+        SUPABASE_URL: "https://example.supabase.co",
+        OPS_ALERT_WEBHOOK_URL: "http://127.0.0.1:8787/hook",
+      }),
+    ).toThrow("OPS_ALERT_WEBHOOK_URL must use https");
+    expect(() =>
+      validateEnvironment({
+        APP_ENV: "test",
+        OPS_ALERT_WEBHOOK_FORMAT: "slack",
+      }),
+    ).toThrow("OPS_ALERT_WEBHOOK_FORMAT must be feishu, wecom, or generic");
+  });
 });

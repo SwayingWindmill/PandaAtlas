@@ -4,6 +4,10 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 
 ## Credentials and accounts
 
+- **Ops alert webhook (`OPS_ALERT_WEBHOOK_URL`).** Both `.github/workflows/production-probe.yml` (failed production probes) and the API Worker (`zhipanda-v2-api` for 5xx errors, failed Cron cycles, new community contributions and account-deletion requests) send webhook alerts without PII when configured; leaving it unset keeps alerts off without affecting requests.
+  - Set `OPS_ALERT_WEBHOOK_URL` (`https://...` webhook for Feishu, WeCom or generic JSON) as a GitHub Actions repository secret and as a Cloudflare Worker secret (`wrangler secret put OPS_ALERT_WEBHOOK_URL --name zhipanda-v2-api`).
+  - Optionally set `OPS_ALERT_WEBHOOK_FORMAT` (`feishu`, `wecom` or `generic`, defaulting to `feishu`) as a GitHub Actions repository variable and Worker environment variable/secret if not using a Feishu bot webhook.
+
 - **Supabase Auth: leaked-password protection.** The Supabase security advisor flags it as off (Authentication → Policies → Password security, which checks passwords against HaveIBeenPwned). Fans sign in with email codes and staff with email codes plus TOTP, so no password is in use today; turning it on costs nothing and covers any future password sign-in. It is an account setting, so it is yours to switch.
 
 - **App builds and store release.** The app (`com.zhipanda.app`) has no EAS project yet, so it runs only in Expo Go and on the web. Releasing it needs an Expo account to own the EAS project, an Apple Developer Program membership and a Google Play Console account; then `eas init`, `eas build` and `eas submit` (the same accounts cover the push credentials below). `apps/mobile/eas.json` already has the build profiles (Xcode 27.1 image via the `sdk-58` alias).
