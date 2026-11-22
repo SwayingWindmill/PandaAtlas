@@ -79,6 +79,8 @@ jobs:
         working-directory: apps/mobile
         env:
           JOURNEY: ${{ inputs.journey }}
+          # Keep Node (fixture seeding & todayLabel) in sync with e2e.config.ts browser timezoneId across 16:00-23:59 UTC.
+          TZ: Asia/Shanghai
         run: npx e2e run $JOURNEY --trace on
 
       - name: Upload traces and logs

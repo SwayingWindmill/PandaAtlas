@@ -109,3 +109,13 @@ test("the planner loads without npm dependencies", async () => {
   await visit(path.join(repoRoot, "scripts", "development", "verify.mjs"));
   assert.deepEqual(bare, []);
 });
+
+test("Mobile E2E CI sets TZ=Asia/Shanghai to match Playwright e2e.config.ts timezoneId", async () => {
+  const [workflow, config] = await Promise.all([
+    readFile(path.join(repoRoot, ".github", "workflows", "mobile-e2e.yml"), "utf8"),
+    readFile(path.join(repoRoot, "apps", "mobile", "e2e.config.ts"), "utf8"),
+  ]);
+
+  assert.match(config, /timezoneId:\s*["']Asia\/Shanghai["']/u);
+  assert.match(workflow, /name:\s*Run journeys[\s\S]*?TZ:\s*Asia\/Shanghai/u);
+});
