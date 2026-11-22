@@ -437,6 +437,7 @@ const commands = [
       "scripts/development/tests/check-local-ports.test.mjs",
       "scripts/development/tests/dev-processes.test.mjs",
       "scripts/development/tests/operations.test.mjs",
+      "scripts/development/tests/ops-cli.test.mjs",
       "scripts/development/tests/verification-workflow.test.mjs",
     ],
     // cloudflare-production-surface loads both cloudflare.config.ts files, which import cf.
