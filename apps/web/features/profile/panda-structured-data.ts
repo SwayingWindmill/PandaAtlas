@@ -1,5 +1,5 @@
-import { localizedPath, type PublicLocale } from "@/lib/locales";
-import { ZHIPANDA_PUBLIC_ORIGIN } from "@/lib/public-metadata";
+import type { PublicLocale } from "@/lib/locales";
+import { publicPageUrl, type StructuredData } from "@/lib/structured-data";
 
 interface PandaStructuredDataInput {
   locale: PublicLocale;
@@ -21,11 +21,8 @@ export function buildPandaStructuredData({
   pinyin,
   summary,
   coverImageUrl,
-}: PandaStructuredDataInput): Record<string, unknown> {
-  const url = new URL(
-    localizedPath(locale, `/pandas/${canonicalSlug}`),
-    ZHIPANDA_PUBLIC_ORIGIN,
-  ).toString();
+}: PandaStructuredDataInput): StructuredData {
+  const url = publicPageUrl(locale, `/pandas/${canonicalSlug}`);
   const alternateNames = [alternateName, pinyin]
     .filter((value): value is string => Boolean(value));
 
@@ -46,8 +43,4 @@ export function buildPandaStructuredData({
     ...(coverImageUrl ? { image: coverImageUrl } : {}),
     inLanguage: locale === "zh" ? "zh-CN" : "en",
   };
-}
-
-export function serializeStructuredData(value: Record<string, unknown>): string {
-  return JSON.stringify(value).replaceAll("<", "\\u003c");
 }

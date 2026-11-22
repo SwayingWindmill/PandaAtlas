@@ -20,7 +20,16 @@ interface PublicMetadataInput {
   } | null;
   privatePage?: boolean;
   noFollow?: boolean;
+  /** The page exists in this locale only, so no language alternates are advertised. */
+  singleLocale?: boolean;
 }
+
+export const DEFAULT_SHARE_IMAGE = {
+  url: "/og-default.png",
+  width: 1200,
+  height: 630,
+  alt: "吱熊猫 ZhiPanda",
+} as const;
 
 function absolutePublicUrl(path: string): string {
   return new URL(path, ZHIPANDA_PUBLIC_ORIGIN).toString();
@@ -34,12 +43,13 @@ export function buildPublicMetadata({
   image,
   privatePage = false,
   noFollow = false,
+  singleLocale = false,
 }: PublicMetadataInput): Metadata {
   const canonicalPath = localizedPath(locale, path);
   const canonical = absolutePublicUrl(canonicalPath);
   const chinese = absolutePublicUrl(localizedPath("zh", path));
   const english = absolutePublicUrl(localizedPath("en", path));
-  const images = image ? [{ url: image.url, alt: image.alt }] : undefined;
+  const images = image ? [{ url: image.url, alt: image.alt }] : [DEFAULT_SHARE_IMAGE];
 
   return {
     title: { absolute: title },
@@ -50,11 +60,13 @@ export function buildPublicMetadata({
     publisher: ZHIPANDA_PUBLISHER,
     alternates: {
       canonical,
-      languages: {
-        "zh-CN": chinese,
-        en: english,
-        "x-default": chinese,
-      },
+      languages: singleLocale
+        ? undefined
+        : {
+            "zh-CN": chinese,
+            en: english,
+            "x-default": chinese,
+          },
     },
     robots: privatePage
       ? { index: false, follow: !noFollow, nocache: true, noarchive: true }
@@ -68,16 +80,16 @@ export function buildPublicMetadata({
           description,
           siteName: ZHIPANDA_PUBLISHER,
           locale: locale === "zh" ? "zh_CN" : "en_US",
-          alternateLocale: locale === "zh" ? ["en_US"] : ["zh_CN"],
+          alternateLocale: singleLocale ? undefined : locale === "zh" ? ["en_US"] : ["zh_CN"],
           images,
         },
     twitter: privatePage
       ? undefined
       : {
-          card: image ? "summary_large_image" : "summary",
+          card: "summary_large_image",
           title,
           description,
-          images: image ? [image.url] : undefined,
+          images: images.map((item) => item.url),
         },
   };
 }

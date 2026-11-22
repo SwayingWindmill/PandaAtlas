@@ -65,6 +65,13 @@ const coreJourneys = [
   { name: "English terms", path: "/en/terms" },
   { name: "Chinese privacy", path: "/zh/privacy" },
   { name: "English privacy", path: "/en/privacy" },
+  { name: "Chinese about", path: "/zh/about" },
+  { name: "English about", path: "/en/about" },
+  { name: "Chinese learn", path: "/zh/learn" },
+  { name: "English learn", path: "/en/learn" },
+  { name: "Chinese learn article", path: "/zh/learn/articles/black-eye-patches" },
+  { name: "English learn term", path: "/en/learn/terms/eye-patch" },
+  { name: "Chinese app download", path: "/zh/app" },
 ];
 
 for (const journey of coreJourneys) {

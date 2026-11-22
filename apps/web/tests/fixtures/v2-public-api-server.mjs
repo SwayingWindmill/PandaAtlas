@@ -382,6 +382,39 @@ function dailyGuessResult(guessPandaIds) {
   };
 }
 
+const learningSource = { title: { zh: "史密森尼国家动物园：大熊猫", en: "Smithsonian's National Zoo: Giant Panda" }, url: "https://nationalzoo.si.edu/animals/giant-panda", citedOn: "2026-10-31" };
+const learningArticle = (slug, category, title, relatedArticles) => ({
+  slug,
+  category,
+  title: { zh: title, en: "" },
+  dek: { zh: `${title}的导语。`, en: "" },
+  pullQuote: { zh: "", en: "" },
+  body: {
+    sections: [{
+      heading: { zh: "黑白配色里最显眼的一笔", en: "" },
+      paragraphs: [{ text: { zh: "提到大熊猫，几乎每个人第一个想到的都是那对[[eye-patch|黑眼圈]]。", en: "" }, refs: ["si-panda"] }],
+    }],
+  },
+  keyFacts: [{ text: { zh: "眼斑是天生的黑毛图案。", en: "" }, refs: ["si-panda"] }],
+  images: [{ role: "hero", type: "existing", pandaSlug: "xi-lun", asset: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Xi_Lun_at_Zoo_Atlanta.jpg?width=1600", credit: "O01326 / Wikimedia Commons", caption: { zh: "喜伦的眼斑下角上扬。", en: "" } }],
+  references: [{ id: "si-panda", title: "Giant panda", publisher: "Smithsonian's National Zoo", url: "https://nationalzoo.si.edu/animals/giant-panda", citedOn: "2026-10-31" }],
+  relatedArticles,
+});
+const learningCatalog = {
+  version: "2026.10.29.2",
+  articles: [
+    learningArticle("black-eye-patches", "外形与识别", "黑眼圈不是熬夜熬的：大熊猫眼斑从哪来、有什么用", ["bamboo"]),
+    learningArticle("bamboo", "食性", "不只是“箭竹”：大熊猫吃的竹子有哪些门道", ["black-eye-patches"]),
+  ],
+  terms: [
+    { slug: "eye-patch", term: { zh: "黑眼圈", en: "Eye patches" }, definition: { zh: "大熊猫眼睛周围的黑色毛斑，也叫眼斑。", en: "The black fur patches around a giant panda's eyes." }, relatedSlugs: ["pseudo-thumb"], sources: [learningSource] },
+    { slug: "pseudo-thumb", term: { zh: "伪拇指", en: "Pseudo-thumb" }, definition: { zh: "大熊猫前爪上帮助抓握竹子的结构。", en: "A structure on a giant panda's forepaw that helps it grip bamboo." }, relatedSlugs: [], sources: [learningSource] },
+  ],
+  faceGuides: [],
+  challenges: [],
+  monthThemes: [],
+};
+
 const server = http.createServer((request, response) => {
   const url = new URL(request.url ?? "/", `http://${host}:${port}`);
 
@@ -403,6 +436,10 @@ const server = http.createServer((request, response) => {
 
   if (url.pathname === "/health") {
     sendJson(response, 200, { ok: true });
+    return;
+  }
+  if (url.pathname === "/api/v2/learning") {
+    sendJson(response, 200, learningCatalog);
     return;
   }
   if (url.pathname === "/api/v2/pandas") {
