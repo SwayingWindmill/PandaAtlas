@@ -330,9 +330,9 @@ const commands = [
   {
     id: "curation.test",
     category: "verification",
-    description: "Run the curated-content validator tests (learning, institutions, overseas status, review-due).",
+    description: "Run the curated-content validator and audit tests.",
     command: "python",
-    args: ["-m", "unittest", "discover", "-s", "scripts/curation/tests", "-p", "test_[rv]*.py"],
+    args: ["-m", "unittest", "discover", "-s", "scripts/curation/tests", "-p", "test_*.py"],
     requires: ["python"],
     effect: "generated-output",
   },

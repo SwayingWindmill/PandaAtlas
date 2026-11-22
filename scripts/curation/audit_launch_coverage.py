@@ -20,7 +20,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode, urlparse
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -87,7 +87,7 @@ CORE_VENUES: tuple[tuple[str, str, tuple[str, ...]], ...] = (
     (
         "中国大熊猫保护研究中心都江堰基地（中华大熊猫苑）",
         "CN",
-        ("dujiangyan", "都江堰", "中华大熊猫苑"),
+        ("ccrcgp-dujiangyan", "中华大熊猫苑", "都江堰基地"),
     ),
     ("成都大熊猫繁育研究基地都江堰野放繁育研究中心（熊猫谷）", "CN", ("panda-valley", "熊猫谷")),
     ("北京动物园", "CN", ("beijing-zoo", "北京动物园")),
@@ -176,10 +176,27 @@ def percent(count: int, total: int) -> float:
     return round((count / total) * 100.0, 1) if total > 0 else 0.0
 
 
+VALID_SEX = {"female", "male"}
+VALID_LIFE_STATUS = {"alive", "deceased"}
+
+
 def fact_value(facts: list[dict[str, Any]], key: str) -> Any:
     for fact in facts:
-        if fact.get("fieldKey") == key and fact.get("value") is not None:
-            return fact.get("value")
+        if fact.get("fieldKey") != key or fact.get("status") == "disputed":
+            continue
+        value = fact.get("value")
+        if value is None:
+            continue
+        if isinstance(value, str):
+            text = value.strip()
+            if not text:
+                continue
+            if key == "sex" and text not in VALID_SEX:
+                continue
+            if key == "life_status" and text not in VALID_LIFE_STATUS:
+                continue
+            return text
+        return value
     return None
 
 
@@ -203,15 +220,22 @@ def place_label(place: dict[str, Any] | None) -> str | None:
     return place.get("nameZh") or place.get("nameEn") or place.get("slug")
 
 
+def _validate_http_url(url: str) -> None:
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        raise ValueError(f"Unsupported URL scheme or missing host: {url}")
+
+
 def default_fetch_json(url: str) -> Any:
+    _validate_http_url(url)
     last_error: Exception | None = None
     for attempt in range(1, HTTP_MAX_ATTEMPTS + 1):
         request = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
         try:
-            with urlopen(request, timeout=HTTP_TIMEOUT_SECONDS) as response:  # noqa: S310
+            with urlopen(request, timeout=HTTP_TIMEOUT_SECONDS) as response:
                 return json.loads(response.read().decode("utf-8"))
         except HTTPError as error:
-            if error.code == 404:
+            if error.code != 429 and error.code < 500:
                 raise
             last_error = error
         except (URLError, ssl.SSLError, TimeoutError, OSError, json.JSONDecodeError) as error:
@@ -237,6 +261,8 @@ def fetch_paginated_items(
     while isinstance(cursor, str) and cursor and cursor not in seen_cursors:
         seen_cursors.add(cursor)
         next_payload = fetch_json(f"{base_url}{route}{separator}{urlencode({'cursor': cursor})}")
+        if not isinstance(next_payload, dict):
+            break
         batch = next_payload.get("items") or []
         if not batch:
             break
@@ -258,18 +284,22 @@ def load_live_dataset(
     institutions_doc = fetch_paginated_items(fetch_json, base, "/api/v2/institutions")
 
     optional: dict[str, Any] = {}
-    for key, route in (
-        ("lineage", "/api/v2/lineage"),
-        ("residencies", "/api/v2/residencies"),
-        ("life_events", "/api/v2/life-events"),
-        ("popular", "/api/v2/popular-pandas"),
-        ("learning", "/api/v2/learning"),
-        ("venue_news", "/api/v2/venue-news"),
-        ("overseas_status", "/api/v2/overseas-status"),
-        ("comparisons", "/api/v2/comparisons"),
+    for key, route, paginated in (
+        ("lineage", "/api/v2/lineage", True),
+        ("residencies", "/api/v2/residencies", True),
+        ("life_events", "/api/v2/life-events", True),
+        ("popular", "/api/v2/popular-pandas", False),
+        ("learning", "/api/v2/learning", False),
+        ("venue_news", "/api/v2/venue-news", False),
+        ("overseas_status", "/api/v2/overseas-status", False),
+        ("comparisons", "/api/v2/comparisons", False),
     ):
         try:
-            optional[key] = fetch_json(f"{base}{route}")
+            optional[key] = (
+                fetch_paginated_items(fetch_json, base, route)
+                if paginated
+                else fetch_json(f"{base}{route}")
+            )
         except HTTPError:
             optional[key] = None
 
@@ -419,13 +449,13 @@ def _fetch_focus_details(
     if dataset.get("source_mode") != "api":
         return details
     base = str(dataset["source"]).rstrip("/")
-    missing = [slug for slug in slugs if slug and slug not in details]
+    missing = list(dict.fromkeys(slug for slug in slugs if slug and slug not in details))
     if not missing:
         return details
 
     def load_one(slug: str) -> tuple[str, dict[str, Any] | None]:
         try:
-            return slug, fetch_json(f"{base}/api/v2/pandas/{slug}")
+            return slug, fetch_json(f"{base}/api/v2/pandas/{quote(slug, safe='')}")
         except HTTPError:
             return slug, None
 
@@ -565,10 +595,11 @@ def _audit_venues(
                     curation_tokens.add(norm)
 
     core_audits: list[CoreVenueAudit] = []
+    facility_places = [live for live in live_places if live.place_type == "facility"]
     for venue_name, country_code, aliases in CORE_VENUES:
         normalized_aliases = [normalize_key(a) for a in aliases if normalize_key(a)]
         matched_live: list[LivePlaceAudit] = []
-        for live in live_places:
+        for live in facility_places:
             haystack = " ".join(filter(None, [normalize_key(live.slug), normalize_key(live.name)]))
             if any(alias in haystack for alias in normalized_aliases):
                 matched_live.append(live)
@@ -688,15 +719,24 @@ def analyze_coverage(
         slug = str(primary.get("canonicalSlug") or "")
         facts = primary.get("facts") or []
         detail = details_by_slug.get(slug)
+        res_loaded = isinstance(dataset.get("residencies"), dict)
+        lin_loaded = isinstance(dataset.get("lineage"), dict)
+        evt_loaded = isinstance(dataset.get("life_events"), dict)
         res_count = (
             len(detail.get("residencies") or [])
             if detail is not None
-            else residency_counts.get(pid)
+            else (residency_counts.get(pid, 0) if res_loaded else None)
         )
         lin_count = (
-            len(detail.get("lineage") or []) if detail is not None else lineage_counts.get(pid)
+            len(detail.get("lineage") or [])
+            if detail is not None
+            else (lineage_counts.get(pid, 0) if lin_loaded else None)
         )
-        evt_count = len(detail.get("events") or []) if detail is not None else event_counts.get(pid)
+        evt_count = (
+            len(detail.get("events") or [])
+            if detail is not None
+            else (event_counts.get(pid, 0) if evt_loaded else None)
+        )
         media_count = (
             len(detail.get("media") or []) if detail is not None else (1 if pid in cover_ids else 0)
         )
@@ -951,7 +991,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     if args.output is not None:
         args.output.write_text(rendered, encoding="utf-8")
-    sys.stdout.reconfigure(encoding="utf-8")
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     sys.stdout.write(rendered)
     return 0
 

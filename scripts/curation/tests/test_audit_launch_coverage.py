@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import importlib.util
+import io
 import json
 import sys
 import tempfile
 import unittest
+from email.message import Message
 from pathlib import Path
+from unittest.mock import patch
+from urllib.error import HTTPError
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "audit_launch_coverage.py"
 SPEC = importlib.util.spec_from_file_location("audit_launch_coverage", MODULE_PATH)
@@ -48,6 +52,24 @@ def make_panda(
     return item
 
 
+def http_error(url: str, code: int) -> HTTPError:
+    return HTTPError(url, code, f"HTTP {code}", Message(), None)
+
+
+class _FakeResponse:
+    def __init__(self, body: str) -> None:
+        self._body = body.encode("utf-8")
+
+    def read(self) -> bytes:
+        return self._body
+
+    def __enter__(self) -> _FakeResponse:
+        return self
+
+    def __exit__(self, *_args: object) -> None:
+        return None
+
+
 class AuditLaunchCoverageTests(unittest.TestCase):
     def test_analyze_export_directory_computes_coverage_and_gaps(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -76,7 +98,13 @@ class AuditLaunchCoverageTests(unittest.TestCase):
                 has_cover=True,
             )
             p2 = make_panda(
-                "id-2", "meng-lan", "萌兰", birth_date=None, sex="male", place=None, has_cover=False
+                "id-2",
+                "meng-lan",
+                "萌兰",
+                birth_date=None,
+                sex="male",
+                place=None,
+                has_cover=False,
             )
 
             (export_dir / "stats.json").write_text(
@@ -174,6 +202,10 @@ class AuditLaunchCoverageTests(unittest.TestCase):
             self.assertEqual(by_name["花花（和花）"]["lineage_count"], 1)
             self.assertTrue(by_name["萌兰"]["matched"])
             self.assertFalse(by_name["萌兰"]["has_birth_date"])
+            # Top-level relation collections loaded: zero matches resolve to 0, not None.
+            self.assertEqual(by_name["萌兰"]["residency_count"], 0)
+            self.assertEqual(by_name["萌兰"]["lineage_count"], 0)
+            self.assertEqual(by_name["萌兰"]["event_count"], 0)
             self.assertFalse(by_name["福宝"]["matched"])
 
             markdown = AUDIT.render_markdown(report)
@@ -181,7 +213,7 @@ class AuditLaunchCoverageTests(unittest.TestCase):
             self.assertIn("`he-hua`", markdown)
             self.assertIn("北京动物园", markdown)
 
-    def test_load_live_dataset_uses_mocked_fetcher_and_batches_covers(self) -> None:
+    def test_load_live_dataset_paginates_batches_covers_and_handles_optional_errors(self) -> None:
         place = {
             "placeId": "pl-1",
             "slug": "beijing-zoo",
@@ -189,16 +221,35 @@ class AuditLaunchCoverageTests(unittest.TestCase):
             "nameZh": "北京动物园",
             "countryCode": "CN",
         }
-        p1 = make_panda(
-            "uuid-1", "meng-lan", "萌兰", birth_date="2015-07-04", sex="male", place=place
-        )
-        responses = {
+        pandas = [
+            make_panda(
+                f"uuid-{idx}",
+                "meng-lan" if idx == 0 else f"panda-{idx}",
+                "萌兰" if idx == 0 else f"熊猫{idx}",
+                birth_date="2015-07-04" if idx == 0 else None,
+                sex="male",
+                place=place if idx == 0 else None,
+            )
+            for idx in range(51)
+        ]
+        batch_one_ids = ",".join(f"uuid-{idx}" for idx in range(50))
+        batch_two_ids = "uuid-50"
+        requested_urls: list[str] = []
+
+        responses: dict[str, object] = {
             "https://mock.local/api/v2/stats": {
                 "release": {"releaseId": "r1", "version": "2026.11.01"},
-                "stats": {"pandaCount": 1},
+                "stats": {"pandaCount": 51},
             },
-            "https://mock.local/api/v2/pandas": {"items": [p1], "nextCursor": "c2"},
-            "https://mock.local/api/v2/pandas?cursor=c2": {"items": []},
+            # Page 1 -> page.nextCursor -> Page 2 -> cycle guard stops repeat cursor.
+            "https://mock.local/api/v2/pandas": {
+                "items": pandas[:30],
+                "page": {"nextCursor": "c2"},
+            },
+            "https://mock.local/api/v2/pandas?cursor=c2": {
+                "items": pandas[30:],
+                "nextCursor": "c2",
+            },
             "https://mock.local/api/v2/places": {"items": [place]},
             "https://mock.local/api/v2/institutions": {"items": []},
             "https://mock.local/api/v2/lineage": {"items": []},
@@ -206,7 +257,7 @@ class AuditLaunchCoverageTests(unittest.TestCase):
             "https://mock.local/api/v2/life-events": {"items": []},
             "https://mock.local/api/v2/popular-pandas": {
                 "windowDays": 30,
-                "items": [{"pandaId": "uuid-1", "slug": "meng-lan"}],
+                "items": [{"pandaId": "uuid-0", "slug": "meng-lan"}],
             },
             "https://mock.local/api/v2/learning": {
                 "version": "2026.11.18.1",
@@ -216,37 +267,49 @@ class AuditLaunchCoverageTests(unittest.TestCase):
                 "challenges": [],
                 "monthThemes": [],
             },
-            "https://mock.local/api/v2/venue-news": {"version": "", "items": []},
+            "https://mock.local/api/v2/venue-news": http_error(
+                "https://mock.local/api/v2/venue-news", 404
+            ),
             "https://mock.local/api/v2/overseas-status": {"version": "", "items": []},
             "https://mock.local/api/v2/comparisons": {"version": "2026.11.11.1", "items": []},
-            "https://mock.local/api/v2/panda-covers?ids=uuid-1": {"items": [{"pandaId": "uuid-1"}]},
-            "https://mock.local/api/v2/pandas/meng-lan": {
-                "panda": p1,
-                "residencies": [{"id": "r"}],
-                "lineage": [],
-                "events": [],
-                "media": [{"id": "m"}],
+            f"https://mock.local/api/v2/panda-covers?ids={batch_one_ids}": {
+                "items": [{"pandaId": "uuid-0"}]
             },
+            f"https://mock.local/api/v2/panda-covers?ids={batch_two_ids}": {
+                "items": [{"pandaId": "uuid-50"}]
+            },
+            "https://mock.local/api/v2/pandas/meng-lan": http_error(
+                "https://mock.local/api/v2/pandas/meng-lan", 404
+            ),
         }
 
         def fake_fetch(url: str) -> dict:
+            requested_urls.append(url)
             if url not in responses:
                 raise AssertionError(f"Unexpected URL requested: {url}")
-            return responses[url]
+            value = responses[url]
+            if isinstance(value, Exception):
+                raise value
+            return value  # type: ignore[return-value]
 
         dataset = AUDIT.load_live_dataset("https://mock.local", fetch_json=fake_fetch)
         report = AUDIT.analyze_coverage(
             dataset, institutions_file=None, learning_file=None, fetch_json=fake_fetch
         )
 
-        self.assertEqual(report["field_coverage"]["cover_photo"]["count"], 1)
+        self.assertEqual(len(dataset["pandas"]["items"]), 51)
+        self.assertEqual(
+            report["field_coverage"]["cover_photo"], {"count": 2, "total": 51, "percent": 3.9}
+        )
+        self.assertIsNone(report["catalogs"]["venue_news"])
         self.assertEqual(report["catalogs"]["popular_pandas"], {"windowDays": 30, "count": 1})
         matched_meng_lan = next(
             item for item in report["focus_pandas"] if item["canonical_slug"] == "meng-lan"
         )
         self.assertTrue(matched_meng_lan["from_popular_api"])
-        self.assertEqual(matched_meng_lan["residency_count"], 1)
-        self.assertEqual(matched_meng_lan["media_count"], 1)
+        # Detail 404 falls back to loaded top-level relation collections (0).
+        self.assertEqual(matched_meng_lan["residency_count"], 0)
+        self.assertEqual(requested_urls.count("https://mock.local/api/v2/pandas?cursor=c2"), 1)
 
     def test_prefers_exact_chinese_name_or_slug_over_romanization_homophone(self) -> None:
         fu_bao_real = make_panda(
@@ -285,6 +348,135 @@ class AuditLaunchCoverageTests(unittest.TestCase):
         self.assertTrue(fubao_row["matched"])
         self.assertEqual(fubao_row["canonical_slug"], "fu-bao")
         self.assertEqual(fubao_row["display_name"], "福宝")
+        self.assertIsNone(fubao_row["residency_count"])
+
+    def test_ignores_disputed_invalid_facts_and_coarse_venue_false_positives(self) -> None:
+        coarse_fuzhou = {
+            "placeId": "coarse-fz",
+            "slug": "coarse-fuzhou",
+            "placeType": "coarse_location",
+            "nameZh": "福州",
+        }
+        panda_valley = {
+            "placeId": "pv-1",
+            "slug": "chengdu-panda-valley-dujiangyan",
+            "placeType": "facility",
+            "nameZh": "成都基地都江堰熊猫谷",
+            "countryCode": "CN",
+        }
+        panda = {
+            "pandaId": "id-1",
+            "canonicalSlug": "test-panda",
+            "legacySlugs": [],
+            "names": [],
+            "facts": [
+                {"fieldKey": "sex", "value": "unknown", "status": "confirmed"},
+                {"fieldKey": "life_status", "value": "alive", "status": "disputed"},
+                {"fieldKey": "birth_date", "value": "   ", "status": "confirmed"},
+            ],
+        }
+        dataset = {
+            "source_mode": "export",
+            "source": "mock",
+            "stats": {},
+            "pandas": {"items": [panda]},
+            "places": {"items": [coarse_fuzhou, panda_valley]},
+            "institutions": {"items": []},
+            "cover_ids": set(),
+            "details_by_slug": {},
+        }
+        report = AUDIT.analyze_coverage(dataset, institutions_file=None, learning_file=None)
+        self.assertEqual(report["field_coverage"]["sex"]["count"], 0)
+        self.assertEqual(report["field_coverage"]["life_status"]["count"], 0)
+        self.assertEqual(report["field_coverage"]["birth_date"]["count"], 0)
+
+        venues = {v["name"]: v for v in report["core_venues"]}
+        self.assertFalse(venues["福州熊猫世界（海峡大熊猫研究交流中心）"]["present_live"])
+        self.assertTrue(
+            venues["成都大熊猫繁育研究基地都江堰野放繁育研究中心（熊猫谷）"]["present_live"]
+        )
+        self.assertFalse(venues["中国大熊猫保护研究中心都江堰基地（中华大熊猫苑）"]["present_live"])
+
+    def test_handles_empty_dataset_and_missing_export_directory(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(FileNotFoundError):
+                AUDIT.load_export_dataset(Path(tmp) / "missing")
+
+        empty_dataset = {
+            "source_mode": "export",
+            "source": "empty",
+            "stats": {},
+            "pandas": {"items": []},
+            "places": {"items": []},
+            "institutions": {"items": []},
+            "cover_ids": set(),
+            "details_by_slug": {},
+        }
+        report = AUDIT.analyze_coverage(empty_dataset, institutions_file=None, learning_file=None)
+        self.assertEqual(
+            report["field_coverage"]["cover_photo"], {"count": 0, "total": 0, "percent": 0.0}
+        )
+        self.assertIn("未命中 / 未收录", AUDIT.render_markdown(report))
+
+    def test_default_fetch_json_retries_transient_errors_and_rejects_bad_schemes_or_4xx(
+        self,
+    ) -> None:
+        with self.assertRaises(ValueError):
+            AUDIT.default_fetch_json("file:///etc/passwd")
+
+        with patch.object(
+            AUDIT, "urlopen", side_effect=http_error("https://mock.local/x", 400)
+        ) as m:
+            with self.assertRaises(HTTPError):
+                AUDIT.default_fetch_json("https://mock.local/x")
+            self.assertEqual(m.call_count, 1)
+
+        with (
+            patch.object(AUDIT.time, "sleep") as sleep_mock,
+            patch.object(
+                AUDIT,
+                "urlopen",
+                side_effect=[
+                    http_error("https://mock.local/y", 503),
+                    _FakeResponse('{"ok": true}'),
+                ],
+            ) as m,
+        ):
+            self.assertEqual(AUDIT.default_fetch_json("https://mock.local/y"), {"ok": True})
+            self.assertEqual(m.call_count, 2)
+            sleep_mock.assert_called_once()
+
+    def test_main_writes_json_output_and_handles_stdout_without_reconfigure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            export_dir = Path(tmp) / "export"
+            export_dir.mkdir()
+            (export_dir / "pandas.json").write_text(json.dumps({"items": []}), encoding="utf-8")
+            out_file = Path(tmp) / "report.json"
+            inst_file = Path(tmp) / "missing-inst.json"
+            learning_file = Path(tmp) / "missing-learning.json"
+            fake_stdout = io.StringIO()
+
+            with patch.object(sys, "stdout", fake_stdout):
+                exit_code = AUDIT.main(
+                    [
+                        "--from-export",
+                        str(export_dir),
+                        "--institutions-file",
+                        str(inst_file),
+                        "--learning-file",
+                        str(learning_file),
+                        "--format",
+                        "json",
+                        "--output",
+                        str(out_file),
+                    ]
+                )
+
+            self.assertEqual(exit_code, 0)
+            written = json.loads(out_file.read_text(encoding="utf-8"))
+            printed = json.loads(fake_stdout.getvalue())
+            self.assertEqual(written, printed)
+            self.assertEqual(written["source"]["mode"], "export")
 
 
 if __name__ == "__main__":
