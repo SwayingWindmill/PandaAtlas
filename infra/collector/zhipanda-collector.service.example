@@ -1,0 +1,23 @@
+# Example Linux systemd service for running the collector on the host alongside compose PostgreSQL/RSSHub.
+# Copy to /etc/systemd/system/zhipanda-collector.service and replace paths, user, and EnvironmentFile.
+
+[Unit]
+Description=ZhiPanda Collector V1 Service
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=collector
+Group=collector
+WorkingDirectory=/opt/PandaAtlas/services/collector
+EnvironmentFile=/opt/PandaAtlas/infra/collector/.env.minimal
+ExecStartPre=/usr/local/bin/uv run --frozen collector doctor
+ExecStart=/usr/local/bin/uv run --frozen collector run
+Restart=on-failure
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
