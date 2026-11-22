@@ -1,4 +1,409 @@
 {
-  "version": "2026.11.04.0",
-  "items": []
+  "version": "2026.11.22.1",
+  "items": [
+    {
+      "status": "published",
+      "pandaSlug": "yuandudu",
+      "stage": "return_announced",
+      "institutionSlug": "zooparc-de-beauval",
+      "expectedReturn": {
+        "on": "2026-12-17",
+        "precision": "day"
+      },
+      "sourceUrl": "https://actus.zoobeauval.com/en/yuandudu-and-huanlili-will-return-to-china-on-17-december-the-pandas-story-continues-at-beauval/",
+      "sourcePublisher": "ZooParc de Beauval",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "huanlili",
+      "stage": "return_announced",
+      "institutionSlug": "zooparc-de-beauval",
+      "expectedReturn": {
+        "on": "2026-12-17",
+        "precision": "day"
+      },
+      "sourceUrl": "https://actus.zoobeauval.com/en/yuandudu-and-huanlili-will-return-to-china-on-17-december-the-pandas-story-continues-at-beauval/",
+      "sourcePublisher": "ZooParc de Beauval",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "rui-bao",
+      "stage": "return_announced",
+      "institutionSlug": "everland",
+      "expectedReturn": {
+        "on": "2026-12",
+        "precision": "month"
+      },
+      "sourceUrl": "https://www.koreajoongangdaily.com/lifestyle/everlands-pandas-rui-bao-and-hui-bao-to-return-to-china-in-december/12898008",
+      "sourcePublisher": "Korea JoongAng Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "hui-bao",
+      "stage": "return_announced",
+      "institutionSlug": "everland",
+      "expectedReturn": {
+        "on": "2026-12",
+        "precision": "month"
+      },
+      "sourceUrl": "https://www.koreajoongangdaily.com/lifestyle/everlands-pandas-rui-bao-and-hui-bao-to-return-to-china-in-december/12898008",
+      "sourcePublisher": "Korea JoongAng Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "bao-li",
+      "stage": "abroad",
+      "institutionSlug": "smithsonian-national-zoo",
+      "sourceUrl": "https://nationalzoo.si.edu/news/two-new-giant-pandas-debut-smithsonians-national-zoo-and-conservation-biology-institute",
+      "sourcePublisher": "Smithsonian's National Zoo",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "qing-bao",
+      "stage": "abroad",
+      "institutionSlug": "smithsonian-national-zoo",
+      "sourceUrl": "https://nationalzoo.si.edu/news/two-new-giant-pandas-debut-smithsonians-national-zoo-and-conservation-biology-institute",
+      "sourcePublisher": "Smithsonian's National Zoo",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "yun-chuan",
+      "stage": "abroad",
+      "institutionSlug": "san-diego-zoo",
+      "sourceUrl": "https://sandiegozoowildlifealliance.org/PR/pandas-public-debut",
+      "sourcePublisher": "San Diego Zoo Wildlife Alliance",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xin-bao",
+      "stage": "abroad",
+      "institutionSlug": "san-diego-zoo",
+      "sourceUrl": "https://sandiegozoowildlifealliance.org/PR/pandas-public-debut",
+      "sourcePublisher": "San Diego Zoo Wildlife Alliance",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "ping-ping-atlanta",
+      "stage": "abroad",
+      "institutionSlug": "zoo-atlanta",
+      "sourceUrl": "https://global.chinadaily.com.cn/a/202611/07/WS6aeed103e4b03ebf8519b07d.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "fu-shuang-atlanta",
+      "stage": "abroad",
+      "institutionSlug": "zoo-atlanta",
+      "sourceUrl": "https://global.chinadaily.com.cn/a/202611/07/WS6aeed103e4b03ebf8519b07d.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "meng-meng-berlin",
+      "stage": "abroad",
+      "institutionSlug": "berlin-zoo",
+      "sourceUrl": "https://www.zoo-berlin.de/en/latest/news/detail/panda-party-hoch-zwei",
+      "sourcePublisher": "Zoo Berlin",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "meng-tian",
+      "stage": "abroad",
+      "institutionSlug": "berlin-zoo",
+      "sourceUrl": "https://www.zoo-berlin.de/en/latest/news/detail/panda-party-hoch-zwei",
+      "sourcePublisher": "Zoo Berlin",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "jin-xi-madrid",
+      "stage": "abroad",
+      "institutionSlug": "zoo-aquarium-madrid",
+      "sourceUrl": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/a-new-pair-of-pandas-will-arrive-at-zoo-aquarium-madrid-at-the-end-of-april",
+      "sourcePublisher": "Zoo Aquarium Madrid",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "zhu-yu-madrid",
+      "stage": "abroad",
+      "institutionSlug": "zoo-aquarium-madrid",
+      "sourceUrl": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/a-new-pair-of-pandas-will-arrive-at-zoo-aquarium-madrid-at-the-end-of-april",
+      "sourcePublisher": "Zoo Aquarium Madrid",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "he-feng-vienna",
+      "stage": "abroad",
+      "institutionSlug": "tiergarten-schonbrunn",
+      "sourceUrl": "https://www.zoovienna.at/de/news/panda-paar-ist-angekommen/",
+      "sourcePublisher": "Tiergarten Schönbrunn",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "lan-yun-vienna",
+      "stage": "abroad",
+      "institutionSlug": "tiergarten-schonbrunn",
+      "sourceUrl": "https://www.zoovienna.at/de/news/panda-paar-ist-angekommen/",
+      "sourcePublisher": "Tiergarten Schönbrunn",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "chen-xing-malaysia",
+      "stage": "abroad",
+      "institutionSlug": "zoo-negara",
+      "sourceUrl": "https://www.chinadaily.com.cn/a/202601/11/WS69630198a310d6866eb3314a.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xiao-yue-malaysia",
+      "stage": "abroad",
+      "institutionSlug": "zoo-negara",
+      "sourceUrl": "https://www.chinadaily.com.cn/a/202601/11/WS69630198a310d6866eb3314a.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "kai-kai-singapore",
+      "stage": "abroad",
+      "institutionSlug": "river-wonders",
+      "sourceUrl": "https://www.mandai.com/en/river-wonders/animals-and-zones/giant-panda-forest.html",
+      "sourcePublisher": "Mandai Wildlife Group",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "jia-jia-singapore",
+      "stage": "abroad",
+      "institutionSlug": "river-wonders",
+      "sourceUrl": "https://www.mandai.com/en/river-wonders/animals-and-zones/giant-panda-forest.html",
+      "sourcePublisher": "Mandai Wildlife Group",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "ai-bao",
+      "stage": "abroad",
+      "institutionSlug": "everland",
+      "sourceUrl": "https://news.samsungcnt.com/en/features/resort/2026-06-everland-welcomes-new-baby-panda-as-panda-conservation-research-marks-10-years/",
+      "sourcePublisher": "Samsung C&T Newsroom",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "le-bao",
+      "stage": "abroad",
+      "institutionSlug": "everland",
+      "sourceUrl": "https://news.samsungcnt.com/en/features/resort/2026-06-everland-welcomes-new-baby-panda-as-panda-conservation-research-marks-10-years/",
+      "sourcePublisher": "Samsung C&T Newsroom",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xiao-xiao",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2026-01-28",
+      "sourceUrl": "https://www.tokyo-zoo.net/en/ueno/blog/10109/index.html",
+      "sourcePublisher": "Tokyo Zoological Park Society",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "lei-lei",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2026-01-28",
+      "sourceUrl": "https://www.tokyo-zoo.net/en/ueno/blog/10109/index.html",
+      "sourcePublisher": "Tokyo Zoological Park Society",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "huan-huan",
+      "stage": "returned",
+      "institutionSlug": "chengdu-research-base",
+      "returnedOn": "2025-11-26",
+      "sourceUrl": "https://www.globaltimes.cn/page/202511/1349085.shtml",
+      "sourcePublisher": "Global Times",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "yuan-zi",
+      "stage": "returned",
+      "institutionSlug": "chengdu-research-base",
+      "returnedOn": "2025-11-26",
+      "sourceUrl": "https://www.globaltimes.cn/page/202511/1349085.shtml",
+      "sourcePublisher": "Global Times",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xing-xing-my",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2025-05-18",
+      "sourceUrl": "https://global.chinadaily.com.cn/a/202505/20/WS682bd776a310a04af22c058b.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "liang-liang-my",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2025-05-18",
+      "sourceUrl": "https://global.chinadaily.com.cn/a/202505/20/WS682bd776a310a04af22c058b.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "lun-lun",
+      "stage": "returned",
+      "institutionSlug": "chengdu-research-base",
+      "returnedOn": "2024-10-13",
+      "sourceUrl": "https://www.chinadaily.com.cn/a/202410/14/WS670f10dca310f1265a1c7ce2.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "yang-yang-atlanta",
+      "stage": "returned",
+      "institutionSlug": "chengdu-research-base",
+      "returnedOn": "2024-10-13",
+      "sourceUrl": "https://www.chinadaily.com.cn/a/202410/14/WS670f10dca310f1265a1c7ce2.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "ya-lun",
+      "stage": "returned",
+      "institutionSlug": "chengdu-research-base",
+      "returnedOn": "2024-10-13",
+      "sourceUrl": "https://www.chinadaily.com.cn/a/202410/14/WS670f10dca310f1265a1c7ce2.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xi-lun",
+      "stage": "returned",
+      "institutionSlug": "chengdu-research-base",
+      "returnedOn": "2024-10-13",
+      "sourceUrl": "https://www.chinadaily.com.cn/a/202410/14/WS670f10dca310f1265a1c7ce2.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "ri-ri",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2024-09-29",
+      "sourceUrl": "https://www.tokyo-zoo.net/en/topics/news/ueno/355_28750_2024-09-29.html",
+      "sourcePublisher": "Tokyo Zoological Park Society",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "shin-shin",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2024-09-29",
+      "sourceUrl": "https://www.tokyo-zoo.net/en/topics/news/ueno/355_28750_2024-09-29.html",
+      "sourcePublisher": "Tokyo Zoological Park Society",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "fu-bao",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2024-04-03",
+      "sourceUrl": "https://www.chinadaily.com.cn/a/202404/04/WS660e83dda31082fc043c05d9.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "le-le-singapore",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2024-01-16",
+      "sourceUrl": "https://www.mandai.com/en/about-mandai/media-centre/Giant-panda-cub-Le-Le-arrives-safely-in-China-on-a-specially-arranged-Singapore-Airlines-flight.html",
+      "sourcePublisher": "Mandai Wildlife Group",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "mei-xiang",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2023-11-09",
+      "sourceUrl": "https://en.people.cn/n3/2023/1110/c90000-20095770.html",
+      "sourcePublisher": "People's Daily Online",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "tian-tian",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2023-11-09",
+      "sourceUrl": "https://en.people.cn/n3/2023/1110/c90000-20095770.html",
+      "sourcePublisher": "People's Daily Online",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xiao-qi-ji",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2023-11-09",
+      "sourceUrl": "https://en.people.cn/n3/2023/1110/c90000-20095770.html",
+      "sourcePublisher": "People's Daily Online",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "ya-ya-memphis",
+      "stage": "returned",
+      "institutionSlug": "beijing-zoo",
+      "returnedOn": "2023-04-27",
+      "sourceUrl": "https://global.chinadaily.com.cn/a/202305/29/WS6473eb27a310b6054fad57a9.html",
+      "sourcePublisher": "China Daily",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xiang-xiang",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2023-02-21",
+      "sourceUrl": "https://www.news.cn/2023-02/21/c_1129385189.htm",
+      "sourcePublisher": "Xinhua",
+      "updatedAt": "2026-11-22T16:00:00+08:00"
+    }
+  ]
 }
