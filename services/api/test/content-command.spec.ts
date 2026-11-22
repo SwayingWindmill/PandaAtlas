@@ -18,6 +18,34 @@ describe("curation.content", () => {
     await expect(writeContent(noDatabase, "venue-news", { version: "v", items: [{ id: "a" }] })).rejects.toThrow();
     await expect(writeContent(noDatabase, "venue-news", { items: [] })).rejects.toThrow(/version/);
     await expect(writeContent(noDatabase, "institutions", { institutions: [{}] })).rejects.toThrow(/slug/);
+    await expect(
+      writeContent(noDatabase, "institutions", {
+        institutions: [
+          {
+            slug: "bad-zoo",
+            nameEn: "Bad Zoo",
+            profile: { kind: "aquarium", verifiedOn: "2026-11-22", sourceUrls: ["https://example.com"] },
+          },
+        ],
+      }),
+    ).rejects.toThrow(/institution kind/);
+    await expect(
+      writeContent(noDatabase, "institutions", {
+        institutions: [
+          {
+            slug: "bad-guide-zoo",
+            nameEn: "Bad Guide Zoo",
+            profile: { kind: "zoo", verifiedOn: "2026-11-22", sourceUrls: ["https://example.com"] },
+            places: [
+              {
+                slug: "bad-guide-zoo",
+                visitGuide: { tips: [{ topic: "invalid", text: { en: "x" } }], verifiedOn: "2026-11-22", sourceUrls: ["https://example.com"] },
+              },
+            ],
+          },
+        ],
+      }),
+    ).rejects.toThrow(/unknown topic/);
   });
 
   it("tells the owner to publish a release after institutions", () => {

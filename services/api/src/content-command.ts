@@ -8,6 +8,12 @@ import { assertVerifiedDatabase } from "./batch-database.js";
 import { publishedComparisons } from "./modules/catalog/application/comparison-catalog.js";
 import { publishedOverseasStatus } from "./modules/catalog/application/overseas-status-catalog.js";
 import { publishedVenueNews } from "./modules/catalog/application/venue-news-catalog.js";
+import {
+  assertFacilityVisitGuide,
+  assertInstitutionProfile,
+  type FacilityVisitGuide,
+  type InstitutionProfile,
+} from "./modules/places/application/visitor-content.js";
 import { ConfigModule } from "./platform/config/config.module.js";
 import { DatabaseModule } from "./platform/database/database.module.js";
 import { DatabaseService } from "./platform/database/database.service.js";
@@ -73,6 +79,10 @@ export async function writeCatalog(
 
 interface InstitutionPlace {
   slug: string;
+  nameZh?: string | null;
+  nameEn?: string | null;
+  countryCode?: string | null;
+  region?: string | null;
   longitude?: number;
   latitude?: number;
   visitGuide?: unknown;
@@ -93,24 +103,88 @@ function institutionsOf(file: unknown): InstitutionEntry[] {
   if (!Array.isArray(institutions) || institutions.some((entry) => typeof (entry as { slug?: unknown })?.slug !== "string")) {
     throw new Error("institutions.json needs an institutions list of entries with a slug.");
   }
-  return institutions as InstitutionEntry[];
+  const entries = institutions as InstitutionEntry[];
+  for (const institution of entries) {
+    assertInstitutionProfile(institution.profile as InstitutionProfile);
+    for (const place of institution.places ?? []) {
+      if (place.visitGuide !== undefined && place.visitGuide !== null) {
+        assertFacilityVisitGuide(place.visitGuide as FacilityVisitGuide);
+      }
+    }
+  }
+  return entries;
+}
+
+function nonEmptyText(value: string | null | undefined): string | null {
+  return typeof value === "string" && value.trim().length > 0 ? value : null;
+}
+
+async function upsertFacilityPlace(
+  trx: Kysely<Database>,
+  institution: InstitutionEntry,
+  institutionId: string,
+  place: InstitutionPlace,
+): Promise<number> {
+  const existing = await trx
+    .selectFrom("place.places")
+    .select(["place_id", "place_type"])
+    .where("slug", "=", place.slug)
+    .executeTakeFirst();
+  const hasPoint = typeof place.longitude === "number" && typeof place.latitude === "number";
+  const centerValue = hasPoint
+    ? sql<string>`ST_SetSRID(ST_MakePoint(${place.longitude}, ${place.latitude}), 4326)`
+    : undefined;
+  const visitGuide = place.visitGuide === undefined || place.visitGuide === null ? null : JSON.stringify(place.visitGuide);
+
+  if (existing !== undefined) {
+    if (existing.place_type !== "facility") return 0;
+    const result = await trx
+      .updateTable("place.places")
+      .set({
+        institution_id: institutionId,
+        visit_guide: visitGuide,
+        updated_at: sql`now()`,
+        ...(centerValue === undefined ? {} : { center: centerValue }),
+        ...(place.nameZh === undefined ? {} : { name_zh: place.nameZh }),
+        ...(place.nameEn === undefined ? {} : { name_en: place.nameEn }),
+        ...(place.countryCode === undefined ? {} : { country_code: place.countryCode }),
+        ...(place.region === undefined ? {} : { region: place.region }),
+      })
+      .where("place_id", "=", existing.place_id)
+      .executeTakeFirst();
+    return Number(result.numUpdatedRows);
+  }
+
+  const nameZh = place.nameZh ?? (place.slug === institution.slug ? (institution.nameZh ?? null) : null);
+  const nameEn = place.nameEn ?? (place.slug === institution.slug ? (institution.nameEn ?? null) : null);
+  if (nonEmptyText(nameZh) === null && nonEmptyText(nameEn) === null) return 0;
+
+  await trx
+    .insertInto("place.places")
+    .values({
+      slug: place.slug,
+      place_type: "facility",
+      institution_id: institutionId,
+      name_zh: nameZh,
+      name_en: nameEn,
+      country_code: place.countryCode ?? institution.countryCode ?? null,
+      region: place.region ?? null,
+      visit_guide: visitGuide,
+      ...(centerValue === undefined ? {} : { center: centerValue }),
+    })
+    .execute();
+  return 1;
 }
 
 /**
- * One transaction: merges each place's legacy slugs into it, upserts institutions by slug, then updates the
- * facility places that already exist by slug. A place not in the database yet is skipped, not created.
+ * One transaction: upserts institutions by slug and facility places by slug (creating named
+ * facilities when missing and leaving non-facility places untouched), then merges legacySlugs.
  */
 export async function writeInstitutions(db: Kysely<Database>, institutions: readonly InstitutionEntry[]): Promise<Record<string, number>> {
   const inTransaction = <T>(work: (trx: Kysely<Database>) => Promise<T>) => (db.isTransaction ? work(db) : db.transaction().execute(work));
   return inTransaction(async (trx) => {
     let merged = 0;
     let places = 0;
-    for (const place of institutions.flatMap((institution) => institution.places ?? [])) {
-      for (const old of place.legacySlugs ?? []) {
-        await sql`select place.merge_place(${old}, ${place.slug})`.execute(trx);
-        merged += 1;
-      }
-    }
     for (const institution of institutions) {
       const profile = JSON.stringify(institution.profile);
       const row = await trx
@@ -134,20 +208,13 @@ export async function writeInstitutions(db: Kysely<Database>, institutions: read
         .returning("institution_id")
         .executeTakeFirstOrThrow();
       for (const place of institution.places ?? []) {
-        const result = await trx
-          .updateTable("place.places")
-          .set({
-            institution_id: row.institution_id,
-            visit_guide: place.visitGuide === undefined || place.visitGuide === null ? null : JSON.stringify(place.visitGuide),
-            updated_at: sql`now()`,
-            ...(typeof place.longitude === "number" && typeof place.latitude === "number"
-              ? { center: sql<string>`ST_SetSRID(ST_MakePoint(${place.longitude}, ${place.latitude}), 4326)` }
-              : {}),
-          })
-          .where("slug", "=", place.slug)
-          .where("place_type", "=", "facility")
-          .executeTakeFirst();
-        places += Number(result.numUpdatedRows);
+        places += await upsertFacilityPlace(trx, institution, row.institution_id, place);
+      }
+    }
+    for (const place of institutions.flatMap((institution) => institution.places ?? [])) {
+      for (const old of place.legacySlugs ?? []) {
+        await sql`select place.merge_place(${old}, ${place.slug})`.execute(trx);
+        merged += 1;
       }
     }
     return { institutions: institutions.length, places, merged };
