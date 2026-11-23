@@ -7,7 +7,7 @@ import { test } from "./support/test.ts";
 
 test("a fan reads the draft 科普 pages", async ({ app, screen }) => {
   await app.open("/");
-  await screen.getByRole("link", "认识大熊猫，科普").tap();
+  await screen.getByRole("link", /科普$/).tap();
   await expect(screen.getByRole("heading", { name: "认识大熊猫", level: 1 })).toBeVisible();
 
   await screen.getByRole("button", "黑眼圈不是熬夜熬的：大熊猫眼斑从哪来、有什么用").tap();

@@ -11,7 +11,7 @@ This directory is the maintained source for verifying what a user can see and do
 
 ## Driving conventions
 
-- Start each recipe on its own route with `app.open("<route>")`, not by tapping through from 今天.
+- Start each recipe on its own route with `app.open("<route>")`, not by tapping through from 探索.
 - Find elements by role and accessible name (`screen.getByRole("radio", "攻略")`) or by `getByLabel`, never by position.
 - Names are Chinese and exact. Copy them from the recipe.
 - The local database is reused across runs. Names repeat with a run suffix (`runSuffix()`), and a marker on the map can hold earlier runs' zoos.
@@ -30,7 +30,8 @@ Each feature file starts with an H1 title and one paragraph on the user-visible 
 ## Features
 
 - [Photo viewer](./photo-viewer.md) covers a panda's full-screen photos: paging, zoom, immersive mode, drag to close, share and save, and a width change.
-- [Venue page](./venue-page.md) covers a zoo's page from the map and from 今天, its 概况 / 熊猫 / 攻略 tabs, and 关注.
+- [Explore, live clock & sounds](./explore.md) covers the unified 探索 home tab, Option B star/followed strip, 此刻谁醒着 live clock, 听熊猫 & `/sounds`, and `/play` mini-games.
+- [Venue page](./venue-page.md) covers a zoo's page from the map and from 探索, its 概况 / 熊猫 / 攻略 tabs, and 关注.
 - [Wild habitat](./wild-habitat.md) covers the map's wild layer, the habitat sheet and a habitat's own page.
 - [Sign-in](./sign-in.md) covers email-code sign-in, resending a code, a wrong code, the welcome's follow after sign-in, renaming the account and signing out.
 - [Collections and visits](./collections-visits.md) covers making, renaming, emptying and deleting a collection, and recording a visit.

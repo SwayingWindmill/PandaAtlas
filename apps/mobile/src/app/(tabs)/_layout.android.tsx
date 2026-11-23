@@ -4,7 +4,7 @@ import type { ColorValue } from "react-native";
 
 import { CapsuleTabBar } from "@/components/capsule-tab-bar";
 import { Icon } from "@/components/icon";
-import { Book, Calendar, Compass, type LucideIcon, Search, UserRound } from "@/components/icons";
+import { Book, Compass, type LucideIcon, Search, UserRound } from "@/components/icons";
 import { component } from "@/design/tokens";
 import { useWelcomeSeen } from "@/features/onboarding/welcome";
 
@@ -25,8 +25,7 @@ export default function AndroidTabsLayout() {
   if (!welcomeSeen) return <Redirect href="/welcome" />;
   return (
     <Tabs tabBar={(props) => <CapsuleTabBar {...props} />} screenOptions={{ headerShown: false }}>
-      <Tabs.Screen name="(today)" options={{ title: "今天", tabBarIcon: tabIcon(Calendar) }} />
-      <Tabs.Screen name="discover" options={{ title: "发现", tabBarIcon: tabIcon(Compass) }} />
+      <Tabs.Screen name="(today)" options={{ title: "探索", tabBarIcon: tabIcon(Compass) }} />
       <Tabs.Screen name="find" options={{ title: "找熊猫", tabBarIcon: tabIcon(Search) }} />
       <Tabs.Screen name="book" options={{ title: "图鉴", tabBarIcon: tabIcon(Book) }} />
       <Tabs.Screen name="me" options={{ title: "我的", tabBarIcon: tabIcon(UserRound) }} />
