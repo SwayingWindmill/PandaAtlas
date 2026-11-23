@@ -9,7 +9,7 @@ import { Mars, Venus } from "@/components/icons";
 import { PhotoOutline } from "@/components/photo-outline";
 import { Text } from "@/components/ui/text";
 import { type TextPart, highlightParts } from "@/features/pandas/highlight";
-import { type PandaListItem, listMeta } from "@/features/pandas/pandas";
+import { type PandaListItem, listMeta, normalizeTerm } from "@/features/pandas/pandas";
 import { usePandaCover } from "@/lib/covers";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
@@ -64,7 +64,7 @@ export const PandaRow = memo(function PandaRow({
   const meta = listMeta(item);
   const nameHit = highlight ? highlightParts(item.name, highlight) : null;
   const placeHit = highlight && item.place ? highlightParts(item.place, highlight) : null;
-  const nameParts = nameHit ?? (highlight?.trim() && !placeHit ? [{ text: item.name, hit: true }] : null);
+  const nameParts = nameHit ?? (highlight && normalizeTerm(highlight) && !placeHit ? [{ text: item.name, hit: true }] : null);
   const metaParts = placeHit && item.place ? [...placeHit, { text: meta.slice(item.place.length), hit: false }] : null;
   return (
     <View

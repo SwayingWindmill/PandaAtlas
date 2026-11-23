@@ -131,7 +131,7 @@ describe("searchPandas by pinyin initials", () => {
     expect(slugsFor("ab2")).toEqual([]);
   });
 
-  it("does not turn a one-word slug into an initial", () => {
+  it("builds initials from the Latin name, not the one-word slug", () => {
     expect(slugsFor("t")).toEqual(["tiantian"]);
     expect(pandas.find((item) => item.slug === "tiantian")?.initials).toEqual(["tt"]);
   });

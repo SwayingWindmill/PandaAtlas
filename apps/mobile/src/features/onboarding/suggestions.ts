@@ -16,12 +16,10 @@ export const WELL_KNOWN_SLUGS = [
   "run-yue-yuanrun-offspring-2020",
 ];
 
-/** Slugs in the order fans know them: the ones followed lately in rank order, then the well-known list. */
 export function fameSlugs(popular: readonly PandaListItem[]): string[] {
   return [...popular.map((panda) => panda.slug), ...WELL_KNOWN_SLUGS];
 }
 
-/** The well-known pandas the index has and that are alive, in the order above. */
 export function wellKnownPandas(pandas: readonly PandaListItem[]): PandaListItem[] {
   const bySlug = new Map(pandas.map((panda) => [panda.slug, panda]));
   return WELL_KNOWN_SLUGS.flatMap((slug) => {
@@ -30,10 +28,6 @@ export function wellKnownPandas(pandas: readonly PandaListItem[]): PandaListItem
   });
 }
 
-/**
- * Pandas to offer before the fan searches: the ones fans follow lately, in rank order; then the well-known
- * ones; then living pandas that can be visited, youngest first.
- */
 export function suggestions(pandas: PandaListItem[], popular: readonly PandaListItem[] = [], limit = 12): PandaListItem[] {
   const youngest = pandas
     .filter((panda) => !panda.deceased && panda.place !== null)

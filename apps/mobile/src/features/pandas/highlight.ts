@@ -3,7 +3,6 @@ export interface TextPart {
   hit: boolean;
 }
 
-/** The first case-insensitive occurrence of the query in the text, split out; null when it is not there. */
 export function highlightParts(text: string, query: string): TextPart[] | null {
   const needle = query.trim().toLowerCase();
   const start = needle ? text.toLowerCase().indexOf(needle) : -1;

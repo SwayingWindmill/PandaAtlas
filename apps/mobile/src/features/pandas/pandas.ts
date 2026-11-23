@@ -30,7 +30,7 @@ export interface PandaListItem {
   terms: string[];
   /**
    * Pinyin initials of each multi-word Latin name ("He Hua" gives "hh"), matched by prefix only. A panda with no
-   * Latin name falls back to its slugs, whose extra words (a place, a year) would otherwise give false hits.
+   * Latin name falls back to its slugs. Latin names come first because slugs carry extra words (a place, a year) that give false hits.
    */
   initials: string[];
 }
@@ -44,10 +44,7 @@ export function normalizeTerm(value: string): string {
     .replace(/[\s_\-:]+/g, "");
 }
 
-/**
- * One initial per alphabetic word; numbers and the Chinese half of a mixed name are skipped.
- * A single word gives nothing: one letter would match every panda that starts with it.
- */
+/** A single word gives nothing: one letter would match every panda that starts with it. */
 function initialsOf(source: string): string | null {
   const initials = source
     .normalize("NFKD")
@@ -124,10 +121,6 @@ export function pandaIndexQueryOptions() {
   return queryOptions({ queryKey: ["public", "panda-index"], queryFn: buildIndex, staleTime: 300_000, networkMode: "always" });
 }
 
-/**
- * Exact matches first, then names starting with the query, then pinyin initials, then the rest. Within a tier
- * the pandas in `famous` come first, in that order, then the rest in list order.
- */
 export function searchPandas(items: PandaListItem[], query: string, famous: readonly string[] = []): PandaListItem[] {
   const needle = normalizeTerm(query);
   if (!needle) return items;

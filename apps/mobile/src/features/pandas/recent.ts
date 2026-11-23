@@ -8,7 +8,7 @@ const MAX_SEARCHES = 8;
 const MAX_ID_LENGTH = 64;
 const MAX_QUERY_LENGTH = 32;
 
-/** Stored text is untrusted: keep non-empty strings once each, cut to length, newest first up to max. */
+/** Stored text is untrusted. */
 export function parseList(max: number, length: number) {
   return (stored: string | null): string[] => {
     try {
@@ -35,15 +35,15 @@ const searches = createStoredPref<string[]>(options("recentPandaSearches", MAX_S
 function serialized(store: typeof views) {
   let queue: Promise<void> = Promise.resolve();
   return (change: (list: string[]) => string[]) => {
-    queue = queue.then(async () => store.set(change(await store.read())));
-    return queue;
+    const next = queue.then(async () => store.set(change(await store.read())));
+    queue = next.catch(() => undefined);
+    return next;
   };
 }
 
 const updateViews = serialized(views);
 const updateSearches = serialized(searches);
 
-/** Most recent first, one entry per panda id. */
 export function withView(ids: readonly string[], id: string): string[] {
   return [id, ...ids.filter((item) => item !== id)].slice(0, MAX_VIEWS);
 }

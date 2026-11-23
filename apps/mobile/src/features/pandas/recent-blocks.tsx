@@ -62,7 +62,6 @@ function Thumb({ item }: { item: PandaListItem }) {
   );
 }
 
-/** 最近看过: the pandas whose page was opened lately, as a shelf of covers. Nothing shows until one was. */
 export function RecentViews({ pandas }: { pandas: readonly PandaListItem[] }) {
   const ids = useRecentViews();
   const byId = new Map(pandas.map((panda) => [panda.id, panda]));
@@ -86,7 +85,6 @@ export function RecentViews({ pandas }: { pandas: readonly PandaListItem[] }) {
   );
 }
 
-/** 最近搜索: the last queries that led to a panda; tapping one searches it again. */
 export function RecentSearches({ onPick }: { onPick: (query: string) => void }) {
   const queries = useRecentSearches();
   if (!queries || queries.length === 0) return null;

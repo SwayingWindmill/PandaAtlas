@@ -8,7 +8,7 @@
 - `find-highlight` tints the matched characters of a name or place, or the whole name when only the initials or a Latin name matched. The browsing list has none.
 - `find-recent-views` is a shelf of up to 10 covers, newest first, recorded when a panda's page opens.
 - `find-recent-searches` is up to 8 chips, newest first, recorded when a result is opened from a non-empty search. Tapping one fills the search.
-- `find-no-results` shows 没有找到「q」, a hint to try initials, then 大家常看 (popular, else the well-known list).
+- `find-no-results` shows 没有找到「q」, a hint to try initials (with an area chip active: 「试试选「全部」，或换一个地区。」), then 大家常看 (popular, else the well-known list).
 - `welcome-suggestions` is the first tiles of `/welcome`: popular pandas, then the well-known list, then the youngest living.
 
 ## How to get to it (user POV)
