@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { type Href, Stack, router } from "expo-router";
 import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -12,6 +13,7 @@ import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
 import { BirthdayReminderCard } from "@/features/birthdays/reminder-card";
 import { localToday } from "@/features/engagement/seen";
+import { loadOverseasStatus } from "@/features/overseas/overseas-status";
 import { FollowedChanges } from "@/features/today/followed-changes";
 import { FollowedStrip } from "@/features/today/followed-strip";
 import { OnThisDayCard } from "@/features/today/on-this-day-card";
@@ -41,15 +43,16 @@ function dateLine(now = new Date()) {
 
 /**
  * Shortcuts under the hero, each a bare glyph over its name (v4 `01-today`): 观猫时机 at the followed panda's
- * venue when it publishes the hours, else 日历; then 归国, 挑战 and 场馆.
+ * venue when it publishes the hours, else 日历; then 归国 (only once a return is published), 挑战 and 场馆.
  */
 function QuickEntries({ viewing }: { viewing: ViewingSpot | null }) {
   const stacked = useStacked();
+  const overseas = useQuery({ queryKey: ["overseas-status"], queryFn: loadOverseasStatus });
   const quick: { label: string; icon: LucideIcon; href: Href }[] = [
     viewing
       ? { label: "观猫时机", icon: Sun, href: { pathname: "/institutions/[slug]", params: { slug: viewing.slug, tab: "guide" } } }
       : { label: "日历", icon: CalendarDays, href: "/calendar" },
-    { label: "归国", icon: Plane, href: "/returning" },
+    ...((overseas.data?.length ?? 0) > 0 ? [{ label: "归国", icon: Plane, href: "/returning" as const }] : []),
     { label: "挑战", icon: Trophy, href: "/challenge" },
     { label: "场馆", icon: House, href: "/institutions" },
   ];

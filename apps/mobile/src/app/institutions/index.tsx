@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
@@ -15,6 +16,8 @@ import { type InstitutionListItem, loadInstitutions } from "@/features/instituti
 import { loadMapView } from "@/features/map/load";
 import { type MapItem } from "@/features/map/model";
 import { type PlaceRow, PlaceRows } from "@/features/map/place-list";
+import { loadOverseasStatus } from "@/features/overseas/overseas-status";
+import { loadVenueNews } from "@/features/venue-news/venue-news";
 
 interface Loaded {
   items: InstitutionListItem[];
@@ -49,6 +52,21 @@ function Group({ title, items, residents }: { title: string; items: InstitutionL
   );
 }
 
+/** 场馆动态 and 归国熊猫, each only once it has something published: an entry must not open onto an empty page. */
+function NewsAndReturns() {
+  const news = useQuery({ queryKey: ["venue-news", "all"], queryFn: () => loadVenueNews() });
+  const overseas = useQuery({ queryKey: ["overseas-status"], queryFn: loadOverseasStatus });
+  const hasNews = (news.data?.length ?? 0) > 0;
+  const hasReturns = (overseas.data?.length ?? 0) > 0;
+  if (!hasNews && !hasReturns) return null;
+  return (
+    <ListSection>
+      {hasNews ? <ListCell icon={Newspaper} label="场馆动态" href="/venue-news" last={!hasReturns} /> : null}
+      {hasReturns ? <ListCell icon={Plane} label="归国熊猫" href="/returning" last /> : null}
+    </ListSection>
+  );
+}
+
 export default function InstitutionsScreen() {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [failed, setFailed] = useState(false);
@@ -75,10 +93,7 @@ export default function InstitutionsScreen() {
       {loaded ? (
         loaded.items.length > 0 ? (
           <Animated.View entering={PAGE_ENTER} className="gap-section-tight">
-            <ListSection>
-              <ListCell icon={Newspaper} label="场馆动态" href="/venue-news" />
-              <ListCell icon={Plane} label="归国熊猫" href="/returning" last />
-            </ListSection>
+            <NewsAndReturns />
             <Group title="国内" items={loaded.items.filter((item) => item.domestic)} residents={loaded.residents} />
             <Group title="海外" items={loaded.items.filter((item) => !item.domestic)} residents={loaded.residents} />
           </Animated.View>
