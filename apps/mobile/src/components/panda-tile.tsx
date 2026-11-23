@@ -1,8 +1,8 @@
-import { Image } from "expo-image";
 import { View } from "react-native";
 
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage, prefetchImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { Text } from "@/components/ui/text";
 import { semantic } from "@/design/tokens";
@@ -37,7 +37,10 @@ export function PandaTile({
   const cover = usePandaCover(pandaId);
   return (
     <PressScale
-      onPress={onPress}
+      onPress={() => {
+        prefetchImage(cover);
+        onPress();
+      }}
       role="button"
       accessibilityLabel={accessibilityLabel}
       style={{ width, aspectRatio: aspect }}
@@ -53,7 +56,7 @@ export function PandaTile({
         }}
       >
         {cover ? (
-          <Image
+          <RemoteImage
             source={cover}
             style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
             contentFit="cover"

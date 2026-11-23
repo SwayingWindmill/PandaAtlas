@@ -1,10 +1,10 @@
-import { Image } from "expo-image";
 import { type Href, router } from "expo-router";
 import type { ReactNode } from "react";
 import { View } from "react-native";
 
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { Text } from "@/components/ui/text";
 import { semantic } from "@/design/tokens";
@@ -45,7 +45,7 @@ export function PhotoCard({
     <PressScale onPress={() => router.push(href)} role="button" accessibilityLabel={spoken} style={{ width, aspectRatio: ratio }}>
       <View style={{ flex: 1, borderRadius: radius, borderCurve: "continuous", overflow: "hidden", backgroundColor: PLACEHOLDER }}>
         {photo ? (
-          <Image
+          <RemoteImage
             source={photo.url}
             style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
             contentFit="cover"

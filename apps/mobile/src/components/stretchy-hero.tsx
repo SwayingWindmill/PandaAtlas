@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { Link } from "expo-router";
 import type { ReactNode } from "react";
 import { Platform, Pressable, View } from "react-native";
@@ -11,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
+import { RemoteImage } from "@/components/remote-image";
 
 
 /**
@@ -49,7 +49,7 @@ export function StretchyHero({
       ],
     };
   });
-  const photo = <Image source={url} style={{ flex: 1 }} contentFit="cover" accessible={false} transition={200} />;
+  const photo = <RemoteImage source={url} style={{ flex: 1 }} contentFit="cover" accessible={false} transition={200} />;
   return (
     <View style={{ height, overflow: Platform.OS === "web" ? "hidden" : "visible" }}>
       <Animated.View style={[{ height, backgroundColor: muted }, stretch]}>

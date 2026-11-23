@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
@@ -6,6 +5,7 @@ import { FlatList, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LoadFailed } from "@/components/load-failed";
+import { RemoteImage } from "@/components/remote-image";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -68,7 +68,7 @@ export default function PhotosScreen() {
             className="mt-4 flex-1"
             onLayout={(event) => setPageHeight(event.nativeEvent.layout.height)}
             renderItem={({ item, index: position }) => (
-              <Image
+              <RemoteImage
                 source={item.url}
                 style={{ width, height: pageHeight }}
                 contentFit="contain"

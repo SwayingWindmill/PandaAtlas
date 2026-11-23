@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { Platform, Pressable, View } from "react-native";
@@ -9,6 +8,7 @@ import { SYSTEM_BAR, useHeroScroll } from "@/components/hero-header";
 import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { ScreenState } from "@/components/screen-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -115,7 +115,7 @@ export default function ArticleScreen() {
         <Animated.View entering={PAGE_ENTER}>
           {hero?.asset ? (
             <View className="gap-stack-tight">
-              <Image
+              <RemoteImage
                 source={hero.asset}
                 style={{ width: "100%", height: LEAD_HEIGHT }}
                 contentFit="cover"
@@ -260,7 +260,7 @@ function FigureGroup({ images }: { images: LearningArticleImage[] }) {
           <View key={learningText(image.caption)} className="flex-1">
             {image.type === "existing" && image.asset ? (
               <View className={pair ? "overflow-hidden rounded-tile" : undefined} style={{ borderCurve: "continuous" }}>
-                <Image
+                <RemoteImage
                   source={image.asset}
                   style={{ width: "100%", height: pair ? 180 : 240 }}
                   contentFit="cover"
@@ -351,7 +351,7 @@ function RelatedArticle({ article }: { article: CatalogArticle }) {
       </View>
       {hero?.asset ? (
         <View className="size-20 overflow-hidden rounded-control" style={{ borderCurve: "continuous" }}>
-          <Image source={hero.asset} style={{ width: "100%", height: "100%" }} contentFit="cover" accessible={false} />
+          <RemoteImage source={hero.asset} style={{ width: "100%", height: "100%" }} contentFit="cover" accessible={false} />
           <PhotoOutline radius={RADIUS.control} />
         </View>
       ) : null}

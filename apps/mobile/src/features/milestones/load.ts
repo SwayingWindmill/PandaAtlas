@@ -1,9 +1,15 @@
+import { queryOptions } from "@tanstack/react-query";
+
 import { buildLifeList } from "@/features/book/book";
 import { loadPandaIndex, loadPlaces, placeName } from "@/features/pandas/pandas";
 import { loadVisits } from "@/features/visits/visits";
 import { authedApi } from "@/lib/api";
 
 import { type PersonalMilestone, personalMilestones } from "./milestones";
+
+export function milestonesQueryOptions(accountId: string) {
+  return queryOptions({ queryKey: ["private", accountId, "milestones"], queryFn: loadMilestones, staleTime: 0 });
+}
 
 /** The fan's 里程碑, newest first, from the same records and numbering as the 图鉴 and 去过的地点. */
 export async function loadMilestones(): Promise<PersonalMilestone[]> {

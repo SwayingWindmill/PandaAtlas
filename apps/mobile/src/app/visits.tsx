@@ -1,5 +1,5 @@
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -12,8 +12,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { longDate } from "@/features/pandas/profile";
-import { loadPlaces, placeName } from "@/features/pandas/pandas";
-import { type Visit, loadVisits, removeVisit } from "@/features/visits/visits";
+import { placeName, placesQueryOptions } from "@/features/pandas/pandas";
+import { useAccount } from "@/features/session/account";
+import { type Visit, removeVisit, visitsQueryKey, visitsQueryOptions } from "@/features/visits/visits";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -77,28 +79,30 @@ function VisitRow({ visit, place, last, onRemove }: { visit: Visit; place: strin
 }
 
 export default function VisitsScreen() {
-  const [visits, setVisits] = useState<Visit[] | null>(null);
-  const [names, setNames] = useState<Map<string, string>>(new Map());
-  const [failed, setFailed] = useState(false);
+  const { accountId, unavailable } = useAccount();
+  const queryClient = useQueryClient();
   const [removeFailed, setRemoveFailed] = useState(false);
   const stacked = useStacked();
 
-  const load = useCallback(() => {
-    Promise.all([loadVisits(), loadPlaces()])
-      .then(([loaded, places]) => {
-        setNames(new Map([...places].map(([id, place]) => [id, placeName(place) ?? place.nameEn ?? place.slug])));
-        setVisits(loaded);
-        setFailed(false);
-      })
-      .catch(() => setFailed(true));
-  }, []);
-  useFocusEffect(load);
+  const list = useQuery({ ...visitsQueryOptions(accountId ?? ""), enabled: accountId !== null });
+  const placeList = useQuery(placesQueryOptions());
+  useRefetchOnFocus(list.refetch, accountId !== null);
+  const visits = list.data && placeList.data ? list.data : null;
+  const names = useMemo(
+    () => new Map([...(placeList.data ?? [])].map(([id, place]) => [id, placeName(place) ?? place.nameEn ?? place.slug])),
+    [placeList.data],
+  );
+  const failed = unavailable || list.isError || placeList.isError;
 
   async function remove(visit: Visit) {
     setRemoveFailed(false);
     try {
       await removeVisit(visit.checkinId);
-      setVisits((current) => current?.filter((item) => item.checkinId !== visit.checkinId) ?? null);
+      if (accountId) {
+        queryClient.setQueryData<Visit[]>(visitsQueryKey(accountId), (current) =>
+          current?.filter((item) => item.checkinId !== visit.checkinId),
+        );
+      }
     } catch {
       setRemoveFailed(true);
     }
@@ -109,7 +113,10 @@ export default function VisitsScreen() {
   return (
     <Page title="去过的地点">
       {failed ? (
-        <LoadFailed message="到访记录暂时打不开。" onRetry={load} />
+        <LoadFailed message="到访记录暂时打不开。" onRetry={() => {
+            if (list.isError) void list.refetch();
+            if (placeList.isError) void placeList.refetch();
+          }} />
       ) : visits === null ? (
         <View className="gap-section" accessibilityLabel="正在加载到访记录">
           <View className="flex-row gap-row">

@@ -1,7 +1,7 @@
-import { Image } from "expo-image";
 import { View } from "react-native";
 
 import { PhotoOutline } from "@/components/photo-outline";
+import { RemoteImage } from "@/components/remote-image";
 import { Text } from "@/components/ui/text";
 import { usePandaCover } from "@/lib/covers";
 import { RADIUS } from "@/lib/surface";
@@ -26,6 +26,11 @@ export function PandaThumb({
 }) {
   const photo = usePandaCover(pandaId);
   const radius = shape === "round" ? size / 2 : shape === "tile" ? RADIUS.tile : RADIUS.control;
+  const initial = (
+    <Text variant={size >= 48 ? "title" : "headline"} role="none" allowFontScaling={false} className="text-muted-foreground">
+      {name.slice(0, 1)}
+    </Text>
+  );
   return (
     <View
       className="items-center justify-center overflow-hidden bg-secondary"
@@ -34,16 +39,15 @@ export function PandaThumb({
       importantForAccessibility="no-hide-descendants"
     >
       {photo ? (
-        <Image source={photo} style={{ width: size, height: size }} contentFit="cover" transition={200} accessible={false} />
+        <RemoteImage
+          source={photo}
+          fallback={initial}
+          style={{ width: size, height: size }}
+          contentFit="cover"
+          accessible={false}
+        />
       ) : (
-        <Text
-          variant={size >= 48 ? "title" : "headline"}
-          role="none"
-          allowFontScaling={false}
-          className="text-muted-foreground"
-        >
-          {name.slice(0, 1)}
-        </Text>
+        initial
       )}
       {photo ? <PhotoOutline radius={radius} /> : null}
     </View>

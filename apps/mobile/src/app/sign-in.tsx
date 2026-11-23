@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -6,6 +5,7 @@ import Animated from "react-native-reanimated";
 
 import { Page } from "@/components/page";
 import { PhotoOutline } from "@/components/photo-outline";
+import { RemoteImage } from "@/components/remote-image";
 import { TextField } from "@/components/text-field";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -32,7 +32,7 @@ function Faces({ photos }: { photos: StoryPhoto[] }) {
           className="overflow-hidden rounded-full border-4 border-background bg-secondary"
           style={{ width: FACE + 8, height: FACE + 8, marginLeft: index === 0 ? 0 : OVERLAP, zIndex: photos.length - index }}
         >
-          <Image source={photo.url} style={{ width: FACE, height: FACE }} contentFit="cover" transition={200} accessible={false} />
+          <RemoteImage source={photo.url} style={{ width: FACE, height: FACE }} contentFit="cover" transition={200} accessible={false} />
           <PhotoOutline radius={FACE / 2} />
         </View>
       ))}

@@ -1,5 +1,5 @@
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { Pressable, View } from "react-native";
 
 import { LoadFailed } from "@/components/load-failed";
@@ -9,32 +9,28 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { statusLabel } from "@/features/corrections/correction";
-import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
+import { contributionsQueryOptions } from "@/features/corrections/submissions";
 import { shortDay } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
-import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
+import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { useAccount } from "@/features/session/account";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { HAIRLINE } from "@/lib/surface";
 
 /** 我的纠错, opened from 我的: each report the fan sent, its status and the editors' note. */
 export default function ContributionsScreen() {
-  const [items, setItems] = useState<ContributionRecord[] | null>(null);
-  const [failed, setFailed] = useState(false);
-  const [pandas, setPandas] = useState<Map<string, PandaListItem>>(new Map());
-  const load = useCallback(() => {
-    setFailed(false);
-    loadMyContributions()
-      .then(setItems)
-      .catch(() => setFailed(true));
-    loadPandaIndex()
-      .then((list) => setPandas(new Map(list.map((panda) => [panda.id, panda]))))
-      .catch(() => undefined);
-  }, []);
+  const { accountId, unavailable } = useAccount();
+  const list = useQuery({ ...contributionsQueryOptions(accountId ?? ""), enabled: accountId !== null });
   // Read again whenever the page shows, so a report sent from a profile appears on return.
-  useFocusEffect(load);
+  useRefetchOnFocus(list.refetch, accountId !== null);
+  const index = useQuery(pandaIndexQueryOptions());
+  const pandas = useMemo(() => new Map(index.data?.map((panda) => [panda.id, panda])), [index.data]);
+  const items = list.data ?? null;
+  const failed = unavailable || list.isError;
 
   return (
     <Page title="我的纠错">
-      {failed ? <LoadFailed message="纠错记录暂时打不开。" onRetry={load} /> : null}
+      {failed ? <LoadFailed message="纠错记录暂时打不开。" onRetry={() => void list.refetch()} /> : null}
       {!failed && items === null ? <Skeleton className="h-44 w-full rounded-group" accessibilityLabel="正在加载" /> : null}
       {items && items.length === 0 ? <ScreenState message="在熊猫资料页点「告诉我们」，发出的纠错会列在这里。" /> : null}
       {items && items.length > 0 ? (

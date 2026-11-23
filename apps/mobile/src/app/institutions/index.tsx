@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -12,8 +11,8 @@ import { ScreenState } from "@/components/screen-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
-import { type InstitutionListItem, loadInstitutions } from "@/features/institutions/institutions";
-import { loadMapView } from "@/features/map/load";
+import { type InstitutionListItem, institutionListQueryOptions, toListItems } from "@/features/institutions/institutions";
+import { mapViewQueryOptions } from "@/features/map/load";
 import { type MapItem } from "@/features/map/model";
 import { type PlaceRow, PlaceRows } from "@/features/map/place-list";
 import { loadOverseasStatus } from "@/features/overseas/overseas-status";
@@ -68,24 +67,17 @@ function NewsAndReturns() {
 }
 
 export default function InstitutionsScreen() {
-  const [loaded, setLoaded] = useState<Loaded | null>(null);
-  const [failed, setFailed] = useState(false);
-
-  const load = useCallback(() => {
-    // The list is the page; who lives where only dresses the rows, so a map failure is not one.
-    Promise.all([loadInstitutions(), loadMapView().catch(() => null)])
-      .then(([items, map]) => {
-        const residents = new Map<string, MapItem>();
-        for (const item of map?.items ?? []) if (item.kind === "institution") residents.set(item.slug, item);
-        setLoaded({ items, residents });
-      })
-      .catch(() => setFailed(true));
-  }, []);
-  useEffect(load, [load]);
+  const list = useQuery({ ...institutionListQueryOptions(), select: toListItems });
+  // The list is the page; who lives where only dresses the rows, so a map failure is not one.
+  const map = useQuery(mapViewQueryOptions());
+  const residents = new Map<string, MapItem>();
+  for (const item of map.data?.items ?? []) if (item.kind === "institution") residents.set(item.slug, item);
+  const loaded: Loaded | null = list.data && !map.isPending ? { items: list.data, residents } : null;
+  const failed = list.isError;
 
   function retry() {
-    setFailed(false);
-    load();
+    void list.refetch();
+    if (map.isError) void map.refetch();
   }
 
   return (

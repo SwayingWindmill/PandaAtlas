@@ -1,3 +1,5 @@
+import { queryOptions } from "@tanstack/react-query";
+
 import { displayName, pandaBirthDate, pandaIsDeceased } from "@/lib/panda";
 import { loadPandaDetail } from "@/lib/public-panda";
 import { localToday } from "@/features/engagement/seen";
@@ -10,6 +12,15 @@ export interface PandaTimeline extends Timeline {
   slug: string;
   name: string;
   deceased: boolean;
+}
+
+export function timelineQueryOptions(slug: string) {
+  return queryOptions({
+    queryKey: ["public", "timeline", slug],
+    queryFn: () => loadTimeline(slug),
+    staleTime: 60_000,
+    networkMode: "always",
+  });
 }
 
 export async function loadTimeline(slug: string): Promise<PandaTimeline> {

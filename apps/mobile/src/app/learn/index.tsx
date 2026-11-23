@@ -1,6 +1,5 @@
-import { Image } from "expo-image";
-import { router, Stack, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { router, Stack } from "expo-router";
 import { ScrollView, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -11,6 +10,7 @@ import { LoadFailed } from "@/components/load-failed";
 import { NO_WEB_BAR_TITLE } from "@/components/page";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { ScreenState } from "@/components/screen-state";
 import { SectionHeader } from "@/components/section-header";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,12 +22,13 @@ import {
   learningText,
   readingMinutes,
 } from "@/features/learning/catalog";
-import { loadAskStatus } from "@/features/ask/ask";
+import { askStatusQueryOptions } from "@/features/ask/ask";
 import { FeedArticle, openArticle } from "@/features/learning/feed-article";
 import { PandaPhoto } from "@/features/learning/panda-photo";
 import { useLearningCatalog, useLearningPandas } from "@/features/learning/use-catalog";
-import { useSession } from "@/features/session/session";
+import { useAccount } from "@/features/session/account";
 import { RADIUS } from "@/lib/surface";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 const CATEGORY_ORDER = ["外形与识别", "食性", "繁殖与成长", "保护"];
 const TITLE = "认识大熊猫";
@@ -70,24 +71,10 @@ function StillWriting({ shelves }: { shelves: Shelf[] }) {
  * whether it is open, and an entry that leads to "closed" is worse than none.
  */
 function AskEntry() {
-  const { state } = useSession();
-  const signedIn = state.status === "signedIn";
-  const [enabled, setEnabled] = useState(false);
-  useFocusEffect(
-    useCallback(() => {
-      if (!signedIn) {
-        setEnabled(false);
-        return;
-      }
-      let live = true;
-      loadAskStatus()
-        .then((status) => live && setEnabled(status.enabled))
-        .catch(() => live && setEnabled(false));
-      return () => {
-        live = false;
-      };
-    }, [signedIn]),
-  );
+  const { accountId } = useAccount();
+  const status = useQuery({ ...askStatusQueryOptions(accountId ?? ""), enabled: accountId !== null });
+  useRefetchOnFocus(status.refetch, accountId !== null);
+  const enabled = accountId !== null && status.data?.enabled === true;
   if (!enabled) return null;
   return (
     <View className="px-inset">
@@ -279,7 +266,7 @@ function FeaturedArticle({ article }: { article: CatalogArticle }) {
       style={{ borderCurve: "continuous" }}
     >
       {hero?.asset ? (
-        <Image
+        <RemoteImage
           source={hero.asset}
           style={{ width: "100%", aspectRatio: 4 / 3 }}
           contentFit="cover"

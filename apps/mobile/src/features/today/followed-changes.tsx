@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { type ReactNode, useMemo } from "react";
 import { Pressable, View } from "react-native";
 
 import { BellRing } from "@/components/icons";
+import { RemoteImage } from "@/components/remote-image";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -90,7 +90,7 @@ function Thumb({ pandaId, name }: { pandaId: string; name: string }) {
       style={{ width: THUMB, height: THUMB }}
     >
       {photo ? (
-        <Image source={photo} style={{ width: THUMB, height: THUMB }} contentFit="cover" accessible={false} />
+        <RemoteImage source={photo} style={{ width: THUMB, height: THUMB }} contentFit="cover" accessible={false} />
       ) : (
         <Text variant="headline" className="text-muted-foreground">
           {name.slice(0, 1)}

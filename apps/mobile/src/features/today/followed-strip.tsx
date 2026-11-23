@@ -1,10 +1,10 @@
-import { Image } from "expo-image";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { PawPrint } from "@/components/icons";
+import { RemoteImage } from "@/components/remote-image";
 import { SectionHeader } from "@/components/section-header";
 import { Text } from "@/components/ui/text";
 import { useFollowed } from "@/features/engagement/favorites";
@@ -31,7 +31,7 @@ export function PandaAvatar({ panda }: { panda: Pick<PandaListItem, "id" | "slug
         style={{ width: AVATAR, height: AVATAR }}
       >
         {photo ? (
-          <Image
+          <RemoteImage
             source={photo}
             style={{ width: AVATAR, height: AVATAR }}
             contentFit="cover"

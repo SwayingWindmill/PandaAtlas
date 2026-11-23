@@ -1,7 +1,7 @@
-import { Image } from "expo-image";
 import type { ReactNode } from "react";
 import { View } from "react-native";
 
+import { RemoteImage } from "@/components/remote-image";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 import { usePandaCover } from "@/lib/covers";
@@ -50,7 +50,7 @@ function Cover({
   if (!photo) return <Empty aspect={aspect} rounded={rounded} />;
   return (
     <Frame aspect={aspect} rounded={rounded}>
-      <Image
+      <RemoteImage
         source={photo}
         style={{ width: "100%", height: "100%" }}
         contentFit="cover"

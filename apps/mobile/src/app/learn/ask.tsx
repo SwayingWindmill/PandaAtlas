@@ -1,6 +1,7 @@
-import { router, useFocusEffect } from "expo-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -19,20 +20,21 @@ import {
   AskError,
   type AskFailure,
   type AskLink,
-  type AskStatus,
   appHref,
   askPanda,
+  askStatusQueryOptions,
   canSend,
   closesToday,
   FAILURE_COPY,
-  loadAskStatus,
   QUESTION_LIMIT,
   questionLength,
   referenceUrl,
   sourceDetail,
   STARTERS,
 } from "@/features/ask/ask";
+import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { successHaptic, tapHaptic } from "@/lib/haptics";
 
 const TITLE = "问问熊猫";
@@ -115,27 +117,20 @@ function Starters({ onPick }: { onPick: (question: string) => void }) {
 export default function AskScreen() {
   const { state: session } = useSession();
   const signedIn = session.status === "signedIn";
-  const [status, setStatus] = useState<AskStatus | null>(null);
-  const [statusFailed, setStatusFailed] = useState(false);
+  const { accountId } = useAccount();
+  const queryClient = useQueryClient();
+  const statusQuery = useQuery({ ...askStatusQueryOptions(accountId ?? ""), enabled: signedIn });
+  useRefetchOnFocus(statusQuery.refetch, signedIn);
+  const status = statusQuery.data ?? null;
+  const statusFailed = statusQuery.isError;
   const [draft, setDraft] = useState("");
   const [exchanges, setExchanges] = useState<Exchange[]>([]);
   const [problem, setProblem] = useState<AskFailure | null>(null);
-  const [closed, setClosed] = useState<AskFailure | null>(null);
+  const [stopped, setStopped] = useState<AskFailure | null>(null);
+  const closed: AskFailure | null =
+    stopped ?? (status && !status.enabled ? "disabled" : status?.remainingToday === 0 ? "quotaExhausted" : null);
   const busy = exchanges.some((exchange) => exchange.answer === null);
   const next = useRef(1);
-
-  const load = useCallback(() => {
-    if (!signedIn) return;
-    setStatusFailed(false);
-    loadAskStatus()
-      .then((value) => {
-        setStatus(value);
-        if (!value.enabled) setClosed("disabled");
-        else if (value.remainingToday === 0) setClosed("quotaExhausted");
-      })
-      .catch(() => setStatusFailed(true));
-  }, [signedIn]);
-  useFocusEffect(load);
 
   async function send(text: string) {
     if (!canSend(text) || busy) return;
@@ -147,15 +142,16 @@ export default function AskScreen() {
     try {
       const answer = await askPanda(text);
       setExchanges((list) => list.map((item) => (item.id === id ? { ...item, answer } : item)));
-      setStatus((current) => (current ? { ...current, remainingToday: answer.remainingToday } : current));
+      queryClient.setQueryData(askStatusQueryOptions(accountId ?? "").queryKey, (current) =>
+        current ? { ...current, remainingToday: answer.remainingToday } : current,
+      );
       if (answer.kind === "answer") successHaptic();
-      if (answer.remainingToday === 0) setClosed("quotaExhausted");
     } catch (error) {
       const failure = error instanceof AskError ? error.failure : "failed";
       // The question was not answered: take it back out and give the words back to the field.
       setExchanges((list) => list.filter((item) => item.id !== id));
       setDraft(text);
-      if (closesToday(failure)) setClosed(failure);
+      if (closesToday(failure)) setStopped(failure);
       else setProblem(failure);
     }
   }
@@ -186,7 +182,7 @@ export default function AskScreen() {
   if (statusFailed) {
     return (
       <Page title={TITLE} label={INTRO}>
-        <ScreenState message="问问熊猫暂时打不开。" actionLabel="重试" onAction={load} />
+        <ScreenState message="问问熊猫暂时打不开。" actionLabel="重试" onAction={() => void statusQuery.refetch()} />
       </Page>
     );
   }

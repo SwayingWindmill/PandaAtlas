@@ -53,7 +53,11 @@ export function currentPlaceId(residencies: Residency[]): string | null {
 }
 
 export function loadPlaces(): Promise<Map<string, Place>> {
-  return queryClient.fetchQuery({
+  return queryClient.fetchQuery(placesQueryOptions());
+}
+
+export function placesQueryOptions() {
+  return queryOptions({
     queryKey: ["public", "places"],
     networkMode: "always",
     staleTime: 300_000,

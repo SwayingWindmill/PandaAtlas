@@ -102,8 +102,8 @@ export function institutionListQueryOptions() {
   });
 }
 
-export async function loadInstitutions(): Promise<InstitutionListItem[]> {
-  const institutions = await loadInstitutionList();
+/** The list screen's rows, as a `select` over the shared institutions query. */
+export function toListItems(institutions: Institution[]): InstitutionListItem[] {
   return institutions.map((institution) => ({
     slug: institution.slug,
     name: nameOf(institution),

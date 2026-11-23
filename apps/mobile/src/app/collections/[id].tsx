@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AccessibilityInfo, type HostInstance, Platform, Pressable, TextInput, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useCSSVariable } from "uniwind";
@@ -18,13 +19,15 @@ import {
   NAME_MAX,
   collectionName,
   deleteCollection,
-  loadCollections,
+  collectionsQueryOptions,
+  patchCollections,
   renameCollection,
   setInCollection,
 } from "@/features/collections/collections";
 import { Mosaic } from "@/features/collections/mosaic";
 import { openPanda } from "@/features/pandas/panda-row";
-import { type PandaListItem, listMeta, loadPandaIndex } from "@/features/pandas/pandas";
+import { type PandaListItem, listMeta, pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { useAccount } from "@/features/session/account";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -186,12 +189,13 @@ function Loading() {
   );
 }
 
-type Load = { status: "loading" } | { status: "failed" } | { status: "missing" } | { status: "ready"; collection: Collection };
-
 export default function CollectionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [state, setState] = useState<Load>({ status: "loading" });
-  const [pandas, setPandas] = useState<Map<string, PandaListItem>>(new Map());
+  const { accountId, unavailable } = useAccount();
+  const list = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: accountId !== null });
+  const index = useQuery(pandaIndexQueryOptions());
+  const pandas = useMemo(() => new Map(index.data?.map((panda) => [panda.id, panda])), [index.data]);
+  const collection = list.data?.find((item) => item.collectionId === id);
   const [mode, setMode] = useState<"view" | "edit" | "rename" | "confirmDelete">("view");
   const [removed, setRemoved] = useState<PandaListItem | null>(null);
   const [actionFailed, setActionFailed] = useState(false);
@@ -206,29 +210,19 @@ export default function CollectionScreen() {
     if (confirmHeading.current) AccessibilityInfo.sendAccessibilityEvent(confirmHeading.current, "focus");
   }, [mode]);
 
-  const load = useCallback(() => {
-    Promise.all([loadCollections(), loadPandaIndex()])
-      .then(([collections, index]) => {
-        setPandas(new Map(index.map((panda) => [panda.id, panda])));
-        const found = collections.find((item) => item.collectionId === id);
-        setState(found ? { status: "ready", collection: found } : { status: "missing" });
-      })
-      .catch(() => setState({ status: "failed" }));
-  }, [id]);
-  useEffect(load, [load]);
-
-  if (state.status !== "ready") {
+  if (!collection || !index.data) {
+    const failed = unavailable || list.isError || index.isError;
     return (
       <Page title="合集">
-        {state.status === "failed" ? (
+        {failed ? (
           <LoadFailed
             message="这个合集暂时打不开。"
             onRetry={() => {
-              setState({ status: "loading" });
-              load();
+              if (list.isError) void list.refetch();
+              if (index.isError) void index.refetch();
             }}
           />
-        ) : state.status === "missing" ? (
+        ) : list.data && index.data && !list.isFetching ? (
           <ScreenState message="这个合集已经不在了。" actionLabel="回到我的合集" onAction={() => router.back()} />
         ) : (
           <Loading />
@@ -237,8 +231,9 @@ export default function CollectionScreen() {
     );
   }
 
-  const { collection } = state;
-  const set = (next: Collection) => setState({ status: "ready", collection: next });
+  const set = (next: Collection) => {
+    if (accountId) patchCollections(accountId, (current) => current.map((item) => (item.collectionId === next.collectionId ? next : item)));
+  };
 
   async function run(work: () => Promise<void>) {
     setActionFailed(false);

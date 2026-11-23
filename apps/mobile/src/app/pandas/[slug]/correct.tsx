@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { type ReactNode, useState } from "react";
 import { TextInput, type TextInputProps, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
@@ -17,7 +18,7 @@ import {
   buildSubmission,
   draftProblem,
 } from "@/features/corrections/correction";
-import { type CorrectionTarget, loadCorrectionTarget, submitCorrection } from "@/features/corrections/submissions";
+import { type CorrectionTarget, correctionTargetQueryOptions, submitCorrection } from "@/features/corrections/submissions";
 import { localToday } from "@/features/engagement/seen";
 import { useSession } from "@/features/session/session";
 import { cn } from "@/lib/utils";
@@ -136,15 +137,7 @@ function Form({ target }: { target: CorrectionTarget }) {
 export default function CorrectScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const { state: session } = useSession();
-  const [target, setTarget] = useState<CorrectionTarget | null>(null);
-  const [failed, setFailed] = useState(false);
-
-  const load = useCallback(() => {
-    loadCorrectionTarget(slug)
-      .then(setTarget)
-      .catch(() => setFailed(true));
-  }, [slug]);
-  useEffect(load, [load]);
+  const { data: target, isError: failed, refetch } = useQuery(correctionTargetQueryOptions(slug));
 
   return (
     <Page label={target ? `纠错　${target.name}` : "纠错"} title="资料哪里不对？" keyboardShouldPersistTaps="handled">
@@ -158,7 +151,7 @@ export default function CorrectScreen() {
       ) : session.status === "unavailable" ? (
         <Text className="text-muted-foreground">账号暂时不可用，请稍后再试。</Text>
       ) : failed ? (
-        <LoadFailed message="资料暂时打不开。" onRetry={() => { setFailed(false); load(); }} />
+        <LoadFailed message="资料暂时打不开。" onRetry={() => void refetch()} />
       ) : target && session.status === "signedIn" ? (
         <Form target={target} />
       ) : (
