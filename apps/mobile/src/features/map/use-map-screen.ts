@@ -12,6 +12,7 @@ import { buildTimeline, eventsInYear, residentsInYear } from "@/features/map/tim
 import { useMapCamera } from "@/features/map/use-map-camera";
 import type { MapMarker, YearView } from "@/features/map/venue-map";
 import { WILD_AREAS, type WildArea, venuesNear } from "@/features/map/wild";
+import { useBackToClose } from "@/lib/use-back-to-close";
 
 const SHEET_SHARE = 0.5;
 const PLAY_STEP_MS = 700;
@@ -166,6 +167,9 @@ export function useMapScreen(insetsTop: number, windowWidth: number, windowHeigh
     setSelection(null);
     flyTo(home(viewport));
   }
+
+  // Back closes the selected place's or wild area's sheet before it leaves the map.
+  useBackToClose(selection !== null, () => setSelection(null));
 
   return {
     view,

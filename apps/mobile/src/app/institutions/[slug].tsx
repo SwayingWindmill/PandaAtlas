@@ -28,6 +28,7 @@ import {
 import { institutionQueryOptions, unseenResidents } from "@/features/institutions/institutions";
 import { useSession } from "@/features/session/session";
 import { FacilityVisits } from "@/features/visits/facility-visits";
+import { PAGE_COLUMN } from "@/lib/surface";
 
 const TABS = ["overview", "pandas", "guide"] as const;
 type Tab = (typeof TABS)[number];
@@ -55,7 +56,7 @@ export default function InstitutionScreen() {
       <View className="flex-1 bg-background">
         <HeroHeader title="" pastHero={false} />
         {failed ? (
-          <View className="px-gutter" style={{ paddingTop: insets.top + 64 }}>
+          <View className="px-gutter" style={[PAGE_COLUMN, { paddingTop: insets.top + 64 }]}>
             <LoadFailed message="这一页暂时打不开。" onRetry={() => void refetch()} />
           </View>
         ) : (
@@ -105,7 +106,7 @@ export default function InstitutionScreen() {
         ) : (
           <PlateHero institution={institution} pending={hero === undefined} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-gutter pt-4">
+        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-gutter pt-4" style={PAGE_COLUMN}>
           <View className="gap-section">
             <Badges institution={institution} />
             {tabs.length > 1 ? (

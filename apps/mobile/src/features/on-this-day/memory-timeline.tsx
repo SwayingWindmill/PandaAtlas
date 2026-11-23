@@ -8,6 +8,7 @@ import { Text } from "@/components/ui/text";
 import { component } from "@/design/tokens";
 import type { Evidence } from "@/features/timeline/timeline";
 import { selectionHaptic } from "@/lib/haptics";
+import { useBackToClose } from "@/lib/use-back-to-close";
 import { cn } from "@/lib/utils";
 
 import { Thumb, lessLabel, openMemory, sourceLine } from "./memory-group";
@@ -50,6 +51,7 @@ export function MemoryTimeline({
   onOff: () => void;
 }) {
   const [menu, setMenu] = useState<string | null>(null);
+  useBackToClose(menu !== null, () => setMenu(null));
   const { rail } = component.timeline;
 
   function more(memory: Memory) {

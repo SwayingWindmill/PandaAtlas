@@ -2,7 +2,7 @@ import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, useFocusEffect, useLocalSearchParams, useNavigation, usePreventRemove } from "expo-router";
 import { HeaderBackButton } from "expo-router/react-navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { AccessibilityInfo, BackHandler, Linking, Modal, Platform, ScrollView, View } from "react-native";
+import { AccessibilityInfo, Linking, Modal, ScrollView, View } from "react-native";
 
 import { ListCell, ListSection, useSingleColumn } from "@/components/grouped-list";
 import { FileText, MapPin, Network, Users } from "@/components/icons";
@@ -21,6 +21,7 @@ import { hostname } from "@/features/institutions/institutions";
 import { openPanda } from "@/features/pandas/panda-row";
 import { longDate } from "@/features/pandas/profile";
 import { RelationshipContent } from "@/features/relationship/relationship-content";
+import { useBackToClose } from "@/lib/use-back-to-close";
 import { cn } from "@/lib/utils";
 
 /** One relative as the linear 家谱 lists it; the list is the tree's reading order for VoiceOver and at large text. */
@@ -232,16 +233,7 @@ export default function FamilyScreen() {
 
   // Back (the bar, the edge swipe, Android's back key) steps through the families walked through first.
   usePreventRemove(history.length > 0, goBack);
-  useFocusEffect(
-    useCallback(() => {
-      if (Platform.OS !== "android" || history.length === 0) return;
-      const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
-        goBack();
-        return true;
-      });
-      return () => subscription.remove();
-    }, [goBack, history.length]),
-  );
+  useBackToClose(history.length > 0, goBack);
   // A 家谱 opened from a link has no screen beneath it, so the bar has no back button of its own.
   useLayoutEffect(() => {
     const needsBack = history.length > 0 && !navigation.canGoBack();

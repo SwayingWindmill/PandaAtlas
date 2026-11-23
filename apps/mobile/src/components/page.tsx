@@ -7,6 +7,7 @@ import { StatusBarCover } from "@/components/status-bar-cover";
 import { Text } from "@/components/ui/text";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
+import { PAGE_COLUMN } from "@/lib/surface";
 
 /**
  * Where the screen title is drawn.
@@ -83,7 +84,7 @@ export function Page({
         contentContainerClassName="gap-6 px-gutter"
         refreshControl={refreshControl}
         {...scroll}
-        contentContainerStyle={[{ paddingBottom: bottom }, barless && { paddingTop: insets.top + BARLESS_TOP }, scroll.contentContainerStyle]}
+        contentContainerStyle={[PAGE_COLUMN, { paddingBottom: bottom }, barless && { paddingTop: insets.top + BARLESS_TOP }, scroll.contentContainerStyle]}
       >
         {inContent ? (
           <View className="gap-1">
