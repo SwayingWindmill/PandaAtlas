@@ -13,7 +13,8 @@ import { StretchyHero } from "@/components/stretchy-hero";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
-import { seenIdsQueryOptions } from "@/features/engagement/seen";
+import { useFollowed } from "@/features/engagement/favorites";
+import { useSeenIds } from "@/features/engagement/use-seen-ids";
 import { VisitGuide } from "@/features/institutions/institution-guide";
 import { useInstitutionHero } from "@/features/institutions/institution-hero";
 import {
@@ -26,7 +27,7 @@ import {
   Residents,
 } from "@/features/institutions/institution-overview";
 import { institutionQueryOptions, unseenResidents } from "@/features/institutions/institutions";
-import { useSession } from "@/features/session/session";
+import { VenueLiveCard } from "@/features/viewing/venue-live-card";
 import { FacilityVisits } from "@/features/visits/facility-visits";
 import { PAGE_COLUMN } from "@/lib/surface";
 
@@ -41,13 +42,8 @@ export default function InstitutionScreen() {
   const failed = !institution && isError && !isFetching;
   const [tab, setTab] = useState<Tab>(isTab(params.tab) ? params.tab : "overview");
   const hero = useInstitutionHero(institution?.residents ?? null);
-  const { state } = useSession();
-  const accountId = state.status === "signedIn" ? state.accountId : null;
-  // 见过 is a nicety on the 攻略: signed out, or if it fails, the row is simply left out.
-  const { data: seen = null } = useQuery({
-    ...seenIdsQueryOptions(accountId ?? ""),
-    enabled: accountId !== null,
-  });
+  const seen = useSeenIds();
+  const followed = useFollowed();
   const insets = useSafeAreaInsets();
   const { scrollY, onScroll, pastHero } = useHeroScroll(INSTITUTION_HERO_HEIGHT);
 
@@ -72,7 +68,7 @@ export default function InstitutionScreen() {
     );
   }
 
-  const unseen = accountId !== null && seen ? unseenResidents(institution.residents, seen) : null;
+  const unseen = seen ? unseenResidents(institution.residents, seen) : null;
   const tabs = [
     { value: "overview" as const, label: "概况" },
     institution.residents.length + institution.former.length > 0 ? { value: "pandas" as const, label: "熊猫" } : null,
@@ -107,8 +103,9 @@ export default function InstitutionScreen() {
           <PlateHero institution={institution} pending={hero === undefined} />
         )}
         <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-gutter pt-4" style={PAGE_COLUMN}>
-          <View className="gap-section">
+          <View className="gap-3">
             <Badges institution={institution} />
+            <VenueLiveCard variant="venue" slug={institution.slug} apiLiveCamUrl={institution.liveCamUrl} />
             {tabs.length > 1 ? (
               <Segmented value={shown} options={tabs} onChange={setTab} accessibilityLabel={`${institution.name}的页面`} />
             ) : null}
@@ -116,7 +113,9 @@ export default function InstitutionScreen() {
           {shown === "overview" ? <Overview institution={institution} onPandas={() => setTab("pandas")} /> : null}
           {shown === "pandas" ? (
             <>
-              {institution.residents.length > 0 ? <Residents pandas={institution.residents} /> : null}
+              {institution.residents.length > 0 ? (
+                <Residents pandas={institution.residents} seen={seen} followed={followed} />
+              ) : null}
               {institution.former.length > 0 ? <Former pandas={institution.former} /> : null}
             </>
           ) : null}

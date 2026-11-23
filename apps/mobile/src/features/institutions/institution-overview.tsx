@@ -1,4 +1,5 @@
 import { Link } from "expo-router";
+import { useState } from "react";
 import { Linking, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
@@ -7,11 +8,12 @@ import { useCSSVariable } from "uniwind";
 import { ListCell, ListSection, SectionTitle, useSingleColumn } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import { IconRow } from "@/components/icon-row";
-import { CalendarCheck, Globe, History, MapPin, PawPrint, Ticket, Video } from "@/components/icons";
+import { CalendarCheck, Check, Globe, History, MapPin, PawPrint, Ticket, Video } from "@/components/icons";
 import { PandaThumb } from "@/components/panda-thumb";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { RemoteImage } from "@/components/remote-image";
+import { ScreenState } from "@/components/screen-state";
 import { Scrim } from "@/components/scrim";
 import { SourceBadge } from "@/components/source-badge";
 import { StatTile } from "@/components/stat-tile";
@@ -26,10 +28,17 @@ import {
   hostname,
   isFreeEntry,
 } from "@/features/institutions/institutions";
+import {
+  type ResidentFilter,
+  filterResidents,
+  splitResidentsByCover,
+} from "@/features/institutions/resident-filter";
 import { openPanda } from "@/features/pandas/panda-row";
 import type { PandaListItem } from "@/features/pandas/pandas";
 import { longDate } from "@/features/pandas/profile";
+import { SearchField } from "@/features/pandas/search-field";
 import { VenueNewsSection } from "@/features/venue-news/venue-news-section";
+import { resolveVenueLiveCamUrl } from "@/features/viewing/venue-live";
 import { usePandaCover } from "@/lib/covers";
 import { PAGE_COLUMN, pageColumn, RADIUS } from "@/lib/surface";
 import { cn } from "@/lib/utils";
@@ -117,21 +126,21 @@ function FollowButton({ slug, name }: { slug: string; name: string }) {
 
 export function Badges({ institution }: { institution: InstitutionDetail }) {
   const count = institution.residents.length;
-  const badges = [
-    isFreeEntry(institution.facilities) ? { icon: Ticket, label: "免费", spoken: "免费参观" } : null,
-    institution.liveCamUrl ? { icon: Video, label: "直播", spoken: "有官方直播" } : null,
+  const liveCamUrl = resolveVenueLiveCamUrl(institution.slug, institution.liveCamUrl);
+  const infoBadges = [
     count > 0 ? { icon: PawPrint, label: `${count} 只`, spoken: `住着 ${count} 只熊猫` } : null,
+    isFreeEntry(institution.facilities) ? { icon: Ticket, label: "免费", spoken: "免费参观" } : null,
   ].filter((badge) => badge !== null);
   return (
     <View className="flex-row items-center gap-stack-tight">
-      <View className="min-w-0 flex-1 flex-row flex-wrap gap-stack-tight">
-        {badges.map((badge) => (
+      <View className="min-w-0 flex-1 flex-row flex-wrap items-center gap-stack-tight">
+        {infoBadges.map((badge) => (
           <View
             key={badge.label}
             accessible
             accessibilityLabel={badge.spoken}
-            className="flex-row items-center gap-hair-gap rounded-pill bg-secondary px-row"
-            style={{ height: 32 }}
+            className="flex-row items-center gap-hair-gap rounded-pill bg-secondary px-row py-1.5"
+            style={{ minHeight: 32 }}
           >
             <Icon icon={badge.icon} size="footnote" tone="label" />
             <Text variant="subheadline" className="font-semibold">
@@ -139,6 +148,25 @@ export function Badges({ institution }: { institution: InstitutionDetail }) {
             </Text>
           </View>
         ))}
+        {liveCamUrl ? (
+          <Pressable
+            role="link"
+            accessibilityLabel="看官方直播"
+            accessibilityHint="在浏览器中打开"
+            onPress={() => void Linking.openURL(liveCamUrl)}
+            className="-my-1.5 min-h-11 justify-center active:opacity-75"
+          >
+            <View
+              className="flex-row items-center gap-1 rounded-pill bg-highlight-soft px-row py-1.5"
+              style={{ minHeight: 32 }}
+            >
+              <Icon icon={Video} size="footnote" tone="tint" />
+              <Text variant="subheadline" className="font-semibold text-primary">
+                看直播
+              </Text>
+            </View>
+          </Pressable>
+        ) : null}
       </View>
       <FollowButton slug={institution.slug} name={institution.name} />
     </View>
@@ -224,31 +252,23 @@ export function Overview({ institution, onPandas }: { institution: InstitutionDe
           <NavigateCell facility={location} detail={addressOf(location)} />
         </ListSection>
       ) : null}
-      {institution.liveCamUrl ? (
-        <ListSection>
-          <ListCell
-            icon={Video}
-            label="看官方直播"
-            tone="tint"
-            role="link"
-            accessibilityHint="在浏览器中打开"
-            onPress={() => void Linking.openURL(institution.liveCamUrl!)}
-            last
-          />
-        </ListSection>
-      ) : null}
       <Sources institution={institution} />
     </>
   );
 }
 
-function ResidentTile({ panda, width }: { panda: PandaListItem; width: number }) {
+function ResidentTile({ panda, width, seen }: { panda: PandaListItem; width: number; seen: boolean }) {
   const photo = usePandaCover(panda.id);
   const height = Math.round((width * 5) / 4);
+  const birthYear = panda.birthDate ? panda.birthDate.slice(0, 4) : null;
   return (
     <Link href={{ pathname: "/pandas/[slug]", params: { slug: panda.slug } }} asChild>
       <Link.AppleZoom>
-        <PressScale role="link" accessibilityLabel={panda.name} style={{ width, height }}>
+        <PressScale
+          role="link"
+          accessibilityLabel={seen ? `${panda.name}，已见过` : panda.name}
+          style={{ width, height }}
+        >
           <View
             style={{ flex: 1, borderRadius: RADIUS.tile, borderCurve: "continuous", overflow: "hidden", backgroundColor: PLACEHOLDER }}
           >
@@ -261,12 +281,36 @@ function ResidentTile({ panda, width }: { panda: PandaListItem; width: number })
                 transition={200}
               />
             ) : null}
-            <Scrim id={`resident-${panda.id}`} height="45%" />
+            <Scrim id={`resident-${panda.id}`} height="50%" />
             {/* Padding on the wrapper: on web a padded, clamped Text shows a third line in its padding. */}
-            <View className="absolute right-0 bottom-0 left-0 p-3">
+            <View className="absolute right-0 bottom-0 left-0 gap-1 p-3">
               <Text variant="title" role="none" className="text-on-media" numberOfLines={2}>
                 {panda.name}
               </Text>
+              {birthYear || seen ? (
+                <View className="flex-row flex-wrap items-center justify-between gap-x-2 gap-y-1">
+                  {birthYear ? (
+                    <Text
+                      variant="footnote"
+                      role="none"
+                      className="min-w-0 shrink text-on-media/85 tabular-nums"
+                      numberOfLines={1}
+                    >
+                      {`${birthYear} 年出生`}
+                    </Text>
+                  ) : (
+                    <View />
+                  )}
+                  {seen ? (
+                    <View className="flex-row items-center gap-1 rounded-pill bg-glass-fallback px-2 py-0.5">
+                      <Icon icon={Check} size={11} tone="onMedia" strokeWidth={2.5} />
+                      <Text variant="footnote" role="none" className="font-semibold text-on-media">
+                        见过
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              ) : null}
             </View>
             <PhotoOutline radius={RADIUS.tile} />
           </View>
@@ -276,18 +320,113 @@ function ResidentTile({ panda, width }: { panda: PandaListItem; width: number })
   );
 }
 
-export function Residents({ pandas }: { pandas: PandaListItem[] }) {
+export function Residents({
+  pandas,
+  seen = null,
+  followed = null,
+}: {
+  pandas: PandaListItem[];
+  seen?: ReadonlySet<string> | null;
+  followed?: ReadonlySet<string> | null;
+}) {
   const { width } = useWindowDimensions();
   const columns = useSingleColumn() ? 1 : 2;
   const tile = Math.floor((pageColumn(width) - GAP * (columns - 1)) / columns);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<ResidentFilter>("all");
+
+  const filterPills: { key: ResidentFilter; label: string }[] = [
+    { key: "all", label: `全部 ${pandas.length}` },
+    ...(seen !== null
+      ? [{ key: "unseen" as const, label: `未见过 ${pandas.filter((panda) => !seen.has(panda.id)).length}` }]
+      : []),
+    ...(followed !== null
+      ? [{ key: "followed" as const, label: `我关注 ${pandas.filter((panda) => followed.has(panda.id)).length}` }]
+      : []),
+  ];
+
+  const activeFilter = filterPills.some((pill) => pill.key === filter) ? filter : "all";
+  const filtered = filterResidents(pandas, query, activeFilter, seen, followed);
+  const { featured, compact } = splitResidentsByCover(filtered);
+
   return (
-    <View className="gap-1.5">
+    <View className="gap-3">
       <SectionTitle title={`住在这里的熊猫　${pandas.length} 只`} icon={PawPrint} />
-      <View className="flex-row flex-wrap" style={{ gap: GAP }}>
-        {pandas.map((panda) => (
-          <ResidentTile key={panda.id} panda={panda} width={tile} />
-        ))}
-      </View>
+      {pandas.length >= 4 ? (
+        <SearchField
+          value={query}
+          onChange={setQuery}
+          label="在馆内搜索熊猫"
+          placeholder={`在 ${pandas.length} 只住客中搜名字…`}
+        />
+      ) : null}
+      {pandas.length >= 2 && filterPills.length > 1 ? (
+        <View className="flex-row flex-wrap gap-2" accessibilityRole="tablist">
+          {filterPills.map((pill) => {
+            const selected = activeFilter === pill.key;
+            return (
+              <Pressable
+                key={pill.key}
+                role="tab"
+                aria-selected={selected}
+                accessibilityState={{ selected }}
+                accessibilityLabel={pill.label}
+                onPress={() => setFilter(pill.key)}
+                className="-my-1 min-h-11 justify-center active:opacity-75"
+              >
+                <View
+                  className={cn(
+                    "items-center justify-center rounded-pill px-3 py-1.5",
+                    selected ? "bg-foreground" : "bg-secondary",
+                  )}
+                  style={{ minHeight: 36 }}
+                >
+                  <Text
+                    variant="subheadline"
+                    className={cn("font-semibold tabular-nums", selected ? "text-background" : "text-foreground")}
+                  >
+                    {pill.label}
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          })}
+        </View>
+      ) : null}
+      {filtered.length === 0 ? (
+        <ScreenState message="没有找到符合条件的熊猫。" />
+      ) : (
+        <View className="gap-3">
+          {featured.length > 0 ? (
+            <View className="flex-row flex-wrap" style={{ gap: GAP }}>
+              {featured.map((panda) => (
+                <ResidentTile key={panda.id} panda={panda} width={tile} seen={Boolean(seen?.has(panda.id))} />
+              ))}
+            </View>
+          ) : null}
+          {compact.length > 0 ? (
+            <ListSection>
+              {compact.map((panda, index) => {
+                const birthYear = panda.birthDate ? panda.birthDate.slice(0, 4) : null;
+                const isSeen = Boolean(seen?.has(panda.id));
+                return (
+                  <ListCell
+                    key={panda.id}
+                    role="link"
+                    leading={<PandaThumb pandaId={panda.id} name={panda.name} size={44} shape="round" />}
+                    label={panda.name}
+                    detail={birthYear ? `${birthYear} 年出生` : undefined}
+                    meta={isSeen ? "见过" : undefined}
+                    accessibilityLabel={`${panda.name}${birthYear ? `，${birthYear} 年出生` : ""}${isSeen ? "，已见过" : ""}`}
+                    onPress={() => openPanda(panda.slug)}
+                    last={index === compact.length - 1}
+                  />
+                );
+              })}
+            </ListSection>
+          ) : null}
+        </View>
+      )}
     </View>
   );
 }

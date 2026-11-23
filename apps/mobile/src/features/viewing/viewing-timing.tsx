@@ -100,7 +100,7 @@ export function ViewingTiming({ facility }: { facility: Facility }) {
           <DayBand viewing={viewing} />
           {rest.length > 0 ? (
             <Text variant="footnote" className="text-muted-foreground tabular-nums">
-              {rest.map((slot) => `${slot.kind === "nap" ? "午睡" : partOfDay(slot.window)} ${shortSpan(slot.window)}`).join(" · ")}
+              {rest.map((slot) => `${slot.kind === "nap" ? "午睡" : partOfDay(slot.window)} ${shortSpan(slot.window)}`).join("　")}
             </Text>
           ) : null}
           <View className="flex-row flex-wrap gap-x-inset gap-y-hair-gap">

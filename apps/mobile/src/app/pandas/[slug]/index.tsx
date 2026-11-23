@@ -28,6 +28,9 @@ import {
   KeyRows,
   Memories,
   NoPhoto,
+  PandaFaceGuideCard,
+  PandaRoommates,
+  PandaVenueLive,
   Sources,
   Stats,
   openPandaCorrection,
@@ -66,6 +69,7 @@ function ProfileSkeleton({ slug }: { slug: string }) {
       <View className="gap-4 px-gutter" style={[PAGE_COLUMN, photo ? { marginTop: -OVERLAP } : null]}>
         <Skeleton className="h-10 w-32" />
         <Skeleton className="h-12 w-full rounded-pill" />
+        <Skeleton className="h-9 w-full rounded-pill" />
         <View className="flex-row gap-2.5">
           {[0, 1, 2].map((key) => (
             <Skeleton key={key} className="h-24 flex-1 rounded-tile" />
@@ -170,12 +174,15 @@ export default function ProfileScreen() {
             ) : null}
           </View>
           <PandaActions pandaId={profile.id} name={profile.name} deceased={profile.deceased} />
-          {tab === "overview" ? <Stats profile={profile} /> : null}
           <View className="pt-0.5">
             <Segmented value={tab} options={TABS} onChange={setTab} accessibilityLabel="资料分区" />
           </View>
           {tab === "overview" ? (
             <View className="gap-3">
+              <Stats profile={profile} />
+              <PandaVenueLive profile={profile} />
+              <PandaFaceGuideCard slug={profile.slug} pandaId={profile.id} />
+              <PandaRoommates profile={profile} />
               <KeyRows profile={profile} />
               <Experience profile={profile} />
               <CompareRows slug={profile.slug} />

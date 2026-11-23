@@ -1,6 +1,7 @@
 import { expect } from "e2e";
 
 import { fixture, runSuffix } from "./support/fixture.ts";
+import { openedTabs, recordOpenedTabs } from "./support/opened-tabs.ts";
 import { test } from "./support/test.ts";
 
 test("a profile states sex, birth, home and parents, and lists the places it has lived", async ({ app, screen }) => {
@@ -48,4 +49,93 @@ test("找熊猫's area chips narrow the list to pandas living there", async ({ a
   await expect(screen.getByRole("button", new RegExp(`^${notice.name}`))).toHaveCount(0);
   await screen.getByRole("button", "全部").tap();
   await expect(screen.getByRole("button", new RegExp(`^${notice.name}`))).toBeVisible();
+});
+
+test("profile keeps Segmented vertically stable across tabs", async ({ app, screen, browser }) => {
+  const { panda } = fixture();
+
+  await app.open(`/pandas/${panda.slug}`);
+  await expect(screen.getByRole("radio", { name: "概况", checked: true })).toBeVisible();
+  await expect(screen.getByLabel("生日，7.20，已确认")).toBeVisible();
+
+  const segmentedTop = () =>
+    browser.evaluate(
+      () => document.querySelector('[role="radiogroup"][aria-label="资料分区"]')?.getBoundingClientRect().top ?? null,
+    );
+
+  await screen.getByRole("radio", "家族").tap();
+  await expect(screen.getByLabel("生日，7.20，已确认")).toHaveCount(0);
+  const familyTop = await segmentedTop();
+  expect(familyTop).not.toBeNull();
+
+  await screen.getByRole("radio", "照片").tap();
+  await expect(screen.getByText("2 张")).toBeVisible();
+  const photosTop = await segmentedTop();
+  expect(photosTop).not.toBeNull();
+  expect(Math.abs(photosTop! - familyTop!)).toBeLessThanOrEqual(1);
+
+  await screen.getByRole("radio", "动态").tap();
+  await expect(screen.getByRole("button", "时间线")).toBeVisible();
+  const eventsTop = await segmentedTop();
+  expect(eventsTop).not.toBeNull();
+  expect(Math.abs(eventsTop! - familyTop!)).toBeLessThanOrEqual(1);
+
+  await screen.getByRole("radio", "概况").tap();
+  await expect(screen.getByLabel("生日，7.20，已确认")).toBeVisible();
+  const overviewTop = await segmentedTop();
+  expect(overviewTop).not.toBeNull();
+  expect(Math.abs(overviewTop! - familyTop!)).toBeLessThanOrEqual(1);
+});
+
+test("venue exposes clickable live cam link and resident filter tabs", async ({ app, screen, browser }) => {
+  const { notice, zoo } = fixture();
+
+  await recordOpenedTabs(browser);
+  await browser.route(new RegExp(`/api/v2/institutions/${zoo.slug}$`), async (route) => {
+    const upstream = await route.fetch();
+    const headers = Object.fromEntries(
+      Object.entries(upstream.headers).filter(([name]) => !["content-length", "content-encoding"].includes(name.toLowerCase())),
+    );
+    if (upstream.status !== 200) {
+      await route.fulfill({ status: upstream.status, headers, body: await upstream.text() });
+      return;
+    }
+    const body = (await upstream.json()) as {
+      institution: { profile?: Record<string, unknown> | null };
+      residents: {
+        pandaId: string;
+        canonicalSlug: string;
+        legacySlugs: string[];
+        names: { languageTag: string; nameKind: string; value: string; isPrimary: boolean }[];
+        facts: unknown[];
+        hasFullBleedCover?: boolean;
+      }[];
+    };
+    body.institution.profile = { ...(body.institution.profile ?? {}), liveCamUrl: "https://example.test/live" };
+    if (body.residents.length < 2) {
+      body.residents.push({
+        pandaId: notice.id,
+        canonicalSlug: notice.slug,
+        legacySlugs: [],
+        names: [{ languageTag: "zh-Hans", nameKind: "official", value: notice.name, isPrimary: true }],
+        facts: [],
+        hasFullBleedCover: false,
+      });
+    }
+    await route.fulfill({ status: upstream.status, headers, body: JSON.stringify(body) });
+  });
+
+  await app.open(`/institutions/${zoo.slug}`);
+  const liveLink = screen.getByRole("link", "看官方直播");
+  await expect(liveLink).toBeVisible();
+  await liveLink.tap();
+  await expect.poll(async () => (await openedTabs(browser)).includes("https://example.test/live")).toBe(true);
+
+  await screen.getByRole("radio", "熊猫").tap();
+  await expect(screen.getByRole("tab", { name: "全部 2", selected: true })).toBeVisible();
+  const unseenTab = screen.getByRole("tab", "未见过 2");
+  await expect(unseenTab).toBeVisible();
+  await unseenTab.tap();
+  await expect(screen.getByRole("tab", { name: "未见过 2", selected: true })).toBeVisible();
+  await expect(screen.getByRole("link", notice.name)).toBeVisible();
 });

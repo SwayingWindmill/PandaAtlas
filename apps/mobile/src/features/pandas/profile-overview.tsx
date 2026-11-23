@@ -1,10 +1,11 @@
+import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { ListCell, ListSection, useStacked } from "@/components/grouped-list";
+import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import {
   BadgeCheck,
@@ -19,17 +20,23 @@ import {
   Newspaper,
   Plane,
 } from "@/components/icons";
+import { PandaThumb } from "@/components/panda-thumb";
 import { PressScale } from "@/components/press-scale";
 import { Timeline, type TimelineItem } from "@/components/timeline";
 import { Text } from "@/components/ui/text";
 import type { FamilyMember } from "@/features/family/family";
+import { institutionListQueryOptions, institutionQueryOptions } from "@/features/institutions/institutions";
+import { learningText, visibleTips } from "@/features/learning/catalog";
+import { useLearningCatalog } from "@/features/learning/use-catalog";
 import { useMilestonesOn } from "@/features/milestones/prefs";
 import { sourceLine } from "@/features/on-this-day/memory-group";
 import { DECEASED_POLICY, isCubDay } from "@/features/on-this-day/on-this-day";
+import { openPanda } from "@/features/pandas/panda-row";
 import { type Profile, longDate, shortPublisher } from "@/features/pandas/profile";
 import { Face } from "@/features/pandas/profile-family-tab";
 import type { Stat } from "@/features/pandas/profile-facts";
 import type { MilestoneKind } from "@/features/timeline/timeline";
+import { VenueLiveCard } from "@/features/viewing/venue-live-card";
 import { PAGE_COLUMN, RADIUS } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -155,7 +162,7 @@ export function KeyRows({ profile }: { profile: Profile }) {
               ))}
             </View>
           }
-          label={parents.map((member) => member.name).join(" · ")}
+          label={parents.map((member) => member.name).join("　")}
           meta="父母"
           accessibilityLabel={`父母，${parents.map((member) => `${member.relation}${member.name}`).join("，")}`}
           href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }}
@@ -310,6 +317,111 @@ export function NoPhoto({ profile }: { profile: Profile }) {
         <ListCell label="暂无照片" />
         <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => openPandaCorrection(profile.slug)} last />
       </ListSection>
+    </View>
+  );
+}
+
+/** Shows the live venue clock, active bar, and live cam link for the panda's current institution. */
+export function PandaVenueLive({ profile }: { profile: Profile }) {
+  const visit = !profile.deceased ? profile.visit : null;
+  const { data: institutions } = useQuery({
+    ...institutionListQueryOptions(),
+    enabled: Boolean(visit),
+  });
+  if (!visit) return null;
+
+  const inst = institutions?.find((item) => item.slug === visit.institutionSlug);
+  const venueName = inst?.nameZh ?? inst?.nameEn ?? visit.place;
+  return (
+    <VenueLiveCard
+      variant="panda"
+      slug={visit.institutionSlug}
+      venueName={venueName}
+      apiLiveCamUrl={inst?.profile?.liveCamUrl ?? null}
+      onOpenVenue={() => router.push({ pathname: "/institutions/[slug]", params: { slug: visit.institutionSlug } })}
+    />
+  );
+}
+
+/** Direct card linking to a panda's published face recognition guide when one exists. */
+export function PandaFaceGuideCard({ slug, pandaId }: { slug: string; pandaId: string }) {
+  const { state } = useLearningCatalog();
+  if (state.status !== "ready") return null;
+
+  const guide = state.catalog.faceGuides.find((item) => item.pandaSlug === slug);
+  if (!guide) return null;
+
+  const title = learningText(guide.title);
+  const tips = visibleTips(guide.tips).slice(0, 3);
+  return (
+    <Pressable
+      role="link"
+      accessibilityLabel={`认脸指南，${title}`}
+      onPress={() => router.push({ pathname: "/learn/faces/[slug]", params: { slug: guide.slug } })}
+      className="flex-row items-center gap-3 rounded-group bg-card px-4 py-3 active:opacity-75"
+      style={{ borderCurve: "continuous" }}
+    >
+      <PandaThumb pandaId={pandaId} name={title} size={44} shape="round" />
+      <View className="min-w-0 flex-1 gap-1.5">
+        <Text variant="headline" numberOfLines={2}>
+          {`认脸指南　${title}`}
+        </Text>
+        {tips.length > 0 ? (
+          <View className="flex-row flex-wrap gap-1.5">
+            {tips.map((tip) => (
+              <View key={tip.key} className="rounded-pill bg-secondary px-2.5 py-0.5">
+                <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
+                  {learningText(tip.label)}
+                </Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
+      </View>
+      <Chevron />
+    </Pressable>
+  );
+}
+
+/** Horizontal shelf of up to 8 current pandas sharing the same institution. */
+export function PandaRoommates({ profile }: { profile: Profile }) {
+  const slug = !profile.deceased ? profile.visit?.institutionSlug : undefined;
+  const { data: institution } = useQuery({
+    ...institutionQueryOptions(slug ?? ""),
+    enabled: Boolean(slug),
+  });
+  const roommates = (institution?.residents ?? [])
+    .filter((panda) => panda.id !== profile.id)
+    .slice(0, 8);
+  if (roommates.length === 0) return null;
+
+  return (
+    <View className="gap-2">
+      <Text variant="footnote" role="heading" className="px-1 text-muted-foreground">
+        同馆舍友
+      </Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className="-mx-gutter"
+        contentContainerClassName="gap-3 px-gutter"
+      >
+        {roommates.map((panda) => (
+          <PressScale
+            key={panda.id}
+            role="link"
+            accessibilityLabel={`同馆舍友，${panda.name}`}
+            onPress={() => openPanda(panda.slug)}
+            className="items-center gap-1"
+            style={{ width: 64 }}
+          >
+            <PandaThumb pandaId={panda.id} name={panda.name} size={56} shape="round" />
+            <Text variant="footnote" className="w-full text-center font-medium" numberOfLines={1}>
+              {panda.name}
+            </Text>
+          </PressScale>
+        ))}
+      </ScrollView>
     </View>
   );
 }
