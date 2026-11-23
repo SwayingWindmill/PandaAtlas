@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { suggestions, wellKnownPandas } from "./suggestions";
+import { fameSlugs, suggestions, wellKnownPandas } from "./suggestions";
 
 const panda = (id: string, birthDate: string | null, place: string | null, deceased = false) => ({
   id,
@@ -64,6 +64,11 @@ describe("suggestions", () => {
       "famous",
       "cub",
     ]);
+  });
+
+  it("orders fame by popular rank, then the well-known list", () => {
+    const slugs = fameSlugs([{ ...panda("x", null, null), slug: "tian-tian" }, { ...panda("y", null, null), slug: "zz" }]);
+    expect(slugs.slice(0, 3)).toEqual(["tian-tian", "zz", "he-hua-chengdu"]);
   });
 
   it("skips a well-known panda that has died or is not in the index", () => {

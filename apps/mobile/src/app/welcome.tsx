@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { setFollowing } from "@/features/engagement/favorites";
 import { clearPicks, pickedPandas, readPicks, savePicks } from "@/features/onboarding/picks";
-import { suggestions } from "@/features/onboarding/suggestions";
+import { fameSlugs, suggestions } from "@/features/onboarding/suggestions";
 import { markWelcomeSeen } from "@/features/onboarding/welcome";
 import { type PandaListItem, loadPandaIndex, searchPandas } from "@/features/pandas/pandas";
 import { usePopularPandas } from "@/features/pandas/popular";
@@ -127,7 +127,7 @@ export default function WelcomeScreen() {
 
   const popular = usePopularPandas(pandas ?? undefined);
   const shown = useMemo(
-    () => (pandas ? (deferred.trim() ? searchPandas(pandas, deferred).slice(0, 12) : suggestions(pandas, popular)) : []),
+    () => (pandas ? (deferred.trim() ? searchPandas(pandas, deferred, fameSlugs(popular)).slice(0, 12) : suggestions(pandas, popular)) : []),
     [pandas, deferred, popular],
   );
   const isSelected = (panda: PandaListItem) => selected.some((item) => item.id === panda.id);

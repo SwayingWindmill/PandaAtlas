@@ -108,6 +108,7 @@ describe("searchPandas by pinyin initials", () => {
     toPandaListItem(summary("tiantian", "Tian Tian", "添添")),
     toPandaListItem(summary("ai-bang-2016-cub-66", "Ai Bang's 2016 Cub 66", "爱浜2016仔")),
   ];
+  const heHua = toPandaListItem(summary("he-hua-chengdu", "He Hua", "和花"));
   const slugsFor = (query: string) => searchPandas(pandas, query).map((item) => item.slug);
 
   it("finds 和花 and 花花 by hh", () => {
@@ -132,6 +133,34 @@ describe("searchPandas by pinyin initials", () => {
   it("does not turn a one-word slug into an initial", () => {
     expect(slugsFor("t")).toEqual(["tiantian"]);
     expect(pandas.find((item) => item.slug === "tiantian")?.initials).toEqual(["tt"]);
+  });
+
+  it("puts the best-known pandas first among the same kind of hit", () => {
+    const lanLan = toPandaListItem(summary("lan-lan-ueno-1968", "Lan Lan", "兰兰"));
+    const mengLanLater = toPandaListItem(summary("mei-lun-beijing", "Mei Lun", "美伦"));
+    const items = [lanLan, mengLanLater, ...pandas];
+    expect(searchPandas(items, "ml", ["meng-lan"]).map((item) => item.slug)[0]).toBe("meng-lan");
+    expect(searchPandas(items, "ml").map((item) => item.slug)[0]).toBe("mei-lun-beijing");
+  });
+
+  it("ranks followed pandas above the well-known order", () => {
+    const first = toPandaListItem(summary("hai-hua", "Hai Hua", "海花"));
+    const items = [heHua, first];
+    expect(searchPandas(items, "hh", ["hai-hua", "he-hua-chengdu"]).map((item) => item.slug)).toEqual([
+      "hai-hua",
+      "he-hua-chengdu",
+    ]);
+    expect(searchPandas(items, "hh", ["he-hua-chengdu", "hai-hua"]).map((item) => item.slug)).toEqual([
+      "he-hua-chengdu",
+      "hai-hua",
+    ]);
+  });
+
+  it("never lets fame lift a weaker kind of hit over a stronger one", () => {
+    const byName = toPandaListItem(summary("hhx-star", null, "星"));
+    expect(searchPandas([heHua, byName], "hh", ["he-hua-chengdu"])[0]?.slug).toBe(
+      "hhx-star",
+    );
   });
 
   it("ranks name hits before initials hits", () => {

@@ -118,8 +118,11 @@ export function pandaIndexQueryOptions() {
   return queryOptions({ queryKey: ["public", "panda-index"], queryFn: buildIndex, staleTime: 300_000, networkMode: "always" });
 }
 
-/** Exact matches first, then names starting with the query, then pinyin initials, then the rest, each in list order. */
-export function searchPandas(items: PandaListItem[], query: string): PandaListItem[] {
+/**
+ * Exact matches first, then names starting with the query, then pinyin initials, then the rest. Within a tier
+ * the pandas in `famous` come first, in that order, then the rest in list order.
+ */
+export function searchPandas(items: PandaListItem[], query: string, famous: readonly string[] = []): PandaListItem[] {
   const needle = normalizeTerm(query);
   if (!needle) return items;
   const rank = (item: PandaListItem) => {
@@ -128,10 +131,12 @@ export function searchPandas(items: PandaListItem[], query: string): PandaListIt
     if (item.initials.some((initials) => initials.startsWith(needle))) return 2;
     return item.terms.some((term) => term.includes(needle)) ? 3 : null;
   };
+  const fame = new Map(famous.map((slug, index) => [slug, index]));
+  const fameOf = (item: PandaListItem) => fame.get(item.slug) ?? famous.length;
   return items
     .map((item) => ({ item, rank: rank(item) }))
     .filter((entry): entry is { item: PandaListItem; rank: number } => entry.rank !== null)
-    .sort((a, b) => a.rank - b.rank)
+    .sort((a, b) => a.rank - b.rank || fameOf(a.item) - fameOf(b.item))
     .map(({ item }) => item);
 }
 

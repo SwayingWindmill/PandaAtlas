@@ -16,6 +16,11 @@ export const WELL_KNOWN_SLUGS = [
   "run-yue-yuanrun-offspring-2020",
 ];
 
+/** Slugs in the order fans know them: the ones followed lately in rank order, then the well-known list. */
+export function fameSlugs(popular: readonly PandaListItem[]): string[] {
+  return [...popular.map((panda) => panda.slug), ...WELL_KNOWN_SLUGS];
+}
+
 /** The well-known pandas the index has and that are alive, in the order above. */
 export function wellKnownPandas(pandas: readonly PandaListItem[]): PandaListItem[] {
   const bySlug = new Map(pandas.map((panda) => [panda.slug, panda]));

@@ -14,7 +14,7 @@ import { StatusBarCover } from "@/components/status-bar-cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { MapCard } from "@/features/map/map-card";
-import { wellKnownPandas } from "@/features/onboarding/suggestions";
+import { fameSlugs, wellKnownPandas } from "@/features/onboarding/suggestions";
 import { areaChips } from "@/features/pandas/areas";
 import { SPECIAL_CHIPS, type SpecialChips, isSpecialChip, useSpecialChips } from "@/features/pandas/special-chips";
 import { PandaRow } from "@/features/pandas/panda-row";
@@ -79,12 +79,12 @@ export default function FindScreen() {
   const [area, setArea] = useState("全部");
   const special = useSpecialChips();
   const chips = useMemo(() => (pandas ? findChips(pandas, special) : []), [pandas, special]);
-  const results = useMemo(() => {
-    const found = pandas ? searchPandas(pandas, deferredQuery) : [];
-    return found.filter((panda) => inChip(panda, area, special));
-  }, [pandas, deferredQuery, area, special]);
-  const browsing = !deferredQuery.trim() && area === "全部";
   const popular = usePopularPandas(pandas);
+  const results = useMemo(() => {
+    const found = pandas ? searchPandas(pandas, deferredQuery, fameSlugs(popular)) : [];
+    return found.filter((panda) => inChip(panda, area, special));
+  }, [pandas, deferredQuery, popular, area, special]);
+  const browsing = !deferredQuery.trim() && area === "全部";
   const searchBarRef: SearchBarRef = useRef(null);
   const noResultRows = useMemo(
     () => (popular.length > 0 ? popular : wellKnownPandas(pandas ?? []).slice(0, POPULAR_SHOWN)),
