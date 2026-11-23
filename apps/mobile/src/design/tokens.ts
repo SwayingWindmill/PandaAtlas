@@ -418,6 +418,16 @@ export const component = {
    * 生日卡: a saved image, so it keeps one look in light and dark. Drawn on a 360×480 artboard and scaled
    * to its width; ink, white and sky come from the palette, these are the few extra stops it needs.
    */
+  /** The ordinary share card's image: sizes that are not text styles because the card is a picture. */
+  shareCard: {
+    /** The band that stands in for a missing cover photo. */
+    coverlessBand: 132,
+    /** The name's first character in that band. */
+    monogram: { size: 64, lineHeight: 72 },
+    /** The display title of a name too long for two lines at display size. */
+    longName: { size: 28, lineHeight: 34 },
+    qr: 72,
+  },
   birthdayCard: {
     artboard: { width: 360, height: 480 },
     radius: 28,

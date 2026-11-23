@@ -1,3 +1,4 @@
+import * as Clipboard from "expo-clipboard";
 import { shareAsync } from "expo-sharing";
 import type { ComponentRef, RefObject } from "react";
 import { Platform, Share, type View } from "react-native";
@@ -22,6 +23,14 @@ export async function shareCardImage(card: RefObject<ComponentRef<typeof View> |
   await shareAsync(uri, { mimeType: "image/png", UTI: "public.png" });
 }
 
+function linkMessage(name: string, slug: string): string {
+  return `${name} ${profileUrl(slug)}`;
+}
+
 export async function shareLink(name: string, slug: string): Promise<void> {
-  await Share.share({ message: `${name} ${profileUrl(slug)}` });
+  await Share.share({ message: linkMessage(name, slug) });
+}
+
+export async function copyLink(name: string, slug: string): Promise<void> {
+  await Clipboard.setStringAsync(linkMessage(name, slug));
 }
