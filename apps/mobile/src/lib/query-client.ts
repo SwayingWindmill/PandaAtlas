@@ -1,4 +1,6 @@
-import { notifyManager, QueryClient } from "@tanstack/react-query";
+import { MutationCache, notifyManager, QueryCache, QueryClient } from "@tanstack/react-query";
+
+import { reportError } from "@/lib/error-reporting";
 
 // Query Core gives every finished fetch its own setTimeout to tell React. Covers come back fifty to a
 // response, so a list of thumbnails got fifty tasks, each a separate sync commit of one row. Each commit
@@ -27,6 +29,13 @@ notifyManager.setScheduler((callback) => {
 
 // Public queries keep the existing network-first offline fallback available.
 export const queryClient = new QueryClient({
+  queryCache: new QueryCache({ onError: (error) => reportError(error, "query") }),
+  // A mutation with its own onError already shows the failure to the fan; only the unhandled ones report.
+  mutationCache: new MutationCache({
+    onError: (error, _variables, _context, mutation) => {
+      if (!mutation.options.onError) reportError(error, "mutation");
+    },
+  }),
   defaultOptions: {
     queries: { staleTime: 60_000, retry: 1 },
   },

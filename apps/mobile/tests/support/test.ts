@@ -8,7 +8,7 @@ import { test as base } from "@e2e-dev/web";
 /** A journey on a fresh install: the first-launch welcome still shows. */
 export const freshInstallTest = base.extend<{ photos: void }>({
   photos: async ({ browser }, run) => {
-    await browser.route("https://api.zhipanda.com/media/**", (route) =>
+    await browser.route("https://www.zhipanda.com/media/**", (route) =>
       route.fulfill({ path: "assets/images/android-icon-background.png" }),
     );
     await run();
