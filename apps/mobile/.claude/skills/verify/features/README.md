@@ -31,6 +31,6 @@ Each feature file starts with an H1 title and one paragraph on the user-visible 
 
 - [Venue page](./venue-page.md) covers a zoo's page from the map and from 今天, its 概况 / 熊猫 / 攻略 tabs, and 关注.
 - [Wild habitat](./wild-habitat.md) covers the map's wild layer, the habitat sheet and a habitat's own page.
-- [Sign-in](./sign-in.md) covers email-code sign-in, a wrong code, renaming the account and signing out.
+- [Sign-in](./sign-in.md) covers email-code sign-in, resending a code, a wrong code, the welcome's follow after sign-in, renaming the account and signing out.
 - [Collections and visits](./collections-visits.md) covers making, renaming, emptying and deleting a collection, and recording a visit.
 - [Account and data](./account-privacy.md) covers data export, account deletion confirmation, and user-initiated email OTP re-verification on recent-auth expiry.
