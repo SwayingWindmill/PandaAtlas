@@ -8,6 +8,7 @@ import type { PandaListItem } from "@/features/pandas/pandas";
 import { openPanda } from "@/features/pandas/panda-row";
 import { clearRecentSearches, clearRecentViews, useRecentSearches, useRecentViews } from "@/features/pandas/recent";
 import { usePandaCover } from "@/lib/covers";
+import { nameInitial } from "@/lib/panda";
 
 const THUMB = 72;
 
@@ -50,7 +51,7 @@ function Thumb({ item }: { item: PandaListItem }) {
           <Image source={photo} style={{ width: THUMB, height: THUMB }} contentFit="cover" accessible={false} />
         ) : (
           <Text variant="headline" className="text-muted-foreground">
-            {item.name.slice(0, 1)}
+            {nameInitial(item.name)}
           </Text>
         )}
         {photo ? <PhotoOutline radius={16} /> : null}
