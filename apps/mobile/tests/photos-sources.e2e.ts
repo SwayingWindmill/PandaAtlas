@@ -39,6 +39,34 @@ test("the photo viewer stays on its page when the window changes width", async (
   await expect.poll(async () => (await viewer.getByRole("img", `${panda.name} 第 2 张照片`).boundingBox())?.x).toBe(0);
 });
 
+// The page's touch-action decides whether a phone browser may swipe the pager; a page that claims
+// every touch ("none") at 1x cannot be swiped to the next photo.
+const firstPageTouchAction = () => {
+  const image = [...document.querySelectorAll("img")].find((img) => img.alt.endsWith("第 1 张照片"));
+  for (let element = image?.parentElement; element; element = element.parentElement) {
+    const touchAction = getComputedStyle(element).touchAction;
+    if (touchAction !== "auto") return touchAction;
+  }
+  return null;
+};
+
+test("a photo leaves sideways swipes to the pager at 1x and keeps them while zoomed", async ({ app, screen, browser }) => {
+  const { panda } = fixture();
+  await app.open(`/pandas/${panda.slug}/photos`);
+  const photo = screen.getByRole("dialog", "照片").getByRole("img", `${panda.name} 第 1 张照片`);
+  await expect(photo).toBeVisible();
+  await expect.poll(() => browser.evaluate(firstPageTouchAction)).toBe("pan-x");
+
+  // The image itself ignores pointers, so the double tap goes to the point on screen.
+  const box = await photo.boundingBox();
+  if (!box) throw new Error("the first photo has no box");
+  const centre = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  await screen.doubleTapAt(centre);
+  await expect.poll(() => browser.evaluate(firstPageTouchAction)).toBe("none");
+  await screen.doubleTapAt(centre);
+  await expect.poll(() => browser.evaluate(firstPageTouchAction)).toBe("pan-x");
+});
+
 test("a profile lists its sources and opens one in the browser", async ({ app, screen, browser }) => {
   const { panda } = fixture();
   await recordOpenedTabs(browser);

@@ -13,7 +13,6 @@ export interface Point {
 /** `zoomed` sits just above 1x so float noise after a pinch never counts as zoomed and locks the pager. */
 export const ZOOM = { min: 1, max: 4, doubleTap: 2.5, zoomed: 1.01 } as const;
 
-/** The page a horizontal pager rests on at this offset, for pages one `width` wide. */
 export function pageAt(offset: number, width: number, count: number): number {
   "worklet";
   if (width <= 0 || count <= 0) return 0;
@@ -25,7 +24,6 @@ export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-/** The scale a released pinch settles to: back inside the bounds, and exactly 1x if it barely left it. */
 export function restingScale(scale: number): number {
   "worklet";
   return scale <= ZOOM.zoomed ? ZOOM.min : clamp(scale, ZOOM.min, ZOOM.max);
@@ -43,7 +41,6 @@ export function rubberBand(value: number, min: number, max: number, dimension: n
   return value;
 }
 
-/** How big the image draws inside the viewport with contentFit "contain". Unknown sizes fill it. */
 export function fittedSize(viewport: Size, image: Size | null): Size {
   "worklet";
   if (!image || image.width <= 0 || image.height <= 0) return viewport;
@@ -51,7 +48,6 @@ export function fittedSize(viewport: Size, image: Size | null): Size {
   return { width: image.width * fit, height: image.height * fit };
 }
 
-/** How far a zoomed image can pan from centre before its edge leaves the viewport's edge. */
 export function panLimit(scale: number, viewport: Size, content: Size): Point {
   "worklet";
   return {
@@ -74,7 +70,6 @@ export function anchoredTranslation(focal: Point, fromFocal: Point, fromScale: n
   };
 }
 
-/** Where a double tap at `tap` lands: zoomed to ZOOM.doubleTap around it, kept inside the edges. */
 export function doubleTapTarget(tap: Point, viewport: Size, content: Size): Point & { scale: number } {
   "worklet";
   const scale = ZOOM.doubleTap;
@@ -87,17 +82,33 @@ export function shareText(photo: Photo, name: string): string {
   return [name, photo.credit].filter(Boolean).join("\n");
 }
 
+// File systems cap a name at 255 bytes, not characters, and a CJK character takes three.
+const MAX_STEM_BYTES = 200;
+
+function utf8Length(char: string): number {
+  const codePoint = char.codePointAt(0) ?? 0;
+  if (codePoint < 0x80) return 1;
+  if (codePoint < 0x800) return 2;
+  return codePoint < 0x10000 ? 3 : 4;
+}
+
 /**
  * Names the file after the panda and the credit. Android's share sheet carries no text with a file,
- * so the file name is the only place the credit travels there.
+ * so the file name is the only place the credit travels there. `#` and `%` would break its file URI.
  */
 export function fileName(photo: Photo, name: string): string {
   const extension = /\.(jpe?g|png|webp|heic|gif)(?:$|[?#])/i.exec(photo.url)?.[1]?.toLowerCase() ?? "jpg";
-  const stem = [name, photo.credit]
+  const words = [name, photo.credit]
     .filter(Boolean)
     .join(" ")
-    .replace(/[\\/:*?"<>|\s]+/g, " ")
-    .trim()
-    .slice(0, 120);
-  return `${stem || photo.id}.${extension}`;
+    .replace(/[\\/:*?"<>|#%\u0000-\u001f\s]+/g, " ")
+    .trim();
+  let stem = "";
+  let bytes = 0;
+  for (const char of words) {
+    bytes += utf8Length(char);
+    if (bytes > MAX_STEM_BYTES) break;
+    stem += char;
+  }
+  return `${stem.trim() || photo.id}.${extension}`;
 }

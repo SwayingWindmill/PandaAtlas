@@ -82,6 +82,20 @@ describe("zoom geometry", () => {
     expect((focal.y - at2.y) / 2).toBe(focal.y);
   });
 
+  it("keeps the pinched point under the fingers when the pinch starts on an already zoomed photo", () => {
+    const from = { x: -150, y: 0 };
+    const centre = { x: 0, y: 0 };
+    const at5 = anchoredTranslation(centre, centre, 2.5, from, 5);
+    expect(at5).toEqual({ x: -300, y: 0 });
+    expect((centre.x - from.x) / 2.5).toBe((centre.x - at5.x) / 5);
+
+    const fingers = { x: 120, y: -60 };
+    const moved = { x: 160, y: -20 };
+    const atMoved = anchoredTranslation(moved, fingers, 2.5, from, 3);
+    expect((moved.x - atMoved.x) / 3).toBeCloseTo((fingers.x - from.x) / 2.5);
+    expect((moved.y - atMoved.y) / 3).toBeCloseTo((fingers.y - from.y) / 2.5);
+  });
+
   it("zooms a double tap around the tapped point without opening a gap above a letterboxed photo", () => {
     const target = doubleTapTarget({ x: 100, y: 50 }, viewport, landscape);
     expect(target).toMatchObject({ scale: 2.5, x: -150 });
@@ -102,5 +116,26 @@ describe("shared photo", () => {
   it("carries the credit in a file name every file system accepts", () => {
     expect(fileName(photo, "萌兰")).toBe("萌兰 照片 王小明 CC BY 4.0，CC-BY-4.0.jpg");
     expect(fileName({ ...photo, credit: null, url: "https://media.example/p/a1" }, "")).toBe("a1.jpg");
+  });
+
+  const bytes = (text: string) => new TextEncoder().encode(text).length;
+
+  it("caps a long CJK credit at 200 bytes, not 200 characters", () => {
+    const name = fileName({ ...photo, credit: "熊".repeat(150) }, "萌兰");
+    expect(name.endsWith(".jpg")).toBe(true);
+    const stem = name.slice(0, -".jpg".length);
+    expect(bytes(stem)).toBeLessThanOrEqual(200);
+    expect(stem).toBe(`萌兰 ${"熊".repeat(64)}`);
+  });
+
+  it("never cuts an emoji in half at the cap", () => {
+    const stem = fileName({ ...photo, credit: `${"a".repeat(190)}🐼🐼` }, "萌兰").slice(0, -".jpg".length);
+    expect(stem).toBe(`萌兰 ${"a".repeat(190)}`);
+    expect(bytes(`萌兰 ${"a".repeat(190)}🐼`)).toBeGreaterThan(200);
+    expect(stem).not.toMatch(/[\uD800-\uDFFF]/);
+  });
+
+  it("drops characters that would break the file URI or the file system", () => {
+    expect(fileName({ ...photo, credit: "#1 100% 熊猫\u0007\u001f图" }, "萌兰")).toBe("萌兰 1 100 熊猫 图.jpg");
   });
 });

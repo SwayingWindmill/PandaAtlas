@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Linking, Platform, Pressable, FlatList as RNFlatList, StyleSheet, View } from "react-native";
+import { useCallback, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { AccessibilityInfo, Platform, Pressable, FlatList as RNFlatList, StyleSheet, View } from "react-native";
 import { FlatList as GestureFlatList, type NativeGesture } from "react-native-gesture-handler";
 import Animated, { interpolate, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,14 +18,12 @@ import { type Size, clamp, pageAt } from "@/features/pandas/photo-viewer";
 import { type Photo, photosQueryOptions } from "@/features/pandas/profile";
 import { ZoomablePhoto } from "@/features/pandas/zoomable-photo";
 
-type Status = { text: string; settings?: true };
-
-const SAVED: Record<SaveOutcome, Status> = {
-  saved: { text: "已保存到相册" },
-  downloaded: { text: "已开始下载" },
-  opened: { text: "已在新标签页打开原图" },
-  denied: { text: "没有相册权限，照片没有保存。" },
-  blocked: { text: "吱熊猫没有相册权限，请在系统设置里允许添加照片。", settings: true },
+const SAVED: Record<SaveOutcome, string> = {
+  saved: "已保存到相册",
+  downloaded: "已开始下载",
+  opened: "已在新标签页打开原图",
+  denied: "没有相册权限，照片没有保存。",
+  blocked: "保存需要相册权限，请在系统设置里允许吱熊猫添加照片。",
 };
 
 // On native the pager is gesture-handler's list, so each page's pinch and pan can hold its scroll gesture
@@ -57,7 +55,7 @@ export default function PhotosScreen() {
   const [scrolledTo, setScrolledTo] = useState(0);
   const [zoomedId, setZoomedId] = useState<string | null>(null);
   const [immersive, setImmersive] = useState(false);
-  const [status, setStatus] = useState<Status | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   // The pager's own size: every page is one pager wide, so paging survives rotation and resizing.
   const [page, setPage] = useState<Size>({ width: 0, height: 0 });
@@ -81,7 +79,7 @@ export default function PhotosScreen() {
   }, [page.width]);
 
   useEffect(() => {
-    if (!status || status.settings) return;
+    if (!status) return;
     const timer = setTimeout(() => setStatus(null), 3000);
     return () => clearTimeout(timer);
   }, [status]);
@@ -102,22 +100,31 @@ export default function PhotosScreen() {
     setScrolledTo(to);
   }
 
-  async function run(action: () => Promise<Status | null>, failure: string) {
+  async function run(action: () => Promise<string | null>, failure: string) {
     setBusy(true);
     try {
       setStatus(await action());
     } catch (error) {
       if (__DEV__) console.warn(failure, error);
-      setStatus({ text: failure });
+      setStatus(failure);
     } finally {
       setBusy(false);
     }
   }
 
   const reveal = () => setImmersive(false);
+  // The pages are memoised, so what they receive stays stable across renders of this screen.
+  const toggleImmersive = useCallback(() => setImmersive((now) => !now), []);
+  const zoomChanged = useCallback(
+    (id: string, now: boolean) => setZoomedId((zoomedNow) => (now ? id : zoomedNow === id ? null : zoomedNow)),
+    [],
+  );
+  const extraData = useMemo(() => ({ index, zoomed, page, pager }), [index, zoomed, page, pager]);
   // Opened first in its own stack (a deep link), there is nothing to go back to: land on the panda instead.
-  const close = () =>
-    navigation.canGoBack() ? router.back() : router.replace({ pathname: "/pandas/[slug]", params: { slug } });
+  const close = useCallback(
+    () => (navigation.canGoBack() ? router.back() : router.replace({ pathname: "/pandas/[slug]", params: { slug } })),
+    [navigation, slug],
+  );
   const chrome = {
     opacity: hidden ? 0 : 1,
     transitionProperty: "opacity",
@@ -142,28 +149,34 @@ export default function PhotosScreen() {
           ref={list}
           onGestureUpdate_CAN_CAUSE_INFINITE_RERENDER={setPager}
           data={photos}
-          extraData={{ index, zoomed, page, pager }}
+          extraData={extraData}
           keyExtractor={(photo) => photo.id}
           horizontal
           pagingEnabled
           scrollEnabled={!zoomed}
           showsHorizontalScrollIndicator={false}
           getItemLayout={(_, item) => ({ length: page.width, offset: page.width * item, index: item })}
-          onScroll={(event) => setScrolledTo(pageAt(event.nativeEvent.contentOffset.x, page.width, photos.length))}
+          onScroll={({ nativeEvent }) => {
+            // Between a resize and the next layout the old pages no longer fill the scroller, and the
+            // browser clamps the offset to the first page; that offset says nothing about the page.
+            if (nativeEvent.layoutMeasurement.width !== page.width) return;
+            setScrolledTo(pageAt(nativeEvent.contentOffset.x, page.width, photos.length));
+          }}
           scrollEventThrottle={16}
           style={StyleSheet.absoluteFill}
           onLayout={(event) => setPage({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height })}
           renderItem={({ item, index: position }) => (
             <ZoomablePhoto
+              id={item.id}
               uri={item.url}
               label={`${data.name} 第 ${position + 1} 张照片`}
               size={page}
               active={position === index}
-              zoomed={zoomed}
+              zoomed={position === index && zoomed}
               pager={pager}
               dismissY={dismissY}
-              onZoomedChange={(now) => setZoomedId((id) => (now ? item.id : id === item.id ? null : id))}
-              onTap={() => setImmersive((now) => !now)}
+              onZoomedChange={zoomChanged}
+              onTap={toggleImmersive}
               onDismiss={close}
             />
           )}
@@ -198,17 +211,10 @@ export default function PhotosScreen() {
           style={[{ paddingBottom: insets.bottom + 16 }, chrome]}
         >
           {status ? (
-            <View className="absolute inset-x-5 bottom-full mb-3 items-center gap-1">
+            <View className="absolute inset-x-5 bottom-full mb-3 items-center">
               <Text variant="footnote" className="text-center text-white" accessibilityLiveRegion="polite">
-                {status.text}
+                {status}
               </Text>
-              {status.settings ? (
-                <Pressable role="button" onPress={() => void Linking.openSettings()} onFocus={reveal} hitSlop={12} className="active:opacity-60">
-                  <Text variant="footnote" className="font-semibold text-white underline">
-                    去设置
-                  </Text>
-                </Pressable>
-              ) : null}
             </View>
           ) : null}
           <View className="gap-0.5">

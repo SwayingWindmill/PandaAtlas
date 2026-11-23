@@ -1,10 +1,14 @@
 import { Image } from "expo-image";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
+import { Platform, View } from "react-native";
 import {
   GestureDetector,
   GestureStateManager,
   type NativeGesture,
+  type PanGestureConfig,
+  type PinchGestureConfig,
   State,
+  type TapGestureConfig,
   useCompetingGestures,
   useExclusiveGestures,
   usePanGesture,
@@ -73,7 +77,8 @@ function useRange(scale: SharedValue<number>, range: Range): [SharedValue<number
   return [from, to];
 }
 
-export function ZoomablePhoto({
+export const ZoomablePhoto = memo(function ZoomablePhoto({
+  id,
   uri,
   label,
   size,
@@ -85,17 +90,17 @@ export function ZoomablePhoto({
   onTap,
   onDismiss,
 }: {
+  id: string;
   uri: string;
   label: string;
   size: Size;
-  /** The page on screen. Every other page rests at 1x. */
   active: boolean;
   zoomed: boolean;
   /** The pager's native scroll gesture, which must wait for this page's pinch and pan. Null on web. */
   pager: NativeGesture | null;
   /** The viewer's drag-to-dismiss offset, shared so the background fades with it. */
   dismissY: SharedValue<number>;
-  onZoomedChange: (zoomed: boolean) => void;
+  onZoomedChange: (id: string, zoomed: boolean) => void;
   onTap: () => void;
   onDismiss: () => void;
 }) {
@@ -108,6 +113,10 @@ export function ZoomablePhoto({
   const focal = useSharedValue<Point>({ x: 0, y: 0 });
   const touchStart = useSharedValue<Point>({ x: 0, y: 0 });
   const blocksPager = pager ?? undefined;
+  // gesture-handler's web handlers drop the detector's touchAction each time a gesture's config is
+  // applied and fall back to "none", which stops a phone browser paging the list, so every gesture
+  // carries its own. The field is missing from the config types, hence the casts.
+  const touchAction = Platform.OS === "web" ? (zoomed ? "none" : "pan-x") : undefined;
 
   const activeX = useRange(scale, "activeX");
   const activeY = useRange(scale, "activeY");
@@ -125,7 +134,7 @@ export function ZoomablePhoto({
   useAnimatedReaction(
     () => scale.get() > ZOOM.zoomed,
     (now, before) => {
-      if (before !== null && now !== before) scheduleOnRN(onZoomedChange, now);
+      if (before !== null && now !== before) scheduleOnRN(onZoomedChange, id, now);
     },
   );
 
@@ -146,6 +155,7 @@ export function ZoomablePhoto({
 
   const pinch = usePinchGesture({
     block: blocksPager,
+    touchAction,
     onTouchesDown: (event) => {
       "worklet";
       const touch = event.allTouches[0];
@@ -184,10 +194,11 @@ export function ZoomablePhoto({
       drag.set("idle");
       settle();
     },
-  });
+  } as PinchGestureConfig);
 
   const pan = usePanGesture({
     block: blocksPager,
+    touchAction,
     activeOffsetX: activeX,
     activeOffsetY: activeY,
     failOffsetX: failX,
@@ -230,11 +241,12 @@ export function ZoomablePhoto({
       x.set(withDecay({ ...decay, velocity: event.velocityX, clamp: [-limit.x, limit.x] }));
       y.set(withDecay({ ...decay, velocity: event.velocityY, clamp: [-limit.y, limit.y] }));
     },
-  });
+  } as PanGestureConfig);
 
   const doubleTap = useTapGesture({
     numberOfTaps: 2,
     maxDelay: DOUBLE_TAP_DELAY,
+    touchAction,
     onActivate: (event) => {
       "worklet";
       if (scale.get() > ZOOM.zoomed) {
@@ -248,14 +260,15 @@ export function ZoomablePhoto({
       x.set(withSpring(target.x, SETTLE));
       y.set(withSpring(target.y, SETTLE));
     },
-  });
+  } as TapGestureConfig);
 
   const singleTap = useTapGesture({
+    touchAction,
     onActivate: () => {
       "worklet";
       scheduleOnRN(onTap);
     },
-  });
+  } as TapGestureConfig);
 
   const gesture = useCompetingGestures(
     useSimultaneousGestures(pinch, pan),
@@ -271,17 +284,20 @@ export function ZoomablePhoto({
   });
 
   return (
-    <GestureDetector gesture={gesture} touchAction={zoomed ? "none" : "pan-x"}>
-      <Animated.View style={[{ width: size.width, height: size.height }, style]}>
-        <Image
-          source={uri}
-          // On web a mouse drag on an <img> starts the browser's image drag, which cancels the pan.
-          style={{ width: size.width, height: size.height, pointerEvents: "none" }}
-          contentFit="contain"
-          accessibilityLabel={label}
-          onLoad={(event) => image.set({ width: event.source.width, height: event.source.height })}
-        />
-      </Animated.View>
+    <GestureDetector gesture={gesture}>
+      {/* Gestures report focal points in the detector child's own frame, so that child stays untransformed. */}
+      <View style={{ width: size.width, height: size.height }}>
+        <Animated.View style={[{ width: size.width, height: size.height }, style]}>
+          <Image
+            source={uri}
+            // On web a mouse drag on an <img> starts the browser's image drag, which cancels the pan.
+            style={{ width: size.width, height: size.height, pointerEvents: "none" }}
+            contentFit="contain"
+            accessibilityLabel={label}
+            onLoad={(event) => image.set({ width: event.source.width, height: event.source.height })}
+          />
+        </Animated.View>
+      </View>
     </GestureDetector>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { File, Paths } from "expo-file-system";
+import { Directory, File, Paths } from "expo-file-system";
 import { Asset, requestPermissionsAsync } from "expo-media-library";
 import { shareAsync } from "expo-sharing";
 import { Platform, Share } from "react-native";
@@ -29,32 +29,40 @@ async function downloadInBrowser(photo: Photo, name: string): Promise<"downloade
   return "downloaded";
 }
 
-async function withCachedOriginal<T>(photo: Photo, name: string, act: (file: File) => Promise<T>): Promise<T> {
-  const file = await File.downloadFileAsync(photo.url, new File(Paths.cache, fileName(photo, name)), { idempotent: true });
-  try {
-    return await act(file);
-  } finally {
-    if (file.exists) file.delete();
-  }
+// The app the photo was shared to may still be reading it after the share sheet resolves, so a shared
+// copy stays until the next share or save clears it. Built on call: Paths.cache throws on web.
+function clearSharedCopies(): Directory {
+  const shared = new Directory(Paths.cache, "shared-photos");
+  if (shared.exists) shared.delete();
+  return shared;
 }
 
-/** Hands the original photo to the share sheet with the panda's name and the credit. On web it downloads. */
+function downloadOriginal(photo: Photo, name: string, to: Directory): Promise<File> {
+  return File.downloadFileAsync(photo.url, new File(to, fileName(photo, name)), { idempotent: true });
+}
+
 export async function sharePhoto(photo: Photo, name: string): Promise<void> {
   if (Platform.OS === "web") {
     await downloadInBrowser(photo, name);
     return;
   }
-  await withCachedOriginal(photo, name, async (file) => {
-    if (Platform.OS === "ios") await Share.share({ url: file.uri, message: shareText(photo, name) });
-    else await shareAsync(file.uri, { dialogTitle: shareText(photo, name) });
-  });
+  const shared = clearSharedCopies();
+  shared.create();
+  const file = await downloadOriginal(photo, name, shared);
+  if (Platform.OS === "ios") await Share.share({ url: file.uri, message: shareText(photo, name) });
+  else await shareAsync(file.uri, { dialogTitle: shareText(photo, name) });
 }
 
-/** Saves the original photo to the photo library, asking only to add photos. On web it downloads. */
 export async function savePhoto(photo: Photo, name: string): Promise<SaveOutcome> {
   if (Platform.OS === "web") return downloadInBrowser(photo, name);
+  clearSharedCopies();
   const permission = await requestPermissionsAsync(true, ["photo"]);
   if (!permission.granted) return permission.canAskAgain ? "denied" : "blocked";
-  await withCachedOriginal(photo, name, (file) => Asset.create(file.uri));
+  const file = await downloadOriginal(photo, name, Paths.cache);
+  try {
+    await Asset.create(file.uri);
+  } finally {
+    if (file.exists) file.delete();
+  }
   return "saved";
 }
