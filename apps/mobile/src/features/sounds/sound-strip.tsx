@@ -62,13 +62,14 @@ export function SoundStripSection() {
                 role="button"
                 accessibilityLabel={`${clip.shortLabel}，${clip.durationLabel}`}
                 accessibilityState={{ selected }}
+                hitSlop={8}
                 onPress={() => player.selectClip(clip.id, true)}
                 className={
                   selected
                     ? "justify-center rounded-pill bg-highlight-soft px-3 active:opacity-75"
                     : "justify-center rounded-pill bg-background px-3 active:opacity-75"
                 }
-                style={{ height: 26, borderCurve: "continuous" }}
+                style={{ height: 28, borderCurve: "continuous" }}
               >
                 <Text
                   variant="footnote"

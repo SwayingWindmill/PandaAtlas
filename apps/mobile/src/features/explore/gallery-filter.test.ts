@@ -47,7 +47,7 @@ describe("pickStarStrip", () => {
 });
 
 describe("pickFeaturedPanda", () => {
-  it("prefers curated stars with full-bleed covers deterministically by day", () => {
+  it("prefers curated stars with full-bleed covers and returns null when none are full-bleed ready", () => {
     const pandas = [
       makePanda("random-one", { hasFullBleedCover: true }),
       makePanda("meng-lan", { hasFullBleedCover: false }),
@@ -58,24 +58,26 @@ describe("pickFeaturedPanda", () => {
     const second = pickFeaturedPanda([...pandas].reverse(), "2026-11-23");
     expect(first?.slug).toBe(second?.slug);
     expect(["xiang-xiang", "bao-li"]).toContain(first?.slug);
+
+    expect(pickFeaturedPanda([makePanda("meng-lan", { hasFullBleedCover: false })], "2026-11-23")).toBeNull();
   });
 });
 
 describe("availableGalleryTabs and pickGalleryPandas", () => {
   const pandas = [
-    makePanda("he-hua-chengdu"),
-    makePanda("he-ye-chengdu"),
+    makePanda("he-hua-chengdu", { hasFullBleedCover: false }),
+    makePanda("he-ye-chengdu", { hasFullBleedCover: true }),
     makePanda("bao-li", { area: "海外", hasFullBleedCover: true }),
     makePanda("xiang-xiang", { hasFullBleedCover: true }),
     makePanda("xiao-xiao", { hasFullBleedCover: true }),
   ];
 
-  it("hides filter tabs without matches and filters each category cleanly", () => {
+  it("enforces full-bleed readiness across gallery filters and hides empty categories", () => {
     expect(availableGalleryTabs(pandas, SPECIAL)).toEqual(["精选", "双胞胎", "在海外", "已归国"]);
-    expect(availableGalleryTabs(pandas, { 双胞胎: new Set(), 归国: new Set() })).toEqual(["精选", "在海外"]);
+    expect(availableGalleryTabs([makePanda("unreviewed", { hasFullBleedCover: false })], SPECIAL)).toEqual([]);
 
     const twins = pickGalleryPandas(pandas, "双胞胎", SPECIAL, "2026-11-23", 4).map((p) => p.slug);
-    expect(twins.sort()).toEqual(["he-hua-chengdu", "he-ye-chengdu"]);
+    expect(twins).toEqual(["he-ye-chengdu"]);
 
     const overseas = pickGalleryPandas(pandas, "在海外", SPECIAL, "2026-11-23", 4).map((p) => p.slug);
     expect(overseas).toEqual(["bao-li"]);

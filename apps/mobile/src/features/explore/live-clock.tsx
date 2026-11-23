@@ -142,10 +142,10 @@ export function LiveClockSection() {
                   <Pressable
                     role="link"
                     accessibilityLabel={`看${card.name}官方直播`}
-                    hitSlop={6}
+                    hitSlop={8}
                     onPress={() => void Linking.openURL(card.liveCamUrl!)}
                     className="flex-row items-center gap-1 rounded-pill bg-highlight-soft px-2.5 active:opacity-70"
-                    style={{ height: 26 }}
+                    style={{ height: 28 }}
                   >
                     <Icon icon={Video} size={13} tone="tint" strokeWidth={2} />
                     <Text variant="footnote" className="font-semibold text-primary">

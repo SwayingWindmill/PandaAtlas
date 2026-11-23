@@ -63,11 +63,10 @@ export function pickStarStrip(
   return picked.slice(0, limit);
 }
 
-/** One living featured panda for the top hero card, rotated daily across curated full-bleed stars. */
+/** One living featured panda with a reviewed full-bleed cover for the top hero card. */
 export function pickFeaturedPanda(pandas: readonly PandaListItem[], day: string): PandaListItem | null {
-  const living = pandas.filter((panda) => !panda.deceased);
-  const fullBleed = living.filter((panda) => panda.hasFullBleedCover);
-  const pool = fullBleed.length > 0 ? fullBleed : living;
+  const pool = pandas.filter((panda) => !panda.deceased && panda.hasFullBleedCover);
+  if (pool.length === 0) return null;
   const starSet = new Set<string>(STAR_STRIP_SLUGS);
   const ordered = storyCandidates(pool, day);
   const curated = ordered.filter((panda) => starSet.has(panda.slug));
@@ -75,7 +74,7 @@ export function pickFeaturedPanda(pandas: readonly PandaListItem[], day: string)
 }
 
 function matchesGalleryTab(panda: PandaListItem, tab: GalleryTab, special: SpecialChips): boolean {
-  if (panda.deceased) return false;
+  if (panda.deceased || !panda.hasFullBleedCover) return false;
   switch (tab) {
     case "精选":
       return true;
@@ -88,15 +87,17 @@ function matchesGalleryTab(panda: PandaListItem, tab: GalleryTab, special: Speci
   }
 }
 
-/** Which gallery filter pills have real content to display. */
+/** Which gallery filter pills have reviewed full-bleed photos to display. */
 export function availableGalleryTabs(pandas: readonly PandaListItem[], special: SpecialChips): GalleryTab[] {
+  const hasFullBleed = pandas.some((panda) => !panda.deceased && panda.hasFullBleedCover);
+  if (!hasFullBleed) return [];
   return GALLERY_TABS.filter((tab) => {
     if (tab === "精选") return true;
     return pandas.some((panda) => matchesGalleryTab(panda, tab, special));
   });
 }
 
-/** Picks up to `count` living pandas for the 2x2 portrait gallery grid, preferring full-bleed covers. */
+/** Picks up to `count` living full-bleed-ready pandas for the gallery grid. */
 export function pickGalleryPandas(
   pandas: readonly PandaListItem[],
   tab: GalleryTab,
@@ -109,8 +110,7 @@ export function pickGalleryPandas(
     `${day}:${tab}`,
   );
   const starSet = new Set<string>(STAR_STRIP_SLUGS);
-  const fullBleedStars = ordered.filter((p) => p.hasFullBleedCover && starSet.has(p.slug));
-  const fullBleedOther = ordered.filter((p) => p.hasFullBleedCover && !starSet.has(p.slug));
-  const fallback = ordered.filter((p) => !p.hasFullBleedCover);
-  return [...fullBleedStars, ...fullBleedOther, ...fallback].slice(0, count);
+  const stars = ordered.filter((panda) => starSet.has(panda.slug));
+  const others = ordered.filter((panda) => !starSet.has(panda.slug));
+  return [...stars, ...others].slice(0, count);
 }

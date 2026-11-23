@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "expo-router";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
@@ -11,12 +11,12 @@ import { semantic } from "@/design/tokens";
 import { localToday } from "@/features/engagement/seen";
 import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { usePandaCover } from "@/lib/covers";
-import { RADIUS } from "@/lib/surface";
+import { RADIUS, pageColumn } from "@/lib/surface";
 
 import { pickFeaturedPanda } from "./gallery-filter";
 
 const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
-const HERO_HEIGHT = 196;
+const MIN_HERO_HEIGHT = 196;
 
 function birthMonthLabel(birthDate: string | null): string | null {
   if (!birthDate) return null;
@@ -26,18 +26,24 @@ function birthMonthLabel(birthDate: string | null): string | null {
 }
 
 export function FeaturedPandaCard() {
+  const { width, fontScale } = useWindowDimensions();
   const { data: pandas } = useQuery(pandaIndexQueryOptions());
   const panda = pandas ? pickFeaturedPanda(pandas, localToday()) : null;
-  const photo = usePandaCover(panda?.id);
+  const hasPhoto = Boolean(panda?.hasFullBleedCover);
+  const photo = usePandaCover(hasPhoto ? panda?.id : undefined);
 
-  if (!panda) return null;
+  if (!panda || !hasPhoto) return null;
 
+  const heroHeight = Math.max(
+    MIN_HERO_HEIGHT,
+    Math.round(pageColumn(width) * 0.56 * Math.min(Math.max(fontScale, 1), 1.5)),
+  );
   const subtitle = [panda.place, birthMonthLabel(panda.birthDate)].filter(Boolean).join("　");
 
   return (
     <Link href={{ pathname: "/pandas/[slug]", params: { slug: panda.slug } }} asChild>
       <Link.AppleZoom>
-        <PressScale role="link" accessibilityLabel={`精选档案，${panda.name}${subtitle ? `，${subtitle}` : ""}`} style={{ height: HERO_HEIGHT }}>
+        <PressScale role="link" accessibilityLabel={`精选档案，${panda.name}${subtitle ? `，${subtitle}` : ""}`} style={{ height: heroHeight }}>
           <View
             style={{
               flex: 1,
@@ -57,11 +63,6 @@ export function FeaturedPandaCard() {
               />
             ) : null}
             <Scrim id="explore-featured-scrim" />
-            <View className="absolute left-3.5 top-3 rounded-pill bg-bar-material px-2.5 py-1">
-              <Text variant="footnote" className="font-semibold text-foreground">
-                精选档案
-              </Text>
-            </View>
             <View className="absolute right-0 bottom-0 left-0 gap-0.5 px-4 pb-3.5">
               <Text variant="display" role="none" className="text-on-media" numberOfLines={1}>
                 {panda.name}

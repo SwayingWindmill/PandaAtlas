@@ -1,5 +1,6 @@
 import { View, useWindowDimensions } from "react-native";
 
+import { useSingleColumn } from "@/components/grouped-list";
 import { Page } from "@/components/page";
 import { PhotoCard } from "@/features/discover/photo-card";
 import { localToday } from "@/features/engagement/seen";
@@ -17,9 +18,10 @@ const GAMES = [
 
 export default function PlayScreen() {
   const { width } = useWindowDimensions();
+  const single = useSingleColumn();
   const photos = useStoryPhotos(`play:${localToday()}`, GAMES.length);
   const column = pageColumn(width);
-  const tile = Math.floor((column - GAP) / 2);
+  const tile = single ? column : Math.floor((column - GAP) / 2);
 
   return (
     <Page title="趣味挑战" label="通过写真识别、猜谜与每月收集，多一种方式认识每一只大熊猫。">

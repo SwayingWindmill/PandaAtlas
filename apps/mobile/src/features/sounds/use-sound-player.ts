@@ -12,6 +12,9 @@ export interface SoundPlayerController {
   selectClip: (id: PandaSoundId, autoPlay?: boolean) => void;
 }
 
+// Tracks the currently active hook instance so starting playback on /sounds pauses /.
+let activePause: (() => void) | null = null;
+
 /** Single-track player controller backed by expo-audio with graceful web fallback. */
 export function useSoundPlayer(initialId: PandaSoundId = "panda-twittering"): SoundPlayerController {
   const [activeId, setActiveId] = useState<PandaSoundId>(initialId);
@@ -19,23 +22,42 @@ export function useSoundPlayer(initialId: PandaSoundId = "panda-twittering"): So
   const player = useAudioPlayer(null, { updateInterval: 150 });
   const status = useAudioPlayerStatus(player);
 
+  const pauseSelf = useCallback(() => {
+    try {
+      player.pause();
+    } catch {
+      // Ignore pause errors when audio backend is inactive.
+    }
+  }, [player]);
+
   useEffect(() => {
     void setAudioModeAsync({ playsInSilentMode: true }).catch(() => undefined);
   }, []);
 
   useEffect(() => {
+    return () => {
+      if (activePause === pauseSelf) activePause = null;
+    };
+  }, [pauseSelf]);
+
+  useEffect(() => {
     if (!status.didJustFinish) return;
+    if (activePause === pauseSelf) activePause = null;
     try {
       player.pause();
       void player.seekTo(0).catch(() => undefined);
     } catch {
       // Ignore cleanup failures in headless environments.
     }
-  }, [player, status.didJustFinish]);
+  }, [pauseSelf, player, status.didJustFinish]);
 
   const startClip = useCallback(
     (id: PandaSoundId) => {
       try {
+        if (activePause && activePause !== pauseSelf) {
+          activePause();
+        }
+        activePause = pauseSelf;
         if (loadedId !== id) {
           setLoadedId(id);
           player.replace(AUDIO_SOURCES[id]);
@@ -47,24 +69,21 @@ export function useSoundPlayer(initialId: PandaSoundId = "panda-twittering"): So
         // Ignore playback errors in environments without audio output devices.
       }
     },
-    [loadedId, player, status.currentTime, status.duration],
+    [loadedId, pauseSelf, player, status.currentTime, status.duration],
   );
 
   const toggle = useCallback(
     (targetId?: PandaSoundId) => {
       const id = targetId ?? activeId;
       if (loadedId === id && status.playing) {
-        try {
-          player.pause();
-        } catch {
-          // Ignore pause errors when audio backend is inactive.
-        }
+        if (activePause === pauseSelf) activePause = null;
+        pauseSelf();
         return;
       }
       setActiveId(id);
       startClip(id);
     },
-    [activeId, loadedId, player, startClip, status.playing],
+    [activeId, loadedId, pauseSelf, startClip, status.playing],
   );
 
   const selectClip = useCallback(

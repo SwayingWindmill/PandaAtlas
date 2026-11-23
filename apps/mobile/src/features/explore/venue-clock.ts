@@ -2,7 +2,7 @@ import type { TimeWindow } from "@/features/institutions/institutions";
 import type { MapItem } from "@/features/map/model";
 import { minutesOf } from "@/features/viewing/day-window";
 
-export type VenueClockStatus = "active" | "nap" | "upcoming" | "closed";
+export type VenueClockStatus = "active" | "upcoming" | "open" | "nap" | "closed";
 
 export interface VenueClockSpec {
   timeZone: string;
@@ -245,6 +245,7 @@ export const VENUE_CLOCK_SPECS: Readonly<Record<string, VenueClockSpec>> = {
 const STATUS_LABEL: Record<VenueClockStatus, string> = {
   active: "正在活跃",
   upcoming: "即将开园",
+  open: "开园中",
   nap: "午休时段",
   closed: "夜间休整",
 };
@@ -279,7 +280,7 @@ function inWindow(minutes: number, window: TimeWindow): boolean {
   return minutes >= minutesOf(window.start) && minutes < minutesOf(window.end);
 }
 
-/** Whether a venue is active, napping, opening soon, or resting for the night at `minutes` local time. */
+/** Whether a venue is active, napping, in daytime open hours, opening soon, or resting at night. */
 export function venueActivityStatus(minutes: number, spec: Pick<VenueClockSpec, "active" | "nap">): VenueClockStatus {
   if (spec.nap && inWindow(minutes, spec.nap)) return "nap";
   if (spec.active.some((window) => inWindow(minutes, window))) return "active";
@@ -287,6 +288,13 @@ export function venueActivityStatus(minutes: number, spec: Pick<VenueClockSpec, 
     (min, window) => Math.min(min, minutesOf(window.start)),
     Number.POSITIVE_INFINITY,
   );
+  const latest = spec.active.reduce(
+    (max, window) => Math.max(max, minutesOf(window.end)),
+    Number.NEGATIVE_INFINITY,
+  );
+  if (earliest <= latest && minutes >= earliest && minutes < latest) {
+    return "open";
+  }
   if (earliest < Number.POSITIVE_INFINITY && minutes >= earliest - UPCOMING_LEAD_MINUTES && minutes < earliest) {
     return "upcoming";
   }
@@ -300,10 +308,12 @@ function rankOf(card: LiveClockCard): number {
       return camBonus;
     case "upcoming":
       return 2 + camBonus;
-    case "nap":
+    case "open":
       return 4 + camBonus;
-    case "closed":
+    case "nap":
       return 6 + camBonus;
+    case "closed":
+      return 8 + camBonus;
   }
 }
 

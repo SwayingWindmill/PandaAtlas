@@ -55,3 +55,16 @@ test("today shows the pandas whose birthday it is, and the followed ones on top"
   await screen.getByRole("button", panda.name).tap();
   await expect(screen.getByRole("heading", panda.name)).toBeVisible();
 });
+
+test("sounds section switches active clip and opens 声音图鉴", async ({ app, screen }) => {
+  await app.open("/");
+  const bambooPill = screen.getByRole("button", "啃竹原声，0:43");
+  await expect(bambooPill).toBeVisible();
+  await bambooPill.tap();
+  await expect(screen.getByText("大熊猫啃竹 ASMR")).toBeVisible();
+
+  await screen.getByRole("link", "声音图鉴").tap();
+  await expect(screen.getByRole("heading", "声音图鉴")).toBeVisible();
+  await expect(screen.getByText("实听原声")).toBeVisible();
+  await expect(screen.getByText("大熊猫如何发声")).toBeVisible();
+});

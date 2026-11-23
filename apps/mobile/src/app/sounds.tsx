@@ -21,8 +21,9 @@ export default function SoundsScreen() {
           {PANDA_SOUND_CLIPS.map((clip) => {
             const active = player.activeId === clip.id;
             const playing = active && player.isPlaying;
+            const bars = clip.waveform.slice(0, 14);
             const activeBars = active
-              ? Math.max(0, Math.round(clip.waveform.length * (playing ? Math.max(player.progress, 0.2) : 0.3)))
+              ? Math.max(0, Math.round(bars.length * (playing ? Math.max(player.progress, 0.2) : 0.3)))
               : 0;
             return (
               <View
@@ -50,7 +51,7 @@ export default function SoundsScreen() {
                     </Text>
                   </View>
                   <View className="flex-row items-center" style={{ gap: 2.5, height: 22 }} aria-hidden>
-                    {clip.waveform.slice(0, 14).map((h, idx) => (
+                    {bars.map((h, idx) => (
                       <View
                         key={idx}
                         className={idx < activeBars ? "rounded-full bg-primary" : "rounded-full bg-border"}
@@ -69,9 +70,8 @@ export default function SoundsScreen() {
                   <Pressable
                     role="link"
                     accessibilityLabel={`查看${clip.title}原始授权页`}
-                    hitSlop={8}
                     onPress={() => void Linking.openURL(clip.pageUrl)}
-                    className="flex-row items-center gap-1 active:opacity-60"
+                    className="min-h-11 flex-row items-center gap-1 px-1 active:opacity-60"
                   >
                     <Icon icon={Globe} size="footnote" tone="tint" />
                     <Text variant="footnote" className="font-semibold text-primary">
@@ -102,7 +102,8 @@ export default function SoundsScreen() {
                       accessibilityLabel={playingThis ? `暂停${entry.name}示例` : `试听${entry.name}示例`}
                       hitSlop={8}
                       onPress={() => player.toggle(linked)}
-                      className="flex-row items-center gap-1 rounded-pill bg-highlight-soft px-3 py-1 active:opacity-70"
+                      className="flex-row items-center justify-center gap-1 rounded-pill bg-highlight-soft px-3 active:opacity-70"
+                      style={{ height: 28 }}
                     >
                       <Icon icon={playingThis ? Pause : Play} size="footnote" tone="tint" />
                       <Text variant="footnote" className="font-semibold text-primary">

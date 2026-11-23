@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { Chip } from "@/components/chip";
+import { ListCell, ListSection, useSingleColumn } from "@/components/grouped-list";
+import { Plane } from "@/components/icons";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { RemoteImage } from "@/components/remote-image";
@@ -24,14 +26,15 @@ const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
 const GRID_GAP = 10;
 const TILE_HEIGHT = 112;
 
-function GalleryTile({ panda, width }: { panda: PandaListItem; width: number }) {
-  const photo = usePandaCover(panda.id);
+function GalleryTile({ panda, width, height }: { panda: PandaListItem; width: number; height: number }) {
+  const hasPhoto = Boolean(panda.hasFullBleedCover);
+  const photo = usePandaCover(hasPhoto ? panda.id : undefined);
   return (
     <PressScale
       role="link"
       accessibilityLabel={[panda.name, panda.place].filter(Boolean).join("，")}
       onPress={() => router.push({ pathname: "/pandas/[slug]", params: { slug: panda.slug } })}
-      style={{ width, height: TILE_HEIGHT }}
+      style={{ width, height }}
     >
       <View
         style={{
@@ -42,7 +45,7 @@ function GalleryTile({ panda, width }: { panda: PandaListItem; width: number }) 
           backgroundColor: PLACEHOLDER,
         }}
       >
-        {photo ? (
+        {photo && hasPhoto ? (
           <RemoteImage
             source={photo}
             style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
@@ -69,17 +72,18 @@ function GalleryTile({ panda, width }: { panda: PandaListItem; width: number }) 
 }
 
 export function CuratedGallerySection() {
-  const { width } = useWindowDimensions();
+  const { width, fontScale } = useWindowDimensions();
+  const single = useSingleColumn();
   const [selected, setSelected] = useState<GalleryTab>("精选");
   const { data: pandas } = useQuery(pandaIndexQueryOptions());
   const special = useSpecialChips();
   const overseas = useQuery({ queryKey: ["overseas-status"], queryFn: loadOverseasStatus });
 
   const tabs = useMemo(
-    () => (pandas ? availableGalleryTabs(pandas, special) : ["精选" as const]),
+    () => (pandas ? availableGalleryTabs(pandas, special) : []),
     [pandas, special],
   );
-  const activeTab = tabs.includes(selected) ? selected : "精选";
+  const activeTab = tabs.includes(selected) ? selected : (tabs[0] ?? "精选");
   const today = localToday();
 
   const items = useMemo(
@@ -87,10 +91,20 @@ export function CuratedGallerySection() {
     [activeTab, pandas, special, today],
   );
 
-  if (items.length === 0) return null;
-
-  const tileWidth = Math.floor((pageColumn(width) - GRID_GAP) / 2);
   const hasReturning = (overseas.data?.length ?? 0) > 0;
+  if (items.length === 0 && !hasReturning) return null;
+
+  if (items.length === 0) {
+    return (
+      <ListSection title="海外与归国">
+        <ListCell icon={Plane} label="归国与专题" href="/returning" role="link" last />
+      </ListSection>
+    );
+  }
+
+  const column = pageColumn(width);
+  const tileWidth = single ? column : Math.floor((column - GRID_GAP) / 2);
+  const tileHeight = Math.round(TILE_HEIGHT * Math.min(Math.max(fontScale, 1), 1.4));
 
   return (
     <View className="gap-stack-tight">
@@ -113,7 +127,7 @@ export function CuratedGallerySection() {
       ) : null}
       <View className="flex-row flex-wrap" style={{ gap: GRID_GAP }}>
         {items.map((panda) => (
-          <GalleryTile key={panda.id} panda={panda} width={tileWidth} />
+          <GalleryTile key={panda.id} panda={panda} width={tileWidth} height={tileHeight} />
         ))}
       </View>
     </View>
