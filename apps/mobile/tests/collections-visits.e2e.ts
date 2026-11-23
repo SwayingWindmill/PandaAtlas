@@ -54,9 +54,14 @@ test("a fan records a visit on a zoo's page and removes it from 去过的地点"
   await expect(screen.getByText("还没有到访记录。", { exact: false })).toBeVisible();
 });
 
-test("signed out, a zoo's page opened on 攻略 asks the fan to sign in to record a visit", async ({ app, screen }) => {
+test("signed out, a zoo's page opened on 攻略 lets the guest record a visit locally", async ({ app, screen }) => {
   const { zoo } = fixture();
   await app.open(`/institutions/${zoo.slug}?tab=guide`);
   await expect(screen.getByRole("radio", { name: "攻略", checked: true })).toBeVisible();
-  await expect(screen.getByRole("button", "登录后记下到访")).toBeVisible();
+  await screen.getByRole("button", `记下今天去过${zoo.facility}`).tap();
+  await expect(screen.getByText(`${todayLabel()}去过`)).toBeVisible();
+  await expect(screen.getByRole("button", `今天已记下去过${zoo.facility}`)).toBeDisabled();
+
+  await app.open("/visits");
+  await expect(screen.getByRole("button", new RegExp(`^删除.*去${zoo.facility}的记录$`))).toBeVisible();
 });

@@ -11,9 +11,11 @@ import { StatTile } from "@/components/stat-tile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
+import { guestVisitsQueryOptions, removeGuestVisit } from "@/features/engagement/guest-store";
 import { longDate } from "@/features/pandas/profile";
 import { placeName, placesQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
+import { useSession } from "@/features/session/session";
 import { type Visit, removeVisit, visitsQueryKey, visitsQueryOptions } from "@/features/visits/visits";
 import { failedWithoutData } from "@/lib/query-failed";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
@@ -80,24 +82,33 @@ function VisitRow({ visit, place, last, onRemove }: { visit: Visit; place: strin
 }
 
 export default function VisitsScreen() {
-  const { accountId, unavailable } = useAccount();
+  const { state: session } = useSession();
+  const { accountId } = useAccount();
+  const signedIn = accountId !== null;
+  const signedOut = session.status === "signedOut";
   const queryClient = useQueryClient();
   const [removeFailed, setRemoveFailed] = useState(false);
   const stacked = useStacked();
 
-  const list = useQuery({ ...visitsQueryOptions(accountId ?? ""), enabled: accountId !== null });
+  const remoteList = useQuery({ ...visitsQueryOptions(accountId ?? ""), enabled: signedIn });
+  const guestList = useQuery({ ...guestVisitsQueryOptions(), enabled: signedOut });
+  const list = signedOut ? guestList : remoteList;
   const placeList = useQuery(placesQueryOptions());
-  useRefetchOnFocus(list.refetch, accountId !== null);
+  useRefetchOnFocus(remoteList.refetch, signedIn);
   const visits = list.data && placeList.data ? list.data : null;
   const names = useMemo(
     () => new Map([...(placeList.data ?? [])].map(([id, place]) => [id, placeName(place) ?? place.nameEn ?? place.slug])),
     [placeList.data],
   );
-  const failed = unavailable || failedWithoutData(list) || failedWithoutData(placeList);
+  const failed = session.status === "unavailable" || failedWithoutData(list) || failedWithoutData(placeList);
 
   async function remove(visit: Visit) {
     setRemoveFailed(false);
     try {
+      if (signedOut) {
+        await removeGuestVisit(visit.checkinId);
+        return;
+      }
       await removeVisit(visit.checkinId);
       if (accountId) {
         const queryKey = visitsQueryKey(accountId);

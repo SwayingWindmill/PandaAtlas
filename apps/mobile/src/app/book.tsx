@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -19,29 +19,32 @@ import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import {
   type Filter,
+  type GameEntry,
   type Group,
   type LifeEntry,
   type LifeList,
+  type SeenEntry,
   baseGroups,
   baseProgress,
   buildLifeList,
   entryDetail,
   filterEntries,
 } from "@/features/book/book";
-import { localToday } from "@/features/engagement/seen";
-import { openPanda } from "@/features/pandas/panda-row";
 import { LitCard } from "@/features/book/lit-card";
-import { type PandaListItem, loadPandaIndex, loadPlaces, pandaIndexQueryOptions, placeName } from "@/features/pandas/pandas";
+import {
+  loadGuestGames,
+  loadGuestSeen,
+  loadGuestVisits,
+} from "@/features/engagement/guest-store";
+import { openPanda } from "@/features/pandas/panda-row";
+import { type PandaListItem, loadPandaIndex, loadPlaces, placeName } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
-import { LockedPhotoTile, StoryPhotoTile } from "@/features/today/story-photo-tile";
-import { useStoryPhotos } from "@/features/today/story-photos";
-import { loadVisits } from "@/features/visits/visits";
+import { type Visit, loadVisits } from "@/features/visits/visits";
 import { authedApi } from "@/lib/api";
 import { RADIUS, pageColumn } from "@/lib/surface";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 const GAP = 12;
-/** Tiles the grid shows before 显示全部: three rows of four. */
 const FIRST_TILES = 12;
 
 const VIEWS = [
@@ -54,22 +57,21 @@ interface Book {
   list: LifeList;
   pandas: Map<string, PandaListItem>;
   placeNames: Map<string, string>;
-  /** Every published panda: what 点亮 counts against. */
   catalog: number;
   visitedPlaces: number;
   bases: Group[];
 }
 
-async function loadBook(): Promise<Book> {
-  const [games, seen, visits, index, places] = await Promise.all([
-    authedApi.GET("/api/v2/me/panda-book"),
-    authedApi.GET("/api/v2/me/seen-pandas"),
-    loadVisits(),
-    loadPandaIndex(),
-    loadPlaces(),
-  ]);
-  if (!games.data || !seen.data) throw new Error("Panda book unavailable");
-  const list = buildLifeList(games.data.items, seen.data.items);
+type PlacesMap = Awaited<ReturnType<typeof loadPlaces>>;
+
+function assembleBook(
+  games: GameEntry[],
+  seen: SeenEntry[],
+  visits: Visit[],
+  index: PandaListItem[],
+  places: PlacesMap,
+): Book {
+  const list = buildLifeList(games, seen);
   const known = new Set(list.entries.map((entry) => entry.pandaId));
   const placeNames = new Map(
     [...places].flatMap(([id, place]) => {
@@ -90,7 +92,35 @@ async function loadBook(): Promise<Book> {
   };
 }
 
-/** The three ways a panda or a place gets into the list, each a row that goes and does it. */
+async function loadBook(): Promise<Book> {
+  const [games, seen, visits, index, places] = await Promise.all([
+    authedApi.GET("/api/v2/me/panda-book"),
+    authedApi.GET("/api/v2/me/seen-pandas"),
+    loadVisits(),
+    loadPandaIndex(),
+    loadPlaces(),
+  ]);
+  if (!games.data || !seen.data) throw new Error("Panda book unavailable");
+  return assembleBook(games.data.items, seen.data.items, visits, index, places);
+}
+
+async function loadGuestBook(): Promise<Book> {
+  const [games, seenMap, visits, index, places] = await Promise.all([
+    loadGuestGames(),
+    loadGuestSeen(),
+    loadGuestVisits(),
+    loadPandaIndex(),
+    loadPlaces(),
+  ]);
+  const seen: SeenEntry[] = Object.entries(seenMap).map(([pandaId, entry]) => ({
+    pandaId,
+    seenOn: entry.seenOn,
+    placeId: entry.placeId ?? null,
+    firstSeenAt: entry.firstSeenAt,
+  }));
+  return assembleBook(games, seen, visits, index, places);
+}
+
 function WaysIn({ title, footer }: { title: string; footer?: string }) {
   return (
     <ListSection title={title} footer={footer}>
@@ -131,7 +161,6 @@ function Stats({ book }: { book: Book }) {
   );
 }
 
-/** Four square tiles a row, as Photos lays out an album; three when rows stack. */
 function useTiles() {
   const { width } = useWindowDimensions();
   const columns = useStacked() ? 3 : 4;
@@ -139,7 +168,6 @@ function useTiles() {
   return { columns, tile: Math.floor((column - GAP * (columns - 1)) / columns) };
 }
 
-/** One panda met: its cover and its name. The spoken label says when and where. */
 function MetTile({ entry, panda, detail, size }: { entry: LifeEntry; panda: PandaListItem | undefined; detail: string; size: number }) {
   const name = panda?.name ?? "熊猫";
   return (
@@ -159,7 +187,6 @@ function MetTile({ entry, panda, detail, size }: { entry: LifeEntry; panda: Pand
   );
 }
 
-/** What is still to meet: one row of empty tiles, never the whole catalog. It opens 找熊猫. */
 function Unmet({ count, columns, size }: { count: number; columns: number; size: number }) {
   const tiles = Array.from({ length: Math.min(count, columns) }, (_, index) => index);
   return (
@@ -217,7 +244,6 @@ function Grid({ book, filter }: { book: Book; filter: Filter }) {
   );
 }
 
-/** Each base the fan has met a panda at or been to: met out of those living there now. */
 function Bases({ bases }: { bases: Group[] }) {
   const started = bases.filter((group) => group.known > 0 || group.visitedOn !== null);
   if (started.length === 0) return null;
@@ -261,27 +287,8 @@ function Loading() {
   );
 }
 
-/** Keyed by account, so another fan signing in on this device starts from a fresh load. */
-function SignedIn({ accountId }: { accountId: string }) {
-  const { data: book, isError, isFetching, refetch } = useQuery({
-    queryKey: ["private", accountId, "book"],
-    queryFn: loadBook,
-  });
-  useRefetchOnFocus(refetch);
+function BookBody({ book, guest = false }: { book: Book; guest?: boolean }) {
   const [filter, setFilter] = useState<Filter>("all");
-
-  if (!book && isError && !isFetching) {
-    return (
-      <LoadFailed
-        message="图鉴暂时打不开。"
-        onRetry={() => {
-          void refetch();
-        }}
-      />
-    );
-  }
-  if (!book) return <Loading />;
-
   const empty = book.list.entries.length === 0;
   return (
     <Animated.View entering={PAGE_ENTER} className="gap-section">
@@ -297,7 +304,7 @@ function SignedIn({ accountId }: { accountId: string }) {
               认出、见过的熊猫会点亮在这里。
             </Text>
           </View>
-          <WaysIn title="怎样记下" />
+          <WaysIn title="怎样记下" footer={guest ? "记录先保存在本机，绑定邮箱后可同步到云端。" : undefined} />
         </>
       ) : (
         <View className="gap-row">
@@ -306,73 +313,71 @@ function SignedIn({ accountId }: { accountId: string }) {
         </View>
       )}
       <Bases bases={book.bases} />
+      {guest ? (
+        <View className="items-center gap-hair-gap pt-stack-tight">
+          {!empty ? (
+            <Text variant="footnote" className="text-center text-muted-foreground">
+              记录先保存在本机，绑定邮箱后可跨设备同步
+            </Text>
+          ) : null}
+          <Button variant="plain" onPress={() => router.push("/sign-in")}>
+            <Text>绑定同步</Text>
+          </Button>
+        </View>
+      ) : null}
     </Animated.View>
   );
 }
 
-/** Three portrait tiles a row, as Photos lays out an album; two when rows stack. */
-function useGrid() {
-  const { width } = useWindowDimensions();
-  const columns = useStacked() ? 2 : 3;
-  const column = pageColumn(width);
-  return { columns, tile: Math.floor((column - GAP * (columns - 1)) / columns) };
+function SignedIn({ accountId }: { accountId: string }) {
+  const { data: book, isError, isFetching, refetch } = useQuery({
+    queryKey: ["private", accountId, "book"],
+    queryFn: loadBook,
+  });
+  useRefetchOnFocus(refetch);
+
+  if (!book && isError && !isFetching) {
+    return (
+      <LoadFailed
+        message="图鉴暂时打不开。"
+        onRetry={() => {
+          void refetch();
+        }}
+      />
+    );
+  }
+  if (!book) return <Loading />;
+  return <BookBody book={book} />;
 }
 
-/** Which tiles of the signed-out preview show a panda; the rest wait under a lock. */
-function isOpenTile(index: number, columns: number) {
-  return index === 0 || index === columns + 1;
-}
+function GuestBook() {
+  const { data: book, isError, isFetching, refetch } = useQuery({
+    queryKey: ["guest", "book"],
+    queryFn: loadGuestBook,
+    networkMode: "always",
+  });
+  useRefetchOnFocus(refetch);
 
-/**
- * The signed-out 图鉴: a preview where two real pandas are lit and the rest wait under a lock, what
- * the list keeps, and the three ways in. The only number is the real catalog size.
- */
-function SignedOut() {
-  const { columns, tile } = useGrid();
-  const photos = useStoryPhotos(localToday(), columns * 2);
-  const { data: pandaIndex } = useQuery(pandaIndexQueryOptions());
-  const published = pandaIndex?.length ?? null;
-  const tiles = useMemo(() => Array.from({ length: columns * 2 }, (_, index) => index), [columns]);
-  return (
-    <>
-      <View className="gap-stack">
-        <View className="flex-row flex-wrap" style={{ gap: GAP }}>
-          {tiles.map((index) =>
-            isOpenTile(index, columns) ? (
-              <StoryPhotoTile key={index} photo={photos[index]} width={tile} slot={`book-${index}`} />
-            ) : (
-              <LockedPhotoTile key={index} photo={photos[index]} width={tile} />
-            ),
-          )}
-        </View>
-        <View className="gap-hair-gap">
-          <Text variant="title">你的熊猫清单</Text>
-          <Text variant="subheadline" className="text-muted-foreground">
-            {`认出的、见过的熊猫，去过的基地，都按先后记在这里，连第一次遇见的日子和地方。${
-              published === null ? "" : `吱熊猫收录了 ${published} 只熊猫。`
-            }`}
-          </Text>
-        </View>
-      </View>
-      <View className="gap-stack-tight">
-        <Button onPress={() => router.push("/sign-in")}>
-          <Text>登录，开始记</Text>
-        </Button>
-        <Button variant="plain" onPress={() => router.push("/daily")}>
-          <Text>先去猜今天的每日一猫</Text>
-        </Button>
-      </View>
-      <WaysIn title="三种记法" footer="清单只给你自己看，没有排行。" />
-    </>
-  );
+  if (!book && isError && !isFetching) {
+    return (
+      <LoadFailed
+        message="图鉴暂时打不开。"
+        onRetry={() => {
+          void refetch();
+        }}
+      />
+    );
+  }
+  if (!book) return <Loading />;
+  return <BookBody book={book} guest />;
 }
 
 export default function BookScreen() {
   const { state } = useSession();
   return (
-    <Page title="图鉴" back={false}>
+    <Page title="我的图鉴">
       {state.status === "signedIn" ? <SignedIn key={state.accountId} accountId={state.accountId} /> : null}
-      {state.status === "signedOut" ? <SignedOut /> : null}
+      {state.status === "signedOut" ? <GuestBook /> : null}
       {state.status === "loading" ? <Loading /> : null}
       {state.status === "unavailable" ? (
         <Text variant="subheadline" className="text-muted-foreground">

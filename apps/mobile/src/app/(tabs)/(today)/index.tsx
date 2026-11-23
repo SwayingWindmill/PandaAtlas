@@ -1,10 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
 import { Stack, router } from "expo-router";
 import { Platform, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BARLESS_TOP } from "@/components/page";
-import { SectionHeader } from "@/components/section-header";
 import { StatusBarCover } from "@/components/status-bar-cover";
 import { Text } from "@/components/ui/text";
 import { component } from "@/design/tokens";
@@ -13,11 +11,8 @@ import { CuratedGallerySection } from "@/features/explore/curated-gallery";
 import { FeaturedPandaCard } from "@/features/explore/featured-panda-card";
 import { LearningAndPlaySection } from "@/features/explore/learning-and-play";
 import { LiveClockSection } from "@/features/explore/live-clock";
-import { PopularVenuesRail } from "@/features/explore/popular-venues-rail";
 import { StarOrFollowedStrip } from "@/features/explore/star-strip";
 import { TimelyBanner } from "@/features/explore/timely-banner";
-import { MapCard } from "@/features/map/map-card";
-import { mapViewQueryOptions } from "@/features/map/load";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
@@ -60,11 +55,9 @@ export default function ExploreScreen() {
   const bottom = useBottomClearance();
   const refreshControl = usePullToRefresh();
   const { width } = useWindowDimensions();
-  const { data: mapView } = useQuery(mapViewQueryOptions());
   const memory = useWeekMemory();
 
   const top = Platform.OS === "android" ? insets.top + BARLESS_TOP : insets.top + 6;
-  const venueCount = mapView?.items.length ?? 0;
   const heroHeight = Math.round(pageColumn(width) * 0.62);
 
   return (
@@ -88,19 +81,6 @@ export default function ExploreScreen() {
           {memory ? <WeekHero hero={memory} height={heroHeight} /> : <FeaturedPandaCard />}
         </View>
 
-        <View className="gap-stack-tight">
-          <SectionHeader
-            title="逛基地"
-            action={{
-              label: venueCount > 0 ? `全部 ${venueCount} 处` : "全部场馆",
-              href: "/institutions",
-              accessibilityLabel: "查看全部熊猫场馆",
-            }}
-          />
-          <MapCard height={112} />
-        </View>
-
-        <PopularVenuesRail />
         <CuratedGallerySection />
         <SoundStripSection />
         <LearningAndPlaySection />

@@ -25,9 +25,16 @@ import {
   setInCollection,
 } from "@/features/collections/collections";
 import { Mosaic } from "@/features/collections/mosaic";
+import {
+  deleteGuestCollection,
+  guestCollectionsQueryOptions,
+  renameGuestCollection,
+  setInGuestCollection,
+} from "@/features/engagement/guest-store";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, listMeta, pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
+import { useSession } from "@/features/session/session";
 import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
@@ -42,7 +49,15 @@ function updatedOn(stamp: string): string {
 }
 
 /** Reminders' rename: the name field and 完成 share one grouped row, with the limit under it. */
-function Rename({ collection, onDone }: { collection: Collection; onDone: (next: Collection | null) => void }) {
+function Rename({
+  collection,
+  onSaveName,
+  onDone,
+}: {
+  collection: Collection;
+  onSaveName: (name: string) => Promise<Collection>;
+  onDone: (next: Collection | null) => void;
+}) {
   const muted = String(useCSSVariable("--color-muted-foreground"));
   const [name, setName] = useState(collection.name);
   const [status, setStatus] = useState<"idle" | "saving" | "failed">("idle");
@@ -54,7 +69,7 @@ function Rename({ collection, onDone }: { collection: Collection; onDone: (next:
     if (valid === collection.name) return onDone(null);
     setStatus("saving");
     try {
-      onDone(await renameCollection(collection.collectionId, valid));
+      onDone(await onSaveName(valid));
     } catch {
       setStatus("failed");
     }
@@ -192,8 +207,13 @@ function Loading() {
 
 export default function CollectionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { accountId, unavailable } = useAccount();
-  const list = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: accountId !== null });
+  const { state: session } = useSession();
+  const { accountId } = useAccount();
+  const signedIn = accountId !== null;
+  const signedOut = session.status === "signedOut";
+  const remoteList = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: signedIn });
+  const guestList = useQuery({ ...guestCollectionsQueryOptions(), enabled: signedOut });
+  const list = signedOut ? guestList : remoteList;
   const index = useQuery(pandaIndexQueryOptions());
   const pandas = useMemo(() => new Map(index.data?.map((panda) => [panda.id, panda])), [index.data]);
   // A deleted collection stays on screen while the screen pops, instead of the "已经不在了" state.
@@ -214,7 +234,7 @@ export default function CollectionScreen() {
   }, [mode]);
 
   if (!collection || !index.data) {
-    const failed = unavailable || failedWithoutData(list) || failedWithoutData(index);
+    const failed = session.status === "unavailable" || failedWithoutData(list) || failedWithoutData(index);
     return (
       <Page title="合集">
         {failed ? (
@@ -249,19 +269,26 @@ export default function CollectionScreen() {
 
   const remove = (panda: PandaListItem) =>
     run(async () => {
-      await set(await setInCollection(collection.collectionId, panda.id, false));
+      const next = signedOut
+        ? await setInGuestCollection(collection.collectionId, panda.id, false)
+        : await setInCollection(collection.collectionId, panda.id, false);
+      if (!signedOut) await set(next);
       setRemoved(panda);
     });
   const undo = (panda: PandaListItem) =>
     run(async () => {
-      await set(await setInCollection(collection.collectionId, panda.id, true));
+      const next = signedOut
+        ? await setInGuestCollection(collection.collectionId, panda.id, true)
+        : await setInCollection(collection.collectionId, panda.id, true);
+      if (!signedOut) await set(next);
       setRemoved(null);
     });
   const destroy = () =>
     run(async () => {
       setDeleting(true);
       try {
-        await deleteCollection(collection.collectionId);
+        if (signedOut) await deleteGuestCollection(collection.collectionId);
+        else await deleteCollection(collection.collectionId);
         setLeaving(collection);
         router.back();
         if (accountId) {
@@ -285,16 +312,21 @@ export default function CollectionScreen() {
               {members.length > 0 ? `${members.length} 只熊猫` : "还没有熊猫"}
             </Text>
             <Text variant="footnote" className="text-muted-foreground">
-              {`${updatedOn(collection.updatedAt)}更新 · 只有你看得到`}
+              {`${updatedOn(collection.updatedAt)}更新　${signedOut ? "保存在本机" : "只有你看得到"}`}
             </Text>
           </View>
         </View>
         {mode === "rename" ? (
           <Rename
             collection={collection}
+            onSaveName={(valid) =>
+              signedOut
+                ? renameGuestCollection(collection.collectionId, valid)
+                : renameCollection(collection.collectionId, valid)
+            }
             onDone={(next) => {
               setMode("view");
-              if (next) void run(() => set(next));
+              if (next && !signedOut) void run(() => set(next));
             }}
           />
         ) : null}

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useMemo, useState } from "react";
 import { TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
@@ -20,6 +20,12 @@ import {
   setInCollection,
 } from "@/features/collections/collections";
 import { correctionTargetQueryOptions } from "@/features/corrections/submissions";
+import {
+  createGuestCollection,
+  guestCollectionsQueryOptions,
+  setInGuestCollection,
+} from "@/features/engagement/guest-store";
+import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
 import { failedWithoutData } from "@/lib/query-failed";
@@ -30,14 +36,29 @@ export default function CollectScreen() {
   const { state: session } = useSession();
   const muted = String(useCSSVariable("--color-muted-foreground"));
   const { accountId } = useAccount();
+  const signedIn = accountId !== null;
+  const signedOut = session.status === "signedOut";
   const [name, setName] = useState("");
   const [actionFailed, setActionFailed] = useState(false);
 
-  const target = useQuery({ ...correctionTargetQueryOptions(slug), enabled: accountId !== null });
-  const list = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: accountId !== null });
-  const panda = target.data;
+  const target = useQuery({ ...correctionTargetQueryOptions(slug), enabled: signedIn });
+  const publicIndex = useQuery({ ...pandaIndexQueryOptions(), enabled: signedOut });
+  const remoteList = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: signedIn });
+  const guestList = useQuery({ ...guestCollectionsQueryOptions(), enabled: signedOut });
+
+  const guestPanda = useMemo(() => {
+    if (!signedOut || !publicIndex.data) return undefined;
+    const item = publicIndex.data.find((entry) => entry.slug === slug);
+    return item ? { pandaId: item.id, name: item.name } : undefined;
+  }, [publicIndex.data, signedOut, slug]);
+
+  const panda = signedOut ? guestPanda : target.data;
+  const list = signedOut ? guestList : remoteList;
   const collections = list.data;
-  const failed = failedWithoutData(target) || failedWithoutData(list);
+  const failed =
+    session.status === "unavailable" ||
+    (signedIn ? failedWithoutData(target) : failedWithoutData(publicIndex)) ||
+    failedWithoutData(list);
 
   async function replace(next: Collection) {
     if (accountId) await patchCollections(accountId, (current) => current.map((item) => (item.collectionId === next.collectionId ? next : item)));
@@ -47,7 +68,11 @@ export default function CollectScreen() {
     if (!panda) return;
     setActionFailed(false);
     try {
-      await replace(await setInCollection(collection.collectionId, panda.pandaId, inside));
+      if (signedOut) {
+        await setInGuestCollection(collection.collectionId, panda.pandaId, inside);
+      } else {
+        await replace(await setInCollection(collection.collectionId, panda.pandaId, inside));
+      }
     } catch {
       setActionFailed(true);
     }
@@ -58,23 +83,17 @@ export default function CollectScreen() {
     if (!valid || !panda) return;
     setActionFailed(false);
     try {
-      const created = await setInCollection((await createCollection(valid)).collectionId, panda.pandaId, true);
-      if (accountId) await patchCollections(accountId, (current) => [created, ...current]);
+      if (signedOut) {
+        const created = await createGuestCollection(valid);
+        await setInGuestCollection(created.collectionId, panda.pandaId, true);
+      } else {
+        const created = await setInCollection((await createCollection(valid)).collectionId, panda.pandaId, true);
+        if (accountId) await patchCollections(accountId, (current) => [created, ...current]);
+      }
       setName("");
     } catch {
       setActionFailed(true);
     }
-  }
-
-  if (session.status === "signedOut") {
-    return (
-      <Page label="加入合集" title="把它放进合集">
-        <Text className="text-muted-foreground">登录后才能整理自己的合集。</Text>
-        <Button className="self-start" onPress={() => router.push("/sign-in")}>
-          <Text>登录</Text>
-        </Button>
-      </Page>
-    );
   }
 
   return (
@@ -87,7 +106,8 @@ export default function CollectScreen() {
         <LoadFailed
           message="合集暂时打不开。"
           onRetry={() => {
-            if (failedWithoutData(target)) void target.refetch();
+            if (signedIn && failedWithoutData(target)) void target.refetch();
+            if (signedOut && failedWithoutData(publicIndex)) void publicIndex.refetch();
             if (failedWithoutData(list)) void list.refetch();
           }}
         />
