@@ -1,12 +1,38 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { notifyManager, onlineManager } from "@tanstack/react-query";
 
-import { queryClient } from "./query-client";
+import { queryClient, reportCacheErrors } from "./query-client";
 
 afterEach(() => {
   queryClient.clear();
   onlineManager.setOnline(true);
   vi.useRealTimers();
+});
+
+describe("reportCacheErrors", () => {
+  it("reports a failed query", async () => {
+    const report = vi.fn();
+    const stop = reportCacheErrors(queryClient, report);
+    const failure = new Error("offline");
+    await expect(
+      queryClient.fetchQuery({ queryKey: ["test", "fails"], queryFn: () => Promise.reject(failure), retry: false }),
+    ).rejects.toBe(failure);
+    stop();
+    expect(report).toHaveBeenCalledWith(failure, "query");
+  });
+
+  it("reports a failed mutation only when nothing handles it", async () => {
+    const report = vi.fn();
+    const stop = reportCacheErrors(queryClient, report);
+    const failure = new Error("rejected");
+    const mutate = (options: { onError?: () => void }) =>
+      queryClient.getMutationCache().build(queryClient, { mutationFn: () => Promise.reject(failure), ...options }).execute(undefined);
+    await expect(mutate({ onError: () => undefined })).rejects.toBe(failure);
+    expect(report).not.toHaveBeenCalled();
+    await expect(mutate({})).rejects.toBe(failure);
+    stop();
+    expect(report).toHaveBeenCalledWith(failure, "mutation");
+  });
 });
 
 describe("mobile query cache", () => {

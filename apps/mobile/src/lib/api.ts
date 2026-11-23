@@ -4,8 +4,9 @@ import { offlineCache } from "@/lib/offline-cache";
 import { supabase } from "@/lib/supabase";
 
 // The public V2 API. Set EXPO_PUBLIC_API_BASE_URL to point a development build at a local API.
+// Photos are served by the Web worker under www.zhipanda.com/media; the API host has no /media.
 const baseUrl = (process.env.EXPO_PUBLIC_API_BASE_URL ?? "https://api.zhipanda.com").replace(/\/$/, "");
-const mediaBaseUrl = (process.env.EXPO_PUBLIC_MEDIA_BASE_URL ?? "https://api.zhipanda.com/media").replace(/\/$/, "");
+const mediaBaseUrl = (process.env.EXPO_PUBLIC_MEDIA_BASE_URL ?? "https://www.zhipanda.com/media").replace(/\/$/, "");
 
 export const api = createApiClient(baseUrl);
 api.use(offlineCache);
