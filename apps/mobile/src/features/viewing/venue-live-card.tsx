@@ -165,9 +165,9 @@ export function VenueLiveCard(props: VenueLiveCardProps) {
       <View className="flex-row items-center gap-2.5">
         <Pressable
           role="link"
-          accessibilityLabel={`打开${props.venueName}的页面`}
+          accessibilityLabel={`打开${props.venueName}的页面${snapshot ? `，当地 ${snapshot.localTime}，${snapshot.statusLabel}` : ""}`}
           onPress={props.onOpenVenue}
-          className="min-w-0 flex-1 flex-row items-center gap-2.5 active:opacity-70"
+          className="min-h-11 min-w-0 flex-1 flex-row items-center gap-2.5 active:opacity-70"
         >
           <Icon icon={MapPin} tone="tint" strokeWidth={2} />
           <View className="min-w-0 flex-1 gap-0.5">
@@ -189,15 +189,18 @@ export function VenueLiveCard(props: VenueLiveCardProps) {
             role="link"
             accessibilityLabel={`看${props.venueName}官方直播`}
             accessibilityHint="在浏览器中打开"
-            hitSlop={6}
             onPress={() => void Linking.openURL(liveCamUrl)}
-            className="flex-row items-center gap-1 rounded-pill bg-highlight-soft px-3 active:opacity-75"
-            style={{ height: 32 }}
+            className="-my-1.5 min-h-11 justify-center active:opacity-75"
           >
-            <Icon icon={Video} size="footnote" tone="tint" strokeWidth={2} />
-            <Text variant="footnote" className="font-semibold text-primary">
-              看直播
-            </Text>
+            <View
+              className="flex-row items-center gap-1 rounded-pill bg-highlight-soft px-3 py-1.5"
+              style={{ minHeight: 32 }}
+            >
+              <Icon icon={Video} size="footnote" tone="tint" strokeWidth={2} />
+              <Text variant="footnote" className="font-semibold text-primary">
+                看直播
+              </Text>
+            </View>
           </Pressable>
         ) : null}
       </View>

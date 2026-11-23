@@ -12,8 +12,10 @@ describe("venue-live", () => {
     expect(resolveVenueLiveCamUrl("unknown-venue", null)).toBeNull();
   });
 
-  it("returns null for unknown venue slugs instead of fabricating a schedule", () => {
+  it("returns null for unknown or prototype venue slugs instead of fabricating a schedule", () => {
     expect(buildVenueLiveSnapshot("not-in-specs", null, new Date("2026-10-01T02:00:00Z"))).toBeNull();
+    expect(buildVenueLiveSnapshot("constructor", null, new Date("2026-10-01T02:00:00Z"))).toBeNull();
+    expect(resolveVenueLiveCamUrl("constructor", null)).toBeNull();
   });
 
   it("reports active, nap, and closed states for domestic Chengdu schedule", () => {

@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/api", () => ({
-  api: {},
-}));
-
 import { normalizeTerm, type PandaListItem } from "@/features/pandas/pandas";
 
 import { filterResidents, splitResidentsByCover } from "./resident-filter";
+
+vi.mock("@/lib/api", () => ({
+  api: {},
+}));
 
 function samplePanda(overrides: Partial<PandaListItem>): PandaListItem {
   const name = overrides.name ?? "和花";

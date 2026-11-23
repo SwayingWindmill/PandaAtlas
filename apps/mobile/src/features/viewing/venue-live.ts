@@ -40,12 +40,16 @@ const VENUE_STATUS_HINT: Record<VenueClockStatus, string> = {
   closed: "闭园休整中",
 };
 
+function venueSpecFor(slug: string) {
+  return Object.hasOwn(VENUE_CLOCK_SPECS, slug) ? VENUE_CLOCK_SPECS[slug] : undefined;
+}
+
 /** Prefers an API-supplied live-cam URL, falling back to verified static venue specs. */
 export function resolveVenueLiveCamUrl(
   slug: string,
   apiLiveCamUrl: string | null | undefined,
 ): string | null {
-  return apiLiveCamUrl || VENUE_CLOCK_SPECS[slug]?.liveCamUrl || null;
+  return apiLiveCamUrl || venueSpecFor(slug)?.liveCamUrl || null;
 }
 
 /** Builds a real-time viewing activity snapshot for a venue with a verified schedule spec. */
@@ -54,7 +58,7 @@ export function buildVenueLiveSnapshot(
   apiLiveCamUrl: string | null | undefined,
   now: Date = new Date(),
 ): VenueLiveSnapshot | null {
-  const spec = VENUE_CLOCK_SPECS[slug];
+  const spec = venueSpecFor(slug);
   if (!spec || spec.active.length === 0) return null;
 
   const { hhmm, minutes } = localClockOf(now, spec.timeZone);

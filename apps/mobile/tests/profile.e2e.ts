@@ -68,8 +68,14 @@ test("profile keeps Segmented vertically stable across tabs", async ({ app, scre
   const familyTop = await segmentedTop();
   expect(familyTop).not.toBeNull();
 
+  await screen.getByRole("radio", "照片").tap();
+  await expect(screen.getByText("2 张")).toBeVisible();
+  const photosTop = await segmentedTop();
+  expect(photosTop).not.toBeNull();
+  expect(Math.abs(photosTop! - familyTop!)).toBeLessThanOrEqual(1);
+
   await screen.getByRole("radio", "动态").tap();
-  await expect(screen.getByLabel("生日，7.20，已确认")).toHaveCount(0);
+  await expect(screen.getByRole("button", "时间线")).toBeVisible();
   const eventsTop = await segmentedTop();
   expect(eventsTop).not.toBeNull();
   expect(Math.abs(eventsTop! - familyTop!)).toBeLessThanOrEqual(1);
@@ -90,6 +96,10 @@ test("venue exposes clickable live cam link and resident filter tabs", async ({ 
     const headers = Object.fromEntries(
       Object.entries(upstream.headers).filter(([name]) => !["content-length", "content-encoding"].includes(name.toLowerCase())),
     );
+    if (upstream.status !== 200) {
+      await route.fulfill({ status: upstream.status, headers, body: await upstream.text() });
+      return;
+    }
     const body = (await upstream.json()) as {
       institution: { profile?: Record<string, unknown> | null };
       residents: {
@@ -122,9 +132,10 @@ test("venue exposes clickable live cam link and resident filter tabs", async ({ 
   await expect.poll(async () => (await openedTabs(browser)).includes("https://example.test/live")).toBe(true);
 
   await screen.getByRole("radio", "熊猫").tap();
-  await expect(screen.getByRole("tab", { name: /^全部 /, selected: true })).toBeVisible();
-  const unseenTab = screen.getByRole("tab", /^未见过 /);
+  await expect(screen.getByRole("tab", { name: "全部 2", selected: true })).toBeVisible();
+  const unseenTab = screen.getByRole("tab", "未见过 2");
   await expect(unseenTab).toBeVisible();
   await unseenTab.tap();
-  await expect(screen.getByRole("tab", { name: /^未见过 /, selected: true })).toBeVisible();
+  await expect(screen.getByRole("tab", { name: "未见过 2", selected: true })).toBeVisible();
+  await expect(screen.getByRole("link", notice.name)).toBeVisible();
 });

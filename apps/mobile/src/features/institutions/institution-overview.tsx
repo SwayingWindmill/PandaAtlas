@@ -133,14 +133,14 @@ export function Badges({ institution }: { institution: InstitutionDetail }) {
   ].filter((badge) => badge !== null);
   return (
     <View className="flex-row items-center gap-stack-tight">
-      <View className="min-w-0 flex-1 flex-row flex-wrap gap-stack-tight">
+      <View className="min-w-0 flex-1 flex-row flex-wrap items-center gap-stack-tight">
         {infoBadges.map((badge) => (
           <View
             key={badge.label}
             accessible
             accessibilityLabel={badge.spoken}
-            className="flex-row items-center gap-hair-gap rounded-pill bg-secondary px-row"
-            style={{ height: 32 }}
+            className="flex-row items-center gap-hair-gap rounded-pill bg-secondary px-row py-1.5"
+            style={{ minHeight: 32 }}
           >
             <Icon icon={badge.icon} size="footnote" tone="label" />
             <Text variant="subheadline" className="font-semibold">
@@ -153,15 +153,18 @@ export function Badges({ institution }: { institution: InstitutionDetail }) {
             role="link"
             accessibilityLabel="看官方直播"
             accessibilityHint="在浏览器中打开"
-            hitSlop={6}
             onPress={() => void Linking.openURL(liveCamUrl)}
-            className="flex-row items-center gap-1 rounded-pill bg-highlight-soft px-row active:opacity-75"
-            style={{ height: 32 }}
+            className="-my-1.5 min-h-11 justify-center active:opacity-75"
           >
-            <Icon icon={Video} size="footnote" tone="tint" />
-            <Text variant="subheadline" className="font-semibold text-primary">
-              看直播
-            </Text>
+            <View
+              className="flex-row items-center gap-1 rounded-pill bg-highlight-soft px-row py-1.5"
+              style={{ minHeight: 32 }}
+            >
+              <Icon icon={Video} size="footnote" tone="tint" />
+              <Text variant="subheadline" className="font-semibold text-primary">
+                看直播
+              </Text>
+            </View>
           </Pressable>
         ) : null}
       </View>
@@ -285,10 +288,15 @@ function ResidentTile({ panda, width, seen }: { panda: PandaListItem; width: num
                 {panda.name}
               </Text>
               {birthYear || seen ? (
-                <View className="flex-row items-center justify-between gap-2">
+                <View className="flex-row flex-wrap items-center justify-between gap-x-2 gap-y-1">
                   {birthYear ? (
-                    <Text variant="footnote" role="none" className="text-on-media/85 tabular-nums" numberOfLines={1}>
-                      {`${birthYear} 年生`}
+                    <Text
+                      variant="footnote"
+                      role="none"
+                      className="min-w-0 shrink text-on-media/85 tabular-nums"
+                      numberOfLines={1}
+                    >
+                      {`${birthYear} 年出生`}
                     </Text>
                   ) : (
                     <View />
@@ -363,19 +371,23 @@ export function Residents({
                 aria-selected={selected}
                 accessibilityState={{ selected }}
                 accessibilityLabel={pill.label}
-                hitSlop={4}
                 onPress={() => setFilter(pill.key)}
-                className={cn(
-                  "h-9 items-center justify-center rounded-full px-3.5 active:opacity-75",
-                  selected ? "bg-foreground" : "bg-secondary",
-                )}
+                className="-my-1 min-h-11 justify-center active:opacity-75"
               >
-                <Text
-                  variant="subheadline"
-                  className={cn("font-semibold tabular-nums", selected ? "text-background" : "text-foreground")}
+                <View
+                  className={cn(
+                    "items-center justify-center rounded-pill px-3 py-1.5",
+                    selected ? "bg-foreground" : "bg-secondary",
+                  )}
+                  style={{ minHeight: 36 }}
                 >
-                  {pill.label}
-                </Text>
+                  <Text
+                    variant="subheadline"
+                    className={cn("font-semibold tabular-nums", selected ? "text-background" : "text-foreground")}
+                  >
+                    {pill.label}
+                  </Text>
+                </View>
               </Pressable>
             );
           })}
@@ -403,9 +415,9 @@ export function Residents({
                     role="link"
                     leading={<PandaThumb pandaId={panda.id} name={panda.name} size={44} shape="round" />}
                     label={panda.name}
-                    detail={birthYear ? `${birthYear} 年生` : undefined}
+                    detail={birthYear ? `${birthYear} 年出生` : undefined}
                     meta={isSeen ? "见过" : undefined}
-                    accessibilityLabel={`${panda.name}${birthYear ? `，${birthYear} 年生` : ""}${isSeen ? "，已见过" : ""}`}
+                    accessibilityLabel={`${panda.name}${birthYear ? `，${birthYear} 年出生` : ""}${isSeen ? "，已见过" : ""}`}
                     onPress={() => openPanda(panda.slug)}
                     last={index === compact.length - 1}
                   />
