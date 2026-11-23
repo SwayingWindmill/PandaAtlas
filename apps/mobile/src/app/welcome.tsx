@@ -97,6 +97,7 @@ export default function WelcomeScreen() {
   const [status, setStatus] = useState<"idle" | "following" | "failed">("idle");
   const [loadFailed, setLoadFailed] = useState(false);
   const [followAfterSignIn, setFollowAfterSignIn] = useState(false);
+  const busy = status === "following" || (session.status === "signedIn" && followAfterSignIn);
   // Picks are saved only once the stored ones are read, so an empty first render does not wipe them.
   const [restored, setRestored] = useState(false);
 
@@ -129,6 +130,8 @@ export default function WelcomeScreen() {
   const isSelected = (panda: PandaListItem) => selected.some((item) => item.id === panda.id);
 
   function toggle(panda: PandaListItem) {
+    // The picks are being followed; changing them now would not change what gets followed.
+    if (busy) return;
     setSelected((current) =>
       current.some((item) => item.id === panda.id)
         ? current.filter((item) => item.id !== panda.id)
@@ -173,7 +176,6 @@ export default function WelcomeScreen() {
       live = false;
     };
   }, [accountId, followAfterSignIn, selected]);
-  const resuming = accountId !== null && followAfterSignIn;
 
   const signedIn = session.status === "signedIn";
   return (
@@ -223,7 +225,7 @@ export default function WelcomeScreen() {
             有几只没能关注，请再试一次。
           </Text>
         ) : null}
-        <Button onPress={() => void follow()} disabled={selected.length === 0 || status === "following" || resuming}>
+        <Button onPress={() => void follow()} disabled={selected.length === 0 || busy}>
           <Text>
             {selected.length === 0
               ? "选几只熊猫"

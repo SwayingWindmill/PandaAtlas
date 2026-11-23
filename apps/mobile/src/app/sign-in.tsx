@@ -138,7 +138,7 @@ export default function SignInScreen() {
           <Button onPress={() => void verify(code)} disabled={busy || code.length !== 6}>
             <Text>登录</Text>
           </Button>
-          <ResendButton sentAt={sentAt} disabled={busy} onPress={() => void resend()} />
+          <ResendButton key={sentAt} sentAt={sentAt} disabled={busy} onPress={() => void resend()} />
           <Button variant="plain" onPress={() => setSentTo(null)} disabled={busy}>
             <Text>换个邮箱</Text>
           </Button>
