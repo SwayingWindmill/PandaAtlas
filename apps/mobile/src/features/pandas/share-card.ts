@@ -1,7 +1,7 @@
 import * as Clipboard from "expo-clipboard";
 import { shareAsync } from "expo-sharing";
 import type { ComponentRef, RefObject } from "react";
-import { Platform, Share, type View } from "react-native";
+import { PixelRatio, Platform, Share, type View } from "react-native";
 import { captureRef } from "react-native-view-shot";
 
 import { downloadOnWeb } from "@/lib/download";
@@ -14,13 +14,17 @@ export function profileUrl(slug: string): string {
   return `${WEBSITE}/${slug}`;
 }
 
-/** The export size: `captureRef` ignores a width given without a height on Android and web. */
+/**
+ * The export size: `captureRef` ignores a width given without a height on Android and web, and iOS reads the
+ * size in points, so it gets the pixel size divided by the screen's scale.
+ */
 async function exportSize(card: RefObject<ComponentRef<typeof View> | null>) {
   const aspect = await new Promise<number>((resolve, reject) => {
     if (!card.current) return reject(new Error("The share card is not mounted."));
     card.current.measure((_x, _y, width, height) => resolve(height / width));
   });
-  return { width: EXPORT_WIDTH, height: Math.round(EXPORT_WIDTH * aspect) };
+  const scale = Platform.OS === "ios" ? PixelRatio.get() : 1;
+  return { width: EXPORT_WIDTH / scale, height: Math.round(EXPORT_WIDTH * aspect) / scale };
 }
 
 /** Turns the rendered card into a PNG and hands it on: the share sheet on phones, a download on web. */
