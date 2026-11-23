@@ -15,6 +15,7 @@ import { SessionProvider } from "@/features/session/session";
 import { installGlobalErrorReporting, reportError } from "@/lib/error-reporting";
 import { QueryProvider } from "@/lib/query-provider";
 import { stackScreenOptions } from "@/lib/screen-options";
+import { useSilentUpdates } from "@/lib/ota";
 import { NAV_THEME, useIOSColors } from "@/lib/theme";
 
 installGlobalErrorReporting();
@@ -53,6 +54,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 
 export default function RootLayout() {
   const { scheme } = useIOSColors();
+  useSilentUpdates();
   useEffect(() => {
     void applyStoredAppearance();
   }, []);

@@ -69,3 +69,31 @@ Store builds are made in the cloud with EAS Build, so they also work without a M
 EAS signs and uploads the build. The bundle identifier is `com.zhipanda.app` (see `app.json`).
 
 Add a native dependency with `npx expo install <package>` so its version matches the Expo SDK.
+
+### Store screenshots
+
+`npm run store:screenshots -w @zhipanda/mobile` saves six screens (今天, 发现, 找熊猫, a panda, its family, a venue) in light and dark at 1320×2868 (iPhone 6.9"), 1242×2688 (iPhone 6.5"), 2064×2752 (iPad 13") and 1080×1920 (Android) to `store-screenshots/`. It drives the web build with production's public data, so start `node apps/mobile/scripts/preview-production.mjs` first. `--panda <slug>` and `--venue <slug>` pick the subjects; `--only <device>` makes one size. It is the web rendering, with no iOS status bar.
+
+### Over-the-air updates
+
+`expo-updates` ships JavaScript fixes to installed builds through EAS Update. Each build profile has a channel: `preview` and `production` (`eas.json`). The runtime version follows the app version (`runtimeVersion.policy: appVersion`), so an update only reaches builds of the same `version` in `app.json`; a change to native code needs a new store build and a new `version`.
+
+`src/lib/ota.ts` checks at launch and when the app returns to the foreground, at most every 30 minutes. An update downloads in the background and runs from the next cold start, so nothing changes under a fan mid-screen. For an emergency fix, raise `extra.otaCriticalIndex` in `app.json` by one in the same commit: a running app that downloads an update with a higher mark reloads into it at once (`src/lib/ota-policy.ts`).
+
+One-time setup, on an Expo account with access to the project (until then `expo-updates` stays disabled and the app runs the bundle it shipped with):
+
+```powershell
+npx eas-cli init
+```
+
+```powershell
+npx eas-cli update:configure
+```
+
+The first links the Expo project and writes `extra.eas.projectId`; the second writes `updates.url`. Commit both, then make new store builds. To publish:
+
+```powershell
+npx eas-cli update --channel production --message "<what changed>"
+```
+
+Publish to `preview` first and check it on an internal build. To roll back, republish the previous update to the channel with `npx eas-cli update:republish`.

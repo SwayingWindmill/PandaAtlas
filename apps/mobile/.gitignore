@@ -53,3 +53,6 @@ tests/support/.state.json
 /android
 # react-native-nano-icons output, regenerated from assets/symbols/ at prebuild.
 assets/nanoicons/
+
+# Store screenshots (npm run store:screenshots)
+store-screenshots/
