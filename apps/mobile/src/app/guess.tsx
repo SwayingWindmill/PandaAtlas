@@ -92,6 +92,7 @@ export default function GuessScreen() {
   const [outcome, setOutcome] = useState<GuessOutcome | null>(null);
   const [answerFailed, setAnswerFailed] = useState(false);
   const [level, setLevel] = useState<Level>("any");
+  const [emptyLevels, setEmptyLevels] = useState<Probes>({});
 
   const checks = useQuery(levelChecksQueryOptions());
   const drawn = useQuery(questionQueryOptions(level === "any" ? undefined : level, round));
@@ -101,11 +102,12 @@ export default function GuessScreen() {
     : drawn.isError
       ? { status: empty ? "empty" : "failed" }
       : { status: "loading" };
-  // A level that has no question to draw is left out of the picker, even if its first check said otherwise.
+  // A level found to have no question to draw stays out of the picker for the session, even if its first check said otherwise.
+  if (empty && level !== "any" && emptyLevels[level] !== "empty") setEmptyLevels({ ...emptyLevels, [level]: "empty" });
   const probes: Probes | null = checks.data
     ? {
         ...Object.fromEntries(DIFFICULTIES.map(({ value }) => [value, checks.data[value].probe])),
-        ...(empty && level !== "any" ? { [level]: "empty" as const } : {}),
+        ...emptyLevels,
       }
     : checks.isError
       ? {}

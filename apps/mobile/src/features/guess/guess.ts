@@ -96,7 +96,9 @@ async function nextQuestion(level: GuessDifficulty | undefined): Promise<GuessQu
   const checks = queryClient.getQueryData(levelChecksQueryOptions().queryKey);
   const ready = level ? checks?.[level]?.question : undefined;
   if (checks && level && ready) {
-    queryClient.setQueryData(levelChecksQueryOptions().queryKey, { ...checks, [level]: { probe: checks[level].probe } });
+    const queryKey = levelChecksQueryOptions().queryKey;
+    await queryClient.cancelQueries({ queryKey });
+    queryClient.setQueryData(queryKey, { ...checks, [level]: { probe: checks[level].probe } });
     return ready;
   }
   return loadQuestion(level);

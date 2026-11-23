@@ -168,7 +168,7 @@ export default function NotificationsScreen() {
   );
   const messages = inbox.data ?? null;
   const preferences = stored.data ?? null;
-  const failed = unavailable || inbox.isError || stored.isError;
+  const failed = unavailable || (inbox.isError && !inbox.data) || (stored.isError && !stored.data);
 
   function retry() {
     if (inbox.isError) void inbox.refetch();
@@ -177,26 +177,34 @@ export default function NotificationsScreen() {
 
   const readOne = useMutation({
     mutationFn: (message: Message) => markRead(message.messageId),
-    onSuccess: (updated) =>
-      queryClient.setQueryData<Message[]>(inboxQueryKey(accountId ?? ""), (current) =>
+    onSuccess: async (updated) => {
+      const queryKey = inboxQueryKey(accountId ?? "");
+      await queryClient.cancelQueries({ queryKey });
+      queryClient.setQueryData<Message[]>(queryKey, (current) =>
         current?.map((item) => (item.messageId === updated.messageId ? updated : item)),
-      ),
+      );
+    },
   });
   const readEvery = useMutation({
     mutationFn: markAllRead,
-    onSuccess: () => {
+    onSuccess: async () => {
       const now = new Date().toISOString();
-      queryClient.setQueryData<Message[]>(inboxQueryKey(accountId ?? ""), (current) =>
+      const queryKey = inboxQueryKey(accountId ?? "");
+      await queryClient.cancelQueries({ queryKey });
+      queryClient.setQueryData<Message[]>(queryKey, (current) =>
         current?.map((item) => (item.readAt === null ? { ...item, readAt: now } : item)),
       );
     },
   });
   const save = useMutation({
     mutationFn: savePreference,
-    onSuccess: (saved) =>
-      queryClient.setQueryData<Preference[]>(preferencesQueryKey(accountId ?? ""), (current) =>
+    onSuccess: async (saved) => {
+      const queryKey = preferencesQueryKey(accountId ?? "");
+      await queryClient.cancelQueries({ queryKey });
+      queryClient.setQueryData<Preference[]>(queryKey, (current) =>
         current?.map((item) => (item.category === saved.category && item.channel === saved.channel ? saved : item)),
-      ),
+      );
+    },
   });
   const readFailed = readOne.isError || readEvery.isError;
   const saveFailed = save.isError;

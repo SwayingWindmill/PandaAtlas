@@ -142,7 +142,9 @@ export default function AskScreen() {
     try {
       const answer = await askPanda(text);
       setExchanges((list) => list.map((item) => (item.id === id ? { ...item, answer } : item)));
-      queryClient.setQueryData(askStatusQueryOptions(accountId ?? "").queryKey, (current) =>
+      const statusKey = askStatusQueryOptions(accountId ?? "").queryKey;
+      await queryClient.cancelQueries({ queryKey: statusKey });
+      queryClient.setQueryData(statusKey, (current) =>
         current ? { ...current, remainingToday: answer.remainingToday } : current,
       );
       if (answer.kind === "answer") successHaptic();

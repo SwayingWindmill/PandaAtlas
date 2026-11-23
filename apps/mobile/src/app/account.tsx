@@ -103,13 +103,16 @@ function ExportSection({
 
 function DeletionSection({
   request,
+  reason,
+  onReasonChange,
   onRequest,
 }: {
   request: PrivacyRequest | null;
+  reason: string;
+  onReasonChange: (reason: string) => void;
   onRequest: (reason: string) => Promise<void>;
 }) {
   const [confirming, setConfirming] = useState(false);
-  const [reason, setReason] = useState("");
   const [status, run] = useWork();
   const open = canRequest(request) && !confirming;
 
@@ -137,7 +140,7 @@ function DeletionSection({
           </View>
           <TextField
             value={reason}
-            onChangeText={(value) => setReason(value.slice(0, 1000))}
+            onChangeText={(value) => onReasonChange(value.slice(0, 1000))}
             placeholder="原因（可不填）"
             accessibilityLabel="注销原因"
             multiline
@@ -179,6 +182,8 @@ export default function AccountScreen() {
   const list = useQuery({ ...privacyRequestsQueryOptions(accountId ?? ""), enabled: accountId !== null });
   const requests = list.data;
   const pendingAction = useRef<(() => Promise<void>) | null>(null);
+  // Held here so the typed reason survives the verification screen replacing the form.
+  const [deletionReason, setDeletionReason] = useState("");
   // An action found the verification lapsed, or carrying out the one that waited failed.
   const [actionGate, setActionGate] = useState<"verify" | "resuming" | "failed" | null>(null);
 
@@ -186,7 +191,7 @@ export default function AccountScreen() {
   const gate =
     actionGate === "resuming" ? "checking"
     : actionGate === "verify" || lapsed ? "verify"
-    : actionGate === "failed" || list.isError || unavailable ? "failed"
+    : actionGate === "failed" || (list.isError && !requests) || unavailable ? "failed"
     : requests ? "open"
     : "checking";
 
@@ -202,8 +207,11 @@ export default function AccountScreen() {
     const key = (keys.current[kind] ??= newRequestKey());
     const created = await createPrivacyRequest(kind, requestReason(kind, written), key);
     delete keys.current[kind];
+    if (kind === "account_deletion") setDeletionReason("");
     if (accountId) {
-      queryClient.setQueryData<PrivacyRequest[]>(privacyRequestsQueryKey(accountId), (current) => [
+      const queryKey = privacyRequestsQueryKey(accountId);
+      await queryClient.cancelQueries({ queryKey });
+      queryClient.setQueryData<PrivacyRequest[]>(queryKey, (current) => [
         created,
         ...(current ?? []).filter((item) => item.requestId !== created.requestId),
       ]);
@@ -273,6 +281,8 @@ export default function AccountScreen() {
           />
           <DeletionSection
             request={latestRequest(requests, "account_deletion")}
+            reason={deletionReason}
+            onReasonChange={setDeletionReason}
             onRequest={(reason) => request("account_deletion", reason)}
           />
         </Animated.View>

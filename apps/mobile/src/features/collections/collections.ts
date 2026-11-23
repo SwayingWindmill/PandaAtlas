@@ -36,9 +36,14 @@ export function collectionsQueryOptions(accountId: string) {
   return queryOptions({ queryKey: collectionsQueryKey(accountId), queryFn: loadCollections, staleTime: 0 });
 }
 
-/** Writes a change the server accepted into the cached list, so every reader of it shows the change. */
-export function patchCollections(accountId: string, update: (collections: Collection[]) => Collection[]) {
-  queryClient.setQueryData<Collection[]>(collectionsQueryKey(accountId), (current) => current && update(current));
+/**
+ * Writes a change the server accepted into the cached list, so every reader of it shows the change. A fetch
+ * still in flight is cancelled first: its older response would land on top of the change.
+ */
+export async function patchCollections(accountId: string, update: (collections: Collection[]) => Collection[]) {
+  const queryKey = collectionsQueryKey(accountId);
+  await queryClient.cancelQueries({ queryKey });
+  queryClient.setQueryData<Collection[]>(queryKey, (current) => current && update(current));
 }
 
 export async function createCollection(name: string): Promise<Collection> {

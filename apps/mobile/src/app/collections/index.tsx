@@ -29,7 +29,7 @@ import { cn } from "@/lib/utils";
 
 const GAP = semantic.spacing.inset.value;
 
-function NewCollection({ onCreated }: { onCreated: (collection: Collection) => void }) {
+function NewCollection({ onCreated }: { onCreated: (collection: Collection) => Promise<void> }) {
   const muted = String(useCSSVariable("--color-muted-foreground"));
   const [name, setName] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "failed">("idle");
@@ -148,7 +148,9 @@ export default function CollectionsScreen() {
         </View>
       ) : (
         <Animated.View entering={PAGE_ENTER} className="gap-section">
-          <NewCollection onCreated={(created) => accountId && patchCollections(accountId, (current) => [created, ...current])} />
+          <NewCollection onCreated={async (created) => {
+              if (accountId) await patchCollections(accountId, (current) => [created, ...current]);
+            }} />
           {collections.length === 0 ? (
             <ScreenState message="还没有合集。" className="py-stack" />
           ) : (

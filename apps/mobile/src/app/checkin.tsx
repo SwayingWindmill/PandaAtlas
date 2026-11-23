@@ -249,7 +249,11 @@ export default function CheckinScreen() {
     setNotice(null);
     try {
       const next = await work();
-      if (accountId) queryClient.setQueryData(checkinsQueryKey(accountId, today), next);
+      if (accountId) {
+        const queryKey = checkinsQueryKey(accountId, today);
+        await queryClient.cancelQueries({ queryKey });
+        queryClient.setQueryData(queryKey, next);
+      }
       setNotice(done);
       haptic();
     } catch (error) {

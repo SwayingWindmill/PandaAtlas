@@ -99,7 +99,9 @@ export default function VisitsScreen() {
     try {
       await removeVisit(visit.checkinId);
       if (accountId) {
-        queryClient.setQueryData<Visit[]>(visitsQueryKey(accountId), (current) =>
+        const queryKey = visitsQueryKey(accountId);
+        await queryClient.cancelQueries({ queryKey });
+        queryClient.setQueryData<Visit[]>(queryKey, (current) =>
           current?.filter((item) => item.checkinId !== visit.checkinId),
         );
       }

@@ -38,15 +38,15 @@ export default function CollectScreen() {
   const collections = list.data;
   const failed = target.isError || list.isError;
 
-  function replace(next: Collection) {
-    if (accountId) patchCollections(accountId, (current) => current.map((item) => (item.collectionId === next.collectionId ? next : item)));
+  async function replace(next: Collection) {
+    if (accountId) await patchCollections(accountId, (current) => current.map((item) => (item.collectionId === next.collectionId ? next : item)));
   }
 
   async function toggle(collection: Collection, inside: boolean) {
     if (!panda) return;
     setActionFailed(false);
     try {
-      replace(await setInCollection(collection.collectionId, panda.pandaId, inside));
+      await replace(await setInCollection(collection.collectionId, panda.pandaId, inside));
     } catch {
       setActionFailed(true);
     }
@@ -58,7 +58,7 @@ export default function CollectScreen() {
     setActionFailed(false);
     try {
       const created = await setInCollection((await createCollection(valid)).collectionId, panda.pandaId, true);
-      if (accountId) patchCollections(accountId, (current) => [created, ...current]);
+      if (accountId) await patchCollections(accountId, (current) => [created, ...current]);
       setName("");
     } catch {
       setActionFailed(true);

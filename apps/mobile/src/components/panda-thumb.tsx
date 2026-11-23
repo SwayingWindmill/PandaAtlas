@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { View } from "react-native";
 
 import { PhotoOutline } from "@/components/photo-outline";
@@ -25,6 +26,7 @@ export function PandaThumb({
   shape?: "round" | "square" | "tile";
 }) {
   const photo = usePandaCover(pandaId);
+  const [loaded, setLoaded] = useState<string | null>(null);
   const radius = shape === "round" ? size / 2 : shape === "tile" ? RADIUS.tile : RADIUS.control;
   const initial = (
     <Text variant={size >= 48 ? "title" : "headline"} role="none" allowFontScaling={false} className="text-muted-foreground">
@@ -45,11 +47,12 @@ export function PandaThumb({
           style={{ width: size, height: size }}
           contentFit="cover"
           accessible={false}
+          onLoad={() => setLoaded(photo)}
         />
       ) : (
         initial
       )}
-      {photo ? <PhotoOutline radius={radius} /> : null}
+      {photo && loaded === photo ? <PhotoOutline radius={radius} /> : null}
     </View>
   );
 }

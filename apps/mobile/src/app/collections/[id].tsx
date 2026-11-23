@@ -231,8 +231,8 @@ export default function CollectionScreen() {
     );
   }
 
-  const set = (next: Collection) => {
-    if (accountId) patchCollections(accountId, (current) => current.map((item) => (item.collectionId === next.collectionId ? next : item)));
+  const set = async (next: Collection) => {
+    if (accountId) await patchCollections(accountId, (current) => current.map((item) => (item.collectionId === next.collectionId ? next : item)));
   };
 
   async function run(work: () => Promise<void>) {
@@ -246,12 +246,12 @@ export default function CollectionScreen() {
 
   const remove = (panda: PandaListItem) =>
     run(async () => {
-      set(await setInCollection(collection.collectionId, panda.id, false));
+      await set(await setInCollection(collection.collectionId, panda.id, false));
       setRemoved(panda);
     });
   const undo = (panda: PandaListItem) =>
     run(async () => {
-      set(await setInCollection(collection.collectionId, panda.id, true));
+      await set(await setInCollection(collection.collectionId, panda.id, true));
       setRemoved(null);
     });
   const destroy = () =>
@@ -259,6 +259,9 @@ export default function CollectionScreen() {
       setDeleting(true);
       try {
         await deleteCollection(collection.collectionId);
+        if (accountId) {
+          await patchCollections(accountId, (current) => current.filter((item) => item.collectionId !== collection.collectionId));
+        }
         router.back();
       } finally {
         setDeleting(false);

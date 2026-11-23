@@ -3,22 +3,15 @@ import { type ReactNode, useState } from "react";
 import { type StyleProp, View, type ViewStyle } from "react-native";
 import { useReducedMotion } from "react-native-reanimated";
 
-const FADE_MS = 200;
-
-/** Starts a photo's download into the memory and disk cache, so a screen about to show it finds it there. */
-export function prefetchImage(url: string | null | undefined): void {
-  if (url) void Image.prefetch(url, "memory-disk").catch(() => false);
-}
-
 /**
- * A remote photo: kept in memory and on disk, faded in briefly (not at all under reduced motion), and
- * replaced by `fallback` in the same box when there is no source or it fails to load. Without a fallback the
- * box stays empty, so the placeholder fill of whatever holds the photo shows.
+ * A remote photo: kept in memory and on disk, faded in when `transition` says so (never under reduced
+ * motion), and replaced by `fallback` in the same box when there is no source or it fails to load. Without a
+ * fallback the box stays empty, so the placeholder fill of whatever holds the photo shows.
  */
 export function RemoteImage({
   source,
   fallback,
-  transition = FADE_MS,
+  transition = 0,
   style,
   onError,
   ...props
