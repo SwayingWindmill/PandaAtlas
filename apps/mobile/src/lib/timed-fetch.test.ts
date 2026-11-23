@@ -39,6 +39,27 @@ describe("timedFetch", () => {
     await expect(pending).resolves.toBeInstanceOf(Response);
   });
 
+  it("leaves writes to the network's own timing, so a slow save is never cut off and sent twice", async () => {
+    const network = stalledNetwork();
+    vi.stubGlobal("fetch", network.fetch);
+    let settled = false;
+    const pending = timedFetch(new Request("https://api.example.test/api/v2/games/guess/answer", { method: "POST", body: "{}" }), 1000);
+    void pending.finally(() => (settled = true));
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(settled).toBe(false);
+    network.answer();
+    await expect(pending).resolves.toBeInstanceOf(Response);
+  });
+
+  it("does not send a read the caller already cancelled", async () => {
+    const network = stalledNetwork();
+    vi.stubGlobal("fetch", network.fetch);
+    const caller = new AbortController();
+    caller.abort(new Error("left the screen"));
+    await expect(timedFetch(new Request("https://api.example.test/api/v2/pandas", { signal: caller.signal }), 1000)).rejects.toThrow("left the screen");
+    expect(network.fetch).not.toHaveBeenCalled();
+  });
+
   it("still ends when the caller cancels", async () => {
     const network = stalledNetwork();
     vi.stubGlobal("fetch", network.fetch);

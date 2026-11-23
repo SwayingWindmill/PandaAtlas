@@ -93,10 +93,14 @@ function worstProfile(body: Schemas["PublicPandaDetailDto"]): Schemas["PublicPan
   };
 }
 
-// Every parent gets the cubs worstProfile adds to its relatives, as Pan Pan fathered dozens.
+// Every panda in the lineage gets the cubs worstProfile adds to its relatives, as Pan Pan fathered dozens.
 function worstLineage(body: Schemas["PublicLineageListDto"]): Schemas["PublicLineageListDto"] {
-  const parents = new Map(body.items.map((link) => [link.parentId, link]));
-  const cubs = [...parents].flatMap(([parentId, { parentRole, sourceIds }]) =>
+  const pandas = new Map<string, { parentRole: (typeof body.items)[number]["parentRole"]; sourceIds: string[] }>();
+  for (const link of body.items) {
+    pandas.set(link.parentId, { parentRole: link.parentRole, sourceIds: link.sourceIds });
+    if (!pandas.has(link.childId)) pandas.set(link.childId, { parentRole: "mother", sourceIds: link.sourceIds });
+  }
+  const cubs = [...pandas].flatMap(([parentId, { parentRole, sourceIds }]) =>
     Array.from({ length: RELATIVE_COUNT }, (_, index) => ({
       assertionId: `worst-${parentId}-${index}`,
       childId: fakeId(parentId, index),

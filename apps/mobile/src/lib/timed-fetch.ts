@@ -4,7 +4,10 @@
  */
 export const REQUEST_TIMEOUT_MS = 20_000;
 
+/** Reads only: a write cut off after the server took it would be sent again by the retry. */
 export function timedFetch(request: Request, timeoutMs = REQUEST_TIMEOUT_MS): Promise<Response> {
+  if (request.method !== "GET") return fetch(request);
+  if (request.signal.aborted) return Promise.reject(request.signal.reason);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(new Error(`Request timed out after ${timeoutMs} ms`)), timeoutMs);
   const cancel = () => controller.abort(request.signal.reason);

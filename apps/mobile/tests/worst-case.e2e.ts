@@ -55,6 +55,8 @@ test("a profile with no birth date, eight aliases and 30+ cubs keeps its name an
 
   await app.open(`/pandas/${panda.slug}/family`);
   await expect(screen.getByRole("heading", `${LONG_ZH}的家族`)).toBeVisible();
+  // The tree draws the cubs in a row that scrolls sideways; the second one is a short name, 幼仔2号.
+  await expect(screen.getByRole("button", { name: "幼仔2号", exact: false }).first()).toBeVisible();
   expect(await overflowing(browser)).toEqual([]);
 });
 
