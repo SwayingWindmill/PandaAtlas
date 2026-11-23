@@ -97,7 +97,8 @@ export default function WelcomeScreen() {
   const [status, setStatus] = useState<"idle" | "following" | "failed">("idle");
   const [loadFailed, setLoadFailed] = useState(false);
   const [followAfterSignIn, setFollowAfterSignIn] = useState(false);
-  const busy = status === "following" || (session.status === "signedIn" && followAfterSignIn);
+  // The follow after sign-in runs only with picks; restored picks whose pandas were all unpublished leave none.
+  const busy = status === "following" || (session.status === "signedIn" && followAfterSignIn && selected.length > 0);
   // Picks are saved only once the stored ones are read, so an empty first render does not wipe them.
   const [restored, setRestored] = useState(false);
 
