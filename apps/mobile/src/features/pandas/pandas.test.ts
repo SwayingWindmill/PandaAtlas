@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { fameSlugs } from "@/features/onboarding/suggestions";
 import { loadPandaIndex, searchPandas, toPandaListItem } from "@/features/pandas/pandas";
 import { queryClient } from "@/lib/query-client";
 
@@ -167,5 +168,39 @@ describe("searchPandas by pinyin initials", () => {
     const byInitials = toPandaListItem(summary("hai-hua", "Hai Hua", "海花"));
     const byName = toPandaListItem(summary("hhx-star", null, "星"));
     expect(searchPandas([byInitials, byName], "hh").map((item) => item.slug)).toEqual(["hhx-star", "hai-hua"]);
+  });
+
+  it("builds initials from Latin names, not from the extra words of a slug", () => {
+    const qizai = toPandaListItem(summary("qizai-qinling", "Qizai", "七仔"));
+    const ming = toPandaListItem(summary("ming-london-1938", "Ming", "明"));
+    expect(qizai.initials).toEqual([]);
+    expect(ming.initials).toEqual([]);
+    expect(searchPandas([qizai, ming, ...pandas], "qq")).toEqual([]);
+    expect(searchPandas([ming, ...pandas], "ml").map((item) => item.slug)).toEqual(["meng-lan"]);
+  });
+
+  it("falls back to the slug only when a panda has no Latin name", () => {
+    const rescue = toPandaListItem(summary("hua-hua-wolong-rescue-1983", null, "花花"));
+    expect(rescue.initials).toEqual(["hhwr"]);
+  });
+
+  it("keeps the popular rank when a panda is also on the well-known list", () => {
+    const heYe = toPandaListItem(summary("he-ye-chengdu", "He Ye", "和叶"));
+    const heHua = toPandaListItem(summary("he-hua-chengdu", "He Hua", "和花"));
+    const famous = fameSlugs([heYe, heHua]);
+    expect(searchPandas([heHua, heYe], "he", famous).map((item) => item.slug)).toEqual([
+      "he-ye-chengdu",
+      "he-hua-chengdu",
+    ]);
+  });
+
+  it("keeps a popular 和花 ahead of another hh hit", () => {
+    const huaHua = toPandaListItem(summary("hua-hua-wolong-rescue-1983", null, "花花"));
+    const heHua = toPandaListItem(summary("he-hua-chengdu", "He Hua", "和花"));
+    const famous = fameSlugs([heHua, huaHua]);
+    expect(searchPandas([huaHua, heHua], "hh", famous).map((item) => item.slug)).toEqual([
+      "he-hua-chengdu",
+      "hua-hua-wolong-rescue-1983",
+    ]);
   });
 });

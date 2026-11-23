@@ -20,12 +20,15 @@ export function popularRows(slugs: readonly string[], pandas: readonly PandaList
   return slugs.flatMap((slug) => bySlug.get(slug) ?? []).slice(0, POPULAR_SHOWN);
 }
 
-export function usePopularPandas(pandas: readonly PandaListItem[] | undefined): PandaListItem[] {
-  const { data: slugs } = useQuery({
+/** `settled` is true once the ranking arrived or failed, so a screen can hold its first list until the order is final. */
+export function usePopularPandas(pandas: readonly PandaListItem[] | undefined): { rows: PandaListItem[]; settled: boolean } {
+  const { data: slugs, isSuccess, isError } = useQuery({
     queryKey: ["public", "popular-pandas"],
     queryFn: loadPopularSlugs,
     staleTime: 600_000,
     networkMode: "always",
+    retry: 1,
   });
-  return useMemo(() => (slugs && pandas ? popularRows(slugs, pandas) : []), [slugs, pandas]);
+  const rows = useMemo(() => (slugs && pandas ? popularRows(slugs, pandas) : []), [slugs, pandas]);
+  return { rows, settled: isSuccess || isError };
 }

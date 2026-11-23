@@ -79,7 +79,7 @@ export default function FindScreen() {
   const [area, setArea] = useState("全部");
   const special = useSpecialChips();
   const chips = useMemo(() => (pandas ? findChips(pandas, special) : []), [pandas, special]);
-  const popular = usePopularPandas(pandas);
+  const { rows: popular } = usePopularPandas(pandas);
   const results = useMemo(() => {
     const found = pandas ? searchPandas(pandas, deferredQuery, fameSlugs(popular)) : [];
     return found.filter((panda) => inChip(panda, area, special));
@@ -177,7 +177,11 @@ export default function FindScreen() {
                 {deferredQuery.trim() ? `没有找到「${deferredQuery.trim()}」` : "这里还没有熊猫"}
               </Text>
               <Text variant="subheadline" className="text-center text-muted-foreground">
-                {deferredQuery.trim() ? "试试拼音首字母，比如 fb；或换一个场馆名。" : "试试熊猫的名字，或换一个地方。"}
+                {deferredQuery.trim()
+                  ? area === "全部"
+                    ? "试试拼音首字母，比如 fb；或换一个场馆名。"
+                    : "试试选「全部」，或换一个地区。"
+                  : "试试熊猫的名字，或换一个地方。"}
               </Text>
               {deferredQuery.trim() && noResultRows.length > 0 ? (
                 <View className="mt-stack w-full gap-stack-tight">

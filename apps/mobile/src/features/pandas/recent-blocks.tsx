@@ -64,9 +64,9 @@ function Thumb({ item }: { item: PandaListItem }) {
 
 /** 最近看过: the pandas whose page was opened lately, as a shelf of covers. Nothing shows until one was. */
 export function RecentViews({ pandas }: { pandas: readonly PandaListItem[] }) {
-  const slugs = useRecentViews();
-  const bySlug = new Map(pandas.map((panda) => [panda.slug, panda]));
-  const items = (slugs ?? []).flatMap((slug) => bySlug.get(slug) ?? []);
+  const ids = useRecentViews();
+  const byId = new Map(pandas.map((panda) => [panda.id, panda]));
+  const items = (ids ?? []).flatMap((id) => byId.get(id) ?? []);
   if (items.length === 0) return null;
   return (
     <View className="gap-stack-tight">

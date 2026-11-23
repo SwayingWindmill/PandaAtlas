@@ -4,7 +4,7 @@
 
 ## Sub-features
 
-- `find-initials` matches pinyin initials by prefix from the slug and the Latin names. Name hits rank above initials hits.
+- `find-initials` matches pinyin initials by prefix from the Latin names ("He Hua" gives `hh`). Only a panda with no Latin name uses its slug; a one-word name such as "Qizai" gives none, so `qq` does not find 七仔. Name hits rank above initials hits.
 - `find-highlight` tints the matched characters of a name or place, or the whole name when only the initials or a Latin name matched. The browsing list has none.
 - `find-recent-views` is a shelf of up to 10 covers, newest first, recorded when a panda's page opens.
 - `find-recent-searches` is up to 8 chips, newest first, recorded when a result is opened from a non-empty search. Tapping one fills the search.

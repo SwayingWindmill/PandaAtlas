@@ -51,10 +51,10 @@ export default function ProfileScreen() {
   const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
   const [tab, setTab] = useState<Tab>(() => TABS.find((item) => item.value === opened)?.value ?? "overview");
   const page = String(useCSSVariable("--color-background"));
-  const viewedSlug = profile?.slug;
+  const viewedId = profile?.id;
   useEffect(() => {
-    if (viewedSlug) void recordView(viewedSlug);
-  }, [viewedSlug]);
+    if (viewedId) void recordView(viewedId);
+  }, [viewedId]);
 
   if (!profile) {
     return (

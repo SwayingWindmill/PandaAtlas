@@ -39,7 +39,7 @@ export function suggestions(pandas: PandaListItem[], popular: readonly PandaList
     .filter((panda) => !panda.deceased && panda.place !== null)
     .sort((a, b) => (b.birthDate ?? "").localeCompare(a.birthDate ?? ""));
   const seen = new Set<string>();
-  return [...popular, ...wellKnownPandas(pandas), ...youngest]
+  return [...popular.filter((panda) => !panda.deceased), ...wellKnownPandas(pandas), ...youngest]
     .filter((panda) => (seen.has(panda.id) ? false : (seen.add(panda.id), true)))
     .slice(0, limit);
 }

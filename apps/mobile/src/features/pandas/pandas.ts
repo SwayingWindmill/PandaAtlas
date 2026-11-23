@@ -28,7 +28,10 @@ export interface PandaListItem {
   hasFullBleedCover: boolean;
   /** Slug, every name and the current place, normalized for matching. */
   terms: string[];
-  /** Pinyin initials of each multi-word slug or Latin name ("he-hua-chengdu" gives "hhc"), matched by prefix only. */
+  /**
+   * Pinyin initials of each multi-word Latin name ("He Hua" gives "hh"), matched by prefix only. A panda with no
+   * Latin name falls back to its slugs, whose extra words (a place, a year) would otherwise give false hits.
+   */
   initials: string[];
 }
 
@@ -86,7 +89,10 @@ export function loadPlaces(): Promise<Map<string, Place>> {
 export function toPandaListItem(panda: PandaSummary): PandaListItem {
   const placeRecord = panda.currentPlace;
   const place = placeName(placeRecord);
-  const latin = [panda.canonicalSlug, ...panda.legacySlugs, ...panda.names.map((name) => name.value)];
+  const names = panda.names.map((name) => name.value);
+  const latin = [panda.canonicalSlug, ...panda.legacySlugs, ...names];
+  const latinNames = names.filter((name) => /[A-Za-z]/.test(name));
+  const initialSources = latinNames.length > 0 ? latinNames : [panda.canonicalSlug, ...panda.legacySlugs];
   return {
     id: panda.pandaId,
     slug: panda.canonicalSlug,
@@ -99,7 +105,7 @@ export function toPandaListItem(panda: PandaSummary): PandaListItem {
     area: areaOf(placeRecord),
     hasFullBleedCover: Boolean(panda.hasFullBleedCover),
     terms: (place ? [...latin, place] : latin).map(normalizeTerm),
-    initials: latin.flatMap((source) => initialsOf(source) ?? []),
+    initials: initialSources.flatMap((source) => initialsOf(source) ?? []),
   };
 }
 
@@ -131,7 +137,10 @@ export function searchPandas(items: PandaListItem[], query: string, famous: read
     if (item.initials.some((initials) => initials.startsWith(needle))) return 2;
     return item.terms.some((term) => term.includes(needle)) ? 3 : null;
   };
-  const fame = new Map(famous.map((slug, index) => [slug, index]));
+  const fame = new Map<string, number>();
+  famous.forEach((slug, index) => {
+    if (!fame.has(slug)) fame.set(slug, index);
+  });
   const fameOf = (item: PandaListItem) => fame.get(item.slug) ?? famous.length;
   return items
     .map((item) => ({ item, rank: rank(item) }))

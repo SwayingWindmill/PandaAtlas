@@ -78,6 +78,12 @@ describe("suggestions", () => {
     expect(suggestions([gone], [], 5)).toEqual([]);
   });
 
+  it("leaves a deceased panda out even when it is popular", () => {
+    const gone = panda("gone", "2010-01-01", "成都", true);
+    const alive = panda("alive", "2020-01-01", "成都");
+    expect(suggestions([gone, alive], [gone, alive]).map((item) => item.id)).toEqual(["alive"]);
+  });
+
   it("does not repeat a well-known panda that is also popular or young", () => {
     const famous = { ...panda("famous", "2024-07-01", "成都"), slug: "he-hua-chengdu" };
     expect(suggestions([famous], [famous]).map((item) => item.id)).toEqual(["famous"]);

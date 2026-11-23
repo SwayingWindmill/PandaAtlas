@@ -125,7 +125,7 @@ export default function WelcomeScreen() {
     load();
   }
 
-  const popular = usePopularPandas(pandas ?? undefined);
+  const { rows: popular, settled } = usePopularPandas(pandas ?? undefined);
   const shown = useMemo(
     () => (pandas ? (deferred.trim() ? searchPandas(pandas, deferred, fameSlugs(popular)).slice(0, 12) : suggestions(pandas, popular)) : []),
     [pandas, deferred, popular],
@@ -187,7 +187,7 @@ export default function WelcomeScreen() {
         <SearchField value={query} onChange={setQuery} label="搜索想关注的熊猫" />
         {pandas === null && loadFailed ? (
           <LoadFailed message="熊猫列表暂时打不开。" onRetry={retry} />
-        ) : pandas === null ? (
+        ) : pandas === null || !settled ? (
           <View className="gap-row" accessibilityLabel="正在加载熊猫">
             {[0, 1].map((row) => (
               <View key={row} className="flex-row gap-row">
