@@ -1,0 +1,36 @@
+# Photo viewer
+
+A panda's photos open full screen on black. The top row has 关闭 and the counter `1 / N`. The bottom block has the panda's name, the photo's credit, ‹ 上一张, 分享, 保存 and › 下一张. Swiping pages through the photos at 1x. Pinch and double tap zoom; a zoomed photo pans inside its edges and the pager stops paging. A single tap hides the top row and the bottom block. A downward drag at 1x closes the viewer.
+
+## Sub-features
+
+- `photo-viewer-open` opens from a profile with the counter, credit and chevrons.
+- `photo-viewer-page` pages by swipe or by the chevrons. The chevrons are disabled at the ends.
+- `photo-viewer-zoom` zooms by pinch (1x to 4x, stretching past both) or double tap (2.5x at the tap, again to 1x). Changing page resets zoom.
+- `photo-viewer-immersive` hides the chrome on a single tap and shows it on the next. With a screen reader on, the chrome never hides. Focusing a hidden control by keyboard shows it.
+- `photo-viewer-dismiss` closes on a downward drag past 18% of the height or a fast flick; a shorter drag springs back.
+- `photo-viewer-width` keeps the current page aligned when the window changes width.
+- `photo-viewer-share` shares the original photo (a download on web). `photo-viewer-save` saves it to the photo library with add-only permission (a download on web) and shows `已保存到相册` or why it could not.
+
+## How to get to it (user POV)
+
+- A panda's profile, then the hero photo button `查看<name>的照片，共 N 张`.
+- The route `/pandas/<slug>/photos`.
+
+## Driving it with e2e
+
+Preconditions:
+
+- The doctor passes for `e2e`. The fixture panda `fixture().panda` has two photos with credits.
+
+- **Open, page, close.** Run `npx e2e run tests/photos-sources.e2e.ts:7` from `apps/mobile`. It taps `button "查看<name>的照片，共 2 张"`, reads `dialog "照片"`, `1 / 2`, the first credit and a disabled `button "上一张"`, taps `button "下一张"` for `2 / 2`, then taps `button "关闭"` back to `heading "<name>"`.
+- **Width change.** Run `npx e2e run tests/photos-sources.e2e.ts:26`. It pages to `2 / 2`, resizes to 820×1180 and back, and checks the image `<name> 第 2 张照片` starts at x 0 each time.
+- **Live look with real data.** Start the production preview and open `http://localhost:8796/pandas/<slug>/photos` for a panda with several photos. Double-click the photo to zoom (the counter stays and the pager stops paging: `下一张` still works and resets zoom). Click once and wait 300 ms for the chrome to fade (`opacity` 0 on the top row). Drag down with the mouse past a fifth of the height to close.
+
+## Gotchas
+
+- A single tap waits out the double-tap window, about 200 ms, before the chrome toggles.
+- Pinch needs two touch points. A desktop browser cannot produce it, so pinch is proven only on a device or simulator.
+- The web pager pages by swipe on touch and by the chevrons or a horizontal wheel with a mouse; a sideways mouse drag does not page it.
+- 保存 and 分享 on native need a dev client rebuilt with expo-media-library and react-native-gesture-handler. On web they download through a blob URL. A photo host that refuses CORS to the page's origin (production photos from the localhost preview) opens the original in a new tab instead; the browser pane blocks that tab for agent clicks, so the preview shows `照片没有保存下来，请稍后再试。`.
+- The browser pane throttles a hidden or background tab, so springs there take seconds. Read end states, not timings.

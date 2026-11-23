@@ -29,6 +29,7 @@ Each feature file starts with an H1 title and one paragraph on the user-visible 
 
 ## Features
 
+- [Photo viewer](./photo-viewer.md) covers a panda's full-screen photos: paging, zoom, immersive mode, drag to close, share and save, and a width change.
 - [Venue page](./venue-page.md) covers a zoo's page from the map and from 今天, its 概况 / 熊猫 / 攻略 tabs, and 关注.
 - [Wild habitat](./wild-habitat.md) covers the map's wild layer, the habitat sheet and a habitat's own page.
 - [Sign-in](./sign-in.md) covers email-code sign-in, resending a code, a wrong code, the welcome's follow after sign-in, renaming the account and signing out.

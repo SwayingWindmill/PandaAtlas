@@ -69,6 +69,14 @@
       "expo-image",
       "expo-sharing",
       [
+        "expo-media-library",
+        {
+          "photosPermission": false,
+          "savePhotosPermission": "吱熊猫需要把你选中的熊猫照片保存到相册。",
+          "granularPermissions": ["photo"]
+        }
+      ],
+      [
         "react-native-nano-icons",
         {
           "symbolSets": [{ "inputDir": "./assets/symbols" }]

@@ -19,9 +19,24 @@ test("a profile's photos open in a viewer with their credits", async ({ app, scr
   await expect(viewer.getByRole("button", "上一张")).toBeEnabled();
   await expect(viewer.getByText("照片 E2E Second Photographer / CC BY 4.0，CC-BY-4.0")).toBeVisible();
 
-  // The viewer is a stack screen; its back is the bar's own link, outside the dialog.
-  await screen.getByRole("link", /^返回/).tap();
+  await viewer.getByRole("button", "关闭").tap();
   await expect(screen.getByRole("heading", panda.name)).toBeVisible();
+});
+
+test("the photo viewer stays on its page when the window changes width", async ({ app, screen, browser }) => {
+  const { panda } = fixture();
+  await app.open(`/pandas/${panda.slug}/photos`);
+  const viewer = screen.getByRole("dialog", "照片");
+  await viewer.getByRole("button", "下一张").tap();
+  await expect(viewer.getByText("2 / 2")).toBeVisible();
+
+  await browser.setViewport({ width: 820, height: 1180 });
+  await expect(viewer.getByText("2 / 2")).toBeVisible();
+  await expect.poll(async () => (await viewer.getByRole("img", `${panda.name} 第 2 张照片`).boundingBox())?.x).toBe(0);
+
+  await browser.setViewport({ width: 390, height: 844 });
+  await expect(viewer.getByText("2 / 2")).toBeVisible();
+  await expect.poll(async () => (await viewer.getByRole("img", `${panda.name} 第 2 张照片`).boundingBox())?.x).toBe(0);
 });
 
 test("a profile lists its sources and opens one in the browser", async ({ app, screen, browser }) => {

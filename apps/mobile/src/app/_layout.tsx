@@ -6,6 +6,7 @@ import { ThemeProvider } from "expo-router/react-navigation";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { OfflineBanner } from "@/components/offline-banner";
 import { applyStoredAppearance } from "@/features/appearance/appearance";
@@ -58,18 +59,20 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <QueryProvider>
-      <SessionProvider>
-        <ThemeProvider value={NAV_THEME[scheme]}>
-          <StatusBar style={scheme === "dark" ? "light" : "dark"} />
-          <Stack screenOptions={{ ...stackScreenOptions(scheme), headerLargeTitleEnabled: false }}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="pandas/[slug]/photos" options={{ title: "照片" }} />
-          </Stack>
-          <OfflineBanner />
-          <PortalHost />
-        </ThemeProvider>
-      </SessionProvider>
-    </QueryProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryProvider>
+        <SessionProvider>
+          <ThemeProvider value={NAV_THEME[scheme]}>
+            <StatusBar style={scheme === "dark" ? "light" : "dark"} />
+            <Stack screenOptions={{ ...stackScreenOptions(scheme), headerLargeTitleEnabled: false }}>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="pandas/[slug]/photos" options={{ presentation: "transparentModal", headerShown: false, title: "照片" }} />
+            </Stack>
+            <OfflineBanner />
+            <PortalHost />
+          </ThemeProvider>
+        </SessionProvider>
+      </QueryProvider>
+    </GestureHandlerRootView>
   );
 }
