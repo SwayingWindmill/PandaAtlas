@@ -12,10 +12,17 @@
    * the Radix scale's roles: 1-2 page backgrounds, 3-5 component fills (rest, hover, pressed),
    * 6-8 borders, 9-10 solid fills, 11-12 text.
    */
+  /*
+   * Chinese uses the system's own font: a web CJK font is hundreds of KB per page on a slow network and
+   * reflows the text when it lands. Every target has one: PingFang SC (Apple), Microsoft YaHei (Windows),
+   * Noto Sans CJK SC / Source Han Sans SC (Android, Linux), HarmonyOS Sans SC (Huawei).
+   */
+  --zp-font-cjk: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC",
+    "HarmonyOS Sans SC", system-ui, sans-serif;
   --zp-font-display-latin: "Archivo Variable", "Arial Narrow", sans-serif;
-  --zp-font-display-cjk: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --zp-font-body: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --zp-font-ui-latin: "Archivo Variable", "Noto Sans SC Variable", sans-serif;
+  --zp-font-display-cjk: var(--zp-font-cjk);
+  --zp-font-body: var(--zp-font-cjk);
+  --zp-font-ui-latin: "Archivo Variable", var(--zp-font-cjk);
 
   --font-display: var(--zp-font-display-latin);
   --font-body: var(--zp-font-body);

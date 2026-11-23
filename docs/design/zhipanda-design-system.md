@@ -97,7 +97,7 @@ Tailwind 对应：`text-xs`（12）、`text-base`（16）、`text-xl`（20）。
 
 ### 3.3 字体
 
-中文 Noto Sans SC Variable，西文标题 Archivo Variable（字体已作为依赖安装）。Logo 文字只有「吱熊猫」，不再有小号的 ZHIPANDA 字样。
+中文用系统字体（苹方、微软雅黑、思源黑体 / Noto Sans CJK SC），不加载网络中文字体：可变中文字体每页要几百 KB，弱网下拖慢首屏，字体到达时文字还会重排。西文标题 Archivo Variable（已作为依赖安装）。Logo 文字只有「吱熊猫」，不再有小号的 ZHIPANDA 字样。
 
 ## 4. 间距、圆角、线条、阴影
 

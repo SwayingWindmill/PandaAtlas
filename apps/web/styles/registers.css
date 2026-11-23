@@ -1,5 +1,7 @@
 .pa-shell {
-  width: min(var(--pa-content-max), calc(100% - (2 * var(--pa-space-page))));
+  /* With viewport-fit=cover a landscape iPhone puts the notch inside the page; the margin clears it. */
+  --pa-shell-gutter: max(var(--pa-space-page), env(safe-area-inset-left), env(safe-area-inset-right));
+  width: min(var(--pa-content-max), calc(100% - (2 * var(--pa-shell-gutter))));
   margin-inline: auto;
 }
 
@@ -21,6 +23,7 @@
 
 .pa-public-main {
   min-height: calc(100vh - 4.75rem);
+  min-height: calc(100dvh - 4.75rem);
 }
 
 .pa-section {
