@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -19,7 +20,8 @@ import { LearningSources } from "@/features/learning/sources";
 import { useLearningCatalog } from "@/features/learning/use-catalog";
 import { type Pair, PairSlots, PandaPicker, type SlotKey, nextSlot } from "@/features/pandas/pair-picker";
 import { openPanda } from "@/features/pandas/panda-row";
-import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
+import { type PandaListItem, pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
 
 // 比一比: two pandas side by side, with only the distinguishing points 文献与写作 has written and sourced.
@@ -174,8 +176,6 @@ function Points({ comparison, a, b }: { comparison: Comparison; a: PandaListItem
   );
 }
 
-type Load = { status: "loading" } | { status: "ready"; pandas: PandaListItem[] } | { status: "failed" };
-
 /** The two slots and the panda list; once both are chosen and differ, one button opens the comparison. */
 function PickPair({ pandas, preset }: { pandas: PandaListItem[]; preset: PandaListItem | null }) {
   const [pair, setPair] = useState<Pair>({ first: preset, second: null });
@@ -217,29 +217,23 @@ export default function CompareScreen() {
   // A link with both pandas compares them; one with none or only one asks for the pair first.
   const choosing = !slugA || !slugB;
   const { state: catalog, reload: reloadCatalog } = useLearningCatalog();
-  const [load, setLoad] = useState<Load>({ status: "loading" });
-  const loadPandas = useCallback(() => {
-    loadPandaIndex()
-      .then((pandas) => setLoad({ status: "ready", pandas }))
-      .catch(() => setLoad({ status: "failed" }));
-  }, []);
-  useEffect(loadPandas, [loadPandas]);
+  const index = useQuery(pandaIndexQueryOptions());
+  const { data: pandas, refetch: reloadPandas } = index;
 
-  if (load.status === "failed" || (!choosing && catalog.status === "failed")) {
+  if (failedWithoutData(index) || (!choosing && catalog.status === "failed")) {
     return (
       <Page title="比一比">
         <LoadFailed
           message="暂时打不开。"
           onRetry={() => {
-            setLoad({ status: "loading" });
-            loadPandas();
+            void reloadPandas();
             reloadCatalog();
           }}
         />
       </Page>
     );
   }
-  if (load.status === "loading" || (!choosing && catalog.status === "loading")) {
+  if (!pandas || (!choosing && catalog.status === "loading")) {
     return (
       <Page title="比一比">
         {choosing ? (
@@ -262,10 +256,10 @@ export default function CompareScreen() {
       </Page>
     );
   }
-  const a = load.pandas.find((panda) => panda.slug === slugA);
-  const b = load.pandas.find((panda) => panda.slug === slugB);
+  const a = pandas.find((panda) => panda.slug === slugA);
+  const b = pandas.find((panda) => panda.slug === slugB);
   if (choosing) {
-    return <PickPair pandas={load.pandas} preset={a ?? b ?? null} />;
+    return <PickPair pandas={pandas} preset={a ?? b ?? null} />;
   }
   if (!a || !b || a.slug === b.slug || catalog.status !== "ready") {
     return (

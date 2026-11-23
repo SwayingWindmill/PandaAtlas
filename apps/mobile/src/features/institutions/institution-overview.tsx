@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { Linking, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -12,6 +11,7 @@ import { CalendarCheck, Globe, History, MapPin, PawPrint, Ticket, Video } from "
 import { PandaThumb } from "@/components/panda-thumb";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { SourceBadge } from "@/components/source-badge";
 import { StatTile } from "@/components/stat-tile";
@@ -31,7 +31,7 @@ import type { PandaListItem } from "@/features/pandas/pandas";
 import { longDate } from "@/features/pandas/profile";
 import { VenueNewsSection } from "@/features/venue-news/venue-news-section";
 import { usePandaCover } from "@/lib/covers";
-import { RADIUS, pageColumn } from "@/lib/surface";
+import { PAGE_COLUMN, pageColumn, RADIUS } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
 /** Hero height below the status bar, a little shorter than a panda's: the name sits on it. */
@@ -40,18 +40,22 @@ export const INSTITUTION_HERO_HEIGHT = 300;
 const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
 const GAP = semantic.spacing.row.value;
 const FACE = 72;
+/** A venue can house a hundred pandas; the strip previews a few and 全部 opens the rest. */
+const FACE_LIMIT = 12;
 
 export function HeroTitle({ institution }: { institution: InstitutionDetail }) {
   return (
-    <View pointerEvents="none" className="absolute right-0 bottom-0 left-0 gap-1 px-4 pb-4">
-      <Text variant="display" className="text-on-media" numberOfLines={3}>
-        {institution.name}
-      </Text>
-      {institution.meta ? (
-        <Text variant="footnote" className="font-semibold text-on-media/85">
-          {institution.meta}
+    <View pointerEvents="none" className="absolute right-0 bottom-0 left-0">
+      <View className="gap-1 px-4 pb-4" style={PAGE_COLUMN}>
+        <Text variant="display" className="text-on-media" numberOfLines={3}>
+          {institution.name}
         </Text>
-      ) : null}
+        {institution.meta ? (
+          <Text variant="footnote" className="font-semibold text-on-media/85">
+            {institution.meta}
+          </Text>
+        ) : null}
+      </View>
     </View>
   );
 }
@@ -76,15 +80,17 @@ export function PlateHero({ institution, pending }: { institution: InstitutionDe
         <Rect x="0" y="0" width="100%" height="100%" fill="url(#institution-plate)" />
       </Svg>
       {pending ? null : (
-        <View className="absolute right-0 bottom-0 left-0 gap-hair-gap px-inset pb-inset">
-          <Text variant="display" numberOfLines={3}>
-            {institution.name}
-          </Text>
-          {institution.meta ? (
-            <Text variant="footnote" className="font-semibold text-muted-foreground">
-              {institution.meta}
+        <View className="absolute right-0 bottom-0 left-0">
+          <View className="gap-hair-gap px-inset pb-inset" style={PAGE_COLUMN}>
+            <Text variant="display" numberOfLines={3}>
+              {institution.name}
             </Text>
-          ) : null}
+            {institution.meta ? (
+              <Text variant="footnote" className="font-semibold text-muted-foreground">
+                {institution.meta}
+              </Text>
+            ) : null}
+          </View>
         </View>
       )}
     </View>
@@ -155,14 +161,14 @@ function ResidentFaces({ pandas, onAll }: { pandas: PandaListItem[]; onAll: () =
     <View className="gap-stack-tight">
       <View className="flex-row items-baseline justify-between">
         <SectionTitle title="住在这里" icon={PawPrint} />
-        <Pressable role="button" accessibilityLabel="看全部熊猫" onPress={onAll} hitSlop={8} className="active:opacity-60">
+        <Pressable role="button" accessibilityLabel="看全部熊猫" onPress={onAll} hitSlop={12} className="active:opacity-60">
           <Text variant="body" className="text-primary">
             全部
           </Text>
         </Pressable>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-gutter" contentContainerClassName="gap-section px-gutter">
-        {pandas.map((panda) => (
+        {pandas.slice(0, FACE_LIMIT).map((panda) => (
           <ResidentFace key={panda.id} panda={panda} />
         ))}
       </ScrollView>
@@ -247,7 +253,7 @@ function ResidentTile({ panda, width }: { panda: PandaListItem; width: number })
             style={{ flex: 1, borderRadius: RADIUS.tile, borderCurve: "continuous", overflow: "hidden", backgroundColor: PLACEHOLDER }}
           >
             {photo ? (
-              <Image
+              <RemoteImage
                 source={photo}
                 style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
                 contentFit="cover"

@@ -14,8 +14,14 @@ export const HAIRLINE = Platform.OS === "web" ? 0.5 : StyleSheet.hairlineWidth;
 /** The page's side margin (20pt in the v4 mockups), and the column it leaves on a window up to 700pt. */
 export const GUTTER = semantic.spacing.gutter.value;
 
+/** The widest a page's column grows, gutters included. On an iPad the page centres it instead of stretching rows. */
+export const PAGE_MAX_WIDTH = 700;
+
+/** Style for a scroll view's content, or a page's body under a full-bleed hero: the column, centred. */
+export const PAGE_COLUMN = { width: "100%", maxWidth: PAGE_MAX_WIDTH, alignSelf: "center" } as const;
+
 export function pageColumn(width: number): number {
-  return Math.min(width, 700) - GUTTER * 2;
+  return Math.min(width, PAGE_MAX_WIDTH) - GUTTER * 2;
 }
 
 /**

@@ -23,6 +23,8 @@ export default {
       }),
       app: {
         url: "http://localhost:8792",
+        // The share journey reads the clipboard back; headless Chromium rejects that without a grant.
+        permissions: { "clipboard-read": "grant", "clipboard-write": "grant" },
         command: {
           executable: "node",
           args: ["tests/support/stack.ts", "{port}"],

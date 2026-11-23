@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { memo } from "react";
 import { Pressable, View } from "react-native";
@@ -6,11 +5,10 @@ import { Pressable, View } from "react-native";
 import { Chevron } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import { Mars, Venus } from "@/components/icons";
-import { PhotoOutline } from "@/components/photo-outline";
+import { PandaThumb } from "@/components/panda-thumb";
 import { Text } from "@/components/ui/text";
 import { type TextPart, highlightParts } from "@/features/pandas/highlight";
 import { type PandaListItem, listMeta, normalizeTerm } from "@/features/pandas/pandas";
-import { usePandaCover } from "@/lib/covers";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -41,7 +39,7 @@ function Marked({ parts, variant }: { parts: TextPart[]; variant: "body" | "subh
 }
 
 /**
- * One panda in a list, as Music lists albums: its cover in a small rounded square, the name in
+ * One panda in a list: its cover in a circular avatar, the name in
  * headline and where it lives and when it was born under it. Consecutive rows read as one inset
  * group: `first` and `last` round the group's corners, and the separator stops before the last row.
  * With a `highlight` query, the characters it matched in the name or the place are tinted; a row matched
@@ -60,7 +58,6 @@ export const PandaRow = memo(function PandaRow({
   highlight?: string;
   onOpen?: () => void;
 }) {
-  const photo = usePandaCover(item.id);
   const meta = listMeta(item);
   const nameHit = highlight ? highlightParts(item.name, highlight) : null;
   const placeHit = highlight && item.place ? highlightParts(item.place, highlight) : null;
@@ -80,19 +77,7 @@ export const PandaRow = memo(function PandaRow({
         accessibilityLabel={[item.name, SEX[item.sex ?? ""], meta].filter(Boolean).join("，")}
         className="min-h-11 flex-row items-center gap-row px-inset py-stack-tight active:bg-accent"
       >
-        <View
-          className="items-center justify-center overflow-hidden rounded-full bg-secondary"
-          style={{ width: PHOTO, height: PHOTO, borderCurve: "continuous" }}
-        >
-          {photo ? (
-            <Image source={photo} style={{ width: PHOTO, height: PHOTO }} contentFit="cover" accessible={false} />
-          ) : (
-            <Text variant="headline" className="text-muted-foreground">
-              {item.name.slice(0, 1)}
-            </Text>
-          )}
-          {photo ? <PhotoOutline radius={PHOTO / 2} /> : null}
-        </View>
+        <PandaThumb pandaId={item.id} name={item.name} size={PHOTO} />
         <View className="min-w-0 flex-1 gap-hair-gap">
           <View className="flex-row items-center gap-hair-gap">
             <Text variant="body" className="shrink" numberOfLines={1}>

@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
@@ -22,6 +21,7 @@ import {
   X,
 } from "@/components/icons";
 import { PhotoOutline } from "@/components/photo-outline";
+import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
@@ -126,7 +126,7 @@ export function MysteryCard({
       accessibilityLiveRegion="polite"
     >
       {photoUrl ? (
-        <Image
+        <RemoteImage
           source={photoUrl}
           style={StyleSheet.absoluteFill}
           contentFit="cover"

@@ -1,6 +1,8 @@
 import type { components } from "@zhipanda/api-client";
+import { queryOptions } from "@tanstack/react-query";
 
 import { authedApi } from "@/lib/api";
+import { queryClient } from "@/lib/query-client";
 
 // 合集: private lists a signed-in fan makes of pandas, the same collections the website's 收藏与合集 shows.
 
@@ -25,6 +27,22 @@ export async function loadCollections(): Promise<Collection[]> {
   const { data } = await authedApi.GET("/api/v2/me/collections");
   if (!data) throw new Error("Collections unavailable");
   return sortCollections(data.items);
+}
+
+export const collectionsQueryKey = (accountId: string) => ["private", accountId, "collections"] as const;
+
+export function collectionsQueryOptions(accountId: string) {
+  return queryOptions({ queryKey: collectionsQueryKey(accountId), queryFn: loadCollections, staleTime: 0 });
+}
+
+/**
+ * Writes a change the server accepted into the cached list, so every reader of it shows the change. A fetch
+ * still in flight is cancelled first: its older response would land on top of the change.
+ */
+export async function patchCollections(accountId: string, update: (collections: Collection[]) => Collection[]) {
+  const queryKey = collectionsQueryKey(accountId);
+  await queryClient.cancelQueries({ queryKey });
+  queryClient.setQueryData<Collection[]>(queryKey, (current) => current && update(current));
 }
 
 export async function createCollection(name: string): Promise<Collection> {

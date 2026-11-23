@@ -107,7 +107,7 @@ function OnThisDaySkeleton() {
       <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
         {[0, 1].map((row) => (
           <View key={row} className="flex-row items-center gap-row px-inset py-stack-tight">
-            <Skeleton className="rounded-control" style={{ width: 56, height: 56 }} />
+            <Skeleton className="rounded-full" style={{ width: 56, height: 56 }} />
             <View className="flex-1 gap-stack-tight">
               <Skeleton className="h-5 w-1/3 rounded-control" />
               <Skeleton className="h-4 w-2/3 rounded-control" />

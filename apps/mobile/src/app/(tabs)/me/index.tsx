@@ -1,6 +1,6 @@
-import { Image } from "expo-image";
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
+import { useState } from "react";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
@@ -21,28 +21,31 @@ import {
   Sun,
 } from "@/components/icons";
 import { Page } from "@/components/page";
+import { RemoteImage } from "@/components/remote-image";
 import { SectionHeader } from "@/components/section-header";
 import { StatTile } from "@/components/stat-tile";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { loadCheckins } from "@/features/checkin/checkin";
-import { loadCollections } from "@/features/collections/collections";
-import { loadMyContributions } from "@/features/corrections/submissions";
+import { checkinsQueryOptions } from "@/features/checkin/checkin";
+import { collectionsQueryOptions } from "@/features/collections/collections";
+import { contributionsQueryOptions } from "@/features/corrections/submissions";
 import { useFollowed } from "@/features/engagement/favorites";
 import { localToday } from "@/features/engagement/seen";
-import { loadMilestones } from "@/features/milestones/load";
+import { milestonesQueryOptions } from "@/features/milestones/load";
 import { useMilestonesOn } from "@/features/milestones/prefs";
-import { loadInbox } from "@/features/notifications/inbox";
+import { inboxQueryOptions } from "@/features/notifications/inbox";
 import { unreadCount } from "@/features/notifications/notifications";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { NICKNAME_MAX, displayName, useProfile } from "@/features/profile/profile";
+import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
 import { YearReviewBanner } from "@/features/year-review/banner";
 import { StoryPhotoTile } from "@/features/today/story-photo-tile";
 import { type StoryPhoto, useStoryPhotos } from "@/features/today/story-photos";
-import { loadVisits } from "@/features/visits/visits";
+import { visitsQueryOptions } from "@/features/visits/visits";
 import { successHaptic } from "@/lib/haptics";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 const AVATAR = 64;
 
@@ -78,7 +81,7 @@ const COLLAGE_HEIGHT = 196;
 function CollagePhoto({ photo, style }: { photo: StoryPhoto | undefined; style: object }) {
   return (
     <View className="overflow-hidden bg-secondary" style={style}>
-      {photo ? <Image source={photo.url} style={{ flex: 1 }} contentFit="cover" transition={200} accessible={false} /> : null}
+      {photo ? <RemoteImage source={photo.url} style={{ flex: 1 }} contentFit="cover" transition={200} accessible={false} /> : null}
     </View>
   );
 }
@@ -236,33 +239,33 @@ interface Counts {
 
 /** Read again each time the tab shows, so a change made elsewhere is counted on return. */
 function useCounts(milestonesOn: boolean): Counts {
-  const [counts, setCounts] = useState<Counts>({});
-  useFocusEffect(
-    useCallback(() => {
-      const set = (patch: Counts) => setCounts((current) => ({ ...current, ...patch }));
-      loadCheckins()
-        .then((summary) => set({ checkinDays: summary.totalVisitDays }))
-        .catch(() => undefined);
-      loadVisits()
-        .then((visits) => set({ places: new Set(visits.map((visit) => visit.placeId)).size }))
-        .catch(() => undefined);
-      loadCollections()
-        .then((items) => set({ collections: items.length }))
-        .catch(() => undefined);
-      loadInbox()
-        .then((messages) => set({ unread: unreadCount(messages) }))
-        .catch(() => undefined);
-      loadMyContributions()
-        .then((items) => set({ contributions: items.length }))
-        .catch(() => undefined);
-      if (milestonesOn) {
-        loadMilestones()
-          .then((items) => set({ milestones: items.length }))
-          .catch(() => undefined);
-      }
-    }, [milestonesOn]),
-  );
-  return counts;
+  const { accountId } = useAccount();
+  const id = accountId ?? "";
+  const enabled = accountId !== null;
+  const checkins = useQuery({ ...checkinsQueryOptions(id, localToday()), enabled, select: (summary) => summary.totalVisitDays });
+  const visits = useQuery({
+    ...visitsQueryOptions(id),
+    enabled,
+    select: (items) => new Set(items.map((visit) => visit.placeId)).size,
+  });
+  const collections = useQuery({ ...collectionsQueryOptions(id), enabled, select: (items) => items.length });
+  const inbox = useQuery({ ...inboxQueryOptions(id), enabled, select: unreadCount });
+  const contributions = useQuery({ ...contributionsQueryOptions(id), enabled, select: (items) => items.length });
+  const milestones = useQuery({ ...milestonesQueryOptions(id), enabled: enabled && milestonesOn, select: (items) => items.length });
+  useRefetchOnFocus(checkins.refetch, enabled);
+  useRefetchOnFocus(visits.refetch, enabled);
+  useRefetchOnFocus(collections.refetch, enabled);
+  useRefetchOnFocus(inbox.refetch, enabled);
+  useRefetchOnFocus(contributions.refetch, enabled);
+  useRefetchOnFocus(milestones.refetch, enabled && milestonesOn);
+  return {
+    checkinDays: checkins.data,
+    places: visits.data,
+    collections: collections.data,
+    unread: inbox.data,
+    contributions: contributions.data,
+    milestones: milestones.data,
+  };
 }
 
 function count(value: number | undefined) {

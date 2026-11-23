@@ -72,7 +72,11 @@ test("a profile shares as an image card", async ({ app, screen, browser }) => {
   const card = screen.getByLabel(`${panda.name}的分享卡片`);
   await expect(card).toBeVisible();
   await expect(card.getByText("2020 年 7 月 20 日")).toBeVisible();
-  await expect(card.getByText(`www.zhipanda.com/zh/pandas/${panda.slug}`)).toBeVisible();
+  await expect(card.getByText(`扫码看${panda.name}的家谱、照片和近况`)).toBeVisible();
+
+  await screen.getByRole("button", "复制链接").tap();
+  await expect(screen.getByRole("status").getByText("链接已复制")).toBeVisible();
+  expect(await browser.evaluate(() => navigator.clipboard.readText())).toBe(`${panda.name} https://www.zhipanda.com/zh/pandas/${panda.slug}`);
 
   const file = await browser.waitForDownload(() => screen.getByRole("button", "分享图片").tap());
   expect(file.suggestedFilename).toBe(`zhipanda-${panda.slug}.png`);

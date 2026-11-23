@@ -93,7 +93,7 @@ export function NewsTimeline({
                   </Text>
                 ) : panda ? (
                   <View className="pt-hair-gap">
-                    <PandaThumb pandaId={panda.id} name={panda.name} size={PHOTO} shape="tile" />
+                    <PandaThumb pandaId={panda.id} name={panda.name} size={PHOTO} />
                   </View>
                 ) : null}
               </View>

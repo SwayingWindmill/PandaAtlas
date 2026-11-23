@@ -97,7 +97,7 @@ function WeekSkeleton() {
       <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
         {[0, 1, 2].map((row) => (
           <View key={row} className="flex-row items-center gap-row px-inset py-stack-tight">
-            <Skeleton className="rounded-control" style={{ width: 56, height: 56 }} />
+            <Skeleton className="size-11 rounded-full" />
             <View className="flex-1 gap-2">
               <Skeleton className="h-5 w-1/3 rounded-control" />
               <Skeleton className="h-4 w-1/2 rounded-control" />

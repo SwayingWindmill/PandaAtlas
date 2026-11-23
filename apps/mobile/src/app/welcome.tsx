@@ -23,6 +23,7 @@ import { SearchField } from "@/features/pandas/search-field";
 import { useSession } from "@/features/session/session";
 import { usePandaCover } from "@/lib/covers";
 import { tapHaptic } from "@/lib/haptics";
+import { nameInitial } from "@/lib/panda";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -61,7 +62,7 @@ function Tile({ panda, selected, onToggle }: { panda: PandaListItem; selected: b
             <Image source={photo} style={{ width: "100%", height: "100%" }} contentFit="cover" accessible={false} />
           ) : (
             <Text variant="title" role="none" className="text-muted-foreground">
-              {panda.name.slice(0, 1)}
+              {nameInitial(panda.name)}
             </Text>
           )}
           {photo ? <PhotoOutline radius={RADIUS.control} /> : null}

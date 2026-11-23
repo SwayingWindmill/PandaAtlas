@@ -1,9 +1,9 @@
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { View } from "react-native";
 
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { Text } from "@/components/ui/text";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
 
@@ -39,7 +39,7 @@ export function FeedArticle({ article, last }: { article: CatalogArticle; last: 
         </View>
         {hero?.asset ? (
           <View className="size-24 overflow-hidden rounded-control" style={{ borderCurve: "continuous" }}>
-            <Image
+            <RemoteImage
               source={hero.asset}
               style={{ width: "100%", height: "100%" }}
               contentFit="cover"

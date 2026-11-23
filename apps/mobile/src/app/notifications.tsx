@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -12,7 +13,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SwitchRow } from "@/components/grouped-list";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
-import { loadInbox, loadPreferences, markAllRead, markRead, savePreference } from "@/features/notifications/inbox";
+import {
+  inboxQueryKey,
+  inboxQueryOptions,
+  markAllRead,
+  markRead,
+  preferencesQueryKey,
+  preferencesQueryOptions,
+  savePreference,
+} from "@/features/notifications/inbox";
 import {
   type Message,
   type Preference,
@@ -23,7 +32,9 @@ import {
   unreadCount,
 } from "@/features/notifications/notifications";
 import { openPanda } from "@/features/pandas/panda-row";
-import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
+import { type PandaListItem, pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { useAccount } from "@/features/session/account";
+import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -145,66 +156,70 @@ function Preferences({
 }
 
 export default function NotificationsScreen() {
-  const [messages, setMessages] = useState<Message[] | null>(null);
-  const [preferences, setPreferences] = useState<Preference[] | null>(null);
-  const [pandas, setPandas] = useState<Map<string, PandaListItem>>(new Map());
-  const [failed, setFailed] = useState(false);
-  const [saveFailed, setSaveFailed] = useState(false);
-  const [readFailed, setReadFailed] = useState(false);
-
-  const load = useCallback(() => {
-    Promise.all([loadInbox(), loadPreferences()])
-      .then(([inbox, stored]) => {
-        setMessages(inbox);
-        setPreferences(stored);
-      })
-      .catch(() => setFailed(true));
-    // Avatars only: without the panda list, each message keeps its bell.
-    loadPandaIndex()
-      .then((list) => setPandas(new Map(list.map((panda) => [panda.id, panda]))))
-      .catch(() => undefined);
-  }, []);
-  useEffect(load, [load]);
+  const { accountId, unavailable } = useAccount();
+  const queryClient = useQueryClient();
+  const enabled = accountId !== null;
+  const inbox = useQuery({ ...inboxQueryOptions(accountId ?? ""), enabled });
+  const stored = useQuery({ ...preferencesQueryOptions(accountId ?? ""), enabled });
+  // Avatars only: without the panda list, each message keeps its bell.
+  const index = useQuery(pandaIndexQueryOptions());
+  const pandas = useMemo(
+    () => new Map<string, PandaListItem>(index.data?.map((panda) => [panda.id, panda])),
+    [index.data],
+  );
+  const messages = inbox.data ?? null;
+  const preferences = stored.data ?? null;
+  const failed = unavailable || failedWithoutData(inbox) || failedWithoutData(stored);
 
   function retry() {
-    setFailed(false);
-    load();
+    if (inbox.isError) void inbox.refetch();
+    if (stored.isError) void stored.refetch();
   }
 
-  function read(message: Message) {
-    setReadFailed(false);
-    markRead(message.messageId)
-      .then((updated) =>
-        setMessages((current) => current?.map((item) => (item.messageId === updated.messageId ? updated : item)) ?? null),
-      )
-      .catch(() => setReadFailed(true));
-  }
+  const readOne = useMutation({
+    mutationFn: (message: Message) => markRead(message.messageId),
+    onSuccess: async (updated) => {
+      const queryKey = inboxQueryKey(accountId ?? "");
+      await queryClient.cancelQueries({ queryKey });
+      queryClient.setQueryData<Message[]>(queryKey, (current) =>
+        current?.map((item) => (item.messageId === updated.messageId ? updated : item)),
+      );
+    },
+  });
+  const readEvery = useMutation({
+    mutationFn: markAllRead,
+    onSuccess: async () => {
+      const now = new Date().toISOString();
+      const queryKey = inboxQueryKey(accountId ?? "");
+      await queryClient.cancelQueries({ queryKey });
+      queryClient.setQueryData<Message[]>(queryKey, (current) =>
+        current?.map((item) => (item.readAt === null ? { ...item, readAt: now } : item)),
+      );
+    },
+  });
+  const save = useMutation({
+    mutationFn: savePreference,
+    onSuccess: async (saved) => {
+      const queryKey = preferencesQueryKey(accountId ?? "");
+      await queryClient.cancelQueries({ queryKey });
+      queryClient.setQueryData<Preference[]>(queryKey, (current) =>
+        current?.map((item) => (item.category === saved.category && item.channel === saved.channel ? saved : item)),
+      );
+    },
+  });
+  const readFailed = readOne.isError || readEvery.isError;
+  const saveFailed = save.isError;
 
-  function readAll() {
-    const now = new Date().toISOString();
-    setReadFailed(false);
-    markAllRead()
-      .then(() =>
-        setMessages(
-          (current) => current?.map((item) => (item.readAt === null ? { ...item, readAt: now } : item)) ?? null,
-        ),
-      )
-      .catch(() => setReadFailed(true));
-  }
-
-  function change(row: PreferenceRow, enabled: boolean) {
-    setSaveFailed(false);
-    savePreference({ category: row.category, channel: row.channel, enabled })
-      .then((saved) =>
-        setPreferences(
-          (current) =>
-            current?.map((item) =>
-              item.category === saved.category && item.channel === saved.channel ? saved : item,
-            ) ?? null,
-        ),
-      )
-      .catch(() => setSaveFailed(true));
-  }
+  const read = (message: Message) => {
+    readEvery.reset();
+    readOne.mutate(message);
+  };
+  const readAll = () => {
+    readOne.reset();
+    readEvery.mutate();
+  };
+  const change = (row: PreferenceRow, enabled: boolean) =>
+    save.mutate({ category: row.category, channel: row.channel, enabled });
 
   const unread = messages ? unreadCount(messages) : 0;
   return (

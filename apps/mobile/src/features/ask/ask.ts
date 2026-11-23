@@ -1,4 +1,5 @@
 import type { components } from "@zhipanda/api-client";
+import { queryOptions } from "@tanstack/react-query";
 
 import { authedApi } from "@/lib/api";
 
@@ -108,6 +109,10 @@ export async function loadAskStatus(): Promise<AskStatus> {
   const { data, error, response } = await authedApi.GET("/api/v2/ask/status");
   if (data) return data;
   throw new AskError(failureOf(response.status, error));
+}
+
+export function askStatusQueryOptions(accountId: string) {
+  return queryOptions({ queryKey: ["private", accountId, "ask-status"], queryFn: loadAskStatus, staleTime: 0 });
 }
 
 export async function askPanda(question: string): Promise<AskAnswer> {

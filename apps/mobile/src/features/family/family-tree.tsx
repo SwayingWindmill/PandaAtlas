@@ -11,6 +11,7 @@ import { EASE_MOVE } from "@/design/motion";
 import { primitive, semantic } from "@/design/tokens";
 import { type PlacedCard, type PlacedLine, layoutFamily, TREE_MAX_TEXT_SCALE } from "@/features/family/family-layout";
 import { matchLines, type MorphLine, transitionOffset } from "@/features/family/family-transition";
+import { nameInitial } from "@/lib/panda";
 import { cn } from "@/lib/utils";
 import { usePandaCover } from "@/lib/covers";
 
@@ -20,7 +21,7 @@ export function MemberAvatar({ member, className }: { member: FamilyMember; clas
     <Avatar alt={member.name} className={cn("size-11", className)}>
       {member.photoUrl || photo ? <AvatarImage source={{ uri: member.photoUrl ?? photo! }} /> : null}
       <AvatarFallback className="bg-accent">
-        <Text className="font-extrabold">{member.name.slice(0, 1)}</Text>
+        <Text className="font-extrabold">{nameInitial(member.name)}</Text>
       </AvatarFallback>
     </Avatar>
   );
