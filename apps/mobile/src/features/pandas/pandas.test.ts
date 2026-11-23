@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { loadPandaIndex } from "@/features/pandas/pandas";
+import { loadPandaIndex, searchPandas, toPandaListItem } from "@/features/pandas/pandas";
 import { queryClient } from "@/lib/query-client";
 
 const publicApi = vi.hoisted(() => ({ GET: vi.fn() }));
@@ -84,5 +84,59 @@ describe("loadPandaIndex", () => {
     expect(items.find((item) => item.id === "p-1")?.terms).toContain("史密森国家动物园");
     expect(items.find((item) => item.id === "p-2")?.hasFullBleedCover).toBe(false);
     expect(items.find((item) => item.id === "p-2")?.placeId).toBeNull();
+  });
+});
+
+const summary = (canonicalSlug: string, latinName: string | null, zhName: string, legacySlugs: string[] = []) =>
+  ({
+    pandaId: canonicalSlug,
+    canonicalSlug,
+    legacySlugs,
+    names: [
+      { languageTag: "zh-Hans", nameKind: "official", value: zhName, isPrimary: true },
+      ...(latinName ? [{ languageTag: "en", nameKind: "official", value: latinName, isPrimary: true }] : []),
+    ],
+    facts: [],
+  }) as Parameters<typeof toPandaListItem>[0];
+
+describe("searchPandas by pinyin initials", () => {
+  const pandas = [
+    toPandaListItem(summary("he-hua-chengdu", "He Hua", "和花")),
+    toPandaListItem(summary("meng-lan", "Meng Lan", "萌兰")),
+    toPandaListItem(summary("fu-bao", "Fu Bao", "福宝")),
+    toPandaListItem(summary("hua-hua-wolong-rescue-1983", null, "花花")),
+    toPandaListItem(summary("tiantian", "Tian Tian", "添添")),
+    toPandaListItem(summary("ai-bang-2016-cub-66", "Ai Bang's 2016 Cub 66", "爱浜2016仔")),
+  ];
+  const slugsFor = (query: string) => searchPandas(pandas, query).map((item) => item.slug);
+
+  it("finds 和花 and 花花 by hh", () => {
+    expect(slugsFor("hh")).toEqual(["he-hua-chengdu", "hua-hua-wolong-rescue-1983"]);
+  });
+
+  it("finds 萌兰 by ml and 福宝 by fb", () => {
+    expect(slugsFor("ml")).toEqual(["meng-lan"]);
+    expect(slugsFor("FB")).toEqual(["fu-bao"]);
+  });
+
+  it("matches initials from the start only", () => {
+    expect(slugsFor("hc")).toEqual([]);
+    expect(slugsFor("lan")).toEqual(["meng-lan"]);
+  });
+
+  it("ignores numbers when building initials", () => {
+    expect(slugsFor("abc")).toEqual(["ai-bang-2016-cub-66"]);
+    expect(slugsFor("ab2")).toEqual([]);
+  });
+
+  it("does not turn a one-word slug into an initial", () => {
+    expect(slugsFor("t")).toEqual(["tiantian"]);
+    expect(pandas.find((item) => item.slug === "tiantian")?.initials).toEqual(["tt"]);
+  });
+
+  it("ranks name hits before initials hits", () => {
+    const byInitials = toPandaListItem(summary("hai-hua", "Hai Hua", "海花"));
+    const byName = toPandaListItem(summary("hhx-star", null, "星"));
+    expect(searchPandas([byInitials, byName], "hh").map((item) => item.slug)).toEqual(["hhx-star", "hai-hua"]);
   });
 });

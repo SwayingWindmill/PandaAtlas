@@ -20,6 +20,7 @@ function panda(id: string, sex: "male" | "female" | null, extra: Partial<PandaLi
     area: null,
     hasFullBleedCover: false,
     terms: [],
+    initials: [],
     ...extra,
   };
 }

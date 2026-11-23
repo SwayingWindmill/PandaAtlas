@@ -28,6 +28,8 @@ export interface PandaListItem {
   hasFullBleedCover: boolean;
   /** Slug, every name and the current place, normalized for matching. */
   terms: string[];
+  /** Pinyin initials of each multi-word slug or Latin name ("he-hua-chengdu" gives "hhc"), matched by prefix only. */
+  initials: string[];
 }
 
 /** Case, accents, spaces and separators don't matter: "Fu Bao", "fubao" and "fu-bao" match. */
@@ -37,6 +39,22 @@ export function normalizeTerm(value: string): string {
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
     .replace(/[\s_\-:]+/g, "");
+}
+
+/**
+ * One initial per alphabetic word; numbers and the Chinese half of a mixed name are skipped.
+ * A single word gives nothing: one letter would match every panda that starts with it.
+ */
+function initialsOf(source: string): string | null {
+  const initials = source
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .split(/[\s_\-:]+/)
+    .filter((word) => /^[a-z]/.test(word))
+    .map((word) => word[0])
+    .join("");
+  return initials.length >= 2 ? initials : null;
 }
 
 /** Chinese names only: coarse locations carry English text, except the country-level "China". */
@@ -68,7 +86,7 @@ export function loadPlaces(): Promise<Map<string, Place>> {
 export function toPandaListItem(panda: PandaSummary): PandaListItem {
   const placeRecord = panda.currentPlace;
   const place = placeName(placeRecord);
-  const names = [panda.canonicalSlug, ...panda.legacySlugs, ...panda.names.map((name) => name.value)];
+  const latin = [panda.canonicalSlug, ...panda.legacySlugs, ...panda.names.map((name) => name.value)];
   return {
     id: panda.pandaId,
     slug: panda.canonicalSlug,
@@ -80,7 +98,8 @@ export function toPandaListItem(panda: PandaSummary): PandaListItem {
     placeId: placeRecord?.placeId ?? null,
     area: areaOf(placeRecord),
     hasFullBleedCover: Boolean(panda.hasFullBleedCover),
-    terms: (place ? [...names, place] : names).map(normalizeTerm),
+    terms: (place ? [...latin, place] : latin).map(normalizeTerm),
+    initials: latin.flatMap((source) => initialsOf(source) ?? []),
   };
 }
 
@@ -99,15 +118,19 @@ export function pandaIndexQueryOptions() {
   return queryOptions({ queryKey: ["public", "panda-index"], queryFn: buildIndex, staleTime: 300_000, networkMode: "always" });
 }
 
-/** Exact matches first, then names starting with the query, then the rest, each in list order. */
+/** Exact matches first, then names starting with the query, then pinyin initials, then the rest, each in list order. */
 export function searchPandas(items: PandaListItem[], query: string): PandaListItem[] {
   const needle = normalizeTerm(query);
   if (!needle) return items;
-  const rank = (item: PandaListItem) =>
-    item.terms.some((term) => term === needle) ? 0 : item.terms.some((term) => term.startsWith(needle)) ? 1 : 2;
+  const rank = (item: PandaListItem) => {
+    if (item.terms.some((term) => term === needle)) return 0;
+    if (item.terms.some((term) => term.startsWith(needle))) return 1;
+    if (item.initials.some((initials) => initials.startsWith(needle))) return 2;
+    return item.terms.some((term) => term.includes(needle)) ? 3 : null;
+  };
   return items
-    .filter((item) => item.terms.some((term) => term.includes(needle)))
     .map((item) => ({ item, rank: rank(item) }))
+    .filter((entry): entry is { item: PandaListItem; rank: number } => entry.rank !== null)
     .sort((a, b) => a.rank - b.rank)
     .map(({ item }) => item);
 }

@@ -18,6 +18,7 @@ import { clearPicks, pickedPandas, readPicks, savePicks } from "@/features/onboa
 import { suggestions } from "@/features/onboarding/suggestions";
 import { markWelcomeSeen } from "@/features/onboarding/welcome";
 import { type PandaListItem, loadPandaIndex, searchPandas } from "@/features/pandas/pandas";
+import { usePopularPandas } from "@/features/pandas/popular";
 import { SearchField } from "@/features/pandas/search-field";
 import { useSession } from "@/features/session/session";
 import { usePandaCover } from "@/lib/covers";
@@ -124,9 +125,10 @@ export default function WelcomeScreen() {
     load();
   }
 
+  const popular = usePopularPandas(pandas ?? undefined);
   const shown = useMemo(
-    () => (pandas ? (deferred.trim() ? searchPandas(pandas, deferred).slice(0, 12) : suggestions(pandas)) : []),
-    [pandas, deferred],
+    () => (pandas ? (deferred.trim() ? searchPandas(pandas, deferred).slice(0, 12) : suggestions(pandas, popular)) : []),
+    [pandas, deferred, popular],
   );
   const isSelected = (panda: PandaListItem) => selected.some((item) => item.id === panda.id);
 
