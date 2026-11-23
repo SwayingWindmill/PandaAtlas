@@ -2,6 +2,9 @@ import { Image } from "expo-image";
 import { useEffect } from "react";
 import {
   GestureDetector,
+  GestureStateManager,
+  type NativeGesture,
+  State,
   useCompetingGestures,
   useExclusiveGestures,
   usePanGesture,
@@ -14,6 +17,7 @@ import Animated, {
   type SharedValue,
   useAnimatedReaction,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withDecay,
   withSpring,
@@ -29,33 +33,53 @@ import {
   doubleTapTarget,
   fittedSize,
   panLimit,
+  restingScale,
   rubberBand,
 } from "@/features/pandas/photo-viewer";
 
 const SETTLE = { duration: 400, dampingRatio: 1, reduceMotion: ReduceMotion.System } as const;
 const SNAP_BACK = { duration: 400, dampingRatio: 0.8, reduceMotion: ReduceMotion.System } as const;
-/** Below this the photo counts as unzoomed: paging and drag-to-dismiss come back. */
-const ZOOMED = 1.01;
 const DISMISS_DISTANCE = 0.18;
 const DISMISS_VELOCITY = 900;
 /** Fingers move this far before a drag starts, so a tap stays a tap. */
 const SLOP = 12;
 /** An offset range so wide it never trips: the pan neither fails nor activates on that axis. */
 const ANY = 100_000;
-
-type Drag = "idle" | "pinch" | "pan" | "dismiss";
+/** Shorter than the 500 ms default, so a single tap toggles the chrome sooner. */
+const DOUBLE_TAP_DELAY = 250;
 
 /**
- * One page of the viewer. Pinch zooms around the fingers between 1x and 4x and stretches past them;
- * a drag pans the zoomed photo inside its edges; a double tap zooms to 2.5x at the tap and back; a
- * single tap toggles the viewer's chrome; at 1x a downward drag carries the photo and dismisses.
+ * The pager waits for this page's pan to fail before it scrolls. At rest only a downward drag is the
+ * page's: sideways or upward travel fails the pan and hands the touch to the pager. Zoomed, any drag
+ * pans and nothing fails it, so the pager cannot start.
  */
+const PAN_BOUNDS = {
+  rest: { activeX: [-ANY, ANY], activeY: [-ANY, SLOP], failX: [-SLOP, SLOP], failY: [-SLOP, ANY], pointers: 1 },
+  zoomed: { activeX: [-SLOP, SLOP], activeY: [-SLOP, SLOP], failX: [-ANY, ANY], failY: [-ANY, ANY], pointers: 2 },
+} as const;
+
+type Drag = "idle" | "pinch" | "pan" | "dismiss";
+type Range = keyof Omit<(typeof PAN_BOUNDS)["rest"], "pointers">;
+
+const boundsFor = (scale: number) => {
+  "worklet";
+  return PAN_BOUNDS[scale > ZOOM.zoomed ? "zoomed" : "rest"];
+};
+
+// The bounds follow the scale on the UI thread, so the pager locks the frame a zoom starts.
+function useRange(scale: SharedValue<number>, range: Range): [SharedValue<number>, SharedValue<number>] {
+  const from = useDerivedValue<number>(() => boundsFor(scale.get())[range][0]);
+  const to = useDerivedValue<number>(() => boundsFor(scale.get())[range][1]);
+  return [from, to];
+}
+
 export function ZoomablePhoto({
   uri,
   label,
   size,
   active,
   zoomed,
+  pager,
   dismissY,
   onZoomedChange,
   onTap,
@@ -67,6 +91,8 @@ export function ZoomablePhoto({
   /** The page on screen. Every other page rests at 1x. */
   active: boolean;
   zoomed: boolean;
+  /** The pager's native scroll gesture, which must wait for this page's pinch and pan. Null on web. */
+  pager: NativeGesture | null;
   /** The viewer's drag-to-dismiss offset, shared so the background fades with it. */
   dismissY: SharedValue<number>;
   onZoomedChange: (zoomed: boolean) => void;
@@ -78,8 +104,16 @@ export function ZoomablePhoto({
   const y = useSharedValue(0);
   const image = useSharedValue<Size | null>(null);
   const drag = useSharedValue<Drag>("idle");
-  const start = useSharedValue({ scale: 1, x: 0, y: 0, focal: { x: 0, y: 0 } });
+  const start = useSharedValue({ scale: 1, x: 0, y: 0, lift: 0, focal: { x: 0, y: 0 } });
   const focal = useSharedValue<Point>({ x: 0, y: 0 });
+  const touchStart = useSharedValue<Point>({ x: 0, y: 0 });
+  const blocksPager = pager ?? undefined;
+
+  const activeX = useRange(scale, "activeX");
+  const activeY = useRange(scale, "activeY");
+  const failX = useRange(scale, "failX");
+  const failY = useRange(scale, "failY");
+  const maxPointers = useDerivedValue<number>(() => boundsFor(scale.get()).pointers);
 
   useEffect(() => {
     if (active) return;
@@ -89,7 +123,7 @@ export function ZoomablePhoto({
   }, [active, scale, x, y]);
 
   useAnimatedReaction(
-    () => scale.get() > ZOOMED,
+    () => scale.get() > ZOOM.zoomed,
     (now, before) => {
       if (before !== null && now !== before) scheduleOnRN(onZoomedChange, now);
     },
@@ -102,8 +136,7 @@ export function ZoomablePhoto({
 
   const settle = () => {
     "worklet";
-    const target = clamp(scale.get(), ZOOM.min, ZOOM.max);
-    // Back inside the bounds around the same point the fingers last held.
+    const target = restingScale(scale.get());
     const anchored = anchoredTranslation(focal.get(), focal.get(), scale.get(), { x: x.get(), y: y.get() }, target);
     const limit = panLimit(target, size, fittedSize(size, image.get()));
     scale.set(withSpring(target, SETTLE));
@@ -112,12 +145,27 @@ export function ZoomablePhoto({
   };
 
   const pinch = usePinchGesture({
+    block: blocksPager,
+    onTouchesDown: (event) => {
+      "worklet";
+      const touch = event.allTouches[0];
+      if (event.numberOfTouches === 1 && touch) touchStart.set({ x: touch.absoluteX, y: touch.absoluteY });
+    },
+    // One finger never fails a pinch on its own, and the pager waits for it, so a one-finger swipe at
+    // rest fails it here once it travels past the slop.
+    onTouchesMove: (event) => {
+      "worklet";
+      const touch = event.allTouches[0];
+      if (!touch || event.numberOfTouches !== 1 || event.state === State.ACTIVE || scale.get() > ZOOM.zoomed) return;
+      const from = touchStart.get();
+      if (Math.hypot(touch.absoluteX - from.x, touch.absoluteY - from.y) > SLOP) GestureStateManager.fail(event.handlerTag);
+    },
     onActivate: (event) => {
       "worklet";
       const point = fromCentre(event.focalX, event.focalY);
       if (drag.get() === "dismiss") dismissY.set(withSpring(0, SNAP_BACK));
       drag.set("pinch");
-      start.set({ scale: scale.get(), x: x.get(), y: y.get(), focal: point });
+      start.set({ scale: scale.get(), x: x.get(), y: y.get(), lift: 0, focal: point });
       focal.set(point);
     },
     onUpdate: (event) => {
@@ -139,27 +187,28 @@ export function ZoomablePhoto({
   });
 
   const pan = usePanGesture({
-    // At 1x only a downward drag is this page's: a sideways one fails so the pager takes it.
-    activeOffsetX: zoomed ? [-SLOP, SLOP] : [-ANY, ANY],
-    activeOffsetY: zoomed ? [-SLOP, SLOP] : [-ANY, SLOP],
-    failOffsetX: zoomed ? [-ANY, ANY] : [-SLOP, SLOP],
-    failOffsetY: zoomed ? [-ANY, ANY] : [-SLOP, ANY],
-    maxPointers: zoomed ? 2 : 1,
-    onActivate: () => {
+    block: blocksPager,
+    activeOffsetX: activeX,
+    activeOffsetY: activeY,
+    failOffsetX: failX,
+    failOffsetY: failY,
+    maxPointers,
+    onActivate: (event) => {
       "worklet";
       if (drag.get() === "pinch") return;
-      drag.set(scale.get() > ZOOMED ? "pan" : "dismiss");
-      start.set({ scale: scale.get(), x: x.get(), y: y.get(), focal: focal.get() });
+      drag.set(scale.get() > ZOOM.zoomed ? "pan" : "dismiss");
+      // A drag that catches the dismiss spring mid-flight carries the photo on from where it is.
+      start.set({ scale: scale.get(), x: x.get(), y: y.get(), lift: dismissY.get() - event.translationY, focal: focal.get() });
     },
     onUpdate: (event) => {
       "worklet";
       const mode = drag.get();
+      const from = start.get();
       if (mode === "dismiss") {
-        dismissY.set(Math.max(0, event.translationY));
+        dismissY.set(Math.max(0, from.lift + event.translationY));
         return;
       }
       if (mode !== "pan") return;
-      const from = start.get();
       const limit = panLimit(scale.get(), size, fittedSize(size, image.get()));
       x.set(rubberBand(from.x + event.translationX, -limit.x, limit.x, size.width));
       y.set(rubberBand(from.y + event.translationY, -limit.y, limit.y, size.height));
@@ -185,9 +234,10 @@ export function ZoomablePhoto({
 
   const doubleTap = useTapGesture({
     numberOfTaps: 2,
+    maxDelay: DOUBLE_TAP_DELAY,
     onActivate: (event) => {
       "worklet";
-      if (scale.get() > ZOOMED) {
+      if (scale.get() > ZOOM.zoomed) {
         scale.set(withSpring(1, SETTLE));
         x.set(withSpring(0, SETTLE));
         y.set(withSpring(0, SETTLE));

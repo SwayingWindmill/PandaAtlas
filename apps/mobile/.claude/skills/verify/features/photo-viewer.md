@@ -1,6 +1,6 @@
 # Photo viewer
 
-A panda's photos open full screen on black. The top row has 关闭 and the counter `1 / N`. The bottom block has the panda's name, the photo's credit, ‹ 上一张, 分享, 保存 and › 下一张. Swiping pages through the photos at 1x. Pinch and double tap zoom; a zoomed photo pans inside its edges and the pager stops paging. A single tap hides the top row and the bottom block. A downward drag at 1x closes the viewer.
+A panda's photos open full screen on black. The top row has 关闭 and the counter `1 / N` (read aloud as `第 1 张，共 N 张`; iOS announces it on every page change). The bottom block has the panda's name, the photo's credit, ‹ 上一张, 分享, 保存 and › 下一张. Swiping pages through the photos at 1x. Pinch and double tap zoom; a zoomed photo pans inside its edges and the pager stops paging. A single tap hides the top row and the bottom block. A downward drag at 1x closes the viewer.
 
 ## Sub-features
 
@@ -10,7 +10,8 @@ A panda's photos open full screen on black. The top row has 关闭 and the count
 - `photo-viewer-immersive` hides the chrome on a single tap and shows it on the next. With a screen reader on, the chrome never hides. Focusing a hidden control by keyboard shows it.
 - `photo-viewer-dismiss` closes on a downward drag past 18% of the height or a fast flick; a shorter drag springs back.
 - `photo-viewer-width` keeps the current page aligned when the window changes width.
-- `photo-viewer-share` shares the original photo (a download on web). `photo-viewer-save` saves it to the photo library with add-only permission (a download on web) and shows `已保存到相册` or why it could not.
+- `photo-viewer-share` shares the original photo. On iOS the panda's name and the credit go along as text; Android's share sheet carries no text with a file, so the credit is in the file name (`<name> 照片 <credit>.jpg`). On web it downloads under the same name.
+- `photo-viewer-save` saves it to the photo library with add-only permission (a download on web) and shows `已保存到相册` or why it could not. When the permission is blocked for good, the message has a `去设置` button that opens the system settings. The cached original is deleted after a share or save.
 
 ## How to get to it (user POV)
 
@@ -29,7 +30,8 @@ Preconditions:
 
 ## Gotchas
 
-- A single tap waits out the double-tap window, about 200 ms, before the chrome toggles.
+- A single tap waits out the double-tap window, `maxDelay` 250 ms, before the chrome toggles.
+- The pager is react-native-gesture-handler's `FlatList`. On native, each page's pinch and pan `block` the pager's scroll gesture, so the pager scrolls only after both fail. The pan's offsets are shared values that follow the scale on the UI thread: at 1x sideways travel fails it, while zoomed nothing does, so the pager is locked from the frame a zoom starts. A one-finger swipe fails the pinch once it passes 12 pt. On web there is no pager gesture; `scrollEnabled` and `touch-action` do the same job. None of the native relations has been checked on a device yet.
 - Pinch needs two touch points. A desktop browser cannot produce it, so pinch is proven only on a device or simulator.
 - The web pager pages by swipe on touch and by the chevrons or a horizontal wheel with a mouse; a sideways mouse drag does not page it.
 - 保存 and 分享 on native need a dev client rebuilt with expo-media-library and react-native-gesture-handler. On web they download through a blob URL. A photo host that refuses CORS to the page's origin (production photos from the localhost preview) opens the original in a new tab instead; the browser pane blocks that tab for agent clicks, so the preview shows `照片没有保存下来，请稍后再试。`.

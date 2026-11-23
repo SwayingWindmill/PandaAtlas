@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from "react";
-import { AccessibilityInfo, FlatList, Platform, Pressable, View } from "react-native";
+import { AccessibilityInfo, Linking, Platform, Pressable, FlatList as RNFlatList, StyleSheet, View } from "react-native";
+import { FlatList as GestureFlatList, type NativeGesture } from "react-native-gesture-handler";
 import Animated, { interpolate, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -13,17 +14,25 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { cssEasing } from "@/design/motion";
 import { type SaveOutcome, savePhoto, sharePhoto } from "@/features/pandas/photo-actions";
-import { type Size, pageAt } from "@/features/pandas/photo-viewer";
+import { type Size, clamp, pageAt } from "@/features/pandas/photo-viewer";
 import { type Photo, photosQueryOptions } from "@/features/pandas/profile";
 import { ZoomablePhoto } from "@/features/pandas/zoomable-photo";
 
-const SAVED: Record<SaveOutcome, string> = {
-  saved: "已保存到相册",
-  downloaded: "已开始下载",
-  opened: "已在新标签页打开原图",
-  denied: "没有相册权限，照片没有保存。",
-  blocked: "吱熊猫没有相册权限，请在系统设置里允许添加照片。",
+type Status = { text: string; settings?: true };
+
+const SAVED: Record<SaveOutcome, Status> = {
+  saved: { text: "已保存到相册" },
+  downloaded: { text: "已开始下载" },
+  opened: { text: "已在新标签页打开原图" },
+  denied: { text: "没有相册权限，照片没有保存。" },
+  blocked: { text: "吱熊猫没有相册权限，请在系统设置里允许添加照片。", settings: true },
 };
+
+// On native the pager is gesture-handler's list, so each page's pinch and pan can hold its scroll gesture
+// back. Web has no such gesture to hold, and gesture-handler's web list re-renders without end here.
+const Pager = (Platform.OS === "web" ? RNFlatList : GestureFlatList) as typeof GestureFlatList;
+
+const counterLabel = (index: number, count: number) => `第 ${index + 1} 张，共 ${count} 张`;
 
 function useScreenReader(): boolean {
   const [on, setOn] = useState(false);
@@ -38,26 +47,29 @@ function useScreenReader(): boolean {
   return on;
 }
 
-/**
- * The full-screen photo viewer. Swipe or the chevrons page through the photos; pinch and double tap
- * zoom; a single tap hides the chrome; a downward drag at 1x closes it. The chevrons and 关闭 stay
- * for keyboards and screen readers, and with a screen reader on the chrome never hides.
- */
 export default function PhotosScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const insets = useSafeAreaInsets();
-  const list = useRef<FlatList<Photo>>(null);
+  const list = useRef<RNFlatList<Photo>>(null);
+  const [pager, setPager] = useState<NativeGesture | null>(null);
   const { data, isError: failed, refetch } = useQuery(photosQueryOptions(slug));
-  const [index, setIndex] = useState(0);
-  const [zoomed, setZoomed] = useState(false);
+  const [scrolledTo, setScrolledTo] = useState(0);
+  const [zoomedId, setZoomedId] = useState<string | null>(null);
   const [immersive, setImmersive] = useState(false);
-  const [status, setStatus] = useState<string | null>(null);
+  const [status, setStatus] = useState<Status | null>(null);
   const [busy, setBusy] = useState(false);
   // The pager's own size: every page is one pager wide, so paging survives rotation and resizing.
   const [page, setPage] = useState<Size>({ width: 0, height: 0 });
   const dismissY = useSharedValue(0);
   const screenReader = useScreenReader();
   const hidden = immersive && !screenReader;
+
+  const photos = data?.photos;
+  const index = photos ? clamp(scrolledTo, 0, Math.max(photos.length - 1, 0)) : 0;
+  const current = photos?.[index];
+  // Keyed by photo, so a list that changes under a zoomed photo cannot leave the pager locked.
+  const zoomed = current !== undefined && zoomedId === current.id;
+  const count = photos?.length ?? 0;
 
   // A new width leaves the old offset between pages; put the current page back under the viewport.
   const realign = useEffectEvent((width: number) => {
@@ -68,7 +80,7 @@ export default function PhotosScreen() {
   }, [page.width]);
 
   useEffect(() => {
-    if (!status) return;
+    if (!status || status.settings) return;
     const timer = setTimeout(() => setStatus(null), 3000);
     return () => clearTimeout(timer);
   }, [status]);
@@ -77,20 +89,25 @@ export default function PhotosScreen() {
     opacity: interpolate(dismissY.get(), [0, Math.max(page.height, 1) * 0.6], [1, 0], "clamp"),
   }));
 
-  const photos = data?.photos;
-  const current = photos?.[index];
+  const announced = useRef(index);
+  useEffect(() => {
+    if (Platform.OS !== "ios" || announced.current === index) return;
+    announced.current = index;
+    AccessibilityInfo.announceForAccessibility(counterLabel(index, count));
+  }, [index, count]);
 
   function go(to: number) {
     list.current?.scrollToIndex({ index: to, animated: true });
-    setIndex(to);
+    setScrolledTo(to);
   }
 
-  async function run(action: () => Promise<string | null>, failure: string) {
+  async function run(action: () => Promise<Status | null>, failure: string) {
     setBusy(true);
     try {
       setStatus(await action());
-    } catch {
-      setStatus(failure);
+    } catch (error) {
+      if (__DEV__) console.warn(failure, error);
+      setStatus({ text: failure });
     } finally {
       setBusy(false);
     }
@@ -118,19 +135,20 @@ export default function PhotosScreen() {
           )}
         </View>
       ) : (
-        <FlatList
+        <Pager
           ref={list}
+          onGestureUpdate_CAN_CAUSE_INFINITE_RERENDER={setPager}
           data={photos}
-          extraData={{ index, zoomed, page }}
+          extraData={{ index, zoomed, page, pager }}
           keyExtractor={(photo) => photo.id}
           horizontal
           pagingEnabled
           scrollEnabled={!zoomed}
           showsHorizontalScrollIndicator={false}
           getItemLayout={(_, item) => ({ length: page.width, offset: page.width * item, index: item })}
-          onScroll={(event) => setIndex(pageAt(event.nativeEvent.contentOffset.x, page.width, photos.length))}
+          onScroll={(event) => setScrolledTo(pageAt(event.nativeEvent.contentOffset.x, page.width, photos.length))}
           scrollEventThrottle={16}
-          className="absolute inset-0"
+          style={StyleSheet.absoluteFill}
           onLayout={(event) => setPage({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height })}
           renderItem={({ item, index: position }) => (
             <ZoomablePhoto
@@ -139,8 +157,9 @@ export default function PhotosScreen() {
               size={page}
               active={position === index}
               zoomed={zoomed}
+              pager={pager}
               dismissY={dismissY}
-              onZoomedChange={setZoomed}
+              onZoomedChange={(now) => setZoomedId((id) => (now ? item.id : id === item.id ? null : id))}
               onTap={() => setImmersive((now) => !now)}
               onDismiss={close}
             />
@@ -156,9 +175,14 @@ export default function PhotosScreen() {
         <Pressable role="button" accessibilityLabel="关闭" onPress={close} onFocus={reveal} className="size-11 items-center justify-center">
           <Icon icon={X} tone="onMedia" size={22} strokeWidth={2} />
         </Pressable>
-        {photos && photos.length > 0 ? (
-          <Text variant="subheadline" className="font-semibold text-white tabular-nums" accessibilityLiveRegion="polite">
-            {index + 1} / {photos.length}
+        {count > 0 ? (
+          <Text
+            variant="subheadline"
+            className="font-semibold text-white tabular-nums"
+            accessibilityLabel={counterLabel(index, count)}
+            accessibilityLiveRegion="polite"
+          >
+            {index + 1} / {count}
           </Text>
         ) : null}
         <View className="size-11" />
@@ -171,9 +195,18 @@ export default function PhotosScreen() {
           style={[{ paddingBottom: insets.bottom + 16 }, chrome]}
         >
           {status ? (
-            <Text variant="footnote" className="absolute inset-x-5 bottom-full mb-3 text-center text-white" accessibilityLiveRegion="polite">
-              {status}
-            </Text>
+            <View className="absolute inset-x-5 bottom-full mb-3 items-center gap-1">
+              <Text variant="footnote" className="text-center text-white" accessibilityLiveRegion="polite">
+                {status.text}
+              </Text>
+              {status.settings ? (
+                <Pressable role="button" onPress={() => void Linking.openSettings()} onFocus={reveal} hitSlop={12} className="active:opacity-60">
+                  <Text variant="footnote" className="font-semibold text-white underline">
+                    去设置
+                  </Text>
+                </Pressable>
+              ) : null}
+            </View>
           ) : null}
           <View className="gap-0.5">
             <Text variant="headline" className="text-white">

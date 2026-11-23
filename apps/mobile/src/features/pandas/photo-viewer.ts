@@ -1,3 +1,5 @@
+import type { Photo } from "@/features/pandas/profile";
+
 export interface Size {
   width: number;
   height: number;
@@ -8,7 +10,8 @@ export interface Point {
   y: number;
 }
 
-export const ZOOM = { min: 1, max: 4, doubleTap: 2.5 } as const;
+/** `zoomed` sits just above 1x so float noise after a pinch never counts as zoomed and locks the pager. */
+export const ZOOM = { min: 1, max: 4, doubleTap: 2.5, zoomed: 1.01 } as const;
 
 /** The page a horizontal pager rests on at this offset, for pages one `width` wide. */
 export function pageAt(offset: number, width: number, count: number): number {
@@ -20,6 +23,12 @@ export function pageAt(offset: number, width: number, count: number): number {
 export function clamp(value: number, min: number, max: number): number {
   "worklet";
   return Math.min(Math.max(value, min), max);
+}
+
+/** The scale a released pinch settles to: back inside the bounds, and exactly 1x if it barely left it. */
+export function restingScale(scale: number): number {
+  "worklet";
+  return scale <= ZOOM.zoomed ? ZOOM.min : clamp(scale, ZOOM.min, ZOOM.max);
 }
 
 /**
@@ -72,4 +81,23 @@ export function doubleTapTarget(tap: Point, viewport: Size, content: Size): Poin
   const limit = panLimit(scale, viewport, content);
   const anchored = anchoredTranslation(tap, tap, 1, { x: 0, y: 0 }, scale);
   return { scale, x: clamp(anchored.x, -limit.x, limit.x), y: clamp(anchored.y, -limit.y, limit.y) };
+}
+
+export function shareText(photo: Photo, name: string): string {
+  return [name, photo.credit].filter(Boolean).join("\n");
+}
+
+/**
+ * Names the file after the panda and the credit. Android's share sheet carries no text with a file,
+ * so the file name is the only place the credit travels there.
+ */
+export function fileName(photo: Photo, name: string): string {
+  const extension = /\.(jpe?g|png|webp|heic|gif)(?:$|[?#])/i.exec(photo.url)?.[1]?.toLowerCase() ?? "jpg";
+  const stem = [name, photo.credit]
+    .filter(Boolean)
+    .join(" ")
+    .replace(/[\\/:*?"<>|\s]+/g, " ")
+    .trim()
+    .slice(0, 120);
+  return `${stem || photo.id}.${extension}`;
 }

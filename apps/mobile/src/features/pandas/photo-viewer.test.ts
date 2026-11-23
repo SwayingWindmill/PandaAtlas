@@ -1,6 +1,17 @@
 import { describe, expect, it } from "vitest";
 
-import { ZOOM, anchoredTranslation, doubleTapTarget, fittedSize, pageAt, panLimit, rubberBand } from "./photo-viewer";
+import {
+  ZOOM,
+  anchoredTranslation,
+  doubleTapTarget,
+  fileName,
+  fittedSize,
+  pageAt,
+  panLimit,
+  restingScale,
+  rubberBand,
+  shareText,
+} from "./photo-viewer";
 
 describe("pageAt", () => {
   it("rounds to the nearest whole page and stays inside the list", () => {
@@ -36,6 +47,19 @@ describe("rubberBand", () => {
   });
 });
 
+describe("restingScale", () => {
+  it("snaps a pinch that barely left 1x back to exactly 1x", () => {
+    expect(restingScale(1.005)).toBe(1);
+    expect(restingScale(ZOOM.zoomed)).toBe(1);
+  });
+
+  it("keeps a real zoom and pulls a stretched one back inside the bounds", () => {
+    expect(restingScale(1.5)).toBe(1.5);
+    expect(restingScale(5)).toBe(ZOOM.max);
+    expect(restingScale(0.6)).toBe(ZOOM.min);
+  });
+});
+
 describe("zoom geometry", () => {
   const viewport = { width: 400, height: 800 };
   const landscape = fittedSize(viewport, { width: 4000, height: 3000 });
@@ -54,7 +78,6 @@ describe("zoom geometry", () => {
     const focal = { x: 100, y: -40 };
     const at2 = anchoredTranslation(focal, focal, 1, { x: 0, y: 0 }, 2);
     expect(at2).toEqual({ x: -100, y: 40 });
-    // The image point under the fingers, (focal - translation) / scale, is the same before and after.
     expect((focal.x - at2.x) / 2).toBe(focal.x);
     expect((focal.y - at2.y) / 2).toBe(focal.y);
   });
@@ -65,5 +88,19 @@ describe("zoom geometry", () => {
     expect(target.y).toBeCloseTo(0);
     expect(doubleTapTarget({ x: 190, y: 0 }, viewport, landscape).x).toBe(-285);
     expect(doubleTapTarget({ x: 400, y: 0 }, viewport, landscape).x).toBe(-300);
+  });
+});
+
+describe("shared photo", () => {
+  const photo = { id: "a1", url: "https://media.example/p/a1.JPG?w=2", credit: "照片 王小明 / CC BY 4.0，CC-BY-4.0", creator: null, source: null };
+
+  it("sends the panda's name and the credit as text", () => {
+    expect(shareText(photo, "萌兰")).toBe("萌兰\n照片 王小明 / CC BY 4.0，CC-BY-4.0");
+    expect(shareText({ ...photo, credit: null }, "萌兰")).toBe("萌兰");
+  });
+
+  it("carries the credit in a file name every file system accepts", () => {
+    expect(fileName(photo, "萌兰")).toBe("萌兰 照片 王小明 CC BY 4.0，CC-BY-4.0.jpg");
+    expect(fileName({ ...photo, credit: null, url: "https://media.example/p/a1" }, "")).toBe("a1.jpg");
   });
 });
