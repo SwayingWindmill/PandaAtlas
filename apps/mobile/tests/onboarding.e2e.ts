@@ -5,7 +5,7 @@ import { enterCode, testEmail } from "./support/session.ts";
 // A fresh install, without the journeys' welcome flag.
 import { freshInstallTest as test } from "./support/test.ts";
 
-test("first launch welcomes the fan, who signs in, follows two pandas and lands on 今天", async ({ app, screen }) => {
+test("first launch welcomes the fan, who signs in, follows two pandas and lands on 探索", async ({ app, screen }) => {
   const { panda, notice } = fixture();
   await app.open("/");
   await expect(screen.getByRole("heading", "先关注几只熊猫")).toBeVisible();
@@ -19,7 +19,7 @@ test("first launch welcomes the fan, who signs in, follows two pandas and lands 
   await screen.getByRole("button", "登录并关注这 2 只").tap();
   await enterCode(screen, testEmail("welcome"));
   // Back from signing in, the follow goes on by itself.
-  await expect(screen.getByRole("heading", "今天")).toBeVisible();
+  await expect(screen.getByRole("heading", "探索")).toBeVisible();
 
   await app.open("/me");
   await expect(screen.getByLabel("关注 2 只")).toBeVisible();
@@ -41,7 +41,7 @@ test("the picks survive leaving for sign-in and closing the app", async ({ app, 
   await expect(screen.getByText(`已选：${panda.name}、${notice.name}`)).toBeVisible();
   await screen.getByRole("button", "登录并关注这 2 只").tap();
   await enterCode(screen, testEmail("welcome-restart"));
-  await expect(screen.getByRole("heading", "今天")).toBeVisible();
+  await expect(screen.getByRole("heading", "探索")).toBeVisible();
 
   await app.open("/me");
   await expect(screen.getByLabel("关注 2 只")).toBeVisible();
@@ -50,9 +50,9 @@ test("the picks survive leaving for sign-in and closing the app", async ({ app, 
 test("skipping the welcome shows it only once", async ({ app, screen, browser }) => {
   await app.open("/");
   await screen.getByRole("button", "先逛逛").tap();
-  await expect(screen.getByRole("heading", "今天")).toBeVisible();
+  await expect(screen.getByRole("heading", "探索")).toBeVisible();
 
   await browser.reload();
-  await expect(screen.getByRole("heading", "今天")).toBeVisible();
+  await expect(screen.getByRole("heading", "探索")).toBeVisible();
   await expect(screen.getByRole("heading", "先关注几只熊猫")).toHaveCount(0);
 });

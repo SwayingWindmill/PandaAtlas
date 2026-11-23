@@ -19,7 +19,7 @@ Preconditions:
 
 - The doctor passes for `e2e`, or `--mode preview` for a look with production data.
 
-- **Not found.** Run `npx e2e run tests/not-found.e2e.ts:5` from `apps/mobile`. It opens `/no-such-page/at-all`, reads 这个链接可能已经失效，或者页面已经搬走了。, taps `button "回首页"` and sees `heading "今天"`.
+- **Not found.** Run `npx e2e run tests/not-found.e2e.ts:5` from `apps/mobile`. It opens `/no-such-page/at-all`, reads 这个链接可能已经失效，或者页面已经搬走了。, taps `button "回首页"` and sees `heading "探索"`.
 - **Error page.** No journey drives it, because nothing in the app throws on purpose. For a live look, add a temporary `throw` at the top of a screen (for example `about.tsx`), open that route in the preview, check 页面出了点问题, 重试 and 回首页, then remove the throw.
 
 ## Gotchas

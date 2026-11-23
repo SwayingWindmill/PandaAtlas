@@ -1,87 +1,37 @@
 import { useQuery } from "@tanstack/react-query";
-import { type Href, Stack, router } from "expo-router";
-import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
+import { Stack, router } from "expo-router";
+import { Platform, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useStacked } from "@/components/grouped-list";
-import { Icon } from "@/components/icon";
-import { CalendarDays, House, type LucideIcon, Plane, Sun, Trophy } from "@/components/icons";
+import { BARLESS_TOP } from "@/components/page";
+import { SectionHeader } from "@/components/section-header";
 import { StatusBarCover } from "@/components/status-bar-cover";
 import { Text } from "@/components/ui/text";
 import { component } from "@/design/tokens";
+import { BirthdayReminderCard } from "@/features/birthdays/reminder-card";
+import { CuratedGallerySection } from "@/features/explore/curated-gallery";
+import { FeaturedPandaCard } from "@/features/explore/featured-panda-card";
+import { LearningAndPlaySection } from "@/features/explore/learning-and-play";
+import { LiveClockSection } from "@/features/explore/live-clock";
+import { PopularVenuesRail } from "@/features/explore/popular-venues-rail";
+import { StarOrFollowedStrip } from "@/features/explore/star-strip";
+import { TimelyBanner } from "@/features/explore/timely-banner";
+import { MapCard } from "@/features/map/map-card";
+import { mapViewQueryOptions } from "@/features/map/load";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
-import { BirthdayReminderCard } from "@/features/birthdays/reminder-card";
-import { localToday } from "@/features/engagement/seen";
-import { loadOverseasStatus } from "@/features/overseas/overseas-status";
+import { SoundStripSection } from "@/features/sounds/sound-strip";
 import { FollowedChanges } from "@/features/today/followed-changes";
-import { FollowedStrip } from "@/features/today/followed-strip";
-import { OnThisDayCard } from "@/features/today/on-this-day-card";
-import { StoryCard } from "@/features/today/story-card";
-import { useStoryPhotos } from "@/features/today/story-photos";
-import { TodayBirthdays } from "@/features/today/today-birthdays";
-import { TodayCards, TodayVenueNews, type ViewingSpot, useFollowedViewing } from "@/features/today/venue-blocks";
-import { WeekCard } from "@/features/today/week-card";
+import { TodayVenueNews } from "@/features/today/venue-blocks";
 import { WeekHero, useWeekMemory } from "@/features/today/week-hero";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { PAGE_COLUMN, pageColumn } from "@/lib/surface";
 
-const STORIES = [
-  { id: "daily", title: "今天是哪只熊猫？", feature: "每日一猫", href: "/daily" },
-  { id: "guess", title: "看照片认熊猫", feature: "猜熊猫", href: "/guess" },
-  { id: "learn", title: "认识大熊猫", feature: "科普", href: "/learn" },
-  { id: "calendar", title: "这个月谁过生日", feature: "熊猫日历", href: "/calendar" },
-] as const;
+const PROFILE_AVATAR_SIZE = 36;
 
-const WEEKDAY = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-
-/** "10月29日 星期四", the date line over the title. */
-function dateLine(now = new Date()) {
-  return `${now.getMonth() + 1}月${now.getDate()}日 ${WEEKDAY[now.getDay()]}`;
-}
-
-/**
- * Shortcuts under the hero, each a bare glyph over its name (v4 `01-today`): 观猫时机 at the followed panda's
- * venue when it publishes the hours, else 日历; then 归国 (only once a return is published), 挑战 and 场馆.
- */
-function QuickEntries({ viewing }: { viewing: ViewingSpot | null }) {
-  const stacked = useStacked();
-  const overseas = useQuery({ queryKey: ["overseas-status"], queryFn: loadOverseasStatus });
-  const quick: { label: string; icon: LucideIcon; href: Href }[] = [
-    viewing
-      ? { label: "观猫时机", icon: Sun, href: { pathname: "/institutions/[slug]", params: { slug: viewing.slug, tab: "guide" } } }
-      : { label: "日历", icon: CalendarDays, href: "/calendar" },
-    ...((overseas.data?.length ?? 0) > 0 ? [{ label: "归国", icon: Plane, href: "/returning" as const }] : []),
-    { label: "挑战", icon: Trophy, href: "/challenge" },
-    { label: "场馆", icon: House, href: "/institutions" },
-  ];
-  return (
-    <View className={stacked ? "flex-row flex-wrap gap-y-2" : "flex-row"}>
-      {quick.map((item) => (
-        <Pressable
-          key={item.label}
-          role="link"
-          accessibilityLabel={item.label}
-          onPress={() => router.push(item.href)}
-          className="min-h-11 items-center gap-1.5 py-2 active:opacity-60"
-          style={stacked ? { width: "50%" } : { flex: 1 }}
-        >
-          <Icon icon={item.icon} size={26} tone="label" strokeWidth={2} />
-          <Text variant="footnote" className="font-semibold">
-            {item.label}
-          </Text>
-        </Pressable>
-      ))}
-    </View>
-  );
-}
-
-const AVATAR = 38;
-
-/** The date over a large 今天, with the fan's avatar at the right, which opens 我的. */
-function TodayHeader() {
+function ExploreHeader() {
   const { state } = useSession();
   const { profile } = useProfile();
   const signedIn = state.status === "signedIn";
@@ -89,42 +39,33 @@ function TodayHeader() {
   const name = signedIn && profile ? displayName(profile, email) : null;
   return (
     <View className="flex-row items-end justify-between gap-3">
-      <View className="shrink">
-        <Text variant="footnote" className="font-semibold text-muted-foreground">
-          {dateLine()}
-        </Text>
-        <Text variant="display" role="heading">
-          今天
-        </Text>
-      </View>
-      <Pressable role="link" accessibilityLabel="我的" onPress={() => router.push("/me")} hitSlop={(component.hitTarget - AVATAR) / 2} className="mb-1 active:opacity-70">
-        <ProfileAvatar name={name} size={AVATAR} quiet />
+      <Text variant="display" role="heading">
+        探索
+      </Text>
+      <Pressable
+        role="link"
+        accessibilityLabel="我的"
+        onPress={() => router.push("/me")}
+        hitSlop={(component.hitTarget - PROFILE_AVATAR_SIZE) / 2}
+        className="mb-1 active:opacity-70"
+      >
+        <ProfileAvatar name={name} size={PROFILE_AVATAR_SIZE} quiet />
       </Pressable>
     </View>
   );
 }
 
-/** Gap between the small cards in the scroller, and what each snap moves past. */
-const GAP = 12;
-
-export default function TodayScreen() {
+export default function ExploreScreen() {
   const insets = useSafeAreaInsets();
   const bottom = useBottomClearance();
   const refreshControl = usePullToRefresh();
-  const { width, fontScale } = useWindowDimensions();
-  const photos = useStoryPhotos(localToday(), STORIES.length);
-  const column = pageColumn(width);
-  // The head card is a wide band, so the shortcuts and the row below show on the first screen.
-  // It grows with the text size so a big title still fits. The smaller cards show about one
-  // and a half at a time, so the next one peeks in.
-  const lead = Math.round(column * (useStacked() ? 1.2 : 0.62));
-  const small = Math.round(Math.min(column * 0.72, 300));
-  const smallHeight = Math.round(Math.max(small * 1.22, 220 * Math.min(fontScale, 1.6)));
+  const { width } = useWindowDimensions();
+  const { data: mapView } = useQuery(mapViewQueryOptions());
   const memory = useWeekMemory();
-  const viewing = useFollowedViewing();
-  const [featured, ...more] = STORIES;
-  // An anniversary this week takes the head of the page; the featured story joins the row.
-  const rest = memory ? STORIES : more;
+
+  const top = Platform.OS === "android" ? insets.top + BARLESS_TOP : insets.top + 6;
+  const venueCount = mapView?.items.length ?? 0;
+  const heroHeight = Math.round(pageColumn(width) * 0.62);
 
   return (
     <>
@@ -134,57 +75,36 @@ export default function TodayScreen() {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerClassName="gap-section px-gutter"
         refreshControl={refreshControl}
-        contentContainerStyle={[PAGE_COLUMN, { paddingTop: insets.top + 6, paddingBottom: bottom }]}
+        contentContainerStyle={[PAGE_COLUMN, { paddingTop: top, paddingBottom: bottom }]}
       >
-        {/* The column draws the title so the date can sit over it, with the avatar beside. */}
-        <Stack.Screen options={{ title: "今天", headerShown: false }} />
+        <Stack.Screen options={{ title: "探索", headerShown: false }} />
+
         <View className="gap-stack">
-          <TodayHeader />
-          {memory ? (
-            <WeekHero hero={memory} height={lead} />
-          ) : (
-            <StoryCard
-              featured
-              id={featured.id}
-              title={featured.title}
-              feature={featured.feature}
-              href={featured.href}
-              photo={photos[0]}
-              height={lead}
-            />
-          )}
-          <QuickEntries viewing={viewing} />
-          <TodayCards viewing={viewing} />
-          <TodayVenueNews />
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            className="-mx-gutter"
-            contentContainerClassName="px-gutter"
-            contentContainerStyle={{ gap: GAP }}
-            snapToInterval={small + GAP}
-            snapToAlignment="start"
-            decelerationRate="fast"
-          >
-            {rest.map((story, index) => (
-              <StoryCard
-                key={story.id}
-                id={story.id}
-                title={story.title}
-                feature={story.feature}
-                href={story.href}
-                photo={photos[memory ? index : index + 1]}
-                width={small}
-                height={smallHeight}
-              />
-            ))}
-          </ScrollView>
+          <ExploreHeader />
+          <TimelyBanner />
+          <BirthdayReminderCard />
+          <StarOrFollowedStrip />
+          <LiveClockSection />
+          {memory ? <WeekHero hero={memory} height={heroHeight} /> : <FeaturedPandaCard />}
         </View>
-        <BirthdayReminderCard />
-        <OnThisDayCard />
-        <WeekCard />
-        <FollowedStrip />
-        <TodayBirthdays />
+
+        <View className="gap-stack-tight">
+          <SectionHeader
+            title="逛基地"
+            action={{
+              label: venueCount > 0 ? `全部 ${venueCount} 处` : "全部场馆",
+              href: "/institutions",
+              accessibilityLabel: "查看全部熊猫场馆",
+            }}
+          />
+          <MapCard height={112} />
+        </View>
+
+        <PopularVenuesRail />
+        <CuratedGallerySection />
+        <SoundStripSection />
+        <LearningAndPlaySection />
+        <TodayVenueNews />
         <FollowedChanges />
       </ScrollView>
     </>

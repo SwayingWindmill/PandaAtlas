@@ -2,7 +2,7 @@ import { Redirect, Tabs } from "expo-router";
 import { Platform } from "react-native";
 
 import { Icon } from "@/components/icon";
-import { Book, Calendar, Compass, Search, UserRound } from "@/components/icons";
+import { Book, Compass, Search, UserRound } from "@/components/icons";
 import { component } from "@/design/tokens";
 import { useWelcomeSeen } from "@/features/onboarding/welcome";
 import { useIOSColors } from "@/lib/theme";
@@ -41,8 +41,7 @@ export default function WebTabsLayout() {
         tabBarLabelStyle: { fontSize: component.tabBar.label, lineHeight: component.tabBar.labelLine, fontWeight: "500" },
       }}
     >
-      <Tabs.Screen name="(today)" options={{ title: "今天", tabBarIcon: ({ color }) => <Icon icon={Calendar} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />
-      <Tabs.Screen name="discover" options={{ title: "发现", tabBarIcon: ({ color }) => <Icon icon={Compass} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />
+      <Tabs.Screen name="(today)" options={{ title: "探索", tabBarIcon: ({ color }) => <Icon icon={Compass} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />
       <Tabs.Screen name="find" options={{ title: "找熊猫", tabBarIcon: ({ color }) => <Icon icon={Search} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />
       <Tabs.Screen name="book" options={{ title: "图鉴", tabBarIcon: ({ color }) => <Icon icon={Book} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />
       <Tabs.Screen name="me" options={{ title: "我的", tabBarIcon: ({ color }) => <Icon icon={UserRound} size={TAB_ICON} strokeWidth={component.tabBar.iconStroke} color={color} /> }} />

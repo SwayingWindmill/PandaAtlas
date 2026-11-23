@@ -18,7 +18,7 @@ async function goToJuly2026(screen: Screen): Promise<void> {
 test("the calendar walks to July and opens a panda from its birthday", async ({ app, screen }) => {
   const { panda } = fixture();
   await app.open("/");
-  await screen.getByRole("link", "日历").tap();
+  await screen.getByRole("link", /查看日历/).tap();
   const now = new Date();
   await expect(screen.getByRole("heading", `${now.getFullYear()}年${now.getMonth() + 1}月`)).toBeVisible();
 

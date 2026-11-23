@@ -14,20 +14,19 @@ import { mapViewQueryOptions } from "./load";
 import { VenueMap } from "./venue-map";
 import { WILD_AREAS } from "./wild";
 
-const MAP_HEIGHT = 168;
+const DEFAULT_MAP_HEIGHT = 168;
 
 /**
- * 找熊猫's way into the map: a still thumbnail of China with a glyph per place, and the totals under
- * it. The whole card is one link; the map itself takes no gestures here.
+ * 找熊猫和探索页的地图入口：一张缩略图和统计数字，整张卡片可点进熊猫地图。
  */
-export function MapCard() {
+export function MapCard({ height = DEFAULT_MAP_HEIGHT }: { height?: number } = {}) {
   const { data: view } = useQuery(mapViewQueryOptions());
   const [width, setWidth] = useState(0);
   if (view && view.items.length === 0) return null;
 
   const china = view?.items.filter((item) => !item.overseas && item.point) ?? [];
   const overseas = view?.items.filter((item) => item.overseas).length ?? 0;
-  const viewport = { width, height: MAP_HEIGHT, top: 0, bottom: 0 };
+  const viewport = { width, height, top: 0, bottom: 0 };
   const camera = fitPoints(
     [...china.flatMap((item) => (item.point ? [item.point] : [])), ...WILD_AREAS.flatMap((area) => area.patches)],
     viewport,
@@ -45,7 +44,7 @@ export function MapCard() {
       style={{ borderCurve: "continuous" }}
       onLayout={(event) => setWidth(Math.round(event.nativeEvent.layout.width))}
     >
-      <View style={{ height: MAP_HEIGHT }} pointerEvents="none">
+      <View style={{ height }} pointerEvents="none">
         {view && width > 0 ? (
           <VenueMap items={view.items} camera={camera} viewport={viewport} wild={WILD_AREAS} compact />
         ) : (

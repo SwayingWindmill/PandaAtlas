@@ -16,7 +16,9 @@ async function answerFirstOption(screen: Screen): Promise<void> {
 
 test("a fan answers a 猜熊猫 question and sees which panda it was", async ({ app, screen }) => {
   await app.open("/");
-  await screen.getByRole("link", "看照片认熊猫，猜熊猫").tap();
+  await screen.getByRole("link", "趣味挑战").tap();
+  await expect(screen.getByRole("heading", "趣味挑战")).toBeVisible();
+  await screen.getByRole("button", /^猜熊猫/).tap();
   await expect(screen.getByText("猜熊猫　第 1 题")).toBeVisible();
   await expect(screen.getByRole("link", /^返回/)).toBeVisible();
 
