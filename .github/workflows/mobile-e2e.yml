@@ -79,6 +79,9 @@ jobs:
         working-directory: apps/mobile
         env:
           JOURNEY: ${{ inputs.journey }}
+          # Keep Playwright test workers (todayLabel) in sync with e2e.config.ts timezoneId across 16:00-23:59 UTC;
+          # e2e-fixture.service.ts formats Asia/Shanghai explicitly because e2e ManagedProcess strips TZ.
+          TZ: Asia/Shanghai
         run: npx e2e run $JOURNEY --trace on
 
       - name: Upload traces and logs

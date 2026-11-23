@@ -1,12 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
+import * as Application from "expo-application";
+import Constants from "expo-constants";
+import { Image } from "expo-image";
 import { type Href, router } from "expo-router";
-import { Pressable } from "react-native";
+import { useState } from "react";
+import { Linking, Platform, Pressable } from "react-native";
 
 import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
-import { Database, FileText, Lock, Moon } from "@/components/icons";
+import { Database, FileText, Info, Lock, Mail, Moon, Trash2 } from "@/components/icons";
 import { Page } from "@/components/page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { type AppBuild, FEEDBACK_EMAIL, feedbackMailto, versionLabel } from "@/features/app-info/app-info";
 import { APPEARANCES, useAppearance } from "@/features/appearance/appearance";
 import { BirthdaySwitch } from "@/features/birthdays/settings-section";
 import { LegalRow } from "@/features/legal/legal-links";
@@ -17,6 +22,7 @@ import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
 import { VenueNewsSwitch } from "@/features/venue-news/settings-section";
 import { api } from "@/lib/api";
+import { clearOfflineCache } from "@/lib/offline-cache";
 
 const AVATAR = 48;
 
@@ -65,6 +71,52 @@ function DataVersion() {
   );
 }
 
+const APP: AppBuild = {
+  version: Application.nativeApplicationVersion ?? Constants.expoConfig?.version ?? "",
+  build: Application.nativeBuildVersion,
+  os: Platform.OS,
+  osVersion: Platform.Version,
+};
+
+const CLEARING = { idle: undefined, busy: "正在清除…", done: "已清除", failed: "没能清除，请稍后再试" } as const;
+
+/** 清除本地缓存: the saved pages kept for offline use and expo-image's photo cache. Settings stay. */
+function ClearCacheCell() {
+  const [status, setStatus] = useState<keyof typeof CLEARING>("idle");
+  async function clear() {
+    setStatus("busy");
+    try {
+      await Promise.all([clearOfflineCache(), Image.clearDiskCache(), Image.clearMemoryCache()]);
+      setStatus("done");
+    } catch {
+      setStatus("failed");
+    }
+  }
+  return (
+    <ListCell
+      label="清除本地缓存"
+      glyph={Trash2}
+      meta={CLEARING[status]}
+      chevron={false}
+      onPress={status === "busy" ? undefined : () => void clear()}
+    />
+  );
+}
+
+/** 联系我们 opens a mail to 吱熊猫 with the version filled in; with no mail app, the row says the address. */
+function FeedbackCell() {
+  const [noMailApp, setNoMailApp] = useState(false);
+  return (
+    <ListCell
+      label="联系我们"
+      glyph={Mail}
+      role="link"
+      meta={noMailApp ? FEEDBACK_EMAIL : undefined}
+      onPress={() => void Linking.openURL(feedbackMailto(APP)).catch(() => setNoMailApp(true))}
+    />
+  );
+}
+
 /** 设置: the account, 外观, the 提醒 switches, the source and legal pages, and 退出登录. */
 export default function SettingsScreen() {
   const { state, signOut } = useSession();
@@ -101,6 +153,11 @@ export default function SettingsScreen() {
         <ListCell label="数据来源" glyph={Database} href="/about" />
         <LegalRow id="privacy" glyph={Lock} />
         <LegalRow id="terms" glyph={FileText} last />
+      </ListSection>
+      <ListSection>
+        <FeedbackCell />
+        <ClearCacheCell />
+        <ListCell label="版本" glyph={Info} meta={versionLabel(APP)} last />
       </ListSection>
       {signedIn || state.status === "unavailable" ? (
         <ListSection>

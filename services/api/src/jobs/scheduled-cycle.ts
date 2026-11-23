@@ -1,4 +1,5 @@
 import type { DatabaseService } from "../platform/database/database.service.js";
+import type { OpsAlertService } from "../platform/observability/ops-alert.service.js";
 import { serializeError, type StructuredLoggerService } from "../platform/observability/structured-logger.service.js";
 import type { AsyncDownstreamEffects, AsyncDownstreamRunnerService } from "./async-downstream-runner.service.js";
 
@@ -11,6 +12,7 @@ export async function runScheduledCycle(
   connectionString: string,
   effects: AsyncDownstreamEffects,
   logger: Pick<StructuredLoggerService, "write">,
+  opsAlert?: Pick<OpsAlertService, "notify">,
 ) {
   try {
     const stages = await database.withRequest(connectionString, () => runner.runCycle(effects));
@@ -18,6 +20,16 @@ export async function runScheduledCycle(
     return stages;
   } catch (error) {
     logger.write("error", "Async downstream cycle failed", { error: serializeError(error) });
+    const errorName = error instanceof Error ? error.name : "NonError";
+    void opsAlert?.notify({
+      severity: "critical",
+      category: "cron_failure",
+      title: "定时任务执行失败",
+      summary: `Async downstream cycle failed (${errorName})`,
+      dedupeKey: "cron:async_downstream_cycle",
+      cooldownMs: 300_000,
+      metadata: { errorName },
+    });
     throw error;
   }
 }

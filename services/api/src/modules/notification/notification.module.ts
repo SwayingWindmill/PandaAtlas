@@ -20,10 +20,13 @@ import { IdentityModule } from "../identity/identity.module.js";
 import { NOTIFICATION_PORT, NotificationApplication } from "./application/notification.application.js";
 import {
   NOTIFICATION_PROVIDER_PORT,
+  NOTIFICATION_PUSH_PROVIDER_PORT,
   type NotificationProviderPort,
+  type NotificationPushProviderPort,
 } from "./application/notification-provider.port.js";
 import { NOTIFICATION_PRIVACY_PORT } from "./application/notification-privacy.port.js";
 import { NotificationController } from "./http/notification.controller.js";
+import { ExpoPushNotificationProvider } from "./infrastructure/expo-push-notification.provider.js";
 import { NotificationEventConsumerService } from "./infrastructure/notification-event-consumer.service.js";
 import { NotificationProviderWorkerService } from "./infrastructure/notification-provider-worker.service.js";
 import { PostgresNotificationPrivacyQuery } from "./infrastructure/postgres-notification-privacy.query.js";
@@ -42,6 +45,11 @@ import { ResendNotificationProvider } from "./infrastructure/resend-notification
     {
       provide: NOTIFICATION_PROVIDER_PORT,
       useFactory: (config: AppConfig) => new ResendNotificationProvider(config),
+      inject: [AppConfig],
+    },
+    {
+      provide: NOTIFICATION_PUSH_PROVIDER_PORT,
+      useFactory: (config: AppConfig) => new ExpoPushNotificationProvider(config),
       inject: [AppConfig],
     },
     {
@@ -73,13 +81,15 @@ import { ResendNotificationProvider } from "./infrastructure/resend-notification
         pgmq: PgmqService,
         contacts: IdentityNotificationContactPort,
         provider: NotificationProviderPort,
-      ) => new NotificationProviderWorkerService(database, outbox, pgmq, contacts, provider),
+        pushProvider: NotificationPushProviderPort,
+      ) => new NotificationProviderWorkerService(database, outbox, pgmq, contacts, provider, pushProvider),
       inject: [
         DatabaseService,
         IntegrationOutboxService,
         PgmqService,
         IDENTITY_NOTIFICATION_CONTACT_PORT,
         NOTIFICATION_PROVIDER_PORT,
+        NOTIFICATION_PUSH_PROVIDER_PORT,
       ],
     },
   ],

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import logging
 import signal
 import sys
@@ -13,7 +14,7 @@ from pathlib import Path
 
 import httpx
 
-from collector import aihot, alerts, registry, report
+from collector import aihot, alerts, doctor, registry, report
 from collector.config import Settings, build_adapters, load_targets
 from collector.lexicon import Lexicon
 from collector.scheduler import Scheduler
@@ -174,6 +175,23 @@ def cmd_tag(settings: Settings, args: argparse.Namespace) -> None:
     print(", ".join(lexicon.slugs(args.text)) or "(no panda names)")
 
 
+async def cmd_doctor(settings: Settings, args: argparse.Namespace) -> None:
+    results = await doctor.run_doctor(settings, offline=args.offline)
+    failed = doctor.has_failures(results)
+    if args.as_json:
+        print(
+            json.dumps(
+                {"ok": not failed, "checks": [item.to_dict() for item in results]},
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+    else:
+        print(doctor.format_text(results))
+    if failed:
+        raise SystemExit(1)
+
+
 def main(argv: list[str] | None = None) -> None:
     # Reports and statuses are Chinese; a GBK Windows console cannot print all of it.
     if hasattr(sys.stdout, "reconfigure"):
@@ -197,6 +215,21 @@ def main(argv: list[str] | None = None) -> None:
     resume.add_argument("adapter")
     tag = commands.add_parser("tag", help="show which pandas a text mentions")
     tag.add_argument("text")
+    doc = commands.add_parser(
+        "doctor",
+        help="verify config, targets, lexicon, database, and upstream reachability",
+    )
+    doc.add_argument(
+        "--offline",
+        action="store_true",
+        help="skip database and HTTP reachability probes",
+    )
+    doc.add_argument(
+        "--json",
+        action="store_true",
+        dest="as_json",
+        help="print machine-readable JSON",
+    )
     args = parser.parse_args(argv)
     settings = Settings.from_env()
 
@@ -219,6 +252,7 @@ def main(argv: list[str] | None = None) -> None:
             "registry": cmd_registry,
             "status": cmd_status,
             "resume": cmd_resume,
+            "doctor": cmd_doctor,
         }[args.command]
     # psycopg's async mode needs the selector loop on Windows.
     loop_factory = asyncio.SelectorEventLoop if sys.platform == "win32" else None

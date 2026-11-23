@@ -13,14 +13,16 @@ export function LegalDocumentPage({ locale, document }: { locale: PublicLocale; 
           <header className="grid gap-5">
             <h1>{document.title}</h1>
             <p className="text-xs text-[var(--pa-color-ink-muted)]">{document.effective}</p>
-            <aside
-              aria-label={locale === "zh" ? "草稿说明" : "Draft notice"}
-              className="grid gap-2 rounded-[var(--pa-radius-lg)] bg-[var(--amber-3)] p-4 text-[var(--amber-12)]"
-              data-testid="legal-draft-banner"
-            >
-              <p className="font-bold">{document.bannerTitle}</p>
-              <p>{document.bannerBody}</p>
-            </aside>
+            {document.draftBanner ? (
+              <aside
+                aria-label={locale === "zh" ? "草稿说明" : "Draft notice"}
+                className="grid gap-2 rounded-[var(--pa-radius-lg)] bg-[var(--amber-3)] p-4 text-[var(--amber-12)]"
+                data-testid="legal-draft-banner"
+              >
+                <p className="font-bold">{document.draftBanner.title}</p>
+                <p>{document.draftBanner.body}</p>
+              </aside>
+            ) : null}
           </header>
           {document.sections.map((section) => (
             <section key={section.id} aria-labelledby={section.id} className="grid gap-3">

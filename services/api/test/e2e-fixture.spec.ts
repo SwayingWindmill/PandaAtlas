@@ -32,6 +32,7 @@ import {
   assertE2eFixtureEnvironment,
 } from "../src/e2e-fixture/e2e-fixture.guard.js";
 import { E2eFixtureModule } from "../src/e2e-fixture/e2e-fixture.module.js";
+import { shanghaiMonthDay } from "../src/e2e-fixture/e2e-fixture.service.js";
 import { RecentAuthCutoffStore } from "../src/e2e-fixture/recent-auth-cutoff.store.js";
 import { RequireCapabilities } from "../src/modules/identity/http/access.metadata.js";
 import type { AuthorizationSnapshot } from "../src/modules/identity/application/identity-access.types.js";
@@ -285,5 +286,11 @@ describe("E2E fixture HTTP wiring", () => {
     expect(fresh.statusCode).toBe(200);
 
     expect(E2eFixtureAppModule).toBeDefined();
+  });
+
+  it("formats seeded birthday month-day in Asia/Shanghai regardless of process timezone", () => {
+    expect(shanghaiMonthDay(new Date("2026-11-22T15:59:59Z"))).toBe("11-22");
+    expect(shanghaiMonthDay(new Date("2026-11-22T16:00:00Z"))).toBe("11-23");
+    expect(shanghaiMonthDay(new Date("2026-11-22T17:30:00Z"))).toBe("11-23");
   });
 });

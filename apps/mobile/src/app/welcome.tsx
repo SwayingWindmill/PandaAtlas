@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useEffectEvent, useMemo, useState } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -14,9 +14,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { setFollowing } from "@/features/engagement/favorites";
-import { suggestions } from "@/features/onboarding/suggestions";
+import { clearPicks, pickedPandas, readPicks, savePicks } from "@/features/onboarding/picks";
+import { fameSlugs, suggestions } from "@/features/onboarding/suggestions";
 import { markWelcomeSeen } from "@/features/onboarding/welcome";
 import { type PandaListItem, loadPandaIndex, searchPandas } from "@/features/pandas/pandas";
+import { usePopularPandas } from "@/features/pandas/popular";
 import { SearchField } from "@/features/pandas/search-field";
 import { useSession } from "@/features/session/session";
 import { usePandaCover } from "@/lib/covers";
@@ -82,6 +84,11 @@ function Tile({ panda, selected, onToggle }: { panda: PandaListItem; selected: b
   );
 }
 
+async function followAll(accountId: string, pandas: readonly PandaListItem[]): Promise<boolean> {
+  const results = await Promise.all(pandas.map((panda) => setFollowing(accountId, panda.id, true)));
+  return results.every(Boolean);
+}
+
 export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
   const { state: session } = useSession();
@@ -91,25 +98,44 @@ export default function WelcomeScreen() {
   const [selected, setSelected] = useState<PandaListItem[]>([]);
   const [status, setStatus] = useState<"idle" | "following" | "failed">("idle");
   const [loadFailed, setLoadFailed] = useState(false);
+  const [followAfterSignIn, setFollowAfterSignIn] = useState(false);
+  // The follow after sign-in runs only with picks; restored picks whose pandas were all unpublished leave none.
+  const busy = status === "following" || (session.status === "signedIn" && followAfterSignIn && selected.length > 0);
+  // Picks are saved only once the stored ones are read, so an empty first render does not wipe them.
+  const [restored, setRestored] = useState(false);
 
   const load = useCallback(() => {
-    loadPandaIndex()
-      .then(setPandas)
+    Promise.all([loadPandaIndex(), readPicks()])
+      .then(([index, picks]) => {
+        setPandas(index);
+        if (picks) {
+          setSelected(pickedPandas(index, picks.pandaIds));
+          setFollowAfterSignIn(picks.followAfterSignIn);
+        }
+        setRestored(true);
+      })
       .catch(() => setLoadFailed(true));
   }, []);
   useEffect(load, [load]);
+
+  useEffect(() => {
+    if (restored) void savePicks({ pandaIds: selected.map((panda) => panda.id), followAfterSignIn });
+  }, [restored, selected, followAfterSignIn]);
   function retry() {
     setLoadFailed(false);
     load();
   }
 
+  const { rows: popular, settled } = usePopularPandas(pandas ?? undefined);
   const shown = useMemo(
-    () => (pandas ? (deferred.trim() ? searchPandas(pandas, deferred).slice(0, 12) : suggestions(pandas)) : []),
-    [pandas, deferred],
+    () => (pandas ? (deferred.trim() ? searchPandas(pandas, deferred, fameSlugs(popular)).slice(0, 12) : suggestions(pandas, popular)) : []),
+    [pandas, deferred, popular],
   );
   const isSelected = (panda: PandaListItem) => selected.some((item) => item.id === panda.id);
 
   function toggle(panda: PandaListItem) {
+    // The picks are being followed; changing them now would not change what gets followed.
+    if (busy) return;
     setSelected((current) =>
       current.some((item) => item.id === panda.id)
         ? current.filter((item) => item.id !== panda.id)
@@ -118,20 +144,42 @@ export default function WelcomeScreen() {
   }
 
   async function finish() {
-    await markWelcomeSeen();
+    await Promise.all([markWelcomeSeen(), clearPicks()]);
     router.replace("/");
+  }
+
+  async function followed(ok: boolean) {
+    if (ok) {
+      await finish();
+      return;
+    }
+    setStatus("failed");
+    setFollowAfterSignIn(false);
   }
 
   async function follow() {
     if (session.status !== "signedIn") {
+      setFollowAfterSignIn(true);
       router.push("/sign-in");
       return;
     }
     setStatus("following");
-    const results = await Promise.all(selected.map((panda) => setFollowing(session.accountId, panda.id, true)));
-    if (results.every(Boolean)) await finish();
-    else setStatus("failed");
+    await followed(await followAll(session.accountId, selected));
   }
+
+  // Back from signing in, the follow the fan asked for goes on without a second tap.
+  const accountId = session.status === "signedIn" ? session.accountId : null;
+  const resumed = useEffectEvent((ok: boolean) => void followed(ok));
+  useEffect(() => {
+    if (!accountId || !followAfterSignIn || selected.length === 0) return;
+    let live = true;
+    void followAll(accountId, selected).then((ok) => {
+      if (live) resumed(ok);
+    });
+    return () => {
+      live = false;
+    };
+  }, [accountId, followAfterSignIn, selected]);
 
   const signedIn = session.status === "signedIn";
   return (
@@ -140,7 +188,7 @@ export default function WelcomeScreen() {
         <SearchField value={query} onChange={setQuery} label="搜索想关注的熊猫" />
         {pandas === null && loadFailed ? (
           <LoadFailed message="熊猫列表暂时打不开。" onRetry={retry} />
-        ) : pandas === null ? (
+        ) : pandas === null || !settled ? (
           <View className="gap-row" accessibilityLabel="正在加载熊猫">
             {[0, 1].map((row) => (
               <View key={row} className="flex-row gap-row">
@@ -181,7 +229,7 @@ export default function WelcomeScreen() {
             有几只没能关注，请再试一次。
           </Text>
         ) : null}
-        <Button onPress={() => void follow()} disabled={selected.length === 0 || status === "following"}>
+        <Button onPress={() => void follow()} disabled={selected.length === 0 || busy}>
           <Text>
             {selected.length === 0
               ? "选几只熊猫"

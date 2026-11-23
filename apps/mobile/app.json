@@ -9,7 +9,19 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "bundleIdentifier": "com.zhipanda.app",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "associatedDomains": ["applinks:www.zhipanda.com"],
+      "infoPlist": {
+        "NSPhotoLibraryAddUsageDescription": "把熊猫分享卡片保存到你的相册。"
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          { "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults", "NSPrivacyAccessedAPITypeReasons": ["CA92.1"] },
+          { "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp", "NSPrivacyAccessedAPITypeReasons": ["C617.1"] },
+          { "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime", "NSPrivacyAccessedAPITypeReasons": ["35F9.1"] },
+          { "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace", "NSPrivacyAccessedAPITypeReasons": ["E174.1"] }
+        ]
+      }
     },
     "android": {
       "package": "com.zhipanda.app",
@@ -18,7 +30,22 @@
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      }
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/zh/pandas/" },
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/zh/institutions/" },
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/zh/places/" },
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/en/pandas/" },
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/en/institutions/" },
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/en/places/" }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

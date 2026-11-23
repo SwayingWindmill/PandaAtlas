@@ -1,22 +1,73 @@
 import type { PublicLocale } from "@/lib/locales";
 
-// Draft user agreement and privacy policy. Every sentence is limited to what the
-// website and app actually do. Bracketed fields are unfilled on purpose.
+// User agreement and privacy policy. Every sentence is limited to what the
+// website and app actually do.
 
-export const LEGAL_CONTACT_EMAIL = "hello@zhipanda.com";
+type IsoDate = `${number}-${number}-${number}`;
+
+type LegalPublication =
+  | {
+      status: "draft";
+      operator: Record<PublicLocale, string | null>;
+      effectiveDate: IsoDate | null;
+      contactEmail: string;
+    }
+  | {
+      status: "published";
+      operator: Record<PublicLocale, string>;
+      effectiveDate: IsoDate;
+      contactEmail: string;
+    };
+
+// To publish: fill operator and effectiveDate, then set status to "published".
+// The type refuses "published" while either field is still null.
+export const LEGAL_PUBLICATION: LegalPublication = {
+  status: "draft",
+  operator: { zh: null, en: null },
+  effectiveDate: null,
+  contactEmail: "hello@zhipanda.com",
+};
+
+export const LEGAL_CONTACT_EMAIL = LEGAL_PUBLICATION.contactEmail;
+
+const isDraft = LEGAL_PUBLICATION.status === "draft";
+
+function formatEffectiveDate(locale: PublicLocale, date: IsoDate): string {
+  const [year, month, day] = date.split("-").map(Number);
+  if (locale === "zh") return `${year}年${month}月${day}日`;
+  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export const LEGAL_PLACEHOLDERS = {
   zh: {
-    operator: "[运营方名称]",
+    operator: LEGAL_PUBLICATION.operator.zh ?? "[运营方名称]",
     email: LEGAL_CONTACT_EMAIL,
-    effectiveDate: "[生效日期]",
+    effectiveDate: LEGAL_PUBLICATION.effectiveDate ? formatEffectiveDate("zh", LEGAL_PUBLICATION.effectiveDate) : "[生效日期]",
   },
   en: {
-    operator: "[Operator name]",
+    operator: LEGAL_PUBLICATION.operator.en ?? "[Operator name]",
     email: LEGAL_CONTACT_EMAIL,
-    effectiveDate: "[Effective date]",
+    effectiveDate: LEGAL_PUBLICATION.effectiveDate ? formatEffectiveDate("en", LEGAL_PUBLICATION.effectiveDate) : "[Effective date]",
   },
 } as const;
+
+const draftBanner = {
+  zh: {
+    title: "这是草稿，尚未生效",
+    body: "方括号中的运营方名称和生效日期尚未填写。填上之前，这份文本还没有生效。",
+  },
+  en: {
+    title: "This is a draft and is not in effect",
+    body: "The operator name and effective date in brackets are not filled in. This text is not in effect until they are.",
+  },
+} as const;
+
+const draftWord = { zh: isDraft ? "草稿" : "", en: isDraft ? "draft " : "" } as const;
 
 export type LegalKind = "terms" | "privacy";
 
@@ -33,8 +84,7 @@ export interface LegalDocument {
   path: "/terms" | "/privacy";
   title: string;
   description: string;
-  bannerTitle: string;
-  bannerBody: string;
+  draftBanner: { title: string; body: string } | null;
   effective: string;
   sections: LegalSection[];
   relatedLabel: string;
@@ -50,10 +100,8 @@ const terms: Record<PublicLocale, LegalDocument> = {
     kind: "terms",
     path: "/terms",
     title: "用户协议",
-    description: "吱熊猫用户协议草稿。说明网站和 App 的账号、纠错，以及已发布的熊猫资料。",
-    bannerTitle: "这是草稿，尚未生效",
-    bannerBody:
-      "方括号中的运营方名称和生效日期尚未填写。填上之前，这份文本还没有生效。",
+    description: `吱熊猫用户协议${draftWord.zh}。说明网站和 App 的账号、纠错，以及已发布的熊猫资料。`,
+    draftBanner: isDraft ? draftBanner.zh : null,
     effective: `生效日期：${LEGAL_PLACEHOLDERS.zh.effectiveDate}`,
     relatedLabel: "隐私政策",
     relatedPath: "/privacy",
@@ -63,7 +111,7 @@ const terms: Record<PublicLocale, LegalDocument> = {
         heading: "协议双方",
         paragraphs: [
           `这份协议是你与 ${LEGAL_PLACEHOLDERS.zh.operator} 之间，关于吱熊猫（ZhiPanda）的约定。吱熊猫包括网站 www.zhipanda.com 和吱熊猫 App。`,
-          `联系邮箱是 ${LEGAL_PLACEHOLDERS.zh.email}。生效日期是 ${LEGAL_PLACEHOLDERS.zh.effectiveDate}。在这些空位填上、并且页面不再标为草稿之前，这份文本还没有生效。`,
+          `联系邮箱是 ${LEGAL_PLACEHOLDERS.zh.email}。生效日期是 ${LEGAL_PLACEHOLDERS.zh.effectiveDate}。${isDraft ? "在这些空位填上、并且页面不再标为草稿之前，这份文本还没有生效。" : ""}`,
         ],
       },
       {
@@ -123,10 +171,8 @@ const terms: Record<PublicLocale, LegalDocument> = {
     kind: "terms",
     path: "/terms",
     title: "Terms",
-    description: "Draft terms for ZhiPanda. They describe accounts, corrections, and the published panda information on the website and app.",
-    bannerTitle: "This is a draft and is not in effect",
-    bannerBody:
-      "The operator name and effective date in brackets are not filled in. This text is not in effect until they are.",
+    description: `${isDraft ? "Draft terms" : "Terms"} for ZhiPanda. They describe accounts, corrections, and the published panda information on the website and app.`,
+    draftBanner: isDraft ? draftBanner.en : null,
     effective: `Effective date: ${LEGAL_PLACEHOLDERS.en.effectiveDate}`,
     relatedLabel: "Privacy",
     relatedPath: "/privacy",
@@ -136,7 +182,7 @@ const terms: Record<PublicLocale, LegalDocument> = {
         heading: "Who this is between",
         paragraphs: [
           `These terms are between you and ${LEGAL_PLACEHOLDERS.en.operator} for ZhiPanda (吱熊猫), the website at www.zhipanda.com and the ZhiPanda app.`,
-          `The contact email is ${LEGAL_PLACEHOLDERS.en.email}. The effective date is ${LEGAL_PLACEHOLDERS.en.effectiveDate}. This text is not in effect until those blanks are filled in and the page is no longer marked as a draft.`,
+          `The contact email is ${LEGAL_PLACEHOLDERS.en.email}. The effective date is ${LEGAL_PLACEHOLDERS.en.effectiveDate}.${isDraft ? " This text is not in effect until those blanks are filled in and the page is no longer marked as a draft." : ""}`,
         ],
       },
       {
@@ -199,10 +245,8 @@ const privacy: Record<PublicLocale, LegalDocument> = {
     kind: "privacy",
     path: "/privacy",
     title: "隐私政策",
-    description: "吱熊猫隐私政策草稿。说明账号、关注、见过、图鉴、纠错、通知、导出和注销实际如何处理。",
-    bannerTitle: "这是草稿，尚未生效",
-    bannerBody:
-      "方括号中的运营方名称和生效日期尚未填写。填上之前，这份文本还没有生效。",
+    description: `吱熊猫隐私政策${draftWord.zh}。说明账号、关注、见过、图鉴、纠错、通知、导出和注销实际如何处理。`,
+    draftBanner: isDraft ? draftBanner.zh : null,
     effective: `生效日期：${LEGAL_PLACEHOLDERS.zh.effectiveDate}`,
     relatedLabel: "用户协议",
     relatedPath: "/terms",
@@ -211,7 +255,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         id: "scope",
         heading: "这份政策说明什么",
         paragraphs: [
-          `这是吱熊猫网站（www.zhipanda.com）和吱熊猫 App 的隐私政策草稿，由 ${LEGAL_PLACEHOLDERS.zh.operator} 提供。联系邮箱是 ${LEGAL_PLACEHOLDERS.zh.email}。生效日期是 ${LEGAL_PLACEHOLDERS.zh.effectiveDate}。`,
+          `这是吱熊猫网站（www.zhipanda.com）和吱熊猫 App 的隐私政策${draftWord.zh}，由 ${LEGAL_PLACEHOLDERS.zh.operator} 提供。联系邮箱是 ${LEGAL_PLACEHOLDERS.zh.email}。生效日期是 ${LEGAL_PLACEHOLDERS.zh.effectiveDate}。`,
           "网站和 App 没有接入广告。我们不出售个人信息。网站用 Cloudflare Web Analytics 统计访问量，见下面「网站访问统计」；App 没有接入分析产品。",
           "不登录也可以阅读已发布的熊猫资料。下面的账号数据，只在你登录并使用相应功能时产生。",
         ],
@@ -336,10 +380,8 @@ const privacy: Record<PublicLocale, LegalDocument> = {
     kind: "privacy",
     path: "/privacy",
     title: "Privacy",
-    description: "Draft privacy policy for ZhiPanda. It describes accounts, follows, seen marks, the panda book, corrections, notices, export, and deletion as they work today.",
-    bannerTitle: "This is a draft and is not in effect",
-    bannerBody:
-      "The operator name and effective date in brackets are not filled in. This text is not in effect until they are.",
+    description: `${isDraft ? "Draft privacy policy" : "Privacy policy"} for ZhiPanda. It describes accounts, follows, seen marks, the panda book, corrections, notices, export, and deletion as they work today.`,
+    draftBanner: isDraft ? draftBanner.en : null,
     effective: `Effective date: ${LEGAL_PLACEHOLDERS.en.effectiveDate}`,
     relatedLabel: "Terms",
     relatedPath: "/terms",
@@ -348,7 +390,7 @@ const privacy: Record<PublicLocale, LegalDocument> = {
         id: "scope",
         heading: "What this policy covers",
         paragraphs: [
-          `This is the draft privacy policy for the ZhiPanda website (www.zhipanda.com) and the ZhiPanda app, provided by ${LEGAL_PLACEHOLDERS.en.operator}. The contact email is ${LEGAL_PLACEHOLDERS.en.email}. The effective date is ${LEGAL_PLACEHOLDERS.en.effectiveDate}.`,
+          `This is the ${draftWord.en}privacy policy for the ZhiPanda website (www.zhipanda.com) and the ZhiPanda app, provided by ${LEGAL_PLACEHOLDERS.en.operator}. The contact email is ${LEGAL_PLACEHOLDERS.en.email}. The effective date is ${LEGAL_PLACEHOLDERS.en.effectiveDate}.`,
           "The website and the app do not include an advertising network. We do not sell personal information. The website counts visits with Cloudflare Web Analytics, described under Website visit statistics below. The app has no analytics product.",
           "Published panda pages can be read without an account. The account data below exists only after you sign in and use that feature.",
         ],

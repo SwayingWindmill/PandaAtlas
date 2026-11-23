@@ -121,6 +121,19 @@ class ValidateContentTests(unittest.TestCase):
 
         self.assert_error(merged_twice, "already merged into sample-zoo")
 
+    def test_validates_place_metadata_and_unknown_keys(self) -> None:
+        content = copy.deepcopy(VALID)
+        content["institutions"][0]["places"][0].update(
+            nameZh="示例园",
+            nameEn="Sample Annex",
+            countryCode="US",
+            region="Washington, D.C.",
+        )
+        self.assertEqual(BUILDER.validate_content(content), [])
+        self.assert_error(lambda c: c["institutions"][0]["places"][0].update(countryCode="us"), "countryCode")
+        self.assert_error(lambda c: c["institutions"][0]["places"][0].update(nameZh="  "), "nameZh")
+        self.assert_error(lambda c: c["institutions"][0]["places"][0].update(extraField=1), "unknown fields")
+
 
 class MergeTests(unittest.TestCase):
     def test_panda_tags_must_use_the_surviving_slug(self) -> None:

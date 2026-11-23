@@ -199,10 +199,19 @@ describe("account deletion de-identifies corrections and removes the auth user",
     const accountId = randomUUID();
     await seedAccount(accountId, `erase-${accountId}@example.test`);
     const { submissionId, reviewerHash } = await seedCorrection(accountId);
+    await sql`
+      insert into notification.device_tokens (account_id, expo_push_token, platform)
+      values (${accountId}::uuid, ${`ExponentPushToken[erase-${accountId}]`}, 'ios')
+    `.execute(app.get(DatabaseService).db);
     await fileDeletion(accountId);
 
     const result = await app.get(PrivacyRequestProcessorService).processBatch(1);
     expect(result).toMatchObject({ completed: 1, failed: 0 });
+
+    const remainingTokens = await sql<{ count: string }>`
+      select count(*)::text as count from notification.device_tokens where account_id = ${accountId}::uuid
+    `.execute(app.get(DatabaseService).db);
+    expect(Number(remainingTokens.rows[0]?.count)).toBe(0);
 
     const database = app.get(DatabaseService);
     const submission = await sql<{

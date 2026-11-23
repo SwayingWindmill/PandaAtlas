@@ -5,6 +5,7 @@ export class ProblemException extends HttpException {
     status: number,
     public readonly code: string,
     public readonly detail: string,
+    public readonly headers?: Record<string, string>,
   ) {
     super(detail, status);
   }

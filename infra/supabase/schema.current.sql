@@ -1680,11 +1680,27 @@ CREATE TABLE IF NOT EXISTS "notification"."channel_preferences" (
     "version" integer DEFAULT 1 NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     CONSTRAINT "channel_preferences_category_check" CHECK (("category" = ANY (ARRAY['knowledge_update'::"text", 'correction'::"text"]))),
-    CONSTRAINT "channel_preferences_channel_check" CHECK (("channel" = ANY (ARRAY['station'::"text", 'email'::"text"]))),
+    CONSTRAINT "channel_preferences_channel_check" CHECK (("channel" = ANY (ARRAY['station'::"text", 'email'::"text", 'push'::"text"]))),
     CONSTRAINT "channel_preferences_version_check" CHECK (("version" >= 1))
 );
 
 ALTER TABLE "notification"."channel_preferences" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "notification"."device_tokens" (
+    "device_token_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "account_id" "uuid" NOT NULL,
+    "expo_push_token" "text" NOT NULL,
+    "platform" "text" NOT NULL,
+    "active" boolean DEFAULT true NOT NULL,
+    "disabled_reason" "text",
+    "last_active_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "device_tokens_active_reason_check" CHECK ((("active" AND ("disabled_reason" IS NULL)) OR ((NOT "active") AND ("disabled_reason" IS NOT NULL)))),
+    CONSTRAINT "device_tokens_platform_check" CHECK (("platform" = ANY (ARRAY['ios'::"text", 'android'::"text"])))
+);
+
+ALTER TABLE "notification"."device_tokens" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "notification"."message_channels" (
     "message_id" "uuid" NOT NULL,
@@ -1692,7 +1708,7 @@ CREATE TABLE IF NOT EXISTS "notification"."message_channels" (
     "state" "text" NOT NULL,
     "suppression_reason" "text",
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "message_channels_channel_check" CHECK (("channel" = ANY (ARRAY['station'::"text", 'email'::"text"]))),
+    CONSTRAINT "message_channels_channel_check" CHECK (("channel" = ANY (ARRAY['station'::"text", 'email'::"text", 'push'::"text"]))),
     CONSTRAINT "message_channels_check" CHECK (((("state" = 'suppressed'::"text") AND ("suppression_reason" IS NOT NULL)) OR (("state" <> 'suppressed'::"text") AND ("suppression_reason" IS NULL)))),
     CONSTRAINT "message_channels_state_check" CHECK (("state" = ANY (ARRAY['ready'::"text", 'suppressed'::"text", 'submitted'::"text", 'dead_lettered'::"text"])))
 );
@@ -1762,7 +1778,7 @@ CREATE TABLE IF NOT EXISTS "notification"."provider_jobs" (
     "dead_lettered_at" timestamp with time zone,
     "suppressed_at" timestamp with time zone,
     CONSTRAINT "provider_jobs_attempt_count_check" CHECK (("attempt_count" >= 0)),
-    CONSTRAINT "provider_jobs_channel_check" CHECK (("channel" = 'email'::"text")),
+    CONSTRAINT "provider_jobs_channel_check" CHECK (("channel" = ANY (ARRAY['email'::"text", 'push'::"text"]))),
     CONSTRAINT "provider_jobs_check" CHECK ((("provider_message_id" IS NULL) OR ("provider" IS NOT NULL))),
     CONSTRAINT "provider_jobs_check1" CHECK ((("state" = 'submitted'::"text") = ("submitted_at" IS NOT NULL))),
     CONSTRAINT "provider_jobs_check2" CHECK ((("state" = 'dead_lettered'::"text") = ("dead_lettered_at" IS NOT NULL))),
@@ -2781,6 +2797,12 @@ ALTER TABLE ONLY "media"."panda_assets"
 ALTER TABLE ONLY "notification"."channel_preferences"
     ADD CONSTRAINT "channel_preferences_pkey" PRIMARY KEY ("account_id", "category", "channel");
 
+ALTER TABLE ONLY "notification"."device_tokens"
+    ADD CONSTRAINT "device_tokens_expo_push_token_key" UNIQUE ("expo_push_token");
+
+ALTER TABLE ONLY "notification"."device_tokens"
+    ADD CONSTRAINT "device_tokens_pkey" PRIMARY KEY ("device_token_id");
+
 ALTER TABLE ONLY "notification"."message_channels"
     ADD CONSTRAINT "message_channels_pkey" PRIMARY KEY ("message_id", "channel");
 
@@ -2800,7 +2822,7 @@ ALTER TABLE ONLY "notification"."provider_dead_letters"
     ADD CONSTRAINT "provider_dead_letters_pkey" PRIMARY KEY ("job_id");
 
 ALTER TABLE ONLY "notification"."provider_jobs"
-    ADD CONSTRAINT "provider_jobs_message_id_key" UNIQUE ("message_id");
+    ADD CONSTRAINT "provider_jobs_message_id_channel_key" UNIQUE ("message_id", "channel");
 
 ALTER TABLE ONLY "notification"."provider_jobs"
     ADD CONSTRAINT "provider_jobs_pkey" PRIMARY KEY ("job_id");
@@ -3024,9 +3046,13 @@ CREATE INDEX "idx_engagement_collection_pandas_time" ON "engagement"."collection
 
 CREATE UNIQUE INDEX "idx_engagement_collections_account_name" ON "engagement"."collections" USING "btree" ("account_id", "lower"(TRIM(BOTH FROM "name")));
 
+CREATE INDEX "idx_engagement_collections_account_updated" ON "engagement"."collections" USING "btree" ("account_id", "updated_at" DESC, "collection_id");
+
 CREATE INDEX "idx_engagement_favorites_account_time" ON "engagement"."favorites" USING "btree" ("account_id", "favorited_at" DESC, "panda_id");
 
 CREATE INDEX "idx_engagement_favorites_panda" ON "engagement"."favorites" USING "btree" ("panda_id", "account_id");
+
+CREATE INDEX "idx_engagement_favorites_time_panda" ON "engagement"."favorites" USING "btree" ("favorited_at", "panda_id", "account_id");
 
 CREATE INDEX "idx_engagement_location_checkins_account_date" ON "engagement"."location_checkins" USING "btree" ("account_id", "visited_on" DESC, "created_at" DESC);
 
@@ -3090,6 +3116,8 @@ CREATE UNIQUE INDEX "idx_media_asset_object_identity" ON "media"."assets" USING 
 
 CREATE UNIQUE INDEX "idx_media_one_cover_per_panda" ON "media"."panda_assets" USING "btree" ("panda_id") WHERE ("usage_role" = 'cover'::"text");
 
+CREATE INDEX "idx_notification_device_tokens_account_active" ON "notification"."device_tokens" USING "btree" ("account_id", "updated_at" DESC) WHERE "active";
+
 CREATE INDEX "idx_notification_messages_account_time" ON "notification"."messages" USING "btree" ("account_id", "created_at" DESC, "message_id" DESC);
 
 CREATE INDEX "idx_notification_messages_unread" ON "notification"."messages" USING "btree" ("account_id", "created_at" DESC) WHERE ("read_at" IS NULL);
@@ -3118,6 +3146,8 @@ CREATE INDEX "idx_places_center_gist" ON "place"."places" USING "gist" ("center"
 
 CREATE INDEX "idx_places_institution" ON "place"."places" USING "btree" ("institution_id") WHERE ("institution_id" IS NOT NULL);
 
+CREATE INDEX "idx_privacy_subject_requests_account_time" ON "privacy"."subject_requests" USING "btree" ("account_id", "requested_at" DESC);
+
 CREATE INDEX "idx_privacy_subject_requests_due" ON "privacy"."subject_requests" USING "btree" ("state", "requested_at", "request_id") WHERE ("state" = ANY (ARRAY['pending'::"text", 'processing'::"text"]));
 
 CREATE UNIQUE INDEX "idx_privacy_subject_requests_one_open_kind" ON "privacy"."subject_requests" USING "btree" ("account_id", "kind") WHERE ("state" = ANY (ARRAY['pending'::"text", 'processing'::"text"]));
@@ -3140,6 +3170,8 @@ CREATE INDEX "idx_sightings_observed_at" ON "public"."sightings" USING "btree" (
 
 CREATE INDEX "idx_public_read_life_events_participants" ON "public_read"."life_events" USING "gin" ("participant_ids");
 
+CREATE INDEX "idx_public_read_life_events_release_order" ON "public_read"."life_events" USING "btree" ("release_id", "occurred_on" DESC, "event_id");
+
 CREATE INDEX "idx_public_read_lineage_child" ON "public_read"."lineage" USING "btree" ("release_id", "child_id");
 
 CREATE INDEX "idx_public_read_lineage_parent" ON "public_read"."lineage" USING "btree" ("release_id", "parent_id");
@@ -3148,9 +3180,17 @@ CREATE INDEX "idx_public_read_media_panda" ON "public_read"."media" USING "btree
 
 CREATE INDEX "idx_public_read_media_release_asset" ON "public_read"."media" USING "btree" ("release_id", "asset_id");
 
+CREATE INDEX "idx_public_read_pandas_legacy_slugs" ON "public_read"."pandas" USING "gin" ("legacy_slugs");
+
 CREATE INDEX "idx_public_read_places_institution" ON "public_read"."places" USING "btree" ("release_id", "institution_id") WHERE ("institution_id" IS NOT NULL);
 
+CREATE INDEX "idx_public_read_places_legacy_slugs" ON "public_read"."places" USING "gin" ("legacy_slugs");
+
+CREATE INDEX "idx_public_read_residencies_current" ON "public_read"."residencies" USING "btree" ("release_id", "panda_id", "residency_id") WHERE ("end_on" IS NULL);
+
 CREATE INDEX "idx_public_read_residencies_panda" ON "public_read"."residencies" USING "btree" ("release_id", "panda_id");
+
+CREATE INDEX "idx_public_read_residencies_place" ON "public_read"."residencies" USING "btree" ("release_id", "place_id", "panda_id", "start_on", "residency_id");
 
 CREATE INDEX "idx_publication_membership_resource" ON "publication"."release_memberships" USING "btree" ("resource_kind", "resource_id", "release_id");
 
@@ -3453,6 +3493,9 @@ ALTER TABLE ONLY "media"."panda_assets"
 
 ALTER TABLE ONLY "notification"."channel_preferences"
     ADD CONSTRAINT "channel_preferences_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "identity"."accounts"("account_id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "notification"."device_tokens"
+    ADD CONSTRAINT "device_tokens_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "identity"."accounts"("account_id") ON DELETE CASCADE;
 
 ALTER TABLE ONLY "notification"."message_channels"
     ADD CONSTRAINT "message_channels_message_id_fkey" FOREIGN KEY ("message_id") REFERENCES "notification"."messages"("message_id") ON DELETE CASCADE;
@@ -3880,6 +3923,8 @@ GRANT SELECT ON TABLE "media"."pipeline_asset_export_v1" TO "zhipanda_pipeline";
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "notification"."channel_preferences" TO "zhipanda_app";
 
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "notification"."device_tokens" TO "zhipanda_app";
+
 GRANT SELECT,INSERT,UPDATE ON TABLE "notification"."message_channels" TO "zhipanda_app";
 
 GRANT SELECT,INSERT,UPDATE ON TABLE "notification"."messages" TO "zhipanda_app";
@@ -3936,24 +3981,14 @@ GRANT SELECT,INSERT,UPDATE ON TABLE "privacy"."subject_request_steps" TO "zhipan
 
 GRANT SELECT,INSERT,UPDATE ON TABLE "privacy"."subject_requests" TO "zhipanda_app";
 
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_cells" TO "anon";
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_cells" TO "authenticated";
 GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_cells" TO "service_role";
 
-GRANT UPDATE ON SEQUENCE "public"."distribution_cells_id_seq" TO "anon";
-GRANT UPDATE ON SEQUENCE "public"."distribution_cells_id_seq" TO "authenticated";
 GRANT UPDATE ON SEQUENCE "public"."distribution_cells_id_seq" TO "service_role";
 
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_snapshots" TO "anon";
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_snapshots" TO "authenticated";
 GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_snapshots" TO "service_role";
 
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."habitats" TO "anon";
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."habitats" TO "authenticated";
 GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."habitats" TO "service_role";
 
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."sightings" TO "anon";
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."sightings" TO "authenticated";
 GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."sightings" TO "service_role";
 
 GRANT SELECT,INSERT ON TABLE "public_read"."evidence_sources" TO "zhipanda_app";

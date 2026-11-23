@@ -1,0 +1,16 @@
+{
+  "name": "吱熊猫 ZhiPanda",
+  "short_name": "吱熊猫",
+  "description": "认识大熊猫、探索家族关系、生活足迹和最近动态。",
+  "lang": "zh-CN",
+  "start_url": "/zh",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#fcfdfc",
+  "theme_color": "#fcfdfc",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

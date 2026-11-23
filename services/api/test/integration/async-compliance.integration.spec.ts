@@ -18,6 +18,9 @@ import {
 import {
   NotificationProviderError,
   type NotificationProviderPort,
+  type NotificationPushInput,
+  type NotificationPushProviderPort,
+  type NotificationPushResult,
 } from "../../src/modules/notification/application/notification-provider.port.js";
 import { NotificationEventConsumerService } from "../../src/modules/notification/infrastructure/notification-event-consumer.service.js";
 import { NotificationProviderWorkerService } from "../../src/modules/notification/infrastructure/notification-provider-worker.service.js";
@@ -66,6 +69,22 @@ class TerminalFailureProvider implements NotificationProviderPort {
     return Promise.reject(
       new NotificationProviderError("integration_terminal", false, "Synthetic terminal provider failure"),
     );
+  }
+}
+
+class ScriptedPushProvider implements NotificationPushProviderPort {
+  public readonly calls: NotificationPushInput[] = [];
+  private readonly handlers: Array<(input: NotificationPushInput) => Promise<NotificationPushResult>>;
+
+  public constructor(handlers: Array<(input: NotificationPushInput) => Promise<NotificationPushResult>>) {
+    this.handlers = [...handlers];
+  }
+
+  public sendPush(input: NotificationPushInput): Promise<NotificationPushResult> {
+    this.calls.push(input);
+    const next = this.handlers.shift();
+    if (next === undefined) throw new Error("No scripted push handler left");
+    return next(input);
   }
 }
 
@@ -242,6 +261,7 @@ describe("V2 async downstream and compliance", () => {
     if (exported === undefined) throw new Error("Privacy export was not created");
     expect(Object.keys(exported.payload).sort()).toEqual(["engagement", "game", "identity", "notification"]);
     expect(JSON.stringify(exported.payload)).toContain(panda.pandaId);
+    expect(exported.payload.notification).toHaveProperty("deviceTokens");
 
     await notifications.setPreference(accountId, "correction", "email", true);
     await publication.setResourceTakedown(
@@ -373,5 +393,163 @@ describe("V2 async downstream and compliance", () => {
         .executeTakeFirst();
     }
     expect(deadLetterAudit).toBeDefined();
+
+    // Push delivery: mixed success + DeviceNotRegistered cleanup, followed by retryable -> all DeviceNotRegistered suppression.
+    await notifications.setPreference(accountId, "correction", "email", false);
+    await notifications.setPreference(accountId, "correction", "push", true);
+    const activeToken = `ExponentPushToken[active-${suffix}]`;
+    const staleToken = `ExponentPushToken[stale-${suffix}]`;
+    const regActive = await notifications.registerDevice(accountId, activeToken, "ios");
+    const regStale = await notifications.registerDevice(accountId, staleToken, "android");
+    expect(regActive.active).toBe(true);
+    expect(regStale.active).toBe(true);
+
+    await publication.setResourceTakedown(
+      "panda",
+      panda.pandaId,
+      true,
+      publicationContext,
+      "Exercise push notification delivery",
+    );
+
+    let pushJob: { job_id: string; message_id: string } | undefined;
+    for (let cycle = 0; cycle < 4 && pushJob === undefined; cycle += 1) {
+      await dispatcher.dispatchBatch(200);
+      await notificationConsumer.processBatch(100);
+      pushJob = await database.db
+        .selectFrom("notification.provider_jobs as job")
+        .innerJoin("notification.messages as message", "message.message_id", "job.message_id")
+        .select(["job.job_id", "job.message_id"])
+        .where("message.account_id", "=", accountId)
+        .where("job.channel", "=", "push")
+        .where("job.state", "=", "pending")
+        .orderBy("job.created_at", "desc")
+        .executeTakeFirst();
+    }
+    expect(pushJob).toBeDefined();
+    if (pushJob === undefined) throw new Error("Push provider job was not created");
+
+    const pushProvider = new ScriptedPushProvider([
+      () =>
+        Promise.resolve({
+          provider: "expo",
+          deliveredTicketIds: ["expo-ticket-ok-1"],
+          unregisteredTokens: [staleToken],
+        }),
+      () => Promise.reject(new NotificationProviderError("expo_rate_limited", true, "Rate limit")),
+      () =>
+        Promise.resolve({
+          provider: "expo",
+          deliveredTicketIds: [],
+          unregisteredTokens: [activeToken],
+        }),
+    ]);
+    const pushWorker = new NotificationProviderWorkerService(
+      database,
+      outbox,
+      pgmq,
+      contacts,
+      new RetryableFailureProvider(),
+      pushProvider,
+    );
+    for (let cycle = 0; cycle < 3; cycle += 1) {
+      await pushWorker.processBatch(100);
+      const state = await database.db
+        .selectFrom("notification.provider_jobs")
+        .select("state")
+        .where("job_id", "=", pushJob.job_id)
+        .executeTakeFirstOrThrow();
+      if (state.state === "submitted") break;
+    }
+
+    const submittedPush = await database.db
+      .selectFrom("notification.provider_jobs")
+      .select(["state", "provider", "provider_message_id"])
+      .where("job_id", "=", pushJob.job_id)
+      .executeTakeFirstOrThrow();
+    expect(submittedPush).toEqual({
+      state: "submitted",
+      provider: "expo",
+      provider_message_id: "expo-ticket-ok-1",
+    });
+
+    const staleRow = await database.db
+      .selectFrom("notification.device_tokens")
+      .select(["active", "disabled_reason"])
+      .where("device_token_id", "=", regStale.deviceTokenId)
+      .executeTakeFirstOrThrow();
+    expect(staleRow).toEqual({ active: false, disabled_reason: "DeviceNotRegistered" });
+
+    // Second push notification: retryable error records expo attempt, then all DeviceNotRegistered suppresses job cleanly.
+    await publication.setResourceTakedown(
+      "panda",
+      panda.pandaId,
+      false,
+      publicationContext,
+      "Exercise push retry and all-unregistered suppression",
+    );
+    let secondPushJob: { job_id: string; message_id: string } | undefined;
+    for (let cycle = 0; cycle < 4 && secondPushJob === undefined; cycle += 1) {
+      await dispatcher.dispatchBatch(200);
+      await notificationConsumer.processBatch(100);
+      secondPushJob = await database.db
+        .selectFrom("notification.provider_jobs as job")
+        .innerJoin("notification.messages as message", "message.message_id", "job.message_id")
+        .select(["job.job_id", "job.message_id"])
+        .where("message.account_id", "=", accountId)
+        .where("job.channel", "=", "push")
+        .where("job.state", "=", "pending")
+        .orderBy("job.created_at", "desc")
+        .executeTakeFirst();
+    }
+    expect(secondPushJob).toBeDefined();
+    if (secondPushJob === undefined) throw new Error("Second push provider job was not created");
+
+    for (let cycle = 0; cycle < 3; cycle += 1) {
+      await pushWorker.processBatch(100);
+      const state = await database.db
+        .selectFrom("notification.provider_jobs")
+        .select("state")
+        .where("job_id", "=", secondPushJob.job_id)
+        .executeTakeFirstOrThrow();
+      if (state.state === "retrying") break;
+    }
+    const retryingPush = await database.db
+      .selectFrom("notification.provider_attempts")
+      .select(["outcome", "provider", "error_code"])
+      .where("job_id", "=", secondPushJob.job_id)
+      .executeTakeFirstOrThrow();
+    expect(retryingPush).toEqual({ outcome: "retry", provider: "expo", error_code: "expo_rate_limited" });
+
+    await database.db
+      .updateTable("notification.provider_jobs")
+      .set({ next_attempt_at: new Date(Date.now() - 1_000) })
+      .where("job_id", "=", secondPushJob.job_id)
+      .execute();
+    await database.transaction((transaction) =>
+      pgmq.sendMessage(transaction, "notification_provider", { jobId: secondPushJob.job_id }),
+    );
+    await pushWorker.processBatch(100);
+
+    const suppressedPush = await database.db
+      .selectFrom("notification.provider_jobs")
+      .select(["state", "last_error_code"])
+      .where("job_id", "=", secondPushJob.job_id)
+      .executeTakeFirstOrThrow();
+    expect(suppressedPush).toEqual({ state: "suppressed", last_error_code: "device_not_registered" });
+    const suppressedChannel = await database.db
+      .selectFrom("notification.message_channels")
+      .select(["state", "suppression_reason"])
+      .where("message_id", "=", secondPushJob.message_id)
+      .where("channel", "=", "push")
+      .executeTakeFirstOrThrow();
+    expect(suppressedChannel).toEqual({ state: "suppressed", suppression_reason: "device_not_registered" });
+    expect(
+      await database.db
+        .selectFrom("notification.device_tokens")
+        .select("active")
+        .where("device_token_id", "=", regActive.deviceTokenId)
+        .executeTakeFirstOrThrow(),
+    ).toEqual({ active: false });
   });
 });
