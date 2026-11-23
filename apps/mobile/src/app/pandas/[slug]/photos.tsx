@@ -1,6 +1,7 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { HeaderBackButton } from "expo-router/react-navigation";
 import { useQuery } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { FlatList, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -29,6 +30,24 @@ export default function PhotosScreen() {
   }
 
   const current = photos?.[index];
+  const navigation = useNavigation();
+  useLayoutEffect(() => {
+    const needsBack = !navigation.canGoBack();
+    navigation.setOptions({
+      title: "照片",
+      headerLeft: needsBack
+        ? (props: { tintColor?: string }) => (
+            <HeaderBackButton
+              {...props}
+              label="返回"
+              accessibilityLabel="返回"
+              onPress={() => router.replace({ pathname: "/pandas/[slug]", params: { slug } })}
+            />
+          )
+        : undefined,
+    });
+  }, [navigation, slug]);
+
   return (
     <View
       role="dialog"
@@ -38,7 +57,6 @@ export default function PhotosScreen() {
       style={{ paddingBottom: insets.bottom + 12 }}
     >
       {/* The counter lives once, under the bar, where VoiceOver hears it change. */}
-      <Stack.Screen options={{ title: "照片" }} />
       {photos && photos.length > 0 ? (
         <Text variant="footnote" className="py-2 text-center text-muted-foreground" accessibilityLiveRegion="polite">
           {index + 1} / {photos.length}

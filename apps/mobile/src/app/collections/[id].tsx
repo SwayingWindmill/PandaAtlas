@@ -178,7 +178,7 @@ function Loading() {
       <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
         {[0, 1, 2, 3].map((row) => (
           <View key={row} className="flex-row items-center gap-row px-inset py-stack-tight">
-            <Skeleton className="rounded-tile" style={{ width: PHOTO, height: PHOTO }} />
+            <Skeleton className="rounded-full" style={{ width: PHOTO, height: PHOTO }} />
             <View className="flex-1 gap-stack-tight">
               <Skeleton className="h-4 w-24 rounded-control" />
               <Skeleton className="h-3 w-40 rounded-control" />

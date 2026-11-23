@@ -2,7 +2,7 @@ import { Pressable, View } from "react-native";
 
 import { ListCell, ListSection } from "@/components/grouped-list";
 import { Network } from "@/components/icons";
-import { RemoteImage } from "@/components/remote-image";
+import { PandaThumb } from "@/components/panda-thumb";
 import { SectionHeader } from "@/components/section-header";
 import { Text } from "@/components/ui/text";
 import type { Family, FamilyMember } from "@/features/family/family";
@@ -18,20 +18,7 @@ const TREE_CHILDREN = 4;
 const LINE = "bg-tertiary-foreground";
 
 export function Face({ member, size, className }: { member: FamilyMember; size: number; className?: string }) {
-  return (
-    <View
-      className={cn("items-center justify-center overflow-hidden bg-secondary", className)}
-      style={{ width: size, height: size, borderRadius: size / 2 }}
-    >
-      {member.photoUrl ? (
-        <RemoteImage source={member.photoUrl} style={{ width: size, height: size }} contentFit="cover" accessible={false} />
-      ) : (
-        <Text className="font-bold text-muted-foreground" style={{ fontSize: Math.round(size * 0.4) }}>
-          {member.name.slice(0, 1)}
-        </Text>
-      )}
-    </View>
-  );
+  return <PandaThumb pandaId={member.id} name={member.name} photoUrl={member.photoUrl} size={size} className={className} />;
 }
 
 function year(member: FamilyMember) {

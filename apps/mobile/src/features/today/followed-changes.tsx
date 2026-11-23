@@ -4,7 +4,7 @@ import { type ReactNode, useMemo } from "react";
 import { Pressable, View } from "react-native";
 
 import { BellRing } from "@/components/icons";
-import { RemoteImage } from "@/components/remote-image";
+import { PandaThumb } from "@/components/panda-thumb";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -15,7 +15,6 @@ import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
 import { api } from "@/lib/api";
 import { fetchLifeEvents, fetchLineage, fetchResidencies } from "@/lib/public-data";
-import { usePandaCover } from "@/lib/covers";
 import { HAIRLINE } from "@/lib/surface";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
@@ -78,24 +77,6 @@ function Note({ children, action }: { children: string; action?: { label: string
           <Text>{action.label}</Text>
         </Button>
       ) : null}
-    </View>
-  );
-}
-
-function Thumb({ pandaId, name }: { pandaId: string; name: string }) {
-  const photo = usePandaCover(pandaId);
-  return (
-    <View
-      className="items-center justify-center overflow-hidden rounded-full bg-secondary"
-      style={{ width: THUMB, height: THUMB }}
-    >
-      {photo ? (
-        <RemoteImage source={photo} style={{ width: THUMB, height: THUMB }} contentFit="cover" accessible={false} />
-      ) : (
-        <Text variant="headline" className="text-muted-foreground">
-          {name.slice(0, 1)}
-        </Text>
-      )}
     </View>
   );
 }
@@ -177,7 +158,7 @@ export function FollowedChanges() {
                 accessibilityLabel={`${panda.name}，${change.what}，${day}`}
                 className="min-h-11 flex-row items-center gap-row px-inset py-row active:bg-accent"
               >
-                <Thumb pandaId={panda.id} name={panda.name} />
+                <PandaThumb pandaId={panda.id} name={panda.name} size={THUMB} />
                 <View className="min-w-0 flex-1 gap-hair-gap">
                   <View className="flex-row items-baseline justify-between gap-row">
                     <Text variant="headline" className="min-w-0 flex-1" numberOfLines={1}>
