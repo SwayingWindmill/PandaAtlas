@@ -3981,24 +3981,14 @@ GRANT SELECT,INSERT,UPDATE ON TABLE "privacy"."subject_request_steps" TO "zhipan
 
 GRANT SELECT,INSERT,UPDATE ON TABLE "privacy"."subject_requests" TO "zhipanda_app";
 
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_cells" TO "anon";
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_cells" TO "authenticated";
 GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_cells" TO "service_role";
 
-GRANT UPDATE ON SEQUENCE "public"."distribution_cells_id_seq" TO "anon";
-GRANT UPDATE ON SEQUENCE "public"."distribution_cells_id_seq" TO "authenticated";
 GRANT UPDATE ON SEQUENCE "public"."distribution_cells_id_seq" TO "service_role";
 
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_snapshots" TO "anon";
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_snapshots" TO "authenticated";
 GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."distribution_snapshots" TO "service_role";
 
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."habitats" TO "anon";
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."habitats" TO "authenticated";
 GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."habitats" TO "service_role";
 
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."sightings" TO "anon";
-GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."sightings" TO "authenticated";
 GRANT REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."sightings" TO "service_role";
 
 GRANT SELECT,INSERT ON TABLE "public_read"."evidence_sources" TO "zhipanda_app";
