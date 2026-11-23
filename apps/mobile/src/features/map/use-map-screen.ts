@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PanResponder } from "react-native";
 import { useReducedMotion, useSharedValue, withSpring } from "react-native-reanimated";
 
@@ -70,6 +70,15 @@ export function useMapScreen(
   const [sheetSnap, setSheetSnap] = useState<SheetSnap>("half");
   const sheetHeight = useSharedValue(halfHeight);
   const dragStartHeight = useSharedValue(halfHeight);
+
+  const snapTo = useCallback(
+    (next: SheetSnap) => {
+      const target = snapHeights[next];
+      sheetHeight.set(reducedMotion ? target : withSpring(target, { damping: 24, stiffness: 260, mass: 0.9 }));
+      setSheetSnap(next);
+    },
+    [reducedMotion, sheetHeight, snapHeights],
+  );
 
   useEffect(() => {
     const target = snapHeights[sheetSnap];
@@ -161,34 +170,34 @@ export function useMapScreen(
     // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on the first layout with data
   }, [viewport, view]);
 
-  const sheetResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponderCapture: (_, gesture) =>
-          Math.abs(gesture.dy) > 8 && Math.abs(gesture.dy) > Math.abs(gesture.dx),
-        onPanResponderTerminationRequest: () => false,
-        onPanResponderGrant: () => {
-          dragStartHeight.set(sheetHeight.get());
-        },
-        onPanResponderMove: (_, gesture) => {
-          sheetHeight.set(clamp(dragStartHeight.get() - gesture.dy, snapHeights.peek, snapHeights.expanded));
-        },
-        onPanResponderRelease: (_, gesture) => {
-          const projected = sheetHeight.get() - gesture.vy * 80;
-          const choices: [SheetSnap, number][] = [
-            ["peek", snapHeights.peek],
-            ["half", snapHeights.half],
-            ["expanded", snapHeights.expanded],
-          ];
-          choices.sort((a, b) => Math.abs(projected - a[1]) - Math.abs(projected - b[1]));
-          setSheetSnap(choices[0]![0]);
-        },
-      }),
-    [dragStartHeight, sheetHeight, snapHeights],
-  );
+  const sheetResponder = useMemo(() => {
+    const settle = (vy: number) => {
+      const projected = sheetHeight.get() - vy * 80;
+      const choices: [SheetSnap, number][] = [
+        ["peek", snapHeights.peek],
+        ["half", snapHeights.half],
+        ["expanded", snapHeights.expanded],
+      ];
+      choices.sort((a, b) => Math.abs(projected - a[1]) - Math.abs(projected - b[1]));
+      snapTo(choices[0]![0]);
+    };
+    return PanResponder.create({
+      onMoveShouldSetPanResponderCapture: (_, gesture) =>
+        Math.abs(gesture.dy) > 8 && Math.abs(gesture.dy) > Math.abs(gesture.dx),
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: () => {
+        dragStartHeight.set(sheetHeight.get());
+      },
+      onPanResponderMove: (_, gesture) => {
+        sheetHeight.set(clamp(dragStartHeight.get() - gesture.dy, snapHeights.peek, snapHeights.expanded));
+      },
+      onPanResponderRelease: (_, gesture) => settle(gesture.vy),
+      onPanResponderTerminate: (_, gesture) => settle(gesture.vy),
+    });
+  }, [dragStartHeight, sheetHeight, snapHeights, snapTo]);
 
   const selectedPlace = selection?.kind === "place" ? view?.items.find((item) => item.id === selection.id) : undefined;
-  const featuredPlace = selectedPlace ?? filteredItems[0] ?? view?.items[0];
+  const featuredPlace = selectedPlace ?? filteredItems[0];
   const featuredLiveMeta = featuredPlace ? venueLiveMeta(featuredPlace, liveCamBySlug, now) : null;
   const wildArea = selection?.kind === "wild" ? WILD_AREAS.find((area) => area.range.id === selection.id) : undefined;
   const nearVenues = wildArea ? venuesNear(wildArea, view?.items ?? []).length : 0;
@@ -222,14 +231,13 @@ export function useMapScreen(
     setTimelineOpen(false);
     setPlaying(false);
     setYearIndex(null);
+    setSelection(null);
     if (next === "wild") {
       setLayers({ wild: true });
-      if (selection?.kind === "place") setSelection(null);
       if (viewport) flyTo(fitPoints(wildPoints, viewport, 40, 8));
       setWorldView(false);
       return;
     }
-    if (selection?.kind === "wild") setSelection(null);
     if (!viewport || !view) return;
     const nextItems = filterMapItems(view.items, next, liveCamBySlug);
     const pts = pointsOf(nextItems);

@@ -107,6 +107,10 @@ describe("guest-store", () => {
 
     await deleteGuestCollection(created.collectionId);
     expect(await loadGuestCollections()).toEqual([]);
+
+    await expect(renameGuestCollection("missing-id", "不会生效")).rejects.toThrow("Guest collection not found");
+    const recovered = await createGuestCollection("失败后继续");
+    expect(recovered.name).toBe("失败后继续");
   });
 
   it("tracks recognized games without double counting the same daily puzzle day", async () => {

@@ -65,6 +65,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         setState({ status: "signedOut" });
         return;
       }
+      setState({ status: "loading" });
       provision(session)
         .then((next) => {
           if (current === userId) setState(next);

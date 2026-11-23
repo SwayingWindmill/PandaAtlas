@@ -6,6 +6,7 @@ import { useCSSVariable } from "uniwind";
 
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
+import { ScreenState } from "@/components/screen-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -111,6 +112,8 @@ export default function CollectScreen() {
             if (failedWithoutData(list)) void list.refetch();
           }}
         />
+      ) : (signedOut && publicIndex.data && !panda) || (signedIn && target.isFetched && !panda) ? (
+        <ScreenState message="没有找到这只熊猫。" />
       ) : !collections || !panda ? (
         <Skeleton className="h-40 w-full" accessibilityLabel="正在加载合集" />
       ) : (

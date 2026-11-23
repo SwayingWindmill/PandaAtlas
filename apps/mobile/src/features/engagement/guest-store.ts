@@ -53,7 +53,7 @@ const keyQueues = new Map<string, Promise<unknown>>();
 function enqueue<T>(key: string, work: () => Promise<T>): Promise<T> {
   const prev = keyQueues.get(key) ?? Promise.resolve();
   const next = prev.catch(() => undefined).then(work);
-  const tracked = next.finally(() => {
+  const tracked = next.catch(() => undefined).finally(() => {
     if (keyQueues.get(key) === tracked) keyQueues.delete(key);
   });
   keyQueues.set(key, tracked);

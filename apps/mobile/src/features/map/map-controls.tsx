@@ -40,8 +40,10 @@ export function FilterBar({
           <Pressable
             key={pill.key}
             role="tab"
+            aria-selected={selected}
             accessibilityState={{ selected }}
             accessibilityLabel={pill.label}
+            hitSlop={4}
             onPress={() => onSelect(pill.key)}
             className={cn(
               "h-9 items-center justify-center rounded-full px-3.5 active:opacity-75",

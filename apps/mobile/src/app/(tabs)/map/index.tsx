@@ -139,8 +139,10 @@ export default function MapTabScreen() {
                 </View>
                 {map.year !== undefined ? (
                   <YearSheet timelineBlock={timelineBlock} events={map.yearEvents} />
-                ) : (
+                ) : timelineBlock ? (
                   timelineBlock
+                ) : (
+                  <Skeleton className="h-28 w-full rounded-group" accessibilityLabel="正在加载时间轴" />
                 )}
               </View>
             ) : (
