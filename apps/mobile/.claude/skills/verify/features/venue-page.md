@@ -5,7 +5,7 @@ A zoo or base has its own page: a hero with the name, capsules for free entry, a
 ## Sub-features
 
 - `venue-open-map` opens the page from the map's place list or marker.
-- `venue-open-guide-link` opens the page straight on 攻略 from 今天's 观猫时机.
+- `venue-open-guide-link` opens the page straight on 攻略 via `/institutions/<slug>?tab=guide`.
 - `venue-tabs` switches 概况 / 熊猫 / 攻略. A tab with nothing in it is not shown.
 - `venue-follow` toggles 关注. Signed out, it opens sign-in.
 - `venue-visit` records a visit on 攻略. This lives in [Collections and visits](./collections-visits.md).
@@ -13,7 +13,7 @@ A zoo or base has its own page: a hero with the name, capsules for free entry, a
 ## How to get to it (user POV)
 
 - 找熊猫, then 熊猫地图, then a zoo in the list or on the map, then 打开<zoo>的页面.
-- 今天, then the 观猫时机 shortcut or the 观猫时机 card. These open on 攻略.
+- 探索, then 此刻谁醒着, 热门场馆 or 熊猫地图, then open a zoo.
 - A panda's profile, then the place it lives.
 - The route `/institutions/<slug>`, optionally with `?tab=guide` or `?tab=pandas`.
 

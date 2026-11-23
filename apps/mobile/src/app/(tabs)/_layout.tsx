@@ -14,7 +14,6 @@ import { IOS, useIOSColors } from "@/lib/theme";
  * Regenerate both from Lucide with `node scripts/tab-icons.mjs`.
  */
 const TAB_ICON = {
-  today: require("../../../assets/tab-icons/today.png"),
   discover: require("../../../assets/tab-icons/discover.png"),
   find: require("../../../assets/tab-icons/search.png"),
   book: require("../../../assets/tab-icons/atlas.png"),
@@ -50,11 +49,7 @@ export default function TabsLayout() {
       disableTransparentOnScrollEdge
     >
       <NativeTabs.Trigger name="(today)">
-        <NativeTabs.Trigger.Label>今天</NativeTabs.Trigger.Label>
-        {tabIcon("today", TAB_ICON.today)}
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="discover">
-        <NativeTabs.Trigger.Label>发现</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>探索</NativeTabs.Trigger.Label>
         {tabIcon("discover", TAB_ICON.discover)}
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="find">
