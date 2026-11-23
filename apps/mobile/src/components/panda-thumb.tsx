@@ -1,41 +1,68 @@
-import { Image } from "expo-image";
-import { View } from "react-native";
+import { useMemo, useState } from "react";
 
 import { PhotoOutline } from "@/components/photo-outline";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Text } from "@/components/ui/text";
 import { usePandaCover } from "@/lib/covers";
 import { RADIUS } from "@/lib/surface";
+import { cn } from "@/lib/utils";
 
 /**
- * A panda's cover at row size: a circle for a panda as a person (Messages, Mail), a rounded square
- * for a panda as the subject of a row (Music's albums). With no cover it keeps its size on the
- * secondary fill with the name's first character, so a list never jumps when photos arrive.
- * Always decorative: the row it sits in carries the name.
+ * A panda's cover at row size: round by default on `@/components/ui/avatar`, with an initial-letter
+ * fallback when no cover is available or loading fails. Pass `shape="tile"` only for square album
+ * cells (图鉴). Always decorative: the row or button around it carries the accessible label.
  */
 export function PandaThumb({
   pandaId,
   name,
   size,
-  shape = "square",
+  photoUrl,
+  shape = "round",
+  className,
 }: {
   pandaId: string;
   name: string;
   size: number;
-  /** "tile" is a photo tile in a grid (the 图鉴), at the photo radius. */
-  shape?: "round" | "square" | "tile";
+  photoUrl?: string | null;
+  /** "tile" is reserved for square album grid cells (图鉴), at the photo radius. */
+  shape?: "round" | "tile";
+  className?: string;
 }) {
-  const photo = usePandaCover(pandaId);
-  const radius = shape === "round" ? size / 2 : shape === "tile" ? RADIUS.tile : RADIUS.control;
+  const cover = usePandaCover(photoUrl ? undefined : pandaId);
+  const uri = photoUrl || cover || null;
+  const source = useMemo(() => (uri ? { uri } : undefined), [uri]);
+  const [failedUri, setFailedUri] = useState<string | null>(null);
+  const failed = Boolean(uri && failedUri === uri);
+  const radius = shape === "tile" ? RADIUS.tile : size / 2;
+
   return (
-    <View
-      className="items-center justify-center overflow-hidden bg-secondary"
+    <Avatar
+      alt={name}
+      className={cn(
+        "items-center justify-center bg-secondary",
+        shape === "tile" ? "rounded-tile" : "rounded-full",
+        className,
+      )}
       style={{ width: size, height: size, borderRadius: radius, borderCurve: "continuous" }}
       accessible={false}
+      aria-hidden
       importantForAccessibility="no-hide-descendants"
     >
-      {photo ? (
-        <Image source={photo} style={{ width: size, height: size }} contentFit="cover" transition={200} accessible={false} />
-      ) : (
+      {source ? (
+        <AvatarImage
+          key={uri}
+          source={source}
+          resizeMode="cover"
+          style={{ width: size, height: size }}
+          accessible={false}
+          onLoadingStatusChange={(status) => setFailedUri(status === "error" ? uri : null)}
+        />
+      ) : null}
+      <AvatarFallback
+        role="none"
+        aria-label={undefined}
+        className={cn("bg-secondary", shape === "tile" && "rounded-none")}
+      >
         <Text
           variant={size >= 48 ? "title" : "headline"}
           role="none"
@@ -44,8 +71,8 @@ export function PandaThumb({
         >
           {name.slice(0, 1)}
         </Text>
-      )}
-      {photo ? <PhotoOutline radius={radius} /> : null}
-    </View>
+      </AvatarFallback>
+      {source && !failed ? <PhotoOutline radius={radius} /> : null}
+    </Avatar>
   );
 }

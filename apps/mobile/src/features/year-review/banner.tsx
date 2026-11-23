@@ -1,7 +1,7 @@
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Pressable, View } from "react-native";
 
+import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { Text } from "@/components/ui/text";
 import { localToday } from "@/features/engagement/seen";
@@ -26,7 +26,7 @@ export function YearReviewBanner() {
       className="overflow-hidden rounded-group bg-media-placeholder active:opacity-80"
       style={{ height: 116, borderCurve: "continuous" }}
     >
-      {photo ? <Image source={photo} style={{ position: "absolute", inset: 0 }} contentFit="cover" accessible={false} /> : null}
+      {photo ? <RemoteImage source={photo} style={{ position: "absolute", inset: 0 }} contentFit="cover" accessible={false} /> : null}
       <Scrim id="year-review-banner" height="100%" />
       <View className="mt-auto gap-hair-gap p-inset">
         <Text variant="footnote" className="font-semibold text-on-media tabular-nums">

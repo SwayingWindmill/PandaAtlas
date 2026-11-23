@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/api", () => ({ authedApi: {} }));
 
-const { NAME_MAX, collectionName, sortCollections } = await import("./collections");
+const { NAME_MAX, collectionName, collectionsQueryKey, patchCollections, sortCollections } = await import("./collections");
+const { queryClient } = await import("@/lib/query-client");
 const { lastVisitByPlace, sortVisits } = await import("../visits/visits");
 
 const collection = (name: string, updatedAt: string) => ({
@@ -33,6 +34,28 @@ describe("collections", () => {
     expect(collectionName("  最喜欢  ")).toBe("最喜欢");
     expect(collectionName("   ")).toBeNull();
     expect(collectionName("熊".repeat(NAME_MAX + 1))).toBeNull();
+  });
+});
+
+describe("patchCollections", () => {
+  it("keeps a change that landed while an older fetch was still in flight", async () => {
+    const key = collectionsQueryKey("account-1");
+    const old = collection("旧名", "2026-10-01T00:00:00Z");
+    queryClient.setQueryData(key, [old]);
+
+    let finish: (value: (typeof old)[]) => void = () => {};
+    const refetch = queryClient.fetchQuery({
+      queryKey: key,
+      queryFn: () => new Promise<(typeof old)[]>((resolve) => (finish = resolve)),
+      staleTime: 0,
+    });
+
+    await patchCollections("account-1", (current) => current.map((item) => ({ ...item, name: "新名" })));
+    finish([old]);
+    await refetch;
+
+    expect(queryClient.getQueryData<(typeof old)[]>(key)?.[0]?.name).toBe("新名");
+    queryClient.clear();
   });
 });
 

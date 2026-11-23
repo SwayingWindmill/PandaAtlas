@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { type ComponentRef, useRef, useState } from "react";
 import { View } from "react-native";
@@ -9,6 +8,7 @@ import { Icon } from "@/components/icon";
 import { CalendarCheck, Eye, MapPin, Share } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
+import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { ScreenState } from "@/components/screen-state";
 import { StatTile } from "@/components/stat-tile";
@@ -49,7 +49,7 @@ function Hero({ data }: { data: YearReviewData }) {
       accessible
       accessibilityLabel={`今年第一只，${panda.name}，${monthDot(first.date)}`}
     >
-      {photo ? <Image source={photo} style={{ position: "absolute", inset: 0 }} contentFit="cover" accessible={false} /> : null}
+      {photo ? <RemoteImage source={photo} style={{ position: "absolute", inset: 0 }} contentFit="cover" accessible={false} /> : null}
       <Scrim id="year-review-hero" />
       <View className="mt-auto flex-row items-end justify-between gap-row p-inset">
         <View className="min-w-0 flex-1 gap-hair-gap">

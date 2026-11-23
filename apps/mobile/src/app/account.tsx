@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRef, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -23,13 +24,16 @@ import {
 import {
   VerificationRequired,
   createPrivacyRequest,
-  loadPrivacyRequests,
   newRequestKey,
+  privacyRequestsQueryKey,
+  privacyRequestsQueryOptions,
   saveExport,
 } from "@/features/account/requests";
 import { shortDay } from "@/features/engagement/seen";
+import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
 import { Verification } from "@/features/session/verification";
+import { failedWithoutData } from "@/lib/query-failed";
 
 function StatusCell({ request, last }: { request: PrivacyRequest; last?: boolean }) {
   const done = request.state === "completed";
@@ -100,13 +104,16 @@ function ExportSection({
 
 function DeletionSection({
   request,
+  reason,
+  onReasonChange,
   onRequest,
 }: {
   request: PrivacyRequest | null;
+  reason: string;
+  onReasonChange: (reason: string) => void;
   onRequest: (reason: string) => Promise<void>;
 }) {
   const [confirming, setConfirming] = useState(false);
-  const [reason, setReason] = useState("");
   const [status, run] = useWork();
   const open = canRequest(request) && !confirming;
 
@@ -134,7 +141,7 @@ function DeletionSection({
           </View>
           <TextField
             value={reason}
-            onChangeText={(value) => setReason(value.slice(0, 1000))}
+            onChangeText={(value) => onReasonChange(value.slice(0, 1000))}
             placeholder="原因（可不填）"
             accessibilityLabel="注销原因"
             multiline
@@ -167,36 +174,32 @@ function DeletionSection({
   );
 }
 
-type Gate = { status: "checking" } | { status: "verify" } | { status: "open" } | { status: "failed" };
-
 export default function AccountScreen() {
   const { state: session } = useSession();
+  const { accountId, unavailable } = useAccount();
+  const queryClient = useQueryClient();
   const email = session.status === "signedIn" ? session.email : null;
-  const [gate, setGate] = useState<Gate>({ status: "checking" });
-  const [requests, setRequests] = useState<PrivacyRequest[] | null>(null);
-  const pendingAction = useRef<(() => Promise<void>) | null>(null);
-
   // Privacy requests require recent email-code authentication on a live session; the API says when it lapses.
-  const load = useCallback(() => {
-    loadPrivacyRequests()
-      .then((items) => {
-        setRequests(items);
-        setGate({ status: "open" });
-      })
-      .catch((error: unknown) => {
-        if (error instanceof VerificationRequired) {
-          pendingAction.current = null;
-          setGate({ status: "verify" });
-          return;
-        }
-        setGate({ status: "failed" });
-      });
-  }, []);
-  useEffect(load, [load]);
+  const list = useQuery({ ...privacyRequestsQueryOptions(accountId ?? ""), enabled: accountId !== null });
+  const requests = list.data;
+  const pendingAction = useRef<(() => Promise<void>) | null>(null);
+  // Held here so the typed reason survives the verification screen replacing the form.
+  const [deletionReason, setDeletionReason] = useState("");
+  const [actionGate, setActionGate] = useState<"verify" | "resuming" | "failed" | null>(null);
+
+  const lapsed = list.isError && list.error instanceof VerificationRequired;
+  // A refetch with no data resets the query to pending, which would otherwise unmount the code form mid-entry.
+  if (lapsed && actionGate === null) setActionGate("verify");
+  const gate =
+    actionGate === "resuming" ? "checking"
+    : actionGate === "verify" ? "verify"
+    : actionGate === "failed" || failedWithoutData(list) || unavailable ? "failed"
+    : requests ? "open"
+    : "checking";
 
   function reload() {
-    setGate({ status: "checking" });
-    load();
+    setActionGate(null);
+    if (accountId) void list.refetch();
   }
 
   // One key per request the fan means to file, kept across retries until it succeeds.
@@ -206,7 +209,15 @@ export default function AccountScreen() {
     const key = (keys.current[kind] ??= newRequestKey());
     const created = await createPrivacyRequest(kind, requestReason(kind, written), key);
     delete keys.current[kind];
-    setRequests((current) => [created, ...(current ?? []).filter((item) => item.requestId !== created.requestId)]);
+    if (kind === "account_deletion") setDeletionReason("");
+    if (accountId) {
+      const queryKey = privacyRequestsQueryKey(accountId);
+      await queryClient.cancelQueries({ queryKey });
+      queryClient.setQueryData<PrivacyRequest[]>(queryKey, (current) => [
+        created,
+        ...(current ?? []).filter((item) => item.requestId !== created.requestId),
+      ]);
+    }
   }
 
   async function request(kind: PrivacyKind, written = "") {
@@ -215,7 +226,7 @@ export default function AccountScreen() {
     } catch (error) {
       if (error instanceof VerificationRequired) {
         pendingAction.current = () => performRequest(kind, written);
-        setGate({ status: "verify" });
+        setActionGate("verify");
         return;
       }
       throw error;
@@ -228,7 +239,7 @@ export default function AccountScreen() {
     } catch (error) {
       if (error instanceof VerificationRequired) {
         pendingAction.current = () => saveExport(requestId);
-        setGate({ status: "verify" });
+        setActionGate("verify");
         return;
       }
       throw error;
@@ -236,33 +247,34 @@ export default function AccountScreen() {
   }
 
   async function handleVerified() {
-    setGate({ status: "checking" });
+    setActionGate("resuming");
     const pending = pendingAction.current;
     pendingAction.current = null;
     try {
       if (pending) await pending();
-      setRequests(await loadPrivacyRequests());
-      setGate({ status: "open" });
+      const { error } = await list.refetch({ throwOnError: false });
+      if (error) throw error;
+      setActionGate(null);
     } catch (error) {
       if (error instanceof VerificationRequired) {
         pendingAction.current = pending;
-        setGate({ status: "verify" });
+        setActionGate("verify");
         return;
       }
-      setGate({ status: "failed" });
+      setActionGate("failed");
     }
   }
 
   return (
     <Page label="我的" title="账号与数据">
-      {gate.status === "failed" ? (
+      {gate === "failed" ? (
         <LoadFailed message="暂时打不开。" onRetry={reload} />
       ) : null}
-      {gate.status === "checking" ? (
+      {gate === "checking" ? (
         <Skeleton className="h-48 w-full rounded-card" accessibilityLabel="正在加载" />
       ) : null}
-      {gate.status === "verify" ? <Verification email={email} onVerified={() => void handleVerified()} /> : null}
-      {gate.status === "open" && requests ? (
+      {gate === "verify" ? <Verification email={email} onVerified={() => void handleVerified()} /> : null}
+      {gate === "open" && requests ? (
         <Animated.View entering={PAGE_ENTER} className="gap-section">
           <ExportSection
             request={latestRequest(requests, "access_export")}
@@ -271,6 +283,8 @@ export default function AccountScreen() {
           />
           <DeletionSection
             request={latestRequest(requests, "account_deletion")}
+            reason={deletionReason}
+            onReasonChange={setDeletionReason}
             onRequest={(reason) => request("account_deletion", reason)}
           />
         </Animated.View>

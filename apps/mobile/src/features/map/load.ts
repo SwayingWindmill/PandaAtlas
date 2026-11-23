@@ -44,6 +44,15 @@ export function mapTimelineQueryOptions() {
   });
 }
 
+export function placePageQueryOptions(slug: string) {
+  return queryOptions({
+    queryKey: ["public", "place-page", slug],
+    queryFn: () => loadPlacePage(slug),
+    staleTime: 300_000,
+    networkMode: "always",
+  });
+}
+
 /** A place that belongs to no institution. Null when the release has no such slug. */
 export async function loadPlacePage(slug: string): Promise<PlacePage | null> {
   const [institutions, places, residencies, pandas] = await Promise.all([

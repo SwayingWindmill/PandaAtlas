@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { type ComponentRef, type RefObject, useId, useState } from "react";
 import { type LayoutChangeEvent, type TextStyle, View } from "react-native";
 import Svg, { Defs, LinearGradient, Pattern, RadialGradient, Rect, Stop } from "react-native-svg";
@@ -6,6 +5,7 @@ import Svg, { Defs, LinearGradient, Pattern, RadialGradient, Rect, Stop } from "
 import { Icon } from "@/components/icon";
 import { Cake } from "@/components/icons";
 import { QrCode } from "@/components/qr-code";
+import { RemoteImage } from "@/components/remote-image";
 import { Text } from "@/components/ui/text";
 import { dayHeading } from "@/features/calendar/calendar";
 import { component, primitive } from "@/design/tokens";
@@ -112,7 +112,7 @@ function T({
 
 function Photo({ url, style }: { url: string; style?: object }) {
   return (
-    <Image
+    <RemoteImage
       source={url}
       contentFit="cover"
       contentPosition={{ left: "38%", top: "50%" }}

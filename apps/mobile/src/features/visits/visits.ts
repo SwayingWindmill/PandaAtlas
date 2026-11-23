@@ -1,4 +1,5 @@
 import type { components } from "@zhipanda/api-client";
+import { queryOptions } from "@tanstack/react-query";
 
 import { authedApi } from "@/lib/api";
 
@@ -26,6 +27,12 @@ export async function loadVisits(): Promise<Visit[]> {
   const { data } = await authedApi.GET("/api/v2/me/checkins");
   if (!data) throw new Error("Visits unavailable");
   return sortVisits(data.items);
+}
+
+export const visitsQueryKey = (accountId: string) => ["private", accountId, "visits"] as const;
+
+export function visitsQueryOptions(accountId: string) {
+  return queryOptions({ queryKey: visitsQueryKey(accountId), queryFn: loadVisits, staleTime: 0 });
 }
 
 export async function recordVisit(placeId: string, visitedOn: string): Promise<Visit> {

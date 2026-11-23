@@ -46,7 +46,7 @@ export default function TabsLayout() {
   return (
     <NativeTabs
       tintColor={tint}
-      minimizeBehavior="onScrollDown"
+      minimizeBehavior="never"
       disableTransparentOnScrollEdge
     >
       <NativeTabs.Trigger name="(today)">
