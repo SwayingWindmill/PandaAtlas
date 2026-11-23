@@ -27,13 +27,21 @@ export async function POST(request: NextRequest) {
   redirect.searchParams.set("next", next);
 
   const supabase = await createSupabaseServerClient();
-  await supabase.auth.signInWithOtp({
+  const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
       shouldCreateUser: true,
       emailRedirectTo: redirect.toString(),
     },
   });
+  // Every other outcome answers alike, so the reply never tells whether an address has an account. The send
+  // limit applies to any address, so saying it was hit gives nothing away.
+  if (error?.status === 429) {
+    return NextResponse.json(
+      { code: "rate_limited", detail: "Too many requests" },
+      { status: 429, headers: { "Cache-Control": "no-store, private" } },
+    );
+  }
 
   return NextResponse.json(
     { message: "如果该邮箱可用，我们已发送验证码。" },

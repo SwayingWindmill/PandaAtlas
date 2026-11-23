@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -12,6 +12,7 @@ import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { localToday } from "@/features/engagement/seen";
 import { SignInConsent } from "@/features/legal/legal-links";
+import { rejectedCodeMessage, secondsUntilResend } from "@/features/session/otp";
 import { SignInError, useSession } from "@/features/session/session";
 import { type StoryPhoto, useStoryPhotos } from "@/features/today/story-photos";
 
@@ -39,12 +40,29 @@ function Faces({ photos }: { photos: StoryPhoto[] }) {
   );
 }
 
+/** 重新发送验证码, after the minute Supabase makes a fan wait between two codes. */
+function ResendButton({ sentAt, disabled, onPress }: { sentAt: number; disabled: boolean; onPress: () => void }) {
+  const [now, setNow] = useState(Date.now);
+  const left = secondsUntilResend(sentAt, now);
+  useEffect(() => {
+    if (left === 0) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [left]);
+  return (
+    <Button variant="plain" onPress={onPress} disabled={disabled || left > 0}>
+      <Text className="tabular-nums">{left > 0 ? `${left} 秒后可重新发送` : "重新发送验证码"}</Text>
+    </Button>
+  );
+}
+
 export default function SignInScreen() {
   const { requestCode, verifyCode } = useSession();
   const photos = useStoryPhotos(localToday(), 3);
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [sentTo, setSentTo] = useState<string | null>(null);
+  const [sentAt, setSentAt] = useState(0);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,7 +72,12 @@ export default function SignInScreen() {
     try {
       await work();
     } catch (caught) {
-      setError(caught instanceof SignInError ? caught.message : "没能完成，请稍后再试。");
+      if (caught instanceof SignInError && caught.codeRejected) {
+        setError(rejectedCodeMessage(sentAt, Date.now()));
+        setCode("");
+      } else {
+        setError(caught instanceof SignInError ? caught.message : "没能完成，请稍后再试。");
+      }
     } finally {
       setBusy(false);
     }
@@ -65,14 +88,29 @@ export default function SignInScreen() {
       const address = email.trim().toLowerCase();
       await requestCode(address);
       setSentTo(address);
+      setSentAt(Date.now());
       setCode("");
     });
 
-  const verify = () =>
+  const resend = () =>
     run(async () => {
-      await verifyCode(sentTo!, code);
+      await requestCode(sentTo!);
+      setSentAt(Date.now());
+      setCode("");
+    });
+
+  const verify = (entered: string) =>
+    run(async () => {
+      await verifyCode(sentTo!, entered);
       router.back();
     });
+
+  function enterCode(value: string) {
+    const digits = value.replace(/\D/g, "").slice(0, 6);
+    setCode(digits);
+    // The sixth digit signs in, as the system's one-time-code autofill expects.
+    if (digits.length === 6 && digits !== code && !busy) void verify(digits);
+  }
 
   return (
     <Page title={sentTo ? "输入验证码" : "用邮箱登录"} keyboardShouldPersistTaps="handled">
@@ -88,7 +126,7 @@ export default function SignInScreen() {
         <Animated.View key="code" entering={PAGE_ENTER} className="gap-row">
           <TextField
             value={code}
-            onChangeText={(value) => setCode(value.replace(/\D/g, "").slice(0, 6))}
+            onChangeText={enterCode}
             placeholder="6 位验证码"
             accessibilityLabel="验证码"
             keyboardType="number-pad"
@@ -97,9 +135,10 @@ export default function SignInScreen() {
             className="text-center tracking-widest tabular-nums"
             autoFocus
           />
-          <Button onPress={verify} disabled={busy || code.length !== 6}>
+          <Button onPress={() => void verify(code)} disabled={busy || code.length !== 6}>
             <Text>登录</Text>
           </Button>
+          <ResendButton sentAt={sentAt} disabled={busy} onPress={() => void resend()} />
           <Button variant="plain" onPress={() => setSentTo(null)} disabled={busy}>
             <Text>换个邮箱</Text>
           </Button>
