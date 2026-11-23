@@ -47,8 +47,7 @@ const DEEP = ink[950];
 const BC = component.birthdayCard;
 const ARTBOARD = BC.artboard.width;
 const WHITE = gray.white;
-/** The QR code's side on the artboard, quiet zone included. */
-const QR = 64;
+const QR = component.shareCard.qr;
 
 /** 21 → "21ST", 12 → "12TH". */
 export function ordinal(n: number) {
@@ -189,7 +188,7 @@ function Cover({ card, u }: { card: BirthdayCardData; u: number }) {
               </T>
             ) : null}
           </View>
-          <QrCode value={card.url} size={QR * u} />
+          <QrCode value={card.url} size={QR} />
         </View>
       </View>
     </View>
@@ -280,7 +279,7 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
             </T>
           ) : null}
         </View>
-        <QrCode value={card.url} size={QR * u} />
+        <QrCode value={card.url} size={QR} />
       </View>
     </View>
   );
@@ -363,9 +362,9 @@ function Poster({ card, u }: { card: BirthdayCardData; u: number }) {
         </View>
       </View>
       <View className="absolute" style={{ right: 16 * u, bottom: 16 * u }}>
-        <QrCode value={card.url} size={QR * u} />
+        <QrCode value={card.url} size={QR} />
       </View>
-      <View className="absolute items-end" style={{ right: 16 * u, bottom: (16 + QR + 8) * u }}>
+      <View className="absolute flex-row items-baseline" style={{ right: 16 * u, bottom: 16 * u + QR + 4 * u, gap: 4 * u }}>
         <T u={u} size={20} className="font-rounded font-bold tabular-nums" style={{ color: sky[600] }}>
           {`${Number(m)}.${Number(d)}`}
         </T>

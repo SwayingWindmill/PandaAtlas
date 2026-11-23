@@ -7,9 +7,9 @@ export interface QrCode {
   path: string;
 }
 
-/** Row-major modules of the QR code for `text`: `size * size` entries, 1 is dark. */
+/** Row-major modules of the QR code for `text` at error-correction level M: `size * size` entries, 1 is dark. */
 export function qrModules(text: string): { size: number; modules: Uint8Array } {
-  const modules = toQR(text);
+  const modules = toQR(text, 0);
   return { size: Math.round(Math.sqrt(modules.length)), modules };
 }
 

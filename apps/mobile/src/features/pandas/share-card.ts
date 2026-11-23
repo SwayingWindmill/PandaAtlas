@@ -31,6 +31,7 @@ export async function shareLink(name: string, slug: string): Promise<void> {
   await Share.share({ message: linkMessage(name, slug) });
 }
 
-export async function copyLink(name: string, slug: string): Promise<void> {
-  await Clipboard.setStringAsync(linkMessage(name, slug));
+/** Whether the link reached the clipboard; web returns false instead of throwing when the browser refuses. */
+export function copyLink(name: string, slug: string): Promise<boolean> {
+  return Clipboard.setStringAsync(linkMessage(name, slug));
 }

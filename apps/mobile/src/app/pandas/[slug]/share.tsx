@@ -157,12 +157,9 @@ export default function ShareScreen() {
   const { toast, show } = useToast();
 
   async function copy(name: string, slug: string) {
-    try {
-      await copyLink(name, slug);
-      show("链接已复制");
-    } catch {
-      // No toast: the link was not copied.
-    }
+    const copied = await copyLink(name, slug).catch(() => false);
+    if (copied) show("链接已复制");
+    else show("没能复制链接", true);
   }
 
   async function shareImage() {

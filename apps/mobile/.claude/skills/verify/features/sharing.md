@@ -6,7 +6,7 @@ A fan opens a panda's share screen and posts its card. The card carries the phot
 
 - `share-card` is the ordinary card. With no cover photo it shows a 132 px band with the name's first character. A name over eight characters sets the title at 28/34 on at most two lines. The credit takes at most two lines.
 - `share-image` is 分享图片. On web it downloads `zhipanda-<slug>.png`. On a phone it opens the share sheet.
-- `share-copy-link` is 复制链接. It copies `<名字> <链接>` and shows the pill `链接已复制` (role `status`) for about two seconds.
+- `share-copy-link` is 复制链接. It copies `<名字> <链接>` and shows the pill `链接已复制` (role `status`) for about two seconds. If the copy fails it shows `没能复制链接` instead.
 - `share-link` is 分享链接, the system share of the same text.
 - `share-birthday-card` is the 生日卡 with the 封面 / 奖章 / 海报 radio. Its action row reads 分享, 复制链接, 分享链接.
 
@@ -28,8 +28,8 @@ Preconditions:
 
 ## Gotchas
 
-- 复制链接 on web needs a secure context (`localhost` counts) and a user gesture. A copy that fails shows no pill, on purpose.
+- 复制链接 on web needs a secure context (`localhost` counts) and a user gesture. A copy the browser refuses makes `setStringAsync` return false; the screen then shows `没能复制链接` instead of `链接已复制`.
 - The preview serves production slugs, so the fixture panda's `www.zhipanda.com` link does not exist there. The QR is checked by its text, not by opening it.
 - A 生日卡 appears only for a living panda with a full birth date and a whole age from 1 to 99. Any other panda shows the ordinary card even with `?birthday=`.
-- `expo-clipboard` is a native module. A dev client built before this feature has no `ExpoClipboard` and 复制链接 fails there until the client is rebuilt. Web is unaffected.
+- `expo-clipboard` is a native module and the app requires it on import. A dev client built before this feature has no `ExpoClipboard`, so it likely fails at launch, not only at 复制链接. Rebuild the dev client. Web is unaffected.
 - Native image capture (`result: "tmpfile"`) is not exercised by a web pass.
