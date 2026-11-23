@@ -50,6 +50,7 @@ export function PandaThumb({
     >
       {source ? (
         <AvatarImage
+          key={uri}
           source={source}
           resizeMode="cover"
           style={{ width: size, height: size }}

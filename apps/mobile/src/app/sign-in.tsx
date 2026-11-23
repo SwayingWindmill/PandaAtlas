@@ -31,7 +31,7 @@ function Faces({ photos }: { photos: StoryPhoto[] }) {
           className="overflow-hidden rounded-full border-4 border-background bg-secondary"
           style={{ width: FACE + 8, height: FACE + 8, marginLeft: index === 0 ? 0 : OVERLAP, zIndex: photos.length - index }}
         >
-          <PandaThumb pandaId={photo.pandaId} name="" photoUrl={photo.url} size={FACE} />
+          <PandaThumb pandaId={photo.pandaId} name={photo.name} photoUrl={photo.url} size={FACE} />
         </View>
       ))}
     </View>

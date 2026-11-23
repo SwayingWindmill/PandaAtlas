@@ -1,12 +1,11 @@
 import { Image } from "expo-image";
-import { router, Stack, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { HeaderBackButton } from "expo-router/react-navigation";
 import { useQuery } from "@tanstack/react-query";
-import { useRef, useState } from "react";
-import { FlatList, Pressable, View, useWindowDimensions } from "react-native";
+import { useLayoutEffect, useRef, useState } from "react";
+import { FlatList, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Icon } from "@/components/icon";
-import { ChevronLeft } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,7 +30,24 @@ export default function PhotosScreen() {
   }
 
   const current = photos?.[index];
-  const canGoBack = router.canGoBack();
+  const navigation = useNavigation();
+  useLayoutEffect(() => {
+    const needsBack = !navigation.canGoBack();
+    navigation.setOptions({
+      title: "照片",
+      headerLeft: needsBack
+        ? (props: { tintColor?: string }) => (
+            <HeaderBackButton
+              {...props}
+              label="返回"
+              accessibilityLabel="返回"
+              onPress={() => router.replace({ pathname: "/pandas/[slug]", params: { slug } })}
+            />
+          )
+        : undefined,
+    });
+  }, [navigation, slug]);
+
   return (
     <View
       role="dialog"
@@ -41,28 +57,6 @@ export default function PhotosScreen() {
       style={{ paddingBottom: insets.bottom + 12 }}
     >
       {/* The counter lives once, under the bar, where VoiceOver hears it change. */}
-      <Stack.Screen
-        options={{
-          title: "照片",
-          ...(canGoBack
-            ? {}
-            : {
-                headerLeft: () => (
-                  <Pressable
-                    onPress={() => router.replace({ pathname: "/pandas/[slug]", params: { slug } })}
-                    role="button"
-                    accessibilityLabel="返回"
-                    className="min-h-11 min-w-11 flex-row items-center justify-center active:opacity-60"
-                  >
-                    <Icon icon={ChevronLeft} tone="tint" />
-                    <Text variant="body" className="text-primary">
-                      返回
-                    </Text>
-                  </Pressable>
-                ),
-              }),
-        }}
-      />
       {photos && photos.length > 0 ? (
         <Text variant="footnote" className="py-2 text-center text-muted-foreground" accessibilityLiveRegion="polite">
           {index + 1} / {photos.length}
