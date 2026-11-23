@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from "react";
 import { AccessibilityInfo, Linking, Platform, Pressable, FlatList as RNFlatList, StyleSheet, View } from "react-native";
@@ -49,6 +49,7 @@ function useScreenReader(): boolean {
 
 export default function PhotosScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const list = useRef<RNFlatList<Photo>>(null);
   const [pager, setPager] = useState<NativeGesture | null>(null);
@@ -114,7 +115,9 @@ export default function PhotosScreen() {
   }
 
   const reveal = () => setImmersive(false);
-  const close = () => (router.canGoBack() ? router.back() : router.replace(`/pandas/${slug}`));
+  // Opened first in its own stack (a deep link), there is nothing to go back to: land on the panda instead.
+  const close = () =>
+    navigation.canGoBack() ? router.back() : router.replace({ pathname: "/pandas/[slug]", params: { slug } });
   const chrome = {
     opacity: hidden ? 0 : 1,
     transitionProperty: "opacity",
