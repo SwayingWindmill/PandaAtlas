@@ -16,6 +16,7 @@ const panda = (id: string, deceased = false): PandaListItem => ({
   area: null,
   hasFullBleedCover: true,
   terms: [id],
+  initials: [],
 });
 
 describe("storyCandidates", () => {

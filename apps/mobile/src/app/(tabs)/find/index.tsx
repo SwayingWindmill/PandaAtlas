@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
-import { useDeferredValue, useMemo, useState } from "react";
+import { type ComponentProps, useCallback, useDeferredValue, useMemo, useRef, useState } from "react";
 import { FlatList, Platform, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -14,11 +14,14 @@ import { StatusBarCover } from "@/components/status-bar-cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { MapCard } from "@/features/map/map-card";
+import { fameSlugs, wellKnownPandas } from "@/features/onboarding/suggestions";
 import { areaChips } from "@/features/pandas/areas";
 import { SPECIAL_CHIPS, type SpecialChips, isSpecialChip, useSpecialChips } from "@/features/pandas/special-chips";
 import { PandaRow } from "@/features/pandas/panda-row";
-import { usePopularPandas } from "@/features/pandas/popular";
+import { POPULAR_SHOWN, usePopularPandas } from "@/features/pandas/popular";
 import { pandaIndexQueryOptions, searchPandas } from "@/features/pandas/pandas";
+import { RecentSearches, RecentViews } from "@/features/pandas/recent-blocks";
+import { recordSearch } from "@/features/pandas/recent";
 import { SearchField } from "@/features/pandas/search-field";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
@@ -51,6 +54,7 @@ function inChip(panda: { area: string | null; slug: string }, chip: string, spec
  * own; Android and the web keep the in-page field.
  */
 const SYSTEM_SEARCH = Platform.OS === "ios";
+type SearchBarRef = NonNullable<ComponentProps<typeof Stack.SearchBar>["ref"]>;
 /** Ways to look pandas up besides the search: the map, then 查关系. */
 function FindTools() {
   return (
@@ -75,15 +79,26 @@ export default function FindScreen() {
   const [area, setArea] = useState("全部");
   const special = useSpecialChips();
   const chips = useMemo(() => (pandas ? findChips(pandas, special) : []), [pandas, special]);
+  const { rows: popular } = usePopularPandas(pandas);
   const results = useMemo(() => {
-    const found = pandas ? searchPandas(pandas, deferredQuery) : [];
+    const found = pandas ? searchPandas(pandas, deferredQuery, fameSlugs(popular)) : [];
     return found.filter((panda) => inChip(panda, area, special));
-  }, [pandas, deferredQuery, area, special]);
+  }, [pandas, deferredQuery, popular, area, special]);
   const browsing = !deferredQuery.trim() && area === "全部";
-  const popular = usePopularPandas(pandas);
+  const searchBarRef: SearchBarRef = useRef(null);
+  const noResultRows = useMemo(
+    () => (popular.length > 0 ? popular : wellKnownPandas(pandas ?? []).slice(0, POPULAR_SHOWN)),
+    [popular, pandas],
+  );
+  const rememberSearch = useCallback(() => void recordSearch(query), [query]);
+  function pickSearch(text: string) {
+    setQuery(text);
+    searchBarRef.current?.setText(text);
+  }
 
   const searchBar = SYSTEM_SEARCH ? (
     <Stack.SearchBar
+      ref={searchBarRef}
       placement="stacked"
       hideWhenScrolling={false}
       obscureBackground={false}
@@ -105,7 +120,13 @@ export default function FindScreen() {
           data={results}
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => (
-            <PandaRow item={item} first={index === 0} last={index === results.length - 1} />
+            <PandaRow
+              item={item}
+              first={index === 0}
+              last={index === results.length - 1}
+              highlight={deferredQuery}
+              onOpen={rememberSearch}
+            />
           )}
           className="flex-1 bg-background"
           contentInsetAdjustmentBehavior="automatic"
@@ -131,6 +152,8 @@ export default function FindScreen() {
                   ))}
                 </ScrollView>
               ) : null}
+              {browsing ? <RecentViews pandas={pandas} /> : null}
+              {browsing ? <RecentSearches onPick={pickSearch} /> : null}
               {browsing ? <FindTools /> : null}
               {browsing && popular.length > 0 ? (
                 <View className="gap-stack-tight">
@@ -154,8 +177,20 @@ export default function FindScreen() {
                 {deferredQuery.trim() ? `没有找到「${deferredQuery.trim()}」` : "这里还没有熊猫"}
               </Text>
               <Text variant="subheadline" className="text-center text-muted-foreground">
-                试试熊猫的名字，或换一个地方。
+                {deferredQuery.trim()
+                  ? area === "全部"
+                    ? "试试拼音首字母，比如 fb；或换一个场馆名。"
+                    : "试试选「全部」，或换一个地区。"
+                  : "试试熊猫的名字，或换一个地方。"}
               </Text>
+              {deferredQuery.trim() && noResultRows.length > 0 ? (
+                <View className="mt-stack w-full gap-stack-tight">
+                  <SectionHeader title="大家常看" />
+                  {noResultRows.map((item, index) => (
+                    <PandaRow key={item.id} item={item} first={index === 0} last={index === noResultRows.length - 1} />
+                  ))}
+                </View>
+              ) : null}
             </View>
           }
         />
