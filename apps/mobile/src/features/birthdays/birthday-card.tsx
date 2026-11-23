@@ -4,6 +4,7 @@ import Svg, { Defs, LinearGradient, Pattern, RadialGradient, Rect, Stop } from "
 
 import { Icon } from "@/components/icon";
 import { Cake } from "@/components/icons";
+import { QrCode } from "@/components/qr-code";
 import { RemoteImage } from "@/components/remote-image";
 import { Text } from "@/components/ui/text";
 import { dayHeading } from "@/features/calendar/calendar";
@@ -31,6 +32,8 @@ export interface BirthdayCardData {
   date: string;
   inDays: number;
   sex: "male" | "female" | null;
+  /** The panda's page, which the QR code on the card opens. */
+  url: string;
   photo: { url: string; credit: string | null } | null;
 }
 
@@ -171,17 +174,20 @@ function Cover({ card, u }: { card: BirthdayCardData; u: number }) {
           {[dotted(card.birthDate), card.place].filter(Boolean).join(" · ")}
         </T>
         <View
-          className="flex-row items-center justify-between"
+          className="flex-row items-end justify-between"
           style={{ gap: 12 * u, marginTop: 16 * u, paddingTop: 12 * u, borderTopWidth: 0.5, borderColor: BC.rule }}
         >
-          <T u={u} size={13} className="font-bold" style={{ color: WHITE }}>
-            吱熊猫
-          </T>
-          {card.photo?.credit ? (
-            <T u={u} size={11} lines={2} className="shrink text-right" style={{ color: WHITE, opacity: 0.8 }}>
-              {card.photo.credit}
+          <View className="shrink" style={{ gap: 2 * u }}>
+            <T u={u} size={13} className="font-bold" style={{ color: WHITE }}>
+              吱熊猫
             </T>
-          ) : null}
+            {card.photo?.credit ? (
+              <T u={u} size={11} lines={2} style={{ color: WHITE, opacity: 0.8 }}>
+                {card.photo.credit}
+              </T>
+            ) : null}
+          </View>
+          <QrCode value={card.url} size={BC.qr * u} />
         </View>
       </View>
     </View>
@@ -191,7 +197,7 @@ function Cover({ card, u }: { card: BirthdayCardData; u: number }) {
 /** B 奖章: the photo in a silver ring, the age on a medal under it, the dates between birth and this birthday. */
 function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
   const id = useId().replaceAll(":", "");
-  const ring = 212 * u;
+  const ring = 200 * u;
   const badge = 76 * u;
   return (
     <View className="absolute inset-0 items-center">
@@ -205,7 +211,7 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
         </Defs>
         <Rect x="0" y="0" width="1" height="1" fill={`url(#bg${id})`} />
       </Svg>
-      <View style={{ marginTop: 44 * u, width: ring, height: ring, borderRadius: ring / 2, padding: 7 * u, overflow: "hidden" }}>
+      <View style={{ marginTop: 40 * u, width: ring, height: ring, borderRadius: ring / 2, padding: 7 * u, overflow: "hidden" }}>
         <Svg style={{ position: "absolute", inset: 0 }} width="100%" height="100%" viewBox="0 0 1 1">
           <Defs>
             <LinearGradient id={`ring${id}`} x1="0" y1="0" x2="1" y2="1">
@@ -259,17 +265,20 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
         </T>
       </View>
       <View
-        className="absolute flex-row items-center justify-between"
-        style={{ bottom: 18 * u, left: 22 * u, right: 22 * u, gap: 12 * u }}
+        className="absolute flex-row items-end justify-between"
+        style={{ bottom: 12 * u, left: 22 * u, right: 22 * u, gap: 12 * u }}
       >
-        <T u={u} size={13} className="font-bold" style={{ color: WHITE }}>
-          吱熊猫
-        </T>
-        {card.photo?.credit ? (
-          <T u={u} size={11} lines={2} className="shrink text-right" style={{ color: WHITE, opacity: 0.5 }}>
-            {card.photo.credit}
+        <View className="shrink" style={{ gap: 2 * u }}>
+          <T u={u} size={13} className="font-bold" style={{ color: WHITE }}>
+            吱熊猫
           </T>
-        ) : null}
+          {card.photo?.credit ? (
+            <T u={u} size={11} lines={2} style={{ color: WHITE, opacity: 0.5 }}>
+              {card.photo.credit}
+            </T>
+          ) : null}
+        </View>
+        <QrCode value={card.url} size={BC.qr * u} />
       </View>
     </View>
   );
@@ -351,7 +360,10 @@ function Poster({ card, u }: { card: BirthdayCardData; u: number }) {
           </T>
         </View>
       </View>
-      <View className="absolute items-end" style={{ right: 16 * u, bottom: 22 * u }}>
+      <View className="absolute" style={{ right: 16 * u, bottom: 16 * u }}>
+        <QrCode value={card.url} size={BC.qr * u} />
+      </View>
+      <View className="absolute flex-row items-baseline" style={{ right: 16 * u, bottom: 16 * u + BC.qr * u + 4 * u, gap: 4 * u }}>
         <T u={u} size={20} className="font-rounded font-bold tabular-nums" style={{ color: sky[600] }}>
           {`${Number(m)}.${Number(d)}`}
         </T>

@@ -26,6 +26,7 @@ export { default as CircleQuestionMark } from "lucide-react-native/icons/circle-
 export { default as Clock } from "lucide-react-native/icons/clock";
 export { default as Compass } from "lucide-react-native/icons/compass";
 export { default as Columns } from "lucide-react-native/icons/columns-3";
+export { default as Copy } from "lucide-react-native/icons/copy";
 export { default as Database } from "lucide-react-native/icons/database";
 export { default as Download } from "lucide-react-native/icons/download";
 export { default as Ellipsis } from "lucide-react-native/icons/ellipsis";

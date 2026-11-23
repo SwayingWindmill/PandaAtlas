@@ -414,6 +414,16 @@ export const component = {
   statusDot: 8,
   /** A time band's track and its "now" marker. */
   timeBand: { track: 8, marker: 14 },
+  /** The ordinary share card's image: sizes that are not text styles because the card is a picture. */
+  shareCard: {
+    /** The band that stands in for a missing cover photo. */
+    coverlessBand: 132,
+    /** The name's first character in that band. */
+    monogram: { size: 64, lineHeight: 72 },
+    /** The display title of a name too long for two lines at display size. */
+    longName: { size: 28, lineHeight: 34 },
+    qr: 72,
+  },
   /**
    * 生日卡: a saved image, so it keeps one look in light and dark. Drawn on a 360×480 artboard and scaled
    * to its width; ink, white and sky come from the palette, these are the few extra stops it needs.
@@ -421,6 +431,8 @@ export const component = {
   birthdayCard: {
     artboard: { width: 360, height: 480 },
     radius: 28,
+    /** The QR code's side in artboard units, quiet zone included; it scales with the card like the type. */
+    qr: 80,
     rule: alpha("white", 0.25),
     /** B 奖章's radial background: lit centre to deep edge around ink 950. */
     medalLight: "#26262A",
