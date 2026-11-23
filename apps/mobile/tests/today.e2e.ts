@@ -65,6 +65,7 @@ test("sounds section switches active clip and opens 声音图鉴", async ({ app,
 
   await screen.getByRole("link", "声音图鉴").tap();
   await expect(screen.getByRole("heading", "声音图鉴")).toBeVisible();
-  await expect(screen.getByText("实听原声")).toBeVisible();
-  await expect(screen.getByText("大熊猫如何发声")).toBeVisible();
+  await expect(screen.getByText("实听原声", { exact: false })).toBeVisible();
+  await expect(screen.getByRole("button", "播放大熊猫轻声鸣叫")).toBeVisible();
+  await expect(screen.getByRole("heading", "大熊猫如何发声")).toBeVisible();
 });
