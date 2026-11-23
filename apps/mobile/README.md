@@ -16,6 +16,9 @@ No Mac or Xcode is needed for this. Code changes reload on the phone as you save
 The app talks to `https://api.zhipanda.com` by default. To point it at a local API, set
 `EXPO_PUBLIC_API_BASE_URL` (for example `http://192.168.1.20:3000`) before starting.
 
+Crash reports go to Sentry only when `EXPO_PUBLIC_SENTRY_DSN` is set at build time. Without it, local
+runs and e2e send nothing.
+
 ## Styling and components
 
 Screens are styled with Tailwind class names through [Uniwind](https://docs.uniwind.dev/)
