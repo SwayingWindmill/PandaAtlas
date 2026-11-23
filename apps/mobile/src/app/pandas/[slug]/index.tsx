@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useCSSVariable } from "uniwind";
@@ -17,6 +17,7 @@ import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { CompareRows } from "@/features/compare/compare-rows";
 import { PandaActions } from "@/features/engagement/panda-actions";
+import { recordView } from "@/features/pandas/recent";
 import { profileQueryOptions } from "@/features/pandas/profile";
 import { FamilyTab } from "@/features/pandas/profile-family-tab";
 import {
@@ -50,6 +51,10 @@ export default function ProfileScreen() {
   const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
   const [tab, setTab] = useState<Tab>(() => TABS.find((item) => item.value === opened)?.value ?? "overview");
   const page = String(useCSSVariable("--color-background"));
+  const viewedSlug = profile?.slug;
+  useEffect(() => {
+    if (viewedSlug) void recordView(viewedSlug);
+  }, [viewedSlug]);
 
   if (!profile) {
     return (

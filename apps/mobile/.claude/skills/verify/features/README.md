@@ -35,3 +35,4 @@ Each feature file starts with an H1 title and one paragraph on the user-visible 
 - [Collections and visits](./collections-visits.md) covers making, renaming, emptying and deleting a collection, and recording a visit.
 - [Account and data](./account-privacy.md) covers data export, account deletion confirmation, and user-initiated email OTP re-verification on recent-auth expiry.
 - [Error pages](./error-pages.md) covers 找不到页面 for an unknown link and the root error page when a screen throws.
+- [Find pandas](./find-pandas.md) covers 找熊猫 search by name and pinyin initials, 最近看过, 最近搜索, match highlight, the no-results suggestions and the welcome picks.
