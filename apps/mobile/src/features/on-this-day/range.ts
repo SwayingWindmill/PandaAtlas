@@ -39,9 +39,9 @@ export function titleOn(memory: Pick<Memory, "text" | "subject">, day: string, t
   return /^[\d]/.test(sentence) ? `${name} ${sentence}` : `${name}${sentence}`;
 }
 
-/** "11.05 · 1999": the day in the range and the year it happened. */
+/** "11.05　1999": the day in the range and the year it happened. */
 export function datePart(memory: Pick<Memory, "date">, day: string): string {
-  return `${day.slice(5, 7)}.${day.slice(8, 10)} · ${memory.date.slice(0, 4)}`;
+  return `${day.slice(5, 7)}.${day.slice(8, 10)}　${memory.date.slice(0, 4)}`;
 }
 
 /** "27 周年" for an anniversary; nothing for a birthday, which already counts its years, or a cub's day. */

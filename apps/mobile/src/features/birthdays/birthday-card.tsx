@@ -62,7 +62,7 @@ function dotted(date: string) {
 function birthLine(card: BirthdayCardData) {
   const [y, m, d] = card.birthDate.split("-");
   const sex = card.sex === "male" ? "雄" : card.sex === "female" ? "雌" : null;
-  return [`${y} 年 ${Number(m)} 月 ${Number(d)} 日出生`, sex].filter(Boolean).join(" · ");
+  return [`${y} 年 ${Number(m)} 月 ${Number(d)} 日出生`, sex].filter(Boolean).join("　");
 }
 
 function when(card: BirthdayCardData) {
@@ -171,7 +171,7 @@ function Cover({ card, u }: { card: BirthdayCardData; u: number }) {
           ) : null}
         </View>
         <T u={u} size={13} lines={1} style={{ color: WHITE, opacity: 0.75, marginTop: 6 * u }}>
-          {[dotted(card.birthDate), card.place].filter(Boolean).join(" · ")}
+          {[dotted(card.birthDate), card.place].filter(Boolean).join("　")}
         </T>
         <View
           className="flex-row items-end justify-between"
@@ -356,7 +356,7 @@ function Poster({ card, u }: { card: BirthdayCardData; u: number }) {
             {" 岁"}
           </T>
           <T u={u} size={12} lines={2} style={{ color: gray[500], marginTop: 4 * u }}>
-            {["生日快乐", card.photo?.credit].filter(Boolean).join(" · ")}
+            {["生日快乐", card.photo?.credit].filter(Boolean).join("　")}
           </T>
         </View>
       </View>

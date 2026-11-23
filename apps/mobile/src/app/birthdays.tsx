@@ -100,7 +100,7 @@ export default function BirthdayWeekScreen() {
             <ScreenState message="接下来 7 天没有记下的生日。有确切出生日期的熊猫，会在生日前一周出现在这里。" />
           ) : (
             byDay(week).map(({ date, inDays, entries }) => (
-              <ListSection key={date} title={`${whenLabel(inDays)} · ${dayHeading(date)}`}>
+              <ListSection key={date} title={`${whenLabel(inDays)}　${dayHeading(date)}`}>
                 {entries.map((entry, index) => (
                   <ListCell
                     key={entry.pandaId}
@@ -132,7 +132,7 @@ export default function BirthdayWeekScreen() {
                   <ListCell
                     key={ev.url}
                     label={ev.title}
-                    detail={`${ev.source} · ${ev.date}`}
+                    detail={`${ev.source}　${ev.date}`}
                     onPress={() => void Linking.openURL(ev.url)}
                     accessibilityHint="在浏览器打开官方公告"
                     last={i === events.length - 1}

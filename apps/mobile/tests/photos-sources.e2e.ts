@@ -29,6 +29,24 @@ test("a profile lists its sources and opens one in the browser", async ({ app, s
   await recordOpenedTabs(browser);
   await app.open(`/pandas/${panda.slug}`);
   await expect(screen.getByRole("heading", "资料来源")).toBeVisible();
+  await expect(screen.getByRole("link", /^E2E Archive，End-to-end fixture source，/)).toBeVisible();
   await screen.getByRole("link", /^E2E Archive，End-to-end fixture source，/).tap();
   await expect.poll(async () => (await openedTabs(browser)).some((url) => url.includes("example.test/e2e/"))).toBe(true);
+});
+
+test("tapping a specific photo opens the viewer at that index and supports zooming", async ({ app, screen }) => {
+  const { panda } = fixture();
+  await app.open(`/pandas/${panda.slug}`);
+  await screen.getByRole("radio", "照片").tap();
+  await screen.getByRole("link", "照片 2").tap();
+
+  const viewer = screen.getByRole("dialog", "照片");
+  await expect(viewer.getByText("2 / 2")).toBeVisible();
+  await expect(viewer.getByText("照片 E2E Second Photographer / CC BY 4.0，CC-BY-4.0")).toBeVisible();
+  await expect(viewer.getByRole("button", "下一张")).toBeDisabled();
+
+  await viewer.getByRole("button", "放大照片").tap();
+  await expect(viewer.getByRole("button", "还原照片大小")).toBeVisible();
+  await viewer.getByRole("button", "还原照片大小").tap();
+  await expect(viewer.getByRole("button", "放大照片")).toBeVisible();
 });

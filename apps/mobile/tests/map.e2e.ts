@@ -6,8 +6,7 @@ import { test } from "./support/test.ts";
 test("the map shows a zoo from its marker and from the list, and lists a place with no coordinates", async ({ app, screen }) => {
   const { zoo } = fixture();
   const place = `测试地点${runSuffix()}`;
-  await app.open("/find");
-  await screen.getByRole("link", /^熊猫地图/).tap();
+  await app.open("/map");
   await expect(screen.getByRole("tab", /^全部 /)).toBeVisible();
   await expect(screen.getByRole("tab", "野生区")).toBeVisible();
   const map = screen.getByTestId("panda-world-map");

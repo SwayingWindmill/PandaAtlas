@@ -18,12 +18,29 @@ function creditsOf(photos: Photo[]) {
   return names.length > 0 ? `© ${names.join("、")}` : null;
 }
 
-function PhotoCell({ photo, size, index, slug }: { photo: Photo; size: number; index: number; slug: string }) {
+function PhotoCell({
+  photo,
+  size,
+  gridIndex,
+  targetIndex,
+  slug,
+}: {
+  photo: Photo;
+  size: number;
+  gridIndex: number;
+  targetIndex: number;
+  slug: string;
+}) {
   return (
     <Pressable
-      onPress={() => router.push({ pathname: "/pandas/[slug]/photos", params: { slug } })}
+      onPress={() =>
+        router.push({
+          pathname: "/pandas/[slug]/photos",
+          params: { slug, index: String(targetIndex) },
+        })
+      }
       role="link"
-      accessibilityLabel={`照片 ${index + 1}`}
+      accessibilityLabel={`照片 ${gridIndex + 1}`}
     >
       <RemoteImage source={photo.url} style={{ width: size, height: size }} contentFit="cover" accessible={false} />
     </Pressable>
@@ -42,6 +59,7 @@ export function PhotosTab({ profile }: { profile: Profile }) {
     );
   }
   const photos = source === ALL ? profile.photos : profile.photos.filter((photo) => photo.source === source);
+  const fullIndexById = new Map(profile.photos.map((photo, idx) => [photo.id, idx]));
   const cell = Math.floor((width - GRID_GAP * 2) / 3);
   const lead = cell * 2 + GRID_GAP;
   const [first, second, third, ...rest] = photos;
@@ -53,7 +71,7 @@ export function PhotosTab({ profile }: { profile: Profile }) {
           {`${photos.length} 张`}
         </Text>
         {archives.length > 0 ? (
-          <View className="flex-row gap-2">
+          <View className="flex-row flex-wrap gap-2">
             {[ALL, ...archives].map((name) => (
               <Chip key={name} label={name} appearance="ink" selected={source === name} onPress={() => setSource(name)} />
             ))}
@@ -67,17 +85,46 @@ export function PhotosTab({ profile }: { profile: Profile }) {
       >
         {first && cell > 0 ? (
           <View className="flex-row" style={{ gap: GRID_GAP }}>
-            <PhotoCell photo={first} size={lead} index={0} slug={profile.slug} />
+            <PhotoCell
+              photo={first}
+              size={lead}
+              gridIndex={0}
+              targetIndex={fullIndexById.get(first.id) ?? 0}
+              slug={profile.slug}
+            />
             <View style={{ gap: GRID_GAP }}>
-              {second ? <PhotoCell photo={second} size={cell} index={1} slug={profile.slug} /> : null}
-              {third ? <PhotoCell photo={third} size={cell} index={2} slug={profile.slug} /> : null}
+              {second ? (
+                <PhotoCell
+                  photo={second}
+                  size={cell}
+                  gridIndex={1}
+                  targetIndex={fullIndexById.get(second.id) ?? 1}
+                  slug={profile.slug}
+                />
+              ) : null}
+              {third ? (
+                <PhotoCell
+                  photo={third}
+                  size={cell}
+                  gridIndex={2}
+                  targetIndex={fullIndexById.get(third.id) ?? 2}
+                  slug={profile.slug}
+                />
+              ) : null}
             </View>
           </View>
         ) : null}
         {rest.length > 0 && cell > 0 ? (
           <View className="flex-row flex-wrap" style={{ gap: GRID_GAP }}>
             {rest.map((photo, index) => (
-              <PhotoCell key={photo.id} photo={photo} size={cell} index={index + 3} slug={profile.slug} />
+              <PhotoCell
+                key={photo.id}
+                photo={photo}
+                size={cell}
+                gridIndex={index + 3}
+                targetIndex={fullIndexById.get(photo.id) ?? index + 3}
+                slug={profile.slug}
+              />
             ))}
           </View>
         ) : null}

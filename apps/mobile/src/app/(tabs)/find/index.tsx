@@ -1,22 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { type ComponentProps, useCallback, useDeferredValue, useMemo, useRef, useState } from "react";
-import { FlatList, Platform, ScrollView, View } from "react-native";
+import { FlatList, Platform, Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Chip } from "@/components/chip";
-import { ListCell, ListSection } from "@/components/grouped-list";
-import { Network } from "@/components/icons";
+import { Chevron, useStacked } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
+import { type LucideIcon, Network, ScanFace } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { BARLESS_TOP, ROOT_TITLE_IN_COLUMN } from "@/components/page";
 import { SectionHeader } from "@/components/section-header";
 import { StatusBarCover } from "@/components/status-bar-cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { MapCard } from "@/features/map/map-card";
 import { fameSlugs, wellKnownPandas } from "@/features/onboarding/suggestions";
-import { areaChips } from "@/features/pandas/areas";
-import { SPECIAL_CHIPS, type SpecialChips, isSpecialChip, useSpecialChips } from "@/features/pandas/special-chips";
+import { buildFindChips, matchesFindChip } from "@/features/pandas/find-filter";
+import { useSpecialChips } from "@/features/pandas/special-chips";
 import { PandaRow } from "@/features/pandas/panda-row";
 import { POPULAR_SHOWN, usePopularPandas } from "@/features/pandas/popular";
 import { pandaIndexQueryOptions, searchPandas } from "@/features/pandas/pandas";
@@ -26,44 +26,61 @@ import { SearchField } from "@/features/pandas/search-field";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { PAGE_COLUMN } from "@/lib/surface";
+import { cn } from "@/lib/utils";
 
-/**
- * 在中国 and 在海外 first, then each area in China that has a panda. Overseas cities stay under 在海外,
- * so the row stays short.
- */
-function findChips(pandas: { area: string | null }[], special: SpecialChips): string[] {
-  const areas = areaChips(pandas);
-  const china = areas.filter((area) => area !== "海外");
-  return [
-    ...(china.length > 0 ? ["在中国"] : []),
-    ...(areas.includes("海外") ? ["在海外"] : []),
-    ...SPECIAL_CHIPS.filter((chip) => special[chip].size > 0),
-    ...china,
-  ];
-}
-
-function inChip(panda: { area: string | null; slug: string }, chip: string, special: SpecialChips): boolean {
-  const { area } = panda;
-  if (chip === "全部") return true;
-  if (isSpecialChip(chip)) return special[chip].has(panda.slug);
-  if (chip === "在海外") return area === "海外";
-  if (chip === "在中国") return area !== null && area !== "海外";
-  return area === chip;
-}
 /**
  * iOS searches from the system search bar under the large title, which the bar and its Liquid Glass
  * own; Android and the web keep the in-page field.
  */
 const SYSTEM_SEARCH = Platform.OS === "ios";
 type SearchBarRef = NonNullable<ComponentProps<typeof Stack.SearchBar>["ref"]>;
-/** Ways to look pandas up besides the search: the map, then 查关系. */
-function FindTools() {
+
+function FindToolCard({
+  href,
+  icon,
+  title,
+  subtitle,
+  stacked,
+}: {
+  href: "/relationship" | "/learn";
+  icon: LucideIcon;
+  title: string;
+  subtitle: string;
+  stacked: boolean;
+}) {
   return (
-    <View className="gap-stack-tight">
-      <MapCard />
-      <ListSection>
-        <ListCell icon={Network} label="查关系" detail="两只熊猫是什么亲戚" href="/relationship" last />
-      </ListSection>
+    <Pressable
+      role="button"
+      accessibilityLabel={title}
+      accessibilityHint={subtitle}
+      onPress={() => router.push(href)}
+      className={cn(
+        "min-h-11 flex-row items-center gap-2.5 rounded-group bg-card px-3 py-3 active:opacity-75",
+        !stacked && "min-w-0 flex-1",
+      )}
+      style={{ borderCurve: "continuous" }}
+    >
+      <Icon icon={icon} size="body" tone="tint" strokeWidth={2} />
+      <View className="min-w-0 flex-1 gap-hair-gap">
+        <Text variant="headline" numberOfLines={stacked ? undefined : 2}>
+          {title}
+        </Text>
+        <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : 2}>
+          {subtitle}
+        </Text>
+      </View>
+      <Chevron />
+    </Pressable>
+  );
+}
+
+/** Focused discovery shortcuts without repeating the Map tab. */
+function FindTools() {
+  const stacked = useStacked();
+  return (
+    <View className={stacked ? "gap-2.5" : "flex-row gap-2.5"}>
+      <FindToolCard href="/relationship" icon={Network} title="查关系" subtitle="谱系亲缘链" stacked={stacked} />
+      <FindToolCard href="/learn" icon={ScanFace} title="认脸图鉴" subtitle="眼斑与脸型" stacked={stacked} />
     </View>
   );
 }
@@ -79,11 +96,11 @@ export default function FindScreen() {
   const deferredQuery = useDeferredValue(query);
   const [area, setArea] = useState("全部");
   const special = useSpecialChips();
-  const chips = useMemo(() => (pandas ? findChips(pandas, special) : []), [pandas, special]);
+  const chips = useMemo(() => (pandas ? buildFindChips(pandas, special) : []), [pandas, special]);
   const { rows: popular } = usePopularPandas(pandas);
   const results = useMemo(() => {
     const found = pandas ? searchPandas(pandas, deferredQuery, fameSlugs(popular)) : [];
-    return found.filter((panda) => inChip(panda, area, special));
+    return found.filter((panda) => matchesFindChip(panda, area, special));
   }, [pandas, deferredQuery, popular, area, special]);
   const browsing = !deferredQuery.trim() && area === "全部";
   const searchBarRef: SearchBarRef = useRef(null);
@@ -156,14 +173,6 @@ export default function FindScreen() {
               {browsing ? <RecentViews pandas={pandas} /> : null}
               {browsing ? <RecentSearches onPick={pickSearch} /> : null}
               {browsing ? <FindTools /> : null}
-              {browsing && popular.length > 0 ? (
-                <View className="gap-stack-tight">
-                  <SectionHeader title="大家常看" />
-                  {popular.map((item, index) => (
-                    <PandaRow key={item.id} item={item} first={index === 0} last={index === popular.length - 1} />
-                  ))}
-                </View>
-              ) : null}
               {results.length > 0 ? (
                 <SectionHeader
                   title={browsing ? "全部熊猫" : area !== "全部" && !deferredQuery.trim() ? area : "搜索结果"}

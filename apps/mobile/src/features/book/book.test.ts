@@ -38,7 +38,7 @@ describe("buildLifeList", () => {
     const [mengLan, fuBao, heHua] = list.entries;
     expect(entryDetail(heHua!, names)).toBe("7月12日在成都基地见过");
     expect(entryDetail(fuBao!, names)).toBe("7月20日每日一猫认出，遇到 3 次");
-    expect(entryDetail(mengLan!, names)).toBe("7月30日见过 · 9月9日猜熊猫认出");
+    expect(entryDetail(mengLan!, names)).toBe("7月30日见过　9月9日猜熊猫认出");
     expect(monthDay("2026-01-05")).toBe("1月5日");
   });
 });

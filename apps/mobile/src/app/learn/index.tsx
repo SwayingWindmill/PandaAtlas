@@ -1,71 +1,43 @@
 import { useQuery } from "@tanstack/react-query";
 import { router, Stack } from "expo-router";
-import { ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { ListCell, ListSection } from "@/components/grouped-list";
-import { BookA, type LucideIcon, MessageCircleQuestion, Newspaper, ScanFace } from "@/components/icons";
+import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
+import { MessageCircleQuestion } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { NO_WEB_BAR_TITLE } from "@/components/page";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { RemoteImage } from "@/components/remote-image";
 import { ScreenState } from "@/components/screen-state";
+import { Scrim } from "@/components/scrim";
 import { SectionHeader } from "@/components/section-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
+import { askStatusQueryOptions } from "@/features/ask/ask";
 import {
-  articleHero,
   type CatalogArticle,
+  type CatalogFaceGuide,
+  type LearningPanda,
+  articleHero,
   learningText,
   readingMinutes,
+  visibleTips,
 } from "@/features/learning/catalog";
-import { askStatusQueryOptions } from "@/features/ask/ask";
 import { FeedArticle, openArticle } from "@/features/learning/feed-article";
-import { PandaPhoto } from "@/features/learning/panda-photo";
 import { useLearningCatalog, useLearningPandas } from "@/features/learning/use-catalog";
 import { useAccount } from "@/features/session/account";
-import { RADIUS } from "@/lib/surface";
+import { usePandaCover } from "@/lib/covers";
+import { PAGE_COLUMN, RADIUS } from "@/lib/surface";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 const CATEGORY_ORDER = ["外形与识别", "食性", "繁殖与成长", "保护"];
 const TITLE = "认识大熊猫";
 
-/** The shelves 认识大熊猫 shows, in page order. A shelf with nothing published is listed under 还在写 instead. */
-type Shelf = "articles" | "faces" | "terms";
-const SHELF_NAME: Record<Shelf, { label: string; icon: LucideIcon }> = {
-  articles: { label: "科普文章", icon: Newspaper },
-  faces: { label: "认脸指南", icon: ScanFace },
-  terms: { label: "名词解释", icon: BookA },
-};
-
-/**
- * The shelves still being written: one quiet group at the end, a row per shelf, so what is ready leads the page
- * and nothing stands empty in its place. The words name the shelf only; the app writes no 科普 of its own.
- */
-function StillWriting({ shelves }: { shelves: Shelf[] }) {
-  if (shelves.length === 0) return null;
-  return (
-    <View className="px-inset">
-      <ListSection title="还在写" footer="写好后会出现在这里。">
-        {shelves.map((shelf, index) => (
-          <ListCell
-            key={shelf}
-            icon={SHELF_NAME[shelf].icon}
-            label={SHELF_NAME[shelf].label}
-            accessibilityLabel={`${SHELF_NAME[shelf].label}，还在写`}
-            last={index === shelves.length - 1}
-          />
-        ))}
-      </ListSection>
-    </View>
-  );
-}
-
-
-/** The large title kept in the column, as 科普 does on every platform. */
 /**
  * 问问熊猫 shows only to a signed-in fan while the API has it switched on: signed out, the app cannot know
  * whether it is open, and an entry that leads to "closed" is worse than none.
@@ -77,20 +49,99 @@ function AskEntry() {
   const enabled = accountId !== null && status.data?.enabled === true;
   if (!enabled) return null;
   return (
-    <View className="px-inset">
-      <ListSection>
-        <ListCell icon={MessageCircleQuestion} label="问问熊猫" detail="用已发布的科普回答，附上出处" href="/learn/ask" last />
-      </ListSection>
+    <View className="px-gutter">
+      <Pressable
+        role="link"
+        accessibilityLabel="问问熊猫，基于已核实科普回答"
+        onPress={() => router.push("/learn/ask")}
+        className="min-h-11 flex-row items-center gap-row rounded-group bg-card px-4 py-3.5 active:opacity-80"
+        style={{ borderCurve: "continuous" }}
+      >
+        <Icon icon={MessageCircleQuestion} size="body" tone="tint" strokeWidth={2} />
+        <View className="min-w-0 flex-1 gap-hair-gap">
+          <Text variant="headline" className="text-primary">
+            问问熊猫
+          </Text>
+          <Text variant="footnote" className="text-muted-foreground">
+            基于已核实科普回答
+          </Text>
+        </View>
+        <Chevron />
+      </Pressable>
     </View>
   );
 }
 
 function Masthead({ count }: { count?: number }) {
+  const stacked = useStacked();
   return (
-    <View className="gap-hair-gap px-inset">
+    <View className={stacked ? "gap-hair-gap px-gutter" : "flex-row items-baseline justify-between gap-row px-gutter"}>
       <Text variant="display">{TITLE}</Text>
-      {count ? <Text variant="subheadline" className="text-muted-foreground">{`${count} 篇科普`}</Text> : null}
+      {count ? (
+        <Text variant="subheadline" className="text-muted-foreground tabular-nums">
+          {`${count} 篇科普`}
+        </Text>
+      ) : null}
     </View>
+  );
+}
+
+function FaceGuideCard({
+  guide,
+  panda,
+}: {
+  guide: CatalogFaceGuide;
+  panda: LearningPanda | null;
+}) {
+  const cover = usePandaCover(panda?.id);
+  const title = learningText(guide.title);
+  const tip = visibleTips(guide.tips)[0];
+  return (
+    <PressScale
+      accessibilityRole="button"
+      accessibilityLabel={`认脸指南：${title}`}
+      onPress={() => router.push({ pathname: "/learn/faces/[slug]", params: { slug: guide.slug } })}
+      className="w-36 overflow-hidden rounded-tile bg-media-placeholder"
+      style={{ aspectRatio: 4 / 5, borderCurve: "continuous" }}
+    >
+      {cover ? (
+        <RemoteImage
+          source={cover}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+          contentFit="cover"
+          accessible={false}
+          transition={200}
+        />
+      ) : (
+        <View className="flex-1 items-center justify-center bg-muted pb-12">
+          <Text variant="footnote" className="text-muted-foreground">
+            暂无照片
+          </Text>
+        </View>
+      )}
+      {cover ? <Scrim id={`face-guide-${guide.slug}`} height="55%" /> : null}
+      <View className="absolute right-0 bottom-0 left-0 gap-hair-gap p-3">
+        <Text
+          variant="headline"
+          role="none"
+          className={cover ? "text-on-media" : "text-foreground"}
+          numberOfLines={2}
+        >
+          {title}
+        </Text>
+        {tip ? (
+          <Text
+            variant="footnote"
+            role="none"
+            className={cover ? "text-on-media/85" : "text-muted-foreground"}
+            numberOfLines={1}
+          >
+            {learningText(tip.label)}
+          </Text>
+        ) : null}
+      </View>
+      <PhotoOutline radius={RADIUS.tile} />
+    </PressScale>
   );
 }
 
@@ -102,37 +153,41 @@ export default function LearnScreen() {
 
   if (state.status !== "ready") {
     return (
-      <View className="flex-1 gap-section bg-background pt-stack-tight">
+      <View className="flex-1 bg-background pt-stack-tight">
         {bar}
-        <Masthead />
-        {state.status === "loading" ? (
-          <View className="gap-row px-inset" accessibilityLabel="正在加载">
-            <Skeleton className="h-72 w-full rounded-card" />
-            <Skeleton className="h-28 w-full rounded-group" />
-          </View>
-        ) : null}
-        {state.status === "failed" ? <LoadFailed message="科普暂时打不开。" onRetry={reload} /> : null}
+        <View style={PAGE_COLUMN} className="w-full flex-1 gap-section">
+          <Masthead />
+          {state.status === "loading" ? (
+            <View className="gap-row px-gutter" accessibilityLabel="正在加载">
+              <Skeleton className="h-72 w-full rounded-card" />
+              <Skeleton className="h-28 w-full rounded-group" />
+            </View>
+          ) : null}
+          {state.status === "failed" ? (
+            <LoadFailed message="科普暂时打不开。" onRetry={reload} className="mx-gutter" />
+          ) : null}
+        </View>
       </View>
     );
   }
 
   const { catalog } = state;
-  const ready: Record<Shelf, boolean> = {
-    articles: catalog.articles.length > 0,
-    faces: catalog.faceGuides.length > 0 || catalog.challenges.length > 0,
-    terms: catalog.terms.length > 0,
-  };
-  // Nothing on any shelf: one sentence for the page, as before.
-  if (!ready.articles && !ready.faces && !ready.terms) {
+  const hasContent =
+    catalog.articles.length > 0 ||
+    catalog.faceGuides.length > 0 ||
+    catalog.challenges.length > 0 ||
+    catalog.terms.length > 0;
+  if (!hasContent) {
     return (
-      <View className="flex-1 gap-section bg-background pt-stack-tight">
+      <View className="flex-1 bg-background pt-stack-tight">
         {bar}
-        <Masthead />
-        <ScreenState message="科普还在写。" />
+        <View style={PAGE_COLUMN} className="w-full flex-1 gap-section">
+          <Masthead />
+          <ScreenState message="科普内容准备中。" />
+        </View>
       </View>
     );
   }
-  const pending = (Object.keys(ready) as Shelf[]).filter((shelf) => !ready[shelf]);
 
   const [featured, ...rest] = catalog.articles;
   const faceGuides = catalog.faceGuides.map((guide) => ({
@@ -144,7 +199,7 @@ export default function LearnScreen() {
     <ScrollView
       className="flex-1 bg-background"
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingBottom: insets.bottom + 48 }}
+      contentContainerStyle={[PAGE_COLUMN, { width: "100%", paddingBottom: insets.bottom + 48 }]}
     >
       {bar}
       <Animated.View entering={PAGE_ENTER} className="gap-section pt-stack-tight">
@@ -152,7 +207,7 @@ export default function LearnScreen() {
         <AskEntry />
 
         {featured ? (
-          <View className="px-inset">
+          <View className="px-gutter">
             <FeaturedArticle article={featured} />
           </View>
         ) : null}
@@ -161,7 +216,7 @@ export default function LearnScreen() {
           const articles = rest.filter((article) => article.category === category);
           if (articles.length === 0) return null;
           return (
-            <View key={category} className="gap-row px-inset">
+            <View key={category} className="gap-row px-gutter">
               <SectionHeader title={category} count={`${articles.length} 篇`} />
               <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
                 {articles.map((article, index) => (
@@ -174,60 +229,39 @@ export default function LearnScreen() {
 
         {faceGuides.length > 0 || catalog.challenges.length > 0 ? (
           <View className="gap-row">
-            <View className="px-inset">
-              <SectionHeader title="认脸" count={faceGuides.length > 0 ? `${faceGuides.length} 只` : undefined} />
+            <View className="min-h-11 flex-row items-end justify-between gap-row px-gutter">
+              <View className="min-w-0 flex-1">
+                <SectionHeader title="认脸指南" count={faceGuides.length > 0 ? `${faceGuides.length} 只` : undefined} />
+              </View>
+              {catalog.challenges.length > 0 ? (
+                <Pressable
+                  role="button"
+                  accessibilityLabel="认脸挑战"
+                  onPress={() => router.push("/learn/challenge")}
+                  className="min-h-11 justify-end pb-1 active:opacity-60"
+                >
+                  <Text variant="body" className="font-semibold text-primary">
+                    认脸挑战
+                  </Text>
+                </Pressable>
+              ) : null}
             </View>
             {faceGuides.length > 0 ? (
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerClassName="gap-row px-inset"
+                contentContainerClassName="gap-row px-gutter"
               >
-                {faceGuides.map(({ guide, panda }) => {
-                  const title = learningText(guide.title);
-                  return (
-                    <PressScale
-                      key={guide.slug}
-                      accessibilityRole="button"
-                      accessibilityLabel={`认脸指南：${title}`}
-                      onPress={() => router.push({ pathname: "/learn/faces/[slug]", params: { slug: guide.slug } })}
-                      className="w-36 gap-stack-tight"
-                    >
-                      <View className="overflow-hidden rounded-tile" style={{ borderCurve: "continuous" }}>
-                        <PandaPhoto pandaId={panda?.id ?? null} label={title} aspect="4/5" rounded={false} decorative />
-                        <PhotoOutline radius={RADIUS.tile} />
-                      </View>
-                      <View className="gap-hair-gap px-hair-gap">
-                        <Text variant="headline" numberOfLines={2}>
-                          {title}
-                        </Text>
-                        <Text variant="footnote" className="text-muted-foreground">
-                          认脸指南
-                        </Text>
-                      </View>
-                    </PressScale>
-                  );
-                })}
+                {faceGuides.map(({ guide, panda }) => (
+                  <FaceGuideCard key={guide.slug} guide={guide} panda={panda} />
+                ))}
               </ScrollView>
-            ) : null}
-            {catalog.challenges.length > 0 ? (
-              <View className="px-inset pt-stack-tight">
-                <ListSection>
-                  <ListCell
-                    icon={ScanFace}
-                    label="认脸挑战"
-                    detail={learningText(catalog.challenges[0]?.prompt) || undefined}
-                    href="/learn/challenge"
-                    last
-                  />
-                </ListSection>
-              </View>
             ) : null}
           </View>
         ) : null}
 
         {catalog.terms.length > 0 ? (
-          <View className="px-inset">
+          <View className="px-gutter">
             <ListSection title="名词">
               {catalog.terms.map((term, index) => (
                 <ListCell
@@ -243,20 +277,23 @@ export default function LearnScreen() {
           </View>
         ) : null}
 
-        <StillWriting shelves={pending} />
-
         {catalog.version ? (
-          <Text variant="footnote" className="px-inset text-muted-foreground">{`资料版本 ${catalog.version}`}</Text>
+          <Text variant="footnote" className="px-gutter text-muted-foreground">
+            {`资料版本 ${catalog.version}`}
+          </Text>
         ) : null}
       </Animated.View>
     </ScrollView>
   );
 }
 
-/** The lead story, as News leads its feed: a photo plate, then the title, dek and a meta line on the card. */
+/** Magazine lead story with bottom scrim overlay when a hero photo exists. */
 function FeaturedArticle({ article }: { article: CatalogArticle }) {
+  const stacked = useStacked();
   const title = learningText(article.title);
   const hero = articleHero(article);
+  const metaLine = `${article.category}　${readingMinutes(article)} 分钟阅读`;
+
   return (
     <PressScale
       accessibilityRole="button"
@@ -265,23 +302,50 @@ function FeaturedArticle({ article }: { article: CatalogArticle }) {
       className="overflow-hidden rounded-card bg-card"
       style={{ borderCurve: "continuous" }}
     >
-      {hero?.asset ? (
-        <RemoteImage
-          source={hero.asset}
-          style={{ width: "100%", aspectRatio: 4 / 3 }}
-          contentFit="cover"
-          accessible={false}
-        />
-      ) : null}
-      <View className="gap-stack-tight p-stack">
-        <Text variant="title" role="none">
-          {title}
-        </Text>
-        <Text variant="subheadline" className="text-muted-foreground" numberOfLines={3}>
-          {learningText(article.dek)}
-        </Text>
-        <Text variant="footnote" className="text-muted-foreground">{`${article.category}　·　${readingMinutes(article)} 分钟`}</Text>
-      </View>
+      {hero?.asset && !stacked ? (
+        <View style={{ aspectRatio: 4 / 3 }} className="w-full overflow-hidden bg-media-placeholder">
+          <RemoteImage
+            source={hero.asset}
+            style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+            contentFit="cover"
+            accessible={false}
+          />
+          <Scrim id="learn-featured" height="65%" />
+          <View className="absolute right-0 bottom-0 left-0 gap-1 p-stack">
+            <Text variant="footnote" className="text-on-media/85">
+              {metaLine}
+            </Text>
+            <Text variant="title" role="none" className="text-on-media" numberOfLines={3}>
+              {title}
+            </Text>
+            <Text variant="subheadline" className="text-on-media/85" numberOfLines={2}>
+              {learningText(article.dek)}
+            </Text>
+          </View>
+        </View>
+      ) : (
+        <>
+          {hero?.asset ? (
+            <RemoteImage
+              source={hero.asset}
+              style={{ width: "100%", aspectRatio: 4 / 3 }}
+              contentFit="cover"
+              accessible={false}
+            />
+          ) : null}
+          <View className="gap-stack-tight p-stack">
+            <Text variant="footnote" className="text-muted-foreground">
+              {metaLine}
+            </Text>
+            <Text variant="title" role="none">
+              {title}
+            </Text>
+            <Text variant="subheadline" className="text-muted-foreground" numberOfLines={stacked ? undefined : 3}>
+              {learningText(article.dek)}
+            </Text>
+          </View>
+        </>
+      )}
       <PhotoOutline radius={RADIUS.card} />
     </PressScale>
   );

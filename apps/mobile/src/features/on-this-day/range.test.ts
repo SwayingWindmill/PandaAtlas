@@ -45,7 +45,7 @@ describe("titleOn", () => {
 
 describe("datePart and yearsPart", () => {
   it("dates the row and counts an anniversary, not a birthday", () => {
-    expect(datePart({ date: "1999-11-05" }, "2026-11-05")).toBe("11.05 · 1999");
+    expect(datePart({ date: "1999-11-05" }, "2026-11-05")).toBe("11.05　1999");
     expect(yearsPart({ years: 27, kind: "arrival" })).toBe("27 周年");
     expect(yearsPart({ years: 6, kind: "birthday" })).toBeNull();
   });

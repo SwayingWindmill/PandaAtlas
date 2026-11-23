@@ -28,6 +28,7 @@ import {
   KeyRows,
   Memories,
   NoPhoto,
+  NoPhotoActions,
   PandaFaceGuideCard,
   PandaRoommates,
   PandaVenueLive,
@@ -151,7 +152,7 @@ export default function ProfileScreen() {
         ) : (
           <NoPhoto profile={profile} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-4 px-gutter" style={[PAGE_COLUMN, cover ? { marginTop: -OVERLAP } : null]}>
+        <Animated.View entering={PAGE_ENTER} className="gap-4 px-gutter" style={[PAGE_COLUMN, cover ? { marginTop: -OVERLAP } : { marginTop: -12 }]}>
           <View>
             <View className="flex-row items-center gap-2">
               <Text variant="display" className="shrink">
@@ -188,6 +189,7 @@ export default function ProfileScreen() {
               <CompareRows slug={profile.slug} />
               {profile.memories.length > 0 ? <Memories profile={profile} /> : null}
               {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
+              {!cover ? <NoPhotoActions slug={profile.slug} /> : null}
               {cover?.credit ? (
                 <Text variant="footnote" className="px-4 text-muted-foreground">
                   {`封面照片：${cover.credit}`}
