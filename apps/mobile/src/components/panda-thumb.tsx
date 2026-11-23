@@ -44,6 +44,7 @@ export function PandaThumb({
         <RemoteImage
           source={photo}
           fallback={initial}
+          transition={200}
           style={{ width: size, height: size }}
           contentFit="cover"
           accessible={false}

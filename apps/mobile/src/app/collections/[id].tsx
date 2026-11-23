@@ -196,7 +196,9 @@ export default function CollectionScreen() {
   const list = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: accountId !== null });
   const index = useQuery(pandaIndexQueryOptions());
   const pandas = useMemo(() => new Map(index.data?.map((panda) => [panda.id, panda])), [index.data]);
-  const collection = list.data?.find((item) => item.collectionId === id);
+  // A deleted collection stays on screen while the screen pops, instead of the "已经不在了" state.
+  const [leaving, setLeaving] = useState<Collection | null>(null);
+  const collection = list.data?.find((item) => item.collectionId === id) ?? leaving ?? undefined;
   const [mode, setMode] = useState<"view" | "edit" | "rename" | "confirmDelete">("view");
   const [removed, setRemoved] = useState<PandaListItem | null>(null);
   const [actionFailed, setActionFailed] = useState(false);
@@ -260,7 +262,7 @@ export default function CollectionScreen() {
       setDeleting(true);
       try {
         await deleteCollection(collection.collectionId);
-        // Leave before the cache drops the collection, or this screen flashes "已经不在了" while it pops.
+        setLeaving(collection);
         router.back();
         if (accountId) {
           await patchCollections(accountId, (current) => current.filter((item) => item.collectionId !== collection.collectionId));

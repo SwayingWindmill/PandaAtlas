@@ -199,7 +199,7 @@ export default function AccountScreen() {
 
   function reload() {
     setActionGate(null);
-    void list.refetch();
+    if (accountId) void list.refetch();
   }
 
   // One key per request the fan means to file, kept across retries until it succeeds.
