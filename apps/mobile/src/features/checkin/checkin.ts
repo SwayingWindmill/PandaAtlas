@@ -1,4 +1,5 @@
 import type { components } from "@zhipanda/api-client";
+import { queryOptions } from "@tanstack/react-query";
 
 import { authedApi } from "@/lib/api";
 import { localToday } from "../engagement/seen";
@@ -85,6 +86,13 @@ async function settle(
 
 export function loadCheckins(today = localToday()): Promise<CheckinSummary> {
   return settle(authedApi.GET("/api/v2/me/daily-checkins", { params: { query: { today } } }));
+}
+
+export const checkinsQueryKey = (accountId: string, today: string) => ["private", accountId, "checkins", today] as const;
+
+/** Keyed by the day it was read for, so a screen left open past midnight does not show yesterday's summary. */
+export function checkinsQueryOptions(accountId: string, today: string) {
+  return queryOptions({ queryKey: checkinsQueryKey(accountId, today), queryFn: () => loadCheckins(today), staleTime: 0 });
 }
 
 export function recordCheckin(today = localToday()): Promise<CheckinSummary> {

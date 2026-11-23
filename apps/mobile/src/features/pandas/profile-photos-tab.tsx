@@ -1,10 +1,10 @@
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { Chip } from "@/components/chip";
 import { ListCell, ListSection } from "@/components/grouped-list";
+import { RemoteImage } from "@/components/remote-image";
 import { Text } from "@/components/ui/text";
 import type { Photo, Profile } from "@/features/pandas/profile";
 import { openPandaCorrection } from "@/features/pandas/profile-overview";
@@ -25,7 +25,7 @@ function PhotoCell({ photo, size, index, slug }: { photo: Photo; size: number; i
       role="link"
       accessibilityLabel={`照片 ${index + 1}`}
     >
-      <Image source={photo.url} style={{ width: size, height: size }} contentFit="cover" accessible={false} />
+      <RemoteImage source={photo.url} style={{ width: size, height: size }} contentFit="cover" accessible={false} />
     </Pressable>
   );
 }

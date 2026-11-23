@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { Linking, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -12,6 +11,7 @@ import { CalendarCheck, Globe, History, MapPin, PawPrint, Ticket, Video } from "
 import { PandaThumb } from "@/components/panda-thumb";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { SourceBadge } from "@/components/source-badge";
 import { StatTile } from "@/components/stat-tile";
@@ -247,7 +247,7 @@ function ResidentTile({ panda, width }: { panda: PandaListItem; width: number })
             style={{ flex: 1, borderRadius: RADIUS.tile, borderCurve: "continuous", overflow: "hidden", backgroundColor: PLACEHOLDER }}
           >
             {photo ? (
-              <Image
+              <RemoteImage
                 source={photo}
                 style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
                 contentFit="cover"

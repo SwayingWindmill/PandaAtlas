@@ -172,6 +172,25 @@ export const photosQueryOptions = (slug: string) =>
     networkMode: "always",
   });
 
+export const photoUrlsQueryOptions = (slugs: string) =>
+  queryOptions({
+    queryKey: ["public", "photo-urls", slugs],
+    queryFn: async () =>
+      new Map(
+        await Promise.all(
+          slugs.split(",").map(async (slug) => {
+            try {
+              return [slug, (await loadPhotos(slug)).map((photo) => photo.url)] as const;
+            } catch {
+              return [slug, [] as string[]] as const;
+            }
+          }),
+        ),
+      ),
+    staleTime: 300_000,
+    networkMode: "always",
+  });
+
 export const profileQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["public", "profile", slug],

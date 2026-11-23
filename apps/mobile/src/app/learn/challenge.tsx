@@ -1,5 +1,5 @@
-import { Image } from "expo-image";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -8,6 +8,7 @@ import { Check, X } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { ScreenState } from "@/components/screen-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,7 +19,7 @@ import { PandaPhoto } from "@/features/learning/panda-photo";
 import { ReadingPage, ReadingSkeletonGround } from "@/features/learning/reading-page";
 import { useLearningCatalog, useLearningPandas } from "@/features/learning/use-catalog";
 import { openPanda } from "@/features/pandas/panda-row";
-import { loadPhotos } from "@/features/pandas/profile";
+import { photoUrlsQueryOptions } from "@/features/pandas/profile";
 import { selectionHaptic, successHaptic } from "@/lib/haptics";
 import { RADIUS } from "@/lib/surface";
 import { useIOSColors } from "@/lib/theme";
@@ -49,26 +50,7 @@ export default function FaceChallengeScreen() {
           .sort()
           .join(",")
       : "";
-  const [photoBySlug, setPhotoBySlug] = useState<Map<string, string[]> | null>(null);
-  useEffect(() => {
-    if (photoKey === "") return;
-    let cancel = false;
-    Promise.all(
-      photoKey.split(",").map(async (slug) => {
-        try {
-          const photos = await loadPhotos(slug);
-          return [slug, photos.map((photo) => photo.url)] as const;
-        } catch {
-          return [slug, [] as string[]] as const;
-        }
-      }),
-    ).then((rows) => {
-      if (!cancel) setPhotoBySlug(new Map(rows));
-    });
-    return () => {
-      cancel = true;
-    };
-  }, [photoKey]);
+  const { data: photoBySlug } = useQuery({ ...photoUrlsQueryOptions(photoKey), enabled: photoKey !== "" });
 
   if (state.status !== "ready" || pandas === null) {
     return (
@@ -90,7 +72,7 @@ export default function FaceChallengeScreen() {
     return resolved ? [resolved] : [];
   });
   const round = playable[index];
-  const photosReady = photoKey === "" || photoBySlug !== null;
+  const photosReady = photoKey === "" || photoBySlug !== undefined;
 
   if (!round) {
     return (
@@ -148,7 +130,7 @@ export default function FaceChallengeScreen() {
     <ReadingPage meta={`${KICKER}　${index + 1} / ${playable.length}　得分 ${correctCount}`} title={presented.title}>
       {presented.questionPhotoUrl ? (
         <View className="overflow-hidden rounded-tile" style={{ aspectRatio: 4 / 3, borderCurve: "continuous" }}>
-          <Image
+          <RemoteImage
             source={presented.questionPhotoUrl}
             style={{ width: "100%", height: "100%" }}
             contentFit="cover"
@@ -243,7 +225,7 @@ function ChoicePhoto({ url, pandaId, label }: { url: string | null; pandaId: str
   if (!url) return <PandaPhoto pandaId={pandaId} label={label} aspect="1/1" rounded={false} decorative />;
   return (
     <View className="aspect-square overflow-hidden">
-      <Image source={url} style={{ width: "100%", height: "100%" }} contentFit="cover" accessible={false} />
+      <RemoteImage source={url} style={{ width: "100%", height: "100%" }} contentFit="cover" accessible={false} />
     </View>
   );
 }

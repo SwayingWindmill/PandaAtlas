@@ -16,6 +16,7 @@ import { BirthdayReminderSettings } from "@/features/birthdays/settings-section"
 import { useBirthdayWeek } from "@/features/birthdays/use-week";
 import { dayHeading } from "@/features/calendar/calendar";
 import { localToday } from "@/features/engagement/seen";
+import { failedWithoutData } from "@/lib/query-failed";
 import { cn } from "@/lib/utils";
 
 /** The week's birthdays grouped by day, each heading saying how soon. */
@@ -79,12 +80,13 @@ function WeekStrip({ today, week }: { today: string; week: WeekBirthday[] }) {
  * row opens its 生日卡, which links back to the profile. The opt-in reminder sits at the foot.
  */
 export default function BirthdayWeekScreen() {
-  const { data: week, isError, refetch } = useBirthdayWeek();
+  const birthdays = useBirthdayWeek();
+  const { data: week, refetch } = birthdays;
   const today = localToday();
 
   return (
     <Page title="生日周" dateline="接下来 7 天">
-      {isError ? (
+      {failedWithoutData(birthdays) ? (
         <LoadFailed message="生日周暂时打不开。" onRetry={() => void refetch()} />
       ) : !week ? (
         <View className="gap-1.5" accessibilityLabel="正在加载生日周">

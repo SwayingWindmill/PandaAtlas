@@ -1,8 +1,8 @@
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { View } from "react-native";
 
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { Text } from "@/components/ui/text";
 import { semantic } from "@/design/tokens";
@@ -22,7 +22,7 @@ function Half({ panda, side }: { panda: PandaListItem; side: "left" | "right" })
   return (
     <View style={{ flex: 1 }}>
       {cover ? (
-        <Image source={cover} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }} contentFit="cover" transition={200} accessible={false} />
+        <RemoteImage source={cover} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }} contentFit="cover" transition={200} accessible={false} />
       ) : null}
       <Scrim id={`compare-${panda.id}-${side}`} />
       <Text
