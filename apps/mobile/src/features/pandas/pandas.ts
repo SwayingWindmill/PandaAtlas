@@ -30,7 +30,7 @@ export interface PandaListItem {
   terms: string[];
   /**
    * Pinyin initials of each multi-word Latin name ("He Hua" gives "hh"), matched by prefix only. A panda with no
-   * Latin name falls back to its slugs. Latin names come first because slugs carry extra words (a place, a year) that give false hits.
+   * Latin name falls back to its slugs; slugs come last because they carry extra words (a place, a year).
    */
   initials: string[];
 }
@@ -44,7 +44,7 @@ export function normalizeTerm(value: string): string {
     .replace(/[\s_\-:]+/g, "");
 }
 
-/** A single word gives nothing: one letter would match every panda that starts with it. */
+/** Numbers and the Chinese half of a mixed name are skipped. A single word gives nothing: one letter would match every panda. */
 function initialsOf(source: string): string | null {
   const initials = source
     .normalize("NFKD")
