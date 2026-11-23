@@ -10,11 +10,11 @@ test("the map shows a zoo from its marker and from the list, and lists a place w
   await screen.getByRole("link", /^熊猫地图/).tap();
   await expect(screen.getByRole("tab", /^全部 /)).toBeVisible();
   await expect(screen.getByRole("tab", "野生区")).toBeVisible();
-  await expect(screen.getByRole("image", "大熊猫所在地地图")).toBeVisible();
+  const map = screen.getByTestId("panda-world-map");
+  await expect(map.getByRole("image", "大熊猫所在地地图")).toBeVisible();
 
   const zooLabel = new RegExp(`^${zoo.name}，`);
   const places = screen.getByTestId("map-places");
-  const map = screen.getByTestId("panda-world-map");
   await expect(places.getByRole("button", zooLabel)).toBeVisible();
   await expect(places.getByRole("button", new RegExp(`^${place}，日本，现在没有熊猫$`))).toBeVisible();
   await expect(map.getByRole("button", new RegExp(place))).toHaveCount(0);
