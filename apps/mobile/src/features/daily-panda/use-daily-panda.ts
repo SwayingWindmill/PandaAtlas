@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Share } from "react-native";
 
-import { type CheckinSummary, recordTodayOnce } from "@/features/checkin/checkin";
 import {
   type DailyPandaState,
   type PandaChoice,
@@ -10,6 +9,7 @@ import {
   loadPandaChoices,
   saveDailyResult,
 } from "@/features/daily-panda/daily-panda";
+import { recordGuestGame } from "@/features/engagement/guest-store";
 import { useInstitutionHero } from "@/features/institutions/institution-hero";
 import { useSession } from "@/features/session/session";
 import { selectionHaptic, successHaptic } from "@/lib/haptics";
@@ -41,36 +41,30 @@ export function useDailyPanda() {
     load();
   }
 
-  // A finished puzzle joins the signed-in fan's 图鉴; saving the same day again changes nothing.
+  // A finished puzzle joins the fan's 图鉴 (cloud when signed in, local device when signed out).
   const { state: session } = useSession();
   const accountId = session.status === "signedIn" ? session.accountId : null;
+  const signedOut = session.status === "signedOut";
   const [savedFor, setSavedFor] = useState<string | null>(null);
   useEffect(() => {
-    if (!state?.finished || accountId === null) return;
+    if (!state?.finished) return;
     let active = true;
-    void saveDailyResult(state).then((saved) => {
-      if (active && saved) setSavedFor(`${accountId}:${state.puzzleDate}`);
-    });
+    if (accountId !== null) {
+      void saveDailyResult(state).then((saved) => {
+        if (active && saved) setSavedFor(`${accountId}:${state.puzzleDate}`);
+      });
+    } else if (signedOut && state.answer?.pandaId) {
+      void recordGuestGame(state.answer.pandaId, "daily_panda", state.puzzleDate).then(() => {
+        if (active) setSavedFor(`guest:${state.puzzleDate}`);
+      });
+    }
     return () => {
       active = false;
     };
-  }, [state, accountId]);
+  }, [state, accountId, signedOut]);
 
-  // Opening 每日一猫 signed in counts the day for 每日打卡; quiet, once per day, never blocks the puzzle.
-  const [checkin, setCheckin] = useState<CheckinSummary | null>(null);
-  const puzzleLoaded = state !== null;
-  useEffect(() => {
-    if (!puzzleLoaded || accountId === null) return;
-    let active = true;
-    void recordTodayOnce(accountId).then((summary) => {
-      if (active) setCheckin(summary);
-    });
-    return () => {
-      active = false;
-    };
-  }, [puzzleLoaded, accountId]);
-
-  const savedToBook = state !== null && accountId !== null && savedFor === `${accountId}:${state.puzzleDate}`;
+  const savedToBook =
+    state !== null && savedFor === `${accountId ?? (signedOut ? "guest" : "none")}:${state.puzzleDate}`;
 
   const pandasById = useMemo(() => new Map(pandas.map((panda) => [panda.id, panda])), [pandas]);
   const guessedIds = useMemo(() => new Set(state?.guesses.map((guess) => guess.pandaId)), [state]);
@@ -127,8 +121,7 @@ export function useDailyPanda() {
     setSearch,
     openedWith,
     savedToBook,
-    signedOut: session.status === "signedOut",
-    checkin,
+    signedOut,
     pandasById,
     matches,
     answer,

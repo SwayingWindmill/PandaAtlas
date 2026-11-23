@@ -66,7 +66,7 @@ test("a followed panda's review hold and return reach the inbox, and messages re
 
   await app.open("/me");
   // The fixture release's update reaches the new follower too, so there is at least one more message.
-  await screen.getByRole("button", /^通知，\d+ 条未读$/).tap();
+  await screen.getByRole("button", /^通知与提醒，\d+ 条未读$/).tap();
   await expect(screen.getByRole("button", `未读，${notice.name}的资料暂时下线核对`)).toBeVisible();
 
   await screen.getByRole("button", `未读，${notice.name}的资料恢复公开了`).tap();
@@ -80,7 +80,7 @@ test("a followed panda's review hold and return reach the inbox, and messages re
 
   // 我的 refreshes its count when it is shown again. 通知 has the stack's own back link, not the photo pages' button.
   await screen.getByRole("link", /^返回/).tap();
-  await expect(screen.getByRole("button", "通知")).toBeVisible();
+  await expect(screen.getByRole("button", "通知与提醒")).toBeVisible();
 });
 
 test("notification preferences save to the account", async ({ app, screen, browser }) => {

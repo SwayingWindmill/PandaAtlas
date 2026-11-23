@@ -47,7 +47,7 @@ export async function latestCode(email: string): Promise<string> {
 /** Signs a new fan in through the app's own screens, starting from the 我的 tab. */
 export async function signIn(app: App, screen: Screen, email: string): Promise<void> {
   await app.open("/me");
-  await screen.getByRole("button", "登录").tap();
+  await screen.getByRole("button", "绑定同步").tap();
   await enterCode(screen, email);
   // Only the signed-in 我的 tab offers 改名字; the code screen also shows the address, so it proves nothing.
   await expect(screen.getByRole("button", "改名字")).toBeVisible();

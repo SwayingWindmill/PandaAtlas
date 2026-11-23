@@ -31,6 +31,8 @@ import {
   offeredLevels,
   questionQueryOptions,
 } from "@/features/guess/guess";
+import { recordGuestGame } from "@/features/engagement/guest-store";
+import { localToday } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
 import { useSession } from "@/features/session/session";
 import { selectionHaptic, successHaptic } from "@/lib/haptics";
@@ -131,6 +133,9 @@ export default function GuessScreen() {
         if (result.correct) successHaptic();
         else selectionHaptic();
         setOutcome(result);
+        if (session.status === "signedOut") {
+          void recordGuestGame(result.answerPandaId, "guess_panda", localToday()).catch(() => undefined);
+        }
       })
       .catch(() => {
         setChosen(null);

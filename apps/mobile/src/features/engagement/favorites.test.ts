@@ -7,6 +7,7 @@ const api = vi.hoisted(() => ({
   DELETE: vi.fn(),
   GET: vi.fn(),
 }));
+vi.mock("@react-native-async-storage/async-storage", () => ({ default: {} }));
 vi.mock("@/lib/api", () => ({ authedApi: api }));
 vi.mock("@/features/session/session", () => ({ useSession: vi.fn() }));
 

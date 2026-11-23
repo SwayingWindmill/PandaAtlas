@@ -11,7 +11,7 @@ import { PandaThumb } from "@/components/panda-thumb";
 import { ScreenState } from "@/components/screen-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PAGE_ENTER } from "@/design/motion";
-import { milestonesQueryOptions } from "@/features/milestones/load";
+import { guestMilestonesQueryOptions, milestonesQueryOptions } from "@/features/milestones/load";
 import type { PersonalMilestone } from "@/features/milestones/milestones";
 import { setMilestonePrefs, useMilestonePrefs } from "@/features/milestones/prefs";
 import { MilestoneSettings } from "@/features/milestones/settings-section";
@@ -42,11 +42,14 @@ export default function MilestonesScreen() {
   const prefs = useMilestonePrefs();
   const { accountId } = useAccount();
   const signedIn = accountId !== null;
-  const list = useQuery({ ...milestonesQueryOptions(accountId ?? ""), enabled: signedIn });
+  const signedOut = state.status === "signedOut";
+  const remoteList = useQuery({ ...milestonesQueryOptions(accountId ?? ""), enabled: signedIn });
+  const guestList = useQuery({ ...guestMilestonesQueryOptions(), enabled: signedOut });
+  const list = signedOut ? guestList : remoteList;
   // Read again on return, so a panda just marked 见过 counts at once.
-  useRefetchOnFocus(list.refetch, signedIn);
+  useRefetchOnFocus(list.refetch, signedIn || signedOut);
   const milestones = list.data ?? null;
-  const failed = failedWithoutData(list);
+  const failed = state.status === "unavailable" || failedWithoutData(list);
 
   if (!prefs || state.status === "loading") {
     return (
@@ -69,14 +72,10 @@ export default function MilestonesScreen() {
       </Page>
     );
   }
-  if (!signedIn) {
+  if (!signedIn && !signedOut) {
     return (
       <Page title="里程碑">
-        <ScreenState
-          message="登录后，你认出、见过的熊猫和去过的地方，数到整数时会记在这里。"
-          actionLabel="登录"
-          onAction={() => router.push("/sign-in")}
-        />
+        <ScreenState message="账号暂时不可用，请稍后再试。" />
       </Page>
     );
   }
@@ -103,7 +102,7 @@ export default function MilestonesScreen() {
                 leading={<PandaThumb pandaId={milestone.subject.id} name={milestone.subject.name} size={THUMB} />}
                 label={milestone.title}
                 lines={TITLE_LINES}
-                detail={`${milestone.subject.name} · ${longDate(milestone.date)}`}
+                detail={`${milestone.subject.name}　${longDate(milestone.date)}`}
                 onPress={milestone.subject.slug ? () => open(milestone) : undefined}
                 last={index === pandas.length - 1}
               />

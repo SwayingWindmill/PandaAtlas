@@ -454,15 +454,19 @@ export function VenueMap({
             markers.every((marker) => Math.hypot(marker.x - city.x, marker.y - city.y) > (compact ? 28 : 56)),
         );
   return (
-    <View style={{ width: viewport.width, height: viewport.height, backgroundColor: water, overflow: "hidden" }}>
+    <View
+      style={{ width: viewport.width, height: viewport.height, backgroundColor: water, overflow: "hidden" }}
+      importantForAccessibility={compact ? "no-hide-descendants" : undefined}
+      aria-hidden={compact ? true : undefined}
+    >
       <Svg
         width={viewport.width}
         height={viewport.height}
         viewBox={viewBox(camera, viewport)}
         preserveAspectRatio="none"
         pointerEvents="none"
-        accessibilityRole="image"
-        accessibilityLabel="大熊猫所在地地图"
+        accessibilityRole={compact ? undefined : "image"}
+        accessibilityLabel={compact ? undefined : "大熊猫所在地地图"}
       >
         <Path d={WORLD_LAND_PATH} fill={land} />
         {wild.map((area) => {

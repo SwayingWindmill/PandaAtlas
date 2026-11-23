@@ -21,6 +21,7 @@ const sets = [
       discover: "compass",
       search: "search",
       atlas: "book",
+      map: "map",
       me: "user-round",
     },
   },
