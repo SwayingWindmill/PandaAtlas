@@ -1,13 +1,11 @@
-import { Image } from "expo-image";
 import { Pressable, ScrollView, View } from "react-native";
 
 import { Chip, ChipRow } from "@/components/chip";
-import { PhotoOutline } from "@/components/photo-outline";
+import { PandaThumb } from "@/components/panda-thumb";
 import { Text } from "@/components/ui/text";
 import type { PandaListItem } from "@/features/pandas/pandas";
 import { openPanda } from "@/features/pandas/panda-row";
 import { clearRecentSearches, clearRecentViews, useRecentSearches, useRecentViews } from "@/features/pandas/recent";
-import { usePandaCover } from "@/lib/covers";
 
 const THUMB = 72;
 
@@ -33,7 +31,6 @@ function RecentHeader({ title, onClear }: { title: string; onClear: () => void }
 }
 
 function Thumb({ item }: { item: PandaListItem }) {
-  const photo = usePandaCover(item.id);
   return (
     <Pressable
       onPress={() => openPanda(item.slug)}
@@ -42,19 +39,7 @@ function Thumb({ item }: { item: PandaListItem }) {
       className="items-center gap-hair-gap active:opacity-60"
       style={{ width: THUMB }}
     >
-      <View
-        className="items-center justify-center overflow-hidden bg-secondary"
-        style={{ width: THUMB, height: THUMB, borderRadius: 16, borderCurve: "continuous" }}
-      >
-        {photo ? (
-          <Image source={photo} style={{ width: THUMB, height: THUMB }} contentFit="cover" accessible={false} />
-        ) : (
-          <Text variant="headline" className="text-muted-foreground">
-            {item.name.slice(0, 1)}
-          </Text>
-        )}
-        {photo ? <PhotoOutline radius={16} /> : null}
-      </View>
+      <PandaThumb pandaId={item.id} name={item.name} size={THUMB} />
       <Text variant="footnote" numberOfLines={1}>
         {item.name}
       </Text>

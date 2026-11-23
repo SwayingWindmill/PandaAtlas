@@ -64,7 +64,7 @@ export default function RootLayout() {
           <StatusBar style={scheme === "dark" ? "light" : "dark"} />
           <Stack screenOptions={{ ...stackScreenOptions(scheme), headerLargeTitleEnabled: false }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="pandas/[slug]/photos" options={{ presentation: "fullScreenModal", title: "照片" }} />
+            <Stack.Screen name="pandas/[slug]/photos" options={{ title: "照片" }} />
           </Stack>
           <OfflineBanner />
           <PortalHost />
