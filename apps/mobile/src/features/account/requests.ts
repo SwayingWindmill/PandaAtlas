@@ -33,7 +33,8 @@ export const privacyRequestsQueryKey = (accountId: string) => ["private", accoun
 
 /**
  * Nothing outlives the screen (`gcTime: 0`): the list sits behind a recent verification, so a cached copy
- * must not show before the API has checked it again. A lapsed verification is not worth a retry.
+ * must not show before the API has checked it again. A lapsed verification is not worth a retry, and no refetch on
+ * focus or reconnect: coming back from the mail app would reset the query to pending and lose the code form.
  */
 export function privacyRequestsQueryOptions(accountId: string) {
   return queryOptions({
@@ -41,6 +42,8 @@ export function privacyRequestsQueryOptions(accountId: string) {
     queryFn: loadPrivacyRequests,
     staleTime: 0,
     gcTime: 0,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     retry: (count, error) => !(error instanceof VerificationRequired) && count < 1,
   });
 }

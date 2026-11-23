@@ -38,6 +38,7 @@ import { localToday } from "@/features/engagement/seen";
 import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
 import { selectionHaptic, successHaptic } from "@/lib/haptics";
+import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE } from "@/lib/surface";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
@@ -237,7 +238,7 @@ export default function CheckinScreen() {
   const list = useQuery({ ...checkinsQueryOptions(accountId ?? "", today), enabled: accountId !== null });
   useRefetchOnFocus(list.refetch, accountId !== null);
   const summary = list.data ?? null;
-  const failed = unavailable || list.isError;
+  const failed = unavailable || failedWithoutData(list);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<CheckinFailure | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -294,7 +295,7 @@ export default function CheckinScreen() {
   return (
     <Page title="每日打卡">
       {failed ? (
-        <LoadFailed message="每日打卡暂时打不开。" onRetry={() => void list.refetch()} />
+        <LoadFailed message="每日打卡暂时打不开。" onRetry={() => accountId !== null && void list.refetch()} />
       ) : summary === null ? (
         <View className="gap-section" accessibilityLabel="正在加载每日打卡">
           <View className="flex-row gap-row">

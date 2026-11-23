@@ -9,11 +9,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useFollowed } from "@/features/engagement/favorites";
 import { PandaRow } from "@/features/pandas/panda-row";
 import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { failedWithoutData } from "@/lib/query-failed";
 
 /** 关注的熊猫, opened from 我的: every panda the fan follows, in the catalog's own order. */
 export default function FollowingScreen() {
   const followed = useFollowed();
-  const { data: pandas, isError: failed, refetch } = useQuery(pandaIndexQueryOptions());
+  const index = useQuery(pandaIndexQueryOptions());
+  const { data: pandas, refetch } = index;
+  const failed = failedWithoutData(index);
 
   const items = followed && pandas ? pandas.filter((panda) => followed.has(panda.id)) : null;
   return (

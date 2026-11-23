@@ -21,6 +21,7 @@ import { useLearningCatalog } from "@/features/learning/use-catalog";
 import { type Pair, PairSlots, PandaPicker, type SlotKey, nextSlot } from "@/features/pandas/pair-picker";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
 
 // 比一比: two pandas side by side, with only the distinguishing points 文献与写作 has written and sourced.
@@ -216,9 +217,10 @@ export default function CompareScreen() {
   // A link with both pandas compares them; one with none or only one asks for the pair first.
   const choosing = !slugA || !slugB;
   const { state: catalog, reload: reloadCatalog } = useLearningCatalog();
-  const { data: pandas, isError: pandasFailed, refetch: reloadPandas } = useQuery(pandaIndexQueryOptions());
+  const index = useQuery(pandaIndexQueryOptions());
+  const { data: pandas, refetch: reloadPandas } = index;
 
-  if (pandasFailed || (!choosing && catalog.status === "failed")) {
+  if (failedWithoutData(index) || (!choosing && catalog.status === "failed")) {
     return (
       <Page title="比一比">
         <LoadFailed

@@ -11,10 +11,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { statsQueryOptions } from "@/features/about/stats";
+import { failedWithoutData } from "@/lib/query-failed";
 
 /** 内容和照片从哪来: what the published release holds, and where a fan sees each source and credit. */
 export default function AboutScreen() {
-  const { data: counts, isError: failed, refetch } = useQuery(statsQueryOptions());
+  const stats = useQuery(statsQueryOptions());
+  const { data: counts, refetch } = stats;
+  const failed = failedWithoutData(stats);
 
   const stacked = useStacked();
   const count = (value: number, unit: string) => `${value.toLocaleString("zh-CN")} ${unit}`;

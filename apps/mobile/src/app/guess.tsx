@@ -123,7 +123,7 @@ export default function GuessScreen() {
   }
 
   function choose(question: GuessQuestion, pandaId: string) {
-    if (chosen) return;
+    if (chosen || drawn.isPlaceholderData) return;
     setChosen(pandaId);
     setAnswerFailed(false);
     answerQuestion(question.questionId, pandaId, session.status === "signedIn")
@@ -196,7 +196,7 @@ export default function GuessScreen() {
                 <PressScale
                   key={option.pandaId}
                   onPress={() => choose(question, option.pandaId)}
-                  disabled={chosen !== null}
+                  disabled={chosen !== null || drawn.isPlaceholderData}
                   role="button"
                   accessibilityLabel={
                     isAnswer ? `${option.name}，是它` : wrongPick ? `${option.name}，不是它` : option.name

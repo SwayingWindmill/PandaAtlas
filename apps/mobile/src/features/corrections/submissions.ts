@@ -34,13 +34,13 @@ export async function submitCorrection(submission: Submission): Promise<void> {
   if (!response.ok) throw new Error(`Contribution not accepted (${response.status})`);
 }
 
-/** Newest first. */
 export const contributionsQueryKey = (accountId: string) => ["private", accountId, "contributions"] as const;
 
 export function contributionsQueryOptions(accountId: string) {
   return queryOptions({ queryKey: contributionsQueryKey(accountId), queryFn: loadMyContributions, staleTime: 0 });
 }
 
+/** Newest first. */
 export async function loadMyContributions(): Promise<ContributionRecord[]> {
   const { data } = await authedApi.GET("/api/v2/me/contributions");
   if (!data) throw new Error("Contributions unavailable");

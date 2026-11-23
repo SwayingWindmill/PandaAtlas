@@ -22,6 +22,7 @@ import {
 import { correctionTargetQueryOptions } from "@/features/corrections/submissions";
 import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
+import { failedWithoutData } from "@/lib/query-failed";
 
 /** Which of the fan's collections hold this panda; a tap adds or removes it. */
 export default function CollectScreen() {
@@ -36,7 +37,7 @@ export default function CollectScreen() {
   const list = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: accountId !== null });
   const panda = target.data;
   const collections = list.data;
-  const failed = target.isError || list.isError;
+  const failed = failedWithoutData(target) || failedWithoutData(list);
 
   async function replace(next: Collection) {
     if (accountId) await patchCollections(accountId, (current) => current.map((item) => (item.collectionId === next.collectionId ? next : item)));
@@ -86,8 +87,8 @@ export default function CollectScreen() {
         <LoadFailed
           message="合集暂时打不开。"
           onRetry={() => {
-            if (target.isError) void target.refetch();
-            if (list.isError) void list.refetch();
+            if (failedWithoutData(target)) void target.refetch();
+            if (failedWithoutData(list)) void list.refetch();
           }}
         />
       ) : !collections || !panda ? (

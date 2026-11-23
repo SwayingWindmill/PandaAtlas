@@ -17,6 +17,7 @@ import { type MapItem } from "@/features/map/model";
 import { type PlaceRow, PlaceRows } from "@/features/map/place-list";
 import { loadOverseasStatus } from "@/features/overseas/overseas-status";
 import { loadVenueNews } from "@/features/venue-news/venue-news";
+import { failedWithoutData } from "@/lib/query-failed";
 
 interface Loaded {
   items: InstitutionListItem[];
@@ -73,7 +74,7 @@ export default function InstitutionsScreen() {
   const residents = new Map<string, MapItem>();
   for (const item of map.data?.items ?? []) if (item.kind === "institution") residents.set(item.slug, item);
   const loaded: Loaded | null = list.data && !map.isPending ? { items: list.data, residents } : null;
-  const failed = list.isError;
+  const failed = failedWithoutData(list);
 
   function retry() {
     void list.refetch();

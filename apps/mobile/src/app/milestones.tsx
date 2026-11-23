@@ -19,6 +19,7 @@ import { longDate } from "@/features/pandas/profile";
 import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
 import { tapHaptic } from "@/lib/haptics";
+import { failedWithoutData } from "@/lib/query-failed";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 const THUMB = 40;
@@ -45,7 +46,7 @@ export default function MilestonesScreen() {
   // Read again on return, so a panda just marked 见过 counts at once.
   useRefetchOnFocus(list.refetch, signedIn);
   const milestones = list.data ?? null;
-  const failed = list.isError;
+  const failed = failedWithoutData(list);
 
   if (!prefs || state.status === "loading") {
     return (

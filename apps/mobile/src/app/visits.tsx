@@ -15,6 +15,7 @@ import { longDate } from "@/features/pandas/profile";
 import { placeName, placesQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
 import { type Visit, removeVisit, visitsQueryKey, visitsQueryOptions } from "@/features/visits/visits";
+import { failedWithoutData } from "@/lib/query-failed";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
@@ -92,7 +93,7 @@ export default function VisitsScreen() {
     () => new Map([...(placeList.data ?? [])].map(([id, place]) => [id, placeName(place) ?? place.nameEn ?? place.slug])),
     [placeList.data],
   );
-  const failed = unavailable || list.isError || placeList.isError;
+  const failed = unavailable || failedWithoutData(list) || failedWithoutData(placeList);
 
   async function remove(visit: Visit) {
     setRemoveFailed(false);
@@ -116,8 +117,8 @@ export default function VisitsScreen() {
     <Page title="去过的地点">
       {failed ? (
         <LoadFailed message="到访记录暂时打不开。" onRetry={() => {
-            if (list.isError) void list.refetch();
-            if (placeList.isError) void placeList.refetch();
+            if (failedWithoutData(list)) void list.refetch();
+            if (failedWithoutData(placeList)) void placeList.refetch();
           }} />
       ) : visits === null ? (
         <View className="gap-section" accessibilityLabel="正在加载到访记录">

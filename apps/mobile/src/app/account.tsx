@@ -33,6 +33,7 @@ import { shortDay } from "@/features/engagement/seen";
 import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
 import { Verification } from "@/features/session/verification";
+import { failedWithoutData } from "@/lib/query-failed";
 
 function StatusCell({ request, last }: { request: PrivacyRequest; last?: boolean }) {
   const done = request.state === "completed";
@@ -184,14 +185,15 @@ export default function AccountScreen() {
   const pendingAction = useRef<(() => Promise<void>) | null>(null);
   // Held here so the typed reason survives the verification screen replacing the form.
   const [deletionReason, setDeletionReason] = useState("");
-  // An action found the verification lapsed, or carrying out the one that waited failed.
   const [actionGate, setActionGate] = useState<"verify" | "resuming" | "failed" | null>(null);
 
   const lapsed = list.isError && list.error instanceof VerificationRequired;
+  // A refetch with no data resets the query to pending, which would otherwise unmount the code form mid-entry.
+  if (lapsed && actionGate === null) setActionGate("verify");
   const gate =
     actionGate === "resuming" ? "checking"
-    : actionGate === "verify" || lapsed ? "verify"
-    : actionGate === "failed" || (list.isError && !requests) || unavailable ? "failed"
+    : actionGate === "verify" ? "verify"
+    : actionGate === "failed" || failedWithoutData(list) || unavailable ? "failed"
     : requests ? "open"
     : "checking";
 

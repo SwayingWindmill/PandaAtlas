@@ -24,6 +24,7 @@ import {
 } from "@/features/collections/collections";
 import { Mosaic } from "@/features/collections/mosaic";
 import { useAccount } from "@/features/session/account";
+import { failedWithoutData } from "@/lib/query-failed";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { cn } from "@/lib/utils";
 
@@ -128,7 +129,7 @@ export default function CollectionsScreen() {
   const list = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: accountId !== null });
   useRefetchOnFocus(list.refetch, accountId !== null);
   const collections = list.data ?? null;
-  const failed = unavailable || list.isError;
+  const failed = unavailable || failedWithoutData(list);
 
   return (
     <Page
@@ -137,7 +138,7 @@ export default function CollectionsScreen() {
       keyboardShouldPersistTaps="handled"
     >
       {failed ? (
-        <LoadFailed message="合集暂时打不开。" onRetry={() => void list.refetch()} />
+        <LoadFailed message="合集暂时打不开。" onRetry={() => accountId !== null && void list.refetch()} />
       ) : collections === null ? (
         <View className="gap-section" accessibilityLabel="正在加载合集">
           <Skeleton className="h-11 w-full rounded-group" />

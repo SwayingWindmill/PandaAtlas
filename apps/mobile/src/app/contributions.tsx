@@ -14,6 +14,7 @@ import { shortDay } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
 import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
+import { failedWithoutData } from "@/lib/query-failed";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { HAIRLINE } from "@/lib/surface";
 
@@ -26,11 +27,11 @@ export default function ContributionsScreen() {
   const index = useQuery(pandaIndexQueryOptions());
   const pandas = useMemo(() => new Map(index.data?.map((panda) => [panda.id, panda])), [index.data]);
   const items = list.data ?? null;
-  const failed = unavailable || list.isError;
+  const failed = unavailable || failedWithoutData(list);
 
   return (
     <Page title="我的纠错">
-      {failed ? <LoadFailed message="纠错记录暂时打不开。" onRetry={() => void list.refetch()} /> : null}
+      {failed ? <LoadFailed message="纠错记录暂时打不开。" onRetry={() => accountId !== null && void list.refetch()} /> : null}
       {!failed && items === null ? <Skeleton className="h-44 w-full rounded-group" accessibilityLabel="正在加载" /> : null}
       {items && items.length === 0 ? <ScreenState message="在熊猫资料页点「告诉我们」，发出的纠错会列在这里。" /> : null}
       {items && items.length > 0 ? (

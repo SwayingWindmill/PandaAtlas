@@ -102,7 +102,6 @@ export function institutionListQueryOptions() {
   });
 }
 
-/** The list screen's rows, as a `select` over the shared institutions query. */
 export function toListItems(institutions: Institution[]): InstitutionListItem[] {
   return institutions.map((institution) => ({
     slug: institution.slug,

@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ComparisonCard, pairOf } from "@/features/discover/comparison-card";
 import { comparisonsQueryOptions } from "@/features/discover/comparisons";
 import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { failedWithoutData } from "@/lib/query-failed";
 import { pageColumn } from "@/lib/surface";
 
 /** Every published 比一比, newest first, each card the column's width. */
@@ -23,7 +24,7 @@ export default function ComparisonsScreen() {
 
   return (
     <Page title="比一比">
-      {comparisons.isError ? (
+      {failedWithoutData(comparisons) ? (
         <LoadFailed message="比一比暂时打不开。" onRetry={() => void comparisons.refetch()} />
       ) : !comparisons.data || !pandas ? (
         <View className="gap-section" accessibilityLabel="正在加载比一比">

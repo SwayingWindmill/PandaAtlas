@@ -23,6 +23,7 @@ import { nextBirthday } from "@/features/birthdays/birthday-week";
 import { localToday } from "@/features/engagement/seen";
 import { type Profile, profileQueryOptions } from "@/features/pandas/profile";
 import { profileUrl, shareCardImage, shareLink } from "@/features/pandas/share-card";
+import { failedWithoutData } from "@/lib/query-failed";
 
 /** The image a fan shares: photo, name, the key facts and where to read more. */
 function Card({ profile, cardRef }: { profile: Profile; cardRef: RefObject<ComponentRef<typeof View> | null> }) {
@@ -114,7 +115,8 @@ export default function ShareScreen() {
     BIRTHDAY_CARD_STYLES.find((option) => option.value === lookParam)?.value ?? "cover",
   );
   const card = useRef<ComponentRef<typeof View>>(null);
-  const { data: profile, isError: failed, refetch } = useQuery(profileQueryOptions(slug));
+  const profileQuery = useQuery(profileQueryOptions(slug));
+  const { data: profile, refetch } = profileQuery;
   const [status, setStatus] = useState<"idle" | "sharing" | "failed">("idle");
 
   const birthday = wantsBirthday && profile ? birthdayCardOf(profile) : null;
@@ -131,7 +133,7 @@ export default function ShareScreen() {
 
   return (
     <Page label={wantsBirthday ? undefined : "分享"} title={wantsBirthday ? "生日卡" : "分享这只熊猫"}>
-      {failed ? (
+      {failedWithoutData(profileQuery) ? (
         <LoadFailed message="资料暂时打不开。" onRetry={() => void refetch()} />
       ) : !profile ? (
         <Skeleton className="h-96 w-full" accessibilityLabel="正在加载" />

@@ -172,7 +172,6 @@ export const photosQueryOptions = (slug: string) =>
     networkMode: "always",
   });
 
-/** Photo URLs by slug for a comma-joined list of slugs. A panda whose photos do not load gets none, not a failure. */
 export const photoUrlsQueryOptions = (slugs: string) =>
   queryOptions({
     queryKey: ["public", "photo-urls", slugs],

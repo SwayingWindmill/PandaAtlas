@@ -28,6 +28,7 @@ import { Mosaic } from "@/features/collections/mosaic";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, listMeta, pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
+import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -211,15 +212,15 @@ export default function CollectionScreen() {
   }, [mode]);
 
   if (!collection || !index.data) {
-    const failed = unavailable || list.isError || index.isError;
+    const failed = unavailable || failedWithoutData(list) || failedWithoutData(index);
     return (
       <Page title="合集">
         {failed ? (
           <LoadFailed
             message="这个合集暂时打不开。"
             onRetry={() => {
-              if (list.isError) void list.refetch();
-              if (index.isError) void index.refetch();
+              if (failedWithoutData(list)) void list.refetch();
+              if (failedWithoutData(index)) void index.refetch();
             }}
           />
         ) : list.data && index.data && !list.isFetching ? (
@@ -259,10 +260,11 @@ export default function CollectionScreen() {
       setDeleting(true);
       try {
         await deleteCollection(collection.collectionId);
+        // Leave before the cache drops the collection, or this screen flashes "已经不在了" while it pops.
+        router.back();
         if (accountId) {
           await patchCollections(accountId, (current) => current.filter((item) => item.collectionId !== collection.collectionId));
         }
-        router.back();
       } finally {
         setDeleting(false);
       }
@@ -289,8 +291,8 @@ export default function CollectionScreen() {
           <Rename
             collection={collection}
             onDone={(next) => {
-              if (next) set(next);
               setMode("view");
+              if (next) void run(() => set(next));
             }}
           />
         ) : null}

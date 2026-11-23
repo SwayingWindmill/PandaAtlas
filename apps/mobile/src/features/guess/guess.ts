@@ -79,7 +79,6 @@ export async function probeLevels(): Promise<Record<GuessDifficulty, LevelCheck>
   >;
 }
 
-/** Nothing is kept once the game closes: every visit checks the levels again. */
 export function levelChecksQueryOptions() {
   return queryOptions({
     queryKey: ["public", "guess-levels"],
@@ -91,7 +90,6 @@ export function levelChecksQueryOptions() {
   });
 }
 
-/** The question a level probe already returned is shown once; every other request draws a new one. */
 async function nextQuestion(level: GuessDifficulty | undefined): Promise<GuessQuestion> {
   const checks = queryClient.getQueryData(levelChecksQueryOptions().queryKey);
   const ready = level ? checks?.[level]?.question : undefined;
@@ -112,6 +110,8 @@ export function questionQueryOptions(level: GuessDifficulty | undefined, round: 
   return queryOptions({
     queryKey: ["public", "guess-question", level ?? "any", round],
     queryFn: () => nextQuestion(level),
+    // The next round keeps the last question on screen until it arrives; another level starts from a skeleton.
+    placeholderData: (previous, previousQuery) => (previousQuery?.queryKey[2] === (level ?? "any") ? previous : undefined),
     staleTime: Infinity,
     gcTime: 0,
     retry: false,

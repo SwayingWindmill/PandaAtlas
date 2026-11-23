@@ -34,6 +34,7 @@ import {
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
+import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -168,7 +169,7 @@ export default function NotificationsScreen() {
   );
   const messages = inbox.data ?? null;
   const preferences = stored.data ?? null;
-  const failed = unavailable || (inbox.isError && !inbox.data) || (stored.isError && !stored.data);
+  const failed = unavailable || failedWithoutData(inbox) || failedWithoutData(stored);
 
   function retry() {
     if (inbox.isError) void inbox.refetch();

@@ -34,6 +34,7 @@ import {
 } from "@/features/ask/ask";
 import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
+import { failedWithoutData } from "@/lib/query-failed";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { successHaptic, tapHaptic } from "@/lib/haptics";
 
@@ -122,7 +123,7 @@ export default function AskScreen() {
   const statusQuery = useQuery({ ...askStatusQueryOptions(accountId ?? ""), enabled: signedIn });
   useRefetchOnFocus(statusQuery.refetch, signedIn);
   const status = statusQuery.data ?? null;
-  const statusFailed = statusQuery.isError;
+  const statusFailed = failedWithoutData(statusQuery);
   const [draft, setDraft] = useState("");
   const [exchanges, setExchanges] = useState<Exchange[]>([]);
   const [problem, setProblem] = useState<AskFailure | null>(null);

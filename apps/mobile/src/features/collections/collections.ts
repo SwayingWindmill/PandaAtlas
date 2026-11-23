@@ -31,7 +31,6 @@ export async function loadCollections(): Promise<Collection[]> {
 
 export const collectionsQueryKey = (accountId: string) => ["private", accountId, "collections"] as const;
 
-/** Always revalidated on mount: the cached list shows at once, and a change made elsewhere replaces it. */
 export function collectionsQueryOptions(accountId: string) {
   return queryOptions({ queryKey: collectionsQueryKey(accountId), queryFn: loadCollections, staleTime: 0 });
 }
