@@ -88,3 +88,13 @@ export function pandaBirthDate(panda: PandaSummary): string | null {
 export function pandaIsDeceased(panda: PandaSummary): boolean {
   return fact(panda, "life_status") === "deceased";
 }
+
+/**
+ * The one character a photo-less avatar shows. Imported names start with years and romanization
+ * ("2016 Ai Bang's Cub / 爱浜2016仔"), so the first Han character wins, then the first letter.
+ */
+export function nameInitial(name: string): string {
+  const chars = [...name.trim()];
+  const initial = chars.find((char) => HAN.test(char)) ?? chars.find((char) => /\p{L}/u.test(char)) ?? chars[0] ?? "";
+  return initial.toUpperCase();
+}

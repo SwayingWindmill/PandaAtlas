@@ -58,6 +58,8 @@ When this machine cannot run the local stack (the doctor reports Windows-reserve
 
 `node apps/mobile/scripts/preview-production.mjs`, run in the background. It is ready when `http://localhost:8796` answers 200, and the first route then takes about 20 s to bundle. Open routes in the browser pane at a 390-wide viewport. It is read-only: the proxy refuses anything but GET and HEAD, and the app's Supabase URL points at the proxy too, so sign-in and every write fail by design.
 
+Two flags stress a screen with real content (the `break-ui` skill). `--worst-case` rewrites the public reads through `tests/support/worst-case.ts`: unbounded names, eight aliases, missing birth dates and life status, a parent with 32 cubs, a venue with a 30-character name and 120 residents. `--delay <ms>` holds each API response back, to see skeletons and slow-network states. `tests/worst-case.e2e.ts` runs the same rewrite against the local fixture.
+
 ## Drive
 
 **Journeys.** The journeys in `apps/mobile/tests/*.e2e.ts` are the drivers. They use roles and accessible names from the app, never coordinates. Write or extend a journey for the behavior you changed, following the e2e skill at `node_modules/e2e/skills/e2e/SKILL.md`. Then run it by `file:line`.

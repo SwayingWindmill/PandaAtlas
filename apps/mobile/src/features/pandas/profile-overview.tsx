@@ -305,7 +305,7 @@ export function Sources({ sources }: { sources: Profile["sources"] }) {
 export function NoPhoto({ profile }: { profile: Profile }) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ paddingTop: insets.top + 64 }} className="px-gutter">
+    <View style={{ paddingTop: insets.top + 64 }} className="px-gutter pb-4">
       <ListSection>
         <ListCell label="暂无照片" />
         <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => openPandaCorrection(profile.slug)} last />

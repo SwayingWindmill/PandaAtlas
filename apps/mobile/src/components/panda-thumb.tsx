@@ -4,6 +4,7 @@ import { PhotoOutline } from "@/components/photo-outline";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Text } from "@/components/ui/text";
 import { usePandaCover } from "@/lib/covers";
+import { nameInitial } from "@/lib/panda";
 import { RADIUS } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -69,7 +70,7 @@ export function PandaThumb({
           allowFontScaling={false}
           className="text-muted-foreground"
         >
-          {name.slice(0, 1)}
+          {nameInitial(name)}
         </Text>
       </AvatarFallback>
       {source && !failed ? <PhotoOutline radius={radius} /> : null}
