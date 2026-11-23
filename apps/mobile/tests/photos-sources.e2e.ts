@@ -50,7 +50,7 @@ const firstPageTouchAction = () => {
   return null;
 };
 
-test("a photo leaves sideways swipes to the pager at 1x and keeps them while zoomed", async ({ app, screen, browser }) => {
+test("the pager takes sideways swipes at 1x and the photo takes them while zoomed", async ({ app, screen, browser }) => {
   const { panda } = fixture();
   await app.open(`/pandas/${panda.slug}/photos`);
   const photo = screen.getByRole("dialog", "照片").getByRole("img", `${panda.name} 第 1 张照片`);

@@ -70,7 +70,6 @@ export default function PhotosScreen() {
   const zoomed = current !== undefined && zoomedId === current.id;
   const count = photos?.length ?? 0;
 
-  // A new width leaves the old offset between pages; put the current page back under the viewport.
   const realign = useEffectEvent((width: number) => {
     list.current?.scrollToOffset({ offset: index * width, animated: false });
   });
@@ -113,7 +112,6 @@ export default function PhotosScreen() {
   }
 
   const reveal = () => setImmersive(false);
-  // The pages are memoised, so what they receive stays stable across renders of this screen.
   const toggleImmersive = useCallback(() => setImmersive((now) => !now), []);
   const zoomChanged = useCallback(
     (id: string, now: boolean) => setZoomedId((zoomedNow) => (now ? id : zoomedNow === id ? null : zoomedNow)),
@@ -159,7 +157,7 @@ export default function PhotosScreen() {
           onScroll={({ nativeEvent }) => {
             // Between a resize and the next layout the old pages no longer fill the scroller, and the
             // browser clamps the offset to the first page; that offset says nothing about the page.
-            if (nativeEvent.layoutMeasurement.width !== page.width) return;
+            if (Math.abs(nativeEvent.layoutMeasurement.width - page.width) > 1) return;
             setScrolledTo(pageAt(nativeEvent.contentOffset.x, page.width, photos.length));
           }}
           scrollEventThrottle={16}
