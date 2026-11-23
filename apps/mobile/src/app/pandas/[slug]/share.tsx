@@ -154,13 +154,6 @@ export default function ShareScreen() {
   useEffect(load, [load]);
 
   const birthday = wantsBirthday && profile ? birthdayCardOf(profile) : null;
-  const { toast, show } = useToast();
-
-  async function copy(name: string, slug: string) {
-    const copied = await copyLink(name, slug).catch(() => false);
-    if (copied) show("链接已复制");
-    else show("没能复制链接", true);
-  }
 
   async function shareImage() {
     setStatus("sharing");
@@ -170,6 +163,14 @@ export default function ShareScreen() {
     } catch {
       setStatus("failed");
     }
+  }
+
+  const { toast, show } = useToast();
+
+  async function copy(name: string, slug: string) {
+    const copied = await copyLink(name, slug).catch(() => false);
+    if (copied) show("链接已复制");
+    else show("没能复制链接", true);
   }
 
   return (

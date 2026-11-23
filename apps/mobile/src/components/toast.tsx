@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, View } from "react-native";
+import { AccessibilityInfo, Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Icon } from "@/components/icon";
@@ -11,8 +11,8 @@ const SHOWN_MS = 2000;
 const { black, white } = primitive.palette.gray;
 
 /**
- * A short confirmation that stays about two seconds: a black pill with a check, near the bottom of
- * the screen. Render `toast` as a sibling of the screen's scroll view and call `show` after the action.
+ * A short message that stays about two seconds: a black pill with a check, or an alert glyph when `failed`,
+ * near the bottom of the screen. Render `toast` as a sibling of the screen's scroll view and call `show` after the action.
  */
 export function useToast(): { toast: ReactNode; show: (message: string, failed?: boolean) => void } {
   const [message, setMessage] = useState<string | null>(null);
@@ -34,7 +34,8 @@ export function useToast(): { toast: ReactNode; show: (message: string, failed?:
     clearTimeout(timer.current);
     setMessage(next);
     setFailed(isFailure);
-    AccessibilityInfo.announceForAccessibility(next);
+    // TalkBack already reads the live region below; only VoiceOver needs the announcement.
+    if (Platform.OS === "ios") AccessibilityInfo.announceForAccessibility(next);
     timer.current = setTimeout(() => setMessage(null), SHOWN_MS);
   }, []);
 

@@ -1,6 +1,6 @@
 # Sharing a panda
 
-A fan opens a panda's share screen and posts its card. The card carries the photo, the name, the key facts and the credit. In its footer, 吱熊猫 and a line 扫码看<名字>的家谱、照片和近况 sit beside a 72 px QR code of `https://www.zhipanda.com/zh/pandas/<slug>`. A living panda with a full birth date opened from 生日周 shows a 生日卡 in three looks, 封面, 奖章 and 海报, each with the same QR code.
+A fan opens a panda's share screen and posts its card. The card carries the photo, the name, the key facts and the credit. In its footer, 吱熊猫 and a line 扫码看<名字>的家谱、照片和近况 sit beside a 72pt QR code of `https://www.zhipanda.com/zh/pandas/<slug>`. A living panda with a full birth date opened from 生日周 shows a 生日卡 in three looks, 封面, 奖章 and 海报, each with the same QR code, 80 artboard units wide so it scales with the card. Both cards export as a 1080 px wide PNG, so a module is about 5 px on any phone.
 
 ## Sub-features
 
@@ -28,7 +28,7 @@ Preconditions:
 
 ## Gotchas
 
-- 复制链接 on web needs a secure context (`localhost` counts) and a user gesture. A copy the browser refuses makes `setStringAsync` return false; the screen then shows `没能复制链接` instead of `链接已复制`.
+- 复制链接 on web needs a secure context (`localhost` counts) and a user gesture. `没能复制链接` appears only when `setStringAsync` throws; web's `execCommand` fallback and native both resolve true, so a refused copy can still show `链接已复制`.
 - The preview serves production slugs, so the fixture panda's `www.zhipanda.com` link does not exist there. The QR is checked by its text, not by opening it.
 - A 生日卡 appears only for a living panda with a full birth date and a whole age from 1 to 99. Any other panda shows the ordinary card even with `?birthday=`.
 - `expo-clipboard` is a native module and the app requires it on import. A dev client built before this feature has no `ExpoClipboard`, so it likely fails at launch, not only at 复制链接. Rebuild the dev client. Web is unaffected.

@@ -1,7 +1,6 @@
 import { toQR } from "toqr";
 
 export interface QrCode {
-  /** Modules per side. */
   size: number;
   /** One SVG path, in module units, covering every dark module as one run per row segment. */
   path: string;

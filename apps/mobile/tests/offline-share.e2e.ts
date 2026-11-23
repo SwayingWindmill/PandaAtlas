@@ -76,7 +76,6 @@ test("a profile shares as an image card", async ({ app, screen, browser }) => {
 
   await screen.getByRole("button", "复制链接").tap();
   await expect(screen.getByRole("status").getByText("链接已复制")).toBeVisible();
-  // The text on the clipboard, not just the toast.
   expect(await browser.evaluate(() => navigator.clipboard.readText())).toBe(`${panda.name} https://www.zhipanda.com/zh/pandas/${panda.slug}`);
 
   const file = await browser.waitForDownload(() => screen.getByRole("button", "分享图片").tap());

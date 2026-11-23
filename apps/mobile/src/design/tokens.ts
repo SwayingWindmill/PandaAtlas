@@ -422,7 +422,6 @@ export const component = {
     monogram: { size: 64, lineHeight: 72 },
     /** The display title of a name too long for two lines at display size. */
     longName: { size: 28, lineHeight: 34 },
-    /** The QR code's side, quiet zone included; fixed on the ordinary card and on every 生日卡 look. */
     qr: 72,
   },
   /**
@@ -432,6 +431,8 @@ export const component = {
   birthdayCard: {
     artboard: { width: 360, height: 480 },
     radius: 28,
+    /** The QR code's side in artboard units, quiet zone included; it scales with the card like the type. */
+    qr: 80,
     rule: alpha("white", 0.25),
     /** B 奖章's radial background: lit centre to deep edge around ink 950. */
     medalLight: "#26262A",

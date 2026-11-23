@@ -47,7 +47,6 @@ const DEEP = ink[950];
 const BC = component.birthdayCard;
 const ARTBOARD = BC.artboard.width;
 const WHITE = gray.white;
-const QR = component.shareCard.qr;
 
 /** 21 → "21ST", 12 → "12TH". */
 export function ordinal(n: number) {
@@ -188,7 +187,7 @@ function Cover({ card, u }: { card: BirthdayCardData; u: number }) {
               </T>
             ) : null}
           </View>
-          <QrCode value={card.url} size={QR} />
+          <QrCode value={card.url} size={BC.qr * u} />
         </View>
       </View>
     </View>
@@ -198,7 +197,7 @@ function Cover({ card, u }: { card: BirthdayCardData; u: number }) {
 /** B 奖章: the photo in a silver ring, the age on a medal under it, the dates between birth and this birthday. */
 function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
   const id = useId().replaceAll(":", "");
-  const ring = 212 * u;
+  const ring = 200 * u;
   const badge = 76 * u;
   return (
     <View className="absolute inset-0 items-center">
@@ -212,7 +211,7 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
         </Defs>
         <Rect x="0" y="0" width="1" height="1" fill={`url(#bg${id})`} />
       </Svg>
-      <View style={{ marginTop: 44 * u, width: ring, height: ring, borderRadius: ring / 2, padding: 7 * u, overflow: "hidden" }}>
+      <View style={{ marginTop: 40 * u, width: ring, height: ring, borderRadius: ring / 2, padding: 7 * u, overflow: "hidden" }}>
         <Svg style={{ position: "absolute", inset: 0 }} width="100%" height="100%" viewBox="0 0 1 1">
           <Defs>
             <LinearGradient id={`ring${id}`} x1="0" y1="0" x2="1" y2="1">
@@ -267,7 +266,7 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
       </View>
       <View
         className="absolute flex-row items-end justify-between"
-        style={{ bottom: 18 * u, left: 22 * u, right: 22 * u, gap: 12 * u }}
+        style={{ bottom: 12 * u, left: 22 * u, right: 22 * u, gap: 12 * u }}
       >
         <View className="shrink" style={{ gap: 2 * u }}>
           <T u={u} size={13} className="font-bold" style={{ color: WHITE }}>
@@ -279,7 +278,7 @@ function Medal({ card, u }: { card: BirthdayCardData; u: number }) {
             </T>
           ) : null}
         </View>
-        <QrCode value={card.url} size={QR} />
+        <QrCode value={card.url} size={BC.qr * u} />
       </View>
     </View>
   );
@@ -362,9 +361,9 @@ function Poster({ card, u }: { card: BirthdayCardData; u: number }) {
         </View>
       </View>
       <View className="absolute" style={{ right: 16 * u, bottom: 16 * u }}>
-        <QrCode value={card.url} size={QR} />
+        <QrCode value={card.url} size={BC.qr * u} />
       </View>
-      <View className="absolute flex-row items-baseline" style={{ right: 16 * u, bottom: 16 * u + QR + 4 * u, gap: 4 * u }}>
+      <View className="absolute flex-row items-baseline" style={{ right: 16 * u, bottom: 16 * u + BC.qr * u + 4 * u, gap: 4 * u }}>
         <T u={u} size={20} className="font-rounded font-bold tabular-nums" style={{ color: sky[600] }}>
           {`${Number(m)}.${Number(d)}`}
         </T>
