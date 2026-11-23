@@ -77,7 +77,8 @@
   --pa-ease: cubic-bezier(0.215, 0.61, 0.355, 1);
   --pa-duration: 250ms;
   --pa-focus-ring: 0 0 0 0.125rem var(--pa-color-canvas), 0 0 0 0.25rem var(--pa-color-highlight);
-  --pa-space-page: clamp(1rem, 4vw, 4rem);
+  /* viewport-fit=cover lets a landscape iPhone put its notch inside the page; every page margin clears it. */
+  --pa-space-page: max(clamp(1rem, 4vw, 4rem), env(safe-area-inset-left), env(safe-area-inset-right));
   --pa-content-max: 77.5rem;
 
   /* The type scale: four sizes, nothing below 12px. */

@@ -30,7 +30,7 @@ main {
 
 /*
  * iOS Safari zooms the whole page into a form control whose text is under 16px, and does not zoom back. On touch
- * screens every field, select and text area gets at least 16px.
+ * screens a field, select or text area gets at least 16px; a component that sets its own font repeats the rule.
  */
 @media (pointer: coarse) {
   :where(input, select, textarea) {
