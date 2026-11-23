@@ -57,7 +57,6 @@ export async function signIn(app: App, screen: Screen, email: string): Promise<v
 export async function enterCode(screen: Screen, email: string): Promise<void> {
   await screen.getByLabel("邮箱").fill(email);
   await screen.getByRole("button", "获取验证码").tap();
+  // The sixth digit signs in on its own.
   await screen.getByLabel("验证码").fill(await latestCode(email));
-  // The code screen's own 登录 button, after the header's.
-  await screen.getByRole("button", "登录").last().tap();
 }
