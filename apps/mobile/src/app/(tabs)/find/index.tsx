@@ -26,6 +26,7 @@ import { SearchField } from "@/features/pandas/search-field";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { PAGE_COLUMN } from "@/lib/surface";
+import { cn } from "@/lib/utils";
 
 /**
  * iOS searches from the system search bar under the large title, which the bar and its Liquid Glass
@@ -49,18 +50,22 @@ function FindToolCard({
 }) {
   return (
     <Pressable
-      role="link"
-      accessibilityLabel={`${title}，${subtitle}`}
+      role="button"
+      accessibilityLabel={title}
+      accessibilityHint={subtitle}
       onPress={() => router.push(href)}
-      className="min-h-11 flex-1 flex-row items-center gap-2.5 rounded-group bg-card px-3.5 py-3 active:opacity-75"
+      className={cn(
+        "min-h-11 flex-row items-center gap-2.5 rounded-group bg-card px-3 py-3 active:opacity-75",
+        !stacked && "min-w-0 flex-1",
+      )}
       style={{ borderCurve: "continuous" }}
     >
       <Icon icon={icon} size="body" tone="tint" strokeWidth={2} />
       <View className="min-w-0 flex-1 gap-hair-gap">
-        <Text variant="headline" numberOfLines={stacked ? undefined : 1}>
+        <Text variant="headline" numberOfLines={stacked ? undefined : 2}>
           {title}
         </Text>
-        <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : 1}>
+        <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : 2}>
           {subtitle}
         </Text>
       </View>
@@ -75,7 +80,7 @@ function FindTools() {
   return (
     <View className={stacked ? "gap-2.5" : "flex-row gap-2.5"}>
       <FindToolCard href="/relationship" icon={Network} title="查关系" subtitle="谱系亲缘链" stacked={stacked} />
-      <FindToolCard href="/learn" icon={ScanFace} title="认脸图鉴" subtitle="眼斑与脸型区分" stacked={stacked} />
+      <FindToolCard href="/learn" icon={ScanFace} title="认脸图鉴" subtitle="眼斑与脸型" stacked={stacked} />
     </View>
   );
 }

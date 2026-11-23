@@ -4,7 +4,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { ListCell, ListSection, useSingleColumn } from "@/components/grouped-list";
+import { useSingleColumn } from "@/components/grouped-list";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PandaTile } from "@/components/panda-tile";
@@ -76,7 +76,6 @@ function Residents({ pandas }: { pandas: MapPandaInput[] }) {
 
 function Loaded({ place }: { place: PlacePage }) {
   const hero = useInstitutionHero(place.residents);
-  const institution = place.institution;
   return (
     <Animated.View entering={PAGE_ENTER} className="gap-section">
       <Lead hero={place.residents.length > 0 ? hero : null} />
@@ -85,17 +84,6 @@ function Loaded({ place }: { place: PlacePage }) {
       ) : (
         <ScreenState message="现在没有熊猫住在这里。" className="py-stack" />
       )}
-      {institution ? (
-        <ListSection title="所属">
-          <ListCell
-            label={institution.name}
-            detail="基地和动物园"
-            href={{ pathname: "/institutions/[slug]", params: { slug: institution.slug } }}
-            accessibilityLabel={`${institution.name}，基地和动物园`}
-            last
-          />
-        </ListSection>
-      ) : null}
       {hero?.credit ? (
         <Text variant="footnote" className="px-inset text-muted-foreground">
           {`顶部照片：${hero.pandaName}，${hero.credit}`}

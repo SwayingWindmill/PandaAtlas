@@ -54,7 +54,7 @@ function AskEntry() {
         role="link"
         accessibilityLabel="问问熊猫，基于已核实科普回答"
         onPress={() => router.push("/learn/ask")}
-        className="min-h-11 flex-row items-center gap-row rounded-group bg-highlight-soft px-4 py-3.5 active:opacity-80"
+        className="min-h-11 flex-row items-center gap-row rounded-group bg-card px-4 py-3.5 active:opacity-80"
         style={{ borderCurve: "continuous" }}
       >
         <Icon icon={MessageCircleQuestion} size="body" tone="tint" strokeWidth={2} />
@@ -289,6 +289,7 @@ export default function LearnScreen() {
 
 /** Magazine lead story with bottom scrim overlay when a hero photo exists. */
 function FeaturedArticle({ article }: { article: CatalogArticle }) {
+  const stacked = useStacked();
   const title = learningText(article.title);
   const hero = articleHero(article);
   const metaLine = `${article.category}　${readingMinutes(article)} 分钟阅读`;
@@ -301,7 +302,7 @@ function FeaturedArticle({ article }: { article: CatalogArticle }) {
       className="overflow-hidden rounded-card bg-card"
       style={{ borderCurve: "continuous" }}
     >
-      {hero?.asset ? (
+      {hero?.asset && !stacked ? (
         <View style={{ aspectRatio: 4 / 3 }} className="w-full overflow-hidden bg-media-placeholder">
           <RemoteImage
             source={hero.asset}
@@ -323,17 +324,27 @@ function FeaturedArticle({ article }: { article: CatalogArticle }) {
           </View>
         </View>
       ) : (
-        <View className="gap-stack-tight p-stack">
-          <Text variant="title" role="none">
-            {title}
-          </Text>
-          <Text variant="subheadline" className="text-muted-foreground" numberOfLines={3}>
-            {learningText(article.dek)}
-          </Text>
-          <Text variant="footnote" className="text-muted-foreground">
-            {metaLine}
-          </Text>
-        </View>
+        <>
+          {hero?.asset ? (
+            <RemoteImage
+              source={hero.asset}
+              style={{ width: "100%", aspectRatio: 4 / 3 }}
+              contentFit="cover"
+              accessible={false}
+            />
+          ) : null}
+          <View className="gap-stack-tight p-stack">
+            <Text variant="footnote" className="text-muted-foreground">
+              {metaLine}
+            </Text>
+            <Text variant="title" role="none">
+              {title}
+            </Text>
+            <Text variant="subheadline" className="text-muted-foreground" numberOfLines={stacked ? undefined : 3}>
+              {learningText(article.dek)}
+            </Text>
+          </View>
+        </>
       )}
       <PhotoOutline radius={RADIUS.card} />
     </PressScale>

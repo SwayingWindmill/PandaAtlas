@@ -122,6 +122,8 @@ export function ZoomablePhoto({
             tx.set(0);
             ty.set(0);
             onZoomChange(false);
+          } else {
+            onZoomChange(true);
           }
         },
       }),
@@ -144,7 +146,7 @@ export function ZoomablePhoto({
 
   return (
     <View style={{ width, height, overflow: "hidden" }} {...panResponder.panHandlers}>
-      <Pressable accessible={false} onPress={handleTap} style={{ width, height }}>
+      <Pressable accessible={false} tabIndex={-1} onPress={handleTap} style={{ width, height }}>
         <Animated.View style={[{ width, height }, animatedStyle]}>
           <RemoteImage
             source={uri}

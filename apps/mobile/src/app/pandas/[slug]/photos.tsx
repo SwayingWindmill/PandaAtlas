@@ -6,6 +6,7 @@ import { FlatList, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LoadFailed } from "@/components/load-failed";
+import { ScreenState } from "@/components/screen-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -21,18 +22,19 @@ export default function PhotosScreen() {
   const { width } = useWindowDimensions();
   const list = useRef<FlatList<Photo>>(null);
   const { data: photos, isError: failed, refetch } = useQuery(photosQueryOptions(slug));
+  const requestedIndex = parsePhotoIndex(indexParam, Number.MAX_SAFE_INTEGER);
   const initialIndex = parsePhotoIndex(indexParam, photos?.length ?? 0);
   const [selected, setSelected] = useState<number | null>(null);
   const [zoomed, setZoomed] = useState(false);
-  // Prevents an initial x = 0 layout scroll on web from overriding a non-zero initialIndex.
-  const [aligned, setAligned] = useState(initialIndex === 0);
+  // Defer scroll-sync until photos load and initial non-zero scroll completes.
+  const [aligned, setAligned] = useState(requestedIndex === 0);
   // The pager's own height: a percentage height inside a horizontal list resolves to 0 on web.
   const [pageHeight, setPageHeight] = useState(0);
 
   const index = Math.min(selected ?? initialIndex, Math.max((photos?.length ?? 1) - 1, 0));
 
   useEffect(() => {
-    if (!photos || width <= 0 || pageHeight <= 0 || aligned) return;
+    if (!photos || photos.length === 0 || width <= 0 || pageHeight <= 0 || aligned) return;
     list.current?.scrollToIndex({ index: initialIndex, animated: false });
     const timer = setTimeout(() => setAligned(true), 50);
     return () => clearTimeout(timer);
@@ -84,6 +86,8 @@ export default function PhotosScreen() {
         ) : (
           <Skeleton className="mx-5 mt-6 h-96" accessibilityLabel="正在加载照片" />
         )
+      ) : photos.length === 0 ? (
+        <ScreenState message="暂无照片。" />
       ) : (
         <>
           <FlatList
