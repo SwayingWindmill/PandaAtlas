@@ -17,7 +17,8 @@ The app talks to `https://api.zhipanda.com` by default. To point it at a local A
 `EXPO_PUBLIC_API_BASE_URL` (for example `http://192.168.1.20:3000`) before starting.
 
 Crash reports go to Sentry only when `EXPO_PUBLIC_SENTRY_DSN` is set at build time. Without it, local
-runs and e2e send nothing.
+runs and e2e send nothing. Before setting it for a store build, name Sentry as a processor in the privacy
+policy (`apps/web/features/legal/documents.ts`) and turn off IP storage in the Sentry project.
 
 ## Styling and components
 

@@ -34,3 +34,4 @@ Each feature file starts with an H1 title and one paragraph on the user-visible 
 - [Sign-in](./sign-in.md) covers email-code sign-in, a wrong code, renaming the account and signing out.
 - [Collections and visits](./collections-visits.md) covers making, renaming, emptying and deleting a collection, and recording a visit.
 - [Account and data](./account-privacy.md) covers data export, account deletion confirmation, and user-initiated email OTP re-verification on recent-auth expiry.
+- [Error pages](./error-pages.md) covers 找不到页面 for an unknown link and the root error page when a screen throws.

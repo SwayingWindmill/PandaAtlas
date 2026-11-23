@@ -1,6 +1,4 @@
-import { MutationCache, notifyManager, QueryCache, QueryClient } from "@tanstack/react-query";
-
-import { reportError } from "@/lib/error-reporting";
+import { notifyManager, QueryClient } from "@tanstack/react-query";
 
 // Query Core gives every finished fetch its own setTimeout to tell React. Covers come back fifty to a
 // response, so a list of thumbnails got fifty tasks, each a separate sync commit of one row. Each commit
@@ -29,14 +27,29 @@ notifyManager.setScheduler((callback) => {
 
 // Public queries keep the existing network-first offline fallback available.
 export const queryClient = new QueryClient({
-  queryCache: new QueryCache({ onError: (error) => reportError(error, "query") }),
-  // A mutation with its own onError already shows the failure to the fan; only the unhandled ones report.
-  mutationCache: new MutationCache({
-    onError: (error, _variables, _context, mutation) => {
-      if (!mutation.options.onError) reportError(error, "mutation");
-    },
-  }),
   defaultOptions: {
     queries: { staleTime: 60_000, retry: 1 },
   },
 });
+
+/**
+ * Hands every failed query, and every failed mutation that has no onError of its own, to `report`. The
+ * reporter is passed in so this module stays free of React Native and loads in unit tests.
+ */
+export function reportCacheErrors(
+  client: QueryClient,
+  report: (error: unknown, source: "query" | "mutation") => void,
+): () => void {
+  const queries = client.getQueryCache().subscribe((event) => {
+    if (event.type === "updated" && event.action.type === "error") report(event.action.error, "query");
+  });
+  const mutations = client.getMutationCache().subscribe((event) => {
+    if (event.type !== "updated" || event.action.type !== "error") return;
+    // A mutation with its own onError already shows the failure to the fan.
+    if (!event.mutation.options.onError) report(event.action.error, "mutation");
+  });
+  return () => {
+    queries();
+    mutations();
+  };
+}

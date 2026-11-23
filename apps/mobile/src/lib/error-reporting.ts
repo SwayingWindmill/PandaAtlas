@@ -68,12 +68,19 @@ export function reportError(error: unknown, source: ErrorSource): void {
   );
 }
 
+let installed = false;
+
 /** Reports uncaught JS errors on native, then hands them to React Native's own handler (the red box, or the crash). */
 export function installGlobalErrorReporting(): void {
-  if (typeof ErrorUtils === "undefined") return;
+  // Fast Refresh re-runs the root layout's module; wrapping the handler again would report each error twice.
+  if (installed || typeof ErrorUtils === "undefined") return;
+  installed = true;
   const previous = ErrorUtils.getGlobalHandler();
   ErrorUtils.setGlobalHandler((error, isFatal) => {
-    reportError(error, isFatal ? "fatal" : "global");
-    previous(error, isFatal);
+    try {
+      reportError(error, isFatal ? "fatal" : "global");
+    } finally {
+      previous(error, isFatal);
+    }
   });
 }
