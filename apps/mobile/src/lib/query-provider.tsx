@@ -3,7 +3,8 @@ import * as Network from "expo-network";
 import { useEffect, type ReactNode } from "react";
 import { AppState, Platform } from "react-native";
 
-import { queryClient } from "@/lib/query-client";
+import { reportError } from "@/lib/error-reporting";
+import { queryClient, reportCacheErrors } from "@/lib/query-client";
 
 if (Platform.OS !== "web") {
   onlineManager.setEventListener((setOnline) => {
@@ -20,6 +21,7 @@ if (Platform.OS !== "web") {
 }
 
 export function QueryProvider({ children }: { children: ReactNode }) {
+  useEffect(() => reportCacheErrors(queryClient, reportError), []);
   useEffect(() => {
     if (Platform.OS === "web") return;
     const subscription = AppState.addEventListener("change", (status) => focusManager.setFocused(status === "active"));

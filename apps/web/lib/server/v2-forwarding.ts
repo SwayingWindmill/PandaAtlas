@@ -48,6 +48,25 @@ const ROUTES: readonly ForwardedRoute[] = [
   route("/api/notification/inbox/:inboxItemId/read", "/api/v2/me/notifications/{messageId}/read", "PATCH"),
 ];
 
+export const FORWARDED_CLIENT_IP_HEADER = "x-zhipanda-client-ip";
+
+export function forwardedClientIpHeaders(headers: Headers): Record<string, string> {
+  const clientIp = headers.get("cf-connecting-ip")?.trim();
+  return clientIp ? { [FORWARDED_CLIENT_IP_HEADER]: clientIp } : {};
+}
+
+export function forwardedResponseHeaders(
+  upstreamHeaders: Headers,
+  extraNames: readonly string[] = [],
+): Headers {
+  const headers = new Headers({ "Cache-Control": "no-store, private" });
+  for (const name of [...extraNames, "www-authenticate", "retry-after"]) {
+    const value = upstreamHeaders.get(name);
+    if (value !== null) headers.set(name, value);
+  }
+  return headers;
+}
+
 export interface ForwardingDependencies {
   baseUrl: string;
   transport: (request: Request) => Promise<Response>;
@@ -140,6 +159,7 @@ export async function forwardToV2(request: Request, dependencies: ForwardingDepe
     Accept: "application/json",
     Authorization: `Bearer ${accessToken}`,
     "X-Correlation-Id": crypto.randomUUID(),
+    ...forwardedClientIpHeaders(request.headers),
   });
   let body: string | undefined;
   if (request.method !== "GET") {
@@ -154,10 +174,6 @@ export async function forwardToV2(request: Request, dependencies: ForwardingDepe
   const upstream = await dependencies.transport(
     new Request(`${dependencies.baseUrl}${apiPath}${url.search}`, { method: request.method, headers, body }),
   );
-  const responseHeaders = new Headers({ "Cache-Control": "no-store, private" });
-  for (const name of ["content-type", "www-authenticate"]) {
-    const value = upstream.headers.get(name);
-    if (value !== null) responseHeaders.set(name, value);
-  }
+  const responseHeaders = forwardedResponseHeaders(upstream.headers, ["content-type"]);
   return new Response(upstream.status === 204 ? null : upstream.body, { status: upstream.status, headers: responseHeaders });
 }

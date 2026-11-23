@@ -31,3 +31,25 @@ export const queryClient = new QueryClient({
     queries: { staleTime: 60_000, retry: 1 },
   },
 });
+
+/**
+ * Hands every failed query, and every failed mutation that has no onError of its own, to `report`. The
+ * reporter is passed in so this module stays free of React Native and loads in unit tests.
+ */
+export function reportCacheErrors(
+  client: QueryClient,
+  report: (error: unknown, source: "query" | "mutation") => void,
+): () => void {
+  const queries = client.getQueryCache().subscribe((event) => {
+    if (event.type === "updated" && event.action.type === "error") report(event.action.error, "query");
+  });
+  const mutations = client.getMutationCache().subscribe((event) => {
+    if (event.type !== "updated" || event.action.type !== "error") return;
+    // A mutation with its own onError already shows the failure to the fan.
+    if (!event.mutation.options.onError) report(event.action.error, "mutation");
+  });
+  return () => {
+    queries();
+    mutations();
+  };
+}

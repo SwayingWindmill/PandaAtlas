@@ -1,0 +1,39 @@
+.term {
+  position: relative;
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: var(--pa-color-highlight);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
+
+.termCard {
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  top: calc(100% + 8px);
+  display: none;
+  width: min(18rem, 80vw);
+  padding: 12px 14px;
+  border-radius: var(--pa-radius-lg);
+  background: var(--pa-color-surface);
+  box-shadow: var(--pa-shadow-float);
+  color: var(--pa-color-ink);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-decoration: none;
+  white-space: normal;
+}
+
+.term:hover .termCard,
+.term:focus-visible .termCard {
+  display: grid;
+  gap: 4px;
+}
+
+@media (hover: none) {
+  .term:hover .termCard {
+    display: none;
+  }
+}

@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, View } from "react-native";
@@ -8,6 +7,7 @@ import Animated from "react-native-reanimated";
 import { Chevron } from "@/components/grouped-list";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
+import { RemoteImage } from "@/components/remote-image";
 import { ScreenState } from "@/components/screen-state";
 import { Segmented } from "@/components/segmented";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,6 +17,7 @@ import { LOOK_ALIKE_NOTES, type LookAlikePair, lookAlikePairs } from "@/features
 import { useLearningCatalog } from "@/features/learning/use-catalog";
 import { loadPandaIndex } from "@/features/pandas/pandas";
 import { usePandaCover } from "@/lib/covers";
+import { nameInitial } from "@/lib/panda";
 import { loadLineage } from "@/lib/public-data";
 
 const GAP = 2;
@@ -27,10 +28,10 @@ function Half({ panda }: { panda: LookAlikePair["a"] }) {
   return (
     <View className="flex-1 items-center justify-center bg-media-placeholder" style={{ aspectRatio: 3 / 2 }}>
       {photo ? (
-        <Image source={photo} style={{ position: "absolute", inset: 0 }} contentFit="cover" accessible={false} />
+        <RemoteImage source={photo} style={{ position: "absolute", inset: 0 }} contentFit="cover" accessible={false} />
       ) : (
         <Text variant="title" className="text-muted-foreground">
-          {panda.name.slice(0, 1)}
+          {nameInitial(panda.name)}
         </Text>
       )}
     </View>

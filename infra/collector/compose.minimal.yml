@@ -1,0 +1,85 @@
+# Minimal V1 runtime stack for zero-login official + Weibo visitor targets (bjzoo + weibo_rsshub).
+#
+#   cp infra/collector/env.minimal.example infra/collector/.env.minimal
+#   docker compose -f infra/collector/compose.minimal.yml --env-file infra/collector/.env.minimal up -d --build
+name: zhipanda-collector-v1
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: collector
+      POSTGRES_PASSWORD: ${COLLECTOR_DB_PASSWORD:-collector}
+      POSTGRES_DB: collector
+    ports:
+      - "127.0.0.1:${COLLECTOR_DB_PORT:-55432}:5432"
+    volumes:
+      - collector-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U collector -d collector"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rsshub:
+    image: diygod/rsshub:chromium-bundled
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      CACHE_TYPE: redis
+      REDIS_URL: redis://redis:6379/
+      CACHE_EXPIRE: 600
+      WEIBO_COOKIES: ${WEIBO_COOKIE:-}
+    ports:
+      - "127.0.0.1:${RSSHUB_PORT:-1200}:1200"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:1200/healthz').then((r)=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  collector:
+    build:
+      context: ../..
+      dockerfile: services/collector/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rsshub:
+        condition: service_healthy
+    environment:
+      COLLECTOR_DATABASE_URL: postgresql://collector:${COLLECTOR_DB_PASSWORD:-collector}@postgres:5432/collector
+      RSSHUB_URL: http://rsshub:1200
+      COLLECTOR_ALERT_WEBHOOK: ${COLLECTOR_ALERT_WEBHOOK:-}
+      COLLECTOR_ALERT_FORMAT: ${COLLECTOR_ALERT_FORMAT:-feishu}
+      COLLECTOR_RSS_CONCURRENCY: ${COLLECTOR_RSS_CONCURRENCY:-4}
+      AIHOT_URL: ${AIHOT_URL:-}
+      AIHOT_INGEST_TOKEN: ${AIHOT_INGEST_TOKEN:-}
+    volumes:
+      - ../../data/collector:/app/data/collector:ro
+      - ../../data/curation/learning/published-pandas.json:/app/data/curation/learning/published-pandas.json:ro
+      - collector-state:/var/lib/collector
+
+volumes:
+  collector-db:
+  collector-state:

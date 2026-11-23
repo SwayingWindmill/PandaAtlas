@@ -740,18 +740,34 @@ export const loadV2PublicInstitutionSlugs = cache(async (): Promise<string[]> =>
   return institutions.items.map((item) => item.slug);
 });
 
-/** The institution page that replaces a facility's place page, when the facility belongs to one. */
-export const resolveV2InstitutionSlugForPlace = cache(async (placeId: string): Promise<string | null> => {
+const loadV2PlacesAndInstitutions = cache(async () => {
   const client = createServerV2Client();
   const [placesResult, institutionsResult] = await Promise.all([
     settlePublicRead(client.GET("/api/v2/places")),
     settlePublicRead(client.GET("/api/v2/institutions")),
   ]);
-  const places = requirePublicCollection(placesResult);
-  const institutions = requirePublicCollection(institutionsResult);
-  const place = places.items.find((item) => item.placeId === placeId);
-  if (!place?.institutionId || place.placeType !== "facility") return null;
-  return institutions.items.find((item) => item.institutionId === place.institutionId)?.slug ?? null;
+  return {
+    places: requirePublicCollection(placesResult).items,
+    institutions: requirePublicCollection(institutionsResult).items,
+  };
+});
+
+function institutionSlugForPlace(place: V2InstitutionPlace, institutions: readonly V2Institution[]): string | null {
+  if (!place.institutionId || place.placeType !== "facility") return null;
+  return institutions.find((item) => item.institutionId === place.institutionId)?.slug ?? null;
+}
+
+/** The institution page that replaces a facility's place page, when the facility belongs to one. */
+export const resolveV2InstitutionSlugForPlace = cache(async (placeId: string): Promise<string | null> => {
+  const { places, institutions } = await loadV2PlacesAndInstitutions();
+  const place = places.find((item) => item.placeId === placeId);
+  return place ? institutionSlugForPlace(place, institutions) : null;
+});
+
+/** Slugs of places that render their own page instead of redirecting to an institution. */
+export const loadV2PublicPlaceSlugs = cache(async (): Promise<string[]> => {
+  const { places, institutions } = await loadV2PlacesAndInstitutions();
+  return places.filter((place) => !institutionSlugForPlace(place, institutions)).map((place) => place.slug);
 });
 
 function sourceOccurrence(event: PandaDetail["events"][number], pandasById: Map<string, PandaDetail>): PublicMomentOccurrence {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { createServerV2Client, v2JsonResponse } from "@/lib/server/v2-api";
-import { refuseStateChange } from "@/lib/server/v2-forwarding";
+import { forwardedClientIpHeaders, refuseStateChange } from "@/lib/server/v2-forwarding";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
   const locale = body.locale === "en" ? "en" : "zh";
   const client = createServerV2Client();
   const answerResult = await client.POST("/api/v2/games/guess/answer", {
+    headers: forwardedClientIpHeaders(request.headers),
     body: {
       questionId: body.questionId,
       selectedPandaId: body.selectedPandaId,

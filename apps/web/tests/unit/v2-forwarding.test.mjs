@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { forwardToV2, refuseStateChange } from "../../lib/server/v2-forwarding.ts";
+import {
+  FORWARDED_CLIENT_IP_HEADER,
+  forwardedClientIpHeaders,
+  forwardedResponseHeaders,
+  forwardToV2,
+  refuseStateChange,
+} from "../../lib/server/v2-forwarding.ts";
 
 const ORIGIN = "https://www.example.test";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
@@ -151,4 +157,39 @@ test("the API's status, body and challenge come back unchanged", async () => {
   assert.equal(response.status, 401);
   assert.equal(response.headers.get("www-authenticate"), 'Bearer error="invalid_token"');
   assert.deepEqual(await response.json(), { status: 401, code: "auth.invalidToken" });
+});
+
+test("forwardToV2 forwards trimmed client IP from cf-connecting-ip and preserves Retry-After on 429", async () => {
+  const { dependencies, upstream } = harness({
+    reply: () =>
+      Response.json(
+        { status: 429, code: "request.rateLimited" },
+        { status: 429, headers: { "retry-after": "60" } },
+      ),
+  });
+
+  const response = await forwardToV2(
+    request("POST", "/api/community-intake/submissions", {
+      headers: {
+        "sec-fetch-site": "same-origin",
+        "content-type": "application/json",
+        "cf-connecting-ip": " 198.51.100.42 ",
+      },
+      body: "{}",
+    }),
+    dependencies,
+  );
+
+  assert.equal(upstream.length, 1);
+  assert.equal(upstream[0].request.headers.get(FORWARDED_CLIENT_IP_HEADER), "198.51.100.42");
+  assert.equal(response.status, 429);
+  assert.equal(response.headers.get("retry-after"), "60");
+  assert.equal(response.headers.get("cache-control"), "no-store, private");
+
+  assert.deepEqual(forwardedClientIpHeaders(new Headers({ "cf-connecting-ip": "   " })), {});
+  assert.deepEqual(forwardedClientIpHeaders(new Headers()), {});
+  const jsonHeaders = forwardedResponseHeaders(new Headers({ "retry-after": "45", "www-authenticate": "Bearer" }));
+  assert.equal(jsonHeaders.get("retry-after"), "45");
+  assert.equal(jsonHeaders.get("www-authenticate"), "Bearer");
+  assert.equal(jsonHeaders.get("cache-control"), "no-store, private");
 });

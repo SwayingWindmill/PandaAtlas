@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
 import { HeroHeader, useHeroScroll } from "@/components/hero-header";
@@ -17,6 +18,8 @@ import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { CompareRows } from "@/features/compare/compare-rows";
 import { PandaActions } from "@/features/engagement/panda-actions";
+import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { recordView } from "@/features/pandas/recent";
 import { profileQueryOptions } from "@/features/pandas/profile";
 import { FamilyTab } from "@/features/pandas/profile-family-tab";
 import {
@@ -30,12 +33,48 @@ import {
   openPandaCorrection,
 } from "@/features/pandas/profile-overview";
 import { PhotosTab } from "@/features/pandas/profile-photos-tab";
+import { queryClient } from "@/lib/query-client";
 import { PAGE_COLUMN } from "@/lib/surface";
 
 /** Hero height below the status bar. The photo runs under the status bar too. */
 const HERO = 320;
 /** How far the name block rides up onto the photo's faded bottom. */
 const OVERLAP = 64;
+
+/**
+ * Whether the profile will open on a photo, from the list and cover already loaded on the way here: most pandas
+ * have no cover, and a skeleton that always reserves one jumps by the hero's height when the profile lands.
+ * Unknown (opened from a link) counts as a photo.
+ */
+function expectsPhoto(slug: string): boolean {
+  const id = queryClient.getQueryData(pandaIndexQueryOptions().queryKey)?.find((item) => item.slug === slug)?.id;
+  return id === undefined || queryClient.getQueryData(["public", "panda-cover", id]) !== null;
+}
+
+function ProfileSkeleton({ slug }: { slug: string }) {
+  const insets = useSafeAreaInsets();
+  const photo = expectsPhoto(slug);
+  return (
+    <View accessibilityLabel="正在加载资料">
+      {photo ? (
+        <Skeleton className="w-full rounded-none" style={{ height: HERO + insets.top }} />
+      ) : (
+        <View className="px-gutter pb-4" style={[PAGE_COLUMN, { paddingTop: insets.top + 64 }]}>
+          <Skeleton className="h-24 w-full rounded-group" />
+        </View>
+      )}
+      <View className="gap-4 px-gutter" style={[PAGE_COLUMN, photo ? { marginTop: -OVERLAP } : null]}>
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-12 w-full rounded-pill" />
+        <View className="flex-row gap-2.5">
+          {[0, 1, 2].map((key) => (
+            <Skeleton key={key} className="h-24 flex-1 rounded-tile" />
+          ))}
+        </View>
+      </View>
+    </View>
+  );
+}
 
 type Tab = "overview" | "family" | "photos" | "events";
 const TABS: { value: Tab; label: string }[] = [
@@ -51,6 +90,10 @@ export default function ProfileScreen() {
   const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
   const [tab, setTab] = useState<Tab>(() => TABS.find((item) => item.value === opened)?.value ?? "overview");
   const page = String(useCSSVariable("--color-background"));
+  const viewedId = profile?.id;
+  useEffect(() => {
+    if (viewedId) void recordView(viewedId);
+  }, [viewedId]);
 
   if (!profile) {
     return (
@@ -61,18 +104,7 @@ export default function ProfileScreen() {
             <LoadFailed message="资料暂时打不开。" onRetry={() => void refetch()} />
           </View>
         ) : (
-          <View className="gap-4" accessibilityLabel="正在加载资料">
-            <Skeleton className="h-96 w-full rounded-none" />
-            <View className="gap-4 px-gutter">
-              <Skeleton className="h-10 w-32" />
-              <Skeleton className="h-12 w-full rounded-pill" />
-              <View className="flex-row gap-2.5">
-                {[0, 1, 2].map((key) => (
-                  <Skeleton key={key} className="h-24 flex-1 rounded-tile" />
-                ))}
-              </View>
-            </View>
-          </View>
+          <ProfileSkeleton slug={slug} />
         )}
       </View>
     );

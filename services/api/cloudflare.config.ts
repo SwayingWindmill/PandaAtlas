@@ -34,6 +34,8 @@ export default defineConfig(() => ({
         AI_SEARCH: bindings.aiSearch({ name: "zhipanda-knowledge" }),
         // Five questions a minute per client address; the per-account daily quota lives in Postgres.
         ASK_RATE_LIMIT: bindings.rateLimit({ namespace: "1001", simple: { limit: 5, period: 60 } }),
+        WRITE_RATE_LIMIT: bindings.rateLimit({ namespace: "1002", simple: { limit: 60, period: 60 } }),
+        SENSITIVE_RATE_LIMIT: bindings.rateLimit({ namespace: "1003", simple: { limit: 5, period: 60 } }),
       },
     },
   }));

@@ -3,7 +3,7 @@
 // and served without running the Worker. A genuine not-found for one of those pages is cached
 // briefly too, so a guessed slug does not re-render. Every other response is explicitly
 // uncacheable, so Cloudflare's heuristic freshness never caches a redirect, error or private response.
-const PUBLIC_PAGE = /^\/(?:zh|en)(?:\/(?:pandas|families|moments|map|places|institutions|games|search|terms|privacy)(?:\/[^/]+)*)?$/u;
+const PUBLIC_PAGE = /^\/(?:zh|en)(?:\/(?:pandas|families|moments|map|places|institutions|games|search|terms|privacy|about|learn|app)(?:\/[^/]+)*)?$/u;
 const PUBLIC_FILES = new Set(["/sitemap.xml"]);
 const PAGE_CONTENT = /^text\/(?:html|x-component)\b/u;
 

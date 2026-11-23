@@ -1,5 +1,6 @@
-import { router, useFocusEffect } from "expo-router";
-import { type ReactNode, useCallback, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
+import { type ReactNode, useState } from "react";
 import { Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -24,17 +25,22 @@ import {
   cancellable,
   dayKey,
   dayMark,
+  checkinsQueryKey,
+  checkinsQueryOptions,
   leaveLeftIn,
-  loadCheckins,
   rulesNote,
   takeLeave,
   upcomingLeave,
   visitsIn,
 } from "@/features/checkin/checkin";
 import { DayCircle, LegendItem, useDayCircle } from "@/features/checkin/day-mark";
+import { localToday } from "@/features/engagement/seen";
+import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
 import { selectionHaptic, successHaptic } from "@/lib/haptics";
+import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE } from "@/lib/surface";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 const WEEK = ["一", "二", "三", "四", "五", "六", "日"];
 /** A day's circle: 36pt inside a 48pt-tall cell, as the 熊猫日历 grid draws one. */
@@ -226,29 +232,29 @@ function LeaveSection({
 
 export default function CheckinScreen() {
   const { state: session } = useSession();
-  const signedIn = session.status === "signedIn";
-  const [summary, setSummary] = useState<CheckinSummary | null>(null);
-  const [failed, setFailed] = useState(false);
+  const { accountId, unavailable } = useAccount();
+  const queryClient = useQueryClient();
+  const today = localToday();
+  const list = useQuery({ ...checkinsQueryOptions(accountId ?? "", today), enabled: accountId !== null });
+  useRefetchOnFocus(list.refetch, accountId !== null);
+  const summary = list.data ?? null;
+  const failed = unavailable || failedWithoutData(list);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<CheckinFailure | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const stacked = useStacked();
-
-  const load = useCallback(() => {
-    if (!signedIn) return;
-    setFailed(false);
-    loadCheckins()
-      .then(setSummary)
-      .catch(() => setFailed(true));
-  }, [signedIn]);
-  useFocusEffect(load);
 
   async function change(work: () => Promise<CheckinSummary>, haptic: () => void, done: string) {
     setBusy(true);
     setProblem(null);
     setNotice(null);
     try {
-      setSummary(await work());
+      const next = await work();
+      if (accountId) {
+        const queryKey = checkinsQueryKey(accountId, today);
+        await queryClient.cancelQueries({ queryKey });
+        queryClient.setQueryData(queryKey, next);
+      }
       setNotice(done);
       haptic();
     } catch (error) {
@@ -289,7 +295,7 @@ export default function CheckinScreen() {
   return (
     <Page title="每日打卡">
       {failed ? (
-        <LoadFailed message="每日打卡暂时打不开。" onRetry={load} />
+        <LoadFailed message="每日打卡暂时打不开。" onRetry={() => accountId !== null && void list.refetch()} />
       ) : summary === null ? (
         <View className="gap-section" accessibilityLabel="正在加载每日打卡">
           <View className="flex-row gap-row">

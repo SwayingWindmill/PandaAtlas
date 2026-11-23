@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { Image } from "expo-image";
 import { useMemo } from "react";
 import { View } from "react-native";
 
 import { useStacked } from "@/components/grouped-list";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { Text } from "@/components/ui/text";
 import { localToday } from "@/features/engagement/seen";
@@ -168,7 +168,7 @@ export function WeekHero({
         }}
       >
         {cover ? (
-          <Image
+          <RemoteImage
             source={cover}
             style={{
               position: "absolute",

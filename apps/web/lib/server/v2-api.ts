@@ -5,7 +5,7 @@ import { env } from "cloudflare:workers";
 import { NextResponse } from "next/server";
 
 import { createCachedPublicGet, responseFromCache } from "@/lib/server/cached-public-get";
-import { sessionRequiredResponse } from "@/lib/server/v2-forwarding";
+import { forwardedResponseHeaders, sessionRequiredResponse } from "@/lib/server/v2-forwarding";
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 
 export const V2_API_BASE_URL = (process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001").replace(/\/$/, "");
@@ -63,9 +63,7 @@ export function authenticationRequiredResponse(): Response {
 }
 
 export function v2JsonResponse(result: V2Result): NextResponse {
-  const headers = new Headers({ "Cache-Control": "no-store, private" });
-  const authenticate = result.response.headers.get("www-authenticate");
-  if (authenticate) headers.set("WWW-Authenticate", authenticate);
+  const headers = forwardedResponseHeaders(result.response.headers);
 
   const body = result.data ?? result.error ?? null;
   if (body === null || result.response.status === 204) {

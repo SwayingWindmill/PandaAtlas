@@ -11,7 +11,8 @@ import { TrustedProfileMediaGallery } from "@/features/profile/trusted-profile-m
 import { PublicDeliveryNotice } from "@/features/public-content/public-delivery-notice";
 import { LicensedMediaFigure } from "@/features/profile/licensed-media-figure";
 import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
-import { buildPandaStructuredData, serializeStructuredData } from "@/features/profile/panda-structured-data";
+import { buildPandaStructuredData } from "@/features/profile/panda-structured-data";
+import { StructuredDataScript } from "@/components/structured-data-script";
 import type { PublicLocale } from "@/lib/locales";
 import type { PandaListItem } from "@/lib/types";
 import type {
@@ -247,7 +248,7 @@ export function TrustedProfilePage({
     const source = profile.sources.find((item) => item.id === sourceId);
     return source ? [source] : [];
   });
-  const structuredData = serializeStructuredData(buildPandaStructuredData({
+  const structuredData = buildPandaStructuredData({
     locale,
     stableId: profile.stableId,
     canonicalSlug: profile.canonicalSlug,
@@ -256,7 +257,7 @@ export function TrustedProfilePage({
     pinyin: profile.pinyin,
     summary: profile.summary,
     coverImageUrl: envelope.data.panda.cover_image_url,
-  }));
+  });
   // A stale, partial or untranslated delivery is a warning the reader needs before the facts;
   // live, reviewed data needs no notice at all.
   const deliveryNotice = (
@@ -279,11 +280,7 @@ export function TrustedProfilePage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        data-testid="panda-structured-data"
-        dangerouslySetInnerHTML={{ __html: structuredData }}
-      />
+      <StructuredDataScript data={structuredData} testId="panda-structured-data" />
       <ProfileVisitRecorder stableId={profile.stableId} slug={profile.canonicalSlug} />
       <main
         id="main-content"

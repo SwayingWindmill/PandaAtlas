@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
@@ -14,46 +15,39 @@ import {
   NAME_MAX,
   collectionName,
   createCollection,
-  loadCollections,
+  collectionsQueryOptions,
+  patchCollections,
   setInCollection,
 } from "@/features/collections/collections";
-import { type CorrectionTarget, loadCorrectionTarget } from "@/features/corrections/submissions";
+import { correctionTargetQueryOptions } from "@/features/corrections/submissions";
+import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
+import { failedWithoutData } from "@/lib/query-failed";
 
 /** Which of the fan's collections hold this panda; a tap adds or removes it. */
 export default function CollectScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const { state: session } = useSession();
   const muted = String(useCSSVariable("--color-muted-foreground"));
-  const [panda, setPanda] = useState<CorrectionTarget | null>(null);
-  const [collections, setCollections] = useState<Collection[] | null>(null);
-  const [failed, setFailed] = useState(false);
+  const { accountId } = useAccount();
   const [name, setName] = useState("");
   const [actionFailed, setActionFailed] = useState(false);
 
-  const signedIn = session.status === "signedIn";
-  const load = useCallback(() => {
-    if (!signedIn) return;
-    Promise.all([loadCorrectionTarget(slug), loadCollections()])
-      .then(([target, loaded]) => {
-        setPanda(target);
-        setCollections(loaded);
-      })
-      .catch(() => setFailed(true));
-  }, [slug, signedIn]);
-  useEffect(load, [load]);
+  const target = useQuery({ ...correctionTargetQueryOptions(slug), enabled: accountId !== null });
+  const list = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: accountId !== null });
+  const panda = target.data;
+  const collections = list.data;
+  const failed = failedWithoutData(target) || failedWithoutData(list);
 
-  function replace(next: Collection) {
-    setCollections(
-      (current) => current?.map((item) => (item.collectionId === next.collectionId ? next : item)) ?? null,
-    );
+  async function replace(next: Collection) {
+    if (accountId) await patchCollections(accountId, (current) => current.map((item) => (item.collectionId === next.collectionId ? next : item)));
   }
 
   async function toggle(collection: Collection, inside: boolean) {
     if (!panda) return;
     setActionFailed(false);
     try {
-      replace(await setInCollection(collection.collectionId, panda.pandaId, inside));
+      await replace(await setInCollection(collection.collectionId, panda.pandaId, inside));
     } catch {
       setActionFailed(true);
     }
@@ -65,7 +59,7 @@ export default function CollectScreen() {
     setActionFailed(false);
     try {
       const created = await setInCollection((await createCollection(valid)).collectionId, panda.pandaId, true);
-      setCollections((current) => [created, ...(current ?? [])]);
+      if (accountId) await patchCollections(accountId, (current) => [created, ...current]);
       setName("");
     } catch {
       setActionFailed(true);
@@ -93,11 +87,11 @@ export default function CollectScreen() {
         <LoadFailed
           message="合集暂时打不开。"
           onRetry={() => {
-            setFailed(false);
-            load();
+            if (failedWithoutData(target)) void target.refetch();
+            if (failedWithoutData(list)) void list.refetch();
           }}
         />
-      ) : collections === null || panda === null ? (
+      ) : !collections || !panda ? (
         <Skeleton className="h-40 w-full" accessibilityLabel="正在加载合集" />
       ) : (
         <>

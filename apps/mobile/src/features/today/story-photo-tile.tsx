@@ -1,10 +1,10 @@
-import { Image } from "expo-image";
 import { View } from "react-native";
 
 import { Icon } from "@/components/icon";
 import { Lock } from "@/components/icons";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { Text } from "@/components/ui/text";
 import { semantic } from "@/design/tokens";
@@ -39,7 +39,7 @@ export function StoryPhotoTile({ photo, width, slot }: { photo: StoryPhoto | und
       >
         {photo ? (
           <>
-            <Image source={photo.url} style={FILL} contentFit="cover" transition={200} accessible={false} />
+            <RemoteImage source={photo.url} style={FILL} contentFit="cover" transition={200} accessible={false} />
             <Scrim id={`story-tile-${slot}`} height="50%" />
             <Text
               variant="headline"
@@ -74,7 +74,7 @@ export function LockedPhotoTile({ photo, width }: { photo: StoryPhoto | undefine
       }}
     >
       {photo ? (
-        <Image source={photo.url} style={FILL} contentFit="cover" blurRadius={20} transition={200} accessible={false} />
+        <RemoteImage source={photo.url} style={FILL} contentFit="cover" blurRadius={20} transition={200} accessible={false} />
       ) : null}
       <View style={[FILL, { backgroundColor: semantic.scrim.color, opacity: 0.38 }]} />
       <View style={FILL} className="items-center justify-center">

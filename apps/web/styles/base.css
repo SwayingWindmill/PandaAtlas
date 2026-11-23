@@ -27,6 +27,11 @@ main {
   color: var(--pa-color-ink);
 }
 
+/* The open-in-app bar is fixed to the bottom; keep the footer's last row above it. */
+.pa-public-register:has([data-open-in-app-bar]) {
+  padding-bottom: 4rem;
+}
+
 .pa-public-register :where(a, button, input):focus-visible {
   outline: none;
   box-shadow: var(--pa-focus-ring);

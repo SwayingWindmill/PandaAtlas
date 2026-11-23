@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { requestJson } from "@/lib/api/request";
+import { ApiRequestError, requestJson } from "@/lib/api/request";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 const SAFE_APP_PATH = /^\/(zh|en)\/(?:(?:pandas|places|institutions)\/[a-z0-9-]+|contribute|games\/(?:guess|daily)|me(?:\/(?:passport|feed|inbox|collections|memories|game-history|panda-book|submissions(?:\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})?))?)$/;
@@ -31,6 +31,11 @@ function safeNextPath(value: string | null): string {
 }
 
 type Phase = "email" | "otp";
+
+/** Supabase Auth refuses another code for the same address within a minute, so the resend waits as long. */
+const RESEND_SECONDS = 60;
+/** Supabase Auth's `otp_expiry` (infra/supabase/config.toml). */
+const CODE_LIFETIME_MS = 3_600_000;
 type MessageKind = "status" | "error";
 
 const copy = {
@@ -44,11 +49,16 @@ const copy = {
     sending: "正在发送…",
     sendSafe: "如果该邮箱可用，我们已发送验证码。",
     sendFailed: "验证码发送失败，请稍后重试。",
+    tooFrequent: "请求太频繁，请稍后再试。",
+    resend: "重新发送验证码",
+    resendIn: (seconds: number) => `${seconds} 秒后可重新发送`,
+    resent: "新的验证码已发送。",
     otp: "6 位验证码",
     verify: "验证并登录",
     verifying: "正在验证…",
     changeEmail: "更换邮箱",
     invalidOtp: "验证码不正确，请检查后重试。",
+    expiredOtp: "验证码已过期，请重新获取。",
     consentBefore: "登录即表示同意",
     terms: "《用户协议》",
     consentBetween: "和",
@@ -65,11 +75,16 @@ const copy = {
     sending: "Sending…",
     sendSafe: "If that email can be used, a verification code has been sent.",
     sendFailed: "The verification code could not be sent. Try again later.",
+    tooFrequent: "Too many requests. Try again in a moment.",
+    resend: "Send a new code",
+    resendIn: (seconds: number) => `Send a new code in ${seconds} s`,
+    resent: "A new verification code has been sent.",
     otp: "6-digit verification code",
     verify: "Verify and sign in",
     verifying: "Verifying…",
     changeEmail: "Use another email",
     invalidOtp: "That verification code is not correct. Check it and try again.",
+    expiredOtp: "That verification code has expired. Send a new one.",
     consentBefore: "Signing in means you agree to the ",
     terms: "Terms",
     consentBetween: " and the ",
@@ -77,6 +92,10 @@ const copy = {
     consentAfter: " policy",
   },
 } as const;
+
+function secondsUntilResend(sentAt: number, now: number): number {
+  return Math.max(0, Math.ceil((sentAt + RESEND_SECONDS * 1000 - now) / 1000));
+}
 
 function localeFromPath(path: string): "zh" | "en" {
   return path.startsWith("/en/") ? "en" : "zh";
@@ -99,6 +118,9 @@ export function EmailOtpLogin() {
     searchParams.get("reason") === "session-expired" ? t.expiredSession : null
   ));
   const [messageKind, setMessageKind] = useState<MessageKind>("status");
+  const [sentAt, setSentAt] = useState(0);
+  const [now, setNow] = useState(0);
+  const resendIn = secondsUntilResend(sentAt, now);
   const otpInputRef = useRef<HTMLInputElement | null>(null);
   const messageRef = useRef<HTMLParagraphElement | null>(null);
 
@@ -110,22 +132,43 @@ export function EmailOtpLogin() {
     if (messageKind === "error" && message) messageRef.current?.focus();
   }, [message, messageKind]);
 
-  async function requestOtp(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  useEffect(() => {
+    if (resendIn === 0) return;
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [resendIn]);
+
+  async function sendCode(): Promise<boolean> {
     setBusy(true);
     setMessage(null);
-    const sent = await requestJson("/api/auth/email-otp/start", {
+    const failure = await requestJson("/api/auth/email-otp/start", {
       method: "POST",
       body: JSON.stringify({ email, next: destination }),
-    }).then(() => true, () => false);
+    }).then(() => null, (error: unknown) => (error instanceof ApiRequestError && error.status === 429 ? t.tooFrequent : t.sendFailed));
     setBusy(false);
-    if (!sent) {
-      setMessage(t.sendFailed);
+    if (failure) {
+      setMessage(failure);
       setMessageKind("error");
-      return;
+      return false;
     }
+    const sent = Date.now();
+    setSentAt(sent);
+    setNow(sent);
+    return true;
+  }
+
+  async function requestOtp(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!(await sendCode())) return;
     setPhase("otp");
     setMessage(t.sendSafe);
+    setMessageKind("status");
+  }
+
+  async function resendOtp() {
+    if (!(await sendCode())) return;
+    setOtp("");
+    setMessage(t.resent);
     setMessageKind("status");
   }
 
@@ -140,7 +183,14 @@ export function EmailOtpLogin() {
     });
     if (result.error || !result.data.session) {
       setBusy(false);
-      setMessage(t.invalidOtp);
+      // Supabase answers a wrong code and an expired one alike (otp_expired); the code's age tells them apart.
+      setMessage(
+        result.error?.status === 429
+          ? t.tooFrequent
+          : Date.now() - sentAt >= CODE_LIFETIME_MS
+            ? t.expiredOtp
+            : t.invalidOtp,
+      );
       setMessageKind("error");
       setOtp("");
       return;
@@ -192,6 +242,15 @@ export function EmailOtpLogin() {
             </label>
             <Button className="min-h-12 w-full" disabled={busy || otp.length !== 6} type="submit">
               {busy ? t.verifying : t.verify}
+            </Button>
+            <Button
+              className="min-h-12 w-full tabular-nums"
+              type="button"
+              variant="outline"
+              disabled={busy || resendIn > 0}
+              onClick={() => void resendOtp()}
+            >
+              {resendIn > 0 ? t.resendIn(resendIn) : t.resend}
             </Button>
             <Button
               className="min-h-12 w-full"

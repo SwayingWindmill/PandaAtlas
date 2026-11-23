@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AccessibilityInfo, type HostInstance, Platform, Pressable, TextInput, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useCSSVariable } from "uniwind";
@@ -18,13 +19,16 @@ import {
   NAME_MAX,
   collectionName,
   deleteCollection,
-  loadCollections,
+  collectionsQueryOptions,
+  patchCollections,
   renameCollection,
   setInCollection,
 } from "@/features/collections/collections";
 import { Mosaic } from "@/features/collections/mosaic";
 import { openPanda } from "@/features/pandas/panda-row";
-import { type PandaListItem, listMeta, loadPandaIndex } from "@/features/pandas/pandas";
+import { type PandaListItem, listMeta, pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { useAccount } from "@/features/session/account";
+import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -174,7 +178,7 @@ function Loading() {
       <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
         {[0, 1, 2, 3].map((row) => (
           <View key={row} className="flex-row items-center gap-row px-inset py-stack-tight">
-            <Skeleton className="rounded-tile" style={{ width: PHOTO, height: PHOTO }} />
+            <Skeleton className="rounded-full" style={{ width: PHOTO, height: PHOTO }} />
             <View className="flex-1 gap-stack-tight">
               <Skeleton className="h-4 w-24 rounded-control" />
               <Skeleton className="h-3 w-40 rounded-control" />
@@ -186,12 +190,15 @@ function Loading() {
   );
 }
 
-type Load = { status: "loading" } | { status: "failed" } | { status: "missing" } | { status: "ready"; collection: Collection };
-
 export default function CollectionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [state, setState] = useState<Load>({ status: "loading" });
-  const [pandas, setPandas] = useState<Map<string, PandaListItem>>(new Map());
+  const { accountId, unavailable } = useAccount();
+  const list = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: accountId !== null });
+  const index = useQuery(pandaIndexQueryOptions());
+  const pandas = useMemo(() => new Map(index.data?.map((panda) => [panda.id, panda])), [index.data]);
+  // A deleted collection stays on screen while the screen pops, instead of the "已经不在了" state.
+  const [leaving, setLeaving] = useState<Collection | null>(null);
+  const collection = list.data?.find((item) => item.collectionId === id) ?? leaving ?? undefined;
   const [mode, setMode] = useState<"view" | "edit" | "rename" | "confirmDelete">("view");
   const [removed, setRemoved] = useState<PandaListItem | null>(null);
   const [actionFailed, setActionFailed] = useState(false);
@@ -206,29 +213,19 @@ export default function CollectionScreen() {
     if (confirmHeading.current) AccessibilityInfo.sendAccessibilityEvent(confirmHeading.current, "focus");
   }, [mode]);
 
-  const load = useCallback(() => {
-    Promise.all([loadCollections(), loadPandaIndex()])
-      .then(([collections, index]) => {
-        setPandas(new Map(index.map((panda) => [panda.id, panda])));
-        const found = collections.find((item) => item.collectionId === id);
-        setState(found ? { status: "ready", collection: found } : { status: "missing" });
-      })
-      .catch(() => setState({ status: "failed" }));
-  }, [id]);
-  useEffect(load, [load]);
-
-  if (state.status !== "ready") {
+  if (!collection || !index.data) {
+    const failed = unavailable || failedWithoutData(list) || failedWithoutData(index);
     return (
       <Page title="合集">
-        {state.status === "failed" ? (
+        {failed ? (
           <LoadFailed
             message="这个合集暂时打不开。"
             onRetry={() => {
-              setState({ status: "loading" });
-              load();
+              if (failedWithoutData(list)) void list.refetch();
+              if (failedWithoutData(index)) void index.refetch();
             }}
           />
-        ) : state.status === "missing" ? (
+        ) : list.data && index.data && !list.isFetching ? (
           <ScreenState message="这个合集已经不在了。" actionLabel="回到我的合集" onAction={() => router.back()} />
         ) : (
           <Loading />
@@ -237,8 +234,9 @@ export default function CollectionScreen() {
     );
   }
 
-  const { collection } = state;
-  const set = (next: Collection) => setState({ status: "ready", collection: next });
+  const set = async (next: Collection) => {
+    if (accountId) await patchCollections(accountId, (current) => current.map((item) => (item.collectionId === next.collectionId ? next : item)));
+  };
 
   async function run(work: () => Promise<void>) {
     setActionFailed(false);
@@ -251,12 +249,12 @@ export default function CollectionScreen() {
 
   const remove = (panda: PandaListItem) =>
     run(async () => {
-      set(await setInCollection(collection.collectionId, panda.id, false));
+      await set(await setInCollection(collection.collectionId, panda.id, false));
       setRemoved(panda);
     });
   const undo = (panda: PandaListItem) =>
     run(async () => {
-      set(await setInCollection(collection.collectionId, panda.id, true));
+      await set(await setInCollection(collection.collectionId, panda.id, true));
       setRemoved(null);
     });
   const destroy = () =>
@@ -264,7 +262,11 @@ export default function CollectionScreen() {
       setDeleting(true);
       try {
         await deleteCollection(collection.collectionId);
+        setLeaving(collection);
         router.back();
+        if (accountId) {
+          await patchCollections(accountId, (current) => current.filter((item) => item.collectionId !== collection.collectionId));
+        }
       } finally {
         setDeleting(false);
       }
@@ -291,8 +293,8 @@ export default function CollectionScreen() {
           <Rename
             collection={collection}
             onDone={(next) => {
-              if (next) set(next);
               setMode("view");
+              if (next) void run(() => set(next));
             }}
           />
         ) : null}

@@ -11,7 +11,7 @@ import type { IntegrationOutboxService } from "../../../platform/integration/int
 import type { PgmqService } from "../../../platform/integration/pgmq.service.js";
 import type { EngagementNotificationAudiencePort } from "../../engagement/application/engagement-notification.port.js";
 import type { IdentityNotificationContactPort } from "../../identity/application/identity-notification.port.js";
-import type { NotificationCategory } from "../application/notification.application.js";
+import type { NotificationCategory, NotificationChannel } from "../application/notification.application.js";
 
 interface NotificationProjection {
   category: NotificationCategory;
@@ -65,31 +65,26 @@ export class NotificationEventConsumerService {
         .values({ message_id: inserted.message_id, channel: "station", state: "ready" })
         .execute();
 
-      const emailEnabled = await this.emailEnabled(transaction, accountId, projection.category);
-      const email = emailEnabled ? await this.contacts.getDeliverableEmail(transaction, accountId) : undefined;
-      if (email === undefined) {
-        await transaction
-          .insertInto("notification.message_channels")
-          .values({
-            message_id: inserted.message_id,
-            channel: "email",
-            state: "suppressed",
-            suppression_reason: emailEnabled ? "email_unavailable" : "preference_disabled",
-          })
-          .execute();
-      } else {
-        await transaction
-          .insertInto("notification.message_channels")
-          .values({ message_id: inserted.message_id, channel: "email", state: "ready" })
-          .execute();
-        const job = await transaction
-          .insertInto("notification.provider_jobs")
-          .values({ message_id: inserted.message_id, correlation_id: event.correlationId })
-          .returning("job_id")
-          .executeTakeFirstOrThrow();
-        await this.pgmq.sendMessage(transaction, "notification_provider", { jobId: job.job_id });
-        providerJobCount += 1;
-      }
+      const emailQueued = await this.projectExternalChannel(transaction, {
+        messageId: inserted.message_id,
+        accountId,
+        category: projection.category,
+        channel: "email",
+        correlationId: event.correlationId,
+        unavailableReason: "email_unavailable",
+        hasDestination: async (enabled) =>
+          enabled && (await this.contacts.getDeliverableEmail(transaction, accountId)) !== undefined,
+      });
+      const pushQueued = await this.projectExternalChannel(transaction, {
+        messageId: inserted.message_id,
+        accountId,
+        category: projection.category,
+        channel: "push",
+        correlationId: event.correlationId,
+        unavailableReason: "device_token_unavailable",
+        hasDestination: async (enabled) => enabled && (await this.hasActiveDeviceToken(transaction, accountId)),
+      });
+      providerJobCount += Number(emailQueued) + Number(pushQueued);
 
       await this.outbox.append(transaction, {
         eventType: "notification.message.created",
@@ -104,7 +99,8 @@ export class NotificationEventConsumerService {
           messageId: inserted.message_id,
           accountId,
           category: projection.category,
-          emailQueued: email !== undefined,
+          emailQueued,
+          pushQueued,
         },
       });
     }
@@ -154,18 +150,70 @@ export class NotificationEventConsumerService {
     return undefined;
   }
 
-  private async emailEnabled(
+  private async projectExternalChannel(
+    transaction: DatabaseTransaction,
+    input: {
+      messageId: string;
+      accountId: string;
+      category: NotificationCategory;
+      channel: Extract<NotificationChannel, "email" | "push">;
+      correlationId: string;
+      unavailableReason: string;
+      hasDestination: (enabled: boolean) => Promise<boolean>;
+    },
+  ): Promise<boolean> {
+    const enabled = await this.channelEnabled(transaction, input.accountId, input.category, input.channel);
+    const deliverable = await input.hasDestination(enabled);
+    if (!deliverable) {
+      await transaction
+        .insertInto("notification.message_channels")
+        .values({
+          message_id: input.messageId,
+          channel: input.channel,
+          state: "suppressed",
+          suppression_reason: enabled ? input.unavailableReason : "preference_disabled",
+        })
+        .execute();
+      return false;
+    }
+
+    await transaction
+      .insertInto("notification.message_channels")
+      .values({ message_id: input.messageId, channel: input.channel, state: "ready" })
+      .execute();
+    const job = await transaction
+      .insertInto("notification.provider_jobs")
+      .values({ message_id: input.messageId, channel: input.channel, correlation_id: input.correlationId })
+      .returning("job_id")
+      .executeTakeFirstOrThrow();
+    await this.pgmq.sendMessage(transaction, "notification_provider", { jobId: job.job_id });
+    return true;
+  }
+
+  private async channelEnabled(
     transaction: DatabaseTransaction,
     accountId: string,
     category: NotificationCategory,
+    channel: Extract<NotificationChannel, "email" | "push">,
   ): Promise<boolean> {
     const row = await transaction
       .selectFrom("notification.channel_preferences")
       .select("enabled")
       .where("account_id", "=", accountId)
       .where("category", "=", category)
-      .where("channel", "=", "email")
+      .where("channel", "=", channel)
       .executeTakeFirst();
     return row?.enabled === true;
+  }
+
+  private async hasActiveDeviceToken(transaction: DatabaseTransaction, accountId: string): Promise<boolean> {
+    const row = await transaction
+      .selectFrom("notification.device_tokens")
+      .select("device_token_id")
+      .where("account_id", "=", accountId)
+      .where("active", "=", true)
+      .limit(1)
+      .executeTakeFirst();
+    return row !== undefined;
   }
 }

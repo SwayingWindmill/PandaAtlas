@@ -38,3 +38,7 @@ delete from integration.dead_letters where dead_letter_id = '<dead_letter_id>';
 ```
 
 `/health/async` reports healthy again once no dead letters remain and the heartbeat is fresh.
+
+## CLI shortcut
+
+See [ops-cli.md](ops-cli.md) for running `list`, `inspect`, dry-run/committed `replay`, and `discard` via `scripts/development/ops-dead-letters.mjs`.

@@ -3,6 +3,7 @@ import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { IntegrationModule } from "../../platform/integration/integration.module.js";
 import { IntegrationOutboxService } from "../../platform/integration/integration-outbox.service.js";
+import { ObservabilityModule } from "../../platform/observability/observability.module.js";
 import { RequestContextModule } from "../../platform/request-context/request-context.module.js";
 import { AskModule } from "../ask/ask.module.js";
 import { ASK_PRIVACY_PORT, type AskPrivacyPort } from "../ask/application/ask-privacy.port.js";
@@ -40,6 +41,7 @@ import { PrivacyRequestProcessorService } from "./infrastructure/privacy-request
   imports: [
     DatabaseModule,
     IntegrationModule,
+    ObservabilityModule,
     RequestContextModule,
     IdentityModule,
     ContributionModule,

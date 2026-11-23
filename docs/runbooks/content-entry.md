@@ -12,6 +12,7 @@
 | 场馆动态 | `data/curation/venue-news/venue-news.json` | [SCHEMA.md](../../data/curation/venue-news/SCHEMA.md) | `curation.content` |
 | 海外大熊猫状态（归国熊猫） | `data/curation/overseas-status/overseas-status.json` | [SCHEMA.md](../../data/curation/overseas-status/SCHEMA.md) | `curation.content` |
 | 比一比（发现页） | `data/curation/comparisons/comparisons.json` | [SCHEMA.md](../../data/curation/comparisons/SCHEMA.md) | `curation.content` |
+| 头部大熊猫档案补全（事实、当前常驻场馆、确认血统） | `data/curation/panda-enrichment/top-pandas.json` | [SCHEMA.md](../../data/curation/panda-enrichment/SCHEMA.md) | `curation.content`（需先跑 `institutions.json`，之后再跑 `release.publish` 和 `curation.guess-questions`） |
 | 科普、认脸挑战、月度挑战主题 | `data/curation/learning/learning.json` | [ARTICLE_SCHEMA.md](../../data/curation/learning/ARTICLE_SCHEMA.md) | `curation.learning` |
 | 熊猫档案、照片 | `data/curation/pandas/*.csv` | [README.md](../../data/curation/pandas/README.md) | 研究流水线和 `release.publish` |
 
@@ -24,7 +25,7 @@
    ```
    它会跑改动涉及的校验，也可以只跑某一个，例如 `python scripts/curation/validate_venue_news.py`。
 3. **核对来源。** 打开 `sourceUrl`，确认原文和条目一致，再把 `status` 改成 `published`，并把 `updatedAt` 或 `verifiedOn` 改成今天。一个人核对即可。
-4. **改版本号。** `venue-news.json`、`overseas-status.json`、`comparisons.json` 和 `learning.json` 的内容变了就要换 `version`，例如 `2026.11.05.1`。内容变了但版本没换，批处理会拒绝写入。`institutions.json` 没有版本号。
+4. **改版本号。** `venue-news.json`、`overseas-status.json`、`comparisons.json`、`top-pandas.json` 和 `learning.json` 的内容变了就要换 `version`，例如 `2026.11.22.1`。其中 `venue-news.json`、`overseas-status.json`、`comparisons.json`、`learning.json` 内容变了但版本没换，批处理会拒绝写入；`institutions.json` 没有版本号。
 5. **开 PR，CI 通过后合并。** 只改了内容的 PR 不触发代码部署。
 6. **发布。** 在 GitHub Actions 打开 **Bounded Batch Operations**，在 `main` 上运行：
    - operation 选表格里的发布操作，manifest 填该文件路径
@@ -32,7 +33,7 @@
    - 批准 `production-batch`
 
    运行摘要会列出写入了多少条已发布的条目。同样的内容再跑一次会显示 already current，不会重复写入。
-7. **场馆内容要多一步。** App 读的是发布版本，所以写完场馆内容后还要运行 `release.publish`，见 [production-release.md](production-release.md)。
+7. **场馆与头部熊猫补全要按顺序多跑两步。** App 读的是发布版本，所以写完 `institutions.json` 后写 `top-pandas.json`（它会关联场馆 `place_id`），随后运行 `release.publish`（如 [2026.11.22.1 manifest](../../data/release-manifests/2026.11.22.1.json)），再运行 `curation.guess-questions`（如 [2026.11.22.1 manifest](../../data/curation/guess-questions/2026.11.22.1.json)）生成含 `hard` 难度的题目；详见 [production-release.md](production-release.md)。
 
 开发版 App 会直接读工作区里的 `learning.json`，草稿也会显示，方便发布前预览科普和月度挑战。
 

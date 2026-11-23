@@ -32,6 +32,18 @@ export interface NotificationChannelPreferences {
   version: Generated<number>;
 }
 
+export interface NotificationDeviceTokens {
+  account_id: string;
+  active: Generated<boolean>;
+  created_at: Generated<Timestamp>;
+  device_token_id: Generated<string>;
+  disabled_reason: string | null;
+  expo_push_token: string;
+  last_active_at: Generated<Timestamp>;
+  platform: string;
+  updated_at: Generated<Timestamp>;
+}
+
 export interface NotificationMessageChannels {
   channel: string;
   message_id: string;
@@ -92,6 +104,7 @@ export interface NotificationProviderJobs {
 
 export interface DB {
   "notification.channel_preferences": NotificationChannelPreferences;
+  "notification.device_tokens": NotificationDeviceTokens;
   "notification.message_channels": NotificationMessageChannels;
   "notification.messages": NotificationMessages;
   "notification.provider_attempts": NotificationProviderAttempts;

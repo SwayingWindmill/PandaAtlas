@@ -1,5 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -11,10 +11,13 @@ import { ScreenState } from "@/components/screen-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
-import { type InstitutionListItem, loadInstitutions } from "@/features/institutions/institutions";
-import { loadMapView } from "@/features/map/load";
+import { type InstitutionListItem, institutionListQueryOptions, toListItems } from "@/features/institutions/institutions";
+import { mapViewQueryOptions } from "@/features/map/load";
 import { type MapItem } from "@/features/map/model";
 import { type PlaceRow, PlaceRows } from "@/features/map/place-list";
+import { loadOverseasStatus } from "@/features/overseas/overseas-status";
+import { loadVenueNews } from "@/features/venue-news/venue-news";
+import { failedWithoutData } from "@/lib/query-failed";
 
 interface Loaded {
   items: InstitutionListItem[];
@@ -49,25 +52,33 @@ function Group({ title, items, residents }: { title: string; items: InstitutionL
   );
 }
 
-export default function InstitutionsScreen() {
-  const [loaded, setLoaded] = useState<Loaded | null>(null);
-  const [failed, setFailed] = useState(false);
+/** 场馆动态 and 归国熊猫, each only once it has something published: an entry must not open onto an empty page. */
+function NewsAndReturns() {
+  const news = useQuery({ queryKey: ["venue-news", "all"], queryFn: () => loadVenueNews() });
+  const overseas = useQuery({ queryKey: ["overseas-status"], queryFn: loadOverseasStatus });
+  const hasNews = (news.data?.length ?? 0) > 0;
+  const hasReturns = (overseas.data?.length ?? 0) > 0;
+  if (!hasNews && !hasReturns) return null;
+  return (
+    <ListSection>
+      {hasNews ? <ListCell icon={Newspaper} label="场馆动态" href="/venue-news" last={!hasReturns} /> : null}
+      {hasReturns ? <ListCell icon={Plane} label="归国熊猫" href="/returning" last /> : null}
+    </ListSection>
+  );
+}
 
-  const load = useCallback(() => {
-    // The list is the page; who lives where only dresses the rows, so a map failure is not one.
-    Promise.all([loadInstitutions(), loadMapView().catch(() => null)])
-      .then(([items, map]) => {
-        const residents = new Map<string, MapItem>();
-        for (const item of map?.items ?? []) if (item.kind === "institution") residents.set(item.slug, item);
-        setLoaded({ items, residents });
-      })
-      .catch(() => setFailed(true));
-  }, []);
-  useEffect(load, [load]);
+export default function InstitutionsScreen() {
+  const list = useQuery({ ...institutionListQueryOptions(), select: toListItems });
+  // The list is the page; who lives where only dresses the rows, so a map failure is not one.
+  const map = useQuery(mapViewQueryOptions());
+  const residents = new Map<string, MapItem>();
+  for (const item of map.data?.items ?? []) if (item.kind === "institution") residents.set(item.slug, item);
+  const loaded: Loaded | null = list.data && !map.isPending ? { items: list.data, residents } : null;
+  const failed = failedWithoutData(list);
 
   function retry() {
-    setFailed(false);
-    load();
+    void list.refetch();
+    if (map.isError) void map.refetch();
   }
 
   return (
@@ -75,10 +86,7 @@ export default function InstitutionsScreen() {
       {loaded ? (
         loaded.items.length > 0 ? (
           <Animated.View entering={PAGE_ENTER} className="gap-section-tight">
-            <ListSection>
-              <ListCell icon={Newspaper} label="场馆动态" href="/venue-news" />
-              <ListCell icon={Plane} label="归国熊猫" href="/returning" last />
-            </ListSection>
+            <NewsAndReturns />
             <Group title="国内" items={loaded.items.filter((item) => item.domestic)} residents={loaded.residents} />
             <Group title="海外" items={loaded.items.filter((item) => !item.domestic)} residents={loaded.residents} />
           </Animated.View>

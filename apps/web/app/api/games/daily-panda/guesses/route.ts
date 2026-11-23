@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { toDailyPandaClue } from "@/features/games/daily-panda-clues";
 import { createServerV2Client, v2JsonResponse } from "@/lib/server/v2-api";
-import { refuseStateChange } from "@/lib/server/v2-forwarding";
+import { forwardedClientIpHeaders, refuseStateChange } from "@/lib/server/v2-forwarding";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
     ? body.guessPandaIds.filter((id): id is string => typeof id === "string")
     : [];
   const result = await createServerV2Client().POST("/api/v2/games/daily-panda/guesses", {
+    headers: forwardedClientIpHeaders(request.headers),
     body: { guessPandaIds },
   });
   if (!result.data) return v2JsonResponse(result);

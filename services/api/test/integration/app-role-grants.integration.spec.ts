@@ -73,4 +73,39 @@ describe("application role grants", () => {
     const missing = result.rows.filter((row) => !row.granted).map((row) => row.entry);
     expect(missing).toEqual([]);
   });
+
+  it("grants anon, authenticated, and public zero privileges on legacy public compatibility tables", async () => {
+    const tables = [
+      "public.distribution_cells",
+      "public.distribution_snapshots",
+      "public.habitats",
+      "public.sightings",
+    ];
+    const tableGrants = await sql<{ role_name: string; relation: string; granted: boolean }>`
+      select role_name, relation,
+        has_table_privilege(
+          role_name,
+          to_regclass(relation),
+          'SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'
+        ) as granted
+      from unnest(array['anon', 'authenticated', 'public']) as role_name
+      cross join unnest(${tables}::text[]) as relation
+    `.execute(database);
+
+    const leakedTableGrants = tableGrants.rows.filter((row) => row.granted);
+    expect(leakedTableGrants).toEqual([]);
+
+    const sequenceGrants = await sql<{ role_name: string; granted: boolean }>`
+      select role_name,
+        has_sequence_privilege(
+          role_name,
+          to_regclass('public.distribution_cells_id_seq'),
+          'USAGE, SELECT, UPDATE'
+        ) as granted
+      from unnest(array['anon', 'authenticated', 'public']) as role_name
+    `.execute(database);
+
+    const leakedSeqGrants = sequenceGrants.rows.filter((row) => row.granted);
+    expect(leakedSeqGrants).toEqual([]);
+  });
 });

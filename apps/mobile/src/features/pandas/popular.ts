@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { PandaListItem } from "@/features/pandas/pandas";
 import { api } from "@/lib/api";
@@ -20,12 +20,22 @@ export function popularRows(slugs: readonly string[], pandas: readonly PandaList
   return slugs.flatMap((slug) => bySlug.get(slug) ?? []).slice(0, POPULAR_SHOWN);
 }
 
-export function usePopularPandas(pandas: readonly PandaListItem[] | undefined): PandaListItem[] {
-  const { data: slugs } = useQuery({
+/** How long a screen holds its first list for the ranking; the API client has no request timeout. */
+const SETTLE_WAIT_MS = 3_000;
+
+/** `settled` is true once the ranking arrived, failed or took too long, so a screen can hold its first list until the order is final. */
+export function usePopularPandas(pandas: readonly PandaListItem[] | undefined): { rows: PandaListItem[]; settled: boolean } {
+  const { data: slugs, isSuccess, isError } = useQuery({
     queryKey: ["public", "popular-pandas"],
     queryFn: loadPopularSlugs,
     staleTime: 600_000,
     networkMode: "always",
   });
-  return useMemo(() => (slugs && pandas ? popularRows(slugs, pandas) : []), [slugs, pandas]);
+  const [waitedOut, setWaitedOut] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setWaitedOut(true), SETTLE_WAIT_MS);
+    return () => clearTimeout(timer);
+  }, []);
+  const rows = useMemo(() => (slugs && pandas ? popularRows(slugs, pandas) : []), [slugs, pandas]);
+  return { rows, settled: isSuccess || isError || waitedOut };
 }

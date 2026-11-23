@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 
 export type AppEnvironment = "development" | "test" | "staging" | "production";
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error" | "fatal";
+export type OpsAlertWebhookFormat = "feishu" | "wecom" | "generic";
 
 export interface EnvironmentConfig {
   APP_ENV: AppEnvironment;
@@ -26,8 +27,12 @@ export interface EnvironmentConfig {
   LOG_LEVEL: LogLevel;
   RESEND_API_KEY: string | undefined;
   RESEND_FROM_EMAIL: string | undefined;
+  EXPO_ACCESS_TOKEN: string | undefined;
+  EXPO_PUSH_ENDPOINT: string;
   ASK_ENABLED: boolean;
   ASK_GLOBAL_DAILY_CAP: number;
+  OPS_ALERT_WEBHOOK_URL: string | undefined;
+  OPS_ALERT_WEBHOOK_FORMAT: OpsAlertWebhookFormat;
 }
 
 const APP_ENVIRONMENTS = new Set<AppEnvironment>([
@@ -37,6 +42,7 @@ const APP_ENVIRONMENTS = new Set<AppEnvironment>([
   "production",
 ]);
 const LOG_LEVELS = new Set<LogLevel>(["trace", "debug", "info", "warn", "error", "fatal"]);
+const OPS_ALERT_WEBHOOK_FORMATS = new Set<OpsAlertWebhookFormat>(["feishu", "wecom", "generic"]);
 
 function parseInteger(
   value: unknown,
@@ -80,6 +86,44 @@ function optionalString(value: unknown): string | undefined {
 function parseSupabaseUrl(value: unknown): string | undefined {
   const raw = optionalString(value);
   return raw?.replace(/\/+$/, "");
+}
+
+export const DEFAULT_EXPO_PUSH_ENDPOINT = "https://exp.host/--/api/v2/push/send";
+
+function parseHttpsUrlWithLocalHttp(raw: string, envName: string, appEnv: AppEnvironment): string {
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    throw new Error(`${envName} must be a valid URL`);
+  }
+  const isLocalHttp =
+    parsed.protocol === "http:" &&
+    (appEnv === "development" || appEnv === "test") &&
+    (parsed.hostname === "127.0.0.1" || parsed.hostname === "localhost");
+  if (parsed.protocol !== "https:" && !isLocalHttp) {
+    throw new Error(`${envName} must use https`);
+  }
+  return parsed.toString();
+}
+
+export function parseOpsAlertWebhookUrl(value: unknown, appEnv: AppEnvironment): string | undefined {
+  const raw = optionalString(value);
+  if (raw === undefined) return undefined;
+  return parseHttpsUrlWithLocalHttp(raw, "OPS_ALERT_WEBHOOK_URL", appEnv);
+}
+
+export function parseExpoPushEndpoint(value: unknown, appEnv: AppEnvironment): string {
+  const raw = optionalString(value) ?? DEFAULT_EXPO_PUSH_ENDPOINT;
+  return parseHttpsUrlWithLocalHttp(raw, "EXPO_PUSH_ENDPOINT", appEnv);
+}
+
+export function parseOpsAlertWebhookFormat(value: unknown): OpsAlertWebhookFormat {
+  const raw = optionalString(value)?.toLowerCase() ?? "feishu";
+  if (!OPS_ALERT_WEBHOOK_FORMATS.has(raw as OpsAlertWebhookFormat)) {
+    throw new Error("OPS_ALERT_WEBHOOK_FORMAT must be feishu, wecom, or generic");
+  }
+  return raw as OpsAlertWebhookFormat;
 }
 
 export function validateEnvironment(
@@ -179,9 +223,13 @@ export function validateEnvironment(
     LOG_LEVEL: rawLogLevel as LogLevel,
     RESEND_API_KEY: optionalString(input.RESEND_API_KEY),
     RESEND_FROM_EMAIL: optionalString(input.RESEND_FROM_EMAIL),
+    EXPO_ACCESS_TOKEN: optionalString(input.EXPO_ACCESS_TOKEN),
+    EXPO_PUSH_ENDPOINT: parseExpoPushEndpoint(input.EXPO_PUSH_ENDPOINT, appEnv),
     // 问问熊猫 stays off unless a deploy turns it on; the cap bounds paid model and search use.
     ASK_ENABLED: parseBoolean(input.ASK_ENABLED, false, "ASK_ENABLED"),
     ASK_GLOBAL_DAILY_CAP: parseInteger(input.ASK_GLOBAL_DAILY_CAP, 30, "ASK_GLOBAL_DAILY_CAP", 0, 10_000),
+    OPS_ALERT_WEBHOOK_URL: parseOpsAlertWebhookUrl(input.OPS_ALERT_WEBHOOK_URL, appEnv),
+    OPS_ALERT_WEBHOOK_FORMAT: parseOpsAlertWebhookFormat(input.OPS_ALERT_WEBHOOK_FORMAT),
   };
 }
 
@@ -279,11 +327,27 @@ export class AppConfig {
     return this.config.get("RESEND_FROM_EMAIL", { infer: true });
   }
 
+  public get expoAccessToken(): string | undefined {
+    return this.config.get("EXPO_ACCESS_TOKEN", { infer: true });
+  }
+
+  public get expoPushEndpoint(): string {
+    return this.config.get("EXPO_PUSH_ENDPOINT", { infer: true });
+  }
+
   public get askEnabled(): boolean {
     return this.config.get("ASK_ENABLED", { infer: true });
   }
 
   public get askGlobalDailyCap(): number {
     return this.config.get("ASK_GLOBAL_DAILY_CAP", { infer: true });
+  }
+
+  public get opsAlertWebhookUrl(): string | undefined {
+    return this.config.get("OPS_ALERT_WEBHOOK_URL", { infer: true });
+  }
+
+  public get opsAlertWebhookFormat(): OpsAlertWebhookFormat {
+    return this.config.get("OPS_ALERT_WEBHOOK_FORMAT", { infer: true });
   }
 }

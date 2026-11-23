@@ -20,6 +20,7 @@ export default function FooterMinimal({
         { title: zh ? "家谱" : "Family tree", href: `/${locale}/families` },
         { title: zh ? "日历" : "Calendar", href: `/${locale}/moments` },
         { title: zh ? "游戏" : "Games", href: `/${locale}/games` },
+        { title: zh ? "科普" : "Learn", href: `/${locale}/learn` },
       ],
     },
     {
@@ -71,6 +72,18 @@ export default function FooterMinimal({
 
         <div className="mt-10 flex flex-wrap items-center gap-x-6 border-t-[0.5px] border-[var(--pa-color-line)] pt-5">
           <p className="text-xs text-[var(--pa-color-ink-muted)]">© {new Date().getFullYear()} ZhiPanda</p>
+          {[
+            { title: zh ? "关于吱熊猫" : "About", href: `/${locale}/about` },
+            { title: zh ? "下载 App" : "Get the app", href: `/${locale}/app` },
+          ].map((link) => (
+            <Link
+              key={link.href}
+              href={link.href as Route}
+              className="inline-flex min-h-10 items-center text-base font-medium hover:underline hover:underline-offset-[3px]"
+            >
+              {link.title}
+            </Link>
+          ))}
           <Link
             href={`/${locale}/terms` as Route}
             className="inline-flex min-h-10 items-center text-base font-medium hover:underline hover:underline-offset-[3px]"

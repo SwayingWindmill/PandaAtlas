@@ -61,6 +61,7 @@ export function Navbar1({
     { label: zh ? "家谱" : "Family tree", href: `/${locale}/families` },
     { label: zh ? "日历" : "Calendar", href: `/${locale}/moments` },
     { label: zh ? "游戏" : "Games", href: `/${locale}/games` },
+    { label: zh ? "科普" : "Learn", href: `/${locale}/learn` },
   ];
 
   const isActive = (href: string) =>

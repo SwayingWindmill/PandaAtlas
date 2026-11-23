@@ -1,5 +1,8 @@
+import { queryOptions } from "@tanstack/react-query";
+
 import { loadPandaIndex } from "@/features/pandas/pandas";
 import { api, authedApi, publicMediaUrl } from "@/lib/api";
+import { queryClient } from "@/lib/query-client";
 
 import { DIFFICULTIES, type GuessDifficulty, type LevelProbe } from "./difficulty";
 
@@ -74,4 +77,45 @@ export async function probeLevels(): Promise<Record<GuessDifficulty, LevelCheck>
     GuessDifficulty,
     LevelCheck
   >;
+}
+
+export function levelChecksQueryOptions() {
+  return queryOptions({
+    queryKey: ["public", "guess-levels"],
+    queryFn: probeLevels,
+    staleTime: 0,
+    gcTime: 0,
+    networkMode: "always",
+    refetchOnWindowFocus: false,
+  });
+}
+
+async function nextQuestion(level: GuessDifficulty | undefined): Promise<GuessQuestion> {
+  const checks = queryClient.getQueryData(levelChecksQueryOptions().queryKey);
+  const ready = level ? checks?.[level]?.question : undefined;
+  if (checks && level && ready) {
+    const queryKey = levelChecksQueryOptions().queryKey;
+    await queryClient.cancelQueries({ queryKey });
+    queryClient.setQueryData(queryKey, { ...checks, [level]: { probe: checks[level].probe } });
+    return ready;
+  }
+  return loadQuestion(level);
+}
+
+/**
+ * One drawn question per level and round. A draw is random, so it is never refetched or kept: a round that
+ * is left (another level, the next question) is dropped, and an answer cannot meet a different question.
+ */
+export function questionQueryOptions(level: GuessDifficulty | undefined, round: number) {
+  return queryOptions({
+    queryKey: ["public", "guess-question", level ?? "any", round],
+    queryFn: () => nextQuestion(level),
+    // The next round keeps the last question on screen until it arrives; another level starts from a skeleton.
+    placeholderData: (previous, previousQuery) => (previousQuery?.queryKey[2] === (level ?? "any") ? previous : undefined),
+    staleTime: Infinity,
+    gcTime: 0,
+    retry: false,
+    networkMode: "always",
+    refetchOnWindowFocus: false,
+  });
 }

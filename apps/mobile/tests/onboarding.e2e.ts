@@ -18,7 +18,29 @@ test("first launch welcomes the fan, who signs in, follows two pandas and lands 
   await expect(screen.getByText(`已选：${panda.name}、${notice.name}`)).toBeVisible();
   await screen.getByRole("button", "登录并关注这 2 只").tap();
   await enterCode(screen, testEmail("welcome"));
-  await screen.getByRole("button", "关注这 2 只").tap();
+  // Back from signing in, the follow goes on by itself.
+  await expect(screen.getByRole("heading", "今天")).toBeVisible();
+
+  await app.open("/me");
+  await expect(screen.getByLabel("关注 2 只")).toBeVisible();
+});
+
+test("the picks survive leaving for sign-in and closing the app", async ({ app, screen }) => {
+  const { panda, notice } = fixture();
+  await app.open("/");
+  for (const name of [panda.name, notice.name]) {
+    await screen.getByLabel("搜索想关注的熊猫").fill(name);
+    await screen.getByRole("checkbox", name).tap();
+  }
+  await screen.getByRole("button", "登录并关注这 2 只").tap();
+  await expect(screen.getByLabel("邮箱")).toBeVisible();
+
+  // The app is closed while the fan goes to read the code, then opened again.
+  await app.restart();
+  await app.open("/");
+  await expect(screen.getByText(`已选：${panda.name}、${notice.name}`)).toBeVisible();
+  await screen.getByRole("button", "登录并关注这 2 只").tap();
+  await enterCode(screen, testEmail("welcome-restart"));
   await expect(screen.getByRole("heading", "今天")).toBeVisible();
 
   await app.open("/me");
