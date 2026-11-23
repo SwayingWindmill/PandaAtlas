@@ -1,5 +1,6 @@
 .my-pandas-page {
   min-height: 100vh;
+  min-height: 100dvh;
   padding-bottom: 5rem;
   background: var(--bg);
   color: var(--fg);

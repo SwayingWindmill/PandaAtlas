@@ -193,6 +193,12 @@
   cursor: pointer;
 }
 
+@media (pointer: coarse) {
+  .select {
+    font-size: var(--pa-text-body);
+  }
+}
+
 .select svg {
   position: absolute;
   right: 0.875rem;

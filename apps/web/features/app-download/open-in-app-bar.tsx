@@ -66,7 +66,7 @@ export function OpenInAppBar({ locale, links, message }: { locale: PublicLocale;
     setClosed(true);
   }
 
-  const linkClass = "ml-auto inline-flex min-h-9 shrink-0 items-center rounded-full bg-[var(--pa-color-accent)] px-4 text-sm font-bold text-[var(--pa-color-on-accent)] hover:bg-[var(--pa-color-accent-hover)]";
+  const linkClass = "ml-auto inline-flex min-h-11 shrink-0 items-center rounded-full bg-[var(--pa-color-accent)] px-4 text-sm font-bold text-[var(--pa-color-on-accent)] hover:bg-[var(--pa-color-accent-hover)]";
   return (
     <aside
       aria-label={copy.title}
@@ -88,7 +88,7 @@ export function OpenInAppBar({ locale, links, message }: { locale: PublicLocale;
           type="button"
           onClick={dismiss}
           aria-label={copy.close}
-          className="inline-flex size-9 shrink-0 items-center justify-center text-[var(--pa-color-ink-muted)] hover:text-[var(--pa-color-ink)]"
+          className="-mr-2 inline-flex size-11 shrink-0 items-center justify-center text-[var(--pa-color-ink-muted)] hover:text-[var(--pa-color-ink)]"
         >
           <X aria-hidden="true" size={18} strokeWidth={1.75} />
         </button>

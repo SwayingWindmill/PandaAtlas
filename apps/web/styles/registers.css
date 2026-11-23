@@ -21,6 +21,7 @@
 
 .pa-public-main {
   min-height: calc(100vh - 4.75rem);
+  min-height: calc(100dvh - 4.75rem);
 }
 
 .pa-section {
