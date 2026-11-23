@@ -37,7 +37,7 @@ export default function WeekScreen() {
   if (!digest) {
     return (
       <Page title="本周新鲜事">
-        <ScreenState message="这 7 天还没有新收录、搬家或新照片。有了会出现在今天页。" />
+        <ScreenState message="这 7 天还没有新收录、搬家或新照片。有了会出现在探索页。" />
       </Page>
     );
   }
@@ -73,7 +73,7 @@ function Group({ group, pandas }: { group: DigestGroup; pandas: Week["pandas"] }
   return (
     <View className="gap-1.5">
       <Text variant="footnote" role="heading" className="px-4 text-muted-foreground">
-        {`${group.label} · ${items.length} 只`}
+        {`${group.label}　${items.length} 只`}
       </Text>
       <View>
         {shown.map((item, index) => (

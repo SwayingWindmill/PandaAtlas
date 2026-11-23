@@ -26,7 +26,7 @@ export function BirthdayReminderCard() {
           <ListCell
             key={entry.pandaId}
             label={entry.name}
-            detail={`${whenLabel(entry.inDays)} · ${entry.age} 岁生日`}
+            detail={`${whenLabel(entry.inDays)}　${entry.age} 岁生日`}
             leading={<PandaThumb pandaId={entry.pandaId} name={entry.name} size={36} shape="round" />}
             href="/birthdays"
             accessibilityLabel={`${entry.name}${whenLabel(entry.inDays)}过 ${entry.age} 岁生日，打开生日周`}

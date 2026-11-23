@@ -77,7 +77,7 @@ function NewestClue({ state }: { state: DailyPandaState }) {
         {newest ? newest.text : "?"}
       </Text>
       <Text variant="footnote" className="text-muted-foreground tabular-nums">
-        {newest ? `${newest.label}　·　${count}` : count}
+        {newest ? `${newest.label}　${count}` : count}
       </Text>
       <Text variant="subheadline" className="text-muted-foreground">
         猜错一次，多一条线索

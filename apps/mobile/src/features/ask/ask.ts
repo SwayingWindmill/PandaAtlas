@@ -83,7 +83,7 @@ const KIND_LABEL: Record<string, string> = {
 /** The second line under a source: who published what it rests on, or what kind of page it is. */
 export function sourceDetail(link: AskLink): string {
   const publishers = [...new Set(link.references.map((reference) => reference.publisher ?? reference.title))];
-  return publishers.length > 0 ? publishers.join(" · ") : (KIND_LABEL[link.kind] ?? "");
+  return publishers.length > 0 ? publishers.join("　") : (KIND_LABEL[link.kind] ?? "");
 }
 
 /** https references only; anything else is shown as plain text. */

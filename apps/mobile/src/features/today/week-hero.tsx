@@ -103,7 +103,7 @@ function names(hero: WeekMemory) {
   const shown = hero.pandas
     .slice(0, 3)
     .map((panda) => panda.name)
-    .join(" · ");
+    .join("　");
   return hero.pandas.length > 3
     ? `${shown} 等 ${hero.pandas.length} 只`
     : shown;
@@ -113,7 +113,7 @@ function names(hero: WeekMemory) {
  * The head of 今天 in a week with an anniversary: the first panda's photo, 那年今天 or 生日周, what it is
  * and who, and the day at the right. It opens the first panda.
  */
-/** What happened, for the 那年今天 page's card: "美香 · 添添 · 小奇迹回到中国". */
+/** What happened, for the 那年今天 page's card: "美香　添添　小奇迹回到中国". */
 function happened(hero: WeekMemory) {
   const who = hero.pandas.map((panda) => panda.name).join("、");
   if (hero.kind === "home") return `${who}回到中国`;
@@ -237,7 +237,7 @@ export function WeekHero({
                   numberOfLines={stacked ? 2 : 1}
                 >
                   {stacked
-                    ? `${names(hero)} · ${when.replace("，", " ")}`
+                    ? `${names(hero)}　${when.replace("，", " ")}`
                     : names(hero)}
                 </Text>
               </View>

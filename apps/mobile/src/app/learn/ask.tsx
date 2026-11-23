@@ -241,7 +241,7 @@ export default function AskScreen() {
               className={over ? "flex-1 text-destructive tabular-nums" : "flex-1 text-muted-foreground tabular-nums"}
               accessibilityLabel={`今天还能问 ${status.remainingToday} 次${over ? `，问题超过 ${QUESTION_LIMIT} 字` : ""}`}
             >
-              {`今天还能问 ${status.remainingToday} 次${length > QUESTION_LIMIT - 100 ? ` · ${length}/${QUESTION_LIMIT}` : ""}`}
+              {`今天还能问 ${status.remainingToday} 次${length > QUESTION_LIMIT - 100 ? `　${length}/${QUESTION_LIMIT}` : ""}`}
             </Text>
             <Button size="sm" onPress={() => void send(draft)} disabled={!canSend(draft) || busy} accessibilityLabel="提问">
               <Text>提问</Text>

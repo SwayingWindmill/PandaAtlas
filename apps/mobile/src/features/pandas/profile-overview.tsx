@@ -2,8 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
+import { useCSSVariable } from "uniwind";
 
 import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
@@ -37,7 +39,7 @@ import { Face } from "@/features/pandas/profile-family-tab";
 import type { Stat } from "@/features/pandas/profile-facts";
 import type { MilestoneKind } from "@/features/timeline/timeline";
 import { VenueLiveCard } from "@/features/viewing/venue-live-card";
-import { PAGE_COLUMN, RADIUS } from "@/lib/surface";
+import { RADIUS } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
 const KIND_WORD: Record<MilestoneKind, string> = {
@@ -311,13 +313,29 @@ export function Sources({ sources }: { sources: Profile["sources"] }) {
 
 export function NoPhoto({ profile }: { profile: Profile }) {
   const insets = useSafeAreaInsets();
+  const [tint, ground] = useCSSVariable(["--color-highlight-soft", "--color-background"]);
   return (
-    <View style={[PAGE_COLUMN, { paddingTop: insets.top + 64 }]} className="px-gutter pb-4">
-      <ListSection>
-        <ListCell label="暂无照片" />
-        <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => openPandaCorrection(profile.slug)} last />
-      </ListSection>
+    <View style={{ height: insets.top + 88 }}>
+      <Svg aria-hidden style={StyleSheet.absoluteFill} width="100%" height="100%" preserveAspectRatio="none">
+        <Defs>
+          <LinearGradient id={`panda-plate-${profile.id}`} x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={String(tint)} stopOpacity={1} />
+            <Stop offset="0.6" stopColor={String(tint)} stopOpacity={0.5} />
+            <Stop offset="1" stopColor={String(ground)} stopOpacity={1} />
+          </LinearGradient>
+        </Defs>
+        <Rect x="0" y="0" width="100%" height="100%" fill={`url(#panda-plate-${profile.id})`} />
+      </Svg>
     </View>
+  );
+}
+
+export function NoPhotoActions({ slug }: { slug: string }) {
+  return (
+    <ListSection>
+      <ListCell label="暂无照片" />
+      <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => openPandaCorrection(slug)} last />
+    </ListSection>
   );
 }
 

@@ -17,7 +17,7 @@ export function OnThisDaySwitch({ separator }: { separator?: boolean }) {
     <SwitchRow
       glyph={History}
       label="那年今天"
-      accessibilityLabel="在今天页显示那年今天"
+      accessibilityLabel="在探索页显示那年今天"
       value={!prefs.off}
       separator={separator}
       onChange={(on) => {
@@ -34,7 +34,7 @@ export function OnThisDaySettings() {
   const hidden = prefs.less.length;
   return (
     <View className="gap-section-tight">
-      <ListSection footer="在今天页回看往年的今天：生日、来到新家、回国，和你自己的记录。这些选择只保存在这台设备上。">
+      <ListSection footer="在探索页回看往年的今天：生日、来到新家、回国，和你自己的记录。这些选择只保存在这台设备上。">
         <OnThisDaySwitch />
       </ListSection>
       {hidden > 0 ? (

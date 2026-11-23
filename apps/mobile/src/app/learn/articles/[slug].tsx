@@ -134,7 +134,7 @@ export default function ArticleScreen() {
             <Text variant="readingTitle">{title}</Text>
             <Text variant="readingLead">{learningText(article.dek)}</Text>
             <Text variant="footnote" className="text-muted-foreground">
-              {`${article.category}　·　${readingMinutes(article)} 分钟`}
+              {`${article.category}　${readingMinutes(article)} 分钟`}
             </Text>
           </View>
 
@@ -347,7 +347,7 @@ function RelatedArticle({ article }: { article: CatalogArticle }) {
         <Text variant="headline" numberOfLines={3}>
           {title}
         </Text>
-        <Text variant="footnote" className="text-muted-foreground">{`${article.category}　·　${readingMinutes(article)} 分钟`}</Text>
+        <Text variant="footnote" className="text-muted-foreground">{`${article.category}　${readingMinutes(article)} 分钟`}</Text>
       </View>
       {hero?.asset ? (
         <View className="size-20 overflow-hidden rounded-control" style={{ borderCurve: "continuous" }}>

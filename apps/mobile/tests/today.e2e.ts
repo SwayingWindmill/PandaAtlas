@@ -44,7 +44,7 @@ test("today shows the pandas whose birthday it is, and the followed ones on top"
   await app.open("/");
   await expect(screen.getByRole("link", /^生日周，[0-9]+ 岁生日，.+，今天$/)).toBeVisible();
   await app.open("/on-this-day");
-  await expect(screen.getByRole("link", new RegExp(`^[0-9.]+ · [0-9]+，${optionD} [0-9]+ 岁生日，`))).toBeVisible();
+  await expect(screen.getByRole("link", new RegExp(`^[0-9.]+　[0-9]+，${optionD} [0-9]+ 岁生日，`))).toBeVisible();
 
   await signIn(app, screen, testEmail("strip"));
   await app.open(`/pandas/${panda.slug}`);

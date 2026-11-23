@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router";
+import { Redirect, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
@@ -129,6 +129,10 @@ export default function PlaceScreen() {
         )}
       </Page>
     );
+  }
+
+  if (place.institution) {
+    return <Redirect href={{ pathname: "/institutions/[slug]", params: { slug: place.institution.slug } }} />;
   }
 
   return (

@@ -12,7 +12,7 @@ export function VenueNewsSwitch({ separator }: { separator?: boolean }) {
     <SwitchRow
       glyph={Newspaper}
       label="场馆动态"
-      accessibilityLabel="在今天页显示关注熊猫所在场馆的动态"
+      accessibilityLabel="在探索页显示关注熊猫所在场馆的动态"
       value={on}
       separator={separator}
       onChange={(next) => {
