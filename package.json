@@ -58,7 +58,7 @@
     "build:cloudflare": "npm run build:cloudflare -w @zhipanda/api && npm run build:cloudflare -w web"
   },
   "devDependencies": {
-    "@colbymchenry/codegraph": "^1.6.2",
+    "@colbymchenry/codegraph": "^1.6.3",
     "@eslint/js": "^10.0.1",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
@@ -67,7 +67,7 @@
     "eslint": "^10.15.0",
     "eslint-import-resolver-typescript": "^3.10.1",
     "globals": "^17.14.0",
-    "ignore": "^7.0.14",
+    "ignore": "^7.0.16",
     "mdast-util-from-markdown": "^2.1.0",
     "supabase": "2.110.0",
     "typescript": "^5.9.0",
