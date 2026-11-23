@@ -22,6 +22,7 @@ import { pandaIndexQueryOptions, searchPandas } from "@/features/pandas/pandas";
 import { SearchField } from "@/features/pandas/search-field";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
+import { PAGE_COLUMN } from "@/lib/surface";
 
 /**
  * 在中国 and 在海外 first, then each area in China that has a panda. Overseas cities stay under 在海外,
@@ -111,7 +112,7 @@ export default function FindScreen() {
           contentInsetAdjustmentBehavior="automatic"
           contentContainerClassName="px-gutter"
           refreshControl={refreshControl}
-          contentContainerStyle={{ paddingTop: top, paddingBottom: bottom }}
+          contentContainerStyle={[PAGE_COLUMN, { paddingTop: top, paddingBottom: bottom }]}
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={
@@ -171,7 +172,7 @@ export default function FindScreen() {
       <ScrollView
         className="flex-1 bg-background"
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ paddingTop: top, paddingBottom: bottom }}
+        contentContainerStyle={[PAGE_COLUMN, { paddingTop: top, paddingBottom: bottom }]}
       >
         {ROOT_TITLE_IN_COLUMN ? (
           <Text variant="display" className="px-gutter">

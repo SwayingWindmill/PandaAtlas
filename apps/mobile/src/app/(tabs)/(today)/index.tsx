@@ -7,6 +7,7 @@ import { Icon } from "@/components/icon";
 import { CalendarDays, House, type LucideIcon, Plane, Sun, Trophy } from "@/components/icons";
 import { StatusBarCover } from "@/components/status-bar-cover";
 import { Text } from "@/components/ui/text";
+import { component } from "@/design/tokens";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { displayName, useProfile } from "@/features/profile/profile";
 import { useSession } from "@/features/session/session";
@@ -23,7 +24,7 @@ import { WeekCard } from "@/features/today/week-card";
 import { WeekHero, useWeekMemory } from "@/features/today/week-hero";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
-import { pageColumn } from "@/lib/surface";
+import { PAGE_COLUMN, pageColumn } from "@/lib/surface";
 
 const STORIES = [
   { id: "daily", title: "今天是哪只熊猫？", feature: "每日一猫", href: "/daily" },
@@ -93,7 +94,7 @@ function TodayHeader() {
           今天
         </Text>
       </View>
-      <Pressable role="link" accessibilityLabel="我的" onPress={() => router.push("/me")} className="mb-1 active:opacity-70">
+      <Pressable role="link" accessibilityLabel="我的" onPress={() => router.push("/me")} hitSlop={(component.hitTarget - AVATAR) / 2} className="mb-1 active:opacity-70">
         <ProfileAvatar name={name} size={AVATAR} quiet />
       </Pressable>
     </View>
@@ -130,7 +131,7 @@ export default function TodayScreen() {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerClassName="gap-section px-gutter"
         refreshControl={refreshControl}
-        contentContainerStyle={{ paddingTop: insets.top + 6, paddingBottom: bottom }}
+        contentContainerStyle={[PAGE_COLUMN, { paddingTop: insets.top + 6, paddingBottom: bottom }]}
       >
         {/* The column draws the title so the date can sit over it, with the avatar beside. */}
         <Stack.Screen options={{ title: "今天", headerShown: false }} />

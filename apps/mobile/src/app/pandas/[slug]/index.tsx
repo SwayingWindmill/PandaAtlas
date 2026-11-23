@@ -30,6 +30,7 @@ import {
   openPandaCorrection,
 } from "@/features/pandas/profile-overview";
 import { PhotosTab } from "@/features/pandas/profile-photos-tab";
+import { PAGE_COLUMN } from "@/lib/surface";
 
 /** Hero height below the status bar. The photo runs under the status bar too. */
 const HERO = 320;
@@ -56,7 +57,7 @@ export default function ProfileScreen() {
       <View className="flex-1 bg-background">
         <HeroHeader title="" pastHero={false} />
         {failed ? (
-          <View className="px-gutter pt-28">
+          <View className="px-gutter pt-28" style={PAGE_COLUMN}>
             <LoadFailed message="资料暂时打不开。" onRetry={() => void refetch()} />
           </View>
         ) : (
@@ -114,7 +115,7 @@ export default function ProfileScreen() {
         ) : (
           <NoPhoto profile={profile} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-4 px-gutter" style={cover ? { marginTop: -OVERLAP } : undefined}>
+        <Animated.View entering={PAGE_ENTER} className="gap-4 px-gutter" style={[PAGE_COLUMN, cover ? { marginTop: -OVERLAP } : null]}>
           <View>
             <View className="flex-row items-center gap-2">
               <Text variant="display" className="shrink">

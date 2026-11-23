@@ -30,7 +30,7 @@ import { type Profile, longDate, shortPublisher } from "@/features/pandas/profil
 import { Face } from "@/features/pandas/profile-family-tab";
 import type { Stat } from "@/features/pandas/profile-facts";
 import type { MilestoneKind } from "@/features/timeline/timeline";
-import { RADIUS } from "@/lib/surface";
+import { PAGE_COLUMN, RADIUS } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
 const KIND_WORD: Record<MilestoneKind, string> = {
@@ -223,7 +223,7 @@ export function Experience({ profile }: { profile: Profile }) {
         <Pressable
           role="link"
           accessibilityLabel="经历，看时间线"
-          hitSlop={10}
+          hitSlop={12}
           onPress={() => router.push({ pathname: "/pandas/[slug]/timeline", params: { slug: profile.slug } })}
           className="active:opacity-60"
         >
@@ -305,7 +305,7 @@ export function Sources({ sources }: { sources: Profile["sources"] }) {
 export function NoPhoto({ profile }: { profile: Profile }) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ paddingTop: insets.top + 64 }} className="px-gutter">
+    <View style={[PAGE_COLUMN, { paddingTop: insets.top + 64 }]} className="px-gutter">
       <ListSection>
         <ListCell label="暂无照片" />
         <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => openPandaCorrection(profile.slug)} last />
