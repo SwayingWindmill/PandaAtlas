@@ -10,6 +10,7 @@ import { PhotoOutline } from "@/components/photo-outline";
 import { Text } from "@/components/ui/text";
 import { type PandaListItem, listMeta } from "@/features/pandas/pandas";
 import { usePandaCover } from "@/lib/covers";
+import { nameInitial } from "@/lib/panda";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -58,7 +59,7 @@ export const PandaRow = memo(function PandaRow({
             <Image source={photo} style={{ width: PHOTO, height: PHOTO }} contentFit="cover" accessible={false} />
           ) : (
             <Text variant="headline" className="text-muted-foreground">
-              {item.name.slice(0, 1)}
+              {nameInitial(item.name)}
             </Text>
           )}
           {photo ? <PhotoOutline radius={PHOTO / 2} /> : null}

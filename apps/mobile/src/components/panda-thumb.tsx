@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { PhotoOutline } from "@/components/photo-outline";
 import { Text } from "@/components/ui/text";
 import { usePandaCover } from "@/lib/covers";
+import { nameInitial } from "@/lib/panda";
 import { RADIUS } from "@/lib/surface";
 
 /**
@@ -42,7 +43,7 @@ export function PandaThumb({
           allowFontScaling={false}
           className="text-muted-foreground"
         >
-          {name.slice(0, 1)}
+          {nameInitial(name)}
         </Text>
       )}
       {photo ? <PhotoOutline radius={radius} /> : null}

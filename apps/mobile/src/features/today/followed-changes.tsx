@@ -14,6 +14,7 @@ import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
 import { api } from "@/lib/api";
+import { nameInitial } from "@/lib/panda";
 import { fetchLifeEvents, fetchLineage, fetchResidencies } from "@/lib/public-data";
 import { usePandaCover } from "@/lib/covers";
 import { HAIRLINE } from "@/lib/surface";
@@ -93,7 +94,7 @@ function Thumb({ pandaId, name }: { pandaId: string; name: string }) {
         <Image source={photo} style={{ width: THUMB, height: THUMB }} contentFit="cover" accessible={false} />
       ) : (
         <Text variant="headline" className="text-muted-foreground">
-          {name.slice(0, 1)}
+          {nameInitial(name)}
         </Text>
       )}
     </View>

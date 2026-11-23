@@ -8,6 +8,7 @@ import { Text } from "@/components/ui/text";
 import type { Family, FamilyMember } from "@/features/family/family";
 import { openPanda } from "@/features/pandas/panda-row";
 import type { Profile } from "@/features/pandas/profile";
+import { nameInitial } from "@/lib/panda";
 import { RADIUS } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +28,7 @@ export function Face({ member, size, className }: { member: FamilyMember; size: 
         <Image source={member.photoUrl} style={{ width: size, height: size }} contentFit="cover" accessible={false} />
       ) : (
         <Text className="font-bold text-muted-foreground" style={{ fontSize: Math.round(size * 0.4) }}>
-          {member.name.slice(0, 1)}
+          {nameInitial(member.name)}
         </Text>
       )}
     </View>

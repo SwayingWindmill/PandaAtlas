@@ -11,6 +11,7 @@ import { useFollowed } from "@/features/engagement/favorites";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { usePandaCover } from "@/lib/covers";
+import { nameInitial } from "@/lib/panda";
 
 /** The avatar's diameter: the size Photos gives the faces in People. */
 export const AVATAR = 64;
@@ -40,7 +41,7 @@ export function PandaAvatar({ panda }: { panda: Pick<PandaListItem, "id" | "slug
           />
         ) : (
           <Text variant="title" role="none" className="text-muted-foreground">
-            {panda.name.slice(0, 1)}
+            {nameInitial(panda.name)}
           </Text>
         )}
         {photo ? <PhotoOutline radius={AVATAR / 2} /> : null}

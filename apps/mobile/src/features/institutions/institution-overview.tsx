@@ -40,6 +40,8 @@ export const INSTITUTION_HERO_HEIGHT = 300;
 const PLACEHOLDER = semantic.color.light.mediaPlaceholder;
 const GAP = semantic.spacing.row.value;
 const FACE = 72;
+/** A venue can house a hundred pandas; the strip previews a few and 全部 opens the rest. */
+const FACE_LIMIT = 12;
 
 export function HeroTitle({ institution }: { institution: InstitutionDetail }) {
   return (
@@ -162,7 +164,7 @@ function ResidentFaces({ pandas, onAll }: { pandas: PandaListItem[]; onAll: () =
         </Pressable>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-gutter" contentContainerClassName="gap-section px-gutter">
-        {pandas.map((panda) => (
+        {pandas.slice(0, FACE_LIMIT).map((panda) => (
           <ResidentFace key={panda.id} panda={panda} />
         ))}
       </ScrollView>

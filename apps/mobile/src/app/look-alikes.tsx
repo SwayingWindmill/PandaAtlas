@@ -17,6 +17,7 @@ import { LOOK_ALIKE_NOTES, type LookAlikePair, lookAlikePairs } from "@/features
 import { useLearningCatalog } from "@/features/learning/use-catalog";
 import { loadPandaIndex } from "@/features/pandas/pandas";
 import { usePandaCover } from "@/lib/covers";
+import { nameInitial } from "@/lib/panda";
 import { loadLineage } from "@/lib/public-data";
 
 const GAP = 2;
@@ -30,7 +31,7 @@ function Half({ panda }: { panda: LookAlikePair["a"] }) {
         <Image source={photo} style={{ position: "absolute", inset: 0 }} contentFit="cover" accessible={false} />
       ) : (
         <Text variant="title" className="text-muted-foreground">
-          {panda.name.slice(0, 1)}
+          {nameInitial(panda.name)}
         </Text>
       )}
     </View>
