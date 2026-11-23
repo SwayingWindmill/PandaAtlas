@@ -24,7 +24,7 @@ import { loadVenueNews } from "@/features/venue-news/venue-news";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { usePandaCover } from "@/lib/covers";
-import { pageColumn } from "@/lib/surface";
+import { PAGE_COLUMN, pageColumn } from "@/lib/surface";
 
 const GAP = 12;
 /** 今天 takes the day's first four story photos; 发现 takes the ones after, so no panda repeats between them. */
@@ -96,7 +96,7 @@ export default function DiscoverScreen() {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerClassName="gap-section px-gutter"
         refreshControl={refreshControl}
-        contentContainerStyle={{ paddingTop: top, paddingBottom: bottom }}
+        contentContainerStyle={[PAGE_COLUMN, { paddingTop: top, paddingBottom: bottom }]}
       >
         <View className="gap-stack">
           {ROOT_TITLE_IN_COLUMN ? <Text variant="display">发现</Text> : null}

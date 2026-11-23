@@ -34,6 +34,7 @@ import {
 } from "@/features/pandas/profile-overview";
 import { PhotosTab } from "@/features/pandas/profile-photos-tab";
 import { queryClient } from "@/lib/query-client";
+import { PAGE_COLUMN } from "@/lib/surface";
 
 /** Hero height below the status bar. The photo runs under the status bar too. */
 const HERO = 320;
@@ -58,11 +59,11 @@ function ProfileSkeleton({ slug }: { slug: string }) {
       {photo ? (
         <Skeleton className="w-full rounded-none" style={{ height: HERO + insets.top }} />
       ) : (
-        <View className="px-gutter pb-4" style={{ paddingTop: insets.top + 64 }}>
+        <View className="px-gutter pb-4" style={[PAGE_COLUMN, { paddingTop: insets.top + 64 }]}>
           <Skeleton className="h-24 w-full rounded-group" />
         </View>
       )}
-      <View className="gap-4 px-gutter" style={photo ? { marginTop: -OVERLAP } : undefined}>
+      <View className="gap-4 px-gutter" style={[PAGE_COLUMN, photo ? { marginTop: -OVERLAP } : null]}>
         <Skeleton className="h-10 w-32" />
         <Skeleton className="h-12 w-full rounded-pill" />
         <View className="flex-row gap-2.5">
@@ -99,7 +100,7 @@ export default function ProfileScreen() {
       <View className="flex-1 bg-background">
         <HeroHeader title="" pastHero={false} />
         {failed ? (
-          <View className="px-gutter pt-28">
+          <View className="px-gutter pt-28" style={PAGE_COLUMN}>
             <LoadFailed message="资料暂时打不开。" onRetry={() => void refetch()} />
           </View>
         ) : (
@@ -146,7 +147,7 @@ export default function ProfileScreen() {
         ) : (
           <NoPhoto profile={profile} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-4 px-gutter" style={cover ? { marginTop: -OVERLAP } : undefined}>
+        <Animated.View entering={PAGE_ENTER} className="gap-4 px-gutter" style={[PAGE_COLUMN, cover ? { marginTop: -OVERLAP } : null]}>
           <View>
             <View className="flex-row items-center gap-2">
               <Text variant="display" className="shrink">
