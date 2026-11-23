@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import { memo, useEffect } from "react";
 import { Platform, View } from "react-native";
 import {
@@ -28,6 +27,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 
+import { RemoteImage } from "@/components/remote-image";
 import {
   type Point,
   type Size,
@@ -288,7 +288,7 @@ export const ZoomablePhoto = memo(function ZoomablePhoto({
       {/* Gestures report focal points in the detector child's own frame, so that child stays untransformed. */}
       <View style={{ width: size.width, height: size.height }}>
         <Animated.View style={[{ width: size.width, height: size.height }, style]}>
-          <Image
+          <RemoteImage
             source={uri}
             // On web a mouse drag on an <img> starts the browser's image drag, which cancels the pan.
             style={{ width: size.width, height: size.height, pointerEvents: "none" }}
