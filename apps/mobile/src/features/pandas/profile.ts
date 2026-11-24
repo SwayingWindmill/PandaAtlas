@@ -8,7 +8,8 @@ import { memoryPlaces } from "@/features/on-this-day/load";
 import { type Memory, memoriesOn } from "@/features/on-this-day/on-this-day";
 import { shortPlace } from "@/features/pandas/areas";
 import { currentPlaceId, loadPlaces, placeName } from "@/features/pandas/pandas";
-import { type PlaceLived, type Stat, headlineStats, infobox, placesLived } from "@/features/pandas/profile-facts";
+import { type PlaceLived, type Stat, type UnifiedMetric, headlineStats, infobox, placesLived, unifiedMetrics } from "@/features/pandas/profile-facts";
+import { type RichProfileFacts, extractRichFacts } from "@/features/pandas/rich-facts";
 import { publicMediaUrl } from "@/lib/api";
 import { type MilestoneKind, describeEvent } from "@/features/timeline/timeline";
 import { displayName, englishName, pandaBirthDate, pandaFactStatus, pandaIsDeceased, pandaSex } from "@/lib/panda";
@@ -26,6 +27,7 @@ export interface Profile {
   nameEn: string | null;
   /** YYYY-MM-DD (or a partial date), for the 生日卡. */
   birthDate: string | null;
+  deathDate: string | null;
   sex: "male" | "female" | null;
   deceased: boolean;
   /**
@@ -38,6 +40,10 @@ export interface Profile {
   facts: { label: string; value: string }[];
   /** Birthday, age and where it lives (or when it died): the stat tiles under the name. */
   stats: Stat[];
+  /** Unified v3.7 3-column metrics: 生日 | 现居 (or 离世) | 谱系号. */
+  metrics: [UnifiedMetric, UnifiedMetric, UnifiedMetric];
+  /** Structured bio, highlights, traits, route and life stage extracted from verified local.* facts. */
+  rich: RichProfileFacts;
   /** The last move between two places it lived, said short: 华盛顿 → 卧龙, 2023. */
   move: { from: string; to: string; year: string } | null;
   /** Oldest first. */
@@ -207,7 +213,10 @@ export async function loadProfile(slug: string): Promise<Profile> {
   const sex = pandaSex(panda);
   const birthDate = pandaBirthDate(panda);
   const deceased = pandaIsDeceased(panda);
-  const deathDate = panda.facts.find((fact) => fact.fieldKey === "death_date")?.value;
+  const deathFact =
+    panda.facts.find((fact) => fact.fieldKey === "death_date" && fact.status !== "disputed")?.value ??
+    panda.facts.find((fact) => fact.fieldKey === "local.death_date" && fact.status !== "disputed")?.value;
+  const deathDate = typeof deathFact === "string" ? deathFact : null;
   const currentPlaceRecord = deceased ? undefined : places.get(currentPlaceId(residencies) ?? "");
   const currentPlace = placeName(currentPlaceRecord);
   const family = await familyOf(detail).catch(() => null);
@@ -218,12 +227,36 @@ export async function loadProfile(slug: string): Promise<Profile> {
   const birth = events.find(
     (event) => event.eventStatus === "completed" && describeEvent(event, place, birthDate)?.kind === "birth",
   );
+  const lived = placesLived(residencies, (id) => place(id));
+  const visit = await visitOf(currentPlaceRecord);
+  const short = shortPlace(currentPlaceRecord) ?? (currentPlace ? { short: currentPlace, sub: null } : null);
+  const today = localToday();
+  const birthCertainty = birthDate ? pandaFactStatus(panda, "birth_date") : null;
+  const rich = extractRichFacts({
+    panda,
+    birthPlace: place(birth?.toPlaceId),
+    currentPlace: short,
+    currentPlaceFull: visit?.place ?? currentPlace,
+    placesLived: lived,
+    canonicalMotherName: family?.mother?.name ?? null,
+    today,
+  });
+  const metrics = unifiedMetrics({
+    birthDate,
+    birthConfirmed: birthCertainty === "confirmed",
+    deceased,
+    deathDate,
+    place: short,
+    hasInstitution: Boolean(visit),
+    studbookNumber: rich.studbookNumber,
+    today,
+  });
   const facts = infobox({
     sex,
     birthDate,
     birthPlace: place(birth?.toPlaceId),
     deceased,
-    deathDate: typeof deathDate === "string" ? deathDate : null,
+    deathDate,
     currentPlace,
     parents: [family?.father?.name, family?.mother?.name].filter((name): name is string => Boolean(name)),
     longDate,
@@ -235,18 +268,21 @@ export async function loadProfile(slug: string): Promise<Profile> {
     name: displayName(panda),
     nameEn: englishName(panda) === displayName(panda) ? null : englishName(panda),
     birthDate,
+    deathDate,
     sex,
     deceased,
-    certainty: { birth: birthDate ? pandaFactStatus(panda, "birth_date") : null, life: pandaFactStatus(panda, "life_status") },
+    certainty: { birth: birthCertainty, life: pandaFactStatus(panda, "life_status") },
     photos: photosOf(media, evidence),
     facts,
     stats: headlineStats({
       birthDate,
       deceased,
-      deathDate: typeof deathDate === "string" ? deathDate : null,
-      place: shortPlace(currentPlaceRecord) ?? (currentPlace ? { short: currentPlace, sub: null } : null),
-      today: localToday(),
+      deathDate,
+      place: short,
+      today,
     }),
+    metrics,
+    rich,
     move: lastMove(completed, residencies, places),
     // Only what happened: an announced plan is not part of the panda's life yet.
     events: completed.flatMap((event) => {
@@ -256,7 +292,7 @@ export async function loadProfile(slug: string): Promise<Profile> {
         : [];
     }),
     memories: memoriesOn({
-      today: localToday(),
+      today,
       pandas: [{ id: panda.pandaId, slug: panda.canonicalSlug, name: displayName(panda), birthDate, deceased }],
       events,
       residencies,
@@ -265,8 +301,8 @@ export async function loadProfile(slug: string): Promise<Profile> {
       includeDeceased: true,
     }),
     family,
-    placesLived: placesLived(residencies, (id) => place(id)),
-    visit: await visitOf(currentPlaceRecord),
+    placesLived: lived,
+    visit,
     sources: evidence
       .map(({ sourceId, publisher, title, url, lastVerifiedOn }) => ({ id: sourceId, publisher, title, url, lastVerifiedOn }))
       .sort((a, b) => b.lastVerifiedOn.localeCompare(a.lastVerifiedOn)),

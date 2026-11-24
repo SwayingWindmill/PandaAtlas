@@ -8,9 +8,7 @@ import { test } from "./support/test.ts";
 test("from a family, 查关系 names a half-sibling and walks the chain through their mother", async ({ app, screen }) => {
   const { panda, notice } = fixture();
   await app.open(`/pandas/${panda.slug}`);
-  // The family is a segment of the profile; 查关系 lives on the full tree it links to.
-  await screen.getByRole("radio", "家族").tap();
-  await screen.getByRole("button", "家族树").tap();
+  await screen.getByRole("link", "家族树").tap();
   await screen.getByRole("button", "查关系").tap();
   await expect(screen.getByRole("button", `第一只，${panda.name}`)).toBeVisible();
 

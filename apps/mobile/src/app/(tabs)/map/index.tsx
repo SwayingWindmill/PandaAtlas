@@ -29,9 +29,10 @@ export default function MapTabScreen() {
         : (tabBar ?? insets.bottom);
 
   const map = useMapScreen(insets.top, bottomSafeInset, window.width, window.height);
+  const { sheetHeight } = map;
 
   const sheetAnimatedStyle = useAnimatedStyle(() => ({
-    height: map.sheetHeight.get(),
+    height: sheetHeight.get(),
   }));
 
   const yearSpan = map.timeline?.years.length

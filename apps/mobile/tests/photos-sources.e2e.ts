@@ -24,20 +24,19 @@ test("a profile's photos open in a viewer with their credits", async ({ app, scr
   await expect(screen.getByRole("heading", panda.name)).toBeVisible();
 });
 
-test("a profile lists its sources and opens one in the browser", async ({ app, screen, browser }) => {
+test("a profile lists its sources in the collapsible footer and opens one in the browser", async ({ app, screen, browser }) => {
   const { panda } = fixture();
   await recordOpenedTabs(browser);
   await app.open(`/pandas/${panda.slug}`);
-  await expect(screen.getByRole("heading", "资料来源")).toBeVisible();
+  await screen.getByRole("button", /^资料来源，\d+ 处$/).tap();
   await expect(screen.getByRole("link", /^E2E Archive，End-to-end fixture source，/)).toBeVisible();
   await screen.getByRole("link", /^E2E Archive，End-to-end fixture source，/).tap();
   await expect.poll(async () => (await openedTabs(browser)).some((url) => url.includes("example.test/e2e/"))).toBe(true);
 });
 
-test("tapping a specific photo opens the viewer at that index and supports zooming", async ({ app, screen }) => {
+test("tapping a specific photo in the overview strip opens the viewer at that index and supports zooming", async ({ app, screen }) => {
   const { panda } = fixture();
   await app.open(`/pandas/${panda.slug}`);
-  await screen.getByRole("radio", "照片").tap();
   await screen.getByRole("link", "照片 2").tap();
 
   const viewer = screen.getByRole("dialog", "照片");

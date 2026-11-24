@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { NOT_RECORDED, UNKNOWN, ageAt, headlineStats, infobox, placesLived } from "./profile-facts";
+import { NOT_RECORDED, QUIET_DASH, UNKNOWN, ageAt, headlineStats, infobox, placesLived, unifiedMetrics } from "./profile-facts";
 
 const longDate = (value: string) => `[${value}]`;
 
@@ -121,5 +121,79 @@ describe("headlineStats", () => {
     const stats = headlineStats({ birthDate: null, deceased: false, deathDate: null, place: null, today: "2026-10-29" });
     expect(stats.map((stat) => stat.value)).toEqual([NOT_RECORDED, NOT_RECORDED, NOT_RECORDED]);
     expect(stats.every((stat) => !stat.unit && !stat.detail)).toBe(true);
+  });
+});
+
+describe("unifiedMetrics (v3.7 top 3-column strip)", () => {
+  it("keeps 生日 | 现居 | 谱系号 aligned across star and sparse pandas with quiet dashes", () => {
+    expect(
+      unifiedMetrics({
+        birthDate: "2020-07-20",
+        birthConfirmed: true,
+        deceased: false,
+        deathDate: null,
+        place: { short: "卧龙", sub: "神树坪基地" },
+        hasInstitution: true,
+        studbookNumber: null,
+        today: "2026-11-24",
+      }),
+    ).toEqual([
+      {
+        key: "birth",
+        label: "生日",
+        value: "7月20日",
+        sub: "2020 年　6 岁",
+        muted: false,
+        link: false,
+        spoken: "生日，7月20日，2020 年 6 岁，已确认",
+      },
+      {
+        key: "place",
+        label: "现居",
+        value: "卧龙",
+        sub: "神树坪基地",
+        muted: false,
+        link: true,
+        spoken: "现居，卧龙，神树坪基地",
+      },
+      {
+        key: "studbook",
+        label: "谱系号",
+        value: QUIET_DASH,
+        sub: "国际谱系",
+        muted: true,
+        link: false,
+        spoken: "谱系号，未记录",
+      },
+    ]);
+
+    const baoMei = unifiedMetrics({
+      birthDate: "2019-07-06",
+      birthConfirmed: false,
+      deceased: false,
+      deathDate: null,
+      place: null,
+      hasInstitution: false,
+      studbookNumber: "#1186",
+      today: "2026-11-24",
+    });
+    expect(baoMei[1]).toMatchObject({ label: "现居", value: QUIET_DASH, sub: "暂未收录", muted: true, link: false });
+    expect(baoMei[2]).toMatchObject({ label: "谱系号", value: "#1186", sub: "国际谱系", muted: false, link: true });
+  });
+
+  it("formats deceased memorial metrics cleanly", () => {
+    const memorial = unifiedMetrics({
+      birthDate: "1986-09-04",
+      birthConfirmed: true,
+      deceased: true,
+      deathDate: "2016-10-16",
+      place: null,
+      hasInstitution: false,
+      studbookNumber: "#314",
+      today: "2026-11-24",
+    });
+    expect(memorial[0]).toMatchObject({ label: "生日", value: "9月4日", sub: "1986 年生" });
+    expect(memorial[1]).toMatchObject({ label: "离世", value: "2016 年", sub: "享年 30 岁", link: false });
+    expect(memorial[2]).toMatchObject({ label: "谱系号", value: "#314", link: true });
   });
 });

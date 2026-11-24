@@ -61,8 +61,12 @@ export function displayName(panda: PandaSummary): string {
   return displayChineseName(panda) ?? englishName(panda) ?? panda.canonicalSlug;
 }
 
-function fact(panda: PandaSummary, key: string): unknown {
-  return panda.facts.find((item) => item.fieldKey === key)?.value;
+function factEntry(panda: PandaSummary, key: string, fallbackKey?: string) {
+  const usable = (k: string) =>
+    panda.facts.find(
+      (item) => item.fieldKey === k && item.status !== "disputed" && item.value !== null && item.value !== undefined && item.value !== "",
+    );
+  return usable(key) ?? (fallbackKey ? usable(fallbackKey) : undefined);
 }
 
 /**
@@ -70,23 +74,23 @@ function fact(panda: PandaSummary, key: string): unknown {
  * Null when the record has no such fact. Shown as a check or a hollow dot, never as words on screen.
  */
 export function pandaFactStatus(panda: PandaSummary, key: string): "confirmed" | "pending" | null {
-  const item = panda.facts.find((entry) => entry.fieldKey === key);
+  const item = factEntry(panda, key, `local.${key}`);
   if (!item) return null;
   return item.status === "confirmed" ? "confirmed" : "pending";
 }
 
 export function pandaSex(panda: PandaSummary): "male" | "female" | null {
-  const value = fact(panda, "sex");
+  const value = factEntry(panda, "sex", "local.sex")?.value;
   return value === "male" || value === "female" ? value : null;
 }
 
 export function pandaBirthDate(panda: PandaSummary): string | null {
-  const value = fact(panda, "birth_date");
+  const value = factEntry(panda, "birth_date", "local.birth_date")?.value;
   return typeof value === "string" && /^\d{4}/.test(value) ? value : null;
 }
 
 export function pandaIsDeceased(panda: PandaSummary): boolean {
-  return fact(panda, "life_status") === "deceased";
+  return factEntry(panda, "life_status", "local.life_status")?.value === "deceased";
 }
 
 /**

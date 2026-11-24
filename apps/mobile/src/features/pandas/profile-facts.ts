@@ -148,3 +148,128 @@ export function headlineStats(input: {
     },
   ];
 }
+
+export const QUIET_DASH = "—";
+
+export interface UnifiedMetric {
+  key: "birth" | "place" | "studbook";
+  label: string;
+  value: string;
+  sub: string | null;
+  /** Quiet dash state when unrecorded: never painted bright blue. */
+  muted: boolean;
+  /** True when the column navigates to an institution or glossary screen. */
+  link: boolean;
+  spoken: string;
+}
+
+function birthMetricParts(birthDate: string, deceased: boolean, today: string): { value: string; sub: string } {
+  const [year = birthDate, month, day] = birthDate.split("-");
+  const age = ageParts(birthDate, today);
+  const ageLabel = `${age.value} ${age.unit}`;
+  if (month && day) {
+    const value = `${Number(month)}月${Number(day)}日`;
+    return { value, sub: deceased ? `${year} 年生` : `${year} 年　${ageLabel}` };
+  }
+  if (month) {
+    return { value: `${Number(month)}月`, sub: deceased ? `${year} 年生` : `${year} 年　${ageLabel}` };
+  }
+  return { value: `${year} 年`, sub: deceased ? "出生年份" : ageLabel };
+}
+
+/**
+ * The v3.7 borderless 3-column metric strip (`生日 | 现居 | 谱系号` for living pandas; `生日 | 离世 | 谱系号`
+ * when deceased). Unrecorded cells render a quiet muted dash rather than a bright action link.
+ */
+export function unifiedMetrics(input: {
+  birthDate: string | null;
+  birthConfirmed: boolean;
+  deceased: boolean;
+  deathDate: string | null;
+  place: { short: string; sub: string | null } | null;
+  hasInstitution: boolean;
+  studbookNumber: string | null;
+  today: string;
+}): [UnifiedMetric, UnifiedMetric, UnifiedMetric] {
+  const birth = (() => {
+    if (!input.birthDate) {
+      return {
+        key: "birth" as const,
+        label: "生日",
+        value: QUIET_DASH,
+        sub: "暂未收录",
+        muted: true,
+        link: false,
+        spoken: "生日，未记录",
+      };
+    }
+    const { value, sub } = birthMetricParts(input.birthDate, input.deceased, input.today);
+    return {
+      key: "birth" as const,
+      label: "生日",
+      value,
+      sub,
+      muted: false,
+      link: false,
+      spoken: `生日，${value}，${sub.replace(/　/g, " ")}${input.birthConfirmed ? "，已确认" : ""}`,
+    };
+  })();
+
+  const middle = (() => {
+    if (input.deceased) {
+      const value = input.deathDate ? `${input.deathDate.slice(0, 4)} 年` : "已离世";
+      const sub = input.birthDate && input.deathDate ? `享年 ${ageAt(input.birthDate, input.deathDate)} 岁` : null;
+      return {
+        key: "place" as const,
+        label: "离世",
+        value,
+        sub,
+        muted: false,
+        link: false,
+        spoken: `离世，${value}${sub ? `，${sub}` : ""}`,
+      };
+    }
+    if (!input.place) {
+      return {
+        key: "place" as const,
+        label: "现居",
+        value: QUIET_DASH,
+        sub: "暂未收录",
+        muted: true,
+        link: false,
+        spoken: "现居，未记录",
+      };
+    }
+    return {
+      key: "place" as const,
+      label: "现居",
+      value: input.place.short,
+      sub: input.place.sub ?? "常驻地",
+      muted: false,
+      link: input.hasInstitution,
+      spoken: `现居，${input.place.short}${input.place.sub ? `，${input.place.sub}` : ""}`,
+    };
+  })();
+
+  const studbook = input.studbookNumber
+    ? {
+        key: "studbook" as const,
+        label: "谱系号",
+        value: input.studbookNumber,
+        sub: "国际谱系",
+        muted: false,
+        link: true,
+        spoken: `谱系号，${input.studbookNumber}，国际谱系`,
+      }
+    : {
+        key: "studbook" as const,
+        label: "谱系号",
+        value: QUIET_DASH,
+        sub: "国际谱系",
+        muted: true,
+        link: false,
+        spoken: "谱系号，未记录",
+      };
+
+  return [birth, middle, studbook];
+}
