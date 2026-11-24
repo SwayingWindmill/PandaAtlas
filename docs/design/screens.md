@@ -107,14 +107,15 @@ Status: built, without 反馈 and 关于 (no pages yet). 场馆动态 turns the 
 2. **关注 and 见过.** `关注` is the filled ink capsule with `Heart` (grey `secondary` once followed); `见过` is the neutral `card` capsule with `Eye` and date once marked. Both hide when deceased.
 3. **Unified 3-column metric strip (`The Stat Block Rule`).** Borderless hairline-separated 3 columns: `生日 | 现居 | 谱系号` when living, or `生日 | 离世 | 谱系号` when deceased. `生日` folds birth year and current age into its subtitle; linked `现居` opens `/institutions/[slug]`; recorded `谱系号` opens `/learn/terms/studbook`. Unrecorded cells show a quiet muted dash `—`, never bright blue.
 4. **Live venue & photo peek.** `PandaVenueLive` shows the local venue clock, one activity band and `看直播` link. When 2 or more photos exist, a horizontal **照片** peek strip links directly (`全部 N 张` and `照片 N` tiles) into `/pandas/[slug]/photos` instead of an inline `Segmented` tab bar.
-5. **Mid/lower editorial sections (only shown when verified data exists).**
-   - **小档案:** horizontal carousel of whitelisted `local.*` facts (enclosure, twin rank, birth size/weight, birth time, first-year or 100-day weight; never repeats studbook; lead card uses `highlight-soft`).
-   - **认出{名字}:** mapped Chinese appearance feature pills and feeding/care notes, followed by `PandaFaceGuideCard` when a guide exists.
-   - **成长阶段:** 4-segment track (`幼崽 / 亚成体 / 成年 / 老年`) with birthday countdown, placed mid-scroll away from the venue activity bar.
-   - **去过的地方 / 经历:** dual-stop route card or residency/timeline summary with a `时间线` link to `/pandas/[slug]/timeline`.
-   - **家人:** canonical lineage merged with deduplicated `local.*` relatives (`<= 2` compact 2-column horizontal cards; `>= 3` horizontal `92pt` portrait cards) with a `家族树` link to `/pandas/[slug]/family`.
-   - **快捷互动三格:** `名片卡` (`/pandas/[slug]/share`), `查关系` (`/relationship?from=`) and `比一比` (`/compare?a=`).
-   - **同年生, 那年今天 / 纪念, 场馆动态 & 科普延伸阅读:** up to 4 living same-year peers (`同年生`), dated memories (`Memories`), matching official venue announcements (`PandaVenueNewsCard`) and one matched learning article card (`RecommendedArticleCard`).
+5. **Mid/lower editorial sections (in scroll order).**
+   - **小档案:** horizontal carousel of whitelisted `local.*` facts (enclosure, twin rank, birth size/weight, birth time, first-year or 100-day weight; never repeats studbook; lead card uses `highlight-soft`); omitted when none exist.
+   - **认出{名字}:** mapped Chinese appearance feature pills and feeding/care notes when verified data exists, followed by `PandaFaceGuideCard` when a guide exists.
+   - **成长阶段:** 4-segment track (`幼崽 / 亚成体 / 成年 / 老年`) with birthday countdown for living pandas with a birth year, placed mid-scroll away from the venue activity bar.
+   - **去过的地方 / 经历:** dual-stop route card or residency/timeline summary with a `时间线` link to `/pandas/[slug]/timeline`, shown when route, stays, or events exist.
+   - **家人:** canonical lineage merged with deduplicated `local.*` relatives (`<= 2` compact 2-column horizontal cards; `>= 3` horizontal `92pt` portrait cards) with a `家族树` link to `/pandas/[slug]/family`, shown when at least one relative is known.
+   - **快捷互动三格:** compact 3-button `control`-radius strip (`名片卡` `/pandas/[slug]/share`, `查关系` `/relationship?from=`, `比一比` `/compare?a=`), shown on every profile.
+   - **同年生, 那年今天 / 纪念, 场馆动态:** up to 4 living same-year peers (`同年生`), dated memories (`Memories`), and matching official venue announcements (`PandaVenueNewsCard`), each shown when present.
+   - **科普延伸阅读:** once the learning catalog loads, one matched article card (`RecommendedArticleCard`, falling back to the catalog's first article when no specific tag matches).
 6. **Quiet footer.** Hairline-separated collapsible **资料来源** (`N 处`, collapsed by default), low-key correction prompt (`信息有遗漏？　帮我们补充` → `/pandas/[slug]/correct`), and optional cover photo credit footnote.
 
 Status: shipped in #814 (tabbed layout), redesigned to the v3.7 single-scroll profile in #931.

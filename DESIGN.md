@@ -331,7 +331,7 @@ components:
 
 **Creative North Star: "A photograph on the system shelf."**
 
-吱熊猫 is a phone atlas of named giant pandas. The shelf is the iOS 26 interface a fan already knows: a large title, a system back chevron, a Liquid Glass tab bar, and inset grouped lists. The thing on the shelf is a photograph of one animal. The palette is the panda's own: black and white, neutral grey cards, and one sky blue. Ink fills the main button; sky blue is the tint on the selected tab, a link, a tinted button and a selected state, and a brighter sky draws rings, rails and nodes. It does not paint cards, and there is no second accent. One signature motion, 竹 *bamboo*, is how things arrive: they bend a little past their mark and settle.
+吱熊猫 is a phone atlas of named giant pandas. The shelf is the iOS 26 interface a fan already knows: a large title, a system back chevron, a Liquid Glass tab bar, and inset grouped lists. The thing on the shelf is a photograph of one animal. The palette is the panda's own: black and white, neutral grey cards, and one sky blue. Ink fills the main button; sky blue is the tint on the selected tab, a link, a tinted button and a selected state, and a brighter sky draws rings, rails and nodes. It does not paint generic cards (save for the approved `highlight-soft` lead tile in `小档案`), and there is no second accent. One signature motion, 竹 *bamboo*, is how things arrive: they bend a little past their mark and settle.
 
 The website keeps its olive paper. The app does not. Android uses the same colors and lists with the system Material tab bar and toolbar; the web export uses the same type with a blurred bottom bar, not Liquid Glass.
 
@@ -360,7 +360,7 @@ Direction C, 熊猫 (v2.15): a white page with neutral grey cards in light mode,
 - **Button** (`#0A0A0A` light, white label, 19.8:1; `#FFFFFF` dark, black label): the one filled button per decision (关注, 打卡, 登录). CSS `button` / `button-foreground`; the `onButton` icon tone draws a glyph on it.
 - **Tint** (`#0A6CDB` light, 5.02:1 on white; `#5AB4FF` dark, 9.41:1 on black, 8.17:1 on `#151517`): links, the selected tab, tint rows, a tinted button's label, a selected chip, a confirmed `Check`, and focus. CSS `primary`.
 - **Graphic** (`#1A8CFF` / `#4DA8FF`): progress rings, timeline rails and nodes, bars. Never text (3.37:1 on white is enough for a non-text graphic, not for a label).
-- **Highlight soft** (`#EBF4FF` / `#0C2033`): the ground of a tinted capsule (见过), a selected chip, a tint badge. `#EBF4FF` is one step paler than the `sky` 50 primitive so the tint on it clears 4.5:1 (4.52:1; `#E7F2FF` gave 4.44:1).
+- **Highlight soft** (`#EBF4FF` / `#0C2033`): the ground of a tinted capsule (看直播, photo zoom 放大, 已关注 on an institution page), a selected chip, a tint badge, or a panda profile's lead `小档案` card. `#EBF4FF` is one step paler than the `sky` 50 primitive so the tint on it clears 4.5:1 (4.52:1; `#E7F2FF` gave 4.44:1).
 - **Why:** Things 3 (https://apps.apple.com/us/app/things-3/id904237743) and Flighty (https://apps.apple.com/us/app/flighty-live-flight-tracker/id1358823008) carry a calm, premium interface on white, grey and one blue; WWF's panda is black and white by brand rule (https://wwf-brand.azurewebsites.net/brand-guidelines/brand-elements/). The blue reads as sky over the bamboo without competing with photographs.
 - **Role split (v2.14, values v2.15).** `button`, `graphic` and `tint` are separate roles; a palette change edits `tokens.ts` only.
 
@@ -546,7 +546,7 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 ### Buttons
 - **Shape:** pill, height 48, at least 44.
 - **Primary:** ink fill (`button`), white label (white fill, black label in dark), headline weight. One per decision. It may lead with one glyph in the `onButton` tone when the pair beside it has one too (关注 `Heart`, 见过 `Eye`).
-- **Tinted:** `highlight-soft` capsule, tint label. The second action beside a primary one, like 见过.
+- **Tinted:** `highlight-soft` capsule, tint label. Used for secondary emphasis or toggled states (`看直播`, photo zoom `放大`, `已关注` on an institution page); beside 关注 on a panda page, 见过 uses a neutral `card` capsule.
 - **Plain:** tint text, no ground. A tertiary action.
 - **Secondary:** system fill, label-colored text. The alternate action.
 - **Focus:** 2px tint ring.
@@ -572,9 +572,9 @@ Every component has a contract: purpose, when not to use it, variants, states, a
 ### Icons
 One set: Lucide (`lucide-react-native` on `react-native-svg`), same glyphs on every platform, each exported from `components/icons.ts` and drawn through `components/icon.tsx`.
 - **Size** follows the text beside it (sizes above). **Stroke** 1.75; chevrons and toolbar glyphs 2–2.25.
-- **Color:** secondary label. Tint only on an action row (官网, 看官方直播, 导航过去), a stat tile's label glyph, quick-tool pill buttons, highlight lead card, or the selected tab. Tertiary label for the chevron. On media: white, or label inside Liquid Glass.
+- **Color:** secondary label. Tint only on an action row (官网, 看官方直播, 导航过去), a stat tile's label glyph, compact quick-tool control tiles (名片卡 / 查关系 / 比一比, `control` radius), a `小档案` lead card, or the selected tab. Tertiary label for the chevron. On media: white, or label inside Liquid Glass.
 - **Bare glyphs only (v2.15).** An icon is never set inside a square, rounded tile or circle ground. A glyph-only control (返回, 分享, the 设置 gear, the 日历 and 打卡 toolbar buttons) is a control, not an icon tile, and keeps its 44 glass circle; selection marks (the welcome check) are marks, not icons; a coverless panda's initial monogram carries text only, never an icon.
-- **Use one** where Settings, Health or Maps would: a leading glyph on a section header, a stat tile, a settings row, or a row naming a fixed category or destination (时间线, 家族树, 查关系, 名片卡, 比一比, 看官方直播, 官网, 导航过去), or a footnote-size glyph beside a stat label.
+- **Use one** where Settings, Health or Maps would: a leading glyph on a section header, a stat tile, a settings row, or a row naming a fixed category or destination (所在机构, every 去之前 fact, 到访, 看官方直播, 官网, 导航过去, 名片卡, 查关系, 比一比), or a footnote-size glyph beside a stat label.
 - **One meaning per glyph** (`MapPin` place, `Clock` hours, `CalendarCheck` visit, `Ellipsis` more actions on a row). **All or none in a group.** No icon on a data row (a relative card, an event row, or inside a source title — only a trailing `ExternalLink` disclosure on external links).
 - **Don't** put an icon on a standard list-action button with a text label (the 关注 / 见过 pair and the compact 3-tool strip 名片卡 / 查关系 / 比一比 are the exceptions), beside a large title, in running text, in any square, tile or circle ground, or fill a glyph to fake selection. A glyph-only toolbar button (返回, 分享, the 设置 gear on 我的) is a 44 circle with an accessible name.
 
@@ -602,7 +602,7 @@ Navigation is Expo Router's `native-tabs` and native stack (the SDK 58 way to th
 ### Don't
 - **Don't** put a kicker above the title. A date line over 今天 or 那年今天 is content, not a kicker.
 - **Don't** put an icon in a square, tile or circle, anywhere.
-- **Don't** paint a card, a progress track, or a hero with the tint, add a second accent (no gold), or tint a card pastel.
+- **Don't** paint a generic card, a progress track, or a hero with the tint, add a second accent (no gold), or tint a card pastel (the lead `小档案` tile's `highlight-soft` and named tint badges are the approved exceptions).
 - **Don't** hand-roll a glass panel.
 - **Don't** bring the website's olive ground or a custom back button onto the app.
 - **Don't** write a hex, `rgba()`, a numeric `fontSize` or an arbitrary Tailwind value (`p-[13px]`) in a screen; add a token.
@@ -660,7 +660,7 @@ The deprecated `Text` variants and `legacyText` CSS tokens have been removed fro
 
 ## Changelog
 
-- **v3.7 (2026-11-24).** Panda profile redesigned as a single-scroll canvas (`#931`), removing the middle `Segmented` bar (`profile-sections.tsx`). Unified borderless 3-column metrics (`生日 | 现居 | 谱系号`, or `离世` when deceased) with quiet muted `—` for unrecorded values, horizontal `60×60` initial monogram header when coverless, deterministic 1-sentence factual lead bio, neutral `card` `见过` button, whitelisted `local.*` highlights / traits / route / mid-scroll `成长阶段` bar, merged `家人` strip (`<= 2` horizontal cards, `>= 3` portrait scroller), quick tools strip (`名片卡 / 查关系 / 比一比`), `同年生` peers, venue news and matched learning article, collapsible footer sources and quiet correction prompt. Added `ExternalLink`, `IdCard`, `Ruler`.
+- **v3.7 (2026-11-24).** Panda profile redesigned as a single-scroll canvas (`#931`), removing the middle `Segmented` bar from `apps/mobile/src/app/pandas/[slug]/index.tsx` (replacing `profile-family-tab.tsx` and `profile-photos-tab.tsx` with single-scroll sections in `profile-sections.tsx`). Unified borderless 3-column metrics (`生日 | 现居 | 谱系号`, or `离世` when deceased) with quiet muted `—` for unrecorded values, horizontal `60×60` initial monogram header when coverless, deterministic 1-sentence factual lead bio, neutral `card` `见过` button, whitelisted `local.*` highlights / traits / route / mid-scroll `成长阶段` bar, merged `家人` strip (`<= 2` horizontal cards, `>= 3` portrait scroller), quick tools strip (`名片卡 / 查关系 / 比一比`), `同年生` peers, venue news and matched learning article, collapsible footer sources and quiet correction prompt. Added `ExternalLink`, `IdCard`, `Ruler`.
 - **v2.20 (2026-11-05).** Tab glyphs follow the v4 mockups: `calendar` for 今天 and `book` for 图鉴 (were `sun` and `layout-grid`).
 - **v2.19 (2026-11-04).** Measured against the v4 mockups: the page margin is its own role, `gutter` 20 (`inset` stays 16 for padding); `group` is 20 and every grey surface takes it (stat tiles, the 点亮 card, a panda's fact cards); the search field is 14 (`radius.field`); 图鉴 grid photos take `tile`. Stat tiles show the unit at footnote size. Panda rows are 44pt round photos, the name in body and a chevron. 找熊猫's explore cards have short names (场馆, 查关系, 比一比) and read the full ones aloud. `/on-this-day` takes the mockup's timeline card and hero.
 - **v2.18 (2026-11-04).** The second v4 batch: 图鉴's grid and filters (The Life List Rule), 我的 as a profile row, three tiles (关注, 打卡, 去过) and two counted groups, with `/following` and `/contributions` for 关注的熊猫 and 我的纠错 (`FilePen`); 找熊猫's `Chip ink` filters (在中国, 在海外, then each area in China) and portrait explore cards with a glyph; panda rows take a round photo and a sex glyph; `/on-this-day` reads 本周 or 本月 (The On This Day Rule). Stat tile glyphs are tinted.
