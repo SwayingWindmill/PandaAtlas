@@ -620,9 +620,11 @@ export function extractRichFacts(input: {
     : highlights.some((item) => item.key === "birth-size" || item.key === "birth-weight" || item.key === "twin") ||
         (lifeStage && lifeStage.stageIndex <= 1)
       ? "cubs"
-      : returnDate
-        ? "panda-diplomacy"
-        : "telling-faces-apart";
+      : deceased || (lifeStage && lifeStage.stageIndex === 3)
+        ? "lifespan-and-health"
+        : returnDate
+          ? "captive-breeding"
+          : "telling-faces-apart";
 
   return {
     studbookNumber,

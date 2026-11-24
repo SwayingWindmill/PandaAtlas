@@ -1,7 +1,7 @@
 import type { components } from "@zhipanda/api-client";
 import { describe, expect, it } from "vitest";
 
-import { chineseName, displayChineseName, displayName, nameInitial, pandaBirthDate, pandaFactStatus, pandaIsDeceased, pandaSex } from "./panda";
+import { chineseName, displayChineseName, displayName, nameInitial, pandaBirthDate, pandaDeathDate, pandaFactStatus, pandaIsDeceased, pandaSex } from "./panda";
 
 type PandaSummary = components["schemas"]["PublicPandaSummaryDto"];
 type Name = PandaSummary["names"][number];
@@ -168,11 +168,14 @@ describe("core fact fallback onto verified local.* fields", () => {
         { fieldKey: "sex", value: "male", status: "confirmed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
         { fieldKey: "local.sex", value: "female", status: "confirmed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
         { fieldKey: "local.birth_date", value: "", status: "disputed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+        { fieldKey: "death_date", value: "", status: "confirmed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+        { fieldKey: "local.death_date", value: "2016-10-16", status: "confirmed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
         { fieldKey: "local.life_status", value: "deceased", status: "disputed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
       ],
     };
     expect(pandaSex(record)).toBe("male");
     expect(pandaBirthDate(record)).toBeNull();
+    expect(pandaDeathDate(record)).toBe("2016-10-16");
     expect(pandaIsDeceased(record)).toBe(false);
     expect(pandaFactStatus(record, "birth_date")).toBeNull();
   });

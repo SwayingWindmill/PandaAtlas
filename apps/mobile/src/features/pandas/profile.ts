@@ -12,7 +12,7 @@ import { type PlaceLived, type Stat, type UnifiedMetric, headlineStats, infobox,
 import { type RichProfileFacts, extractRichFacts } from "@/features/pandas/rich-facts";
 import { publicMediaUrl } from "@/lib/api";
 import { type MilestoneKind, describeEvent } from "@/features/timeline/timeline";
-import { displayName, englishName, pandaBirthDate, pandaFactStatus, pandaIsDeceased, pandaSex } from "@/lib/panda";
+import { displayName, englishName, pandaBirthDate, pandaDeathDate, pandaFactStatus, pandaIsDeceased, pandaSex } from "@/lib/panda";
 import { loadPandaDetail } from "@/lib/public-panda";
 
 type Schemas = components["schemas"];
@@ -213,10 +213,7 @@ export async function loadProfile(slug: string): Promise<Profile> {
   const sex = pandaSex(panda);
   const birthDate = pandaBirthDate(panda);
   const deceased = pandaIsDeceased(panda);
-  const deathFact =
-    panda.facts.find((fact) => fact.fieldKey === "death_date" && fact.status !== "disputed")?.value ??
-    panda.facts.find((fact) => fact.fieldKey === "local.death_date" && fact.status !== "disputed")?.value;
-  const deathDate = typeof deathFact === "string" ? deathFact : null;
+  const deathDate = pandaDeathDate(panda);
   const currentPlaceRecord = deceased ? undefined : places.get(currentPlaceId(residencies) ?? "");
   const currentPlace = placeName(currentPlaceRecord);
   const family = await familyOf(detail).catch(() => null);

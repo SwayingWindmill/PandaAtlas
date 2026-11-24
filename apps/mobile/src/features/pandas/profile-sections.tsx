@@ -44,11 +44,29 @@ import { type Profile, longDate } from "@/features/pandas/profile";
 import { openPandaCorrection } from "@/features/pandas/profile-overview";
 import type { HighlightIcon, LifeStageInfo, ProfileHighlight } from "@/features/pandas/rich-facts";
 import { sameCohortPandas } from "@/features/pandas/same-cohort";
+import type { MilestoneKind } from "@/features/timeline/timeline";
 import { loadVenueNews } from "@/features/venue-news/venue-news";
 import { usePandaCover } from "@/lib/covers";
 import { nameInitial } from "@/lib/panda";
 import { HAIRLINE, PAGE_COLUMN, RADIUS } from "@/lib/surface";
 import { cn } from "@/lib/utils";
+
+const KIND_WORD: Record<MilestoneKind, string> = {
+  birth: "出生",
+  cub: "产仔",
+  move: "迁居",
+  arrive: "迁居",
+  home: "回国",
+  debut: "亮相",
+  naming: "命名",
+  death: "离世",
+  stay: "入住",
+  leave: "迁出",
+  month: "满月",
+  hundred: "百天",
+  age: "生日",
+  parent: "产仔",
+};
 
 const INITIAL_SOURCES_SHOWN = 5;
 const STAGE_LABELS = ["幼崽", "亚成体", "成年", "老年"] as const;
@@ -81,7 +99,7 @@ function SectionHeaderLink({
       <Pressable
         role="link"
         accessibilityLabel={accessibilityLabel}
-        hitSlop={12}
+        hitSlop={{ top: 13, bottom: 13, left: 12, right: 12 }}
         onPress={onPress}
         className="flex-row items-center gap-0.5 active:opacity-60"
       >
@@ -130,7 +148,7 @@ export function NoPhotoIdentityHeader({
             aria-hidden
             importantForAccessibility="no-hide-descendants"
             className="items-center justify-center border-hairline border-border bg-card"
-            style={{ width: 60, height: 60, borderRadius: 18, borderCurve: "continuous" }}
+            style={{ width: 60, height: 60, borderRadius: RADIUS.tile, borderCurve: "continuous" }}
           >
             <Text variant="title" allowFontScaling={false} className="font-bold">
               {nameInitial(profile.name)}
@@ -191,10 +209,14 @@ export function UnifiedMetricStrip({ profile }: { profile: Profile }) {
               stacked ? "flex-row items-center justify-between gap-3 py-1.5" : "min-w-0 flex-1 items-center justify-center px-1.5 py-2",
             )}
           >
-            <Text variant="footnote" className="font-medium text-muted-foreground" numberOfLines={1}>
+            <Text
+              variant="footnote"
+              className={cn("font-medium text-muted-foreground", stacked && "shrink-0")}
+              numberOfLines={1}
+            >
               {metric.label}
             </Text>
-            <View className={cn("min-w-0 w-full", stacked ? "items-end" : "mt-0.5 items-center overflow-hidden")}>
+            <View className={cn("min-w-0 overflow-hidden", stacked ? "flex-1 items-end" : "mt-0.5 w-full items-center")}>
               <View className="min-w-0 max-w-full flex-row items-center justify-center gap-0.5 overflow-hidden">
                 <Text
                   variant="headline"
@@ -534,7 +556,7 @@ export function JourneyRouteSection({ profile }: { profile: Profile }) {
             items={fallbackEvents.map((ev) => ({
               key: ev.key,
               date: ev.date,
-              meta: ev.meta === "birth" ? "出生" : ev.meta === "home" ? "回国" : "动态",
+              meta: KIND_WORD[ev.meta],
               title: ev.title,
             }))}
           />
@@ -629,7 +651,8 @@ export function FamilyStripSection({ profile }: { profile: Profile }) {
       <SectionHeaderLink title="家人" actionLabel="家族树" accessibilityLabel="家族树" onPress={openTree} />
       {combined.length <= 2 ? (
         <View className={stacked ? "gap-2" : "flex-row gap-2.5"}>
-          {combined.map((member) => {
+          {combined.map((member, index) => {
+            const key = member.id ?? member.slug ?? `${member.relation}-${member.name}-${index}`;
             const spoken = `${member.relation}，${member.name}`;
             const body = (
               <View
@@ -654,7 +677,7 @@ export function FamilyStripSection({ profile }: { profile: Profile }) {
             );
             return member.slug ? (
               <Pressable
-                key={`${member.relation}-${member.name}`}
+                key={key}
                 role="link"
                 accessibilityLabel={spoken}
                 onPress={() => openPanda(member.slug!)}
@@ -663,7 +686,7 @@ export function FamilyStripSection({ profile }: { profile: Profile }) {
                 {body}
               </Pressable>
             ) : (
-              <View key={`${member.relation}-${member.name}`} className="min-w-0 flex-1" accessible accessibilityLabel={spoken}>
+              <View key={key} className="min-w-0 flex-1" accessible accessibilityLabel={spoken}>
                 {body}
               </View>
             );
@@ -671,7 +694,8 @@ export function FamilyStripSection({ profile }: { profile: Profile }) {
         </View>
       ) : (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-gutter" contentContainerClassName="gap-2.5 px-gutter">
-          {combined.slice(0, 12).map((member) => {
+          {combined.slice(0, 12).map((member, index) => {
+            const key = member.id ?? member.slug ?? `${member.relation}-${member.name}-${index}`;
             const spoken = `${member.relation}，${member.name}`;
             const card = (
               <View
@@ -697,11 +721,11 @@ export function FamilyStripSection({ profile }: { profile: Profile }) {
               </View>
             );
             return member.slug ? (
-              <PressScale key={`${member.relation}-${member.name}`} role="link" accessibilityLabel={spoken} onPress={() => openPanda(member.slug!)}>
+              <PressScale key={key} role="link" accessibilityLabel={spoken} onPress={() => openPanda(member.slug!)}>
                 {card}
               </PressScale>
             ) : (
-              <View key={`${member.relation}-${member.name}`} accessible accessibilityLabel={spoken}>
+              <View key={key} accessible accessibilityLabel={spoken}>
                 {card}
               </View>
             );

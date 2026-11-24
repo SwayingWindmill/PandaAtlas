@@ -70,8 +70,8 @@ function factEntry(panda: PandaSummary, key: string, fallbackKey?: string) {
 }
 
 /**
- * How sure the record is of one fact: confirmed, or anything else (provisional, disputed) as pending.
- * Null when the record has no such fact. Shown as a check or a hollow dot, never as words on screen.
+ * How sure the record is of one fact: confirmed, or anything else (provisional) as pending.
+ * Null when the record has no usable fact (disputed or empty entries are skipped).
  */
 export function pandaFactStatus(panda: PandaSummary, key: string): "confirmed" | "pending" | null {
   const item = factEntry(panda, key, `local.${key}`);
@@ -86,6 +86,11 @@ export function pandaSex(panda: PandaSummary): "male" | "female" | null {
 
 export function pandaBirthDate(panda: PandaSummary): string | null {
   const value = factEntry(panda, "birth_date", "local.birth_date")?.value;
+  return typeof value === "string" && /^\d{4}/.test(value) ? value : null;
+}
+
+export function pandaDeathDate(panda: PandaSummary): string | null {
+  const value = factEntry(panda, "death_date", "local.death_date")?.value;
   return typeof value === "string" && /^\d{4}/.test(value) ? value : null;
 }
 
