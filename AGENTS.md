@@ -55,7 +55,13 @@
 ## 7. Git 与交付
 
 - `E:\Code\PandaAtlas` 是多个会话共用的检出，别的会话会在里面切分支。每个任务在自己的 git worktree 里开分支、提交；不要在共用检出里提交或切分支。共用检出的 `.git` 里有标记文件 `pandaatlas-shared-checkout`，`.githooks/pre-commit` 据此拒绝 Claude Code agent（`CLAUDECODE` 已设置）在那里提交；别的克隆和手工提交不受影响。
-- 开新任务：`git worktree add ../PandaAtlas-<task> -b <branch> origin/main`，然后在新 worktree 里跑 `npm ci`（约 5 分钟）。不要把 `node_modules` 用 junction 或软链接连到共用检出：npm workspace 的链接会指回共用检出的包，Expo Router 也会找错 app 目录，打开就是 "Welcome to Expo"。任务结束用 `git worktree remove` 删掉。
+- 开新 worktree：先 `git fetch --prune origin`，在共用检出同级目录建 `git worktree add ../PandaAtlas-<task> -b <branch> origin/main`，并在新 worktree 里跑 `npm ci`（约 5 分钟）。统一放 `../PandaAtlas-<task>`，不建在仓库内的 `.claude/worktrees/` 或 `.worktrees/`；任务 worktree 不检出本地 `main`（只读预览用 `--detach origin/main`）。不要把 `node_modules` 用 junction 或软链接连到共用检出：npm workspace 的链接会指回共用检出的包，Expo Router 也会找错 app 目录，打开就是 "Welcome to Expo"。
+- 清理 worktree 是任务完成的必要条件：PR 合并（或放弃分支且确认无未推送改动）后，必须完成以下收尾才算结束：
+  1. 切出该 worktree 目录并停掉其中启动的进程（Windows 会锁住当前目录和 `node_modules`）；
+  2. 跑 `git -C <worktree> status --short` 确认没有要保留的未提交改动；
+  3. 跑 `git worktree remove <path>`（确认只剩 `.audit/` 或构建产物等无关文件时再加 `--force`；若 Windows 留下 `node_modules` 空壳，删掉残留目录后再跑 `git worktree prune`）；
+  4. 确认 PR 已合入后用 `git branch -D <branch>` 删除本地分支（squash 合并会生成新提交，`-d` 会拒绝），再跑 `git worktree prune` 和 `git fetch --prune origin`。
+- 只清理本次任务自己创建的 worktree 和分支。发现 `git worktree list` 中有其他会话遗留的 worktree 时，列出各自状态（已合并 / 未合并 / 有未提交改动），征得用户明确同意后再删。
 - 不要用 `git stash`：所有 worktree 共用一个 stash 列表，会拿错别人的修改。`.claude/settings.json` 里的 PreToolUse hook 会在 Claude Code 里拦下它。其他 agent 没有这两道 hook，照文字规则做。
 - 不覆盖用户已有的未提交修改；遇到冲突或不确定的修改来源时先说明情况。
 - 提交信息和 PR 用中文，提交信息用 Conventional Commits 前缀（如 `fix(mobile): …`）。PR 正文按 `.github/PULL_REQUEST_TEMPLATE.md` 的小节写，`## Why` 开头写用户的目标。
@@ -66,10 +72,10 @@
 
 - `main` 有规则集「main: CI must pass」：Development Verification 的三个检查和 Mobile E2E 的两个检查必须通过，没有人能绕过。它是兜底：GitHub 会挡住 CI 没跑完或没通过的合并。
 - GitHub 管不了的那一半由 agent 自己守：合并前至少一个独立 reviewer（不是写代码的那个 agent）给出 PASS。自己的审查、测试和 CI 都不算独立审查。
-- 不要开自动合并：规则集只管 CI，不管审查，有写权限的人再推一次也不会取消自动合并，没审查过的提交就可能合进去。等 PR 的 CI 跑绿、独立审查 PASS 之后，用 `gh pr merge <n> --squash --match-head-commit <审查过的 head>` 当场合并；合并后看 `main` 上那次 Development Verification。
+- 不要开自动合并：规则集只管 CI，不管审查，有写权限的人再推一次也不会取消自动合并，没审查过的提交就可能合进去。等 PR 的 CI 跑绿、独立审查 PASS 之后，用 `gh pr merge <n> --squash --match-head-commit <审查过的 head>` 当场合并（仓库已开启合并后自动删远端分支，不要传 `--delete-branch`，避免 `gh` 在本地切分支或因 worktree 占用报错）；合并后按上面步骤清理本任务的 worktree 与本地分支，再看 `main` 上那次 Development Verification。
 - 以上合并流程只用于你在本次对话里自己开的 PR。其他 PR，包括以前对话里开的，都按下面「每次都要用户在对话里明确同意」那一条处理。
 - 合并前确认 PR 的目标分支是 `main`（`gh pr view <n> --json baseRefName`）。叠在别的分支上的 PR 会合进那个分支，而不是 `main`；不是 `main` 就停下来问用户。
-- 下面这些每次都要用户在对话里明确同意：合并本次对话以外开的 PR；生产部署（`Production` 环境审批）；批量内容发布（`production-batch`）；强推共享分支；删除数据；改 GitHub 仓库设置、分支保护、环境或密钥。
+- 下面这些每次都要用户在对话里明确同意：合并本次对话以外开的 PR；删除本次任务以外的其他会话 worktree；生产部署（`Production` 环境审批）；批量内容发布（`production-batch`）；强推共享分支；删除数据；改 GitHub 仓库设置、分支保护、环境或密钥。
 
 ## UI 与内容
 
