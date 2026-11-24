@@ -101,19 +101,23 @@ Status: built in the second batch; the 年度回顾 banner came with #805. 关�
 
 Status: built, without 反馈 and 关于 (no pages yet). 场馆动态 turns the 今天 card on and off; it is kept on this device.
 
-## 熊猫详情 — `06-panda`, `06-panda-dark`, `06b-panda-family`, `06c-panda-photos`
+## 熊猫详情 — `06-panda`, `06-panda-dark`, `06b-panda-family`, `06c-panda-photos` (superseded by v3.7 single-scroll canvas in #931)
 
-1. **Hero.** A stretchy, full-bleed photograph with bare back, share and ••• glyphs (The Plate Rule).
-2. The name in display, with the pinyin and sex glyph as a footnote.
-3. **关注 and 见过.** 关注 is the ink button with a `Heart`. 见过 is the tinted button with an `Eye`.
-4. **Stat tiles.** 生日 (month and day), 年龄 and 所在地 (The Stat Block Rule).
-5. A `Segmented` control with 概况, 家族, 照片 and 动态, linked by `?tab=`.
-   - **概况:** a parents row and the latest move row, then the 经历 `Timeline`, which lists only events that happened, each with its `SourceBadge`.
-   - **家族:** the family tree, parents over siblings with the current panda ringed, then a 兄姐 group sorted by birth year.
-   - **照片:** the photo count, a `Segmented` filter by source (全部, the institution, Wikimedia), a mixed grid, and the credits line.
-   - **动态:** venue news about this panda. It needs #807.
+1. **Hero / No-photo identity header (`The Plate Rule`).** With a cover photo, a stretchy full-bleed photograph (`HERO = 292`, `OVERLAP = 52`, `HeroFade`) with bare back, share and `•••` glyphs sits above the display name, optional right-aligned `认养名`, English name and sex glyph. With no published photo, a top `highlight-soft` gradient fading from `y = 0` into the page ground frames a horizontal `60×60` `tile`-radius typographic initial monogram (`nameInitial`, no icon inside) beside the name block. A deterministic 1-sentence factual lead bio follows when verified fields support one.
+2. **关注 and 见过.** `关注` is the filled ink capsule with `Heart` (grey `secondary` once followed); `见过` is the neutral `card` capsule with `Eye` and date once marked. Both hide when deceased.
+3. **Unified 3-column metric strip (`The Stat Block Rule`).** Borderless hairline-separated 3 columns: `生日 | 现居 | 谱系号` when living, or `生日 | 离世 | 谱系号` when deceased. `生日` folds birth year and current age into its subtitle; linked `现居` opens `/institutions/[slug]`; recorded `谱系号` opens `/learn/terms/studbook`. Unrecorded cells show a quiet muted dash `—`, never bright blue.
+4. **Live venue & photo peek.** `PandaVenueLive` shows the local venue clock, one activity band and `看直播` link. When 2 or more photos exist, a horizontal **照片** peek strip links directly (`全部 N 张` and `照片 N` tiles) into `/pandas/[slug]/photos` instead of an inline `Segmented` tab bar.
+5. **Mid/lower editorial sections (only shown when verified data exists).**
+   - **小档案:** horizontal carousel of whitelisted `local.*` facts (enclosure, twin rank, birth size/weight, birth time, first-year or 100-day weight; never repeats studbook; lead card uses `highlight-soft`).
+   - **认出{名字}:** mapped Chinese appearance feature pills and feeding/care notes, followed by `PandaFaceGuideCard` when a guide exists.
+   - **成长阶段:** 4-segment track (`幼崽 / 亚成体 / 成年 / 老年`) with birthday countdown, placed mid-scroll away from the venue activity bar.
+   - **去过的地方 / 经历:** dual-stop route card or residency/timeline summary with a `时间线` link to `/pandas/[slug]/timeline`.
+   - **家人:** canonical lineage merged with deduplicated `local.*` relatives (`<= 2` compact 2-column horizontal cards; `>= 3` horizontal `92pt` portrait cards) with a `家族树` link to `/pandas/[slug]/family`.
+   - **快捷互动三格:** `名片卡` (`/pandas/[slug]/share`), `查关系` (`/relationship?from=`) and `比一比` (`/compare?a=`).
+   - **同年生, 那年今天 / 纪念, 场馆动态 & 科普延伸阅读:** up to 4 living same-year peers (`同年生`), dated memories (`Memories`), matching official venue announcements (`PandaVenueNewsCard`) and one matched learning article card (`RecommendedArticleCard`).
+6. **Quiet footer.** Hairline-separated collapsible **资料来源** (`N 处`, collapsed by default), low-key correction prompt (`信息有遗漏？　帮我们补充` → `/pandas/[slug]/correct`), and optional cover photo credit footnote.
 
-Status: shipped in #814 (概况, 家族, 照片).
+Status: shipped in #814 (tabbed layout), redesigned to the v3.7 single-scroll profile in #931.
 
 ## Feature screens
 
