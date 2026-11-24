@@ -4,39 +4,39 @@ import { fixture, runSuffix } from "./support/fixture.ts";
 import { openedTabs, recordOpenedTabs } from "./support/opened-tabs.ts";
 import { test } from "./support/test.ts";
 
-test("a profile states sex, birth, home and parents, and lists the places it has lived", async ({ app, screen }) => {
+test("a profile states sex, birth, home, studbook and parents, and links directly to the timeline", async ({ app, screen }) => {
   const { panda, zoo } = fixture();
   await app.open(`/pandas/${panda.slug}`);
   await expect(screen.getByRole("heading", panda.name)).toBeVisible();
-  // The facts sit in the name line and the stat tiles; each tile reads as one sentence.
+  // The unified 3-column strip shows birthday (with birth year and age), current home, and studbook.
   await expect(screen.getByLabel(/雌性$/)).toBeVisible();
-  await expect(screen.getByLabel("生日，7.20，已确认")).toBeVisible();
-  await expect(screen.getByRole("link", "所在地，成都")).toBeVisible();
-  await expect(screen.getByRole("button", `父母，妈妈选项丙${runSuffix()}，爸爸选项丁${runSuffix()}`)).toBeVisible();
+  await expect(screen.getByLabel(/^生日，7月20日，2020 年 .*已确认$/)).toBeVisible();
+  await expect(screen.getByRole("link", /^现居，成都/)).toBeVisible();
+  await expect(screen.getByLabel("谱系号，未记录")).toBeVisible();
+  await expect(screen.getByRole("link", `妈妈，选项丙${runSuffix()}`)).toBeVisible();
+  await expect(screen.getByRole("link", `爸爸，选项丁${runSuffix()}`)).toBeVisible();
 
-  // The places it has lived are on its 时间线, under 动态.
-  await screen.getByRole("radio", "动态").tap();
-  await screen.getByRole("button", "时间线").tap();
+  await screen.getByRole("link", "时间线").tap();
   await expect(screen.getByRole("heading", `${panda.name}的时间线`)).toBeVisible();
   await expect(screen.getByText(/住过 1 个地方/)).toBeVisible();
   await expect(screen.getByText(`住进${zoo.facility}`)).toBeVisible();
 });
 
-test("a sparse profile says what is unknown and asks fans to tell us", async ({ app, screen }) => {
+test("a sparse profile keeps missing metrics quiet and places correction at the footer", async ({ app, screen }) => {
   const { panda, notice } = fixture();
   // 选项乙 has no photo, no recorded sex, birth or home, and no life events.
   await app.open(`/pandas/${notice.slug}`);
   await expect(screen.getByRole("heading", notice.name)).toBeVisible();
-  await expect(screen.getByText("暂无照片")).toBeVisible();
+  await expect(screen.getByRole("button", new RegExp(`查看${notice.name}的照片`))).toHaveCount(0);
   await expect(screen.getByLabel("生日，未记录")).toBeVisible();
-  await screen.getByRole("radio", "动态").tap();
-  await screen.getByRole("button", "知道它的经历？告诉我们").tap();
+  await expect(screen.getByLabel("现居，未记录")).toBeVisible();
+  await expect(screen.getByLabel("谱系号，未记录")).toBeVisible();
+  await screen.getByRole("button", "信息有遗漏？帮我们补充").tap();
   await expect(screen.getByText("登录后才能纠错", { exact: false })).toBeVisible();
 
-  // The fixture panda's events are empty too, but it has a photo.
   await app.open(`/pandas/${panda.slug}`);
   await expect(screen.getByRole("heading", panda.name)).toBeVisible();
-  await expect(screen.getByText("暂无照片")).toHaveCount(0);
+  await expect(screen.getByRole("button", `查看${panda.name}的照片，共 2 张`)).toBeVisible();
 });
 
 test("找熊猫's area chips narrow the list to pandas living there", async ({ app, screen }) => {
@@ -51,40 +51,22 @@ test("找熊猫's area chips narrow the list to pandas living there", async ({ a
   await expect(screen.getByRole("button", new RegExp(`^${notice.name}`))).toBeVisible();
 });
 
-test("profile keeps Segmented vertically stable across tabs", async ({ app, screen, browser }) => {
+test("profile uses a single-scroll canvas without middle tabs and links directly to photos, tree and tools", async ({ app, screen, browser }) => {
   const { panda } = fixture();
 
   await app.open(`/pandas/${panda.slug}`);
-  await expect(screen.getByRole("radio", { name: "概况", checked: true })).toBeVisible();
-  await expect(screen.getByLabel("生日，7.20，已确认")).toBeVisible();
+  await expect(screen.getByLabel(/^生日，7月20日，2020 年 .*已确认$/)).toBeVisible();
+  const segmentedCount = await browser.evaluate(
+    () => document.querySelectorAll('[role="radiogroup"][aria-label="资料分区"]').length,
+  );
+  expect(segmentedCount).toBe(0);
 
-  const segmentedTop = () =>
-    browser.evaluate(
-      () => document.querySelector('[role="radiogroup"][aria-label="资料分区"]')?.getBoundingClientRect().top ?? null,
-    );
-
-  await screen.getByRole("radio", "家族").tap();
-  await expect(screen.getByLabel("生日，7.20，已确认")).toHaveCount(0);
-  const familyTop = await segmentedTop();
-  expect(familyTop).not.toBeNull();
-
-  await screen.getByRole("radio", "照片").tap();
-  await expect(screen.getByText("2 张")).toBeVisible();
-  const photosTop = await segmentedTop();
-  expect(photosTop).not.toBeNull();
-  expect(Math.abs(photosTop! - familyTop!)).toBeLessThanOrEqual(1);
-
-  await screen.getByRole("radio", "动态").tap();
-  await expect(screen.getByRole("button", "时间线")).toBeVisible();
-  const eventsTop = await segmentedTop();
-  expect(eventsTop).not.toBeNull();
-  expect(Math.abs(eventsTop! - familyTop!)).toBeLessThanOrEqual(1);
-
-  await screen.getByRole("radio", "概况").tap();
-  await expect(screen.getByLabel("生日，7.20，已确认")).toBeVisible();
-  const overviewTop = await segmentedTop();
-  expect(overviewTop).not.toBeNull();
-  expect(Math.abs(overviewTop! - familyTop!)).toBeLessThanOrEqual(1);
+  await expect(screen.getByRole("link", "全部 2 张")).toBeVisible();
+  await expect(screen.getByRole("link", "家族树")).toBeVisible();
+  await expect(screen.getByRole("link", "时间线")).toBeVisible();
+  await expect(screen.getByRole("button", `生成${panda.name}的名片卡`)).toBeVisible();
+  await expect(screen.getByRole("button", `查询${panda.name}的亲缘关系`)).toBeVisible();
+  await expect(screen.getByRole("button", `和别的熊猫比一比${panda.name}`)).toBeVisible();
 });
 
 test("venue exposes clickable live cam link and resident filter tabs", async ({ app, screen, browser }) => {

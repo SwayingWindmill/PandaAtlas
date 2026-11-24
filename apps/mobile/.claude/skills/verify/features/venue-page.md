@@ -14,7 +14,7 @@ A zoo or base has its own page: a hero with the name, top capsules for resident 
 
 - 地图 Tab (`/map`), then a zoo in the list or on the map, then `进入场馆与攻略`.
 - 探索, then 此刻谁醒着, then open a zoo.
-- A panda's profile, then its 所在地 stat tile or `PandaVenueLive` card.
+- A panda's profile, then its 现居 metric or `PandaVenueLive` card.
 - The route `/institutions/<slug>`, optionally with `?tab=guide` or `?tab=pandas`.
 
 ## Driving it with e2e
@@ -25,7 +25,7 @@ Preconditions:
 
 - **From the map.** Run `npx e2e run tests/map.e2e.ts:6` from `apps/mobile`. It opens `/map`, selects the zoo (tapping its marker, or picking it from `getByTestId("map-places")` when the marker groups several zoos), and taps `button "打开<zoo>的页面"`. The result is that `heading "<zoo>"`, `radio "概况"` and `radio "攻略"` are visible.
 - **Deep link to 攻略.** Run `npx e2e run tests/collections-visits.e2e.ts:57`. It opens `/institutions/<slug>?tab=guide` signed out. The result is that `radio { name: "攻略", checked: true }` is visible, and guests can tap `button "记下今天去过<facility>"` locally.
-- **Live cam & resident filters.** Run `npx e2e run tests/profile.e2e.ts` from `apps/mobile`. It verifies `Segmented` stays vertically stable across panda tabs, clickable `link "看官方直播"` opens the live URL, and `熊猫` shows resident filter tabs (`全部` / `未见过`).
+- **Live cam & resident filters.** Run `npx e2e run tests/profile.e2e.ts` from `apps/mobile`. It verifies clickable `link "看官方直播"` opens the live URL, `熊猫` shows resident filter tabs (`全部` / `未见过`), and panda profiles use a single-scroll canvas without middle tabs.
 - **Live look with real data.** Start the production preview and open `http://localhost:8796/institutions/smithsonian-national-zoo`. The capsules include `住着 N 只熊猫` and a clickable `看官方直播` link (`看直播`), followed by the live activity schedule card. 熊猫 lists filter pills and 以前住过 with 美香 and 添添 `2000–2023`.
 
 ## Gotchas
