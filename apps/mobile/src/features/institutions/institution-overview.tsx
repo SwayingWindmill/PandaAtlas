@@ -157,19 +157,19 @@ export function VenueActionPair({
     <View className={cn("gap-2.5", stacked ? "flex-col" : "flex-row items-center")}>
       <Button
         variant={following ? "secondary" : "default"}
-        className={cn("px-5", !stacked && "flex-1")}
+        className={cn("min-w-0", stacked ? "px-5" : "flex-1 px-3")}
         accessibilityLabel={following ? `已关注${institution.name}，点按取消` : `关注${institution.name}`}
         onPress={toggle}
       >
         <Icon icon={Heart} size="subhead" tone={following ? "label" : "onButton"} strokeWidth={2} />
-        <Text className="text-body font-semibold" numberOfLines={1}>
+        <Text className="shrink text-body font-semibold" numberOfLines={1}>
           {following ? "已关注场馆" : "关注场馆"}
         </Text>
       </Button>
       {institution.facilities.length > 0 ? (
         <Button
           variant="secondary"
-          className={cn("border-hairline border-border bg-card px-4", !stacked && "flex-1")}
+          className={cn("min-w-0 border-hairline border-border bg-card", stacked ? "px-4" : "flex-1 px-3")}
           disabled={singleFacility ? visitedToday || savingVisit || (!signedIn && !signedOut) : false}
           accessibilityLabel={
             singleFacility
@@ -184,7 +184,7 @@ export function VenueActionPair({
           }}
         >
           <Icon icon={MapPinCheck} size="subhead" tone={visitedToday ? "tint" : "label"} strokeWidth={2} />
-          <Text className={cn("text-body font-semibold", visitedToday && "text-primary")} numberOfLines={1}>
+          <Text className={cn("shrink text-body font-semibold", visitedToday && "text-primary")} numberOfLines={1}>
             {visitedToday ? "今天已打卡" : "去过打卡"}
           </Text>
         </Button>

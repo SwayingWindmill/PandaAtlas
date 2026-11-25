@@ -86,11 +86,11 @@ export function NavigateCell({ facility, detail }: { facility: Facility; detail?
 }
 
 function PreTripBentoGrid({ items }: { items: readonly PreTripBentoItem[] }) {
-  const single = useSingleColumn();
+  const stacked = useStacked();
   if (items.length === 0) return null;
 
   const rows: PreTripBentoItem[][] = [];
-  if (single) {
+  if (stacked) {
     for (const item of items) rows.push([item]);
   } else {
     for (let i = 0; i < items.length; i += 2) {
@@ -101,7 +101,7 @@ function PreTripBentoGrid({ items }: { items: readonly PreTripBentoItem[] }) {
   return (
     <View className="gap-2">
       {rows.map((row, rowIndex) => (
-        <View key={rowIndex} className={single ? "gap-2" : "flex-row gap-2"}>
+        <View key={rowIndex} className={stacked ? "gap-2" : "flex-row gap-2"}>
           {row.map((item) => (
             <View
               key={item.key}
@@ -116,11 +116,11 @@ function PreTripBentoGrid({ items }: { items: readonly PreTripBentoItem[] }) {
                   {item.label}
                 </Text>
               </View>
-              <Text variant="headline" className="font-bold tabular-nums" numberOfLines={1}>
+              <Text variant="headline" className="font-bold tabular-nums" numberOfLines={stacked ? undefined : 1}>
                 {item.value}
               </Text>
               {item.sub ? (
-                <Text variant="footnote" className="text-muted-foreground" numberOfLines={2}>
+                <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : 2}>
                   {item.sub}
                 </Text>
               ) : null}

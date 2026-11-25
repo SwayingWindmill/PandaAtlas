@@ -45,6 +45,7 @@ export default function InstitutionScreen() {
   const insets = useSafeAreaInsets();
   const { scrollY, onScroll, pastHero } = useHeroScroll(INSTITUTION_HERO_HEIGHT);
   const scrollRef = useRef<Animated.ScrollView>(null);
+  const [contentTopY, setContentTopY] = useState(0);
   const [visitsY, setVisitsY] = useState(0);
 
   const shareVenue = () => {
@@ -102,7 +103,12 @@ export default function InstitutionScreen() {
         ) : (
           <PlateHero institution={institution} pending={hero === undefined} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-6 bg-background px-gutter pt-4" style={PAGE_COLUMN}>
+        <Animated.View
+          entering={PAGE_ENTER}
+          onLayout={(event) => setContentTopY(event.nativeEvent.layout.y)}
+          className="gap-6 bg-background px-gutter pt-4"
+          style={PAGE_COLUMN}
+        >
           <View className="gap-3">
             {institution.summary ? (
               <Text variant="subheadline" className="text-muted-foreground">
@@ -112,7 +118,7 @@ export default function InstitutionScreen() {
             <VenueActionPair
               institution={institution}
               onScrollToVisits={() => {
-                if (visitsY > 0) scrollRef.current?.scrollTo({ y: Math.max(0, visitsY - 72), animated: true });
+                if (visitsY > 0) scrollRef.current?.scrollTo({ y: Math.max(0, contentTopY + visitsY - 72), animated: true });
               }}
             />
           </View>

@@ -72,36 +72,27 @@ export function DailyPlaySection() {
           containerStyle={stacked ? undefined : { flex: 1 }}
           className="min-w-0 justify-between gap-3 rounded-group border-hairline border-border bg-card p-3.5"
         >
-          <View className="flex-row items-center justify-between gap-2">
+          <View className="gap-0.5">
             <View className="flex-row items-center gap-1.5">
               <Icon icon={Sparkles} size="footnote" tone="tint" strokeWidth={2} />
               <Text variant="headline" numberOfLines={1}>
                 每日一猫
               </Text>
             </View>
-            <View
-              className={cn(
-                "rounded-pill px-2 py-0.5",
-                daily?.solved ? "bg-highlight-soft" : "bg-secondary",
-              )}
+            <Text
+              variant="footnote"
+              className={cn(daily?.solved ? "font-semibold text-primary" : "text-muted-foreground")}
+              numberOfLines={1}
             >
-              <Text
-                variant="footnote"
-                className={cn(
-                  "font-semibold",
-                  daily?.solved ? "text-primary" : "text-muted-foreground",
-                )}
-              >
-                {dailyStatus}
-              </Text>
-            </View>
+              {dailyStatus}
+            </Text>
           </View>
 
           <View className="flex-row items-center justify-between gap-2">
-            <Text variant="footnote" className="min-w-0 flex-1 text-muted-foreground" numberOfLines={1}>
+            <Text variant="footnote" className="min-w-0 flex-1 font-medium text-primary" numberOfLines={1}>
               猜今日主角
             </Text>
-            <View className="flex-row items-center gap-1" aria-hidden>
+            <View className="shrink-0 flex-row items-center gap-1" aria-hidden>
               {Array.from({ length: totalClues }, (_, index) => (
                 <View
                   key={index}
@@ -135,7 +126,7 @@ export function DailyPlaySection() {
               </Text>
             </View>
             {previewPair.length > 0 ? (
-              <View className="flex-row items-center pr-1" aria-hidden>
+              <View className="shrink-0 flex-row items-center pr-1" aria-hidden>
                 {previewPair.map((panda, index) => (
                   <View
                     key={panda.id}

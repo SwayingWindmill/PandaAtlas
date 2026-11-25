@@ -95,7 +95,7 @@ function matchesFilter(venue: LiveHallVenue, filter: LiveHallFilter): boolean {
     case "live":
       return Boolean(venue.liveCamUrl);
     case "active":
-      return venue.status === "active" || venue.status === "open" || venue.status === "upcoming";
+      return venue.status === "active" || venue.status === "open";
     case "overseas":
       return venue.overseas;
   }

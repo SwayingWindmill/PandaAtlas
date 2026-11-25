@@ -97,4 +97,20 @@ describe("buildLiveHallModel", () => {
       "zooparc-de-beauval",
     ]);
   });
+
+  it("keeps active filter results aligned with summary.activeCount when upcoming venues exist", () => {
+    // 14:15 UTC -> 06:15 PST (san-diego-zoo is upcoming), 09:15 EST (smithsonian is active)
+    const usMorning = new Date("2026-11-23T14:15:00Z");
+    const activeFiltered = buildLiveHallModel(
+      [
+        mapVenue("smithsonian-national-zoo", "史密森国家动物园"),
+        mapVenue("san-diego-zoo", "圣地亚哥动物园"),
+      ],
+      [],
+      "active",
+      usMorning,
+    );
+    expect(activeFiltered.summary.activeCount).toBe(1);
+    expect(activeFiltered.awake.map((v) => v.slug)).toEqual(["smithsonian-national-zoo"]);
+  });
 });

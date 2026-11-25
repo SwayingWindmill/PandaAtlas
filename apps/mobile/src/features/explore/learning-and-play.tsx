@@ -25,7 +25,7 @@ export function LearningAndPlaySection() {
       ? { label: `全部 ${articles.length} 篇`, href: "/learn" as const, accessibilityLabel: `查看全部 ${articles.length} 篇科普` }
       : { label: "全部", href: "/learn" as const, accessibilityLabel: "查看认识大熊猫科普" };
 
-  if (state.status === "ready" && !leadArticle && !leadGuide) return null;
+  if (!leadArticle && !leadGuide) return null;
 
   const hero = leadArticle ? articleHero(leadArticle) : undefined;
   const guidePanda = leadGuide && pandas ? pandas.find((item) => item.slug === leadGuide.pandaSlug) : undefined;
@@ -33,52 +33,50 @@ export function LearningAndPlaySection() {
   return (
     <View className="gap-stack-tight">
       <SectionHeader title="认识大熊猫" action={action} />
-      {leadArticle || leadGuide ? (
-        <ListSection>
-          {leadArticle ? (
-            <ListCell
-              icon={hero?.asset ? undefined : FileText}
-              label={learningText(leadArticle.title)}
-              detail={[leadArticle.category, `约 ${readingMinutes(leadArticle)} 分钟`].filter(Boolean).join("　")}
-              lines={2}
-              href={{ pathname: "/learn/articles/[slug]", params: { slug: leadArticle.slug } }}
-              role="link"
-              trailing={
-                hero?.asset ? (
-                  <View
-                    className="overflow-hidden rounded-control bg-secondary"
-                    style={{ width: THUMB_SIZE, height: THUMB_SIZE, borderCurve: "continuous" }}
-                  >
-                    <RemoteImage
-                      source={hero.asset}
-                      style={{ width: THUMB_SIZE, height: THUMB_SIZE }}
-                      contentFit="cover"
-                      accessible={false}
-                    />
-                    <PhotoOutline radius={RADIUS.control} />
-                  </View>
-                ) : undefined
-              }
-              last={!leadGuide}
-            />
-          ) : null}
-          {leadGuide ? (
-            <ListCell
-              label="怎么认出是哪只熊猫？"
-              detail="认脸指南　脸型、眼斑与特征图解"
-              lines={1}
-              href={{ pathname: "/learn/faces/[slug]", params: { slug: leadGuide.slug } }}
-              role="link"
-              trailing={
-                guidePanda ? (
-                  <PandaThumb pandaId={guidePanda.id} name={guidePanda.name} size={THUMB_SIZE} shape="tile" />
-                ) : undefined
-              }
-              last
-            />
-          ) : null}
-        </ListSection>
-      ) : null}
+      <ListSection>
+        {leadArticle ? (
+          <ListCell
+            icon={hero?.asset ? undefined : FileText}
+            label={learningText(leadArticle.title)}
+            detail={[leadArticle.category, `约 ${readingMinutes(leadArticle)} 分钟`].filter(Boolean).join("　")}
+            lines={2}
+            href={{ pathname: "/learn/articles/[slug]", params: { slug: leadArticle.slug } }}
+            role="link"
+            trailing={
+              hero?.asset ? (
+                <View
+                  className="overflow-hidden rounded-control bg-secondary"
+                  style={{ width: THUMB_SIZE, height: THUMB_SIZE, borderCurve: "continuous" }}
+                >
+                  <RemoteImage
+                    source={hero.asset}
+                    style={{ width: THUMB_SIZE, height: THUMB_SIZE }}
+                    contentFit="cover"
+                    accessible={false}
+                  />
+                  <PhotoOutline radius={RADIUS.control} />
+                </View>
+              ) : undefined
+            }
+            last={!leadGuide}
+          />
+        ) : null}
+        {leadGuide ? (
+          <ListCell
+            label="怎么认出是哪只熊猫？"
+            detail="认脸指南　脸型、眼斑与特征图解"
+            lines={1}
+            href={{ pathname: "/learn/faces/[slug]", params: { slug: leadGuide.slug } }}
+            role="link"
+            trailing={
+              guidePanda ? (
+                <PandaThumb pandaId={guidePanda.id} name={guidePanda.name} size={THUMB_SIZE} shape="tile" />
+              ) : undefined
+            }
+            last
+          />
+        ) : null}
+      </ListSection>
     </View>
   );
 }

@@ -110,8 +110,9 @@ export function LiveClockSection() {
                 <Pressable
                   role="button"
                   accessibilityLabel={`查看${card.name}在馆大熊猫`}
+                  hitSlop={8}
                   onPress={openInstitution}
-                  className="min-w-0 flex-1 flex-row items-center gap-2 active:opacity-75"
+                  className="min-h-11 min-w-0 flex-1 flex-row items-center gap-2 active:opacity-75"
                 >
                   {card.residents.length > 0 ? (
                     <View className="flex-row items-center" aria-hidden>
