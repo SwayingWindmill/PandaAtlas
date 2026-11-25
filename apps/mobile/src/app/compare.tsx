@@ -40,7 +40,7 @@ import { SearchField } from "@/features/pandas/search-field";
 import { useBottomClearance } from "@/lib/bottom-clearance";
 import { usePandaCover } from "@/lib/covers";
 import { nameInitial } from "@/lib/panda";
-import { loadLineage } from "@/lib/public-data";
+import { fetchLineage } from "@/lib/public-data";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { failedWithoutData } from "@/lib/query-failed";
 import { PAGE_COLUMN, RADIUS } from "@/lib/surface";
@@ -655,7 +655,7 @@ export default function CompareScreen() {
   const comparisons = useQuery(comparisonsQueryOptions());
   const lineage = useQuery({
     queryKey: ["public", "lineage"],
-    queryFn: loadLineage,
+    queryFn: fetchLineage,
     staleTime: 300_000,
     networkMode: "always",
   });
