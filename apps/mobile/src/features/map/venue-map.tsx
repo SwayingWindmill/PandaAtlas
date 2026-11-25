@@ -8,6 +8,7 @@ import { Icon } from "@/components/icon";
 import { House, Trees } from "@/components/icons";
 import { PandaThumb } from "@/components/panda-thumb";
 import { Text } from "@/components/ui/text";
+import { MAP_FLOAT_SHADOW } from "@/features/map/map-controls";
 import { isMapItemVisited } from "@/features/map/map-filter";
 import { cn } from "@/lib/utils";
 
@@ -121,7 +122,7 @@ function resolveMarkerLead(
   if (!preferred) return undefined;
   const mapped = leadPandaByItemId?.get(preferred.id);
   if (mapped) return mapped;
-  const firstResident = preferred.residents[0];
+  const firstResident = preferred.residents.find((resident) => resident.hasFullBleedCover) ?? preferred.residents[0];
   if (firstResident) return { id: firstResident.id, name: firstResident.name };
   const withLeadId = preferred as MapItem & { leadPandaId?: string | null };
   if (withLeadId.leadPandaId) return { id: withLeadId.leadPandaId, name: preferred.name };
@@ -190,7 +191,7 @@ function Marker({
           "items-center justify-center rounded-full border-2 bg-paper",
           selected && pillMode ? "border-foreground" : "border-primary",
         )}
-        style={{ width: VISITED_RING, height: VISITED_RING, boxShadow: "0 2px 6px rgba(0,0,0,0.16)" }}
+        style={{ width: VISITED_RING, height: VISITED_RING, boxShadow: MAP_FLOAT_SHADOW }}
       >
         <PandaThumb pandaId={lead.id} name={lead.name} size={VISITED_THUMB} />
       </View>
@@ -206,7 +207,7 @@ function Marker({
           {thumbRing}
           <View
             className={cn("flex-row items-center gap-1 rounded-full px-2.5", darkPill ? "bg-foreground" : "bg-primary")}
-            style={{ height: 28, boxShadow: "0 2px 8px rgba(0,0,0,0.18)" }}
+            style={{ height: 28, boxShadow: MAP_FLOAT_SHADOW }}
           >
             <Text
               variant="footnote"
@@ -305,7 +306,7 @@ function Marker({
           flip ? "flex-row-reverse" : "flex-row",
           capsule && (darkPill ? "rounded-full bg-foreground" : "rounded-full bg-primary"),
         )}
-        style={capsule ? { paddingHorizontal: 10, height: 32, boxShadow: "0 2px 8px rgba(0,0,0,0.18)" } : undefined}
+        style={capsule ? { paddingHorizontal: 10, height: 32, boxShadow: MAP_FLOAT_SHADOW } : undefined}
       >
         {glyph}
         {label}

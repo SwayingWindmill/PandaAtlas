@@ -30,6 +30,10 @@ export function pointsOf(items: readonly MapItem[]): Point[] {
   return items.flatMap((item) => (item.point ? [item.point] : []));
 }
 
+function leadResidentOf(item: MapItem) {
+  return item.residents.find((resident) => resident.hasFullBleedCover) ?? item.residents[0];
+}
+
 function visitDayLabel(day: string, currentYear: number): string {
   const year = Number(day.slice(0, 4));
   const monthDay = shortDay(day);
@@ -179,7 +183,7 @@ function VenueFocusCard({
   const colors = useIOSColors();
   const [wildInk, warningInk] = useCSSVariable(["--color-map-wild-ink", "--color-warning"]).map(String) as [string, string];
   const stacked = useStacked();
-  const lead = item.residents[0];
+  const lead = leadResidentOf(item);
   const route = routeUrl(item);
 
   const statusColor =
@@ -475,7 +479,7 @@ export function Overview({
                 .filter(Boolean)
                 .join("　");
               const spoken = visitedLabel ? `${mapItemLabel(item)}，${visitedLabel}` : mapItemLabel(item);
-              const lead = item.residents[0];
+              const lead = leadResidentOf(item);
               return {
                 key: item.id,
                 name: item.name,

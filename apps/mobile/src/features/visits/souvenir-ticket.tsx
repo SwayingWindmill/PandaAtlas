@@ -275,7 +275,7 @@ export function SouvenirTicket({
             )}
           >
             {totalResidents > 0 ? (
-              <View className="min-w-0 flex-1 flex-row items-center gap-3">
+              <View className={cn("flex-row items-center gap-3", !stacked && "min-w-0 flex-1")}>
                 <ProgressRing
                   size="small"
                   value={venueSeenCount / totalResidents}
@@ -283,16 +283,16 @@ export function SouvenirTicket({
                   accessibilityLabel={`本馆已见过 ${venueSeenCount} / ${totalResidents} 只`}
                 />
                 <View className="min-w-0 flex-1 gap-0.5">
-                  <Text variant="subheadline" className="font-semibold tabular-nums" numberOfLines={1}>
+                  <Text variant="subheadline" className="font-semibold tabular-nums" numberOfLines={stacked ? undefined : 1}>
                     {`本馆已见过 ${venueSeenCount} / ${totalResidents} 只`}
                   </Text>
-                  <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
+                  <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : 1}>
                     {allSeenAtVenue ? "住在这里的都已见过" : `还有 ${totalResidents - venueSeenCount} 只待相遇`}
                   </Text>
                 </View>
               </View>
             ) : (
-              <Text variant="subheadline" className="min-w-0 flex-1 font-semibold">
+              <Text variant="subheadline" className={cn("font-semibold", !stacked && "min-w-0 flex-1")}>
                 已收进看猫日记
               </Text>
             )}

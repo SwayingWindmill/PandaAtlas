@@ -38,7 +38,7 @@ export const FindGalleryCard = memo(function FindGalleryCard({
   const birthYear = item.birthDate ? item.birthDate.slice(0, 4) : null;
   const subtitle = [
     item.place,
-    birthYear ? `${birthYear} 年生` : null,
+    birthYear ? `${birthYear} 年出生` : null,
     !birthYear && item.deceased ? "已离世" : null,
   ]
     .filter(Boolean)

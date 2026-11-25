@@ -101,15 +101,11 @@ function FindToolCard({
 /** Focused discovery shortcuts with live covered panda previews when available. */
 function FindTools({ pandas, popular }: { pandas: readonly PandaListItem[]; popular: readonly PandaListItem[] }) {
   const stacked = useStacked();
-  const coveredTools = useMemo(
-    () =>
-      pickStarStrip(
-        pandas.filter((panda) => panda.hasFullBleedCover),
-        popular,
-        3,
-      ),
-    [pandas, popular],
-  );
+  const coveredTools = useMemo(() => {
+    const coveredPandas = pandas.filter((panda) => panda.hasFullBleedCover);
+    const coveredPopular = popular.filter((panda) => panda.hasFullBleedCover);
+    return pickStarStrip(coveredPandas, coveredPopular, 3);
+  }, [pandas, popular]);
   const pair = coveredTools.length >= 2 ? coveredTools.slice(0, 2) : null;
   const faceTile = coveredTools[2] ?? coveredTools[0] ?? null;
 
@@ -503,7 +499,7 @@ export default function FindScreen() {
             {results.length > 0 ? (
               <View className="gap-row">
                 <View className={cn("gap-row", stacked ? "items-start" : "flex-row items-center justify-between")}>
-                  <Text variant="title" className="min-w-0 flex-1" numberOfLines={2}>
+                  <Text variant="title" className={cn(!stacked && "min-w-0 flex-1")} numberOfLines={stacked ? undefined : 2}>
                     {resultsTitle}
                     <Text variant="body" className="font-normal text-muted-foreground tabular-nums">
                       {`　${results.length} 只`}

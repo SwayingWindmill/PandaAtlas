@@ -122,7 +122,7 @@ function ResidentCheckTile({
               borderColor: colors.onMedia,
             }}
           >
-            {selected ? <Icon icon={Check} size={13} color={colors.onMedia} strokeWidth={2.5} /> : null}
+            {selected ? <Icon icon={Check} size={13} tone="onButton" strokeWidth={2.5} /> : null}
           </View>
         </View>
 
@@ -491,9 +491,9 @@ export default function VenueCheckinScreen() {
           style={{ borderCurve: "continuous" }}
         >
           <View className={cn("gap-2", stacked ? "items-start" : "flex-row items-center justify-between")}>
-            <View className="min-w-0 flex-1 flex-row items-center gap-2">
+            <View className={cn("flex-row items-center gap-2", !stacked && "min-w-0 flex-1")}>
               <Icon icon={Landmark} size="subhead" tone="tint" strokeWidth={2} />
-              <Text variant="headline" className="min-w-0 flex-1" numberOfLines={2}>
+              <Text variant="headline" className={cn(!stacked && "min-w-0 flex-1")} numberOfLines={stacked ? undefined : 2}>
                 {institution.name}
               </Text>
             </View>

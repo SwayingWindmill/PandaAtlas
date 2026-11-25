@@ -55,7 +55,7 @@ function FollowedVenueCard({
   const stacked = useStacked();
   const { toggle } = useFollowVenue(institution.slug);
   const name = institution.nameZh ?? institution.nameEn ?? institution.slug;
-  const lead = mapItem?.residents[0];
+  const lead = mapItem?.residents.find((resident) => resident.hasFullBleedCover) ?? mapItem?.residents[0];
   const residentCount = mapItem?.residentCount ?? 0;
   const country = institution.countryCode ? (COUNTRY_NAME[institution.countryCode] ?? mapItem?.where ?? null) : (mapItem?.where ?? null);
   const subMeta = [country, residentCount > 0 ? `${residentCount} 只在馆` : null].filter(Boolean).join("　");
