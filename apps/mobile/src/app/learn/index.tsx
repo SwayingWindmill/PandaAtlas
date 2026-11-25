@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { MessageCircleQuestion } from "@/components/icons";
+import { ChevronRight, MessageCircleQuestion } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { NO_WEB_BAR_TITLE } from "@/components/page";
 import { PhotoOutline } from "@/components/photo-outline";
@@ -34,6 +34,7 @@ import { useAccount } from "@/features/session/account";
 import { usePandaCover } from "@/lib/covers";
 import { PAGE_COLUMN, RADIUS } from "@/lib/surface";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
+import { cn } from "@/lib/utils";
 
 const CATEGORY_ORDER = ["外形与识别", "食性", "繁殖与成长", "保护"];
 const TITLE = "认识大熊猫";
@@ -75,10 +76,18 @@ function AskEntry() {
 function Masthead({ count }: { count?: number }) {
   const stacked = useStacked();
   return (
-    <View className={stacked ? "gap-hair-gap px-gutter" : "flex-row items-baseline justify-between gap-row px-gutter"}>
-      <Text variant="display">{TITLE}</Text>
+    <View className={stacked ? "gap-hair-gap px-gutter" : "flex-row items-end justify-between gap-row px-gutter"}>
+      <View className={stacked ? "gap-hair-gap" : "min-w-0 flex-1 gap-hair-gap"}>
+        <Text variant="footnote" className="font-semibold text-primary">
+          博物科普与识猫
+        </Text>
+        <Text variant="display">{TITLE}</Text>
+      </View>
       {count ? (
-        <Text variant="subheadline" className="text-muted-foreground tabular-nums">
+        <Text
+          variant="subheadline"
+          className={stacked ? "text-muted-foreground tabular-nums" : "pb-1 text-muted-foreground tabular-nums"}
+        >
           {`${count} 篇科普`}
         </Text>
       ) : null}
@@ -147,6 +156,7 @@ function FaceGuideCard({
 
 export default function LearnScreen() {
   const insets = useSafeAreaInsets();
+  const stacked = useStacked();
   const { state, reload } = useLearningCatalog();
   const { pandas } = useLearningPandas();
   const bar = <Stack.Screen options={{ title: "", headerLargeTitleEnabled: false, ...NO_WEB_BAR_TITLE }} />;
@@ -212,25 +222,16 @@ export default function LearnScreen() {
           </View>
         ) : null}
 
-        {CATEGORY_ORDER.map((category) => {
-          const articles = rest.filter((article) => article.category === category);
-          if (articles.length === 0) return null;
-          return (
-            <View key={category} className="gap-row px-gutter">
-              <SectionHeader title={category} count={`${articles.length} 篇`} />
-              <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
-                {articles.map((article, index) => (
-                  <FeedArticle key={article.slug} article={article} last={index === articles.length - 1} />
-                ))}
-              </View>
-            </View>
-          );
-        })}
-
         {faceGuides.length > 0 || catalog.challenges.length > 0 ? (
           <View className="gap-row">
-            <View className="min-h-11 flex-row items-end justify-between gap-row px-gutter">
-              <View className="min-w-0 flex-1">
+            <View
+              className={
+                stacked
+                  ? "gap-stack-tight px-gutter"
+                  : "min-h-11 flex-row items-end justify-between gap-row px-gutter"
+              }
+            >
+              <View className={stacked ? undefined : "min-w-0 flex-1"}>
                 <SectionHeader title="认脸指南" count={faceGuides.length > 0 ? `${faceGuides.length} 只` : undefined} />
               </View>
               {catalog.challenges.length > 0 ? (
@@ -238,11 +239,15 @@ export default function LearnScreen() {
                   role="button"
                   accessibilityLabel="认脸挑战"
                   onPress={() => router.push("/learn/challenge")}
-                  className="min-h-11 justify-end pb-1 active:opacity-60"
+                  className={cn(
+                    "min-h-11 flex-row items-center gap-0.5 active:opacity-60",
+                    stacked ? "self-start" : "pb-0.5",
+                  )}
                 >
                   <Text variant="body" className="font-semibold text-primary">
                     认脸挑战
                   </Text>
+                  <Icon icon={ChevronRight} size="footnote" tone="tint" strokeWidth={2.2} />
                 </Pressable>
               ) : null}
             </View>
@@ -260,6 +265,36 @@ export default function LearnScreen() {
           </View>
         ) : null}
 
+        {CATEGORY_ORDER.map((category) => {
+          const articles = rest.filter((article) => article.category === category);
+          if (articles.length === 0) return null;
+          return (
+            <View key={category} className="px-gutter">
+              <View
+                className={cn(
+                  "border-b-hairline border-border pb-stack-tight",
+                  stacked ? "gap-hair-gap" : "min-h-11 flex-row items-end justify-between gap-row",
+                )}
+              >
+                <Text variant="title" className={stacked ? undefined : "min-w-0 flex-1"} numberOfLines={2}>
+                  {category}
+                </Text>
+                <Text
+                  variant="subheadline"
+                  className={stacked ? "text-muted-foreground tabular-nums" : "pb-0.5 text-muted-foreground tabular-nums"}
+                >
+                  {`${articles.length} 篇`}
+                </Text>
+              </View>
+              <View>
+                {articles.map((article, index) => (
+                  <FeedArticle key={article.slug} article={article} last={index === articles.length - 1} />
+                ))}
+              </View>
+            </View>
+          );
+        })}
+
         {catalog.terms.length > 0 ? (
           <View className="px-gutter">
             <ListSection title="名词">
@@ -275,12 +310,6 @@ export default function LearnScreen() {
               ))}
             </ListSection>
           </View>
-        ) : null}
-
-        {catalog.version ? (
-          <Text variant="footnote" className="px-gutter text-muted-foreground">
-            {`资料版本 ${catalog.version}`}
-          </Text>
         ) : null}
       </Animated.View>
     </ScrollView>

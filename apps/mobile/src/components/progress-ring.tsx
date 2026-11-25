@@ -16,6 +16,7 @@ export function ProgressRing({
   label,
   accessibilityLabel,
   size = "regular",
+  trackColor,
   children,
 }: {
   /** 0 to 1. */
@@ -25,6 +26,8 @@ export function ProgressRing({
   accessibilityLabel: string;
   /** "large" leads a page (月度挑战). */
   size?: "regular" | "small" | "large";
+  /** Optional track color override (e.g., on dark Obsidian Passport cards). */
+  trackColor?: string;
   /** Center content in place of `label`, when the value needs more than one style ("3/5"). */
   children?: React.ReactNode;
 }) {
@@ -45,7 +48,7 @@ export function ProgressRing({
       className="items-center justify-center"
     >
       <Svg width={px} height={px} style={{ position: "absolute", transform: [{ rotate: "-90deg" }] }}>
-        <Circle cx={px / 2} cy={px / 2} r={r} stroke={colors.fill} strokeWidth={stroke} fill="none" />
+        <Circle cx={px / 2} cy={px / 2} r={r} stroke={trackColor ?? colors.fill} strokeWidth={stroke} fill="none" />
         {clamped > 0 ? (
           <Circle
             cx={px / 2}

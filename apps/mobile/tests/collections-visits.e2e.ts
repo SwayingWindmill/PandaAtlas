@@ -85,7 +85,8 @@ test("a signed-in fan completes bundle check-in with a note and seen panda, gets
   await expect(screen.getByText("当日点亮见过　1 只")).toBeVisible();
 
   await screen.getByRole("button", "查看看猫日记").tap();
-  await expect(screen.getByText(`“${note}”`)).toBeVisible();
+  await expect(screen.getByRole("heading", "去过的地点")).toBeVisible();
+  await expect(screen.getByText(`“${note}”`, { visible: true })).toBeVisible();
   await expect(screen.getByRole("link", `查看${panda.name}`)).toBeVisible();
   await expect(screen.getByRole("link", "足迹地图")).toBeVisible();
   await screen.getByRole("link", "足迹地图").tap();
