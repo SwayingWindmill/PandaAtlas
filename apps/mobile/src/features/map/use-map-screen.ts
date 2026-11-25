@@ -3,15 +3,20 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PanResponder } from "react-native";
 import { useReducedMotion, useSharedValue, withSpring } from "react-native-reanimated";
 
+import { guestVisitsQueryOptions } from "@/features/engagement/guest-store";
+import { useSeenIds } from "@/features/engagement/use-seen-ids";
 import { institutionListQueryOptions } from "@/features/institutions/institutions";
 import { type Camera, type Viewport, fitPoints } from "@/features/map/camera";
 import { mapTimelineQueryOptions, mapViewQueryOptions } from "@/features/map/load";
 import { MAP_BUTTON_SIZE } from "@/features/map/map-controls";
 import {
   type MapFilter,
+  countVisitedThisYear,
   filterMapItems,
+  isMapItemVisited,
   mapFilterCounts,
   resolveLiveCamMap,
+  resolveVisitedInstitutions,
   venueLiveMeta,
 } from "@/features/map/map-filter";
 import { pointsOf } from "@/features/map/map-sheets";
@@ -21,7 +26,11 @@ import { buildTimeline, eventsInYear, residentsInYear } from "@/features/map/tim
 import { useMapCamera } from "@/features/map/use-map-camera";
 import type { MapMarker, YearView } from "@/features/map/venue-map";
 import { WILD_AREAS, type WildArea, venuesNear } from "@/features/map/wild";
+import { placesQueryOptions } from "@/features/pandas/pandas";
+import { useSession } from "@/features/session/session";
+import { visitsQueryOptions } from "@/features/visits/visits";
 import { useBackToClose } from "@/lib/use-back-to-close";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 export type SheetSnap = "peek" | "half" | "expanded";
 
@@ -39,11 +48,23 @@ export function useMapScreen(
   bottomSafeInset: number,
   windowWidth: number,
   windowHeight: number,
+  initialFilter: MapFilter = "all",
 ) {
   const reducedMotion = useReducedMotion();
+  const { state: session } = useSession();
+  const signedIn = session.status === "signedIn";
+  const signedOut = session.status === "signedOut";
+  const accountId = signedIn ? session.accountId : "";
+
   const { data: view, isError: failed, refetch } = useQuery(mapViewQueryOptions());
   const { data: institutions } = useQuery(institutionListQueryOptions());
   const { data: history } = useQuery(mapTimelineQueryOptions());
+  const placesQuery = useQuery(placesQueryOptions());
+  const remoteVisits = useQuery({ ...visitsQueryOptions(accountId), enabled: signedIn && accountId.length > 0 });
+  const guestVisits = useQuery({ ...guestVisitsQueryOptions(), enabled: signedOut });
+  useRefetchOnFocus(remoteVisits.refetch, signedIn && accountId.length > 0);
+  const seenIds = useSeenIds();
+
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -51,7 +72,7 @@ export function useMapScreen(
     return () => clearInterval(timer);
   }, []);
 
-  const [filter, setFilterState] = useState<MapFilter>("all");
+  const [filter, setFilterState] = useState<MapFilter>(initialFilter);
   const [selection, setSelection] = useState<MapSelection>(null);
   const [layers, setLayers] = useState({ wild: true });
   const [timelineOpen, setTimelineOpen] = useState(false);
@@ -102,16 +123,53 @@ export function useMapScreen(
     [institutions],
   );
 
+  const visits = useMemo(
+    () => (signedOut ? guestVisits.data : signedIn ? remoteVisits.data : undefined) ?? [],
+    [guestVisits.data, remoteVisits.data, signedIn, signedOut],
+  );
+
+  const visitedSummary = useMemo(
+    () => resolveVisitedInstitutions(visits, placesQuery.data),
+    [placesQuery.data, visits],
+  );
+
+  const visitedItemIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const item of view?.items ?? []) {
+      if (isMapItemVisited(item, visitedSummary.visitedInstitutionIds, visitedSummary.visitedPlaceIds)) {
+        ids.add(item.id);
+      }
+    }
+    return ids;
+  }, [view?.items, visitedSummary.visitedInstitutionIds, visitedSummary.visitedPlaceIds]);
+
   const filterCounts = useMemo(
-    () => mapFilterCounts(view?.items ?? [], liveCamBySlug),
-    [liveCamBySlug, view?.items],
+    () => mapFilterCounts(view?.items ?? [], liveCamBySlug, visitedSummary.visitedInstitutionIds, visitedSummary.visitedPlaceIds),
+    [liveCamBySlug, view?.items, visitedSummary.visitedInstitutionIds, visitedSummary.visitedPlaceIds],
   );
   const filteredItems = useMemo(
-    () => filterMapItems(view?.items ?? [], filter, liveCamBySlug),
-    [filter, liveCamBySlug, view?.items],
+    () => filterMapItems(view?.items ?? [], filter, liveCamBySlug, visitedSummary.visitedInstitutionIds, visitedSummary.visitedPlaceIds),
+    [filter, liveCamBySlug, view?.items, visitedSummary.visitedInstitutionIds, visitedSummary.visitedPlaceIds],
   );
 
   const thisYear = now.getFullYear();
+  const visitedThisYearCount = useMemo(
+    () =>
+      countVisitedThisYear(
+        view?.items ?? [],
+        visitedSummary.firstVisitedByInstitution,
+        visitedSummary.firstVisitedByPlace,
+        thisYear,
+      ),
+    [thisYear, view?.items, visitedSummary.firstVisitedByInstitution, visitedSummary.firstVisitedByPlace],
+  );
+  const seenCount = seenIds ? seenIds.size : null;
+
+  const pandaIdBySlug = useMemo(
+    () => new Map((history?.pandas ?? []).map((panda) => [panda.slug, panda.id])),
+    [history?.pandas],
+  );
+
   const timeline = useMemo(
     () => (history ? buildTimeline(history.residencies, history.events, thisYear) : null),
     [history, thisYear],
@@ -163,12 +221,31 @@ export function useMapScreen(
   const home = (port: Viewport): Camera => fitPoints([...china, ...(layers.wild ? wildPoints : [])], port, 40, 8);
 
   const opened = useRef(false);
+  const visitedFitted = useRef(false);
   useEffect(() => {
     if (!viewport || !view || opened.current) return;
     opened.current = true;
+    if (filter === "visited") {
+      const pts = pointsOf(filteredItems);
+      if (pts.length > 0) {
+        visitedFitted.current = true;
+        setCamera(fitPoints(pts, viewport, 56, 8));
+        return;
+      }
+    }
     setCamera(home(viewport));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on the first layout with data
   }, [viewport, view]);
+
+  // When opening /map?filter=visited before visits finish loading, fit the camera once visits resolve.
+  useEffect(() => {
+    if (!opened.current || visitedFitted.current) return;
+    if (filter !== "visited" || !viewport || !view) return;
+    const pts = pointsOf(filteredItems);
+    if (pts.length === 0) return;
+    visitedFitted.current = true;
+    flyTo(fitPoints(pts, viewport, 56, 8));
+  }, [filter, filteredItems, flyTo, view, viewport]);
 
   const sheetResponder = useMemo(() => {
     const settle = (vy: number) => {
@@ -232,6 +309,7 @@ export function useMapScreen(
     setPlaying(false);
     setYearIndex(null);
     setSelection(null);
+    if (next !== "visited") visitedFitted.current = false;
     if (next === "wild") {
       setLayers({ wild: true });
       if (viewport) flyTo(fitPoints(wildPoints, viewport, 40, 8));
@@ -239,16 +317,38 @@ export function useMapScreen(
       return;
     }
     if (!viewport || !view) return;
-    const nextItems = filterMapItems(view.items, next, liveCamBySlug);
+    const nextItems = filterMapItems(
+      view.items,
+      next,
+      liveCamBySlug,
+      visitedSummary.visitedInstitutionIds,
+      visitedSummary.visitedPlaceIds,
+    );
     const pts = pointsOf(nextItems);
     if (next === "china" || next === "all") {
       flyTo(fitPoints([...(pts.length ? pts : china), ...(layers.wild ? wildPoints : [])], viewport, 40, 8));
       setWorldView(false);
     } else if (pts.length > 0) {
+      if (next === "visited") visitedFitted.current = true;
       flyTo(fitPoints(pts, viewport, 56, 8));
-      setWorldView(next === "overseas");
+      setWorldView(next === "overseas" || nextItems.some((item) => item.overseas));
+    } else if (next === "visited") {
+      visitedFitted.current = false;
+      flyTo(home(viewport));
+      setWorldView(false);
     }
   }
+
+  const applyVisitedFilterRef = useRef<() => void>(() => {});
+  useEffect(() => {
+    applyVisitedFilterRef.current = () => {
+      visitedFitted.current = false;
+      setFilter("visited");
+    };
+  });
+  const applyVisitedFilter = useCallback(() => {
+    applyVisitedFilterRef.current();
+  }, []);
 
   function play() {
     if (playing) {
@@ -280,6 +380,11 @@ export function useMapScreen(
     setTimelineOpen(false);
   }
 
+  function toggleTimeline() {
+    if (timelineOpen || year !== undefined) closeTimeline();
+    else openTimeline();
+  }
+
   function toggleWild() {
     setLayers((current) => ({ wild: !current.wild }));
     if (selection?.kind === "wild") setSelection(null);
@@ -307,8 +412,14 @@ export function useMapScreen(
   });
 
   const showVenues = year !== undefined || filter !== "wild";
-  const showWild = year === undefined && (filter === "wild" || layers.wild);
-  const visibleItems = year !== undefined ? (view?.items ?? []) : showVenues ? filteredItems : [];
+  const visibleItems =
+    year !== undefined
+      ? (view?.items ?? [])
+      : filter === "visited"
+        ? (view?.items ?? [])
+        : showVenues
+          ? filteredItems
+          : [];
 
   return {
     view,
@@ -316,13 +427,22 @@ export function useMapScreen(
     refetch,
     filter,
     setFilter,
+    applyVisitedFilter,
     filterCounts,
     filteredItems,
     visibleItems,
     liveCamBySlug,
+    visitedInstitutionIds: visitedSummary.visitedInstitutionIds,
+    lastVisitedByInstitution: visitedSummary.lastVisitedByInstitution,
+    lastVisitedByPlace: visitedSummary.lastVisitedByPlace,
+    visitedItemIds,
+    visitedThisYearCount,
+    seenCount,
+    thisYear,
+    pandaIdBySlug,
     now,
     layers,
-    showWild,
+    showWild: year === undefined && (filter === "wild" || layers.wild),
     toggleWild,
     clearSelection: () => setSelection(null),
     viewport,
@@ -332,6 +452,7 @@ export function useMapScreen(
     timelineOpen,
     openTimeline,
     closeTimeline,
+    toggleTimeline,
     index,
     year,
     playing,

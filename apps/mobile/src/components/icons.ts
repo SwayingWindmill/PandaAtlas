@@ -49,6 +49,7 @@ export { default as Landmark } from "lucide-react-native/icons/landmark";
 export { default as Layers } from "lucide-react-native/icons/layers";
 export { default as LayoutGrid } from "lucide-react-native/icons/layout-grid";
 export { default as Link } from "lucide-react-native/icons/link";
+export { default as List } from "lucide-react-native/icons/list";
 export { default as LocateFixed } from "lucide-react-native/icons/locate-fixed";
 export { default as Lock } from "lucide-react-native/icons/lock";
 export { default as Mail } from "lucide-react-native/icons/mail";

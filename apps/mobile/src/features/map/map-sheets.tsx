@@ -2,23 +2,25 @@ import { router } from "expo-router";
 import { Linking, Platform, Pressable, ScrollView, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
-import { useStacked } from "@/components/grouped-list";
+import { Chevron, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Heart, History, House, Landmark, type LucideIcon, Navigation, PawPrint, Trees, Video, X } from "@/components/icons";
+import { Heart, House, Landmark, type LucideIcon, MapPinCheck, Navigation, PawPrint, Trees, Video, X } from "@/components/icons";
 import { PandaThumb } from "@/components/panda-thumb";
 import { PandaTile } from "@/components/panda-tile";
+import { ProgressRing } from "@/components/progress-ring";
 import { ScreenState } from "@/components/screen-state";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { useFollowVenue } from "@/features/engagement/followed-venues";
+import { shortDay } from "@/features/engagement/seen";
 import type { Point } from "@/features/map/camera";
 import { MapStat } from "@/features/map/map-controls";
-import type { MapFilter, VenueLiveMeta } from "@/features/map/map-filter";
-import type { MapItem, MapView } from "@/features/map/model";
-import { MapRows, PlaceRows, openVenue } from "@/features/map/place-list";
+import { type MapFilter, type VenueLiveMeta, lastVisitedOfItem } from "@/features/map/map-filter";
+import { type MapItem, type MapView, mapItemLabel, pandaCountLabel } from "@/features/map/model";
+import { PlaceRows, openVenue } from "@/features/map/place-list";
 import { WILD_AREAS, WILD_SOURCE, type WildArea } from "@/features/map/wild";
-import { useIOSColors } from "@/lib/theme";
 import { HAIRLINE } from "@/lib/surface";
+import { useIOSColors } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const TILE = 96;
@@ -26,6 +28,16 @@ const HERO_THUMB = 48;
 
 export function pointsOf(items: readonly MapItem[]): Point[] {
   return items.flatMap((item) => (item.point ? [item.point] : []));
+}
+
+function leadResidentOf(item: MapItem) {
+  return item.residents.find((resident) => resident.hasFullBleedCover) ?? item.residents[0];
+}
+
+function visitDayLabel(day: string, currentYear: number): string {
+  const year = Number(day.slice(0, 4));
+  const monthDay = shortDay(day);
+  return year && year !== currentYear ? `${year}年${monthDay}` : monthDay;
 }
 
 function routeUrl(item: MapItem): string | null {
@@ -94,6 +106,69 @@ function FollowAction({ item }: { item: MapItem }) {
   );
 }
 
+function FootprintPassportCard({
+  visitedVenueCount,
+  totalVenueCount,
+  visitedThisYearCount,
+  seenCount,
+}: {
+  visitedVenueCount: number;
+  totalVenueCount: number;
+  visitedThisYearCount: number;
+  seenCount: number | null;
+}) {
+  const stacked = useStacked();
+  const ratio = totalVenueCount > 0 ? visitedVenueCount / totalVenueCount : 0;
+  const pct =
+    visitedVenueCount === 0 || totalVenueCount === 0
+      ? 0
+      : Math.min(100, Math.max(1, Math.round(ratio * 100)));
+
+  const yearPart = visitedThisYearCount > 0 ? `今年新解锁 ${visitedThisYearCount} 处` : null;
+  const seenPart = seenCount !== null ? `现场见过 ${seenCount} 只大熊猫` : null;
+  const subtitle = [yearPart, seenPart].filter(Boolean).join("　") || "去过的每座基地都会在这里点亮";
+
+  const diaryLink = (
+    <Pressable
+      role="link"
+      accessibilityLabel="看猫日记"
+      onPress={() => router.push("/visits")}
+      hitSlop={8}
+      className="min-h-11 shrink-0 flex-row items-center gap-0.5 active:opacity-60"
+    >
+      <Text variant="footnote" className="font-semibold text-primary">
+        看猫日记
+      </Text>
+      <Chevron />
+    </Pressable>
+  );
+
+  return (
+    <View
+      className={cn("rounded-group bg-card px-inset py-row", stacked ? "gap-stack-tight" : "flex-row items-center gap-row")}
+      style={{ borderCurve: "continuous" }}
+    >
+      <ProgressRing
+        value={ratio}
+        label={`${pct}%`}
+        accessibilityLabel={`已去过 ${visitedVenueCount} / ${totalVenueCount} 个场馆，进度 ${pct}%`}
+      />
+      <View className={stacked ? "gap-hair-gap" : "min-w-0 flex-1 gap-hair-gap"}>
+        <View className={stacked ? "gap-hair-gap" : "flex-row items-center justify-between gap-2"}>
+          <Text variant="headline" className={cn("tabular-nums", !stacked && "min-w-0 flex-1")} numberOfLines={stacked ? undefined : 1}>
+            {`已去过 ${visitedVenueCount} / ${totalVenueCount} 个场馆`}
+          </Text>
+          {stacked ? null : diaryLink}
+        </View>
+        <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={stacked ? undefined : 2}>
+          {subtitle}
+        </Text>
+        {stacked ? diaryLink : null}
+      </View>
+    </View>
+  );
+}
+
 function VenueFocusCard({
   item,
   liveMeta,
@@ -108,7 +183,7 @@ function VenueFocusCard({
   const colors = useIOSColors();
   const [wildInk, warningInk] = useCSSVariable(["--color-map-wild-ink", "--color-warning"]).map(String) as [string, string];
   const stacked = useStacked();
-  const lead = item.residents[0];
+  const lead = leadResidentOf(item);
   const route = routeUrl(item);
 
   const statusColor =
@@ -232,54 +307,53 @@ function VenueFocusCard({
   );
 }
 
-function BentoShortcuts({
+function DirectoryShortcut({
   totalVenues,
   chinaCount,
   overseasCount,
-  yearSpan,
-  onOpenTimeline,
 }: {
   totalVenues: number;
   chinaCount: number;
   overseasCount: number;
-  yearSpan: string;
-  onOpenTimeline: () => void;
 }) {
-  const stacked = useStacked();
   return (
-    <View className={stacked ? "gap-2.5" : "flex-row gap-2.5"}>
-      <Pressable
-        role="link"
-        accessibilityLabel={`${totalVenues} 家场馆名录，国内 ${chinaCount}，海外 ${overseasCount}`}
-        onPress={() => router.push("/institutions")}
-        className="flex-1 flex-row items-center gap-2.5 rounded-group bg-card px-3.5 py-3 active:opacity-75"
-        style={{ borderCurve: "continuous" }}
-      >
-        <Icon icon={Landmark} size="body" tone="tint" strokeWidth={2} />
-        <View className="min-w-0 flex-1 gap-hair-gap">
-          <Text variant="headline" numberOfLines={1}>{`${totalVenues} 家场馆名录`}</Text>
-          <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
-            {`国内 ${chinaCount}　海外 ${overseasCount}`}
-          </Text>
-        </View>
-      </Pressable>
-      <Pressable
-        role="button"
-        accessibilityLabel={`分布时间轴，${yearSpan}`}
-        onPress={onOpenTimeline}
-        className="flex-1 flex-row items-center gap-2.5 rounded-group bg-card px-3.5 py-3 active:opacity-75"
-        style={{ borderCurve: "continuous" }}
-      >
-        <Icon icon={History} size="body" tone="tint" strokeWidth={2} />
-        <View className="min-w-0 flex-1 gap-hair-gap">
-          <Text variant="headline" numberOfLines={1}>
-            分布时间轴
-          </Text>
-          <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
-            {yearSpan}
-          </Text>
-        </View>
-      </Pressable>
+    <Pressable
+      role="link"
+      accessibilityLabel={`${totalVenues} 家场馆名录，国内 ${chinaCount}，海外 ${overseasCount}`}
+      onPress={() => router.push("/institutions")}
+      className="min-h-11 flex-row items-center gap-2.5 rounded-group bg-card px-inset py-row active:opacity-75"
+      style={{ borderCurve: "continuous" }}
+    >
+      <Icon icon={Landmark} size="body" tone="tint" strokeWidth={2} />
+      <View className="min-w-0 flex-1 gap-hair-gap">
+        <Text variant="headline" numberOfLines={1}>{`${totalVenues} 家场馆名录`}</Text>
+        <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
+          {`国内 ${chinaCount}　海外 ${overseasCount}`}
+        </Text>
+      </View>
+      <Chevron />
+    </Pressable>
+  );
+}
+
+function VisitedEmptyCard({ onResetFilter }: { onResetFilter?: () => void }) {
+  return (
+    <View
+      className="items-center gap-stack-tight rounded-group bg-card px-inset py-stack"
+      style={{ borderCurve: "continuous" }}
+    >
+      <Icon icon={MapPinCheck} size="title3" tone="tint" strokeWidth={2} />
+      <Text variant="headline" className="text-center">
+        还没有去过的场馆足迹
+      </Text>
+      <Text variant="footnote" className="text-center text-muted-foreground">
+        打开任意基地或动物园页面，点击「去过打卡」即可点亮地图足迹。
+      </Text>
+      {onResetFilter ? (
+        <Button variant="tinted" size="sm" onPress={onResetFilter}>
+          <Text>看看全部场馆</Text>
+        </Button>
+      ) : null}
     </View>
   );
 }
@@ -291,10 +365,15 @@ export function Overview({
   featuredPlace,
   featuredLiveMeta,
   explicitPlace,
-  yearSpan,
   wildShown,
+  visitedVenueCount = 0,
+  visitedThisYearCount = 0,
+  seenCount = null,
+  lastVisitedByInstitution,
+  lastVisitedByPlace,
+  thisYear = new Date().getFullYear(),
   onClearPlace,
-  onOpenTimeline,
+  onResetFilter,
   onChoose,
   onWild,
 }: {
@@ -304,20 +383,48 @@ export function Overview({
   featuredPlace: MapItem | undefined;
   featuredLiveMeta: VenueLiveMeta | null;
   explicitPlace: MapItem | undefined;
-  yearSpan: string;
   wildShown: boolean;
+  visitedVenueCount?: number;
+  visitedThisYearCount?: number;
+  seenCount?: number | null;
+  lastVisitedByInstitution?: ReadonlyMap<string, string>;
+  lastVisitedByPlace?: ReadonlyMap<string, string>;
+  thisYear?: number;
   onClearPlace: () => void;
-  onOpenTimeline: () => void;
+  onResetFilter?: () => void;
   onChoose: (item: MapItem) => void;
   onWild: (area: WildArea) => void;
 }) {
   if (view.items.length === 0) return <ScreenState message="地点资料还在整理中。" />;
   const chinaCount = view.items.filter((item) => !item.overseas).length;
   const overseasCount = view.items.filter((item) => item.overseas).length;
+  const showPassport = filter !== "wild" && (visitedVenueCount > 0 || filter === "visited");
+
+  const sortedItems =
+    filter === "visited"
+      ? [...filteredItems].sort((left, right) => {
+          const leftDay = lastVisitedOfItem(left, lastVisitedByInstitution, lastVisitedByPlace) ?? "";
+          const rightDay = lastVisitedOfItem(right, lastVisitedByInstitution, lastVisitedByPlace) ?? "";
+          return (
+            rightDay.localeCompare(leftDay) ||
+            right.residentCount - left.residentCount ||
+            left.name.localeCompare(right.name, "zh-CN")
+          );
+        })
+      : filteredItems;
 
   return (
     <View className="gap-stack">
-      {filter !== "wild" && featuredPlace ? (
+      {showPassport ? (
+        <FootprintPassportCard
+          visitedVenueCount={visitedVenueCount}
+          totalVenueCount={view.items.length}
+          visitedThisYearCount={visitedThisYearCount}
+          seenCount={seenCount}
+        />
+      ) : null}
+
+      {filter !== "wild" && filter !== "visited" && featuredPlace ? (
         <VenueFocusCard
           item={featuredPlace}
           liveMeta={featuredLiveMeta}
@@ -326,14 +433,8 @@ export function Overview({
         />
       ) : null}
 
-      {!explicitPlace && filter !== "wild" ? (
-        <BentoShortcuts
-          totalVenues={view.items.length}
-          chinaCount={chinaCount}
-          overseasCount={overseasCount}
-          yearSpan={yearSpan}
-          onOpenTimeline={onOpenTimeline}
-        />
+      {!explicitPlace && filter !== "wild" && filter !== "visited" ? (
+        <DirectoryShortcut totalVenues={view.items.length} chinaCount={chinaCount} overseasCount={overseasCount} />
       ) : null}
 
       {filter === "wild" && wildShown ? (
@@ -343,8 +444,12 @@ export function Overview({
       ) : null}
 
       <View testID="map-places" className="gap-stack-tight">
-        <Text variant="footnote" role="heading" className="px-inset text-muted-foreground">
-          {filter === "wild" ? `野生栖息地　${WILD_AREAS.length} 片` : "附近场馆与栖息地"}
+        <Text variant="footnote" role="heading" className="px-inset text-muted-foreground tabular-nums">
+          {filter === "wild"
+            ? `野生栖息地　${WILD_AREAS.length} 片`
+            : filter === "visited"
+              ? `已打卡足迹　${sortedItems.length} 处`
+              : "附近场馆与栖息地"}
         </Text>
         {filter === "wild" ? (
           <PlaceRows
@@ -359,10 +464,33 @@ export function Overview({
               onPress: () => onWild(area),
             }))}
           />
-        ) : filteredItems.length === 0 ? (
-          <ScreenState message="这一筛选项里暂时没有场馆。" />
+        ) : sortedItems.length === 0 ? (
+          filter === "visited" ? (
+            <VisitedEmptyCard onResetFilter={onResetFilter} />
+          ) : (
+            <ScreenState message="这一筛选项里暂时没有场馆。" />
+          )
         ) : (
-          <MapRows items={filteredItems} onOpen={onChoose} />
+          <PlaceRows
+            rows={sortedItems.map((item) => {
+              const lastDay = lastVisitedOfItem(item, lastVisitedByInstitution, lastVisitedByPlace);
+              const visitedLabel = lastDay ? `${visitDayLabel(lastDay, thisYear)}去过` : null;
+              const detail = [visitedLabel, item.overseas ? item.where : null, item.residentNames ?? pandaCountLabel(item.residentCount)]
+                .filter(Boolean)
+                .join("　");
+              const spoken = visitedLabel ? `${mapItemLabel(item)}，${visitedLabel}` : mapItemLabel(item);
+              const lead = leadResidentOf(item);
+              return {
+                key: item.id,
+                name: item.name,
+                detail,
+                count: item.residentCount,
+                lead: lead ? { id: lead.id, name: lead.name } : undefined,
+                accessibilityLabel: spoken,
+                onPress: () => onChoose(item),
+              };
+            })}
+          />
         )}
       </View>
     </View>

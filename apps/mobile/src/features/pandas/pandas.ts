@@ -26,7 +26,9 @@ export interface PandaListItem {
   /** The 找熊猫 area chip it falls under: a base area in China, or 海外. */
   area: string | null;
   hasFullBleedCover: boolean;
-  /** Slug, every name and the current place, normalized for matching. */
+  /** International or local studbook number formatted as `#1237`, or null when unrecorded. */
+  studbookNumber?: string | null;
+  /** Slug, every name, studbook number and the current place, normalized for matching. */
   terms: string[];
   /**
    * Pinyin initials of each multi-word Latin name ("He Hua" gives "hh"), matched by prefix only. A panda with no
@@ -87,11 +89,46 @@ export function placesQueryOptions() {
   });
 }
 
+const STUDBOOK_KEYS = [
+  "studbook_number",
+  "local.studbook_number",
+  "international_studbook_number",
+  "local.international_studbook_number",
+] as const;
+
+/** Parses studbook number from panda facts aligned with `rich-facts.ts`, returning `#<id>` or `null`. */
+function parseStudbookNumber(facts: PandaSummary["facts"]): string | null {
+  for (const key of STUDBOOK_KEYS) {
+    const entry = facts.find(
+      (item) =>
+        item.fieldKey === key &&
+        item.status !== "disputed" &&
+        item.value !== null &&
+        item.value !== undefined &&
+        item.value !== "",
+    );
+    if (!entry) continue;
+    const raw =
+      typeof entry.value === "number"
+        ? Number.isFinite(entry.value)
+          ? String(entry.value)
+          : ""
+        : typeof entry.value === "string"
+          ? entry.value.trim()
+          : "";
+    const normalized = raw.replace(/^#+/, "").trim();
+    if (normalized && /^[A-Za-z0-9-]+$/.test(normalized)) return `#${normalized}`;
+  }
+  return null;
+}
+
 export function toPandaListItem(panda: PandaSummary): PandaListItem {
   const placeRecord = panda.currentPlace;
   const place = placeName(placeRecord);
+  const studbookNumber = parseStudbookNumber(panda.facts);
+  const studbookTerms = studbookNumber ? [studbookNumber, studbookNumber.slice(1)] : [];
   const names = panda.names.map((name) => name.value);
-  const latin = [panda.canonicalSlug, ...panda.legacySlugs, ...names];
+  const latin = [panda.canonicalSlug, ...panda.legacySlugs, ...names, ...studbookTerms];
   const latinNames = names.filter((name) => /[A-Za-z]/.test(name));
   const initialSources = latinNames.length > 0 ? latinNames : [panda.canonicalSlug, ...panda.legacySlugs];
   return {
@@ -105,6 +142,7 @@ export function toPandaListItem(panda: PandaSummary): PandaListItem {
     placeId: placeRecord?.placeId ?? null,
     area: areaOf(placeRecord),
     hasFullBleedCover: Boolean(panda.hasFullBleedCover),
+    studbookNumber,
     terms: (place ? [...latin, place] : latin).map(normalizeTerm),
     initials: initialSources.flatMap((source) => initialsOf(source) ?? []),
   };

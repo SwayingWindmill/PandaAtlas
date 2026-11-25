@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
 import { Share, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -44,9 +43,6 @@ export default function InstitutionScreen() {
   const followed = useFollowed();
   const insets = useSafeAreaInsets();
   const { scrollY, onScroll, pastHero } = useHeroScroll(INSTITUTION_HERO_HEIGHT);
-  const scrollRef = useRef<Animated.ScrollView>(null);
-  const [contentTopY, setContentTopY] = useState(0);
-  const [visitsY, setVisitsY] = useState(0);
 
   const shareVenue = () => {
     if (!institution) return;
@@ -80,7 +76,6 @@ export default function InstitutionScreen() {
     <View className="flex-1 bg-background">
       <HeroHeader title={institution.name} pastHero={pastHero} onShare={shareVenue} />
       <Animated.ScrollView
-        ref={scrollRef}
         className="flex-1"
         contentInsetAdjustmentBehavior="never"
         contentContainerClassName="pb-16"
@@ -105,7 +100,6 @@ export default function InstitutionScreen() {
         )}
         <Animated.View
           entering={PAGE_ENTER}
-          onLayout={(event) => setContentTopY(event.nativeEvent.layout.y)}
           className="gap-6 bg-background px-gutter pt-4"
           style={PAGE_COLUMN}
         >
@@ -115,12 +109,7 @@ export default function InstitutionScreen() {
                 {institution.summary}
               </Text>
             ) : null}
-            <VenueActionPair
-              institution={institution}
-              onScrollToVisits={() => {
-                if (visitsY > 0) scrollRef.current?.scrollTo({ y: Math.max(0, contentTopY + visitsY - 72), animated: true });
-              }}
-            />
+            <VenueActionPair institution={institution} />
           </View>
 
           <VenueMetricStrip institution={institution} />
@@ -133,11 +122,7 @@ export default function InstitutionScreen() {
 
           <VisitGuide institution={institution} />
 
-          {institution.facilities.length > 0 ? (
-            <View onLayout={(event) => setVisitsY(event.nativeEvent.layout.y)}>
-              <FacilityVisits facilities={institution.facilities} />
-            </View>
-          ) : null}
+          {institution.facilities.length > 0 ? <FacilityVisits facilities={institution.facilities} /> : null}
 
           <VenueNewsSection institutionSlug={institution.slug} />
 

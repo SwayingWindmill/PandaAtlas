@@ -8,14 +8,14 @@ A zoo or base has a single-scroll detail page (`/institutions/[slug]`, no middle
 - `venue-open-guide-link` accepts `/institutions/<slug>?tab=guide` harmlessly on the single-scroll page.
 - `venue-residents` filters residents directly in-scroll (`全部 / 未见过 / 我关注`, search, and `看全部熊猫` expansion).
 - `venue-follow` toggles 关注场馆 (cloud when signed in, local guest storage when signed out).
-- `venue-visit` records a visit via top `去过打卡` or `FacilityVisits` (`记下今天去过<facility>`). This lives in [Collections and visits](./collections-visits.md).
+- `venue-visit` opens `/institutions/[slug]/checkin` from the top `去过打卡` / `今天已打卡` capsule (`button /^去过打卡/` or `button /^今天已打卡/`) for bundle check-in + `SouvenirTicket`, or records a quick facility visit via `FacilityVisits` (`记下今天去过<facility>`). This lives in [Collections and visits](./collections-visits.md).
 
 ## How to get to it (user POV)
 
 - 地图 Tab (`/map`), then a zoo in the list or on the map, then `进入场馆与攻略`.
 - 探索 (`/`) → 此刻谁醒着 or `/live` (`此刻直播与作息`), then open a zoo.
 - A panda's profile, then its 现居 metric or `PandaVenueLive` card.
-- Direct route `/institutions/<slug>` (optional `?tab=guide`).
+- Direct route `/institutions/<slug>` (optional `?tab=guide`) and `/institutions/<slug>/checkin`.
 
 ## Driving it with e2e
 

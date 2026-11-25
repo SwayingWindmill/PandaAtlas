@@ -1,6 +1,6 @@
-import { Stack } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import { BottomTabBarHeightContext } from "expo-router/js-tabs";
-import { use } from "react";
+import { use, useEffect } from "react";
 import { Platform, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { component } from "@/design/tokens";
 import { FilterBar, ViewControls } from "@/features/map/map-controls";
+import type { MapFilter } from "@/features/map/map-filter";
 import { CloseButton, Overview, PlaceSheet, WildSheet } from "@/features/map/map-sheets";
 import { TimelineBlock, YearSheet } from "@/features/map/map-timeline-sheet";
 import { useMapScreen } from "@/features/map/use-map-screen";
@@ -20,6 +21,8 @@ export default function MapTabScreen() {
   const insets = useSafeAreaInsets();
   const tabBar = use(BottomTabBarHeightContext);
   const window = useWindowDimensions();
+  const params = useLocalSearchParams<{ filter?: string }>();
+  const initialFilter: MapFilter = params.filter === "visited" ? "visited" : "all";
 
   const bottomSafeInset =
     Platform.OS === "ios"
@@ -28,16 +31,20 @@ export default function MapTabScreen() {
         ? insets.bottom + component.tabBar.webHeight
         : (tabBar ?? insets.bottom);
 
-  const map = useMapScreen(insets.top, bottomSafeInset, window.width, window.height);
-  const { sheetHeight } = map;
+  const map = useMapScreen(insets.top, bottomSafeInset, window.width, window.height, initialFilter);
+  const { sheetHeight, applyVisitedFilter } = map;
+
+  useEffect(() => {
+    if (params.filter !== "visited") return;
+    applyVisitedFilter();
+    router.setParams({ filter: undefined });
+  }, [applyVisitedFilter, params.filter]);
 
   const sheetAnimatedStyle = useAnimatedStyle(() => ({
     height: sheetHeight.get(),
   }));
 
-  const yearSpan = map.timeline?.years.length
-    ? `${map.timeline.years[0]} — ${map.timeline.years[map.timeline.years.length - 1]}`
-    : "1950 — 2026";
+  const timelineActive = map.timelineOpen || map.year !== undefined;
 
   const timelineBlock = map.timeline ? (
     <TimelineBlock
@@ -72,6 +79,8 @@ export default function MapTabScreen() {
               selectedWildId={map.wildArea?.range.id ?? null}
               onSelectWild={map.onWild}
               year={map.yearView}
+              visitedIds={map.visitedItemIds}
+              dimUnvisited={map.filter === "visited"}
             />
           </>
         ) : (
@@ -93,8 +102,10 @@ export default function MapTabScreen() {
             overseas={map.overseas}
             worldView={map.worldView}
             wild={map.layers.wild}
+            timelineOpen={timelineActive}
             onToggleWorld={map.toggleWorldView}
             onToggleWild={map.toggleWild}
+            onToggleTimeline={map.toggleTimeline}
           />
         </View>
       ) : null}
@@ -130,7 +141,7 @@ export default function MapTabScreen() {
               <PlaceSheet item={map.place} liveMeta={map.featuredLiveMeta} onClose={map.clearSelection} />
             ) : map.wildArea ? (
               <WildSheet area={map.wildArea} nearVenues={map.nearVenues} onClose={map.clearSelection} />
-            ) : map.timelineOpen || map.year !== undefined ? (
+            ) : timelineActive ? (
               <View className="gap-stack-tight">
                 <View className="flex-row items-center justify-between">
                   <Text variant="title" role="heading">
@@ -139,7 +150,7 @@ export default function MapTabScreen() {
                   <CloseButton label="关闭时间轴" onPress={map.closeTimeline} />
                 </View>
                 {map.year !== undefined ? (
-                  <YearSheet timelineBlock={timelineBlock} events={map.yearEvents} />
+                  <YearSheet timelineBlock={timelineBlock} events={map.yearEvents} pandaIdBySlug={map.pandaIdBySlug} />
                 ) : timelineBlock ? (
                   timelineBlock
                 ) : (
@@ -154,10 +165,15 @@ export default function MapTabScreen() {
                 featuredPlace={map.featuredPlace}
                 featuredLiveMeta={map.featuredLiveMeta}
                 explicitPlace={map.place}
-                yearSpan={yearSpan}
                 wildShown={map.layers.wild}
+                visitedVenueCount={map.filterCounts.visited}
+                visitedThisYearCount={map.visitedThisYearCount}
+                seenCount={map.seenCount}
+                lastVisitedByInstitution={map.lastVisitedByInstitution}
+                lastVisitedByPlace={map.lastVisitedByPlace}
+                thisYear={map.thisYear}
                 onClearPlace={map.clearSelection}
-                onOpenTimeline={map.openTimeline}
+                onResetFilter={() => map.setFilter("all")}
                 onChoose={map.choose}
                 onWild={map.onWild}
               />

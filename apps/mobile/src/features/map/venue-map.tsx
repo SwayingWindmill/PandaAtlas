@@ -6,7 +6,10 @@ import { useCSSVariable } from "uniwind";
 
 import { Icon } from "@/components/icon";
 import { House, Trees } from "@/components/icons";
+import { PandaThumb } from "@/components/panda-thumb";
 import { Text } from "@/components/ui/text";
+import { MAP_FLOAT_SHADOW } from "@/features/map/map-controls";
+import { isMapItemVisited } from "@/features/map/map-filter";
 import { cn } from "@/lib/utils";
 
 import { type Camera, type Point, type Viewport, toScreen, viewBox } from "./camera";
@@ -17,6 +20,9 @@ import type { WildArea } from "./wild";
 const MARKER_GAP = 44;
 const GLYPH_GAP = 24;
 const GLYPH = 22;
+const VISITED_THUMB = 26;
+const VISITED_RING = VISITED_THUMB + 4;
+const DIM_DOT = 8;
 /** A name longer than this ends in an ellipsis on the map; the sheet and the spoken label carry it whole. */
 const LABEL_MAX = 150;
 
@@ -47,6 +53,11 @@ export interface MapMarker {
   y: number;
 }
 
+export interface LeadPandaRef {
+  id: string;
+  name: string;
+}
+
 /** Venues grouped by how close they fall on screen at this camera, the biggest one keeping its place. */
 export function markersAt(items: readonly MapItem[], camera: Camera, viewport: Viewport, gap = MARKER_GAP): MapMarker[] {
   return clusterWorldPoints(items, (item) => item.point, gap / camera.scale).map((cluster) => {
@@ -57,9 +68,9 @@ export function markersAt(items: readonly MapItem[], camera: Camera, viewport: V
 
 /** Rough box a marker's glyph and label take, for thinning labels; footnote CJK is about 13px a character. */
 function labelBox(marker: MapMarker, flip: boolean) {
-  const width = GLYPH + 4 + Math.min(LABEL_MAX, markerName(marker).length * 13) + 24;
-  const left = flip ? marker.x + GLYPH / 2 - width : marker.x - GLYPH / 2;
-  return { left, right: left + width, top: marker.y - 11, bottom: marker.y + 11 };
+  const width = VISITED_RING + 6 + Math.min(LABEL_MAX, markerName(marker).length * 13) + 28;
+  const left = flip ? marker.x + VISITED_RING / 2 - width : marker.x - VISITED_RING / 2;
+  return { left, right: left + width, top: marker.y - 14, bottom: marker.y + 14 };
 }
 
 function flipsAt(marker: MapMarker, width: number): boolean {
@@ -101,14 +112,52 @@ function markerLabel(marker: MapMarker): string {
   return `${marker.items.map((item) => item.name).join("、")}，${marker.items.length} 个地方，点一下放大`;
 }
 
+function resolveMarkerLead(
+  marker: MapMarker,
+  visitedIds?: ReadonlySet<string>,
+  leadPandaByItemId?: ReadonlyMap<string, LeadPandaRef>,
+): LeadPandaRef | undefined {
+  const preferred =
+    (visitedIds ? marker.items.find((item) => isMapItemVisited(item, visitedIds)) : undefined) ?? marker.items[0];
+  if (!preferred) return undefined;
+  const mapped = leadPandaByItemId?.get(preferred.id);
+  if (mapped) return mapped;
+  const firstResident = preferred.residents.find((resident) => resident.hasFullBleedCover) ?? preferred.residents[0];
+  if (firstResident) return { id: firstResident.id, name: firstResident.name };
+  const withLeadId = preferred as MapItem & { leadPandaId?: string | null };
+  if (withLeadId.leadPandaId) return { id: withLeadId.leadPandaId, name: preferred.name };
+  return undefined;
+}
+
+function DimmedDot({ marker }: { marker: MapMarker }) {
+  return (
+    <View
+      pointerEvents="none"
+      accessible={false}
+      importantForAccessibility="no-hide-descendants"
+      className="absolute rounded-full border border-muted-foreground bg-paper opacity-45"
+      style={{
+        width: DIM_DOT,
+        height: DIM_DOT,
+        left: marker.x - DIM_DOT / 2,
+        top: marker.y - DIM_DOT / 2,
+      }}
+    />
+  );
+}
+
 /**
  * A place as Apple Maps draws one: a bare house glyph with a halo in the land color, and its name
- * and resident count beside it, haloed the same way. The selected place becomes a filled capsule.
+ * and resident count beside it, haloed the same way. Visited venues highlight with a crisp `primary`
+ * ring and lead panda thumbnail; the selected place becomes a filled capsule.
  */
 function Marker({
   marker,
   land,
   selected,
+  visited,
+  pillMode,
+  lead,
   compact,
   width,
   onPress,
@@ -118,61 +167,161 @@ function Marker({
   /** The map's width: a marker near the right edge hangs its name to the left instead. */
   width: number;
   selected: boolean;
+  visited: boolean;
+  /** True on the 我去过 filter where visited pins get a tinted capsule pill. */
+  pillMode: boolean;
+  lead: LeadPandaRef | undefined;
   compact: boolean;
   onPress?: () => void;
 }) {
   const count = markerCount(marker);
   const halo = { textShadowColor: land, textShadowRadius: 3, textShadowOffset: { width: 0, height: 0 } };
-  const glyph = selected ? (
-    <Icon icon={House} size={18} tone="onButton" strokeWidth={2.5} />
-  ) : (
-    <View style={{ width: GLYPH, height: GLYPH }}>
-      <View style={{ position: "absolute" }}>
-        <Icon icon={House} size={GLYPH} color={land} strokeWidth={6} />
-      </View>
-      <Icon icon={House} size={GLYPH} tone="tint" strokeWidth={2.5} />
-    </View>
-  );
-  const label = compact ? null : (
-    <View className="flex-row items-center gap-1">
-      <Text
-        variant="footnote"
-        allowFontScaling={false}
-        numberOfLines={1}
-        style={[selected ? undefined : halo, { maxWidth: LABEL_MAX }]}
-        className={selected ? "font-semibold text-primary-foreground" : "font-semibold"}
+  const flip = !compact && flipsAt(marker, width);
+  const showVisitedRing = visited && Boolean(lead);
+  const showVisitedPill = visited && pillMode && !compact;
+
+  let body: React.ReactNode;
+  let inset: number;
+  let topOffset: number;
+
+  if (showVisitedRing && lead) {
+    const thumbRing = (
+      <View
+        className={cn(
+          "items-center justify-center rounded-full border-2 bg-paper",
+          selected && pillMode ? "border-foreground" : "border-primary",
+        )}
+        style={{ width: VISITED_RING, height: VISITED_RING, boxShadow: MAP_FLOAT_SHADOW }}
       >
-        {markerName(marker)}
-      </Text>
-      {count > 0 ? (
+        <PandaThumb pandaId={lead.id} name={lead.name} size={VISITED_THUMB} />
+      </View>
+    );
+    if (compact) {
+      body = thumbRing;
+      inset = VISITED_RING / 2;
+      topOffset = VISITED_RING / 2;
+    } else if (selected || showVisitedPill) {
+      const darkPill = selected && pillMode;
+      body = (
+        <View className={cn("items-center gap-1.5", flip ? "flex-row-reverse" : "flex-row")}>
+          {thumbRing}
+          <View
+            className={cn("flex-row items-center gap-1 rounded-full px-2.5", darkPill ? "bg-foreground" : "bg-primary")}
+            style={{ height: 28, boxShadow: MAP_FLOAT_SHADOW }}
+          >
+            <Text
+              variant="footnote"
+              allowFontScaling={false}
+              numberOfLines={1}
+              style={{ maxWidth: LABEL_MAX }}
+              className={cn("font-semibold", darkPill ? "text-background" : "text-primary-foreground")}
+            >
+              {markerName(marker)}
+            </Text>
+            {count > 0 ? (
+              <Text
+                variant="footnote"
+                allowFontScaling={false}
+                className={cn("font-medium tabular-nums", darkPill ? "text-background" : "text-primary-foreground")}
+              >
+                {count}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+      );
+      inset = VISITED_RING / 2;
+      topOffset = VISITED_RING / 2;
+    } else {
+      body = (
+        <View className={cn("items-center gap-1.5", flip ? "flex-row-reverse" : "flex-row")}>
+          {thumbRing}
+          <View className="flex-row items-center gap-1">
+            <Text
+              variant="footnote"
+              allowFontScaling={false}
+              numberOfLines={1}
+              style={[halo, { maxWidth: LABEL_MAX }]}
+              className="font-semibold"
+            >
+              {markerName(marker)}
+            </Text>
+            {count > 0 ? (
+              <Text variant="footnote" allowFontScaling={false} style={halo} className="font-medium text-muted-foreground tabular-nums">
+                {count}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+      );
+      inset = VISITED_RING / 2;
+      topOffset = VISITED_RING / 2;
+    }
+  } else {
+    const capsule = selected || showVisitedPill;
+    const darkPill = selected && pillMode;
+    const glyph = capsule ? (
+      <Icon icon={House} size={18} tone="onButton" strokeWidth={2.5} />
+    ) : (
+      <View style={{ width: GLYPH, height: GLYPH }}>
+        <View style={{ position: "absolute" }}>
+          <Icon icon={House} size={GLYPH} color={land} strokeWidth={6} />
+        </View>
+        <Icon icon={House} size={GLYPH} tone="tint" strokeWidth={2.5} />
+      </View>
+    );
+    const label = compact ? null : (
+      <View className="flex-row items-center gap-1">
         <Text
           variant="footnote"
           allowFontScaling={false}
-          style={selected ? undefined : halo}
-          className={selected ? "font-medium text-primary-foreground tabular-nums" : "font-medium text-muted-foreground tabular-nums"}
+          numberOfLines={1}
+          style={[capsule ? undefined : halo, { maxWidth: LABEL_MAX }]}
+          className={capsule ? (darkPill ? "font-semibold text-background" : "font-semibold text-primary-foreground") : "font-semibold"}
         >
-          {count}
+          {markerName(marker)}
         </Text>
-      ) : null}
-    </View>
-  );
-  const flip = !compact && flipsAt(marker, width);
-  const body = (
-    <View
-      className={cn("items-center gap-1", flip ? "flex-row-reverse" : "flex-row", selected && "rounded-full bg-primary")}
-      style={selected ? { paddingHorizontal: 10, height: 32, boxShadow: "0 2px 8px rgba(0,0,0,0.18)" } : undefined}
-    >
-      {glyph}
-      {label}
-    </View>
-  );
-  // The glyph's centre sits on the place; the label hangs to its right, or its left by the edge.
-  const inset = selected ? 10 + 9 : GLYPH / 2;
+        {count > 0 ? (
+          <Text
+            variant="footnote"
+            allowFontScaling={false}
+            style={capsule ? undefined : halo}
+            className={
+              capsule
+                ? darkPill
+                  ? "font-medium text-background tabular-nums"
+                  : "font-medium text-primary-foreground tabular-nums"
+                : "font-medium text-muted-foreground tabular-nums"
+            }
+          >
+            {count}
+          </Text>
+        ) : null}
+      </View>
+    );
+    body = (
+      <View
+        className={cn(
+          "items-center gap-1",
+          flip ? "flex-row-reverse" : "flex-row",
+          capsule && (darkPill ? "rounded-full bg-foreground" : "rounded-full bg-primary"),
+        )}
+        style={capsule ? { paddingHorizontal: 10, height: 32, boxShadow: MAP_FLOAT_SHADOW } : undefined}
+      >
+        {glyph}
+        {label}
+      </View>
+    );
+    inset = capsule ? 10 + 9 : GLYPH / 2;
+    topOffset = capsule ? 16 : GLYPH / 2;
+  }
+
   const style = {
     position: "absolute" as const,
-    top: marker.y - (selected ? 16 : GLYPH / 2),
+    top: marker.y - topOffset,
     ...(flip ? { right: width - marker.x - inset } : { left: marker.x - inset }),
   };
+
   if (!onPress) {
     return (
       <View style={style} pointerEvents="none" accessible={false}>
@@ -310,7 +459,6 @@ function Flows({ flows, camera, viewport }: { flows: YearView["flows"]; camera: 
   );
 }
 
-/** Where a wild area's name goes: at its centre, or just above or below it when a venue's name is there. */
 /** Where a range's name goes: under its largest circle, so the name never sits on the area; at the centre while the circles are dots. */
 function wildAnchor(area: WildArea, camera: Camera, viewport: Viewport): Point {
   const largest = area.patches.reduce((best, patch) => (patch.radius > best.radius ? patch : best));
@@ -412,6 +560,9 @@ export function VenueMap({
   selectedWildId = null,
   onSelectWild,
   year,
+  visitedIds,
+  dimUnvisited = false,
+  leadPandaByItemId,
 }: {
   items: readonly MapItem[];
   camera: Camera;
@@ -426,6 +577,12 @@ export function VenueMap({
   onSelectWild?: (area: WildArea) => void;
   /** A year on the timeline: each place drawn as a ring sized by who lived there, and the year's moves as flows. */
   year?: YearView;
+  /** Visited venue IDs (`MapItem.id` or raw `institutionId`). */
+  visitedIds?: ReadonlySet<string>;
+  /** When true (e.g. 我去过 filter), visited markers take focus and unvisited venues render as soft dimmed dots. */
+  dimUnvisited?: boolean;
+  /** Optional override for lead resident photo per MapItem ID. */
+  leadPandaByItemId?: ReadonlyMap<string, LeadPandaRef>;
 }) {
   const [land, water, wildFill, wildInk] = useCSSVariable([
     "--color-map-land",
@@ -433,13 +590,30 @@ export function VenueMap({
     "--color-map-wild",
     "--color-map-wild-ink",
   ]).map(String) as [string, string, string, string];
-  const shown = useMemo(
-    () => (year ? items.filter((item) => (year.counts.get(item.id) ?? 0) > 0) : items),
-    [items, year],
-  );
+
+  const dimming = dimUnvisited && !year;
+  const shown = useMemo(() => {
+    if (year) return items.filter((item) => (year.counts.get(item.id) ?? 0) > 0);
+    if (dimming) return items.filter((item) => (visitedIds ? isMapItemVisited(item, visitedIds) : false));
+    return items;
+  }, [dimming, items, visitedIds, year]);
+
+  const unvisitedDots = useMemo(() => {
+    if (!dimming) return [];
+    const unvisited = items.filter((item) => !(visitedIds ? isMapItemVisited(item, visitedIds) : false));
+    return markersAt(unvisited, camera, viewport, GLYPH_GAP);
+  }, [camera, dimming, items, viewport, visitedIds]);
+
   const markers = useMemo(
     () => markersAt(shown, camera, viewport, compact ? GLYPH_GAP : MARKER_GAP),
     [shown, camera, viewport, compact],
+  );
+  const visibleDimmedDots = useMemo(
+    () =>
+      unvisitedDots.filter((dot) =>
+        markers.every((marker) => Math.hypot(marker.x - dot.x, marker.y - dot.y) > 28),
+      ),
+    [markers, unvisitedDots],
   );
   const named = useMemo(() => namedMarkers(markers, viewport.width), [markers, viewport.width]);
   const cities =
@@ -520,6 +694,9 @@ export function VenueMap({
       {cities.map((city) => (
         <CityLabel key={city.name} name={city.name} x={city.x} y={city.y} land={land} />
       ))}
+      {visibleDimmedDots.map((dot) => (
+        <DimmedDot key={`dim:${dot.id}`} marker={dot} />
+      ))}
       {year
         ? markers.map((marker) => (
             <YearNode
@@ -532,17 +709,23 @@ export function VenueMap({
             />
           ))
         : null}
-      {(year ? [] : markers).map((marker) => (
-        <Marker
-          key={marker.id}
-          marker={marker}
-          land={land}
-          compact={compact || !named.has(marker.id)}
-          width={viewport.width}
-          selected={marker.items.length === 1 && marker.items[0]?.id === selectedId}
-          onPress={onSelect ? () => onSelect(marker) : undefined}
-        />
-      ))}
+      {(year ? [] : markers).map((marker) => {
+        const markerVisited = Boolean(visitedIds && marker.items.some((item) => isMapItemVisited(item, visitedIds)));
+        return (
+          <Marker
+            key={marker.id}
+            marker={marker}
+            land={land}
+            compact={compact || !named.has(marker.id)}
+            width={viewport.width}
+            selected={marker.items.length === 1 && marker.items[0]?.id === selectedId}
+            visited={markerVisited}
+            pillMode={dimming}
+            lead={markerVisited ? resolveMarkerLead(marker, visitedIds, leadPandaByItemId) : undefined}
+            onPress={onSelect ? () => onSelect(marker) : undefined}
+          />
+        );
+      })}
     </View>
   );
 }

@@ -1,36 +1,32 @@
+import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { PanResponder, Pressable, View } from "react-native";
 import Svg, { Defs, Line, Pattern, Rect } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
+import { useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import {
-  Baby,
-  History,
-  type LucideIcon,
-  Pause,
-  Plane,
-  Play,
-  Sparkles,
-  Tag,
-  Truck,
-} from "@/components/icons";
-import { Timeline, type TimelineItem } from "@/components/timeline";
+import { History, Pause, Play } from "@/components/icons";
+import { PandaThumb } from "@/components/panda-thumb";
 import { Text } from "@/components/ui/text";
+import { component } from "@/design/tokens";
 import { MAP_FLOAT_SHADOW } from "@/features/map/map-controls";
 import type { MapTimeline, YearEvent, YearEventKind } from "@/features/map/timeline";
+import { cn } from "@/lib/utils";
 
 const HIST_HEIGHT = 40;
+const EVENT_DOT = 8;
+const EVENT_THUMB = 36;
 
-const KIND: Record<YearEventKind, { icon?: LucideIcon; meta: string }> = {
-  birth: { icon: Baby, meta: "出生" },
-  abroad: { icon: Plane, meta: "出国" },
-  home: { icon: Plane, meta: "回国" },
-  move: { icon: Truck, meta: "搬家" },
-  debut: { icon: Sparkles, meta: "公开亮相" },
-  naming: { icon: Tag, meta: "取名" },
-  death: { meta: "离世" },
-  other: { meta: "" },
+const KIND_BADGE: Record<YearEventKind, string> = {
+  birth: "出生",
+  abroad: "出国",
+  home: "归国",
+  move: "旅居",
+  debut: "亮相",
+  naming: "取名",
+  death: "",
+  other: "",
 };
 
 function YearScrubber({
@@ -223,7 +219,93 @@ export function TimelineBlock({
   );
 }
 
-function YearEvents({ events }: { events: YearEvent[] }) {
+function YearEventRow({
+  event,
+  pandaId,
+  first,
+  last,
+  stacked,
+}: {
+  event: YearEvent;
+  pandaId: string | undefined;
+  first: boolean;
+  last: boolean;
+  stacked: boolean;
+}) {
+  const quiet = event.kind === "death";
+  const isHome = event.kind === "home";
+  const badge = KIND_BADGE[event.kind];
+  const title = quiet ? `${event.who}　${event.what}` : event.who;
+  const detail = quiet ? undefined : event.what;
+  const spoken = `${event.when}${badge ? `，${badge}` : ""}，${title}${detail ? `，${detail}` : ""}`;
+
+  const content = (
+    <View className="flex-row gap-row">
+      <View className="items-center" style={{ width: component.timeline.column }}>
+        <View className={cn("w-hairline bg-border", first && "opacity-0")} style={{ height: 6 }} />
+        <View
+          className={cn("rounded-full", isHome ? "bg-primary" : quiet ? "bg-tertiary-foreground" : "bg-graphic")}
+          style={{ width: EVENT_DOT, height: EVENT_DOT }}
+        />
+        <View className={cn("w-hairline flex-1 bg-border", last && "opacity-0")} />
+      </View>
+
+      <View className={cn("min-w-0 flex-1 flex-row items-center gap-row", !last && "pb-stack-tight")}>
+        <View className="min-w-0 flex-1 gap-hair-gap">
+          <View className="flex-row flex-wrap items-center gap-1.5">
+            <Text variant="footnote" className="text-muted-foreground tabular-nums">
+              {event.when}
+            </Text>
+            {badge ? (
+              <View className={cn("rounded-pill px-2 py-0.5", isHome ? "bg-highlight-soft" : "bg-secondary")}>
+                <Text variant="footnote" className={cn("font-semibold", isHome ? "text-primary" : "text-muted-foreground")}>
+                  {badge}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+          <Text variant="headline" className={cn(quiet && "font-normal text-muted-foreground")} numberOfLines={stacked ? undefined : 2}>
+            {title}
+          </Text>
+          {detail ? (
+            <Text variant="footnote" className="text-muted-foreground" numberOfLines={stacked ? undefined : 2}>
+              {detail}
+            </Text>
+          ) : null}
+        </View>
+        {!stacked && pandaId && !quiet ? <PandaThumb pandaId={pandaId} name={event.who} size={EVENT_THUMB} /> : null}
+      </View>
+    </View>
+  );
+
+  if (!event.pandaSlug) {
+    return (
+      <View accessible accessibilityLabel={spoken}>
+        {content}
+      </View>
+    );
+  }
+
+  return (
+    <Pressable
+      role="link"
+      accessibilityLabel={spoken}
+      onPress={() => router.push({ pathname: "/pandas/[slug]", params: { slug: event.pandaSlug! } })}
+      className="min-h-11 active:opacity-70"
+    >
+      {content}
+    </Pressable>
+  );
+}
+
+function YearEvents({
+  events,
+  pandaIdBySlug,
+}: {
+  events: YearEvent[];
+  pandaIdBySlug?: ReadonlyMap<string, string>;
+}) {
+  const stacked = useStacked();
   if (events.length === 0) {
     return (
       <Text variant="subheadline" className="text-muted-foreground">
@@ -231,19 +313,31 @@ function YearEvents({ events }: { events: YearEvent[] }) {
       </Text>
     );
   }
-  const items: TimelineItem[] = events.map((event) => ({
-    key: event.id,
-    date: event.when,
-    meta: KIND[event.kind].meta,
-    title: event.kind === "death" ? `${event.who}　${event.what}` : event.who,
-    detail: event.kind === "death" ? undefined : event.what,
-    icon: KIND[event.kind].icon,
-    quiet: event.kind === "death",
-  }));
-  return <Timeline items={items} newestFirst={false} />;
+  return (
+    <View className="rounded-group bg-card px-inset py-row" style={{ borderCurve: "continuous" }}>
+      {events.map((event, index) => (
+        <YearEventRow
+          key={event.id}
+          event={event}
+          pandaId={event.pandaSlug ? pandaIdBySlug?.get(event.pandaSlug) : undefined}
+          first={index === 0}
+          last={index === events.length - 1}
+          stacked={stacked}
+        />
+      ))}
+    </View>
+  );
 }
 
-export function YearSheet({ timelineBlock, events }: { timelineBlock: React.ReactNode; events: YearEvent[] }) {
+export function YearSheet({
+  timelineBlock,
+  events,
+  pandaIdBySlug,
+}: {
+  timelineBlock: React.ReactNode;
+  events: YearEvent[];
+  pandaIdBySlug?: ReadonlyMap<string, string>;
+}) {
   return (
     <View className="gap-section-tight">
       {timelineBlock}
@@ -251,7 +345,7 @@ export function YearSheet({ timelineBlock, events }: { timelineBlock: React.Reac
         <Text variant="headline" role="heading">
           这一年
         </Text>
-        <YearEvents events={events} />
+        <YearEvents events={events} pandaIdBySlug={pandaIdBySlug} />
       </View>
     </View>
   );

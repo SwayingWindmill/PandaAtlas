@@ -4,7 +4,7 @@ The app opens directly onto **探索** inside the unified 4-tab bar (**探索 / 
 
 - **探索** (`/(tabs)/(today)`) opens with a Chinese date eyebrow (`M 月 D 日　周X`) + `熊猫日历` capsule (`link "熊猫日历，查看日历"` → `/calendar`), followed by the top `WeekHero` (with sibling `全部记忆` pill → `/on-this-day`) or `FeaturedPandaCard`, **明星熊猫 / 你关注的 N 只** (consolidated with monthly/followed birthday shortcut), **此刻谁醒着** (compact `VenueActivityBar` per card + `link "查看全部直播与作息"` → `/live`), **每日一玩** (side-by-side `每日一猫` / `猜熊猫`, header `link "趣味挑战"` → `/play`), **精选专题** (cover grid + conditional `双胞胎怎么分` / `海外与归国` shortcuts), **听熊猫** (scene labels, → `/sounds`), Apple News-style **认识大熊猫** rows (→ `/learn`), **场馆动态**, and **关注的最新动态** (hidden completely when signed out or empty).
 - **此刻直播与作息** (`/live`) shows a 3-region global day/night pulse (`东亚 / 欧洲 / 北美`) + 3-column summary (`正在活跃 / 可看直播 / 午休或闭园`), 4 filter chips (`全部 / 有直播 / 正在活跃 / 海外`), photo-anchored active/nap venue cards with full `VenueActivityBar`, and compact nighttime resting rows.
-- **地图** is a top-level full-bleed map tab with filter pills (**全部 / 国内 / 海外 / 有直播 / 野生区**), globe/layer controls, a three-snap animated bottom sheet, venue live-status & live-cam CTA, shortcuts to `/institutions` and the **分布时间轴**, and the venue/wild list.
+- **地图** is a top-level full-bleed map tab with filter pills (**全部 / 国内 / 海外 / 有直播 / 我去过 / 野生区**, plus `/map?filter=visited` deep link), globe/layer/timeline controls (top-right `时间轴` button `button "分布时间轴"`), visited pins with `primary` rings + lead `PandaThumb`s, a three-snap animated bottom sheet with `FootprintPassportCard` (`ProgressRing` + `看猫日记` → `/visits`), `lastVisited` venue rows with `PandaThumb`s, shortcuts to `/institutions`, and the **分布时间轴** (`YearSheet` with vertical timeline rail, dual-tone badges, and `PandaThumb`s).
 - **我的** (`熊猫护照`) uses Bento cards (`ProgressRing`图鉴卡 -> `/book`, `关注` / `去过的基地` 双列卡, `我的合集` 横向画册, `里程碑` 摘要, and grouped `通知与提醒 / 我的纠错 / 设置` rows). Signed-out guests can follow pandas/venues, mark `见过`, record facility visits, manage collections, and unlock `/book` & `/milestones` locally via AsyncStorage (`zhipanda:guest:*`), which automatically merges into the account on email sign-in.
 
 ## How to get to it (user POV)
@@ -26,7 +26,7 @@ Preconditions:
 - **Calendar entry from Explore header.** Run `npx e2e run tests/calendar.e2e.ts` from `apps/mobile`.
 - **Direct entry & `/welcome` redirect.** Run `npx e2e run tests/onboarding.e2e.ts` from `apps/mobile`.
 - **Guest local-first & sign-in sync.** Run `npx e2e run tests/follow-seen.e2e.ts` and `npx e2e run tests/book.e2e.ts` from `apps/mobile`.
-- **Map tab & wild habitats.** Run `npx e2e run tests/map.e2e.ts` from `apps/mobile`.
+- **Map tab & wild habitats.** Run `npx e2e run tests/map.e2e.ts` from `apps/mobile` (covers top-right `分布时间轴`, wild habitats, and `/map?filter=visited`).
 - **Dead ends & `/discover` redirect.** Run `npx e2e run tests/dead-ends.e2e.ts` from `apps/mobile`.
 - **Mini-games secondary hub.** Run `npx e2e run tests/guess.e2e.ts:17` from `apps/mobile`.
 

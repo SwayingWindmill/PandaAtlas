@@ -21,6 +21,7 @@ import { Mosaic } from "@/features/collections/mosaic";
 import { collectionsQueryOptions } from "@/features/collections/collections";
 import { contributionsQueryOptions } from "@/features/corrections/submissions";
 import { useFollowed } from "@/features/engagement/favorites";
+import { useFollowedVenues } from "@/features/engagement/followed-venues";
 import {
   guestCollectionsQueryOptions,
   guestGamesQueryOptions,
@@ -222,6 +223,7 @@ function BentoDashboard({ signedIn, email }: { signedIn: boolean; email: string 
   const signedOut = !signedIn;
 
   const followed = useFollowed();
+  const followedVenues = useFollowedVenues();
   const milestonePrefs = useMilestonePrefs();
   const milestonesOn = !(milestonePrefs?.off ?? false);
 
@@ -293,6 +295,7 @@ function BentoDashboard({ signedIn, email }: { signedIn: boolean; email: string 
   const seenCount = lifeList?.seenCount ?? 0;
   const recognizedCount = lifeList?.recognizedCount ?? 0;
   const followedCount = followed?.size ?? 0;
+  const followedVenueCount = followedVenues?.size ?? 0;
   const placeCount = visits ? new Set(visits.map((visit) => visit.placeId)).size : 0;
   const latestVisitPlace = visits?.[0] ? placesQuery.data?.get(visits[0].placeId) : undefined;
   const latestPlaceName = latestVisitPlace ? placeName(latestVisitPlace) : null;
@@ -368,7 +371,13 @@ function BentoDashboard({ signedIn, email }: { signedIn: boolean; email: string 
                     只
                   </Text>
                 </View>
-                <OverlappingFaces pandas={followedPandas} limit={3} borderColor={colors.card} />
+                {followedPandas.length > 0 ? (
+                  <OverlappingFaces pandas={followedPandas} limit={3} borderColor={colors.card} />
+                ) : followedVenueCount > 0 ? (
+                  <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
+                    {`含 ${followedVenueCount} 场馆`}
+                  </Text>
+                ) : null}
               </View>
             </Card>
           </Pressable>

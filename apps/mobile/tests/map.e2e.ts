@@ -72,3 +72,12 @@ test("a wild habitat has its own page, with its populations, the other ranges an
   await expect(screen.getByRole("heading", "岷山")).toBeVisible();
   await expect(screen.getByLabel("野生大熊猫 765 只")).toBeVisible();
 });
+
+test("opening /map?filter=visited selects the visited tab and shows the passport card", async ({ app, screen }) => {
+  await app.open("/map?filter=visited");
+  await expect(screen.getByRole("tab", { name: /^我去过 0/, selected: true })).toBeVisible();
+  await expect(screen.getByText(/^已去过 0 \//)).toBeVisible();
+  await expect(screen.getByText("还没有去过的场馆足迹")).toBeVisible();
+  await screen.getByRole("button", "看看全部场馆").tap();
+  await expect(screen.getByRole("tab", { name: /^全部 /, selected: true })).toBeVisible();
+});
