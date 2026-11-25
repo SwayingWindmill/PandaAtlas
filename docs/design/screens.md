@@ -14,16 +14,28 @@ The mockups are in [`mockups/v4/`](mockups/v4/), and [`00-overview.webp`](mockup
 
 There are five tabs: 今天, 发现, 找熊猫, 图鉴 and 我的. The bar is the system bar described in DESIGN.md › Navigation. The glyphs follow the mockups: calendar for 今天, compass for 发现, search, book for 图鉴, and the person for 我的. 发现 came after v4; its plan and canvas are the 发现页 design artifact (2026-11-10).
 
-## 今天 — `01-today`, `01-today-dark`
+## 探索（原今天） — `/(tabs)/(today)` (v4.1 overhaul)
 
-1. **Header.** The date as a semibold secondary footnote line (11月4日 星期三), then 今天 in display. The date line is content, not a kicker. The monogram avatar on the right opens 我的.
-2. **Week hero** (`WeekHero`). This is the nearest 那年今天 or 生日周 anniversary in the coming 7 days: one photograph, the tag in the top-left corner, the title (回国 3 周年) and the pandas' names at the bottom-left, and the day (11.8 周日) at the bottom-right. Tapping it opens the first panda. In a week with no anniversary the featured story card takes its place.
-3. **Quick entries.** There are four bare glyphs with labels, all in label color: 观猫时机, 归国, 挑战, 场馆. An entry shows only once its page exists. Until then the slot goes to an existing page, such as 日历 or 猜熊猫.
-4. **观猫时机 and 挑战.** Two half-width cards. 观猫时机 shows the best hours today at the user's followed or nearest venue, with a `TimeBand`; it needs #811. 挑战 shows this month's progress as a `ProgressRing`; it needs #806 and real progress. The ring shown in the mockup is 示例.
-5. **场馆动态.** A `Timeline` card with the next and the latest event at the venues the user follows, a countdown (2 天后) on an upcoming one, and a chevron to the list. It needs #807.
-6. **What follows.** The story cards, 本周新鲜事, 你关注的 and the birthday scroller stay below, as in DESIGN.md, until the blocks above are live. After that, decide whether they stay.
+1. **Header.** Chinese date eyebrow (`M 月 D 日　周X`) over `探索` in `display`, paired on the right with a compact `熊猫日历` capsule (`Calendar` icon, opens `/calendar`, `accessibilityLabel="熊猫日历，查看日历"`). No duplicate `/me` avatar and no stacked standalone birthday banners.
+2. **Hero.** Top `WeekHero` when a public anniversary/birthday falls within 7 days, paired with a sibling top-right `全部记忆` floating capsule (`bg-glass-fallback`, opens `/on-this-day`); otherwise `FeaturedPandaCard`.
+3. **明星熊猫 / 你关注的 N 只.** Horizontal 56pt circular quick-jump strip (`StarOrFollowedStrip`), consolidated on the right with a single contextual birthday link (`近期 N 只过生日` → `/birthdays` when reminder is on and followed pandas have birthdays this week, else `本月 N 只过生日` → `/calendar` when > 0).
+4. **此刻谁醒着.** Horizontal live venue clock cards (`LiveClockSection`) with right link `全部直播与作息` → `/live`. Each card embeds a compact `VenueActivityBar`, local clock + status dot, overlapping resident faces with single-line names, and a `看直播` capsule when available.
+5. **每日一玩.** Side-by-side `每日一猫` (real daily status + 4 clue-progress dots → `/daily`) and `猜熊猫` (real recognized count + 2 tilted mini tiles → `/guess`), headed by `全部 4 项` (`accessibilityLabel="趣味挑战"`, opens `/play`).
+6. **精选专题.** Filterable 2-column cover photo grid (`CuratedGallerySection`) with conditional `归国与专题` header action and non-dead-end topic shortcut cards (`双胞胎怎么分` → `/look-alikes`, `海外与归国` → `/returning`) shown only when backing data exists.
+7. **听熊猫.** Compact interactive audio player (`SoundStripSection`) showing human scene labels (`高频轻鸣实录`, `竹竿啃食原声`, etc.) rather than license strings, linking to `/sounds`.
+8. **认识大熊猫.** Apple News-style left-text / right-thumbnail (`44×44`) rows for the lead article and face guide (`LearningAndPlaySection`), linking to `/learn`.
+9. **场馆动态 & 关注的最新动态.** `TodayVenueNews` and `FollowedChanges` render only when real notices or followed updates exist; zero cold-start placeholder boxes when signed out or empty.
 
-Status: all five steps are built. The quick entries are 观猫时机 (the venue of the first followed panda that publishes viewing hours; 日历 when there is none), 归国, 挑战 (the monthly challenge) and 场馆. 观猫时机 shows that venue's first active window (8–12 点) over its day band; "nearest venue" waits for location. 挑战 shows only once the fan has joined this month, with their own progress. 场馆动态 shows the next and the latest notice at the venues where followed pandas live, and 设置 can turn it off. Each block is hidden when it has nothing real.
+Status: shipped in Batch 1 (v4.1).
+
+## 此刻直播与作息 — `/live` (new in v4.1)
+
+1. **Global Day/Night Pulse & Summary.** Top card (`buildLiveHallModel`, `buildRegionalPulses`) displaying real-time local clocks and daytime/nighttime state across `东亚`, `欧洲` and `北美`, above a 3-column summary (`正在活跃 N 馆 | 可看直播 N 馆 | 午休或闭园 N 馆`).
+2. **Filter chips.** Single-select ink chips: `全部`, `有直播`, `正在活跃`, `海外`, showing live counts when > 0. Zero-resident no-cam venues are excluded automatically.
+3. **日间开放与活跃.** Photo-anchored cards (`72×72` lead resident tile, status dot, local clock, resident list, full `VenueActivityBar`, `进馆看熊猫` link and `看直播` capsule).
+4. **夜间休整.** Compact grouped rows (`40pt` round resident face, local clock, next opening time, optional `官方频道` link). Quiet timezone disclaimer at the foot.
+
+Status: shipped in Batch 1 (v4.1).
 
 ## 找熊猫 — `02-find`
 
@@ -137,11 +149,11 @@ Each of these is built in its own PR. Each PR moves to palette C and the new com
 | 那年今天 | `14-on-this-day` | built in the second batch |
 | 归国熊猫 | `15-overseas-return` | #812 |
 
-A venue's page (`/institutions/[slug]`, mockup in the 场馆与野生区 canvas, 2026-11-11) keeps the stretchy hero, then the badges (免费 when the ticket line starts with 免费, 直播, the number living there) with 关注 at the end, and a `Segmented` of 概况, 熊猫 and 攻略; a tab with nothing in it is left out. 概况 holds the summary, tiles for 现在住这里, 以前住过 and 在这里出生 (shown when two or more are above zero), the residents' faces with 全部 to the 熊猫 tab, 场馆动态, 位置 with 导航过去, the live camera and the sources. 熊猫 holds the resident tiles and 以前住过, newest departure first, with the years of the stays and 在这里出生 when a stay here began on the birthday. 攻略 holds the 参观攻略 below and 记下到访. The tabs do not stick under the bar yet.
+A venue's page (`/institutions/[slug]`, redesigned in Batch 1 v4.1) uses a single-scroll canvas without middle `Segmented` tabs (`?tab=guide` remains harmlessly accepted). Below the stretchy hero (`INSTITUTION_HERO_HEIGHT = 276`) sit the factual intro, the dual primary/secondary action capsules (`关注场馆` and `去过打卡`), a borderless hairline-separated 3-column metric strip (`现在住这里 | 在这里出生 | 门票概况`), the inline `VenueLiveCard` (local clock, activity bar, `看直播`), and the compact `VenueQuickTools` strip (`导航过去 / 官方直播 / 查看官网`). Next sits `住在这里` (optional `你在本馆已见过 N / M 只` progress bar, `全部 / 未见过 / 我关注` filter tabs, search for `>= 4` residents, and an initial 6-item preview expanding via `看全部熊猫`), followed by the 6-layer `参观攻略`, `FacilityVisits`, `VenueNewsSection`, expandable `以前住过`, and a quiet source footer.
 
 A wild range's page (`/wild/[id]`) opens from the map sheet's 栖息地页. It shows a sketch of the populations (circles sized by habitat, lettered), tiles for 野生大熊猫, 栖息地 km² and 占国家公园, the populations by count with a bar each, the venues within reach of the range's centre (the map's 附近场馆 rule), the other ranges and the source.
 
-The 参观攻略 (`07-venue-guide`) leads each facility with the 观猫时机 card: the first window the pandas are up in `figure` type, a day band (active in `graphic`, the midday rest in a quiet fill, hours every four), the other windows in a line, and a key. The band carries no "now" marker or month, since the facility publishes usual hours, not today's. 拍照点位 is a list with each spot's best hours: no spot has a published photo, so the mockup's photo cards wait for one. 须知 follows (opening hours with their `TimeBand`, tickets, tips, 导航过去). The stat tiles (开放, 每次, 直播) and the 示例 key entry are left out until the data exists.
+The enriched `参观攻略` (`institution-guide.tsx`, `venue-guide-extras.ts`) structures pre-trip decisions into 6 modular layers: (1) 2×2 pre-trip Bento (`开放时间 / 门票预约 / 最佳观猫 / 建议时长`), (2) full-day activity band (`DayBand`, falling back to `VENUE_CLOCK_SPECS` when facility hours lack viewing bands), (3) curated 01–04 route timeline with resident avatar hints when configured for major flagship venues (collapsed gracefully when unconfigured), (4) horizontal photo-spot cards from `photoSpots`, (5) an SVG schematic location map card + address one-tap navigation + transit summary, and (6) practical tips + official website entry. Missing blocks hide without placeholders.
 
 场馆动态 (`07b-venue-news`) is one timeline card (`NewsTimeline`), newest first, the newest dot tinted. Each row has the date (2026.11.06), the venue, the notice's own headline, a countdown (2 天后) on one still to come, or else the photo of the first panda it names, and it opens the original. Ink chips narrow it: 全部, 关注的 (the venues where the followed pandas live, shown when one has a notice), then each venue with a notice. The hosts follow as official `SourceBadge`s. The mockup's bell waits for a news reminder. A venue's page shows its three newest notices on the same card, with 全部动态 when there are more.
 

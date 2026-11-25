@@ -8,6 +8,7 @@ export type PandaSoundId =
 export interface PandaSoundClip {
   id: PandaSoundId;
   shortLabel: string;
+  sceneLabel: string;
   title: string;
   durationLabel: string;
   durationSec: number;
@@ -30,6 +31,7 @@ export const PANDA_SOUND_CLIPS: readonly PandaSoundClip[] = [
   {
     id: "panda-twittering",
     shortLabel: "轻声鸣叫",
+    sceneLabel: "高频轻鸣实录",
     title: "大熊猫轻声鸣叫",
     durationLabel: "0:03",
     durationSec: 3.1,
@@ -42,6 +44,7 @@ export const PANDA_SOUND_CLIPS: readonly PandaSoundClip[] = [
   {
     id: "bamboo-eating-long",
     shortLabel: "啃竹原声",
+    sceneLabel: "竹竿啃食原声",
     title: "大熊猫啃竹 ASMR",
     durationLabel: "0:43",
     durationSec: 43.4,
@@ -54,6 +57,7 @@ export const PANDA_SOUND_CLIPS: readonly PandaSoundClip[] = [
   {
     id: "memphis-ambient",
     shortLabel: "展区环境",
+    sceneLabel: "室外展区实录",
     title: "展区啃食环境声",
     durationLabel: "0:10",
     durationSec: 9.8,
@@ -66,6 +70,7 @@ export const PANDA_SOUND_CLIPS: readonly PandaSoundClip[] = [
   {
     id: "bamboo-eating-short",
     shortLabel: "成都碎竹声",
+    sceneLabel: "成都外场原声",
     title: "成都基地啃竹短段",
     durationLabel: "0:06",
     durationSec: 5.8,
@@ -78,6 +83,7 @@ export const PANDA_SOUND_CLIPS: readonly PandaSoundClip[] = [
   {
     id: "cub-moscow-ambient",
     shortLabel: "幼仔亮相",
+    sceneLabel: "幼仔见面现场",
     title: "莫斯科幼仔“喀秋莎”亮相声",
     durationLabel: "0:39",
     durationSec: 39.5,

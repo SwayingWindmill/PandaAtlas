@@ -27,8 +27,8 @@ test("the map shows a zoo from its marker and from the list, and lists a place w
   await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
   await screen.getByRole("button", `打开${zoo.name}的页面`).tap();
   await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
-  await expect(screen.getByRole("radio", "概况")).toBeVisible();
-  await expect(screen.getByRole("radio", "攻略")).toBeVisible();
+  await expect(screen.getByRole("heading", "住在这里")).toBeVisible();
+  await expect(screen.getByRole("heading", "参观攻略")).toBeVisible();
   await screen.getByRole("button", "返回").tap();
 
   await screen.getByRole("button", "关闭").tap();

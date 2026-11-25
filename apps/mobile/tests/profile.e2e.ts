@@ -113,7 +113,6 @@ test("venue exposes clickable live cam link and resident filter tabs", async ({ 
   await liveLink.tap();
   await expect.poll(async () => (await openedTabs(browser)).includes("https://example.test/live")).toBe(true);
 
-  await screen.getByRole("radio", "熊猫").tap();
   await expect(screen.getByRole("tab", { name: "全部 2", selected: true })).toBeVisible();
   const unseenTab = screen.getByRole("tab", "未见过 2");
   await expect(unseenTab).toBeVisible();

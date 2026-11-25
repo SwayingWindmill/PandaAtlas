@@ -4,8 +4,9 @@ import { useMemo, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { Chip } from "@/components/chip";
-import { ListCell, ListSection, useSingleColumn } from "@/components/grouped-list";
-import { Plane } from "@/components/icons";
+import { ListCell, ListSection, useSingleColumn, useStacked } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
+import { Plane, Users } from "@/components/icons";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
 import { RemoteImage } from "@/components/remote-image";
@@ -74,6 +75,7 @@ function GalleryTile({ panda, width, height }: { panda: PandaListItem; width: nu
 export function CuratedGallerySection() {
   const { width, fontScale } = useWindowDimensions();
   const single = useSingleColumn();
+  const stacked = useStacked();
   const [selected, setSelected] = useState<GalleryTab>("精选");
   const { data: pandas } = useQuery(pandaIndexQueryOptions());
   const special = useSpecialChips();
@@ -91,13 +93,32 @@ export function CuratedGallerySection() {
     [activeTab, pandas, special, today],
   );
 
+  const hasTwins = special["双胞胎"].size > 0;
   const hasReturning = (overseas.data?.length ?? 0) > 0;
-  if (items.length === 0 && !hasReturning) return null;
+  if (items.length === 0 && !hasReturning && !hasTwins) return null;
 
   if (items.length === 0) {
     return (
-      <ListSection title="海外与归国">
-        <ListCell icon={Plane} label="归国与专题" href="/returning" role="link" last />
+      <ListSection title="精选专题">
+        {hasTwins ? (
+          <ListCell
+            icon={Users}
+            label="双胞胎怎么分"
+            detail="对比双胞胎脸型与毛色"
+            href="/look-alikes"
+            role="link"
+            last={!hasReturning}
+          />
+        ) : null}
+        {hasReturning ? (
+          <ListCell
+            icon={Plane}
+            label="归国与专题"
+            href="/returning"
+            role="link"
+            last
+          />
+        ) : null}
       </ListSection>
     );
   }
@@ -109,7 +130,7 @@ export function CuratedGallerySection() {
   return (
     <View className="gap-stack-tight">
       <SectionHeader
-        title="精选画报"
+        title="精选专题"
         action={hasReturning ? { label: "归国与专题", href: "/returning" } : undefined}
       />
       {tabs.length > 1 ? (
@@ -130,6 +151,49 @@ export function CuratedGallerySection() {
           <GalleryTile key={panda.id} panda={panda} width={tileWidth} height={tileHeight} />
         ))}
       </View>
+
+      {hasTwins || hasReturning ? (
+        <View className={stacked ? "gap-2.5" : "flex-row gap-2.5"}>
+          {hasTwins ? (
+            <PressScale
+              role="link"
+              accessibilityLabel="双胞胎怎么分，对比双胞胎脸型与毛色"
+              onPress={() => router.push("/look-alikes")}
+              containerStyle={!stacked && hasReturning ? { flex: 1 } : stacked ? undefined : { flex: 1 }}
+              className="min-w-0 gap-1 rounded-group border-hairline border-border bg-card p-3"
+            >
+              <View className="flex-row items-center gap-1.5">
+                <Icon icon={Users} size="footnote" tone="tint" strokeWidth={2} />
+                <Text variant="headline" numberOfLines={1}>
+                  双胞胎怎么分
+                </Text>
+              </View>
+              <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
+                对比双胞胎脸型与毛色
+              </Text>
+            </PressScale>
+          ) : null}
+          {hasReturning ? (
+            <PressScale
+              role="link"
+              accessibilityLabel="海外与归国，旅居海外与近期回家时间线"
+              onPress={() => router.push("/returning")}
+              containerStyle={!stacked && hasTwins ? { flex: 1 } : stacked ? undefined : { flex: 1 }}
+              className="min-w-0 gap-1 rounded-group border-hairline border-border bg-card p-3"
+            >
+              <View className="flex-row items-center gap-1.5">
+                <Icon icon={Plane} size="footnote" tone="tint" strokeWidth={2} />
+                <Text variant="headline" numberOfLines={1}>
+                  海外与归国
+                </Text>
+              </View>
+              <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
+                旅居海外与近期回家时间线
+              </Text>
+            </PressScale>
+          ) : null}
+        </View>
+      ) : null}
     </View>
   );
 }
