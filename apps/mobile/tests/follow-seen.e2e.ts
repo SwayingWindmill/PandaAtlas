@@ -57,3 +57,19 @@ test("a signed-out guest follows and marks a panda seen locally, survives reload
   await expect(screen.getByRole("button", `已关注${panda.name}，点按取消`)).toBeVisible();
   await expect(screen.getByText(`见过　${todayLabel()}`)).toBeVisible();
 });
+
+test("a fan follows a venue and switches to 场馆 in 我的关注", async ({ app, screen }) => {
+  const { zoo } = fixture();
+  await signIn(app, screen, testEmail("follow-venue"));
+
+  await app.open(`/institutions/${zoo.slug}`);
+  await screen.getByRole("button", `关注${zoo.name}`).tap();
+  await expect(screen.getByRole("button", `已关注${zoo.name}，点按取消`)).toBeVisible();
+
+  await app.open("/following");
+  await expect(screen.getByRole("radio", { name: /^熊猫 0/, checked: true })).toBeVisible();
+  await screen.getByRole("radio", /^场馆 1/).tap();
+  await expect(screen.getByRole("radio", { name: /^场馆 1/, checked: true })).toBeVisible();
+  await expect(screen.getByRole("link", new RegExp(`^${zoo.name}`))).toBeVisible();
+  await expect(screen.getByRole("link", `查看${zoo.name}攻略`)).toBeVisible();
+});

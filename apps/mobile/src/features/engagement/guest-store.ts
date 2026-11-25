@@ -3,6 +3,7 @@ import { queryOptions } from "@tanstack/react-query";
 
 import type { Game, GameEntry } from "@/features/book/book";
 import { type Collection, sortCollections } from "@/features/collections/collections";
+import type { SeenEntry } from "@/features/engagement/seen";
 import { type Visit, sortVisits } from "@/features/visits/visits";
 import { queryClient } from "@/lib/query-client";
 
@@ -17,6 +18,7 @@ export const GUEST_STORAGE_KEYS = {
 
 export const guestFavoritesQueryKey = ["guest", "favorites"] as const;
 export const guestSeenQueryKey = ["guest", "seen"] as const;
+export const guestSeenEntriesQueryKey = ["guest", "seen-entries"] as const;
 export const guestFollowedVenuesQueryKey = ["guest", "followed-venues"] as const;
 export const guestVisitsQueryKey = ["guest", "visits"] as const;
 export const guestCollectionsQueryKey = ["guest", "collections"] as const;
@@ -87,6 +89,7 @@ async function writeJson<T>(
 function invalidateGuestDerived(): void {
   void queryClient.invalidateQueries({ queryKey: ["guest", "book"] });
   void queryClient.invalidateQueries({ queryKey: ["guest", "milestones"] });
+  void queryClient.invalidateQueries({ queryKey: guestSeenEntriesQueryKey });
 }
 
 function parseStringArray(raw: unknown): string[] {
@@ -104,7 +107,7 @@ function parseSeenMap(raw: unknown): GuestSeenMap {
     out[pandaId] = {
       seenOn: candidate.seenOn,
       firstSeenAt: candidate.firstSeenAt,
-      placeId: typeof candidate.placeId === "string" ? candidate.placeId : null,
+      placeId: typeof candidate.placeId === "string" && candidate.placeId.length > 0 ? candidate.placeId : null,
     };
   }
   return out;
@@ -112,15 +115,27 @@ function parseSeenMap(raw: unknown): GuestSeenMap {
 
 function parseVisits(raw: unknown): Visit[] {
   if (!Array.isArray(raw)) return [];
-  const items = raw.filter((item): item is Visit => {
-    if (!item || typeof item !== "object") return false;
+  const items = raw.flatMap((item): Visit[] => {
+    if (!item || typeof item !== "object") return [];
     const candidate = item as Partial<Visit>;
-    return (
-      typeof candidate.checkinId === "string" &&
-      typeof candidate.placeId === "string" &&
-      typeof candidate.visitedOn === "string" &&
-      typeof candidate.createdAt === "string"
-    );
+    if (
+      typeof candidate.checkinId !== "string" ||
+      typeof candidate.placeId !== "string" ||
+      typeof candidate.visitedOn !== "string" ||
+      typeof candidate.createdAt !== "string"
+    ) {
+      return [];
+    }
+    const note = typeof candidate.note === "string" ? candidate.note.trim() : "";
+    return [
+      {
+        checkinId: candidate.checkinId,
+        placeId: candidate.placeId,
+        visitedOn: candidate.visitedOn,
+        note: note ? note : null,
+        createdAt: candidate.createdAt,
+      },
+    ];
   });
   return sortVisits(items);
 }
@@ -201,6 +216,27 @@ export function guestSeenQueryOptions() {
   });
 }
 
+export async function loadGuestSeenEntries(): Promise<SeenEntry[]> {
+  const seen = await loadGuestSeen();
+  return Object.entries(seen)
+    .sort(([, a], [, b]) => b.seenOn.localeCompare(a.seenOn) || b.firstSeenAt.localeCompare(a.firstSeenAt))
+    .map(([pandaId, entry]) => ({
+      pandaId,
+      seenOn: entry.seenOn,
+      placeId: entry.placeId ?? null,
+      note: null,
+    }));
+}
+
+export function guestSeenEntriesQueryOptions() {
+  return queryOptions({
+    queryKey: guestSeenEntriesQueryKey,
+    queryFn: loadGuestSeenEntries,
+    staleTime: 0,
+    networkMode: "always",
+  });
+}
+
 export function setGuestSeen(
   pandaId: string,
   seenOn: string | null,
@@ -216,13 +252,21 @@ export function setGuestSeen(
       next[pandaId] = {
         seenOn,
         firstSeenAt: existing?.firstSeenAt ?? new Date().toISOString(),
-        placeId: placeId !== undefined ? placeId : (existing?.placeId ?? null),
+        placeId: placeId !== undefined ? (placeId || null) : (existing?.placeId ?? null),
       };
     }
     const saved = await writeJson(GUEST_STORAGE_KEYS.seen, guestSeenQueryKey, next);
     invalidateGuestDerived();
     return saved;
   });
+}
+
+export function markGuestSeen(
+  pandaId: string,
+  seenOn: string,
+  placeId?: string | null,
+): Promise<GuestSeenMap> {
+  return setGuestSeen(pandaId, seenOn, placeId);
 }
 
 export async function loadGuestFollowedVenues(): Promise<string[]> {
@@ -259,14 +303,15 @@ export function guestVisitsQueryOptions() {
   });
 }
 
-export function recordGuestVisit(placeId: string, visitedOn: string): Promise<Visit> {
+export function recordGuestVisit(placeId: string, visitedOn: string, note?: string | null): Promise<Visit> {
   return enqueue(GUEST_STORAGE_KEYS.visits, async () => {
     const current = await loadGuestVisits();
+    const trimmed = note?.trim();
     const visit: Visit = {
       checkinId: localId("local-visit"),
       placeId,
       visitedOn,
-      note: null,
+      note: trimmed ? trimmed : null,
       createdAt: new Date().toISOString(),
     };
     const next = sortVisits([visit, ...current]);

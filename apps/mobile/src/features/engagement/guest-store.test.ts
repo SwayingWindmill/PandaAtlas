@@ -8,12 +8,14 @@ import {
   deleteGuestCollection,
   guestCollectionsQueryKey,
   guestFavoritesQueryKey,
+  guestSeenEntriesQueryOptions,
   loadGuestCollections,
   loadGuestFavorites,
   loadGuestFollowedVenues,
   loadGuestGames,
   loadGuestSeen,
   loadGuestVisits,
+  markGuestSeen,
   pruneSyncedGuestData,
   readAllGuestData,
   recordGuestGame,
@@ -73,17 +75,31 @@ describe("guest-store", () => {
     await setGuestSeen("meng-lan", "2026-11-23");
     const seen = await loadGuestSeen();
     expect(seen["meng-lan"]?.seenOn).toBe("2026-11-23");
+    expect(seen["meng-lan"]?.placeId).toBeNull();
+
+    await markGuestSeen("he-hua", "2026-11-24", "chengdu-moon");
+    const entries = await queryClient.fetchQuery(guestSeenEntriesQueryOptions());
+    expect(entries).toEqual([
+      { pandaId: "he-hua", seenOn: "2026-11-24", placeId: "chengdu-moon", note: null },
+      { pandaId: "meng-lan", seenOn: "2026-11-23", placeId: null, note: null },
+    ]);
+
     await setGuestSeen("meng-lan", null);
+    await setGuestSeen("he-hua", null);
     expect(await loadGuestSeen()).toEqual({});
+    expect(await queryClient.fetchQuery(guestSeenEntriesQueryOptions())).toEqual([]);
   });
 
-  it("handles visits CRUD and sorts newest date first", async () => {
-    const older = await recordGuestVisit("place-a", "2026-10-01");
-    const newer = await recordGuestVisit("place-b", "2026-11-20");
+  it("handles visits CRUD, notes, and sorts newest date first", async () => {
+    const older = await recordGuestVisit("place-a", "2026-10-01", "   ");
+    const newer = await recordGuestVisit("place-b", "2026-11-20", "  吃竹子中  ");
     expect(older.checkinId.startsWith("local-visit-")).toBe(true);
+    expect(older.note).toBeNull();
+    expect(newer.note).toBe("吃竹子中");
 
     const list = await loadGuestVisits();
     expect(list.map((item) => item.checkinId)).toEqual([newer.checkinId, older.checkinId]);
+    expect(list.map((item) => item.note)).toEqual(["吃竹子中", null]);
 
     await removeGuestVisit(older.checkinId);
     expect((await loadGuestVisits()).map((item) => item.checkinId)).toEqual([newer.checkinId]);

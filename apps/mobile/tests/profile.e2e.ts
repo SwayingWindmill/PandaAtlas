@@ -40,13 +40,22 @@ test("a sparse profile keeps missing metrics quiet and places correction at the 
 });
 
 test("找熊猫's area chips narrow the list to pandas living there", async ({ app, screen }) => {
-  const { panda, notice } = fixture();
+  const { panda, notice, zoo } = fixture();
   await app.open("/find");
   // The fixture panda lives at the fixture zoo, which is in Chengdu.
   await screen.getByRole("button", "成都").tap();
   await screen.getByLabel("搜索熊猫").fill(runSuffix());
+  await expect(screen.getByRole("heading", /^匹配场馆/)).toBeVisible();
+  await expect(screen.getByRole("link", new RegExp(`^${zoo.name}`))).toBeVisible();
   await expect(screen.getByRole("button", new RegExp(`^${panda.name}`))).toBeVisible();
   await expect(screen.getByRole("button", new RegExp(`^${notice.name}`))).toHaveCount(0);
+
+  await screen.getByRole("radio", "列表模式").tap();
+  await expect(screen.getByRole("radio", { name: "列表模式", checked: true })).toBeVisible();
+  await expect(screen.getByRole("button", new RegExp(`^${panda.name}`))).toBeVisible();
+  await screen.getByRole("radio", "画廊模式").tap();
+  await expect(screen.getByRole("radio", { name: "画廊模式", checked: true })).toBeVisible();
+
   await screen.getByRole("button", "全部").tap();
   await expect(screen.getByRole("button", new RegExp(`^${notice.name}`))).toBeVisible();
 });

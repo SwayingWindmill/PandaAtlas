@@ -29,12 +29,12 @@ Each feature file starts with an H1 title and one paragraph on the user-visible 
 
 ## Features
 
-- [Explore, live clock & sounds](./explore.md) covers the unified 探索 home tab, Option B star/followed strip, 此刻谁醒着 live clock, 听熊猫 & `/sounds`, and `/play` mini-games.
-- [Venue page](./venue-page.md) covers a zoo's page from the map and from 探索, its 概况 / 熊猫 / 攻略 tabs, and 关注.
+- [Explore, live clock & sounds](./explore.md) covers the unified 探索 home tab, Option B star/followed strip, 此刻谁醒着 live clock, 听熊猫 & `/sounds`, `/play` mini-games, and the v4.3 地图 Tab (`我去过 N` passport, `?filter=visited`, `时间轴` button, and vertical timeline rail).
+- [Venue page](./venue-page.md) covers a zoo's single-scroll detail page (`/institutions/[slug]`), `/institutions/[slug]/checkin` bundle check-in + `SouvenirTicket`, and 关注.
 - [Wild habitat](./wild-habitat.md) covers the map's wild layer, the habitat sheet and a habitat's own page.
 - [Sign-in](./sign-in.md) covers email-code sign-in, resending a code, a wrong code, the welcome's follow after sign-in, renaming the account and signing out.
-- [Collections and visits](./collections-visits.md) covers making, renaming, emptying and deleting a collection, and recording a visit.
+- [Collections and visits](./collections-visits.md) covers making, renaming, emptying and deleting a collection, bundle check-in (`/institutions/[slug]/checkin`), the 看猫手账 timeline (`/visits`), and `/following` dual-tab (`熊猫` / `场馆`).
 - [Account and data](./account-privacy.md) covers data export, account deletion confirmation, and user-initiated email OTP re-verification on recent-auth expiry.
 - [Error pages](./error-pages.md) covers 找不到页面 for an unknown link and the root error page when a screen throws.
-- [Find pandas](./find-pandas.md) covers 找熊猫 search by name and pinyin initials, 最近看过, 最近搜索, match highlight, the no-results suggestions and the welcome picks.
+- [Find pandas](./find-pandas.md) covers 找熊猫 search by name, pinyin initials and `#studbook`, multi-dimensional OR/AND chips, unified `匹配场馆` results, `画廊` / `列表` toggle, 最近看过, 最近搜索, match highlight, and the no-results suggestions.
 - [Sharing a panda](./sharing.md) covers the share card and its QR code, copying and sharing the link, and the 生日卡.

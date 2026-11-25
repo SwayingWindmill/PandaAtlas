@@ -37,29 +37,30 @@ Status: shipped in Batch 1 (v4.1).
 
 Status: shipped in Batch 1 (v4.1).
 
-## 找熊猫 — `02-find`
+## 找熊猫 — `/(tabs)/find` (v4.3 overhaul)
 
-1. The large title 找熊猫.
-2. A search field with the placeholder 名字、拼音或场馆.
-3. Filter chips (`Chip`), single select: 全部, 在中国, 在海外, 双胞胎, 归国. A chip shows only when its filter has a real query behind it.
-4. **熊猫地图.** A card with a still thumbnail of China: the land, faint city names and a bare house glyph per place, a 海外 N 个场馆 capsule in the corner, and 熊猫地图 with the totals after bare glyphs under it. The whole card opens `/map`. Shown while browsing.
-5. **查关系.** One grouped row with a leading glyph, to `/relationship`. Shown while browsing. 比一比 moved to 发现 as published comparisons; the venues live on the map.
-6. **大家常看.** One inset group of panda rows: a 44pt round photo, the name with a sex glyph, the current place as a subheadline, and a chevron. The signal is follows: the published pandas that the most fans began following in the last 30 days, counting only pandas with at least five such fans (`GET /api/v2/popular-pandas`, no counts published). The block shows the top five and only while 全部 is selected with no search. It is hidden when no panda reaches the floor. The full list follows directly under it as 全部熊猫, so the block has no 全部 link.
+1. The large title `找熊猫` (`已收录 N 只` or `聚合搜索` counter).
+2. A search field (`SearchField` / iOS `Stack.SearchBar`) with placeholder `名字、拼音、场馆或谱系号` matching names, pinyin initials, places, and normalized `#<id>` / `<id>` studbook numbers (`pandas.ts`).
+3. Multi-dimensional combinable filter chips (`Chip` ink): `全部` (resets active filters) + quiet `重置` link when active, attribute chips (`在世`, `有照片`, `双胞胎`, `归国`, combined via AND intersection) and location chips (`在中国`, `在海外`, domestic regional areas, combined via OR union). Combined matches satisfy `(locations empty || any location) && all attributes`.
+4. **Idle browsing blocks.** `最近看过`, `最近搜索`, and `FindTools` (`查关系` → `/relationship` with dual covered mini avatars joined by a `bg-primary` connector line; `认脸图鉴` → `/learn` with a `-4deg` `34×34` covered tile; bare icon fallbacks when unavailable).
+5. **Unified aggregate search.** When query is non-empty, `匹配场馆` (`SectionHeader`) renders up to 3 matched venues (`MatchedVenueCard`, `role="link"` → `/institutions/[slug]`) with lead photo or bare `Landmark` icon, live local clock + status dot (`buildVenueLiveSnapshot`), and an expand toggle (`展开其余 N 处场馆`) above `匹配大熊猫`.
+6. **Results gallery & list toggle.** Header (`匹配大熊猫` / `符合条件` / `全部熊猫　N 只`) pairs with `画廊` / `列表` toggle (`LayoutGrid` and `List` bare icons; default `"gallery"`). Gallery mode splits `hasFullBleedCover` pandas into 2-column (1-column under `useSingleColumn()`) 4:5 portrait `FindGalleryCard`s (conditional top-left frosted `#1237` studbook pill, conditional top-right `见过`/`关注` badge, bottom name + sex + `place　birthYear 年生`), folding coverless rows (`PandaRow` with quiet `studbookNumber`) below under `更多大熊猫`. Progressive paging (`PAGE_SIZE = 24` + `显示更多`). Both `FindGalleryCard` and `PandaRow` keep `role="button"` and `accessibilityLabel` starting with `panda.name`.
 
-Status: built. The map card replaced the three glyphs and the venue tiles (mockup: 找熊猫 · 地图卡片). 大家常看 stays hidden until five fans follow one panda within 30 days. The chips are 在中国, 在海外, 双胞胎 (pandas in a sourced twin pair), 归国 (pandas the overseas catalog marks returned), then each area in China; each shows only when it keeps a panda.
+Status: upgraded in Batch 2 (v4.3).
 
-## 熊猫地图 — `/map`
+## 熊猫地图 — `/(tabs)/map` (v4.3 overhaul)
 
-Mockups: 地图 · 现在 and 地图 · 点开场馆 on the 发现、找熊猫与地图 canvas. References: Apple Maps for the markers and the control column, Protomaps for the base colors.
+Mockups: 地图 · 现在 and 地图 · 点开场馆 on the 发现、找熊猫与地图 canvas, plus v4.3 visited passport and timeline upgrades. References: Apple Maps for the markers and the control column, Protomaps for the base colors.
 
 1. The map fills the screen: the Natural Earth land outline on `mapWater`, land in `mapLand`, drawn by us (no tiles). One finger drags it, two pinch it, a mouse wheel zooms it on the web. It opens on the places in China.
-2. **Markers.** A bare house glyph haloed in the land color, the name and the resident count beside it, haloed the same way. Places closer than 44pt on screen merge into one marker named N 个地方, and a tap zooms to them. Where two labels would overlap, the smaller place keeps only its glyph. A name near the right edge hangs to the left of its glyph. City names (重庆, 西安 …) show faintly once the map is zoomed to China.
-3. **Controls.** A back button top left. Top right, the 场馆 / 野生区 switch (two pills, each a switch; either layer can be off), and under it one capsule holding 海外 (fits every place) and 回到中国, split by a hairline.
-4. **Wild areas.** The five ranges of the Giant Panda National Park (秦岭, 岷山, 邛崃山, 大相岭, 小相岭), each drawn as `mapWild` circles, one per local population, whose area equals its habitat, with the range's name and a bare trees glyph in `mapWildInk`. They are schematic, not real borders, and the sheet says so. Counts and habitat come from Table 1 of the park's master plan (4th national survey): 1,340 wild pandas in the park. 凉山 is outside the park and not drawn.
-5. **Timeline.** In the sheet: a play button, the year (现在 or YYYY 年) and one line under it, then a histogram of records per year (hatched where a year has none) with a scrubber; drag it or use the adjustable control. Play steps one year every 0.7 s from the first year; the camera stays put. A past year draws each place as a ring sized by who lived there at the year's end, the year's moves as tapered flows, and the year big over the map; the sheet lists the year's events in the `Timeline` component, oldest first (出生, 出国, 回国, 迁移, 亮相, 取名). A death is a quiet grey row with no glyph or color. 现在 returns to today.
-6. **Sheet.** Up to half the screen; drag the grabber (or tap it) to fold it to its header and back. With nothing chosen: 熊猫地图, 中国西南 and a hint, the timeline, three tiles (场馆, 住在场馆, 野生栖息地: a glyph, the number, the label), the schematic note, then every place grouped 中国 and 海外 as rows (places without coordinates included; a row of one opens its page). A chosen place: a bare house glyph, its name, country and count, a close button; an action row of 路线 (the phone's map app; 高德 on the web), 关注 (signed out, it goes to sign-in; followed, it reads 已关注 on the selected ground) and 场馆页 (or 地点页); then 住在这里 with the pandas as photo tiles. A chosen wild area: its name and provinces, an action row with 栖息地页, tiles for 野生大熊猫, 栖息地 km² and 附近场馆, its populations with their counties and counts, and a link to the source.
+2. **Filter bar & deep link.** Horizontal `tablist`: `全部 N`, `国内 N`, `海外 N`, `有直播`, conditional `我去过 N` (shown when visited > 0 or `filter === "visited"`), and `野生区`. Supports `/map?filter=visited` deep links (`useLocalSearchParams`).
+3. **Markers.** A bare house glyph haloed in the land color, the name and the resident count beside it, haloed the same way. Visited venues highlight with a `primary` ring + lead resident `PandaThumb`; under `我去过` (`dimUnvisited`), visited markers carry tinted capsules and unvisited places soften into dimmed dots. Places closer than 44pt merge into `N 个地方`, and tapping zooms in.
+4. **Controls.** Top right `ViewControls`: `Globe` (查看全球视野 / 回到中国西南), `Layers` (野生区图层 switch), and **`时间轴`** (`History` bare icon, `role="button"`, `accessibilityLabel="分布时间轴"`).
+5. **Wild areas.** The five ranges of the Giant Panda National Park (秦岭, 岷山, 邛崃山, 大相岭, 小相岭), drawn as `mapWild` circles with `mapWildInk` labels (`1,340` wild pandas from Table 1 of the master plan; 凉山 is outside the park and not drawn).
+6. **Timeline.** Tapping top-right `时间轴` opens the 1950–present history sheet (`heading "分布时间轴"`, `CloseButton` `"关闭时间轴"`): play button, year label (`现在` or `YYYY 年`), histogram scrubber (`label "年份"`), and `YearSheet` event cards drawn on a vertical `w-hairline bg-border` rail with small dots, dual-tone badges (`归国` in `bg-highlight-soft text-primary`), and `PandaThumb`s.
+7. **Sheet.** Up to half/expanded screen; drag or tap the grabber to fold/expand. With nothing chosen: **足迹护照卡** (`FootprintPassportCard` with `ProgressRing`, `已去过 N / M 个场馆`, `今年新解锁` / `现场见过 K 只大熊猫`, `link "看猫日记"` → `/visits`, shown when visited > 0 or `filter === "visited"`), `VenueFocusCard`, `DirectoryShortcut` → `/institutions`, and `map-places` venue rows with `PandaThumb` and `lastVisited` subtitle (`VisitedEmptyCard` when `filter === "visited"` and 0 visits). Chosen place/wild sheets open `PlaceSheet` / `WildSheet`.
 
-Status: built, matching the mockups. 关注 needs migration `0091_venue_follows` and the API deployed.
+Status: upgraded in Batch 2 (v4.3).
 
 ## 发现 (after v4)
 
@@ -92,7 +93,7 @@ Status: built in the second batch.
 
 1. The large title 我的.
 2. **Profile row.** A large monogram avatar, the name, and a tint pencil glyph that opens 改名字.
-3. **Stat tiles.** 关注 N 只, 打卡 N 天 and 去过 N 处. 打卡 is 累计来过 from The Daily Check-in Rule: a total, never a streak.
+3. **Stat tiles.** 关注 N 只 (hints `含 M 场馆` when `followedPandas` is empty), 打卡 N 天 and 去过 N 处. 打卡 is 累计来过 from The Daily Check-in Rule: a total, never a streak.
 4. **年度回顾 banner.** A photo card with the year and 年度回顾. It needs #805 and shows only once the year has data.
 5. **First group.** 关注的熊猫, 我的合集, 去过的地点 and 里程碑, each with a count and a chevron. 里程碑 shows only while the milestones switch is on.
 6. **Second group.** 通知, 我的纠错 with a count, and 设置.
@@ -100,6 +101,23 @@ Status: built in the second batch.
 Signed out, the profile row becomes 登录 and the stat tiles and the first group are hidden.
 
 Status: built in the second batch; the 年度回顾 banner came with #805. 关注的熊猫 opens `/following` and 我的纠错 opens `/contributions`.
+
+## 我的关注 — `/following` (v4.3 overhaul)
+
+1. Screen title `我的关注`.
+2. `Segmented` toggle (`熊猫 N` | `场馆 M`, defaulting to `熊猫`).
+3. **`熊猫` tab.** `PandaRow` list of followed pandas, or `ScreenState` pointing to `/find`.
+4. **`场馆` tab.** Cards for followed venues (`54×54` `PandaThumb` or bare `Landmark` icon), live local status + embedded `VenueActivityBar`, unfollow action (`已关注场馆`), `查看攻略` → `/institutions/[slug]`, and `看直播` when available.
+
+Status: upgraded in Batch 2 (v4.3).
+
+## 去过的地点 — `/visits` (v4.3 overhaul)
+
+1. Screen title `去过的地点` with top-right `足迹地图` capsule link → `/map?filter=visited`.
+2. Borderless 3-column stat strip (`到访 | 去过的地方 | 现场见过`).
+3. Yearly vertical journal timeline (`YYYY 年看猫手账　N 次`, `w-hairline bg-border` rail + small dot): `longDate`, tappable place/institution name, quoted `visit.note`, horizontal `PandaThumb` + name chip strip for same-day seen pandas (`matchSeenPandasForVisit`), prompt to `/institutions/[slug]/checkin` on today's unannotated visits, and muted secondary `移除` button (`删除...去${placeLabel}的记录`). Empty state keeps `还没有到访记录。`.
+
+Status: upgraded in Batch 2 (v4.3).
 
 ## 设置 — `05-settings`
 
@@ -149,7 +167,9 @@ Each of these is built in its own PR. Each PR moves to palette C and the new com
 | 那年今天 | `14-on-this-day` | built in the second batch |
 | 归国熊猫 | `15-overseas-return` | #812 |
 
-A venue's page (`/institutions/[slug]`, redesigned in Batch 1 v4.1) uses a single-scroll canvas without middle `Segmented` tabs (`?tab=guide` remains harmlessly accepted). Below the stretchy hero (`INSTITUTION_HERO_HEIGHT = 276`) sit the factual intro, the dual primary/secondary action capsules (`关注场馆` and `去过打卡`), a borderless hairline-separated 3-column metric strip (`现在住这里 | 在这里出生 | 门票概况`), the inline `VenueLiveCard` (local clock, activity bar, `看直播`), and the compact `VenueQuickTools` strip (`导航过去 / 官方直播 / 查看官网`). Next sits `住在这里` (optional `你在本馆已见过 N / M 只` progress bar, `全部 / 未见过 / 我关注` filter tabs, search for `>= 4` residents, and an initial 6-item preview expanding via `看全部熊猫`), followed by the 6-layer `参观攻略`, `FacilityVisits`, `VenueNewsSection`, expandable `以前住过`, and a quiet source footer.
+A venue's page (`/institutions/[slug]`, redesigned in Batch 1 v4.1) uses a single-scroll canvas without middle `Segmented` tabs (`?tab=guide` remains harmlessly accepted). Below the stretchy hero (`INSTITUTION_HERO_HEIGHT = 276`) sit the factual intro, the dual primary/secondary action capsules (`关注场馆` and `去过打卡` / `今天已打卡` → `/institutions/[slug]/checkin`), a borderless hairline-separated 3-column metric strip (`现在住这里 | 在这里出生 | 门票概况`), the inline `VenueLiveCard` (local clock, activity bar, `看直播`), and the compact `VenueQuickTools` strip (`导航过去 / 官方直播 / 查看官网`). Next sits `住在这里` (optional `你在本馆已见过 N / M 只` progress bar, `全部 / 未见过 / 我关注` filter tabs, search for `>= 4` residents, and an initial 6-item preview expanding via `看全部熊猫`), followed by the 6-layer `参观攻略`, `FacilityVisits`, `VenueNewsSection`, expandable `以前住过`, and a quiet source footer.
+
+今日逛园打卡 (`/institutions/[slug]/checkin`, added in Batch 2 v4.3) lets signed-in and guest fans pick a facility (when > 1), enter an optional 1-line `看猫小记`, filter residents (`未见过优先` / `全部 N` + `SearchField` when `>= 6`), check off seen pandas across a 3-column (2-col on `useSingleColumn()`) photo tile grid + coverless checklist rows, and save via `Promise.allSettled` (preserving failed IDs for retry on partial failure). Full success renders a notched `SouvenirTicket` (`今日逛园战绩` header, `线下逛园纪念票根` hero plate, quoted note, 3-up newly lit pandas strip, `ProgressRing` venue progress, `分享纪念票根`, `查看看猫日记` → `/visits`, and `返回场馆页`).
 
 A wild range's page (`/wild/[id]`) opens from the map sheet's 栖息地页. It shows a sketch of the populations (circles sized by habitat, lettered), tiles for 野生大熊猫, 栖息地 km² and 占国家公园, the populations by count with a bar each, the venues within reach of the range's centre (the map's 附近场馆 rule), the other ranges and the source.
 

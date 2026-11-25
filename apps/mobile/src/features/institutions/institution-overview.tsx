@@ -1,5 +1,5 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
+import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Linking, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { semantic } from "@/design/tokens";
 import { useFollowVenue } from "@/features/engagement/followed-venues";
-import { guestVisitsQueryOptions, recordGuestVisit } from "@/features/engagement/guest-store";
+import { guestVisitsQueryOptions } from "@/features/engagement/guest-store";
 import { localToday } from "@/features/engagement/seen";
 import { openFacilityNavigation } from "@/features/institutions/institution-guide";
 import {
@@ -37,9 +37,8 @@ import type { PandaListItem } from "@/features/pandas/pandas";
 import { SearchField } from "@/features/pandas/search-field";
 import { useSession } from "@/features/session/session";
 import { resolveVenueLiveCamUrl } from "@/features/viewing/venue-live";
-import { type Visit, lastVisitByPlace, recordVisit, sortVisits, visitsQueryKey, visitsQueryOptions } from "@/features/visits/visits";
+import { lastVisitByPlace, visitsQueryOptions } from "@/features/visits/visits";
 import { usePandaCover } from "@/lib/covers";
-import { successHaptic } from "@/lib/haptics";
 import { PAGE_COLUMN, RADIUS, pageColumn } from "@/lib/surface";
 import { useIOSColors } from "@/lib/theme";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
@@ -106,52 +105,24 @@ export function PlateHero({ institution, pending }: { institution: InstitutionDe
 }
 
 /** Primary action pair under the summary: 关注场馆 (filled ink) and 去过打卡 (neutral card capsule). */
-export function VenueActionPair({
-  institution,
-  onScrollToVisits,
-}: {
-  institution: InstitutionDetail;
-  onScrollToVisits?: () => void;
-}) {
+export function VenueActionPair({ institution }: { institution: InstitutionDetail }) {
   const stacked = useStacked();
   const { following, toggle } = useFollowVenue(institution.slug);
   const { state: session } = useSession();
-  const queryClient = useQueryClient();
-  const [savingVisit, setSavingVisit] = useState(false);
 
   const signedIn = session.status === "signedIn";
   const signedOut = session.status === "signedOut";
   const accountId = signedIn ? session.accountId : "";
-  const singleFacility = institution.facilities.length === 1 ? institution.facilities[0] : undefined;
+  const hasFacilities = institution.facilities.length > 0;
 
-  const remoteVisits = useQuery({ ...visitsQueryOptions(accountId), enabled: signedIn && Boolean(singleFacility) });
-  const guestVisits = useQuery({ ...guestVisitsQueryOptions(), enabled: signedOut && Boolean(singleFacility) });
-  useRefetchOnFocus(remoteVisits.refetch, signedIn && Boolean(singleFacility));
+  const remoteVisits = useQuery({ ...visitsQueryOptions(accountId), enabled: signedIn && hasFacilities });
+  const guestVisits = useQuery({ ...guestVisitsQueryOptions(), enabled: signedOut && hasFacilities });
+  useRefetchOnFocus(remoteVisits.refetch, signedIn && hasFacilities);
 
   const visits = (signedOut ? guestVisits.data : remoteVisits.data) ?? [];
   const today = localToday();
-  const lastDay = singleFacility ? lastVisitByPlace(visits).get(singleFacility.id) : undefined;
-  const visitedToday = Boolean(singleFacility && lastDay === today);
-
-  async function recordSingleVisit() {
-    if (!singleFacility || savingVisit || visitedToday || (!signedIn && !signedOut)) return;
-    setSavingVisit(true);
-    try {
-      if (signedOut) {
-        await recordGuestVisit(singleFacility.id, today);
-      } else if (signedIn) {
-        const visit = await recordVisit(singleFacility.id, today);
-        const key = visitsQueryKey(accountId);
-        await queryClient.cancelQueries({ queryKey: key });
-        queryClient.setQueryData<Visit[]>(key, (current) => sortVisits([visit, ...(current ?? [])]));
-      }
-      successHaptic();
-    } catch {
-      onScrollToVisits?.();
-    } finally {
-      setSavingVisit(false);
-    }
-  }
+  const lastByPlace = lastVisitByPlace(visits);
+  const visitedToday = hasFacilities && institution.facilities.some((facility) => lastByPlace.get(facility.id) === today);
 
   return (
     <View className={cn("gap-2.5", stacked ? "flex-col" : "flex-row items-center")}>
@@ -166,22 +137,16 @@ export function VenueActionPair({
           {following ? "已关注场馆" : "关注场馆"}
         </Text>
       </Button>
-      {institution.facilities.length > 0 ? (
+      {hasFacilities ? (
         <Button
           variant="secondary"
           className={cn("min-w-0 border-hairline border-border bg-card", stacked ? "px-4" : "flex-1 px-3")}
-          disabled={singleFacility ? visitedToday || savingVisit || (!signedIn && !signedOut) : false}
           accessibilityLabel={
-            singleFacility
-              ? visitedToday
-                ? `今天已打卡${singleFacility.name}`
-                : `去过打卡，${singleFacility.name}`
-              : `查看${institution.name}到访记录`
+            visitedToday
+              ? `今天已打卡${institution.name}，点按继续记录见过的熊猫`
+              : `去过打卡，记录在${institution.name}见过的熊猫`
           }
-          onPress={() => {
-            if (singleFacility) void recordSingleVisit();
-            else onScrollToVisits?.();
-          }}
+          onPress={() => router.push({ pathname: "/institutions/[slug]/checkin", params: { slug: institution.slug } })}
         >
           <Icon icon={MapPinCheck} size="subhead" tone={visitedToday ? "tint" : "label"} strokeWidth={2} />
           <Text className={cn("shrink text-body font-semibold", visitedToday && "text-primary")} numberOfLines={1}>

@@ -2,13 +2,14 @@ import { Pressable, ScrollView, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
 import { Icon } from "@/components/icon";
-import { Globe, Layers, type LucideIcon } from "@/components/icons";
+import { Globe, History, Layers, type LucideIcon } from "@/components/icons";
 import { Text } from "@/components/ui/text";
 import type { MapFilter, MapFilterCounts } from "@/features/map/map-filter";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
 export const MAP_BUTTON_SIZE = 44;
+const VIEW_CONTROL_WIDTH = 52;
 export const MAP_FLOAT_SHADOW = "0 1px 2px rgba(0,0,0,0.1), 0 4px 14px rgba(0,0,0,0.1)";
 
 export function FilterBar({
@@ -20,11 +21,13 @@ export function FilterBar({
   counts: MapFilterCounts;
   onSelect: (filter: MapFilter) => void;
 }) {
+  const showVisited = counts.visited > 0 || active === "visited";
   const pills: { key: MapFilter; label: string }[] = [
     { key: "all", label: counts.all > 0 ? `全部 ${counts.all}` : "全部" },
     { key: "china", label: counts.china > 0 ? `国内 ${counts.china}` : "国内" },
     { key: "overseas", label: counts.overseas > 0 ? `海外 ${counts.overseas}` : "海外" },
     { key: "live", label: "有直播" },
+    ...(showVisited ? [{ key: "visited" as const, label: `我去过 ${counts.visited}` }] : []),
     { key: "wild", label: "野生区" },
   ];
   return (
@@ -68,17 +71,24 @@ export function ViewControls({
   overseas,
   worldView,
   wild,
+  timelineOpen,
   onToggleWorld,
   onToggleWild,
+  onToggleTimeline,
 }: {
   overseas: number;
   worldView: boolean;
   wild: boolean;
+  timelineOpen: boolean;
   onToggleWorld: () => void;
   onToggleWild: () => void;
+  onToggleTimeline: () => void;
 }) {
   return (
-    <View className="overflow-hidden rounded-control bg-paper" style={{ width: MAP_BUTTON_SIZE, boxShadow: MAP_FLOAT_SHADOW }}>
+    <View
+      className="overflow-hidden rounded-control bg-paper"
+      style={{ width: VIEW_CONTROL_WIDTH, boxShadow: MAP_FLOAT_SHADOW }}
+    >
       <Pressable
         role="button"
         accessibilityLabel={worldView ? "回到中国西南" : `查看全球视野${overseas > 0 ? `，含海外 ${overseas} 个地方` : ""}`}
@@ -98,6 +108,25 @@ export function ViewControls({
         style={{ height: MAP_BUTTON_SIZE }}
       >
         <Icon icon={Layers} size={21} tone={wild ? "tint" : "secondary"} strokeWidth={2} />
+      </Pressable>
+      <View className="mx-2 bg-border" style={{ height: HAIRLINE }} />
+      <Pressable
+        role="button"
+        accessibilityLabel="分布时间轴"
+        accessibilityState={{ selected: timelineOpen }}
+        onPress={onToggleTimeline}
+        className={cn("items-center justify-center gap-0.5 py-1.5 active:opacity-60", timelineOpen && "bg-highlight-soft")}
+        style={{ minHeight: MAP_BUTTON_SIZE }}
+      >
+        <Icon icon={History} size={19} tone={timelineOpen ? "tint" : "label"} strokeWidth={2} />
+        <Text
+          variant="footnote"
+          allowFontScaling={false}
+          numberOfLines={1}
+          className={cn("font-medium", timelineOpen ? "text-primary" : "text-foreground")}
+        >
+          时间轴
+        </Text>
       </Pressable>
     </View>
   );

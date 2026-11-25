@@ -5,6 +5,10 @@ import { pruneSyncedGuestData, readAllGuestData } from "./guest-store";
 
 let activeSync: { accountId: string; promise: Promise<void> } | null = null;
 
+function visitSyncKey(placeId: string, visitedOn: string, note?: string | null): string {
+  return `${placeId}:${visitedOn}:${note?.trim() ?? ""}`;
+}
+
 async function syncOnce(accountId: string): Promise<void> {
   const data = await readAllGuestData();
   const hasCollections = data.collections.length > 0;
@@ -37,7 +41,7 @@ async function syncOnce(accountId: string): Promise<void> {
       try {
         const { response } = await authedApi.PUT("/api/v2/me/seen-pandas/{pandaId}", {
           params: { path: { pandaId } },
-          body: { seenOn: entry.seenOn, placeId: entry.placeId ?? null },
+          body: { seenOn: entry.seenOn, placeId: entry.placeId || null },
         });
         if (response.ok) syncedSeen.add(pandaId);
       } catch {
@@ -59,20 +63,25 @@ async function syncOnce(accountId: string): Promise<void> {
     try {
       const { data: existing } = await authedApi.GET("/api/v2/me/checkins");
       if (existing) {
-        existingKeys = new Set(existing.items.map((item) => `${item.placeId}:${item.visitedOn}`));
+        existingKeys = new Set(existing.items.map((item) => visitSyncKey(item.placeId, item.visitedOn, item.note)));
       }
     } catch {
       existingKeys = new Set<string>();
     }
     for (const visit of data.visits) {
-      const key = `${visit.placeId}:${visit.visitedOn}`;
+      const trimmedNote = visit.note?.trim();
+      const key = visitSyncKey(visit.placeId, visit.visitedOn, trimmedNote);
       if (existingKeys.has(key)) {
         syncedVisitIds.add(visit.checkinId);
         continue;
       }
       try {
         const { response } = await authedApi.POST("/api/v2/me/checkins", {
-          body: { placeId: visit.placeId, visitedOn: visit.visitedOn },
+          body: {
+            placeId: visit.placeId,
+            visitedOn: visit.visitedOn,
+            ...(trimmedNote ? { note: trimmedNote } : {}),
+          },
         });
         if (response.ok) {
           existingKeys.add(key);

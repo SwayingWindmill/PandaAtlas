@@ -4,6 +4,7 @@ import { queryClient } from "@/lib/query-client";
 
 import {
   createGuestCollection,
+  markGuestSeen,
   readAllGuestData,
   recordGuestVisit,
   setGuestFollowing,
@@ -54,8 +55,10 @@ describe("syncGuestToAccount", () => {
   it("uploads all guest records cleanly and removes synced items", async () => {
     await setGuestFollowing("p1", true);
     await setGuestSeen("p1", "2026-11-23");
+    await markGuestSeen("p2", "2026-11-24", "place-2");
     await setGuestFollowingVenue("chengdu-research-base", true);
     await recordGuestVisit("place-1", "2026-11-23");
+    await recordGuestVisit("place-2", "2026-11-24", "  见到和花  ");
     const col = await createGuestCollection("我的必看");
     await setInGuestCollection(col.collectionId, "p1", true);
 
@@ -80,11 +83,18 @@ describe("syncGuestToAccount", () => {
       params: { path: { pandaId: "p1" } },
       body: { seenOn: "2026-11-23", placeId: null },
     });
+    expect(api.PUT).toHaveBeenCalledWith("/api/v2/me/seen-pandas/{pandaId}", {
+      params: { path: { pandaId: "p2" } },
+      body: { seenOn: "2026-11-24", placeId: "place-2" },
+    });
     expect(api.POST).toHaveBeenCalledWith("/api/v2/me/followed-venues/{slug}", {
       params: { path: { slug: "chengdu-research-base" } },
     });
     expect(api.POST).toHaveBeenCalledWith("/api/v2/me/checkins", {
       body: { placeId: "place-1", visitedOn: "2026-11-23" },
+    });
+    expect(api.POST).toHaveBeenCalledWith("/api/v2/me/checkins", {
+      body: { placeId: "place-2", visitedOn: "2026-11-24", note: "见到和花" },
     });
     expect(api.POST).toHaveBeenCalledWith("/api/v2/me/collections/{collectionId}/pandas/{pandaId}", {
       params: { path: { collectionId: "remote-col-1", pandaId: "p1" } },
@@ -99,6 +109,36 @@ describe("syncGuestToAccount", () => {
       collections: [],
       games: [],
     });
+  });
+
+  it("deduplicates visits by place, date, and note so noted visits are not dropped", async () => {
+    await recordGuestVisit("place-1", "2026-11-23");
+    await recordGuestVisit("place-1", "2026-11-23", "带娃再逛一次");
+    await recordGuestVisit("place-2", "2026-11-24", "同一天同一备注");
+
+    api.GET.mockImplementation(async (path: string) => {
+      if (path === "/api/v2/me/checkins") {
+        return {
+          response: { ok: true },
+          data: {
+            items: [
+              { checkinId: "c1", placeId: "place-1", visitedOn: "2026-11-23", note: null },
+              { checkinId: "c2", placeId: "place-2", visitedOn: "2026-11-24", note: "同一天同一备注" },
+            ],
+          },
+        };
+      }
+      return { response: { ok: true }, data: { items: [] } };
+    });
+    api.POST.mockResolvedValue({ response: { ok: true }, data: {} });
+
+    await syncGuestToAccount("acc-1");
+
+    expect(api.POST).toHaveBeenCalledTimes(1);
+    expect(api.POST).toHaveBeenCalledWith("/api/v2/me/checkins", {
+      body: { placeId: "place-1", visitedOn: "2026-11-23", note: "带娃再逛一次" },
+    });
+    expect((await readAllGuestData()).visits).toEqual([]);
   });
 
   it("keeps failed items on the device so nothing is dropped", async () => {
