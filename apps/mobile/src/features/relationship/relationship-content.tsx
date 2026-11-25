@@ -102,16 +102,18 @@ function Result({
 }
 
 /**
- * Pick two pandas and read how the published lineage links them. `from` starts the first slot on a panda.
- * Shown as its own screen and in the 家谱's sheet, which passes `onOpen` to leave the sheet first and
- * `onFamily` to re-centre its tree on the second panda.
+ * Pick two pandas and read how the published lineage links them. `from` starts the first slot on a panda,
+ * and `to` optionally fills the second when valid and distinct. Shown as its own screen and in the 家谱's
+ * sheet, which passes `onOpen` to leave the sheet first and `onFamily` to re-centre its tree on the second panda.
  */
 export function RelationshipContent({
   from,
+  to,
   onOpen = openPanda,
   onFamily,
 }: {
   from?: string;
+  to?: string;
   onOpen?: (slug: string) => void;
   onFamily?: (panda: PandaListItem) => void;
 }) {
@@ -125,10 +127,14 @@ export function RelationshipContent({
   // undefined until the fan picks a slot themselves.
   const [chosenSlot, setChosenSlot] = useState<SlotKey | null | undefined>(undefined);
 
-  // `from` fills the first slot until the fan picks another, and the picker then opens on the second.
-  const preset = kinship && from ? (kinship.pandas.find((panda) => panda.slug === from) ?? null) : null;
-  const picked: Pair = { first: chosen.first ?? preset, second: chosen.second };
-  const picking = chosenSlot !== undefined ? chosenSlot : preset ? "second" : "first";
+  // `from` and `to` fill the initial slots until the fan picks another; picking opens on the first empty slot.
+  const presetFirst = kinship && from ? (kinship.pandas.find((panda) => panda.slug === from) ?? null) : null;
+  const presetSecond =
+    kinship && to
+      ? (kinship.pandas.find((panda) => panda.slug === to && panda.id !== presetFirst?.id) ?? null)
+      : null;
+  const picked: Pair = { first: chosen.first ?? presetFirst, second: chosen.second ?? presetSecond };
+  const picking = chosenSlot !== undefined ? chosenSlot : nextSlot(picked);
 
   const names = useMemo(() => new Map(kinship?.pandas.map((panda) => [panda.id, panda])), [kinship]);
   const { first, second } = picked;

@@ -70,24 +70,46 @@ What to read and play when the fan is not looking for one panda. The three tabs 
 2. **本期.** The featured `StoryCard`, turning over each day among the published articles whose hero panda has a reviewed cover (shown through that cover, not the article's hotlinked original) and the 专题 with content.
 3. **熊猫日历.** A card that opens `/calendar`, with the next three birthdays as photo tiles. 那年今天 and 生日周 are read by date from the calendar, so they need no block of their own here.
 4. **专题.** 4:5 photo cards for the 专题 with content that are not leading: 归国熊猫 (overseas-status items), 双胞胎, 场馆动态 (venue-news items).
-5. **比一比.** Pairs the team publishes (`data/curation/comparisons`, `GET /api/v2/comparisons`); fans do not pick them. A rail of cards: the two covers side by side split by a white hairline with 比 on a white disc, the names at the bottom corners, the title and the dek under the photo. A card opens `/compare` with the pair; 全部 opens `/comparisons` when there is more than one. Hidden until an entry is published.
+5. **比一比.** Pairs the team publishes (`data/curation/comparisons`, `GET /api/v2/comparisons`); fans do not pick them. A rail of cards: the two covers side by side split by a white hairline with 比 on a white disc, the names at the bottom corners, the title and the dek under the photo. A card opens `/compare` with the pair; legacy `/comparisons` redirects to `/compare`. Hidden until an entry is published.
 6. **玩一玩.** Four square photo cards, always there: 每日一猫, 猜熊猫, 认脸挑战, 月度挑战.
 7. **文章.** The first three published articles that are not leading, as 科普's feed rows, with 全部 to `/learn`.
 
 Status: built. Phase 2 adds status to the blocks (玩一玩 progress) from the loaders the pages already use.
 
-## 图鉴 — `03-book`
+## 我的图鉴 — `/book` (v4.5 overhaul; formerly `03-book`)
 
-1. The large title 图鉴.
-2. **Progress card.** A `ProgressRing` and 点亮 N / total: pandas met (见过 or 认出, once each) over the published catalog count from the API (The Life List Rule). Hidden signed out; at zero it shows 0 / total.
-3. **Stat tiles.** Three tiles: 见过 N 只 (`Eye`), 认出 N 只 (`ScanFace`, per The Life List Rule; `BadgeCheck` means an official source) and 去过 N 处 (`MapPin`). Each opens its own list.
-4. A `Segmented` control with 全部, 见过 and 认出.
-5. **Grid.** Four columns of square photo tiles with the name under each. Pandas not yet met are a `card` tile with a tertiary `Eye` and 未见过. Show at most one row of unmet tiles, not the whole catalog.
-6. **各个基地.** One inset group, with a row per base that has a panda the user has met: `MapPin`, the name, met / living there now (2 / 2), and a chevron.
+1. The screen title `我的图鉴`, with header-right bare `Share` action (`分享`) sharing the passport summary.
+2. **Obsidian Panda Passport Hero (`LitCard`).** Dark ink card (`bg-button` in light, `bg-card` + hairline `border-border` in dark) combining the `ProgressRing` (`点亮 N%`), `吱熊猫　个人图鉴护照` eyebrow, oversized `${met} / ${catalog} 只大熊猫`, and bottom hairline-separated 3-column counters (`现场见过 N 只 | 猜谜认出 N 只 | 去过场馆 M 处`). Preserves the concise variant without counters in `年度回顾`.
+3. **Empty state.** Keeps `从第一只开始` and `WaysIn` (`认出` / `见过` / `去过`), persisting locally for guests via AsyncStorage (`zhipanda:guest:*`).
+4. A `Segmented` control with exact labels `全部`, `见过`, and `认出`.
+5. **Grid & DiscoveryRow.** 3-column (2-column under `useSingleColumn()`) square photo tiles (`MetTile`) with edge-to-edge cover, `Scrim`, panda name, and frosted `见过`/`认出` badge (`role="link"`, `No.${number}，${name}，${detail}`). Unmet placeholder tiles are replaced by a single warm `DiscoveryRow` (`还有 N 只待点亮　去找熊猫 ›` → `/find`).
+6. **基地集邮进度.** Borderless hairline-separated rows directly on `bg-background` (visited/started bases first, expandable to remaining bases with living pandas), each displaying a lead resident `PandaThumb` via `pickBaseLeadPandaId`, venue title, `${known} / ${members.length}` right-aligned in `text-primary`, rounded progress bar (`bg-fill` / `bg-graphic`), and `已到访` / `${pct}%` status.
 
-Signed out and empty states stay as described in DESIGN.md › The Life List Rule.
+Status: upgraded in Batch 3 (v4.5).
 
-Status: built in the second batch.
+## 趣味挑战 — `/play` (v4.5 overhaul)
+
+1. Eyebrow `每日猜谜与主题收集` over `趣味挑战`, backed by real guest/signed-in game records (`loadGuestGames()` / `GET /api/v2/me/panda-book`), `loadDailyPanda()`, `useLearningCatalog()`, `useChallengeState()` + `useMonthThemes()`, and `lookAlikePairs()`.
+2. **16:10 `每日一猫` Spotlight Hero.** Full-bleed `RemoteImage` + `Scrim`, top-left `今日主线　已完成/待猜测` pill, conditional top-right frosted streak pill (`Flame` bare icon, only when real daily streak > 0), bottom title/subtitle, and light `开始`/`查看` pill (`Play` bare icon) → `/daily`.
+3. **2-column Challenge Cards.** Side-by-side (`1`-column under `useSingleColumn()`) photo tiles for `猜熊猫` (frosted `已认出 N 只` or `看图识猫` → `/guess`) and `认脸挑战` (conditional `${count} 组挑战` → `/learn/challenge`).
+4. **月度挑战 Banner & 双胞胎与撞脸对照.** `月度挑战` card with live small `ProgressRing` (`done/total` → `/challenge`), followed by a borderless `双胞胎与撞脸对照` row with overlapping covered `PandaThumb` avatars → `/look-alikes`.
+
+Status: upgraded in Batch 3 (v4.5).
+
+## 比一比 — `/compare` (v4.5 overhaul; `/comparisons` redirects here)
+
+1. **Picking state (`/compare` or `/compare?a=...`).** Eyebrow `档案与外貌对照` over `并排比一比`, unified Split `VS` Stage (`rounded-card border-hairline border-border`, `2px` `bg-background` seam, centered `VS` pill, `useStacked()` column restack), inline `SearchField` + selectable list, primary CTA when distinct, and `精选对照` Editorial Diptych Photo Cards (`buildFeaturedComparePairs`) with `全部双胞胎` → `/look-alikes` when not filtering.
+2. **Result state (`/compare?a=...&b=...`).** Header-right `换选` (`ArrowLeftRight` bare icon → `/compare`), Seamless Split Diptych Hero (two 4:5 `PandaPhoto`s with `2px` seam, tapping each opens `/pandas/[slug]`; top frosted `VS` pill swaps `a`/`b`), `KinshipCallout` (`summarizeCompareKinship` → pre-filled `/relationship?a=...&b=...`), borderless centered-axis `核心档案对照` matrix (`性别`, `出生` with exact delta badge, `现居` with `同住一馆`, `谱系号`; stacks cleanly at `useStacked()`), borderless `外貌辨识` section with calm single-paragraph observation note when points/hints are absent (zero missing-field editorial copy), and quiet `LearningSources` when present. Legacy `/comparisons` renders `<Redirect href="/compare" />`.
+
+Status: upgraded in Batch 3 (v4.5).
+
+## 认识大熊猫 — `/learn` (v4.5 editorial polish)
+
+1. Magazine masthead (`博物科普与识猫` eyebrow over `认识大熊猫`, right `${count} 篇科普`), conditional `AskEntry` (`问问熊猫`), and 4:3 full-bleed `FeaturedArticle` hero.
+2. **认脸指南.** Promoted 4:5 portrait carousel + `认脸挑战` button directly below `FeaturedArticle`.
+3. **Borderless Editorial Feed.** Category article sections (`FeedArticle`) render directly on `bg-background` separated by `border-b-hairline border-border`, followed by `名词` (`ListSection`). Developer `资料版本` footer removed.
+
+Status: upgraded in Batch 3 (v4.5).
 
 ## 我的 — `04-me`
 
@@ -187,9 +209,11 @@ The enriched `参观攻略` (`institution-guide.tsx`, `venue-guide-extras.ts`) s
 
 双胞胎 (`12-twins`) lists pairs as cards: the two covers side by side (the first character on the placeholder when one has none), the names joined by a quiet &, the birthday (2021.06.23 出生) for twins or the written note for a pair, and a chevron to 比一比. A `Segmented` switches 双胞胎 and 像的熊猫 when both exist. Twins come only from sourced lineage (same mother, same exact birth date). The mockup's birthplace waits for a birthplace field. 找熊猫 opens it from a 双胞胎 explore card; the 双胞胎 filter chip is still to come. 对比 (`13-twins-compare`) is the existing 比一比 page on `CompareTable`; its 同框 photo waits for photos tagged with both pandas.
 
-归国熊猫 (`15-overseas-return`) has country chips (全部, then each country with an entry), then 即将归国 (检疫中, 归国途中, 已宣布归国 with its expected date), each year's returns newest first, and 旅居海外. Pandas that came home together on one day from one institution share a row: two overlapping faces, the names, a `Plane` with "上野 → 中国", and the day (01.28) at the right. The catalog records where they left, not the base they went to, so the arrow ends at 中国 until it does. The announcements follow as official `SourceBadge`s. 找熊猫 opens it from the first explore card; the 归国 filter chip is still to come.
+归国与旅居 (`/returning`, `15-overseas-return`, upgraded in Batch 3 v4.5) keeps stack title `归国熊猫` under eyebrow `海外合作与归国行程` + display title `归国与旅居`, country `Chip` filters (`全部` + countries), and Flighty-style `ReturnRouteCard`s (`bg-card rounded-card border-hairline border-border`): semantic status pill (`已归国` / `即将归国` / `现居海外`) + tabular `returnMeta`, dashed route arc with bare `Plane`/`MapPin` (`place` → `中国` or `旅居展馆`, restacking under `useStacked()`), and independent tappable panda member cards (`查看{name}的档案` → `/pandas/[slug]`) for every item in `group.items`, above a calm single-line source footer.
 
-The 那年今天 page (`14-on-this-day`) has a back chevron, the date line and the large title, then a `Segmented` control with 本周 and 本月, the week hero, the memories of the range, and the 那年今天 switch. The memories are one timeline card as in the mockup (`MemoryTimeline`), with 少显示 and 关闭 on a long press and as accessibility actions, and the sources as badges under the card. The hero is the page variant of the week hero: no tag, the day it happened, what happened, and N 周年 at the right.
+家族树 (`/pandas/[slug]/family`, polished in Batch 3 v4.5) preserves `FamilyTree`, cached lineage prefetching and in-place `history` navigation, replaces `StatTile` boxes with a borderless 3-column `SummaryStrip` (`上溯 | 后代 | 亲缘查询` with `查关系` modal trigger, or single `Button "查关系"` when `!known`), renders `GenerationSection` (without `出处` noise) and `DescendantPlaces` as borderless hairline rows on `bg-background`, and finishes with a single-line archive footer.
+
+The 那年今天 page (`14-on-this-day`; legacy `/week` redirects here) has a back chevron, the date line and the large title, then a `Segmented` control with 本周 and 本月, the week hero, the memories of the range, and the 那年今天 switch. The memories are one timeline card as in the mockup (`MemoryTimeline`), with 少显示 and 关闭 on a long press and as accessibility actions, and the sources as badges under the card. The hero is the page variant of the week hero: no tag, the day it happened, what happened, and N 周年 at the right.
 
 ## Open decisions
 

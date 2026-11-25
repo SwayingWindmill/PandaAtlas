@@ -3,6 +3,7 @@
  * the bundle carries only these. One meaning per glyph; reuse the name here before adding one.
  * See DESIGN.md, "Icons", for where an icon belongs and where it does not.
  */
+export { default as ArrowLeftRight } from "lucide-react-native/icons/arrow-left-right";
 export { default as Baby } from "lucide-react-native/icons/baby";
 export { default as BadgeCheck } from "lucide-react-native/icons/badge-check";
 export { default as Bell } from "lucide-react-native/icons/bell";
@@ -35,6 +36,7 @@ export { default as Eye } from "lucide-react-native/icons/eye";
 export { default as FilePen } from "lucide-react-native/icons/file-pen-line";
 export { default as FileText } from "lucide-react-native/icons/file-text";
 export { default as Flag } from "lucide-react-native/icons/flag";
+export { default as Flame } from "lucide-react-native/icons/flame";
 export { default as Flower } from "lucide-react-native/icons/flower-2";
 export { default as FolderHeart } from "lucide-react-native/icons/folder-heart";
 export { default as Globe } from "lucide-react-native/icons/globe";
