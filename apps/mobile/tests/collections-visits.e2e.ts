@@ -42,7 +42,7 @@ test("a fan records a visit on a zoo's page and removes it from 去过的地点"
   const { zoo } = fixture();
   await signIn(app, screen, testEmail("visits"));
   await app.open(`/institutions/${zoo.slug}`);
-  await screen.getByRole("radio", "攻略").tap();
+  await expect(screen.getByRole("heading", "参观攻略")).toBeVisible();
   await screen.getByRole("button", `记下今天去过${zoo.facility}`).tap();
   await expect(screen.getByText(`${todayLabel()}去过`)).toBeVisible();
   await expect(screen.getByRole("button", `今天已记下去过${zoo.facility}`)).toBeDisabled();
@@ -54,10 +54,10 @@ test("a fan records a visit on a zoo's page and removes it from 去过的地点"
   await expect(screen.getByText("还没有到访记录。", { exact: false })).toBeVisible();
 });
 
-test("signed out, a zoo's page opened on 攻略 lets the guest record a visit locally", async ({ app, screen }) => {
+test("signed out, a zoo's page opened with tab=guide lets the guest record a visit locally", async ({ app, screen }) => {
   const { zoo } = fixture();
   await app.open(`/institutions/${zoo.slug}?tab=guide`);
-  await expect(screen.getByRole("radio", { name: "攻略", checked: true })).toBeVisible();
+  await expect(screen.getByRole("heading", "参观攻略")).toBeVisible();
   await screen.getByRole("button", `记下今天去过${zoo.facility}`).tap();
   await expect(screen.getByText(`${todayLabel()}去过`)).toBeVisible();
   await expect(screen.getByRole("button", `今天已记下去过${zoo.facility}`)).toBeDisabled();

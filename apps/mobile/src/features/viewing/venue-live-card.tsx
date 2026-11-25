@@ -31,7 +31,7 @@ type VenueLiveCardProps =
       onOpenVenue: () => void;
     };
 
-function statusColorOf(
+export function venueStatusColorOf(
   status: VenueClockStatus,
   colors: ReturnType<typeof useIOSColors>,
 ): string {
@@ -40,27 +40,30 @@ function statusColorOf(
   return colors.secondaryLabel;
 }
 
-function VenueActivityBar({
+export function VenueActivityBar({
   snapshot,
   dotColor,
   cardColor,
+  compact = false,
 }: {
   snapshot: VenueLiveSnapshot;
   dotColor: string;
   cardColor: string;
+  compact?: boolean;
 }) {
   const { track, marker } = component.timeBand;
   const span = Math.max(snapshot.range.to - snapshot.range.from, 1);
   const nowPct = Math.min(Math.max(((snapshot.minutes - snapshot.range.from) / span) * 100, 0), 100);
+  const dotSize = compact ? marker - 2 : marker;
 
   return (
     <View
-      style={{ height: marker }}
+      style={{ height: dotSize }}
       className="justify-center"
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
-      <View className="overflow-hidden rounded-pill bg-secondary" style={{ height: track }}>
+      <View className="overflow-hidden rounded-pill bg-secondary" style={{ height: compact ? track - 2 : track }}>
         {snapshot.nap ? (
           <View
             className="absolute inset-y-0 rounded-pill bg-tertiary-foreground/40"
@@ -85,10 +88,10 @@ function VenueActivityBar({
         className="absolute rounded-pill"
         style={{
           left: `${nowPct}%`,
-          width: marker,
-          height: marker,
-          marginLeft: -marker / 2,
-          borderWidth: 2.5,
+          width: dotSize,
+          height: dotSize,
+          marginLeft: -dotSize / 2,
+          borderWidth: compact ? 2 : 2.5,
           borderColor: dotColor,
           backgroundColor: cardColor,
         }}
@@ -129,24 +132,44 @@ export function VenueLiveCard(props: VenueLiveCardProps) {
 
   if (props.variant === "venue") {
     if (!snapshot) return null;
-    const statusColor = statusColorOf(snapshot.status, colors);
+    const statusColor = venueStatusColorOf(snapshot.status, colors);
     return (
       <View
-        className="gap-2.5 bg-card px-4 py-3.5"
+        className="gap-2.5 border-hairline border-border bg-card px-4 py-3.5"
         style={{ borderRadius: RADIUS.group, borderCurve: "continuous" }}
-        accessible
-        accessibilityLabel={`当地 ${snapshot.localTime}，${snapshot.statusLabel}，${snapshot.hint}，${snapshot.openLabel}，${snapshot.peakLabel}，${snapshot.closeLabel}`}
       >
-        <View className="flex-row flex-wrap items-center justify-between gap-x-3 gap-y-1">
-          <View className="flex-row items-center gap-1.5">
-            <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: statusColor }} />
-            <Text variant="subheadline" className="font-semibold tabular-nums" style={{ color: statusColor }}>
-              {`当地 ${snapshot.localTime}　${snapshot.statusLabel}`}
+        <View className="flex-row items-center gap-2.5">
+          <View
+            className="min-w-0 flex-1 gap-0.5"
+            accessible
+            accessibilityLabel={`当地 ${snapshot.localTime}，${snapshot.statusLabel}，${snapshot.hint}，${snapshot.openLabel}，${snapshot.peakLabel}，${snapshot.closeLabel}`}
+          >
+            <View className="flex-row items-center gap-1.5">
+              <View className="size-2 rounded-pill" style={{ backgroundColor: statusColor }} />
+              <Text variant="subheadline" className="font-semibold tabular-nums" style={{ color: statusColor }}>
+                {`当地 ${snapshot.localTime}　${snapshot.statusLabel}`}
+              </Text>
+            </View>
+            <Text variant="footnote" className="text-muted-foreground">
+              {snapshot.hint}
             </Text>
           </View>
-          <Text variant="footnote" className="text-muted-foreground">
-            {snapshot.hint}
-          </Text>
+          {liveCamUrl ? (
+            <Pressable
+              role="link"
+              accessibilityLabel="看官方直播"
+              accessibilityHint="在浏览器中打开"
+              onPress={() => void Linking.openURL(liveCamUrl)}
+              className="-my-1.5 min-h-11 shrink-0 justify-center active:opacity-75"
+            >
+              <View className="h-8 flex-row items-center gap-1 rounded-pill border-hairline border-border bg-highlight-soft px-3">
+                <Icon icon={Video} size="footnote" tone="tint" strokeWidth={2} />
+                <Text variant="footnote" className="font-semibold text-primary">
+                  看直播
+                </Text>
+              </View>
+            </Pressable>
+          ) : null}
         </View>
         <VenueActivityBar snapshot={snapshot} dotColor={statusColor} cardColor={colors.card} />
         <ScheduleLabels snapshot={snapshot} stacked={stacked} />
@@ -155,7 +178,7 @@ export function VenueLiveCard(props: VenueLiveCardProps) {
   }
 
   if (!snapshot && !liveCamUrl) return null;
-  const statusColor = snapshot ? statusColorOf(snapshot.status, colors) : colors.secondaryLabel;
+  const statusColor = snapshot ? venueStatusColorOf(snapshot.status, colors) : colors.secondaryLabel;
 
   return (
     <View
@@ -176,7 +199,7 @@ export function VenueLiveCard(props: VenueLiveCardProps) {
             </Text>
             {snapshot ? (
               <View className="flex-row items-center gap-1.5">
-                <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: statusColor }} />
+                <View className="size-2 rounded-pill" style={{ backgroundColor: statusColor }} />
                 <Text variant="footnote" className="font-semibold tabular-nums" style={{ color: statusColor }}>
                   {`当地 ${snapshot.localTime}　${snapshot.statusLabel}`}
                 </Text>
@@ -192,10 +215,7 @@ export function VenueLiveCard(props: VenueLiveCardProps) {
             onPress={() => void Linking.openURL(liveCamUrl)}
             className="-my-1.5 min-h-11 justify-center active:opacity-75"
           >
-            <View
-              className="flex-row items-center gap-1 rounded-pill bg-highlight-soft px-3 py-1.5"
-              style={{ minHeight: 32 }}
-            >
+            <View className="h-8 flex-row items-center gap-1 rounded-pill bg-highlight-soft px-3">
               <Icon icon={Video} size="footnote" tone="tint" strokeWidth={2} />
               <Text variant="footnote" className="font-semibold text-primary">
                 看直播

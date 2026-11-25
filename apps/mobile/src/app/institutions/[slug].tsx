@@ -1,14 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import { View } from "react-native";
+import { useRef, useState } from "react";
+import { Share, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HeroHeader, useHeroScroll } from "@/components/hero-header";
 import { LoadFailed } from "@/components/load-failed";
 import { Scrim } from "@/components/scrim";
-import { Segmented } from "@/components/segmented";
 import { StretchyHero } from "@/components/stretchy-hero";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -18,34 +17,40 @@ import { useSeenIds } from "@/features/engagement/use-seen-ids";
 import { VisitGuide } from "@/features/institutions/institution-guide";
 import { useInstitutionHero } from "@/features/institutions/institution-hero";
 import {
-  Badges,
   Former,
   HeroTitle,
   INSTITUTION_HERO_HEIGHT,
-  Overview,
   PlateHero,
   Residents,
+  VenueActionPair,
+  VenueFooter,
+  VenueMetricStrip,
+  VenueQuickTools,
 } from "@/features/institutions/institution-overview";
-import { institutionQueryOptions, unseenResidents } from "@/features/institutions/institutions";
+import { institutionQueryOptions } from "@/features/institutions/institutions";
+import { VenueNewsSection } from "@/features/venue-news/venue-news-section";
 import { VenueLiveCard } from "@/features/viewing/venue-live-card";
+import { buildVenueLiveSnapshot } from "@/features/viewing/venue-live";
 import { FacilityVisits } from "@/features/visits/facility-visits";
 import { PAGE_COLUMN } from "@/lib/surface";
-
-const TABS = ["overview", "pandas", "guide"] as const;
-type Tab = (typeof TABS)[number];
-const isTab = (value: string | undefined): value is Tab => TABS.some((tab) => tab === value);
 
 export default function InstitutionScreen() {
   const params = useLocalSearchParams<{ slug: string; tab?: string }>();
   const slug = params.slug;
   const { data: institution, isError, isFetching, refetch } = useQuery(institutionQueryOptions(slug));
   const failed = !institution && isError && !isFetching;
-  const [tab, setTab] = useState<Tab>(isTab(params.tab) ? params.tab : "overview");
   const hero = useInstitutionHero(institution?.residents ?? null);
   const seen = useSeenIds();
   const followed = useFollowed();
   const insets = useSafeAreaInsets();
   const { scrollY, onScroll, pastHero } = useHeroScroll(INSTITUTION_HERO_HEIGHT);
+  const scrollRef = useRef<Animated.ScrollView>(null);
+  const [visitsY, setVisitsY] = useState(0);
+
+  const shareVenue = () => {
+    if (!institution) return;
+    void Share.share({ message: `吱熊猫　${institution.name}${institution.meta ? `（${institution.meta}）` : ""}` });
+  };
 
   if (!institution) {
     return (
@@ -68,18 +73,13 @@ export default function InstitutionScreen() {
     );
   }
 
-  const unseen = seen ? unseenResidents(institution.residents, seen) : null;
-  const tabs = [
-    { value: "overview" as const, label: "概况" },
-    institution.residents.length + institution.former.length > 0 ? { value: "pandas" as const, label: "熊猫" } : null,
-    institution.facilities.length > 0 || institution.websiteUrl ? { value: "guide" as const, label: "攻略" } : null,
-  ].filter((option) => option !== null);
-  const shown = tabs.some((option) => option.value === tab) ? tab : "overview";
+  const liveCardShown = buildVenueLiveSnapshot(institution.slug, institution.liveCamUrl) !== null;
 
   return (
     <View className="flex-1 bg-background">
-      <HeroHeader title={institution.name} pastHero={pastHero} />
+      <HeroHeader title={institution.name} pastHero={pastHero} onShare={shareVenue} />
       <Animated.ScrollView
+        ref={scrollRef}
         className="flex-1"
         contentInsetAdjustmentBehavior="never"
         contentContainerClassName="pb-16"
@@ -102,31 +102,45 @@ export default function InstitutionScreen() {
         ) : (
           <PlateHero institution={institution} pending={hero === undefined} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-gutter pt-4" style={PAGE_COLUMN}>
+        <Animated.View entering={PAGE_ENTER} className="gap-6 bg-background px-gutter pt-4" style={PAGE_COLUMN}>
           <View className="gap-3">
-            <Badges institution={institution} />
-            <VenueLiveCard variant="venue" slug={institution.slug} apiLiveCamUrl={institution.liveCamUrl} />
-            {tabs.length > 1 ? (
-              <Segmented value={shown} options={tabs} onChange={setTab} accessibilityLabel={`${institution.name}的页面`} />
+            {institution.summary ? (
+              <Text variant="subheadline" className="text-muted-foreground">
+                {institution.summary}
+              </Text>
             ) : null}
+            <VenueActionPair
+              institution={institution}
+              onScrollToVisits={() => {
+                if (visitsY > 0) scrollRef.current?.scrollTo({ y: Math.max(0, visitsY - 72), animated: true });
+              }}
+            />
           </View>
-          {shown === "overview" ? <Overview institution={institution} onPandas={() => setTab("pandas")} /> : null}
-          {shown === "pandas" ? (
-            <>
-              {institution.residents.length > 0 ? (
-                <Residents pandas={institution.residents} seen={seen} followed={followed} />
-              ) : null}
-              {institution.former.length > 0 ? <Former pandas={institution.former} /> : null}
-            </>
+
+          <VenueMetricStrip institution={institution} />
+
+          <VenueLiveCard variant="venue" slug={institution.slug} apiLiveCamUrl={institution.liveCamUrl} />
+
+          <VenueQuickTools institution={institution} liveCardShown={liveCardShown} />
+
+          <Residents pandas={institution.residents} seen={seen} followed={followed} />
+
+          <VisitGuide institution={institution} />
+
+          {institution.facilities.length > 0 ? (
+            <View onLayout={(event) => setVisitsY(event.nativeEvent.layout.y)}>
+              <FacilityVisits facilities={institution.facilities} />
+            </View>
           ) : null}
-          {shown === "guide" ? (
-            <>
-              <VisitGuide institution={institution} unseen={unseen} />
-              {institution.facilities.length > 0 ? <FacilityVisits facilities={institution.facilities} /> : null}
-            </>
-          ) : null}
+
+          <VenueNewsSection institutionSlug={institution.slug} />
+
+          <Former pandas={institution.former} />
+
+          <VenueFooter institution={institution} />
+
           {hero?.credit ? (
-            <Text variant="footnote" className="px-4 text-muted-foreground">
+            <Text variant="footnote" className="text-muted-foreground">
               {`顶部照片：${hero.pandaName}，${hero.credit}`}
             </Text>
           ) : null}

@@ -5,21 +5,26 @@ import { fixture } from "./support/fixture.ts";
 import { signIn, testEmail } from "./support/session.ts";
 import { test } from "./support/test.ts";
 
-test("signed out, 探索 shows star pandas, live clock, sounds, and what following brings", async ({ app, screen }) => {
+test("signed out, 探索 shows hero, star pandas, live clock, daily play, sounds, and links to /live without cold boxes", async ({ app, screen }) => {
   await app.open("/");
   await expect(screen.getByRole("heading", "探索")).toBeVisible();
   await expect(screen.getByText("明星熊猫")).toBeVisible();
   await expect(screen.getByText("关注后切为你的关注")).toBeVisible();
   await expect(screen.getByText("此刻谁醒着")).toBeVisible();
+  await expect(screen.getByText("每日一玩")).toBeVisible();
   await expect(screen.getByText("听熊猫")).toBeVisible();
-  await expect(screen.getByText("登录并关注熊猫后，它们的新资料会出现在这里。")).toBeVisible();
+  await expect(screen.getByText("关注的最新动态")).toHaveCount(0);
+  await expect(screen.getByText("登录并关注熊猫后，它们的新资料会出现在这里。")).toHaveCount(0);
+
+  await screen.getByRole("link", "查看全部直播与作息").tap();
+  await expect(screen.getByRole("heading", "此刻直播与作息")).toBeVisible();
 });
 
 test("today lists what the latest release changed for a followed panda", async ({ app, screen }) => {
   const { panda } = fixture();
   await signIn(app, screen, testEmail("today"));
   await app.open("/");
-  await expect(screen.getByText("还没有关注的熊猫。", { exact: false })).toBeVisible();
+  await expect(screen.getByText("关注的最新动态")).toHaveCount(0);
 
   await app.open(`/pandas/${panda.slug}`);
   await screen.getByRole("button", `关注${panda.name}`).tap();

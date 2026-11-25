@@ -1,13 +1,20 @@
-import { ListCell, ListSection } from "@/components/grouped-list";
-import { Icon } from "@/components/icon";
-import { Eye, FileText, Trophy } from "@/components/icons";
-import { SectionHeader } from "@/components/section-header";
-import { learningText } from "@/features/learning/catalog";
-import { useLearningCatalog } from "@/features/learning/use-catalog";
 import { View } from "react-native";
+
+import { ListCell, ListSection } from "@/components/grouped-list";
+import { FileText } from "@/components/icons";
+import { PandaThumb } from "@/components/panda-thumb";
+import { PhotoOutline } from "@/components/photo-outline";
+import { RemoteImage } from "@/components/remote-image";
+import { SectionHeader } from "@/components/section-header";
+import { articleHero, learningText, readingMinutes } from "@/features/learning/catalog";
+import { useLearningCatalog, useLearningPandas } from "@/features/learning/use-catalog";
+import { RADIUS } from "@/lib/surface";
+
+const THUMB_SIZE = 44;
 
 export function LearningAndPlaySection() {
   const { state } = useLearningCatalog();
+  const { pandas } = useLearningPandas();
   const articles = state.status === "ready" ? state.catalog.articles : [];
   const faceGuides = state.status === "ready" ? state.catalog.faceGuides : [];
 
@@ -18,40 +25,60 @@ export function LearningAndPlaySection() {
       ? { label: `全部 ${articles.length} 篇`, href: "/learn" as const, accessibilityLabel: `查看全部 ${articles.length} 篇科普` }
       : { label: "全部", href: "/learn" as const, accessibilityLabel: "查看认识大熊猫科普" };
 
+  if (state.status === "ready" && !leadArticle && !leadGuide) return null;
+
+  const hero = leadArticle ? articleHero(leadArticle) : undefined;
+  const guidePanda = leadGuide && pandas ? pandas.find((item) => item.slug === leadGuide.pandaSlug) : undefined;
+
   return (
     <View className="gap-stack-tight">
-      <SectionHeader title="科普与趣味" action={action} />
-      <ListSection>
-        {leadArticle ? (
-          <ListCell
-            icon={FileText}
-            label={learningText(leadArticle.title)}
-            detail={[leadArticle.category, learningText(leadArticle.dek)].filter(Boolean).join("　")}
-            lines={1}
-            href={{ pathname: "/learn/articles/[slug]", params: { slug: leadArticle.slug } }}
-            role="link"
-          />
-        ) : null}
-        {leadGuide ? (
-          <ListCell
-            icon={Eye}
-            label="怎么认出是哪只熊猫？"
-            detail="认脸指南　脸型、眼斑与“雷达耳”图解"
-            lines={1}
-            href={{ pathname: "/learn/faces/[slug]", params: { slug: leadGuide.slug } }}
-            role="link"
-          />
-        ) : null}
-        <ListCell
-          leading={<Icon icon={Trophy} size="body" tone="tint" />}
-          label="趣味挑战"
-          detail="每日一猫　猜熊猫　认脸挑战　月度挑战"
-          lines={1}
-          href="/play"
-          role="link"
-          last
-        />
-      </ListSection>
+      <SectionHeader title="认识大熊猫" action={action} />
+      {leadArticle || leadGuide ? (
+        <ListSection>
+          {leadArticle ? (
+            <ListCell
+              icon={hero?.asset ? undefined : FileText}
+              label={learningText(leadArticle.title)}
+              detail={[leadArticle.category, `约 ${readingMinutes(leadArticle)} 分钟`].filter(Boolean).join("　")}
+              lines={2}
+              href={{ pathname: "/learn/articles/[slug]", params: { slug: leadArticle.slug } }}
+              role="link"
+              trailing={
+                hero?.asset ? (
+                  <View
+                    className="overflow-hidden rounded-control bg-secondary"
+                    style={{ width: THUMB_SIZE, height: THUMB_SIZE, borderCurve: "continuous" }}
+                  >
+                    <RemoteImage
+                      source={hero.asset}
+                      style={{ width: THUMB_SIZE, height: THUMB_SIZE }}
+                      contentFit="cover"
+                      accessible={false}
+                    />
+                    <PhotoOutline radius={RADIUS.control} />
+                  </View>
+                ) : undefined
+              }
+              last={!leadGuide}
+            />
+          ) : null}
+          {leadGuide ? (
+            <ListCell
+              label="怎么认出是哪只熊猫？"
+              detail="认脸指南　脸型、眼斑与特征图解"
+              lines={1}
+              href={{ pathname: "/learn/faces/[slug]", params: { slug: leadGuide.slug } }}
+              role="link"
+              trailing={
+                guidePanda ? (
+                  <PandaThumb pandaId={guidePanda.id} name={guidePanda.name} size={THUMB_SIZE} shape="tile" />
+                ) : undefined
+              }
+              last
+            />
+          ) : null}
+        </ListSection>
+      ) : null}
     </View>
   );
 }

@@ -38,7 +38,7 @@ export function SoundStripSection() {
               {activeClip.title}
             </Text>
             <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
-              {`${activeClip.license}　${activeClip.durationLabel}`}
+              {`${activeClip.sceneLabel}　${activeClip.durationLabel}`}
             </Text>
           </View>
 
