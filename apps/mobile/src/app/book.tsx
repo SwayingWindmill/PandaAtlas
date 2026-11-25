@@ -224,7 +224,7 @@ function DiscoveryRow({ count }: { count: number }) {
         <Icon icon={Compass} size="subhead" tone="tint" />
         <Text
           variant="subheadline"
-          className={cn("text-muted-foreground tabular-nums", !stacked && "min-w-0 flex-1")}
+          className="min-w-0 flex-1 text-muted-foreground tabular-nums"
           numberOfLines={stacked ? undefined : 2}
         >
           {`还有 ${count.toLocaleString("zh-CN")} 只待点亮`}

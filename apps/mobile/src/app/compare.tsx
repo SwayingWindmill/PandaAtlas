@@ -114,7 +114,7 @@ function StageSlot({
           {panda ? panda.name : SLOT_EMPTY_TITLE[slot]}
         </Text>
         <Text variant="footnote" className="text-center text-muted-foreground" numberOfLines={stacked ? undefined : 1}>
-          {panda ? panda.place ?? "点击更换" : SLOT_EMPTY_SUBTITLE[slot]}
+          {panda ? (panda.deceased ? "已离世" : (panda.place ?? "点击更换")) : SLOT_EMPTY_SUBTITLE[slot]}
         </Text>
       </View>
     </Pressable>
@@ -274,7 +274,7 @@ function PickPair({
         <Text variant="footnote" className="font-semibold text-primary">
           档案与外貌对照
         </Text>
-        <Text variant="display" role="heading">
+        <Text variant="display" role="heading" aria-level="2">
           并排比一比
         </Text>
       </View>

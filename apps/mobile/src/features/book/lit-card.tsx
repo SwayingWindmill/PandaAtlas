@@ -61,7 +61,7 @@ export function LitCard({
       accessibilityLabel={`${label} ${met} 只，共收录 ${catalog.toLocaleString("zh-CN")} 只，${percent}%`}
     >
       <View className={stacked ? "gap-row" : "flex-row items-center gap-stack"}>
-        <ProgressRing value={percent / 100} accessibilityLabel={`点亮 ${percent}%`}>
+        <ProgressRing value={percent / 100} trackColor={IOS.dark.fill} accessibilityLabel={`点亮 ${percent}%`}>
           <Text variant="subheadline" className="font-rounded font-semibold text-on-media tabular-nums" role="none">
             {`${percent}%`}
           </Text>

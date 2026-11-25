@@ -93,7 +93,7 @@ function ReturnRouteCard({
           className={cn("rounded-pill px-2.5 py-0.5", abroad ? "bg-secondary" : "bg-highlight-soft")}
           style={{ borderCurve: "continuous" }}
         >
-          <Text variant="footnote" className={cn("font-semibold", abroad ? "text-muted-foreground" : "text-primary")}>
+          <Text variant="footnote" className={cn("font-semibold", abroad ? "text-secondary-foreground" : "text-primary")}>
             {statusLabel}
           </Text>
         </View>
