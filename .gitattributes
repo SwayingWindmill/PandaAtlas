@@ -8,3 +8,7 @@ apps/web/public/_headers text eol=lf
 DESIGN.md text eol=lf
 apps/mobile/src/global.css text eol=lf
 apps/mobile/src/uniwind-types.d.ts text eol=lf
+# Vendored agent skills are compared byte-for-byte across .agents/skills and .claude/skills.
+.agents/skills/** text eol=lf -linguist-detectable
+.claude/skills/** text eol=lf -linguist-detectable
+.agents/hooks.json text eol=lf

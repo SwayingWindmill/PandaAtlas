@@ -81,6 +81,12 @@ test("API client and Supabase foundation changes select the API verification sco
 
 test("changed-path routing stays centralized in the development scope classifier", () => {
   assert.deepEqual(classifyDevelopmentScopes([".github/workflows/example.yml"]), ["release"]);
+  assert.deepEqual(classifyDevelopmentScopes([".agents/hooks.json"]), ["release"]);
+  assert.deepEqual(classifyDevelopmentScopes([".claude/settings.json"]), ["release"]);
+  assert.deepEqual(
+    classifyDevelopmentScopes([".agents/skills/poteto-mode/scripts/resume.ts"]),
+    ["release"],
+  );
   assert.deepEqual(classifyDevelopmentScopes(["apps/web/app/page.tsx"]), ["web"]);
   assert.deepEqual(classifyDevelopmentScopes(["apps/mobile/src/app/daily.tsx"]), ["mobile"]);
   assert.deepEqual(classifyDevelopmentScopes(["packages/world-map/src/world-land.generated.ts"]), ["web", "mobile"]);

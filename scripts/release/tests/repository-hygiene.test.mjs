@@ -11,6 +11,7 @@ import {
   findCurrentAuthorityDocumentationViolations,
   findRetiredRuntimeImports,
   findRepositoryHygieneViolations,
+  findSkillMirrorViolations,
   normalizeRepositoryPath,
   repositoryHygieneViolation,
 } from "../check-repository-hygiene.mjs";
@@ -226,6 +227,65 @@ test("local excludes cannot hide working-tree files while tracked .gitignore rul
       () => checkRepositoryHygiene({ cwd, quiet: true }),
       (error) => /hidden \(1\)\.ts/.test(error.message) && /private \(1\)\.ts/.test(error.message),
     );
+  } finally {
+    await rm(cwd, { force: true, recursive: true });
+  }
+});
+
+test("enforces 1:1 byte-for-byte mirroring between .agents/skills and .claude/skills", async () => {
+  const cwd = await mkdtemp(path.join(tmpdir(), "panda-skill-mirror-"));
+  try {
+    await mkdir(path.join(cwd, ".agents", "skills", "poteto-mode"), { recursive: true });
+    await mkdir(path.join(cwd, ".claude", "skills", "poteto-mode"), { recursive: true });
+    await writeFile(path.join(cwd, ".agents", "skills", "PSTACK-LICENSE.txt"), "MIT\n", "utf8");
+    await writeFile(path.join(cwd, ".claude", "skills", "README.md"), "# Skills\n", "utf8");
+    await writeFile(path.join(cwd, ".agents", "skills", "poteto-mode", "SKILL.md"), "# Poteto\n", "utf8");
+    await writeFile(path.join(cwd, ".claude", "skills", "poteto-mode", "SKILL.md"), "# Poteto\n", "utf8");
+
+    const matchingPaths = [
+      ".agents/skills/PSTACK-LICENSE.txt",
+      ".agents/skills/poteto-mode/SKILL.md",
+      ".claude/skills/README.md",
+      ".claude/skills/poteto-mode/SKILL.md",
+    ];
+    assert.deepEqual(findSkillMirrorViolations(matchingPaths, { cwd }), []);
+
+    await writeFile(path.join(cwd, ".claude", "skills", "poteto-mode", "SKILL.md"), "# Drifted\n", "utf8");
+    assert.match(
+      findSkillMirrorViolations(matchingPaths, { cwd })[0]?.reason ?? "",
+      /byte content drifted/,
+    );
+
+    assert.match(
+      findSkillMirrorViolations(
+        [".agents/skills/poteto-mode/SKILL.md", ".claude/skills/other/SKILL.md"],
+        { cwd },
+      )
+        .map((item) => item.reason)
+        .join("\n"),
+      /missing mirrored counterpart/,
+    );
+
+    assert.match(
+      findSkillMirrorViolations([".agents/skills/extra.txt", ".claude/skills/extra.txt"], { cwd })[0]
+        ?.reason ?? "",
+      /unexpected root file/,
+    );
+  } finally {
+    await rm(cwd, { force: true, recursive: true });
+  }
+});
+
+test("rejects tracked .audit files while allowing git-ignored .audit in the working tree", async () => {
+  assert.equal(repositoryHygieneViolation(".audit/todo.md"), "pstack local checklist or decision trail");
+
+  const cwd = await mkdtemp(path.join(tmpdir(), "panda-audit-ignore-"));
+  try {
+    execFileSync("git", ["init", "--quiet"], { cwd });
+    await writeFile(path.join(cwd, ".gitignore"), ".audit/\n", "utf8");
+    await mkdir(path.join(cwd, ".audit"), { recursive: true });
+    await writeFile(path.join(cwd, ".audit", "todo.md"), "- [ ] check\n", "utf8");
+    assert.doesNotThrow(() => checkRepositoryHygiene({ cwd, quiet: true }));
   } finally {
     await rm(cwd, { force: true, recursive: true });
   }
