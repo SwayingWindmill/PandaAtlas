@@ -1,0 +1,116 @@
+---
+name: poteto-mode
+description: "poteto's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for poteto, /poteto-mode, or end-to-end tasks following pstack playbooks."
+---
+
+# Poteto mode
+
+Sibling skills live at `../<name>/SKILL.md` from this file, and principle detail sheets live at `references/principles/<slug>.md`. Include this file's absolute path, `AGENTS.md`, and `worker.md` in every coding delegate prompt.
+
+## Platform adaptation
+
+- **Antigravity (`agy`)**: Read [`references/agy-tools.md`](references/agy-tools.md) for tool mappings (`invoke_subagent`, `send_message`, `manage_subagents`, `ask_question`, `schedule`). Instructions file is `AGENTS.md` (and `CLAUDE.md` -> `@AGENTS.md`).
+- **Claude Code**: Uses native `Skill`, `Agent`, `AskUserQuestion`, `CLAUDE.md` (`@AGENTS.md`), and `~/.claude/rules/pstack-models.md`.
+- **Checklists**: Use built-in task tools when available; otherwise keep an untracked `.audit/<task-slug>.todo.md` checklist (`.audit/` is git-ignored and blocked from tracking by `npm run check:repository-hygiene`) with playbook steps verbatim and `skip: <reason>` lines.
+
+## Non-negotiables
+
+- **First response**: State in your own words (`in-your-own-words`) the user's goal, the problem being solved, and the smallest expected change. Don't wait for confirmation unless `AGENTS.md` requires consent. If evidence rules out the ask, show it and stop.
+- **Worker floor rules**: Start any spawned subagent prompt with `Read <abs-path-to-poteto-mode>/worker.md before anything else.` so operator-first rules, worktree isolation, test/PR bars, and native runtime rules travel into every delegate.
+- **Comprehension & history**: Trace subsystem behavior directly (`codegraph_explore`, `read_file`, `git grep -n`; run `how` only when directly asked). For defense, threshold, or regression history -> `why`. When a vague description needs expert terminology -> `reframe`.
+- **Empirical questions before asking**: Before using `ask_question` on "how does X behave?" or "which implementation works?", run code, tests, or a scratch probe under `.audit/` and let facts decide. Reserve human questions for product/preference calls, UI mockups (`feature.md`), or irreversible gates.
+- **Data shape & design**: Name the data shape and invariant first (`Model the Domain`, `typescript-best-practices`). Code crossing a function boundary or shared contract -> `architect` + `blast-radius` (`bug-fix` checks `focused-fix-exception` first).
+- **Parallelism & adversarial check**: Independent slices or coverage checks -> `swarm`. Competing architectures/implementations -> `arena`. Contested design or risky diff -> `interrogate`.
+- **Prose & code hygiene**: Any user reply, doc, commit, or PR body -> `unslop` (and `AGENTS.md` concise Chinese rules). Before commit -> `deslop`. Before review -> `no-comments` (and `thermo-nuclear-code-quality-review` when structural rigor is warranted).
+- **Verification & modeling**: Mobile UI changes -> `apps/mobile/.claude/skills/verify/SKILL.md` (`verify`: 390×844 local stack e2e, preview, or CI `mobile-e2e.yml`). Web UI changes -> `docs/agents/frontend-review.md` + `npm run smoke:web` / `npm run smoke:web:matrix`. Repo/domain checks -> `npm run verify:dev` (or `npm run verify:dev -- --base origin/main` after committing). Ad-hoc TLA+ flow charts -> `statechart`. Perf claims -> `benchmark-checklist`. Bug fixes -> reproduce on the matching surface first.
+- **Writing, clarity & catch-up**: `technical-writing` + `unslop` for docs, PR bodies, and commits (`AGENTS.md` concise Chinese rules for repo commits/PRs); `sharpen`, `bro`, `teach`, `ketchup`, `ketchup-video` when asked.
+- **PR lifecycle**: `make-pr-easy-to-review` before opening; `thermos` (`thermo-nuclear-review` + `thermo-nuclear-code-quality-review`) for deep branch audits and independent reviewer PASS before merge; skeptical bot triage via [`references/bugbot-triage.md`](references/bugbot-triage.md); PR rescue via `babysit`, `fix-ci`, `fix-merge-conflicts`, `get-pr-comments`.
+- **Continuity, logs & meta**: `recall` / `what-did-i-get-done` for context recovery; `show-me-your-work` (`.audit/<task-slug>.tsv`) for long/autonomous trails; `reflect` / `automate-me` / `poteto-help` / `setup-pstack` for workflow & skills.
+- **Recurring mistakes & defects**: Repeated corrections -> `correct` (schema/architecture -> types -> targeted lint -> test -> docs). Broken skill or unrelated correctness defect -> fix in scope or track via `gh issue`.
+
+## Principles
+
+Read the leaf sheet under `references/principles/` when applying a principle on non-trivial work, and cite only principles applied.
+
+**Core**
+- **[Laziness Protocol](references/principles/laziness-protocol.md)**: Bias to deletion and the smallest change that solves the problem; resist extra layers or speculative abstractions.
+- **[Foundational Thinking](references/principles/foundational-thinking.md)**: Set core types, shared boundaries, and verification scaffolding before writing feature logic.
+- **[Redesign from First Principles](references/principles/redesign-from-first-principles.md)**: When integrating a new requirement, reshape cleanly as if it existed from day one.
+- **[Attack the Premise](references/principles/attack-the-premise.md)**: If two fixes assuming the same premise fail the same gate, test that premise directly before writing a third fix.
+- **[Subtract Before You Add](references/principles/subtract-before-you-add.md)**: Delete dead code, orphan paths, and stale fallbacks before adding new structure.
+- **[Minimize Reader Load](references/principles/minimize-reader-load.md)**: Collapse one-caller wrappers, shrink mutable scope, and cut layers a reader must trace.
+- **[Outcome-Oriented Execution](references/principles/outcome-oriented-execution.md)**: Converge directly on target architecture without keeping transitional compatibility shims.
+- **[Experience First](references/principles/experience-first.md)**: Prefer operator clarity and product reliability over implementation convenience.
+- **[Exhaust the Design Space](references/principles/exhaust-the-design-space.md)**: When precedent is absent, compare 2-3 competing sketches (`architect` / `arena`) before committing.
+- **[Build the Lever](references/principles/build-the-lever.md)**: Automate repetitive checks or migrations in a script or gate reviewers can rerun.
+
+**Architecture**
+- **[Model the Domain](references/principles/model-the-domain.md)**: Encode domain states in discriminated unions, state machines, or tables instead of scattered booleans.
+- **[Boundary Discipline](references/principles/boundary-discipline.md)**: Validate untrusted inputs at boundaries (`zod`, SQL constraints, gateway types); trust typed internals and keep domain logic pure.
+- **[Type System Discipline](references/principles/type-system-discipline.md)**: Make illegal states unrepresentable; avoid unverified `as` casts and weak optional-field bags.
+- **[Make Operations Idempotent](references/principles/make-operations-idempotent.md)**: Design commands, migrations, and loops to converge safely across crashes and retries.
+- **[Migrate Callers Then Delete Legacy APIs](references/principles/migrate-callers-then-delete-legacy-apis.md)**: Update every caller and delete the legacy path in one wave.
+- **[Separate Before Serializing Shared State](references/principles/separate-before-serializing-shared-state.md)**: Split files, worktrees, or keys between concurrent workers instead of relying on prose locks.
+
+**Verification & Delivery**
+- **[Prove It Works](references/principles/prove-it-works.md)**: Verify against the real running artifact (build, live UI, command state machine), never just "it compiles".
+- **[Fix Root Causes](references/principles/fix-root-causes.md)**: Trace failures to where invalid state originates; don't bolt symptom guards onto corrupt flows.
+- **[Sequence Work into Verifiable Units](references/principles/sequence-verifiable-units.md)**: Slice work into small steps that each end in a check before the next starts.
+- **[Test Behavior, Not Implementation](references/principles/test-behavior-not-implementation.md)**: Assert user-observable behavior on real boundaries rather than internal mocks.
+- **[Explain the Number](references/principles/explain-the-number.md)**: Before trusting or citing any measurement, trace what constrained it and rule out measurement artifacts.
+
+**Delegation & Meta**
+- **[Guard the Context Window](references/principles/guard-the-context-window.md)**: Delegate broad exploration or multi-file audits to subagents; keep crisp summaries here.
+- **[Never Block on the Human](references/principles/never-block-on-the-human.md)**: Proceed on reversible engineering work and present results clearly.
+- **[Encode Lessons in Structure](references/principles/encode-lessons-in-structure.md)**: Turn repeated instructions into types, scripts, or CI gates (`correct`).
+
+## Autonomy & candor
+
+- Proceed on reversible local/repo work and `gh` issue/PR inspection without pausing.
+- **Always pause for human approval (`AGENTS.md`)**: merging any PR opened outside this conversation, deleting another session's worktree, approving `Production` deploys, running `production-batch`, force-pushing a shared branch, deleting or resetting data, changing GitHub repo settings/branch protection/environments/secrets, or sending external messages.
+- **Push back honestly**: If an approach is flawed or doesn't earn its place, say so with evidence rather than agreeing.
+
+## Subagents
+
+- **Kickoff line**: Start every subagent prompt with `Read <abs-path-to-poteto-mode>/worker.md before anything else.` (plus `AGENTS.md` and required `SKILL.md` paths).
+- **Antigravity dispatch**: Use `invoke_subagent` with `TypeName: "self"` (with `Workspace: "share"` or an isolated sibling `git worktree` at `../PandaAtlas-<task>`) for writable/shell tasks, `TypeName: "research"` for read-only inspection, and `Model: "inherit"` by default unless the user specifies another model or configures `~/.gemini/config/pstack-models.md` via `setup-pstack`. On Claude Code, check `~/.claude/rules/pstack-models.md`.
+- **Clean boundaries**: Pass file paths instead of pasting whole files; review every delegate diff and command output yourself before summarizing.
+- **Fresh delegates by default**: Give follow-up rounds fresh subagents with consolidated briefs unless live local state (uncommitted worktree, dev server) must stay alive. Before committing or merging, list and stop active child subagents (`manage_subagents`).
+- **Independent review gate**: Never count your own review or unit tests alone as an independent verification verdict; record any missing reviewer explicitly.
+
+## Replies & comments
+
+- Write crisp sentences; ban decorative `—`/`--` mid-sentence dashes and mid-sentence explanatory colons (`unslop`). Name user/maintainer impact first.
+- Every factual claim cites directly observed command output, file:line, or marks itself as `inferred` / `guess`.
+- Follow `AGENTS.md` for repo replies and docs: concise Chinese plain prose with clickable `file://` links.
+- Comments explain only non-obvious external/protocol constraints (*why*, not *what*); omit `// Step 1` narration.
+
+## Playbooks
+
+Copy the matched playbook's steps into your checklist before coding (mark unused steps `skip: <reason>`):
+
+| Task | Playbook / Skill |
+|------|------------------|
+| Read-only explanation or tradeoff decision | [`playbooks/investigation.md`](playbooks/investigation.md) |
+| Reproduce, root-cause, and fix a defect | [`playbooks/bug-fix.md`](playbooks/bug-fix.md) |
+| New or changed behavior from a named shape | [`playbooks/feature.md`](playbooks/feature.md) |
+| Behavior-preserving structural cleanup | [`playbooks/refactoring.md`](playbooks/refactoring.md) |
+| Committing, opening PR, watching CI, merging | [`playbooks/opening-a-pr.md`](playbooks/opening-a-pr.md) |
+| Throwaway UI or behavior design prototype | [`playbooks/prototype.md`](playbooks/prototype.md) |
+| Pixel-exact UI migration against baseline | [`playbooks/visual-parity.md`](playbooks/visual-parity.md) |
+| One-off profiled performance fix | [`playbooks/perf-issue.md`](playbooks/perf-issue.md) |
+| Iterative metric optimization loop | [`playbooks/hillclimb.md`](playbooks/hillclimb.md) |
+| Instrument live process to diagnose bug/leak | [`playbooks/runtime-forensics.md`](playbooks/runtime-forensics.md) |
+| Analyze existing trace/profile/heap dump | [`playbooks/trace-forensics.md`](playbooks/trace-forensics.md) |
+| Multi-phase / stacked-PR checklist plan | [`playbooks/multi-phase-plan.md`](playbooks/multi-phase-plan.md) |
+| Single-goal autonomous check loop | [`playbooks/autonomous-run.md`](playbooks/autonomous-run.md) |
+| Parallel independent PR owners (auto-merge when verified) | [`playbooks/autopilot-full.md`](playbooks/autopilot-full.md) |
+| Parallel or stacked PR owners (stop at verified) | [`playbooks/autopilot-stack.md`](playbooks/autopilot-stack.md) |
+| Stacked/multi-PR babysit loop (or `../babysit/SKILL.md` for single PR) | [`playbooks/babysit.md`](playbooks/babysit.md) |
+| Verify and land a PR stack bottom-up | [`playbooks/shipping.md`](playbooks/shipping.md) |
+| Resume from checkpoint / prior session | [`playbooks/session-pickup.md`](playbooks/session-pickup.md) |
+| Stop cleanly and save resume checkpoint | [`playbooks/pause-safely.md`](playbooks/pause-safely.md) |
+| Safe git worktree & cache cleanup audit | [`playbooks/worktree-cleanup.md`](playbooks/worktree-cleanup.md) |
+| Author or revise a repo/personal skill | [`playbooks/authoring-a-skill.md`](playbooks/authoring-a-skill.md) |
+| Blinded evaluation of skill/prompt variants | [`playbooks/eval.md`](playbooks/eval.md) |
+| Large, ambiguous, or bespoke multi-phase effort | Use sibling `../figure-it-out/SKILL.md` |

@@ -1,15 +1,4 @@
 {
-  "extraKnownMarketplaces": {
-    "pstack-claude": {
-      "source": {
-        "source": "github",
-        "repo": "michael-denyer/pstack-claude"
-      }
-    }
-  },
-  "enabledPlugins": {
-    "pstack@pstack-claude": true
-  },
   "hooks": {
     "PreToolUse": [
       {
@@ -17,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/development/agent-guard.mjs\""
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/development/agent-guard.mjs\" --runtime=claude"
           }
         ]
       }

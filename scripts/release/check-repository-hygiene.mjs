@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -8,6 +8,7 @@ import { listRepositoryPaths } from "./repository-paths.mjs";
 export const repoRoot = fileURLToPath(new URL("../../", import.meta.url));
 
 const FORBIDDEN_DIRECTORY_NAMES = new Map([
+  [".audit", "pstack local checklist or decision trail"],
   [".batch-work", "bounded batch operation output"],
   [".next", "Next.js build output"],
   [".open-next", "OpenNext build output"],
@@ -160,12 +161,97 @@ export function findActiveAgentNavigationViolations({ cwd = repoRoot } = {}) {
   return violations.sort();
 }
 
+const AGENTS_SKILLS_PREFIX = ".agents/skills/";
+const CLAUDE_SKILLS_PREFIX = ".claude/skills/";
+const ALLOWED_AGENTS_SKILL_ROOT_FILES = new Set(["PSTACK-LICENSE.txt"]);
+const ALLOWED_CLAUDE_SKILL_ROOT_FILES = new Set(["README.md"]);
+
+function collectSkillMirrorEntries(paths, prefix, allowedRootFiles, violations) {
+  const entries = new Map();
+  for (const rawPath of paths) {
+    const normalized = normalizeRepositoryPath(rawPath);
+    if (!normalized.startsWith(prefix)) continue;
+    const rel = normalized.slice(prefix.length);
+    if (!rel) continue;
+    if (!rel.includes("/")) {
+      if (!allowedRootFiles.has(rel)) {
+        violations.push({
+          path: normalized,
+          reason: `unexpected root file under ${prefix}; move into a skill directory or remove`,
+        });
+      }
+      continue;
+    }
+    entries.set(rel, normalized);
+  }
+  return entries;
+}
+
+export function findSkillMirrorViolations(paths, { cwd = repoRoot } = {}) {
+  const violations = [];
+  const uniquePaths = [...new Set(paths.map(normalizeRepositoryPath).filter(Boolean))].sort();
+  const agentsEntries = collectSkillMirrorEntries(
+    uniquePaths,
+    AGENTS_SKILLS_PREFIX,
+    ALLOWED_AGENTS_SKILL_ROOT_FILES,
+    violations,
+  );
+  const claudeEntries = collectSkillMirrorEntries(
+    uniquePaths,
+    CLAUDE_SKILLS_PREFIX,
+    ALLOWED_CLAUDE_SKILL_ROOT_FILES,
+    violations,
+  );
+
+  for (const [rel, agentsPath] of agentsEntries) {
+    if (!claudeEntries.has(rel)) {
+      violations.push({
+        path: agentsPath,
+        reason: `missing mirrored counterpart at ${CLAUDE_SKILLS_PREFIX}${rel}; mirror .agents/skills/ and .claude/skills/ 1:1`,
+      });
+    }
+  }
+
+  for (const [rel, claudePath] of claudeEntries) {
+    if (!agentsEntries.has(rel)) {
+      violations.push({
+        path: claudePath,
+        reason: `missing mirrored counterpart at ${AGENTS_SKILLS_PREFIX}${rel}; mirror .agents/skills/ and .claude/skills/ 1:1`,
+      });
+    }
+  }
+
+  for (const [rel, agentsPath] of agentsEntries) {
+    const claudePath = claudeEntries.get(rel);
+    if (!claudePath) continue;
+    const agentsAbs = path.join(cwd, ...agentsPath.split("/"));
+    const claudeAbs = path.join(cwd, ...claudePath.split("/"));
+    if (!existsSync(agentsAbs)) {
+      violations.push({ path: agentsPath, reason: "skill file is missing on disk" });
+      continue;
+    }
+    if (!existsSync(claudeAbs)) {
+      violations.push({ path: claudePath, reason: "skill file is missing on disk" });
+      continue;
+    }
+    if (Buffer.compare(readFileSync(agentsAbs), readFileSync(claudeAbs)) !== 0) {
+      violations.push({
+        path: agentsPath,
+        reason: `byte content drifted from ${claudePath}; mirror .agents/skills/ and .claude/skills/ 1:1`,
+      });
+    }
+  }
+
+  return violations.sort((left, right) => (left.path < right.path ? -1 : left.path > right.path ? 1 : 0));
+}
+
 export function checkRepositoryHygiene({ cwd = repoRoot, quiet = false } = {}) {
   const paths = collectRepositoryPaths({ cwd });
   const violations = findRepositoryHygieneViolations(paths);
   const retiredRuntimeImports = findRetiredRuntimeImports(paths, { cwd });
   const authorityDocumentationViolations = findCurrentAuthorityDocumentationViolations({ cwd });
   const activeAgentNavigationViolations = findActiveAgentNavigationViolations({ cwd });
+  const skillMirrorViolations = findSkillMirrorViolations(paths, { cwd });
 
   for (const repositoryPath of retiredRuntimeImports) {
     violations.push({
@@ -187,6 +273,7 @@ export function checkRepositoryHygiene({ cwd = repoRoot, quiet = false } = {}) {
       reason: `active agent navigation references retired runtime surface: ${retiredReference}`,
     });
   }
+  violations.push(...skillMirrorViolations);
   violations.sort((left, right) => (left.path < right.path ? -1 : left.path > right.path ? 1 : 0));
 
   if (violations.length > 0) {

@@ -62,7 +62,7 @@
   3. 跑 `git worktree remove <path>`（确认只剩 `.audit/` 或构建产物等无关文件时再加 `--force`；若 Windows 留下 `node_modules` 空壳，删掉残留目录后再跑 `git worktree prune`）；
   4. 确认 PR 已合入后用 `git branch -D <branch>` 删除本地分支（squash 合并会生成新提交，`-d` 会拒绝），再跑 `git worktree prune` 和 `git fetch --prune origin`。
 - 只清理本次任务自己创建的 worktree 和分支。发现 `git worktree list` 中有其他会话遗留的 worktree 时，列出各自状态（已合并 / 未合并 / 有未提交改动），征得用户明确同意后再删。
-- 不要用 `git stash`：所有 worktree 共用一个 stash 列表，会拿错别人的修改。`.claude/settings.json` 里的 PreToolUse hook 会在 Claude Code 里拦下它。其他 agent 没有这两道 hook，照文字规则做。
+- 不要用 `git stash`：所有 worktree 共用一个 stash 列表，会拿错别人的修改。`.claude/settings.json`（Claude Code）和 `.agents/hooks.json`（Antigravity）都会调用 `scripts/development/agent-guard.mjs` 在执行前拦下它。
 - 不覆盖用户已有的未提交修改；遇到冲突或不确定的修改来源时先说明情况。
 - 提交信息和 PR 用中文，提交信息用 Conventional Commits 前缀（如 `fix(mobile): …`）。PR 正文按 `.github/PULL_REQUEST_TEMPLATE.md` 的小节写，`## Why` 开头写用户的目标。
 - 不要提交本地调试时对 `apps/mobile/package.json` 做的临时改动。
@@ -94,18 +94,18 @@
 
 ## pstack
 
-The `pstack` plugin (`pstack@pstack-claude`) is enabled for this project in `.claude/settings.json`. Its SessionStart hook routes tasks to `poteto-mode`, which picks a pstack workflow. Follow that workflow: its playbooks, review gates (`/deslop`, `/no-comments`, an independent reviewer), and verification on the real artifact.
+49 个仓库内置技能（44 个 `pstack` 0.15.48 技能与 5 个互补技能）检入 `.agents/skills/`（Antigravity），并与 `.claude/skills/`（Claude Code）保持逐字节 1:1 镜像，由 `npm run check:repository-hygiene`（以及 `npm run verify:dev`）自动校对。仓库不再引用外部 `pstack@pstack-claude` 插件，也不启用外部 `SessionStart` 路由钩子；日常非简单任务直接以 `.agents/skills/poteto-mode/SKILL.md` 为入口（内含 22 套剧本、`references/principles/` 24 条原则细则、`references/agy-tools.md` 工具映射与子 Agent 底线 `worker.md`）。
 
 This file adds project facts pstack cannot know. Where the two disagree, this file wins on every rule in sections 1–8 and 「UI 与内容」 above, including the shared checkout and worktrees, no `git stash`, merge and deploy gates, the actions that need the user's consent, language, and the UI and data rules.
 
 - Commit messages and PR text are Chinese. Apply `/unslop` to them (short declarative sentences, no filler). The English STE vocabulary rules in `/technical-writing` apply only to English text.
-- Todo checklists and decision trails go in `.audit/<task-slug>.todo.md` and `.audit/<task-slug>.tsv`. `.audit/` is git-ignored.
-- Project playbooks in `.agents/playbooks/` extend pstack's: `landing-a-pr.md` (the merge gate) and `ui-layout.md` (mockup before layout code). After a pstack upgrade, run its `skills/poteto-mode/scripts/check-playbooks.mjs` from the repo root.
+- Todo checklists, scratch probes, and decision trails go in `.audit/<task-slug>.todo.md` and `.audit/<task-slug>.tsv`. `.audit/` is git-ignored and blocked from tracking by `npm run check:repository-hygiene`.
+- PandaAtlas's PR merge gate and UI layout mockup-first rules are folded directly into `.agents/skills/poteto-mode/playbooks/opening-a-pr.md` and `.agents/skills/poteto-mode/playbooks/feature.md`.
 - The mobile app's driver skill is `apps/mobile/.claude/skills/verify/` (`verify`): doctor, launch (local stack, the same journeys on CI, or production preview), drive, evidence, cleanup, and a feature map. Use it for any change a user can see in `apps/mobile`. Keep its `features/` map current when a feature changes (`/maintain-verification-skill`).
 
-## Matt Pocock 技能与 Issue 工作流
+## 互补技能与 Issue 工作流
 
-External skills (including Matt Pocock skills v1.3.1) are recorded in `skills-lock.json` rather than vendored in the repository; load them through the installed harness plugins (such as `mattpocock-skills`).
+5 个互补技能（`codebase-design`、`grilling`、`improve-codebase-architecture`、`to-questionnaire`、`wizard`）与 `pstack` 一并镜像在 `.agents/skills/` 和 `.claude/skills/`；其余外部前端与动效技能（如 `emilkowalski/skills`、`make-interfaces-feel-better`）继续记录在 `skills-lock.json` 中按需由客户端插件加载。同名的 `tdd` 和 `teach` 以仓库内嵌的 `pstack` 技能为准。
 
 ### Issue tracker
 
