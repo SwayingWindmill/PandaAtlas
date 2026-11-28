@@ -10,12 +10,14 @@ import { PUBLIC_READ_PORT, type PublicReadPort } from "../public-read/applicatio
 import { PublicReadModule } from "../public-read/public-read.module.js";
 import { NEWS_PORT, NewsApplication } from "./application/news.application.js";
 import { NewsController } from "./http/news.controller.js";
+import { NewsIngestGuard } from "./http/news-ingest.guard.js";
 import { PostgresNewsRepository } from "./infrastructure/postgres-news.repository.js";
 
 @Module({
   imports: [ConfigModule, DatabaseModule, IntegrationModule, RequestContextModule, PublicReadModule],
   controllers: [NewsController],
   providers: [
+    NewsIngestGuard,
     {
       provide: NEWS_PORT,
       useFactory: (

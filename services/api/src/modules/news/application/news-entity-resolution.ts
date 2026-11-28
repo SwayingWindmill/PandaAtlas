@@ -123,12 +123,18 @@ export function createNewsEntityResolver(catalog: EntityReferenceCatalog): NewsE
         instPhrases.push({ alias: normalized, ref });
       }
     }
-    const domainCandidates = [inst.profile?.websiteUrl, ...(inst.profile?.sourceUrls ?? [])];
-    for (const candidateUrl of domainCandidates) {
-      const host = hostnameOf(candidateUrl);
-      if (host && !host.includes("weibo.") && !host.includes("xiaohongshu.") && !host.includes("douyin.")) {
-        instDomainIndex.set(host, ref);
-      }
+    const host = hostnameOf(inst.profile?.websiteUrl);
+    if (
+      host &&
+      !host.includes("weibo.") &&
+      !host.includes("xiaohongshu.") &&
+      !host.includes("douyin.") &&
+      !host.includes("wikipedia.") &&
+      !host.includes("wikidata.") &&
+      !host.includes("douban.") &&
+      !host.includes("baidu.")
+    ) {
+      instDomainIndex.set(host, ref);
     }
   }
 

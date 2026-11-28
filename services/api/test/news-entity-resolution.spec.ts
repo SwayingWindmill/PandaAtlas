@@ -16,7 +16,7 @@ function catalogFixture(): EntityReferenceCatalog {
           kind: "breeding_center",
           websiteUrl: "https://www.panda.org.cn/cn/",
           verifiedOn: "2026-11-01",
-          sourceUrls: ["https://www.panda.org.cn/cn/"],
+          sourceUrls: ["https://www.panda.org.cn/cn/", "https://en.wikipedia.org/wiki/Chengdu"],
         },
       },
       {
@@ -163,5 +163,12 @@ describe("createNewsEntityResolver", () => {
     });
     expect(officialNotice.institution?.slug).toBe("chengdu-research-base");
     expect(officialNotice.pandas.map((p) => p.canonicalSlug)).toEqual(["he-hua-chengdu"]);
+
+    const wikiLink = resolver.resolveItem({
+      sourceTier: "media",
+      sourceUrl: "https://en.wikipedia.org/wiki/Giant_panda",
+      pandaNames: [],
+    });
+    expect(wikiLink.institution).toBeUndefined();
   });
 });

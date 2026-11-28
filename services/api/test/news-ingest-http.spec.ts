@@ -10,6 +10,7 @@ import type {
 } from "../src/modules/news/application/news.application.js";
 import { decodeNewsCursor, encodeNewsCursor, NewsApplication } from "../src/modules/news/application/news.application.js";
 import { NewsController } from "../src/modules/news/http/news.controller.js";
+import { NewsIngestGuard } from "../src/modules/news/http/news-ingest.guard.js";
 import { NewsIngestBatchDto } from "../src/modules/news/http/news.dto.js";
 import type { PublicReadPort } from "../src/modules/public-read/application/public-read.application.js";
 import type { AppConfig } from "../src/platform/config/app-config.js";
@@ -260,5 +261,21 @@ describe("NewsController & NewsApplication ingest guardrails", () => {
     const invalidId = encodeNewsCursor("2026-11-28T08:00:00.000Z", "not-a-uuid");
     expect(() => decodeNewsCursor(invalidId)).toThrowError(DomainError);
     expect(() => decodeNewsCursor(invalidId)).toThrow(/cursor is malformed/);
+  });
+
+  it("enforces ingest auth in NewsIngestGuard before DTO validation", () => {
+    const mockContext = (headers: Record<string, string>) =>
+      ({
+        switchToHttp: () => ({ getRequest: () => ({ headers }) }),
+      }) as never;
+
+    const disabledGuard = new NewsIngestGuard({ newsIngestToken: undefined } as AppConfig);
+    expect(() => disabledGuard.canActivate(mockContext({}))).toThrow(/not configured/);
+
+    const activeGuard = new NewsIngestGuard({ newsIngestToken: "news-secret-token-1234" } as AppConfig);
+    expect(() => activeGuard.canActivate(mockContext({ authorization: "Bearer wrong" }))).toThrow(
+      /valid ingest bearer token/,
+    );
+    expect(activeGuard.canActivate(mockContext({ authorization: "Bearer news-secret-token-1234" }))).toBe(true);
   });
 });

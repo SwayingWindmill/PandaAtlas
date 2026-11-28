@@ -153,5 +153,25 @@ describe("evaluateFactCandidate", () => {
     });
     expect(delayedTransfer?.gateStatus).toBe("insufficient_source");
     expect(delayedTransfer?.reviewState).toBe("pending_review");
+
+    const nonResidentNaming = evaluateFactCandidate({
+      sourceTier: "institution",
+      publishedAtIso: "2026-11-28T03:00:00.000Z",
+      scope: "single",
+      factChange: { kind: "naming", namingStatus: "official", date: "2026-11-28" },
+      evidenceQuote: "正式命名为和花。",
+      resolution: {
+        institution: { institutionId: "inst-bj", slug: "beijing-zoo", name: "北京动物园" },
+        toInstitution: undefined,
+        pandas: [{ pandaId: "p-1", canonicalSlug: "he-hua-chengdu", name: "和花", institutionIds: new Set(["inst-cd"]) }],
+        unresolvedPandaNames: [],
+        ambiguousPandaNames: [],
+      },
+      allPandas: PANDAS,
+      allResidencies: RESIDENCIES,
+      rawPandaNames: ["和花"],
+    });
+    expect(nonResidentNaming?.gateStatus).toBe("insufficient_source");
+    expect(nonResidentNaming?.reviewState).toBe("pending_review");
   });
 });

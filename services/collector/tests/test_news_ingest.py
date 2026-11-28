@@ -347,3 +347,56 @@ def test_to_ingest_item_guards_blank_and_oversized_fields() -> None:
     clamped = news_ingest.to_ingest_item(blank_row, long_extracted, "fan", None)
     assert len(clamped["titleZh"]) == 80
     assert len(clamped["summaryZh"]) == 300
+
+    long_id_row = {
+        **_outbox_row(10),
+        "platform": "web",
+        "platform_item_id": "https://example.org/very/long/path/" + ("x" * 240),
+    }
+    compacted = news_ingest.to_ingest_item(long_id_row, long_extracted, "fan", None)
+    assert len(compacted["externalId"]) <= 200
+    assert not any(ch.isspace() for ch in compacted["externalId"])
+
+
+def test_resolve_author_tier_falls_back_to_account_target_for_bjzoo() -> None:
+    targets = [
+        Target(
+            "bjzoo:account:activityParkAnnouncement",
+            "bjzoo",
+            TargetKind.ACCOUNT,
+            "activityParkAnnouncement",
+            "北京动物园（园内公告）",
+            Tier.OFFICIAL,
+            240,
+            {},
+            role=Role.INSTITUTION,
+            institution="beijing-zoo",
+        ),
+        Target(
+            "douban_group:feed:745379",
+            "douban_group",
+            TargetKind.FEED,
+            "745379",
+            "豆瓣大熊猫小组",
+            Tier.KEYWORD,
+            180,
+            {"platform": "douban"},
+        ),
+    ]
+    account_map = news_ingest.build_account_map(targets)
+    target_map = news_ingest.build_target_map(targets)
+
+    bjzoo_row = {
+        **_outbox_row(11, platform="web", author_id=None),
+        "target_id": "bjzoo:account:activityParkAnnouncement",
+    }
+    assert news_ingest.resolve_author_tier(bjzoo_row, account_map, target_map) == (
+        "institution",
+        "beijing-zoo",
+    )
+
+    douban_row = {
+        **_outbox_row(12, platform="douban", author_id=None),
+        "target_id": "douban_group:feed:745379",
+    }
+    assert news_ingest.resolve_author_tier(douban_row, account_map, target_map) == ("fan", None)

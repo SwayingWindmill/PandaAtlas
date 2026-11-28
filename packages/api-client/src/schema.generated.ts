@@ -2410,9 +2410,9 @@ export interface components {
             phase?: "announced" | "completed" | null;
             /** @enum {string|null} */
             namingStatus?: "proposed" | "official" | null;
-            date?: Record<string, never> | null;
-            motherName?: Record<string, never> | null;
-            toPlace?: Record<string, never> | null;
+            date?: string | null;
+            motherName?: string | null;
+            toPlace?: string | null;
         };
         NewsIngestItemDto: {
             externalId: string;
@@ -2503,7 +2503,9 @@ export interface components {
             changePayload: {
                 [key: string]: unknown;
             };
-            evidenceItems: Record<string, never>[];
+            evidenceItems: {
+                [key: string]: unknown;
+            }[];
             gateStatus: string;
             /** @enum {string} */
             reviewState: "pending_review" | "approved" | "rejected";

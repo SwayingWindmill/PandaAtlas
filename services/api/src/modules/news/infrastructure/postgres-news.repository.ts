@@ -210,6 +210,8 @@ export class PostgresNewsRepository implements NewsRepository {
             await transaction
               .updateTable("news.items")
               .set({
+                platform: item.platform,
+                source_tier: item.sourceTier,
                 source_url: item.sourceUrl,
                 source_publisher: item.sourcePublisher,
                 title_zh: item.titleZh,
@@ -413,7 +415,7 @@ export class PostgresNewsRepository implements NewsRepository {
       .where("status", "=", "published");
 
     if (query.pandaSlug !== undefined) {
-      builder = builder.where(sql<boolean>`${query.pandaSlug} = any(panda_slugs)`);
+      builder = builder.where(sql<boolean>`panda_slugs @> array[${query.pandaSlug}]::text[]`);
     }
     if (query.institutionSlug !== undefined) {
       builder = builder.where("institution_slug", "=", query.institutionSlug);

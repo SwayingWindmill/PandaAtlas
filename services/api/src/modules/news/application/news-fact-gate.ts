@@ -146,9 +146,11 @@ export function evaluateFactCandidate(input: {
   } else if (input.sourceTier === "institution" && input.resolution.institution !== undefined) {
     const relatedInstId = input.resolution.institution.institutionId;
     const isLinkedToInst =
-      resolvedPanda === undefined ||
-      resolvedPanda.institutionIds.has(relatedInstId) ||
-      targetInst?.institutionId === relatedInstId;
+      kind === "transfer"
+        ? resolvedPanda === undefined ||
+          resolvedPanda.institutionIds.has(relatedInstId) ||
+          input.resolution.toInstitution?.institutionId === relatedInstId
+        : resolvedPanda === undefined || resolvedPanda.institutionIds.has(relatedInstId);
     gateStatus = isLinkedToInst ? "eligible_institution_source" : "insufficient_source";
   } else {
     gateStatus = "insufficient_source";

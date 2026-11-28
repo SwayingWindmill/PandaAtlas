@@ -48,6 +48,7 @@ targets:
     label: 北京动物园（园内外新闻）
     tier: official
     role: institution
+    institution: beijing-zoo
     interval_minutes: 240
   - adapter: bjzoo
     kind: account
@@ -55,6 +56,7 @@ targets:
     label: 北京动物园（园内公告）
     tier: official
     role: institution
+    institution: beijing-zoo
     interval_minutes: 240
   # Allowlisted public Douban panda groups (low-frequency, text + link only) --------------
   - adapter: douban_group

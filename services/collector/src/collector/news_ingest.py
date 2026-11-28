@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import logging
 from datetime import UTC, datetime
 from typing import Any
@@ -10,7 +11,7 @@ import httpx
 
 from collector import registry
 from collector.extractor import ExtractionError, ExtractionResult, LlmExtractor
-from collector.models import Target
+from collector.models import Target, TargetKind
 from collector.store import Store
 
 log = logging.getLogger(__name__)
@@ -39,20 +40,31 @@ def build_account_map(targets: list[Target]) -> dict[tuple[str, str], tuple[str,
     return mapping
 
 
+def build_target_map(targets: list[Target]) -> dict[str, tuple[str, str | None]]:
+    """Map `target.id` -> `(sourceTier, institutionSlug)` for single-account targets."""
+    mapping: dict[str, tuple[str, str | None]] = {}
+    for target in targets:
+        if target.kind is TargetKind.ACCOUNT and target.role is not None:
+            tier = ROLE_TO_SOURCE_TIER.get(target.role.value, "fan")
+            mapping[target.id] = (tier, target.institution)
+    return mapping
+
+
 def resolve_author_tier(
     row: dict[str, Any],
     account_map: dict[tuple[str, str], tuple[str, str | None]],
+    target_map: dict[str, tuple[str, str | None]] | None = None,
 ) -> tuple[str, str | None]:
     platform = str(row["platform"])
     original = (row.get("item_raw") or {}).get("original_author")
-    account_id = (
-        original.get("accountId")
-        if isinstance(original, dict) and original.get("accountId")
-        else row.get("author_id")
-    )
-    if account_id is None:
-        return ("fan", None)
-    return account_map.get((platform, str(account_id)), ("fan", None))
+    if isinstance(original, dict) and original.get("accountId"):
+        return account_map.get((platform, str(original["accountId"])), ("fan", None))
+    account_id = row.get("author_id")
+    if account_id is not None and str(account_id).strip():
+        return account_map.get((platform, str(account_id)), ("fan", None))
+    if target_map is not None:
+        return target_map.get(str(row.get("target_id") or ""), ("fan", None))
+    return ("fan", None)
 
 
 def extract_t1_cover_url(row: dict[str, Any], source_tier: str) -> str | None:
@@ -79,6 +91,14 @@ def _iso_timestamp(value: Any) -> str:
     return datetime.now(UTC).isoformat()
 
 
+def _normalize_external_id(platform: str, platform_item_id: Any) -> str:
+    raw_ext = f"{platform}:{platform_item_id}".strip()
+    if len(raw_ext) <= 200 and not any(ch.isspace() for ch in raw_ext):
+        return raw_ext
+    digest = hashlib.sha256(raw_ext.encode("utf-8")).hexdigest()[:40]
+    return f"{platform}:{digest}"[:200]
+
+
 def to_ingest_item(
     row: dict[str, Any],
     extracted: ExtractionResult,
@@ -94,12 +114,13 @@ def to_ingest_item(
     raw_title = str(row.get("title") or "").strip()
     title_zh = (extracted.zh_title.strip() or raw_title or "熊猫动态")[:80]
     summary_zh = (extracted.zh_summary.strip() or raw_title or title_zh)[:300]
+    source_url = str(row["url"]).strip()
     return {
-        "externalId": f"{platform}:{row['platform_item_id']}",
+        "externalId": _normalize_external_id(platform, row["platform_item_id"]),
         "platform": platform,
         "sourceTier": source_tier,
         "authorInstitutionSlug": author_institution_slug if source_tier == "institution" else None,
-        "sourceUrl": str(row["url"]),
+        "sourceUrl": source_url,
         "sourcePublisher": publisher,
         "publishedAt": _iso_timestamp(row.get("published_at") or row.get("first_seen_at")),
         "kind": extracted.kind,
@@ -128,6 +149,7 @@ async def push(
     if not rows:
         return 0
     account_map = build_account_map(targets)
+    target_map = build_target_map(targets)
     settled: set[tuple[int, int]] = set()
     accepted_payloads: list[tuple[tuple[int, int], str, dict[str, Any]]] = []
     skip_keys: list[tuple[int, int]] = []
@@ -136,12 +158,17 @@ async def push(
     try:
         for row in rows:
             key = (row["item_id"], row["version"])
-            url = str(row.get("url") or "")
-            if row.get("target_tier") == "backfill" or not url.startswith("https://"):
+            url = str(row.get("url") or "").strip()
+            valid_url = (
+                url.startswith("https://")
+                and len(url) <= 1000
+                and not any(ch.isspace() for ch in url)
+            )
+            if row.get("target_tier") == "backfill" or not valid_url:
                 skip_keys.append(key)
                 continue
 
-            source_tier, inst_slug = resolve_author_tier(row, account_map)
+            source_tier, inst_slug = resolve_author_tier(row, account_map, target_map)
             published_at = _iso_timestamp(row.get("published_at") or row.get("first_seen_at"))
             publisher = str(row.get("author_name") or row.get("target_label") or row["platform"])
             try:

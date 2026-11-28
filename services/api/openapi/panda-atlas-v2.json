@@ -7222,19 +7222,19 @@
           },
           "date": {
             "type": [
-              "object",
+              "string",
               "null"
             ]
           },
           "motherName": {
             "type": [
-              "object",
+              "string",
               "null"
             ]
           },
           "toPlace": {
             "type": [
-              "object",
+              "string",
               "null"
             ]
           }
@@ -7611,7 +7611,8 @@
           "evidenceItems": {
             "type": "array",
             "items": {
-              "type": "object"
+              "type": "object",
+              "additionalProperties": true
             }
           },
           "gateStatus": {

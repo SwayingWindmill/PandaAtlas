@@ -1,5 +1,5 @@
-import { createHash, randomUUID, timingSafeEqual } from "node:crypto";
-import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Query, Req } from "@nestjs/common";
+import { randomUUID } from "node:crypto";
+import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { Public } from "../../../platform/auth/public.decorator.js";
@@ -10,6 +10,7 @@ import { RequestContextService } from "../../../platform/request-context/request
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import { NEWS_PORT, type NewsPort } from "../application/news.application.js";
+import { assertNewsIngestAuthorized, NewsIngestGuard } from "./news-ingest.guard.js";
 import {
   DecideFactCandidateDto,
   DecideNewsItemDto,
@@ -29,19 +30,6 @@ function actorAccountId(request: HttpRequest): string {
     throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
   }
   return actor.accountId;
-}
-
-function bearerToken(request: HttpRequest): string | undefined {
-  const raw = request.headers.authorization;
-  if (typeof raw !== "string") return undefined;
-  const match = /^Bearer ([^\s]+)$/i.exec(raw.trim());
-  return match?.[1];
-}
-
-function constantTimeTokenMatch(provided: string, expected: string): boolean {
-  const left = createHash("sha256").update(provided, "utf8").digest();
-  const right = createHash("sha256").update(expected, "utf8").digest();
-  return timingSafeEqual(left, right);
 }
 
 @ApiTags("News")
@@ -73,6 +61,7 @@ export class NewsController {
   @Post("ingest")
   @HttpCode(200)
   @Public()
+  @UseGuards(NewsIngestGuard)
   @RateLimit("write", { keyStrategy: "ip" })
   @ApiOperation({
     operationId: "ingestCollectorNews",
@@ -80,14 +69,7 @@ export class NewsController {
   })
   @ApiOkResponse({ type: NewsIngestResultDto })
   public ingest(@Req() request: HttpRequest, @Body() input: NewsIngestBatchDto) {
-    const expected = this.config.newsIngestToken;
-    if (expected === undefined) {
-      throw new ProblemException(503, "news.ingestDisabled", "News ingest is not configured on this server.");
-    }
-    const provided = bearerToken(request);
-    if (provided === undefined || !constantTimeTokenMatch(provided, expected)) {
-      throw new ProblemException(401, "news.invalidIngestToken", "A valid ingest bearer token is required.");
-    }
+    assertNewsIngestAuthorized(request, this.config);
     const correlationId = this.requestContext.current?.correlationId ?? randomUUID();
     return this.news.ingestBatch(input.items, correlationId);
   }

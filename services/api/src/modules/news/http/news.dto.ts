@@ -54,19 +54,19 @@ export class NewsFactChangeInputDto implements ExtractedFactChangeInput {
   @IsIn(["proposed", "official"])
   public namingStatus?: "proposed" | "official" | null;
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ type: String, nullable: true })
   @IsOptional()
   @IsString()
   @Matches(/^\d{4}-\d{2}(?:-\d{2})?$/)
   public date?: string | null;
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ type: String, nullable: true })
   @IsOptional()
   @IsString()
   @MaxLength(80)
   public motherName?: string | null;
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ type: String, nullable: true })
   @IsOptional()
   @IsString()
   @MaxLength(80)
@@ -331,8 +331,9 @@ export class FactCandidateDto {
   @ApiPropertyOptional() public declare targetInstitutionId?: string;
   @ApiPropertyOptional() public declare targetInstitutionSlug?: string;
   @ApiPropertyOptional() public declare rawInstitutionName?: string;
-  @ApiProperty({ type: Object, additionalProperties: true }) public declare changePayload: Record<string, unknown>;
-  @ApiProperty({ type: [Object] }) public declare evidenceItems: Array<Record<string, unknown>>;
+  @ApiProperty({ type: "object", additionalProperties: true }) public declare changePayload: Record<string, unknown>;
+  @ApiProperty({ type: "array", items: { type: "object", additionalProperties: true } })
+  public declare evidenceItems: Array<Record<string, unknown>>;
   @ApiProperty() public declare gateStatus: string;
   @ApiProperty({ enum: FACT_REVIEW_STATES }) public declare reviewState: FactReviewState;
   @ApiPropertyOptional() public declare reviewNote?: string;
