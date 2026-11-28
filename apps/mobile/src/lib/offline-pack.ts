@@ -169,6 +169,7 @@ export async function downloadOfflinePack(
       () => requireIndexOk(() => api.GET("/api/v2/residencies")),
       () => requireIndexOk(() => api.GET("/api/v2/institutions")),
       () => requireIndexOk(() => api.GET("/api/v2/lineage")),
+      () => api.GET("/api/v2/learning").catch(() => null),
       () => api.GET("/api/v2/venue-news").catch(() => null),
       () => api.GET("/api/v2/venue-news", { params: { query: { institution: institution.slug } } }).catch(() => null),
     ];

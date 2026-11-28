@@ -6,7 +6,7 @@ A zoo or base has a single-scroll detail page (`/institutions/[slug]`, no middle
 
 - `venue-open-map` opens the page from the 地图 Tab's place list or marker sheet (`进入场馆与攻略`).
 - `venue-open-guide-link` accepts `/institutions/<slug>?tab=guide` harmlessly on the single-scroll page.
-- `venue-residents` filters residents directly in-scroll (`全部 / 未见过 / 我关注`, search, and `看全部熊猫` expansion).
+- `venue-residents` filters residents directly in-scroll (`全部 / 未见过 / 我关注`, search, and `看全部熊猫` expansion) and links to `/identify?institution=<slug>` (`现场认熊`) when `>= 2` residents live here.
 - `venue-follow` toggles 关注场馆 (cloud when signed in, local guest storage when signed out).
 - `venue-offline-pack` downloads, pins (`offline:packs:v1` + `offline:covers:v1`), updates, and removes a single venue's shared indexes, resident dossiers, and cover photos so opening the venue or its residents works offline past restarts.
 - `venue-visit` opens `/institutions/[slug]/checkin` from the top `去过打卡` / `今天已打卡` capsule (`button /^去过打卡/` or `button /^今天已打卡/`) for bundle check-in + `SouvenirTicket`, or records a quick facility visit via `FacilityVisits` (`记下今天去过<facility>`). This lives in [Collections and visits](./collections-visits.md).
