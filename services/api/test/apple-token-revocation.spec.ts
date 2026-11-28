@@ -113,14 +113,20 @@ describe("Apple token revocation", () => {
     expect(rows.has("acc-1")).toBe(false);
   });
 
-  it("maps Apple HTTP 400 token exchange rejection to AppleAuthorizationCodeInvalidError", async () => {
+  it("maps Apple HTTP 400 invalid_grant to AppleAuthorizationCodeInvalidError and keeps invalid_client as server error", async () => {
     const apple = await createAppleConfig();
     const { store } = createFakeTokenStore();
-    const fetchMock = vi.fn<typeof fetch>().mockResolvedValueOnce(new Response('{"error":"invalid_grant"}', { status: 400 }));
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response('{"error":"invalid_grant"}', { status: 400 }))
+      .mockResolvedValueOnce(new Response('{"error":"invalid_client"}', { status: 400 }));
     const service = new AppleTokenRevocationService({ appleRevocation: apple }, store, fetchMock);
 
     await expect(service.storeFromAuthorizationCode("acc-1", "bad-code")).rejects.toBeInstanceOf(
       AppleAuthorizationCodeInvalidError,
+    );
+    await expect(service.storeFromAuthorizationCode("acc-1", "valid-code")).rejects.toThrow(
+      "Apple token exchange rejected server credentials (invalid_client)",
     );
   });
 

@@ -61,6 +61,27 @@ function fromBase64Url(encoded: string): Uint8Array<ArrayBuffer> {
   return new Uint8Array(Buffer.from(encoded, "base64url"));
 }
 
+async function cancelResponseBody(response: Response): Promise<void> {
+  if (response.bodyUsed) return;
+  try {
+    await response.body?.cancel();
+  } catch {
+    return;
+  }
+}
+
+async function readAppleErrorCode(response: Response): Promise<string | undefined> {
+  try {
+    const payload: unknown = await response.json();
+    if (typeof payload === "object" && payload !== null && "error" in payload && typeof payload.error === "string") {
+      return payload.error;
+    }
+  } catch {
+    return undefined;
+  }
+  return undefined;
+}
+
 export async function encryptAppleRefreshToken(
   token: string,
   accountId: string,
@@ -150,8 +171,13 @@ export class AppleTokenRevocationService implements AppleTokenRevocationPort {
 
     if (!response.ok) {
       if (response.status === 400) {
+        const errorCode = await readAppleErrorCode(response);
+        if (errorCode === "invalid_client" || errorCode === "unauthorized_client") {
+          throw new Error(`Apple token exchange rejected server credentials (${errorCode})`);
+        }
         throw new AppleAuthorizationCodeInvalidError("Apple rejected the authorization code");
       }
+      await cancelResponseBody(response);
       throw new Error(`Apple token exchange failed with HTTP ${response.status}`);
     }
 
@@ -198,6 +224,7 @@ export class AppleTokenRevocationService implements AppleTokenRevocationPort {
     });
 
     if (!response.ok) {
+      await cancelResponseBody(response);
       throw new Error(`Apple token revocation failed with HTTP ${response.status}`);
     }
 

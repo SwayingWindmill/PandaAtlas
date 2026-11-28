@@ -56,7 +56,7 @@ export function Verification({
   onVerified: () => void;
 }) {
   const { reauthenticateWithApple } = useSession();
-  const [appleAvailable, setAppleAvailable] = useState(false);
+  const [appleAvailable, setAppleAvailable] = useState<boolean | null>(null);
   const [useEmailFallback, setUseEmailFallback] = useState(false);
   const [sent, setSent] = useState(false);
   const [code, setCode] = useState("");
@@ -133,7 +133,9 @@ export function Verification({
     }
   }
 
-  const appleMode = authProvider === "apple" && appleAvailable && !useEmailFallback;
+  if (authProvider === "apple" && appleAvailable === null) return null;
+
+  const appleMode = authProvider === "apple" && appleAvailable === true && !useEmailFallback;
 
   if (appleMode) {
     return (

@@ -1292,6 +1292,15 @@ CREATE TABLE IF NOT EXISTS "identity"."accounts" (
 
 ALTER TABLE "identity"."accounts" OWNER TO "postgres";
 
+CREATE TABLE IF NOT EXISTS "identity"."apple_revocation_tokens" (
+    "account_id" "uuid" NOT NULL,
+    "refresh_token_ciphertext" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+ALTER TABLE "identity"."apple_revocation_tokens" OWNER TO "postgres";
+
 CREATE TABLE IF NOT EXISTS "identity"."authorization_audit_events" (
     "audit_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "event_type" "text" NOT NULL,
@@ -2701,6 +2710,9 @@ ALTER TABLE ONLY "identity"."account_state_events"
 ALTER TABLE ONLY "identity"."accounts"
     ADD CONSTRAINT "accounts_pkey" PRIMARY KEY ("account_id");
 
+ALTER TABLE ONLY "identity"."apple_revocation_tokens"
+    ADD CONSTRAINT "apple_revocation_tokens_pkey" PRIMARY KEY ("account_id");
+
 ALTER TABLE ONLY "identity"."authorization_audit_events"
     ADD CONSTRAINT "authorization_audit_events_pkey" PRIMARY KEY ("audit_id");
 
@@ -3386,6 +3398,9 @@ ALTER TABLE ONLY "identity"."account_state_events"
 ALTER TABLE ONLY "identity"."account_state_events"
     ADD CONSTRAINT "account_state_events_actor_account_id_fkey" FOREIGN KEY ("actor_account_id") REFERENCES "identity"."accounts"("account_id") ON DELETE RESTRICT;
 
+ALTER TABLE ONLY "identity"."apple_revocation_tokens"
+    ADD CONSTRAINT "apple_revocation_tokens_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "identity"."accounts"("account_id") ON DELETE CASCADE;
+
 ALTER TABLE ONLY "identity"."authorization_audit_events"
     ADD CONSTRAINT "authorization_audit_events_actor_account_id_fkey" FOREIGN KEY ("actor_account_id") REFERENCES "identity"."accounts"("account_id") ON DELETE RESTRICT;
 
@@ -3872,6 +3887,8 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "game"."questions" TO "zhipanda_app";
 GRANT SELECT,INSERT ON TABLE "identity"."account_state_events" TO "zhipanda_app";
 
 GRANT SELECT,INSERT,UPDATE ON TABLE "identity"."accounts" TO "zhipanda_app";
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "identity"."apple_revocation_tokens" TO "zhipanda_app";
 
 GRANT SELECT,INSERT ON TABLE "identity"."authorization_audit_events" TO "zhipanda_app";
 
