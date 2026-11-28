@@ -7016,7 +7016,10 @@
             "type": "string",
             "enum": [
               "knowledge_update",
-              "correction"
+              "correction",
+              "birthday_reminder",
+              "panda_news",
+              "venue_news"
             ]
           },
           "content": {
@@ -7069,7 +7072,10 @@
             "type": "string",
             "enum": [
               "knowledge_update",
-              "correction"
+              "correction",
+              "birthday_reminder",
+              "panda_news",
+              "venue_news"
             ]
           },
           "channel": {
@@ -7109,7 +7115,10 @@
             "type": "string",
             "enum": [
               "knowledge_update",
-              "correction"
+              "correction",
+              "birthday_reminder",
+              "panda_news",
+              "venue_news"
             ]
           },
           "channel": {

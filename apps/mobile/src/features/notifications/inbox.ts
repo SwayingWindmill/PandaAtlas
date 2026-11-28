@@ -1,8 +1,12 @@
+import type { components } from "@zhipanda/api-client";
 import { queryOptions } from "@tanstack/react-query";
 
 import { authedApi } from "@/lib/api";
 
 import type { Message, Preference } from "./notifications";
+
+export type DeviceToken = components["schemas"]["NotificationDeviceDto"];
+export type DevicePlatform = components["schemas"]["NotificationDeviceInputDto"]["platform"];
 
 /** Newest first, as the API returns them. */
 export async function loadInbox(): Promise<Message[]> {
@@ -45,4 +49,24 @@ export async function savePreference(input: Pick<Preference, "category" | "chann
   const { data } = await authedApi.PUT("/api/v2/me/notifications/preferences", { body: input });
   if (!data) throw new Error("Notification preference not saved");
   return data;
+}
+
+export async function registerNotificationDevice(
+  expoPushToken: string,
+  platform: DevicePlatform,
+): Promise<DeviceToken> {
+  const { data, response } = await authedApi.POST("/api/v2/me/notifications/devices", {
+    body: { expoPushToken, platform },
+  });
+  if (!data) throw new Error(`Notification device not registered (${response.status})`);
+  return data;
+}
+
+export async function removeNotificationDevice(deviceTokenId: string): Promise<boolean> {
+  const { response } = await authedApi.DELETE("/api/v2/me/notifications/devices/{tokenId}", {
+    params: { path: { tokenId: deviceTokenId } },
+  });
+  if (response.status === 404) return false;
+  if (!response.ok) throw new Error(`Notification device not removed (${response.status})`);
+  return true;
 }

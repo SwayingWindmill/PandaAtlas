@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useMemo } from "react";
-import { Pressable, View } from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AppState, Linking, Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { Icon } from "@/components/icon";
@@ -10,6 +10,7 @@ import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PandaThumb } from "@/components/panda-thumb";
 import { ScreenState } from "@/components/screen-state";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SwitchRow } from "@/components/grouped-list";
 import { Text } from "@/components/ui/text";
@@ -32,6 +33,11 @@ import {
   preferenceRows,
   unreadCount,
 } from "@/features/notifications/notifications";
+import {
+  type PushPermissionState,
+  checkNativePushPermission,
+  registerPushDeviceForAccount,
+} from "@/features/notifications/push";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
@@ -60,7 +66,11 @@ function Inbox({
   return (
     <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
       {messages.map((message, index) => {
-        const view = messageView(message, (pandaId) => pandas.get(pandaId)?.name ?? null);
+        const view = messageView(
+          message,
+          (pandaId) => pandas.get(pandaId)?.name ?? null,
+          (pandaId) => pandas.get(pandaId)?.slug ?? null,
+        );
         const unread = message.readAt === null;
         const panda = view.pandaId ? pandas.get(view.pandaId) : undefined;
         const time = (
@@ -74,6 +84,7 @@ function Inbox({
               onPress={() => {
                 if (unread) onRead(message);
                 if (panda) openPanda(panda.slug);
+                else if (view.href && view.href !== "/notifications") router.push(view.href);
               }}
               role="button"
               accessibilityLabel={`${unread ? "未读，" : ""}${view.title}`}
@@ -161,6 +172,7 @@ export default function NotificationsScreen() {
   const { state: session } = useSession();
   const { accountId, unavailable } = useAccount();
   const queryClient = useQueryClient();
+  const [pushPermission, setPushPermission] = useState<PushPermissionState>("unsupported");
   const enabled = accountId !== null;
   const inbox = useQuery({ ...inboxQueryOptions(accountId ?? ""), enabled });
   const stored = useQuery({ ...preferencesQueryOptions(accountId ?? ""), enabled });
@@ -221,16 +233,55 @@ export default function NotificationsScreen() {
     readOne.reset();
     readEvery.mutate();
   };
-  const change = (row: PreferenceRow, enabled: boolean) =>
+  const syncGrantedToken = useCallback(
+    (next: PushPermissionState) => {
+      setPushPermission(next);
+      if (next === "granted" && accountId) {
+        void registerPushDeviceForAccount(accountId, { promptPermission: false });
+      }
+    },
+    [accountId],
+  );
+
+  useEffect(() => {
+    if (!accountId) return;
+    let active = true;
+    void checkNativePushPermission().then((next) => {
+      if (active) syncGrantedToken(next);
+    });
+    const subscription = AppState.addEventListener("change", (nextState) => {
+      if (nextState !== "active") return;
+      void checkNativePushPermission().then((next) => {
+        if (active) syncGrantedToken(next);
+      });
+    });
+    return () => {
+      active = false;
+      subscription.remove();
+    };
+  }, [accountId, syncGrantedToken]);
+
+  const requestPushPermission = () => {
+    if (!accountId) return;
+    void registerPushDeviceForAccount(accountId, { promptPermission: true })
+      .then(() => checkNativePushPermission())
+      .then(syncGrantedToken);
+  };
+
+  const change = (row: PreferenceRow, enabled: boolean) => {
     save.mutate({ category: row.category, channel: row.channel, enabled });
+    if (row.channel === "push" && enabled && accountId) {
+      requestPushPermission();
+    }
+  };
 
   const unread = messages ? unreadCount(messages) : 0;
   if (session.status === "signedOut") {
     return (
       <Page title="通知与提醒">
         <ScreenState
-          message="绑定邮箱登录后，关注熊猫有新资料更新或状态变化时会自动通知你。"
-          actionLabel="绑定同步"
+          message="登录后，关注的熊猫过生日或有新动态时会自动通知你。"
+          actionLabel="去登录"
           onAction={() => router.push("/sign-in")}
         />
       </Page>
@@ -270,6 +321,27 @@ export default function NotificationsScreen() {
             ) : null}
           </View>
           <View className="gap-1.5">
+            {pushPermission === "promptable" ? (
+              <View className="flex-row items-center justify-between gap-row rounded-card bg-card p-stack" style={{ borderCurve: "continuous" }}>
+                <Text variant="footnote" className="min-w-0 flex-1 text-muted-foreground">
+                  打开手机系统通知，才能第一时间收到关注熊猫的生日与新动态。
+                </Text>
+                <Button size="sm" onPress={requestPushPermission}>
+                  <Text>开启手机通知</Text>
+                </Button>
+              </View>
+            ) : pushPermission === "denied" ? (
+              <View className="flex-row items-center justify-between gap-row rounded-card bg-card p-stack" style={{ borderCurve: "continuous" }}>
+                <Text variant="footnote" className="min-w-0 flex-1 text-muted-foreground">
+                  系统通知权限未开启，请先在系统设置里允许吱熊猫发送通知。
+                </Text>
+                <Pressable onPress={() => void Linking.openSettings()} role="button" hitSlop={8}>
+                  <Text variant="footnote" className="text-primary">
+                    去系统设置
+                  </Text>
+                </Pressable>
+              </View>
+            ) : null}
             <Preferences rows={preferenceRows(preferences)} onChange={change} />
             {saveFailed ? (
               <Text variant="footnote" className="px-inset text-destructive">

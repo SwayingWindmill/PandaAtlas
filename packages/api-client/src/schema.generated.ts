@@ -2352,7 +2352,7 @@ export interface components {
             /** Format: uuid */
             messageId: string;
             /** @enum {string} */
-            category: "knowledge_update" | "correction";
+            category: "knowledge_update" | "correction" | "birthday_reminder" | "panda_news" | "venue_news";
             content: {
                 [key: string]: unknown;
             };
@@ -2368,7 +2368,7 @@ export interface components {
         };
         NotificationPreferenceDto: {
             /** @enum {string} */
-            category: "knowledge_update" | "correction";
+            category: "knowledge_update" | "correction" | "birthday_reminder" | "panda_news" | "venue_news";
             /** @enum {string} */
             channel: "station" | "email" | "push";
             enabled: boolean;
@@ -2378,7 +2378,7 @@ export interface components {
         };
         NotificationPreferenceInputDto: {
             /** @enum {string} */
-            category: "knowledge_update" | "correction";
+            category: "knowledge_update" | "correction" | "birthday_reminder" | "panda_news" | "venue_news";
             /** @enum {string} */
             channel: "station" | "email" | "push";
             enabled: boolean;

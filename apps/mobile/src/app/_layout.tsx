@@ -11,6 +11,7 @@ import { OfflineBanner } from "@/components/offline-banner";
 import { applyStoredAppearance } from "@/features/appearance/appearance";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { usePushNotifications } from "@/features/notifications/push";
 import { SessionProvider } from "@/features/session/session";
 import { installGlobalErrorReporting, reportError } from "@/lib/error-reporting";
 import { QueryProvider } from "@/lib/query-provider";
@@ -52,6 +53,11 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   );
 }
 
+function PushNotificationBridge() {
+  usePushNotifications();
+  return null;
+}
+
 export default function RootLayout() {
   const { scheme } = useIOSColors();
   useSilentUpdates();
@@ -62,6 +68,7 @@ export default function RootLayout() {
   return (
     <QueryProvider>
       <SessionProvider>
+        <PushNotificationBridge />
         <ThemeProvider value={NAV_THEME[scheme]}>
           <StatusBar style={scheme === "dark" ? "light" : "dark"} />
           <Stack screenOptions={{ ...stackScreenOptions(scheme), headerLargeTitleEnabled: false }}>

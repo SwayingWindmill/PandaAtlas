@@ -1,7 +1,22 @@
 import { DomainError } from "../../../platform/errors/domain-error.js";
-export type NotificationCategory = "knowledge_update" | "correction";
-export type NotificationChannel = "station" | "email" | "push";
+
+export const NOTIFICATION_CATEGORIES = [
+  "knowledge_update",
+  "correction",
+  "birthday_reminder",
+  "panda_news",
+  "venue_news",
+] as const;
+
+export type NotificationCategory = (typeof NOTIFICATION_CATEGORIES)[number];
+
+export const NOTIFICATION_CHANNELS = ["station", "email", "push"] as const;
+export type NotificationChannel = (typeof NOTIFICATION_CHANNELS)[number];
 export type NotificationDevicePlatform = "ios" | "android";
+
+export function defaultChannelEnabled(channel: NotificationChannel): boolean {
+  return channel === "station" || channel === "push";
+}
 
 export const EXPO_PUSH_TOKEN_PATTERN = /^(Exponent|Expo)PushToken\[[A-Za-z0-9_+./:=-]+\]$/;
 

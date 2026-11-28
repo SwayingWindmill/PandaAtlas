@@ -16,4 +16,29 @@ export class PostgresEngagementNotificationQuery implements EngagementNotificati
       .execute();
     return rows.map((row) => row.account_id);
   }
+
+  public async listFavoritedPandaIds(transaction: DatabaseTransaction): Promise<string[]> {
+    const rows = await transaction
+      .selectFrom("engagement.favorites")
+      .select("panda_id")
+      .distinct()
+      .orderBy("panda_id")
+      .execute();
+    return rows.map((row) => row.panda_id);
+  }
+
+  public async listAccountsFollowingInstitutions(
+    transaction: DatabaseTransaction,
+    institutionIds: readonly string[],
+  ): Promise<string[]> {
+    if (institutionIds.length === 0) return [];
+    const rows = await transaction
+      .selectFrom("engagement.venue_follows")
+      .select("account_id")
+      .distinct()
+      .where("institution_id", "in", [...institutionIds])
+      .orderBy("account_id")
+      .execute();
+    return rows.map((row) => row.account_id);
+  }
 }

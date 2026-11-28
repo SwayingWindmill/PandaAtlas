@@ -77,6 +77,7 @@
       "expo-image",
       "expo-sharing",
       "expo-apple-authentication",
+      "expo-notifications",
       [
         "expo-media-library",
         {

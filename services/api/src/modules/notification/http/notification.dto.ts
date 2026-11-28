@@ -1,15 +1,21 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsIn, IsString, Matches, MaxLength } from "class-validator";
-import { EXPO_PUSH_TOKEN_PATTERN } from "../application/notification.application.js";
+import {
+  EXPO_PUSH_TOKEN_PATTERN,
+  NOTIFICATION_CATEGORIES,
+  NOTIFICATION_CHANNELS,
+  type NotificationCategory,
+  type NotificationChannel,
+} from "../application/notification.application.js";
 
 export class NotificationPreferenceInputDto {
-  @ApiProperty({ enum: ["knowledge_update", "correction"] })
-  @IsIn(["knowledge_update", "correction"])
-  public declare category: "knowledge_update" | "correction";
+  @ApiProperty({ enum: [...NOTIFICATION_CATEGORIES] })
+  @IsIn([...NOTIFICATION_CATEGORIES])
+  public declare category: NotificationCategory;
 
-  @ApiProperty({ enum: ["station", "email", "push"] })
-  @IsIn(["station", "email", "push"])
-  public declare channel: "station" | "email" | "push";
+  @ApiProperty({ enum: [...NOTIFICATION_CHANNELS] })
+  @IsIn([...NOTIFICATION_CHANNELS])
+  public declare channel: NotificationChannel;
 
   @ApiProperty()
   @IsBoolean()
@@ -17,10 +23,10 @@ export class NotificationPreferenceInputDto {
 }
 
 export class NotificationPreferenceDto {
-  @ApiProperty({ enum: ["knowledge_update", "correction"] })
+  @ApiProperty({ enum: [...NOTIFICATION_CATEGORIES] })
   public declare category: string;
 
-  @ApiProperty({ enum: ["station", "email", "push"] })
+  @ApiProperty({ enum: [...NOTIFICATION_CHANNELS] })
   public declare channel: string;
 
   @ApiProperty()
@@ -37,7 +43,7 @@ export class NotificationMessageDto {
   @ApiProperty({ format: "uuid" })
   public declare messageId: string;
 
-  @ApiProperty({ enum: ["knowledge_update", "correction"] })
+  @ApiProperty({ enum: [...NOTIFICATION_CATEGORIES] })
   public declare category: string;
 
   @ApiProperty({ type: Object, additionalProperties: true })

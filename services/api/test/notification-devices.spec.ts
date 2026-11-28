@@ -4,7 +4,9 @@ import { describe, expect, it } from "vitest";
 import type { ActorContext } from "../src/modules/identity/application/identity-access.types.js";
 import { setActorContext } from "../src/modules/identity/http/request-actor.js";
 import {
+  defaultChannelEnabled,
   NotificationApplication,
+  NOTIFICATION_CATEGORIES,
   isValidExpoPushToken,
   type NotificationDevicePlatform,
   type NotificationDeviceToken,
@@ -124,10 +126,15 @@ describe("Notification device registration and push channel contracts", () => {
     expect((await validate(invalidDevice)).length).toBeGreaterThanOrEqual(2);
 
     const pushPref = new NotificationPreferenceInputDto();
-    pushPref.category = "knowledge_update";
+    pushPref.category = "birthday_reminder";
     pushPref.channel = "push";
     pushPref.enabled = true;
     expect(await validate(pushPref)).toHaveLength(0);
+    expect(NOTIFICATION_CATEGORIES).toContain("panda_news");
+    expect(NOTIFICATION_CATEGORIES).toContain("venue_news");
+    expect(defaultChannelEnabled("station")).toBe(true);
+    expect(defaultChannelEnabled("push")).toBe(true);
+    expect(defaultChannelEnabled("email")).toBe(false);
   });
 
   it("lists, registers, transfers ownership cleanly, and removes device tokens via NotificationController", async () => {

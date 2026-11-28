@@ -1,22 +1,18 @@
 import { sql } from "kysely";
 import type { JsonValue } from "../../../platform/database/database.notification.generated.js";
 import type { DatabaseService } from "../../../platform/database/database.service.js";
-import type {
-  NotificationCategory,
-  NotificationChannel,
-  NotificationDevicePlatform,
-  NotificationDeviceToken,
-  NotificationMessage,
-  NotificationPreference,
-  NotificationRepository,
+import {
+  defaultChannelEnabled,
+  NOTIFICATION_CATEGORIES,
+  NOTIFICATION_CHANNELS,
+  type NotificationCategory,
+  type NotificationChannel,
+  type NotificationDevicePlatform,
+  type NotificationDeviceToken,
+  type NotificationMessage,
+  type NotificationPreference,
+  type NotificationRepository,
 } from "../application/notification.application.js";
-
-const CATEGORIES: readonly NotificationCategory[] = ["knowledge_update", "correction"];
-const CHANNELS: readonly NotificationChannel[] = ["station", "email", "push"];
-
-function defaultEnabled(channel: NotificationChannel): boolean {
-  return channel === "station";
-}
 
 export class PostgresNotificationRepository implements NotificationRepository {
   public constructor(private readonly database: DatabaseService) {}
@@ -63,13 +59,13 @@ export class PostgresNotificationRepository implements NotificationRepository {
       .where("account_id", "=", accountId)
       .execute();
     const stored = new Map(rows.map((row) => [`${row.category}:${row.channel}`, row]));
-    return CATEGORIES.flatMap((category) =>
-      CHANNELS.map((channel) => {
+    return NOTIFICATION_CATEGORIES.flatMap((category) =>
+      NOTIFICATION_CHANNELS.map((channel) => {
         const row = stored.get(`${category}:${channel}`);
         return {
           category,
           channel,
-          enabled: row?.enabled ?? defaultEnabled(channel),
+          enabled: row?.enabled ?? defaultChannelEnabled(channel),
           version: row?.version ?? 0,
           updatedAt: row?.updated_at.toISOString() ?? null,
         };
