@@ -15,7 +15,7 @@ function extraOf(manifest: Updates.Manifest | undefined): Record<string, unknown
 
 async function checkOnce(): Promise<void> {
   const check = await Updates.checkForUpdateAsync();
-  if (!check.isAvailable) return;
+  if (!check.isAvailable && !check.isRollBackToEmbedded) return;
   const fetched = await Updates.fetchUpdateAsync();
   if (!fetched.isNew) return;
   const action = updateAction(criticalIndex(Constants.expoConfig?.extra), criticalIndex(extraOf(fetched.manifest)));

@@ -28,9 +28,9 @@ const DEVICES = {
 };
 
 const SCREENS = [
-  { name: "today", route: "/" },
-  { name: "discover", route: "/discover" },
+  { name: "explore", route: "/" },
   { name: "find", route: "/find" },
+  { name: "map", route: "/map" },
   { name: "panda", route: `/pandas/${flags.panda}` },
   { name: "family", route: `/pandas/${flags.panda}/family` },
   { name: "venue", route: `/institutions/${flags.venue}` },
@@ -87,7 +87,10 @@ if (devices.length === 0) {
   process.exit(1);
 }
 
-const browser = await chromium.launch({ channel: "chrome" });
+const channel =
+  process.env.PLAYWRIGHT_BROWSER_CHANNEL?.trim() ||
+  (process.platform === "win32" ? "msedge" : undefined);
+const browser = await chromium.launch(channel ? { channel } : {});
 let count = 0;
 try {
   for (const [device, size] of devices) {
@@ -107,7 +110,7 @@ try {
       const dir = path.join(outRoot, device, theme);
       fs.mkdirSync(dir, { recursive: true });
       for (const [index, screen] of SCREENS.entries()) {
-        await page.goto(flags.base + screen.route, { timeout: 120_000 });
+        await page.goto(new URL(screen.route, flags.base).toString(), { timeout: 120_000 });
         const started = Date.now();
         await settle(page);
         const file = path.join(dir, `${String(index + 1).padStart(2, "0")}-${screen.name}.png`);

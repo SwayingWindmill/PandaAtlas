@@ -72,7 +72,7 @@ Add a native dependency with `npx expo install <package>` so its version matches
 
 ### Store screenshots
 
-`npm run store:screenshots -w @zhipanda/mobile` saves six screens (今天, 发现, 找熊猫, a panda, its family, a venue) in light and dark at 1320×2868 (iPhone 6.9"), 1242×2688 (iPhone 6.5"), 2064×2752 (iPad 13") and 1080×1920 (Android) to `store-screenshots/`. It drives the web build with production's public data, so start `node apps/mobile/scripts/preview-production.mjs` first. `--panda <slug>` and `--venue <slug>` pick the subjects; `--only <device>` makes one size. It is the web rendering, with no iOS status bar.
+`npm run store:screenshots -w @zhipanda/mobile` saves six screens (探索, 找熊猫, 地图, a panda, its family, a venue) in light and dark at 1320×2868 (iPhone 6.9"), 1242×2688 (iPhone 6.5"), 2064×2752 (iPad 13") and 1080×1920 (Android) to `store-screenshots/`. It drives the web build with production's public data, so start `node apps/mobile/scripts/preview-production.mjs` first. `--panda <slug>` and `--venue <slug>` pick the subjects; `--only <device>` makes one size. It is the web rendering, with no iOS status bar.
 
 ### Over-the-air updates
 
