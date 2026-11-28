@@ -9,7 +9,6 @@
     "userInterfaceStyle": "automatic",
     "runtimeVersion": { "policy": "appVersion" },
     "updates": { "checkAutomatically": "NEVER", "fallbackToCacheTimeout": 0 },
-    "extra": { "otaCriticalIndex": 0 },
     "ios": {
       "bundleIdentifier": "com.zhipanda.app",
       "supportsTablet": true,
@@ -81,6 +80,11 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "otaCriticalIndex": 0,
+      "eas": { "projectId": "22e9d9ee-f59a-4e55-b2c4-2d160beca2e5" }
+    },
+    "owner": "swayingwindmill"
   }
 }
