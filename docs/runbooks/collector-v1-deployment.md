@@ -4,10 +4,10 @@
 
 ## V1 收敛范围
 
-当前 [targets.yaml](../../data/collector/targets.yaml) 经关键词组展开后共 162 个采集目标：
+当前 [targets.yaml](../../data/collector/targets.yaml) 经关键词组展开后共 159 个采集目标：
 
-- **V1 默认启用（49 个）**：`bjzoo`（2 个北京动物园官网源）与 `weibo_rsshub`（47 个微博访客路由账号）。两者只需本机 PostgreSQL 与 RSSHub，不依赖人工扫码或外部 Cookie。
-- **阶段二按需扩展（113 个）**：`douyin_api`（75 个）、`xhs_mcp`（32 个）与 `mediacrawler`（6 个对照目标）在未配置对应环境变量时安全留在数据库中等待调度，不计为失败。
+- **V1 默认启用（52 个）**：`bjzoo`（2 个北京动物园官网源）、`douban_group`（3 个白名单大熊猫公开小组，匿名低频且不采评论与配图）与 `weibo_rsshub`（47 个微博访客路由账号）。三者只需本机 PostgreSQL 与 RSSHub，不依赖人工扫码或外部 Cookie。
+- **阶段二按需扩展（107 个）**：`douyin_api`（75 个）与 `xhs_mcp`（32 个）在未配置对应环境变量时安全留在数据库中等待调度，不计为失败。非商用 `MediaCrawler` 已从生产路径彻底剥离。
 
 ## 方案 A：Docker Compose 一键启动（推荐）
 

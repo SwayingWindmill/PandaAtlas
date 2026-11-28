@@ -6,6 +6,7 @@ import type { DB as PlaceDatabase } from "./database.place.generated.js";
 import type { DB as LifeHistoryDatabase } from "./database.life-history.generated.js";
 import type { DB as LineageDatabase } from "./database.lineage.generated.js";
 import type { DB as MediaDatabase } from "./database.media.generated.js";
+import type { DB as NewsDatabase } from "./database.news.generated.js";
 import type { DB as EngagementDatabase } from "./database.engagement.generated.js";
 import type { DB as GameDatabase } from "./database.game.generated.js";
 import type { DB as ContributionDatabase } from "./database.contribution.generated.js";
@@ -27,6 +28,7 @@ export type Database = IdentityDatabase &
   LifeHistoryDatabase &
   LineageDatabase &
   MediaDatabase &
+  NewsDatabase &
   EngagementDatabase &
   GameDatabase &
   ContributionDatabase &

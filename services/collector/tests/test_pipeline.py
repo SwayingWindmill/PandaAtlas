@@ -155,7 +155,7 @@ async def test_consecutive_empty_runs_raise_one_alert(store: Store) -> None:
 
 
 async def test_cursor_is_handed_back_and_unconfigured_adapters_wait(store: Store) -> None:
-    t, other = make_target("rss", "f"), make_target("mediacrawler", "kw")
+    t, other = make_target("rss", "f"), make_target("weibo_crawler", "kw")
     await store.sync_targets([t, other])
     adapter = FakeAdapter("rss", [Page([item("1")], {"watermark": "w1"}), Page([], {"w": 2})])
     scheduler = Scheduler(store, {"rss": adapter}, tagger)

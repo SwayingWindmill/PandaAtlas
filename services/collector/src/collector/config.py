@@ -12,8 +12,8 @@ import yaml
 
 from collector.adapters.base import Adapter
 from collector.adapters.bjzoo import BjzooAdapter
+from collector.adapters.douban_group import ALLOWED_GROUP_IDS, DoubanGroupAdapter
 from collector.adapters.douyin_api import DouyinApiAdapter
-from collector.adapters.mediacrawler import MediaCrawlerAdapter
 from collector.adapters.rss import RssAdapter
 from collector.adapters.weibo_crawler import WeiboCrawlerAdapter
 from collector.adapters.weibo_rsshub import WeiboRsshubAdapter
@@ -48,17 +48,21 @@ class Settings:
     weibo_crawler_dir: Path | None
     weibo_crawler_cmd: str
     weibo_cookie: str | None
-    mediacrawler_dir: Path | None
-    mediacrawler_cmd: str
-    aihot_url: str | None
-    aihot_token: str | None
-    alert_webhook: str | None
-    alert_format: str
-    rss_concurrency: int
+    zhipanda_api_url: str | None = None
+    zhipanda_news_ingest_token: str | None = None
+    llm_base_url: str | None = None
+    llm_api_key: str | None = None
+    llm_model: str | None = None
+    llm_extra_json: str | None = None
+    aihot_url: str | None = None
+    aihot_token: str | None = None
+    alert_webhook: str | None = None
+    alert_format: str = "feishu"
+    rss_concurrency: int = 4
 
     @classmethod
     def from_env(cls) -> Settings:
-        weibo_dir, media_dir = _env("WEIBO_CRAWLER_DIR"), _env("MEDIACRAWLER_DIR")
+        weibo_dir = _env("WEIBO_CRAWLER_DIR")
         published_pandas = _env("COLLECTOR_PUBLISHED_PANDAS")
         pandas_csv = _env("COLLECTOR_PANDAS_CSV")
         pandas_source = (
@@ -85,8 +89,12 @@ class Settings:
             weibo_crawler_dir=Path(weibo_dir) if weibo_dir else None,
             weibo_crawler_cmd=_env("WEIBO_CRAWLER_CMD", "python weibo.py") or "",
             weibo_cookie=_env("WEIBO_COOKIE"),
-            mediacrawler_dir=Path(media_dir) if media_dir else None,
-            mediacrawler_cmd=_env("MEDIACRAWLER_CMD", "uv run main.py") or "",
+            zhipanda_api_url=_env("ZHIPANDA_API_URL"),
+            zhipanda_news_ingest_token=_env("ZHIPANDA_NEWS_INGEST_TOKEN"),
+            llm_base_url=_env("LLM_BASE_URL"),
+            llm_api_key=_env("LLM_API_KEY"),
+            llm_model=_env("LLM_MODEL"),
+            llm_extra_json=_env("LLM_EXTRA_JSON"),
             aihot_url=_env("AIHOT_URL"),
             aihot_token=_env("AIHOT_INGEST_TOKEN"),
             alert_webhook=_env("COLLECTOR_ALERT_WEBHOOK"),
@@ -100,6 +108,7 @@ def build_adapters(settings: Settings, client: httpx.AsyncClient) -> dict[str, A
     adapters: dict[str, Adapter] = {
         "rss": RssAdapter(client, settings.rsshub_url),
         "bjzoo": BjzooAdapter(client),
+        "douban_group": DoubanGroupAdapter(client),
         "weibo_rsshub": WeiboRsshubAdapter(client, settings.rsshub_url),
     }
     if settings.xhs_mcp_url:
@@ -115,21 +124,17 @@ def build_adapters(settings: Settings, client: httpx.AsyncClient) -> dict[str, A
             settings.weibo_cookie,
             settings.state_dir,
         )
-    if settings.mediacrawler_dir:
-        adapters["mediacrawler"] = MediaCrawlerAdapter(
-            settings.mediacrawler_dir, settings.mediacrawler_cmd
-        )
     return adapters
 
 
 ADAPTER_NAMES = {
     "rss",
     "bjzoo",
+    "douban_group",
     "weibo_rsshub",
     "xhs_mcp",
     "douyin_api",
     "weibo_crawler",
-    "mediacrawler",
 }
 
 
@@ -147,6 +152,8 @@ def _target(entry: dict[str, Any], defaults: dict[str, Any]) -> Target:
         raise ConfigError(f"bad target {entry!r}: {exc}") from exc
     if adapter not in ADAPTER_NAMES:
         raise ConfigError(f"unknown adapter {adapter!r} in {entry!r}")
+    if adapter == "douban_group" and value.strip() not in ALLOWED_GROUP_IDS:
+        raise ConfigError(f"unapproved douban_group id {value!r} in {entry!r}")
     institution = str(merged["institution"]).strip() if merged.get("institution") else None
     if institution and role is not Role.INSTITUTION:
         raise ConfigError(f"only role institution takes an institution slug: {entry!r}")
@@ -154,7 +161,7 @@ def _target(entry: dict[str, Any], defaults: dict[str, Any]) -> Target:
     # Multi-platform adapters search the same term once per platform.
     scope = (
         f"@{params['platform']}"
-        if adapter in ("mediacrawler", "douyin_api") and params.get("platform")
+        if adapter == "douyin_api" and params.get("platform")
         else ""
     )
     return Target(

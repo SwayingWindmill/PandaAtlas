@@ -34,8 +34,12 @@ def _settings(**overrides: Any) -> Settings:
         weibo_crawler_dir=None,
         weibo_crawler_cmd="python weibo.py",
         weibo_cookie=None,
-        mediacrawler_dir=None,
-        mediacrawler_cmd="uv run main.py",
+        zhipanda_api_url=None,
+        zhipanda_news_ingest_token=None,
+        llm_base_url=None,
+        llm_api_key=None,
+        llm_model=None,
+        llm_extra_json=None,
         aihot_url=None,
         aihot_token=None,
         alert_webhook=None,
@@ -51,8 +55,9 @@ async def test_doctor_offline_passes_on_repository_catalog() -> None:
 
     assert set(by_name) == {"targets", "lexicon", "alerts", "config"}
     assert by_name["targets"].status == "ok"
-    assert "49 active on host, 113 waiting" in by_name["targets"].detail
+    assert "52 active on host, 107 waiting" in by_name["targets"].detail
     assert "bjzoo=2" in by_name["targets"].detail
+    assert "douban_group=3" in by_name["targets"].detail
     assert "weibo_rsshub=47" in by_name["targets"].detail
     assert by_name["lexicon"].status == "ok"
     assert by_name["alerts"].status == "warn"
@@ -69,6 +74,10 @@ async def test_doctor_flags_config_and_alert_failures(tmp_path: Path) -> None:
         pandas_source=missing_pandas,
         xhs_mcp_url="http://127.0.0.1:18060",
         xhs_mcp_token=None,
+        zhipanda_api_url="https://api.example.test",
+        zhipanda_news_ingest_token=None,
+        llm_model="deepseek-flash",
+        llm_extra_json="{bad",
         aihot_url="https://aihot.example.test",
         aihot_token=None,
         alert_format="discord",
@@ -83,6 +92,9 @@ async def test_doctor_flags_config_and_alert_failures(tmp_path: Path) -> None:
     assert by_name["alerts"].status == "fail"
     assert by_name["config"].status == "fail"
     assert "XHS_MCP_URL" in by_name["config"].detail
+    assert "ZHIPANDA_API_URL" in by_name["config"].detail
+    assert "LLM_BASE_URL" in by_name["config"].detail
+    assert "LLM_EXTRA_JSON" in by_name["config"].detail
     assert "AIHOT_URL" in by_name["config"].detail
 
     bad_webhook = _settings(alert_webhook="ftp://not-http.example/hook")
@@ -203,6 +215,12 @@ def test_cli_doctor_offline_json_and_failure_exit_code(
         "COLLECTOR_PUBLISHED_PANDAS",
         "XHS_MCP_URL",
         "XHS_MCP_TOKEN",
+        "ZHIPANDA_API_URL",
+        "ZHIPANDA_NEWS_INGEST_TOKEN",
+        "LLM_BASE_URL",
+        "LLM_API_KEY",
+        "LLM_MODEL",
+        "LLM_EXTRA_JSON",
         "AIHOT_URL",
         "AIHOT_INGEST_TOKEN",
     ):

@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
+import { NewsModule } from "../news/news.module.js";
 import {
   ComparisonsController,
   LearningController,
@@ -10,7 +11,7 @@ import {
 import { PostgresJsonCatalogStore } from "./infrastructure/postgres-json-catalog.store.js";
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, NewsModule],
   controllers: [LearningController, OverseasStatusController, VenueNewsController, ComparisonsController],
   providers: [
     {

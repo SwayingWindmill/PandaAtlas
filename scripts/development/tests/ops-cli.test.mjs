@@ -19,6 +19,10 @@ import {
   normalizeApiBaseUrl,
   parseModerationArgs,
 } from "../ops-moderation.mjs";
+import {
+  executeNewsReviewCommand,
+  parseNewsReviewArgs,
+} from "../ops-news-review.mjs";
 
 const CASE_ID = "11111111-1111-4111-8111-111111111111";
 const OTHER_CASE_ID = "44444444-4444-4144-8444-444444444444";
@@ -457,4 +461,53 @@ test("check-launch-readiness: verifies local artifacts, warns consistently, and 
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
+});
+
+test("ops-news-review: validates args, keeps mutations dry-run by default, and submits with --apply", async () => {
+  assert.deepEqual(parseNewsReviewArgs(["--help"]), { command: "help" });
+  assert.throws(() => parseNewsReviewArgs(["decide-item", "--item-id", "not-uuid", "--decision", "publish"]), /valid UUID/u);
+  assert.throws(() => parseNewsReviewArgs(["decide-fact", "--candidate-id", CASE_ID, "--decision", "publish"]), /approved or rejected/u);
+
+  const parsedDecision = parseNewsReviewArgs([
+    "decide-item",
+    "--item-id",
+    CASE_ID,
+    "--decision",
+    "publish",
+    "--pandas",
+    "he-hua-chengdu",
+    "--institution",
+    "chengdu-research-base",
+  ]);
+  const dryRun = await executeNewsReviewCommand(parsedDecision, { apiBase: "https://api.example.test" });
+  assert.equal(dryRun.mode, "dry-run");
+  assert.deepEqual(dryRun.body, {
+    decision: "publish",
+    pandaSlugs: ["he-hua-chengdu"],
+    institutionSlug: "chengdu-research-base",
+  });
+
+  const calls = [];
+  const applied = await executeNewsReviewCommand(
+    parseNewsReviewArgs([
+      "decide-fact",
+      "--candidate-id",
+      CASE_ID,
+      "--decision",
+      "approved",
+      "--note",
+      "核实官网原话一致",
+      "--apply",
+    ]),
+    {
+      apiBase: "https://api.example.test",
+      token: "staff-token",
+      fetchFn: (url, init) => {
+        calls.push({ url, init });
+        return Promise.resolve(Response.json({ candidateId: CASE_ID, reviewState: "approved" }));
+      },
+    },
+  );
+  assert.equal(applied.mode, "applied");
+  assert.equal(calls[0].url, `https://api.example.test/api/v2/news/review/fact-candidates/${CASE_ID}/decision`);
 });

@@ -14,8 +14,9 @@ from pathlib import Path
 
 import httpx
 
-from collector import aihot, alerts, doctor, registry, report
+from collector import aihot, alerts, doctor, news_ingest, registry, report
 from collector.config import Settings, build_adapters, load_targets
+from collector.extractor import LlmExtractor
 from collector.lexicon import Lexicon
 from collector.scheduler import Scheduler
 from collector.store import Store
@@ -47,20 +48,60 @@ def _scheduler(settings: Settings, store: Store, client: httpx.AsyncClient) -> S
     return Scheduler(store, adapters, lexicon.tag, concurrency={"rss": settings.rss_concurrency})
 
 
+def _build_extractor(settings: Settings, client: httpx.AsyncClient) -> LlmExtractor | None:
+    if not (settings.llm_base_url and settings.llm_api_key and settings.llm_model):
+        return None
+    extra = json.loads(settings.llm_extra_json) if settings.llm_extra_json else None
+    return LlmExtractor(
+        client,
+        base_url=settings.llm_base_url,
+        api_key=settings.llm_api_key,
+        model=settings.llm_model,
+        extra_json=extra,
+    )
+
+
+async def _push_downstream(
+    settings: Settings, store: Store, client: httpx.AsyncClient
+) -> int:
+    if settings.zhipanda_api_url and settings.zhipanda_news_ingest_token:
+        extractor = _build_extractor(settings, client)
+        if extractor is None:
+            log.warning("ZHIPANDA_API_URL configured without LLM credentials; skipping news ingest")
+            return 0
+        targets = load_targets(settings.targets_file)
+        pushed = await news_ingest.push(
+            store,
+            client,
+            api_url=settings.zhipanda_api_url,
+            token=settings.zhipanda_news_ingest_token,
+            targets=targets,
+            extractor=extractor,
+        )
+        if pushed:
+            log.info("ingested %d news items into services/api", pushed)
+        return pushed
+
+    if settings.aihot_url and settings.aihot_token:
+        pushed = await aihot.push(store, client, settings.aihot_url, settings.aihot_token)
+        if pushed:
+            log.info("pushed %d versions to AIHOT", pushed)
+        return pushed
+    return 0
+
+
 def _housekeeping(
     settings: Settings, store: Store, client: httpx.AsyncClient
 ) -> Callable[[], Awaitable[None]]:
-    last_push = 0.0
+    last_push = -float(PUSH_EVERY_SECONDS)
 
     async def run() -> None:
         nonlocal last_push
         await alerts.notify(store, client, settings.alert_webhook, settings.alert_format)
         due = time.monotonic() - last_push > PUSH_EVERY_SECONDS
-        if settings.aihot_url and settings.aihot_token and due:
+        if due:
             last_push = time.monotonic()
-            pushed = await aihot.push(store, client, settings.aihot_url, settings.aihot_token)
-            if pushed:
-                log.info("pushed %d versions to AIHOT", pushed)
+            await _push_downstream(settings, store, client)
 
     return run
 
@@ -175,6 +216,18 @@ def cmd_tag(settings: Settings, args: argparse.Namespace) -> None:
     print(", ".join(lexicon.slugs(args.text)) or "(no panda names)")
 
 
+async def cmd_ingest_news(settings: Settings, _: argparse.Namespace) -> None:
+    store = await _open(settings)
+    async with httpx.AsyncClient(
+        timeout=60, headers={"User-Agent": "ZhiPandaCollector/0.1"}
+    ) as client:
+        try:
+            pushed = await _push_downstream(settings, store, client)
+            print(f"ingested {pushed} items")
+        finally:
+            await store.close()
+
+
 async def cmd_doctor(settings: Settings, args: argparse.Namespace) -> None:
     results = await doctor.run_doctor(settings, offline=args.offline)
     failed = doctor.has_failures(results)
@@ -211,6 +264,10 @@ def main(argv: list[str] | None = None) -> None:
     reg.add_argument("--out", required=True)
     reg.add_argument("--sql", action="store_true", help="AIHOT sources as SQL upserts instead")
     commands.add_parser("status", help="paused adapters and failing targets")
+    commands.add_parser(
+        "ingest-news",
+        help="run Option B LLM extraction and push pending outbox items to services/api",
+    )
     resume = commands.add_parser("resume", help="lift an adapter pause after fixing its login")
     resume.add_argument("adapter")
     tag = commands.add_parser("tag", help="show which pandas a text mentions")
@@ -251,6 +308,7 @@ def main(argv: list[str] | None = None) -> None:
             "report": cmd_report,
             "registry": cmd_registry,
             "status": cmd_status,
+            "ingest-news": cmd_ingest_news,
             "resume": cmd_resume,
             "doctor": cmd_doctor,
         }[args.command]

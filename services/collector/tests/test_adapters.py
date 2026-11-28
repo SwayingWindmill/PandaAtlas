@@ -13,8 +13,8 @@ import pytest
 
 from collector.adapters import process
 from collector.adapters.base import FetchContext
+from collector.adapters.douban_group import DoubanGroupAdapter
 from collector.adapters.douyin_api import DouyinApiAdapter
-from collector.adapters.mediacrawler import item_from_row, read_new_rows
 from collector.adapters.rss import RssAdapter
 from collector.adapters.weibo_crawler import WeiboCrawlerAdapter, read_output
 from collector.adapters.weibo_rsshub import WeiboRsshubAdapter
@@ -332,27 +332,96 @@ def test_weibo_repost_exposes_the_original_author(tmp_path: Path) -> None:
     assert original.raw["original_author"] is None
 
 
-def test_mediacrawler_reads_only_new_complete_lines(tmp_path: Path) -> None:
-    path = tmp_path / "search_contents_2026-11-05.jsonl"
-    first = {
-        "note_id": "a",
-        "title": "福宝",
-        "desc": "d",
-        "time": 1762300000000,
-        "creator_hash": "h",
-        "nickname": "n**",
-        "image_list": "https://i/1,https://i/2",
-    }
-    path.write_text(json.dumps(first) + "\n", encoding="utf-8")
-    before = {path.name: path.stat().st_size}
-    second = {**first, "note_id": "b"}
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(second) + "\n" + '{"note_id": "c", "par')  # c is half-written
-    rows = read_new_rows([path], before)
-    assert [r["note_id"] for r in rows] == ["b"]
-    item = item_from_row("xhs", rows[0])
-    assert item and item.author_id == "hash:h" and len(item.media) == 2
-    assert item.url == "https://www.xiaohongshu.com/explore/b"
+DOUBAN_LIST_HTML = """<table>
+<tr class="">
+  <td class="title"><a href="https://www.douban.com/group/topic/1001/"
+    title="旧帖子">旧帖子</a></td>
+  <td><a href="https://www.douban.com/people/secretuser/">用户A</a></td>
+  <td class="time">11-27 10:00</td>
+</tr>
+<tr class="">
+  <td class="title"><a href="https://www.douban.com/group/topic/1002/"
+    title="成都基地幼年别墅今起临时闭馆">成都基地幼年别墅今起临时闭馆</a></td>
+  <td><a href="https://www.douban.com/people/998877/">用户B</a></td>
+  <td class="time">11-28 09:15</td>
+</tr>
+<tr class="">
+  <td class="title"><a href="https://www.douban.com/group/topic/1003/"
+    title="仅成员可见帖">仅成员可见帖</a></td>
+  <td><a href="https://www.douban.com/people/554433/">用户C</a></td>
+  <td class="time">11-28 10:05</td>
+</tr>
+</table>"""
+
+DOUBAN_TOPIC_HTML = """<html><head><title>成都基地幼年别墅今起临时闭馆</title></head><body>
+<h1>成都基地幼年别墅今起临时闭馆</h1>
+<span class="create-time color-green">2026-11-28 09:15:20</span>
+<div id="link-report"><div class="topic-content"><div class="rich-content topic-richtext">
+  <p>因园区例行消毒，今天上午临时闭馆，下午恢复开放。</p>
+  <img src="https://img9.doubanio.com/view/group_topic/l/pic.jpg" />
+</div></div></div>
+<div class="topic-opts-bar"></div>
+<ul class="topic-reply"><li>用户评论隐私</li></ul>
+</body></html>"""
+
+
+async def test_douban_group_rejects_unapproved_groups() -> None:
+    async with httpx.AsyncClient() as client:
+        adapter = DoubanGroupAdapter(client)
+        with pytest.raises(CollectError) as exc:
+            await adapter.fetch(target("douban_group", TargetKind.FEED, "741147"), None, CTX)
+    assert exc.value.kind is ErrorKind.NOT_FOUND
+
+
+async def test_douban_group_extracts_public_posts_without_media_or_user_pii() -> None:
+    requested: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requested.append(str(request.url))
+        if "/discussion" in request.url.path:
+            return httpx.Response(200, text=DOUBAN_LIST_HTML)
+        if request.url.path.endswith("/1002/"):
+            return httpx.Response(200, text=DOUBAN_TOPIC_HTML)
+        if request.url.path.endswith("/1003/"):
+            return httpx.Response(403, text="<html><title>没有访问权限</title></html>")
+        raise AssertionError(request.url)
+
+    async def known(_platform: str, _ids: Any) -> set[str]:
+        return {"1001"}
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        page = await DoubanGroupAdapter(client).fetch(
+            target("douban_group", TargetKind.FEED, "745379"),
+            None,
+            FetchContext(known_ids=known),
+        )
+
+    assert [i.platform_item_id for i in page.items] == ["1002", "1003"]
+    first, restricted = page.items
+    assert first.platform == "douban"
+    assert first.title == "成都基地幼年别墅今起临时闭馆"
+    assert "下午恢复开放" in first.body
+    assert "用户评论隐私" not in first.body
+    assert first.author_id is None
+    assert first.media == []
+    assert restricted.title == "仅成员可见帖"
+    assert restricted.body == ""
+    assert not any("1001" in url for url in requested)
+
+
+async def test_douban_group_pauses_on_anti_bot_challenge() -> None:
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            text="<html><title>验证</title>请完成滑块验证 sec.douban.com</html>",
+        )
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        with pytest.raises(CollectError) as exc:
+            await DoubanGroupAdapter(client).fetch(
+                target("douban_group", TargetKind.FEED, "745379"), None, CTX
+            )
+    assert exc.value.kind is ErrorKind.CHALLENGE
 
 
 @pytest.mark.parametrize(

@@ -2426,6 +2426,333 @@
         ]
       }
     },
+    "/api/v2/news": {
+      "get": {
+        "operationId": "listPublicNews",
+        "parameters": [
+          {
+            "name": "panda",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "institution",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sourceTier",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "institution",
+                "official",
+                "media",
+                "fan"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicNewsPageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List published Chinese panda and venue news links with structured summaries",
+        "tags": [
+          "News"
+        ]
+      }
+    },
+    "/api/v2/news/ingest": {
+      "post": {
+        "operationId": "ingestCollectorNews",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewsIngestBatchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsIngestResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Ingest structured news and fact-change candidates from the continuous collector",
+        "tags": [
+          "News"
+        ]
+      }
+    },
+    "/api/v2/news/review/items": {
+      "get": {
+        "operationId": "listNewsReviewItems",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending_review",
+                "published",
+                "rejected",
+                "hidden"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewsReviewItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "News"
+        ]
+      }
+    },
+    "/api/v2/news/review/items/{newsItemId}/decision": {
+      "post": {
+        "operationId": "decideNewsReviewItem",
+        "parameters": [
+          {
+            "name": "newsItemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideNewsItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsReviewItemDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "News"
+        ]
+      }
+    },
+    "/api/v2/news/review/fact-candidates": {
+      "get": {
+        "operationId": "listNewsFactCandidates",
+        "parameters": [
+          {
+            "name": "reviewState",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending_review",
+                "approved",
+                "rejected"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FactCandidateDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "News"
+        ]
+      }
+    },
+    "/api/v2/news/review/fact-candidates/{candidateId}/decision": {
+      "post": {
+        "operationId": "decideNewsFactCandidate",
+        "parameters": [
+          {
+            "name": "candidateId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideFactCandidateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FactCandidateDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "",
+        "tags": [
+          "News"
+        ]
+      }
+    },
     "/api/v2/popular-pandas": {
       "get": {
         "operationId": "listPopularPandas",
@@ -6741,6 +7068,610 @@
         "required": [
           "version",
           "items"
+        ]
+      },
+      "PublicNewsItemDto": {
+        "type": "object",
+        "properties": {
+          "newsItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "weibo",
+              "douyin",
+              "xiaohongshu",
+              "douban",
+              "bilibili",
+              "web",
+              "x",
+              "wechat"
+            ]
+          },
+          "sourceTier": {
+            "type": "string",
+            "enum": [
+              "institution",
+              "official",
+              "media",
+              "fan"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "enclosure",
+              "schedule",
+              "closure",
+              "arrival",
+              "departure",
+              "event",
+              "birth",
+              "death",
+              "transfer",
+              "naming",
+              "other"
+            ]
+          },
+          "titleZh": {
+            "type": "string"
+          },
+          "summaryZh": {
+            "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string"
+          },
+          "sourcePublisher": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": "string"
+          },
+          "pandaIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pandaSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "institutionId": {
+            "type": "string"
+          },
+          "institutionSlug": {
+            "type": "string"
+          },
+          "institutionName": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "newsItemId",
+          "platform",
+          "sourceTier",
+          "kind",
+          "titleZh",
+          "summaryZh",
+          "sourceUrl",
+          "sourcePublisher",
+          "pandaIds",
+          "pandaSlugs",
+          "publishedAt"
+        ]
+      },
+      "PublicNewsPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicNewsItemDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "NewsFactChangeInputDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "none",
+              "birth",
+              "death",
+              "transfer",
+              "naming"
+            ]
+          },
+          "phase": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "announced",
+              "completed"
+            ]
+          },
+          "namingStatus": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "proposed",
+              "official"
+            ]
+          },
+          "date": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "motherName": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "toPlace": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "NewsIngestItemDto": {
+        "type": "object",
+        "properties": {
+          "externalId": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "weibo",
+              "douyin",
+              "xiaohongshu",
+              "douban",
+              "bilibili",
+              "web",
+              "x",
+              "wechat"
+            ]
+          },
+          "sourceTier": {
+            "type": "string",
+            "enum": [
+              "institution",
+              "official",
+              "media",
+              "fan"
+            ]
+          },
+          "authorInstitutionSlug": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceUrl": {
+            "type": "string"
+          },
+          "sourcePublisher": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "enclosure",
+              "schedule",
+              "closure",
+              "arrival",
+              "departure",
+              "event",
+              "birth",
+              "death",
+              "transfer",
+              "naming",
+              "other"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "single",
+              "composite",
+              "unknown"
+            ]
+          },
+          "titleZh": {
+            "type": "string"
+          },
+          "summaryZh": {
+            "type": "string"
+          },
+          "pandaNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "institutionName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "factChange": {
+            "$ref": "#/components/schemas/NewsFactChangeInputDto"
+          },
+          "evidenceQuote": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "externalId",
+          "platform",
+          "sourceTier",
+          "sourceUrl",
+          "sourcePublisher",
+          "publishedAt",
+          "kind",
+          "scope",
+          "titleZh",
+          "summaryZh",
+          "pandaNames"
+        ]
+      },
+      "NewsIngestBatchDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NewsIngestItemDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "NewsIngestResultDto": {
+        "type": "object",
+        "properties": {
+          "accepted": {
+            "type": "number"
+          },
+          "published": {
+            "type": "number"
+          },
+          "pendingReview": {
+            "type": "number"
+          },
+          "factCandidatesCreated": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "accepted",
+          "published",
+          "pendingReview",
+          "factCandidatesCreated"
+        ]
+      },
+      "NewsReviewItemDto": {
+        "type": "object",
+        "properties": {
+          "newsItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "weibo",
+              "douyin",
+              "xiaohongshu",
+              "douban",
+              "bilibili",
+              "web",
+              "x",
+              "wechat"
+            ]
+          },
+          "sourceTier": {
+            "type": "string",
+            "enum": [
+              "institution",
+              "official",
+              "media",
+              "fan"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "enclosure",
+              "schedule",
+              "closure",
+              "arrival",
+              "departure",
+              "event",
+              "birth",
+              "death",
+              "transfer",
+              "naming",
+              "other"
+            ]
+          },
+          "titleZh": {
+            "type": "string"
+          },
+          "summaryZh": {
+            "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string"
+          },
+          "sourcePublisher": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": "string"
+          },
+          "pandaIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pandaSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "institutionId": {
+            "type": "string"
+          },
+          "institutionSlug": {
+            "type": "string"
+          },
+          "institutionName": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "rawPandaNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending_review",
+              "published",
+              "rejected",
+              "hidden"
+            ]
+          },
+          "reviewNote": {
+            "type": "string"
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "newsItemId",
+          "platform",
+          "sourceTier",
+          "kind",
+          "titleZh",
+          "summaryZh",
+          "sourceUrl",
+          "sourcePublisher",
+          "pandaIds",
+          "pandaSlugs",
+          "publishedAt",
+          "externalId",
+          "rawPandaNames",
+          "status",
+          "createdAt"
+        ]
+      },
+      "DecideNewsItemDto": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "publish",
+              "reject",
+              "hide"
+            ]
+          },
+          "reviewNote": {
+            "type": "string"
+          },
+          "pandaSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "institutionSlug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "FactCandidateDto": {
+        "type": "object",
+        "properties": {
+          "candidateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "candidateKey": {
+            "type": "string"
+          },
+          "newsItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "phase": {
+            "type": "string"
+          },
+          "namingStatus": {
+            "type": "string"
+          },
+          "eventDate": {
+            "type": "string"
+          },
+          "targetPandaId": {
+            "type": "string"
+          },
+          "targetPandaSlug": {
+            "type": "string"
+          },
+          "rawPandaNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "targetInstitutionId": {
+            "type": "string"
+          },
+          "targetInstitutionSlug": {
+            "type": "string"
+          },
+          "rawInstitutionName": {
+            "type": "string"
+          },
+          "changePayload": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "evidenceItems": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "gateStatus": {
+            "type": "string"
+          },
+          "reviewState": {
+            "type": "string",
+            "enum": [
+              "pending_review",
+              "approved",
+              "rejected"
+            ]
+          },
+          "reviewNote": {
+            "type": "string"
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "candidateId",
+          "candidateKey",
+          "newsItemId",
+          "kind",
+          "rawPandaNames",
+          "changePayload",
+          "evidenceItems",
+          "gateStatus",
+          "reviewState",
+          "createdAt"
+        ]
+      },
+      "DecideFactCandidateDto": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "approved",
+              "rejected"
+            ]
+          },
+          "reviewNote": {
+            "type": "string"
+          },
+          "targetPandaSlug": {
+            "type": "string"
+          },
+          "targetInstitutionSlug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "decision"
         ]
       },
       "PopularPandaDto": {
