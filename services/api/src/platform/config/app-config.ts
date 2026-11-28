@@ -4,6 +4,7 @@ import { ConfigService } from "@nestjs/config";
 export type AppEnvironment = "development" | "test" | "staging" | "production";
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error" | "fatal";
 export type OpsAlertWebhookFormat = "feishu" | "wecom" | "generic";
+export type NewsSourceTier = "institution" | "official" | "media" | "fan";
 
 export interface AppleRevocationConfig {
   clientId: string;
@@ -48,6 +49,8 @@ export interface EnvironmentConfig {
   APPLE_REVOKE_ENDPOINT: string;
   ASK_ENABLED: boolean;
   ASK_GLOBAL_DAILY_CAP: number;
+  NEWS_INGEST_TOKEN: string | undefined;
+  NEWS_AUTO_PUBLISH_TIERS: NewsSourceTier[];
   OPS_ALERT_WEBHOOK_URL: string | undefined;
   OPS_ALERT_WEBHOOK_FORMAT: OpsAlertWebhookFormat;
 }
@@ -60,6 +63,7 @@ const APP_ENVIRONMENTS = new Set<AppEnvironment>([
 ]);
 const LOG_LEVELS = new Set<LogLevel>(["trace", "debug", "info", "warn", "error", "fatal"]);
 const OPS_ALERT_WEBHOOK_FORMATS = new Set<OpsAlertWebhookFormat>(["feishu", "wecom", "generic"]);
+const NEWS_SOURCE_TIERS = new Set<NewsSourceTier>(["institution", "official", "media", "fan"]);
 
 function parseInteger(
   value: unknown,
@@ -159,6 +163,31 @@ function parseApplePrivateKey(value: unknown): string | undefined {
 function parseAppleEndpoint(value: unknown, fallback: string, name: string, appEnv: AppEnvironment): string {
   const raw = optionalString(value) ?? fallback;
   return parseHttpsUrlWithLocalHttp(raw, name, appEnv);
+}
+
+function parseNewsIngestToken(value: unknown): string | undefined {
+  const raw = optionalString(value);
+  if (raw !== undefined && raw.length < 16) {
+    throw new Error("NEWS_INGEST_TOKEN must be at least 16 characters");
+  }
+  return raw;
+}
+
+function parseNewsAutoPublishTiers(value: unknown): NewsSourceTier[] {
+  if (value === undefined) return ["institution", "official"];
+  if (typeof value !== "string") {
+    throw new Error("NEWS_AUTO_PUBLISH_TIERS entries must be institution, official, media, or fan");
+  }
+  const items = value
+    .split(",")
+    .map((entry) => entry.trim().toLowerCase())
+    .filter(Boolean);
+  for (const tier of items) {
+    if (!NEWS_SOURCE_TIERS.has(tier as NewsSourceTier)) {
+      throw new Error("NEWS_AUTO_PUBLISH_TIERS entries must be institution, official, media, or fan");
+    }
+  }
+  return [...new Set(items)] as NewsSourceTier[];
 }
 
 export function validateEnvironment(
@@ -290,6 +319,8 @@ export function validateEnvironment(
     // 问问熊猫 stays off unless a deploy turns it on; the cap bounds paid model and search use.
     ASK_ENABLED: parseBoolean(input.ASK_ENABLED, false, "ASK_ENABLED"),
     ASK_GLOBAL_DAILY_CAP: parseInteger(input.ASK_GLOBAL_DAILY_CAP, 30, "ASK_GLOBAL_DAILY_CAP", 0, 10_000),
+    NEWS_INGEST_TOKEN: parseNewsIngestToken(input.NEWS_INGEST_TOKEN),
+    NEWS_AUTO_PUBLISH_TIERS: parseNewsAutoPublishTiers(input.NEWS_AUTO_PUBLISH_TIERS),
     OPS_ALERT_WEBHOOK_URL: parseOpsAlertWebhookUrl(input.OPS_ALERT_WEBHOOK_URL, appEnv),
     OPS_ALERT_WEBHOOK_FORMAT: parseOpsAlertWebhookFormat(input.OPS_ALERT_WEBHOOK_FORMAT),
   };
@@ -403,6 +434,14 @@ export class AppConfig {
 
   public get askGlobalDailyCap(): number {
     return this.config.get("ASK_GLOBAL_DAILY_CAP", { infer: true });
+  }
+
+  public get newsIngestToken(): string | undefined {
+    return this.config.get("NEWS_INGEST_TOKEN", { infer: true });
+  }
+
+  public get newsAutoPublishTiers(): readonly NewsSourceTier[] {
+    return this.config.get("NEWS_AUTO_PUBLISH_TIERS", { infer: true });
   }
 
   public get opsAlertWebhookUrl(): string | undefined {

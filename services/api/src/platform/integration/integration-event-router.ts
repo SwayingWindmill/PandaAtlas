@@ -12,6 +12,8 @@ const ROUTES = new Map<string, readonly IntegrationConsumerQueue[]>([
   ["notification.birthday.due", ["integration_notification", "integration_audit"]],
   ["news.panda_item.published", ["integration_notification", "integration_audit"]],
   ["news.venue_item.published", ["integration_notification", "integration_audit"]],
+  ["news.item.moderated", ["integration_audit"]],
+  ["news.fact_candidate.reviewed", ["integration_audit"]],
   ["notification.message.created", ["integration_audit"]],
   ["notification.provider.submitted", ["integration_audit"]],
   ["notification.provider.dead_lettered", ["integration_audit"]],

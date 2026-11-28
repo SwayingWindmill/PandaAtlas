@@ -45,7 +45,7 @@ import { openPandaCorrection } from "@/features/pandas/profile-overview";
 import type { HighlightIcon, LifeStageInfo, ProfileHighlight } from "@/features/pandas/rich-facts";
 import { sameCohortPandas } from "@/features/pandas/same-cohort";
 import type { MilestoneKind } from "@/features/timeline/timeline";
-import { loadVenueNews } from "@/features/venue-news/venue-news";
+import { loadPandaNews, loadVenueNews, mergePandaNewsItems } from "@/features/venue-news/venue-news";
 import { usePandaCover } from "@/lib/covers";
 import { nameInitial } from "@/lib/panda";
 import { HAIRLINE, PAGE_COLUMN, RADIUS } from "@/lib/surface";
@@ -831,12 +831,17 @@ export function SameCohortSection({ profile }: { profile: Profile }) {
 
 /** Official venue announcements mentioning this panda, shown when present. */
 export function PandaVenueNewsCard({ slug }: { slug: string }) {
-  const { data: items } = useQuery({
+  const { data: venueItems } = useQuery({
     queryKey: ["public", "venue-news", "all"],
     queryFn: () => loadVenueNews(),
     staleTime: 300_000,
   });
-  const matching = (items ?? []).filter((item) => item.pandaSlugs.includes(slug)).slice(0, 2);
+  const { data: pandaItems } = useQuery({
+    queryKey: ["public", "panda-news", slug],
+    queryFn: () => loadPandaNews(slug),
+    staleTime: 300_000,
+  });
+  const matching = mergePandaNewsItems(venueItems ?? [], pandaItems ?? [], slug, 3);
   if (matching.length === 0) return null;
 
   return (

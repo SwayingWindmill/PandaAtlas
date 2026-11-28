@@ -151,4 +151,27 @@ describe("environment validation", () => {
     expect(configured.APPLE_PRIVATE_KEY).toBe("line1\nline2");
     expect(configured.APPLE_TOKEN_ENDPOINT).toBe("http://127.0.0.1:8789/token");
   });
+
+  it("validates NEWS_INGEST_TOKEN and NEWS_AUTO_PUBLISH_TIERS", () => {
+    expect(validateEnvironment({ APP_ENV: "test" })).toMatchObject({
+      NEWS_INGEST_TOKEN: undefined,
+      NEWS_AUTO_PUBLISH_TIERS: ["institution", "official"],
+    });
+    expect(
+      validateEnvironment({
+        APP_ENV: "test",
+        NEWS_INGEST_TOKEN: "news-ingest-secret-token",
+        NEWS_AUTO_PUBLISH_TIERS: "",
+      }),
+    ).toMatchObject({
+      NEWS_INGEST_TOKEN: "news-ingest-secret-token",
+      NEWS_AUTO_PUBLISH_TIERS: [],
+    });
+    expect(() =>
+      validateEnvironment({ APP_ENV: "test", NEWS_INGEST_TOKEN: "short" }),
+    ).toThrow("NEWS_INGEST_TOKEN must be at least 16 characters");
+    expect(() =>
+      validateEnvironment({ APP_ENV: "test", NEWS_AUTO_PUBLISH_TIERS: "institution,unknown" }),
+    ).toThrow("NEWS_AUTO_PUBLISH_TIERS entries must be");
+  });
 });

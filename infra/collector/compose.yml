@@ -1,5 +1,5 @@
-# Base services for the collector host (ADR 0004). The collector itself, weibo-crawler and
-# MediaCrawler run on the host with uv; Douyin_TikTok_Download_API runs from its own compose.
+# Base services for the collector host (ADR 0004). The collector itself and weibo-crawler
+# run on the host with uv; Douyin_TikTok_Download_API runs from its own compose.
 #
 #   cp infra/collector/env.example infra/collector/.env
 #   docker compose -f infra/collector/compose.yml --env-file infra/collector/.env up -d

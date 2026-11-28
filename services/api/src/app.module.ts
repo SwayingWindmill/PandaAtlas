@@ -10,6 +10,7 @@ import { EngagementModule } from "./modules/engagement/engagement.module.js";
 import { GameModule } from "./modules/game/game.module.js";
 import { ApplicationAccessGuard } from "./modules/identity/http/application-access.guard.js";
 import { IdentityModule } from "./modules/identity/identity.module.js";
+import { NewsModule } from "./modules/news/news.module.js";
 import { NotificationModule } from "./modules/notification/notification.module.js";
 import { PopularityModule } from "./modules/popularity/popularity.module.js";
 import { PrivacyModule } from "./modules/privacy/privacy.module.js";
@@ -45,6 +46,7 @@ import { RateLimitModule } from "./platform/rate-limit/rate-limit.module.js";
     AskModule,
     UpdatesModule,
     NotificationModule,
+    NewsModule,
     PrivacyModule,
     AuditModule,
     AsyncJobsModule,

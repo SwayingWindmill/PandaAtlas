@@ -1008,6 +1008,104 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/news": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List published Chinese panda and venue news links with structured summaries */
+        get: operations["listPublicNews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/news/ingest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ingest structured news and fact-change candidates from the continuous collector */
+        post: operations["ingestCollectorNews"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/news/review/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listNewsReviewItems"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/news/review/items/{newsItemId}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["decideNewsReviewItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/news/review/fact-candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listNewsFactCandidates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/news/review/fact-candidates/{candidateId}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["decideNewsFactCandidate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/popular-pandas": {
         parameters: {
             query?: never;
@@ -2278,6 +2376,151 @@ export interface components {
         ComparisonsDto: {
             version: string;
             items: components["schemas"]["ComparisonDto"][];
+        };
+        PublicNewsItemDto: {
+            /** Format: uuid */
+            newsItemId: string;
+            /** @enum {string} */
+            platform: "weibo" | "douyin" | "xiaohongshu" | "douban" | "bilibili" | "web" | "x" | "wechat";
+            /** @enum {string} */
+            sourceTier: "institution" | "official" | "media" | "fan";
+            /** @enum {string} */
+            kind: "enclosure" | "schedule" | "closure" | "arrival" | "departure" | "event" | "birth" | "death" | "transfer" | "naming" | "other";
+            titleZh: string;
+            summaryZh: string;
+            sourceUrl: string;
+            sourcePublisher: string;
+            coverUrl?: string;
+            pandaIds: string[];
+            pandaSlugs: string[];
+            institutionId?: string;
+            institutionSlug?: string;
+            institutionName?: string;
+            /** Format: date-time */
+            publishedAt: string;
+        };
+        PublicNewsPageDto: {
+            items: components["schemas"]["PublicNewsItemDto"][];
+            nextCursor?: string;
+        };
+        NewsFactChangeInputDto: {
+            /** @enum {string} */
+            kind: "none" | "birth" | "death" | "transfer" | "naming";
+            /** @enum {string|null} */
+            phase?: "announced" | "completed" | null;
+            /** @enum {string|null} */
+            namingStatus?: "proposed" | "official" | null;
+            date?: string | null;
+            motherName?: string | null;
+            toPlace?: string | null;
+        };
+        NewsIngestItemDto: {
+            externalId: string;
+            /** @enum {string} */
+            platform: "weibo" | "douyin" | "xiaohongshu" | "douban" | "bilibili" | "web" | "x" | "wechat";
+            /** @enum {string} */
+            sourceTier: "institution" | "official" | "media" | "fan";
+            authorInstitutionSlug?: string | null;
+            sourceUrl: string;
+            sourcePublisher: string;
+            /** Format: date-time */
+            publishedAt: string;
+            /** @enum {string} */
+            kind: "enclosure" | "schedule" | "closure" | "arrival" | "departure" | "event" | "birth" | "death" | "transfer" | "naming" | "other";
+            /** @enum {string} */
+            scope: "single" | "composite" | "unknown";
+            titleZh: string;
+            summaryZh: string;
+            pandaNames: string[];
+            institutionName?: string | null;
+            coverUrl?: string | null;
+            factChange?: components["schemas"]["NewsFactChangeInputDto"];
+            evidenceQuote?: string | null;
+        };
+        NewsIngestBatchDto: {
+            items: components["schemas"]["NewsIngestItemDto"][];
+        };
+        NewsIngestResultDto: {
+            accepted: number;
+            published: number;
+            pendingReview: number;
+            factCandidatesCreated: number;
+        };
+        NewsReviewItemDto: {
+            /** Format: uuid */
+            newsItemId: string;
+            /** @enum {string} */
+            platform: "weibo" | "douyin" | "xiaohongshu" | "douban" | "bilibili" | "web" | "x" | "wechat";
+            /** @enum {string} */
+            sourceTier: "institution" | "official" | "media" | "fan";
+            /** @enum {string} */
+            kind: "enclosure" | "schedule" | "closure" | "arrival" | "departure" | "event" | "birth" | "death" | "transfer" | "naming" | "other";
+            titleZh: string;
+            summaryZh: string;
+            sourceUrl: string;
+            sourcePublisher: string;
+            coverUrl?: string;
+            pandaIds: string[];
+            pandaSlugs: string[];
+            institutionId?: string;
+            institutionSlug?: string;
+            institutionName?: string;
+            /** Format: date-time */
+            publishedAt: string;
+            externalId: string;
+            rawPandaNames: string[];
+            /** @enum {string} */
+            status: "pending_review" | "published" | "rejected" | "hidden";
+            reviewNote?: string;
+            /** Format: date-time */
+            reviewedAt?: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        DecideNewsItemDto: {
+            /** @enum {string} */
+            decision: "publish" | "reject" | "hide";
+            reviewNote?: string;
+            pandaSlugs?: string[];
+            institutionSlug?: string;
+        };
+        FactCandidateDto: {
+            /** Format: uuid */
+            candidateId: string;
+            candidateKey: string;
+            /** Format: uuid */
+            newsItemId: string;
+            kind: string;
+            phase?: string;
+            namingStatus?: string;
+            eventDate?: string;
+            targetPandaId?: string;
+            targetPandaSlug?: string;
+            rawPandaNames: string[];
+            targetInstitutionId?: string;
+            targetInstitutionSlug?: string;
+            rawInstitutionName?: string;
+            changePayload: {
+                [key: string]: unknown;
+            };
+            evidenceItems: {
+                [key: string]: unknown;
+            }[];
+            gateStatus: string;
+            /** @enum {string} */
+            reviewState: "pending_review" | "approved" | "rejected";
+            reviewNote?: string;
+            /** Format: date-time */
+            reviewedAt?: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        DecideFactCandidateDto: {
+            /** @enum {string} */
+            decision: "approved" | "rejected";
+            reviewNote?: string;
+            targetPandaSlug?: string;
+            targetInstitutionSlug?: string;
         };
         PopularPandaDto: {
             pandaId: string;
@@ -4261,6 +4504,150 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    listPublicNews: {
+        parameters: {
+            query?: {
+                panda?: string;
+                institution?: string;
+                sourceTier?: "institution" | "official" | "media" | "fan";
+                limit?: number;
+                cursor?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicNewsPageDto"];
+                };
+            };
+        };
+    };
+    ingestCollectorNews: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NewsIngestBatchDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsIngestResultDto"];
+                };
+            };
+        };
+    };
+    listNewsReviewItems: {
+        parameters: {
+            query?: {
+                status?: "pending_review" | "published" | "rejected" | "hidden";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsReviewItemDto"][];
+                };
+            };
+        };
+    };
+    decideNewsReviewItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                newsItemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideNewsItemDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsReviewItemDto"];
+                };
+            };
+        };
+    };
+    listNewsFactCandidates: {
+        parameters: {
+            query?: {
+                reviewState?: "pending_review" | "approved" | "rejected";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FactCandidateDto"][];
+                };
+            };
+        };
+    };
+    decideNewsFactCandidate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                candidateId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideFactCandidateDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FactCandidateDto"];
+                };
             };
         };
     };

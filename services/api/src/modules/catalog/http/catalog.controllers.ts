@@ -1,7 +1,8 @@
-import { Controller, Get, Inject, Query } from "@nestjs/common";
+import { Controller, Get, Inject, Optional, Query } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiServiceUnavailableResponse, ApiTags } from "@nestjs/swagger";
 import { Public } from "../../../platform/auth/public.decorator.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { NEWS_PORT, type NewsPort } from "../../news/application/news.application.js";
 import { ComparisonCatalogError, publishedComparisons } from "../application/comparison-catalog.js";
 import { LearningCatalogError, publishedCatalog } from "../application/learning-catalog.js";
 import { OverseasStatusCatalogError, publishedOverseasStatus } from "../application/overseas-status-catalog.js";
@@ -92,7 +93,10 @@ export class OverseasStatusController {
 @ApiTags("Venue news")
 @Controller("venue-news")
 export class VenueNewsController {
-  public constructor(@Inject(PostgresJsonCatalogStore) private readonly catalogs: PostgresJsonCatalogStore) {}
+  public constructor(
+    @Inject(PostgresJsonCatalogStore) private readonly catalogs: PostgresJsonCatalogStore,
+    @Optional() @Inject(NEWS_PORT) private readonly news?: NewsPort,
+  ) {}
 
   @Get()
   @Public()
@@ -108,7 +112,15 @@ export class VenueNewsController {
       throw new ProblemException(400, "venue_news.institution_invalid", "institution must be a slug.");
     }
     try {
-      return publishedVenueNews(await this.catalogs.current("place.venue_news_catalog"), institution);
+      const curated = publishedVenueNews(await this.catalogs.current("place.venue_news_catalog"), institution);
+      const live = this.news ? await this.news.listPublishedOfficialVenueNews(institution) : [];
+      if (live.length === 0) return curated;
+      const seenUrls = new Set(curated.items.map((item) => item.sourceUrl));
+      const merged = [
+        ...curated.items,
+        ...live.filter((item) => !seenUrls.has(item.sourceUrl)),
+      ].sort((a, b) => b.publishedOn.localeCompare(a.publishedOn) || b.updatedAt.localeCompare(a.updatedAt));
+      return { version: curated.version, items: merged };
     } catch (error) {
       if (error instanceof VenueNewsCatalogError) {
         throw new ProblemException(503, "venue_news.unavailable", "Venue news is not available.");

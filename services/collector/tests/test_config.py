@@ -24,8 +24,9 @@ def test_keyword_groups_fan_out_per_adapter_and_platform(tmp_path: Path) -> None
             """
 targets:
   - {adapter: weibo_crawler, kind: account, value: "123", label: 基地, tier: official}
+  - {adapter: douban_group, kind: feed, value: "745379", label: 豆瓣大熊猫小组, tier: keyword}
 keyword_groups:
-  - adapters: [xhs_mcp, {adapter: mediacrawler, params: {platform: dy}}]
+  - adapters: [xhs_mcp, {adapter: douyin_api, params: {platform: bilibili}}]
     terms: [福宝]
 """,
         )
@@ -33,8 +34,9 @@ keyword_groups:
     by_id = {t.id: t for t in targets}
     assert set(by_id) == {
         "weibo_crawler:account:123",
+        "douban_group:feed:745379",
         "xhs_mcp:keyword:福宝",
-        "mediacrawler@dy:keyword:福宝",
+        "douyin_api@bilibili:keyword:福宝",
     }
     assert by_id["weibo_crawler:account:123"].interval_minutes == 15
     keyword = by_id["xhs_mcp:keyword:福宝"]
@@ -58,6 +60,10 @@ keyword_groups:
         )
     with pytest.raises(ConfigError, match="unknown adapter"):
         load_targets(write(tmp_path, "targets: [{adapter: tiktok, kind: account, value: x}]"))
+    with pytest.raises(ConfigError, match="unapproved douban_group"):
+        load_targets(
+            write(tmp_path, "targets: [{adapter: douban_group, kind: feed, value: '741147'}]")
+        )
 
 
 def test_repository_targets_file_loads() -> None:

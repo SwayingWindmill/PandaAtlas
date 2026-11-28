@@ -86,6 +86,12 @@ COMMENT ON SCHEMA "media" IS 'Private reviewed media rights, R2 object metadata,
 
 CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
+CREATE SCHEMA IF NOT EXISTS "news";
+
+ALTER SCHEMA "news" OWNER TO "postgres";
+
+COMMENT ON SCHEMA "news" IS 'Live Chinese panda and venue news items plus human-reviewed fact-change candidates.';
+
 CREATE SCHEMA IF NOT EXISTS "notification";
 
 ALTER SCHEMA "notification" OWNER TO "postgres";
@@ -1681,6 +1687,75 @@ ALTER VIEW "media"."pipeline_asset_export_v1" OWNER TO "postgres";
 
 COMMENT ON VIEW "media"."pipeline_asset_export_v1" IS 'Versioned Media-owned read contract for offline media processing and analysis.';
 
+CREATE TABLE IF NOT EXISTS "news"."fact_candidates" (
+    "candidate_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "candidate_key" "text" NOT NULL,
+    "news_item_id" "uuid" NOT NULL,
+    "kind" "text" NOT NULL,
+    "phase" "text",
+    "naming_status" "text",
+    "event_date" "text",
+    "target_panda_id" "text",
+    "target_panda_slug" "text",
+    "raw_panda_names" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
+    "target_institution_id" "text",
+    "target_institution_slug" "text",
+    "raw_institution_name" "text",
+    "change_payload" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "evidence_items" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "gate_status" "text" NOT NULL,
+    "review_state" "text" DEFAULT 'pending_review'::"text" NOT NULL,
+    "reviewed_by_account_id" "uuid",
+    "reviewed_at" timestamp with time zone,
+    "review_note" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "news_fact_candidates_change_payload_check" CHECK (("jsonb_typeof"("change_payload") = 'object'::"text")),
+    CONSTRAINT "news_fact_candidates_event_date_check" CHECK ((("event_date" IS NULL) OR ("event_date" ~ '^\d{4}-\d{2}(-\d{2})?$'::"text"))),
+    CONSTRAINT "news_fact_candidates_evidence_items_check" CHECK (("jsonb_typeof"("evidence_items") = 'array'::"text")),
+    CONSTRAINT "news_fact_candidates_gate_status_check" CHECK (("gate_status" = ANY (ARRAY['needs_identification'::"text", 'conflict'::"text", 'insufficient_source'::"text", 'eligible_institution_source'::"text"]))),
+    CONSTRAINT "news_fact_candidates_kind_check" CHECK (("kind" = ANY (ARRAY['birth'::"text", 'death'::"text", 'transfer'::"text", 'naming'::"text"]))),
+    CONSTRAINT "news_fact_candidates_naming_status_check" CHECK ((("naming_status" IS NULL) OR ("naming_status" = 'official'::"text"))),
+    CONSTRAINT "news_fact_candidates_phase_check" CHECK ((("phase" IS NULL) OR ("phase" = ANY (ARRAY['announced'::"text", 'completed'::"text"])))),
+    CONSTRAINT "news_fact_candidates_review_state_check" CHECK (("review_state" = ANY (ARRAY['pending_review'::"text", 'approved'::"text", 'rejected'::"text"])))
+);
+
+ALTER TABLE "news"."fact_candidates" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "news"."items" (
+    "news_item_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "external_id" "text" NOT NULL,
+    "platform" "text" NOT NULL,
+    "source_tier" "text" NOT NULL,
+    "source_url" "text" NOT NULL,
+    "source_publisher" "text" NOT NULL,
+    "title_zh" "text" NOT NULL,
+    "summary_zh" "text" NOT NULL,
+    "kind" "text" NOT NULL,
+    "cover_url" "text",
+    "panda_ids" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
+    "panda_slugs" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
+    "raw_panda_names" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
+    "institution_id" "text",
+    "institution_slug" "text",
+    "institution_name" "text",
+    "published_at" timestamp with time zone NOT NULL,
+    "status" "text" DEFAULT 'pending_review'::"text" NOT NULL,
+    "review_note" "text",
+    "reviewed_by_account_id" "uuid",
+    "reviewed_at" timestamp with time zone,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "news_items_cover_url_check" CHECK ((("cover_url" IS NULL) OR (("source_tier" = 'institution'::"text") AND ("cover_url" ~ '^https://'::"text")))),
+    CONSTRAINT "news_items_kind_check" CHECK (("kind" = ANY (ARRAY['enclosure'::"text", 'schedule'::"text", 'closure'::"text", 'arrival'::"text", 'departure'::"text", 'event'::"text", 'birth'::"text", 'death'::"text", 'transfer'::"text", 'naming'::"text", 'other'::"text"]))),
+    CONSTRAINT "news_items_platform_check" CHECK (("platform" = ANY (ARRAY['weibo'::"text", 'douyin'::"text", 'xiaohongshu'::"text", 'douban'::"text", 'bilibili'::"text", 'web'::"text", 'x'::"text", 'wechat'::"text"]))),
+    CONSTRAINT "news_items_source_tier_check" CHECK (("source_tier" = ANY (ARRAY['institution'::"text", 'official'::"text", 'media'::"text", 'fan'::"text"]))),
+    CONSTRAINT "news_items_source_url_check" CHECK (("source_url" ~ '^https://'::"text")),
+    CONSTRAINT "news_items_status_check" CHECK (("status" = ANY (ARRAY['pending_review'::"text", 'published'::"text", 'rejected'::"text", 'hidden'::"text"])))
+);
+
+ALTER TABLE "news"."items" OWNER TO "postgres";
+
 CREATE TABLE IF NOT EXISTS "notification"."channel_preferences" (
     "account_id" "uuid" NOT NULL,
     "category" "text" NOT NULL,
@@ -2806,6 +2881,18 @@ ALTER TABLE ONLY "media"."derivatives"
 ALTER TABLE ONLY "media"."panda_assets"
     ADD CONSTRAINT "panda_assets_pkey" PRIMARY KEY ("panda_id", "asset_id", "usage_role");
 
+ALTER TABLE ONLY "news"."fact_candidates"
+    ADD CONSTRAINT "fact_candidates_candidate_key_key" UNIQUE ("candidate_key");
+
+ALTER TABLE ONLY "news"."fact_candidates"
+    ADD CONSTRAINT "fact_candidates_pkey" PRIMARY KEY ("candidate_id");
+
+ALTER TABLE ONLY "news"."items"
+    ADD CONSTRAINT "items_external_id_key" UNIQUE ("external_id");
+
+ALTER TABLE ONLY "news"."items"
+    ADD CONSTRAINT "items_pkey" PRIMARY KEY ("news_item_id");
+
 ALTER TABLE ONLY "notification"."channel_preferences"
     ADD CONSTRAINT "channel_preferences_pkey" PRIMARY KEY ("account_id", "category", "channel");
 
@@ -3127,6 +3214,18 @@ CREATE INDEX "idx_lineage_parentage_parent" ON "lineage"."parentage_assertions" 
 CREATE UNIQUE INDEX "idx_media_asset_object_identity" ON "media"."assets" USING "btree" ("storage_bucket", "storage_key", COALESCE("object_version", ''::"text"));
 
 CREATE UNIQUE INDEX "idx_media_one_cover_per_panda" ON "media"."panda_assets" USING "btree" ("panda_id") WHERE ("usage_role" = 'cover'::"text");
+
+CREATE INDEX "idx_news_fact_candidates_news_item" ON "news"."fact_candidates" USING "btree" ("news_item_id");
+
+CREATE INDEX "idx_news_fact_candidates_review_state" ON "news"."fact_candidates" USING "btree" ("review_state", "created_at" DESC);
+
+CREATE INDEX "idx_news_items_institution_slug" ON "news"."items" USING "btree" ("institution_slug", "published_at" DESC) WHERE (("status" = 'published'::"text") AND ("institution_slug" IS NOT NULL));
+
+CREATE INDEX "idx_news_items_panda_slugs" ON "news"."items" USING "gin" ("panda_slugs");
+
+CREATE INDEX "idx_news_items_published" ON "news"."items" USING "btree" ("published_at" DESC, "news_item_id" DESC) WHERE ("status" = 'published'::"text");
+
+CREATE INDEX "idx_news_items_status_created" ON "news"."items" USING "btree" ("status", "created_at" DESC);
 
 CREATE INDEX "idx_notification_device_tokens_account_active" ON "notification"."device_tokens" USING "btree" ("account_id", "updated_at" DESC) WHERE "active";
 
@@ -3506,6 +3605,15 @@ ALTER TABLE ONLY "media"."panda_assets"
 ALTER TABLE ONLY "media"."panda_assets"
     ADD CONSTRAINT "panda_assets_panda_id_fkey" FOREIGN KEY ("panda_id") REFERENCES "panda"."pandas"("panda_id") ON DELETE CASCADE;
 
+ALTER TABLE ONLY "news"."fact_candidates"
+    ADD CONSTRAINT "fact_candidates_news_item_id_fkey" FOREIGN KEY ("news_item_id") REFERENCES "news"."items"("news_item_id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "news"."fact_candidates"
+    ADD CONSTRAINT "fact_candidates_reviewed_by_account_id_fkey" FOREIGN KEY ("reviewed_by_account_id") REFERENCES "identity"."accounts"("account_id") ON DELETE SET NULL;
+
+ALTER TABLE ONLY "news"."items"
+    ADD CONSTRAINT "items_reviewed_by_account_id_fkey" FOREIGN KEY ("reviewed_by_account_id") REFERENCES "identity"."accounts"("account_id") ON DELETE SET NULL;
+
 ALTER TABLE ONLY "notification"."channel_preferences"
     ADD CONSTRAINT "channel_preferences_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "identity"."accounts"("account_id") ON DELETE CASCADE;
 
@@ -3751,6 +3859,8 @@ GRANT USAGE ON SCHEMA "lineage" TO "zhipanda_app";
 GRANT USAGE ON SCHEMA "media" TO "zhipanda_app";
 GRANT USAGE ON SCHEMA "media" TO "zhipanda_pipeline";
 
+GRANT USAGE ON SCHEMA "news" TO "zhipanda_app";
+
 GRANT USAGE ON SCHEMA "notification" TO "zhipanda_app";
 
 GRANT USAGE ON SCHEMA "panda" TO "zhipanda_app";
@@ -3937,6 +4047,10 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "media"."derivatives" TO "zhipanda_ap
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "media"."panda_assets" TO "zhipanda_app";
 
 GRANT SELECT ON TABLE "media"."pipeline_asset_export_v1" TO "zhipanda_pipeline";
+
+GRANT SELECT,INSERT,UPDATE ON TABLE "news"."fact_candidates" TO "zhipanda_app";
+
+GRANT SELECT,INSERT,UPDATE ON TABLE "news"."items" TO "zhipanda_app";
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "notification"."channel_preferences" TO "zhipanda_app";
 

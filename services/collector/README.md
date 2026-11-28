@@ -4,21 +4,21 @@
 
 ```text
 官网 RSS / RSSHub ─┐
-xiaohongshu-mcp ───┤                                  ┌─> 告警（飞书 / 企业微信 webhook）
-Douyin API (v5) ───┼─> 适配器 ─> 调度 ─> PostgreSQL ─┤
-weibo-crawler ─────┤                                  └─> outbox ─> AIHOT /api/ingest/items
-MediaCrawler ──────┘     （仅第一阶段对照）
+豆瓣白名单小组 ────┤                                  ┌─> 告警（飞书 / 企业微信 webhook）
+xiaohongshu-mcp ───┼─> 适配器 ─> 调度 ─> PostgreSQL ─┤
+Douyin API (v5) ───┤                                  └─> outbox ─> LLM 结构化抽取 ─> POST /api/v2/news/ingest
+weibo-crawler ─────┘
 ```
 
 ## 组成
 
 | 模块 | 作用 |
 |---|---|
-| `adapters/` | 每个平台一个适配器：取一页，给出下一次的游标 |
+| `adapters/` | 每个平台一个适配器：取一页，给出下一次的游标（含 `douban_group` 白名单只读公开小组） |
 | `scheduler.py` | 到期目标按适配器分组运行；失败退避；登录失效、限流、验证码时整个适配器暂停并告警 |
 | `store.py` + `schema.sql` | 目标即任务队列；原始内容、历史版本、运行记录、告警、outbox |
 | `lexicon.py` | 用 `data/curation/learning/published-pandas.json` 和 `data/collector/aliases.yaml` 给内容标出提到的熊猫 |
-| `aihot.py` | 把新内容和修订推给 AIHOT，一个采集目标对应 AIHOT 里的一个信源 |
+| `extractor.py` + `news_ingest.py` | 方案 B 单次大模型结构化抽取中文摘要与事实候选，剥离非 T1 图片与评论 PII 后直推 `services/api` |
 | `report.py` | 第一阶段的采集器对比报告 |
 
 ## 采集策略
@@ -92,16 +92,9 @@ git clone https://github.com/dataabc/weibo-crawler ~/collectors/weibo-crawler
 cd ~/collectors/weibo-crawler && python -m pip install -r requirements.txt
 ```
 
-**5. MediaCrawler（可选，只用于第一阶段对照）。** 许可证禁止商业使用，不要长期开着：
+**5. 大模型抽取与 API 直推（推荐方案 B）。** 配置 `ZHIPANDA_API_URL`、`ZHIPANDA_NEWS_INGEST_TOKEN` 及兼容 OpenAI 格式的 `LLM_BASE_URL` / `LLM_API_KEY` / `LLM_MODEL` 后，采集器会自动执行单次结构化抽取并推送至 `services/api`。非商用 `MediaCrawler` 已从本仓库剥离。
 
-```bash
-git clone https://github.com/NanmiCoder/MediaCrawler ~/collectors/MediaCrawler
-cd ~/collectors/MediaCrawler && uv sync && uv run playwright install chromium
-```
-
-**6. AIHOT。** 按 [AIHOT 的文档](https://github.com/KKKKhazix/AIHOT) 部署一个实例，在它的 `.env` 里设 `INGEST_TOKEN`（至少 16 位）。熊猫相关的分类和精选标准写在 AIHOT 实例的 `industry/` 目录里。
-
-**7. 启动采集器。** 环境变量见下表，写在 `infra/collector/.env` 里。下面的命令都要带上它：Linux 上先 `set -a; . ../../infra/collector/.env; set +a`，Windows 上给每条命令加 `uv run --env-file ../../infra/collector/.env`。带空格的值要加双引号，地址写 `127.0.0.1` 而不是 `localhost`（有的 Windows 机器上 `localhost` 会先试 IPv6 并卡住）。
+**6. 启动采集器。** 环境变量见下表，写在 `infra/collector/.env` 里。下面的命令都要带上它：Linux 上先 `set -a; . ../../infra/collector/.env; set +a`，Windows 上给每条命令加 `uv run --env-file ../../infra/collector/.env`。带空格的值要加双引号，地址写 `127.0.0.1` 而不是 `localhost`（有的 Windows 机器上 `localhost` 会先试 IPv6 并卡住）。
 
 ```bash
 cd services/collector
@@ -118,8 +111,9 @@ uv run collector run
 | `XHS_MCP_URL`、`XHS_MCP_TOKEN` | 例如 `http://localhost:18060`；token 与 compose 里的 `XHS_MCP_TOKEN` 相同 |
 | `DOUYIN_API_URL`、`DOUYIN_API_KEY` | 例如 `http://localhost:8000` |
 | `WEIBO_CRAWLER_DIR`、`WEIBO_COOKIE` | weibo-crawler 的目录和微博 Cookie；`WEIBO_CRAWLER_CMD` 默认 `python weibo.py` |
-| `MEDIACRAWLER_DIR` | 设了才启用 MediaCrawler；`MEDIACRAWLER_CMD` 默认 `uv run main.py` |
-| `AIHOT_URL`、`AIHOT_INGEST_TOKEN` | 两个都设了才推送 |
+| `ZHIPANDA_API_URL`、`ZHIPANDA_NEWS_INGEST_TOKEN` | 吱熊猫 API 地址与入库 Bearer 令牌（优先级高于 `AIHOT_*`） |
+| `LLM_BASE_URL`、`LLM_API_KEY`、`LLM_MODEL`、`LLM_EXTRA_JSON` | 方案 B 单次结构化抽取模型配置 |
+| `AIHOT_URL`、`AIHOT_INGEST_TOKEN` | 可选旧版下游（未设 `ZHIPANDA_API_URL` 时生效） |
 | `COLLECTOR_ALERT_WEBHOOK` | 群机器人 webhook；`COLLECTOR_ALERT_FORMAT` 取 `feishu`（默认）、`wecom` 或 `slack` |
 
 没配置的适配器不会启用，它的目标留在库里，不算失败。
@@ -130,12 +124,13 @@ uv run collector run
 uv run collector doctor --offline        # 部署前校验配置、词表和目标清单（加在线模式还会探库和 RSSHub）
 uv run collector status                  # 暂停的适配器、失败和空结果的目标
 uv run collector once --target <id>      # 立刻跑一个目标，调试用
+uv run collector ingest-news             # 手动触发一轮方案 B 抽取并直推 services/api
 uv run collector resume xhs_mcp          # 重新登录后解除暂停，并立刻补采
 uv run collector report --days 14 --out report.md   # 第一阶段对比报告
 uv run collector tag "福宝今天在吃竹笋"    # 看一段文字会被标成哪些熊猫
 ```
 
-**收到"登录失效"告警**：重新扫码（小红书、MediaCrawler）、换 Cookie（微博，改 `WEIBO_COOKIE` 后重启），或在抖音 API 控制台导入新身份，然后运行 `collector resume <适配器>`。
+**收到"登录失效"告警**：重新扫码（小红书）、换 Cookie（微博，改 `WEIBO_COOKIE` 后重启），或在抖音 API 控制台导入新身份，然后运行 `collector resume <适配器>`。
 
 **收到"连续空结果"告警**：先在浏览器里打开该账号，看它是不是真的没发新内容；如果有新内容，说明采集器拿到的是空页，多半是登录态或接口变了。
 

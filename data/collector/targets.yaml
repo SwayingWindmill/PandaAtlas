@@ -2,7 +2,7 @@
 # targets removed here are disabled in the database, never deleted.
 #
 # Target fields
-#   adapter           rss | bjzoo | weibo_rsshub | xhs_mcp | douyin_api | weibo_crawler | mediacrawler
+#   adapter           rss | bjzoo | douban_group | weibo_rsshub | xhs_mcp | douyin_api | weibo_crawler
 #   kind              account | keyword | feed
 #   value             account id, search term, feed URL, or an RSSHub route as "rsshub:/route"
 #   label             name shown in alerts and as the AIHOT source name
@@ -23,11 +23,11 @@
 #     all             max_pages (3), empty_alert_after (per tier), timeout (subprocess seconds)
 #     rss             platform: platform name to record (default "web")
 #     bjzoo           value is the list page's name on www.bjzoo.com (no params)
+#     douban_group    value is an allowlisted public group id (745379 | 740267 | 56463); zero login, zero comments/media
 #     weibo_rsshub    value is the Weibo uid; RSSHub's /weibo/user route, no login, latest ~10 posts
 #     xhs_mcp         xsec_token (accounts, required), detail_limit (10), filters (search)
 #     douyin_api      platform: douyin | bilibili (default douyin), count (20)
 #     weibo_crawler   since_days (3, first run only), only_original (0)
-#     mediacrawler    platform: xhs | dy | wb | bili (required), login_type (qrcode)
 #
 # Account ids
 #   Weibo        numeric uid from https://weibo.com/u/<uid>
@@ -48,6 +48,7 @@ targets:
     label: 北京动物园（园内外新闻）
     tier: official
     role: institution
+    institution: beijing-zoo
     interval_minutes: 240
   - adapter: bjzoo
     kind: account
@@ -55,7 +56,30 @@ targets:
     label: 北京动物园（园内公告）
     tier: official
     role: institution
+    institution: beijing-zoo
     interval_minutes: 240
+  # Allowlisted public Douban panda groups (low-frequency, text + link only) --------------
+  - adapter: douban_group
+    kind: feed
+    value: "745379"
+    label: 豆瓣大熊猫小组
+    tier: keyword
+    interval_minutes: 180
+    params: { platform: douban }
+  - adapter: douban_group
+    kind: feed
+    value: "740267"
+    label: 豆瓣大熊猫和花小组
+    tier: keyword
+    interval_minutes: 180
+    params: { platform: douban }
+  - adapter: douban_group
+    kind: feed
+    value: "56463"
+    label: 豆瓣我们都爱大熊猫小组
+    tier: keyword
+    interval_minutes: 180
+    params: { platform: douban }
   # Weibo, official institutions and panda live channels ------------------------------------
   - adapter: weibo_rsshub
     kind: account
@@ -859,14 +883,3 @@ keyword_groups:
       - 盈盈
       - 美香
       - 星二
-
-  # Phase one: the same terms through MediaCrawler, for the comparison report. Leave this group
-  # in place; it only runs on a host that sets MEDIACRAWLER_DIR.
-  - tier: keyword
-    adapters:
-      - { adapter: mediacrawler, params: { platform: xhs } }
-      - { adapter: mediacrawler, params: { platform: dy } }
-    terms:
-      - 大熊猫
-      - 福宝
-      - 和花

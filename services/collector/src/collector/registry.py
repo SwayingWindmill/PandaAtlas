@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-from collector.adapters.mediacrawler import PLATFORMS
 from collector.aihot import source_id, source_name
 from collector.models import Role, Target, TargetKind
 
@@ -32,8 +31,8 @@ def target_platform(target: Target) -> str:
         return "xiaohongshu"
     if target.adapter == "douyin_api":
         return str(params.get("platform", "douyin"))
-    if target.adapter == "mediacrawler":
-        return PLATFORMS[params["platform"]][0]
+    if target.adapter == "douban_group":
+        return "douban"
     return str(params.get("platform", "web"))
 
 

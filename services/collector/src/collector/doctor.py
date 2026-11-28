@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections import Counter
 from dataclasses import dataclass
 from typing import Literal
@@ -17,7 +18,7 @@ from collector.lexicon import Lexicon
 CheckStatus = Literal["ok", "warn", "fail"]
 
 VALID_ALERT_FORMATS = {"feishu", "wecom", "slack"}
-ALWAYS_ENABLED_ADAPTERS = {"rss", "bjzoo", "weibo_rsshub"}
+ALWAYS_ENABLED_ADAPTERS = {"rss", "bjzoo", "douban_group", "weibo_rsshub"}
 PROBE_TIMEOUT_SECONDS = 5.0
 
 
@@ -39,8 +40,6 @@ def configured_adapters(settings: Settings) -> set[str]:
         adapters.add("douyin_api")
     if settings.weibo_crawler_dir:
         adapters.add("weibo_crawler")
-    if settings.mediacrawler_dir:
-        adapters.add("mediacrawler")
     return adapters
 
 
@@ -76,6 +75,21 @@ def _check_config(settings: Settings, has_weibo_rsshub: bool) -> CheckResult:
         failures.append(f"COLLECTOR_RSS_CONCURRENCY must be >= 1 (got {settings.rss_concurrency})")
     if bool(settings.xhs_mcp_url) != bool(settings.xhs_mcp_token):
         failures.append("XHS_MCP_URL and XHS_MCP_TOKEN must both be set")
+    if bool(settings.zhipanda_api_url) != bool(settings.zhipanda_news_ingest_token):
+        failures.append("ZHIPANDA_API_URL and ZHIPANDA_NEWS_INGEST_TOKEN must both be set")
+    llm_values = (settings.llm_base_url, settings.llm_api_key, settings.llm_model)
+    if any(llm_values) and not all(llm_values):
+        failures.append("LLM_BASE_URL, LLM_API_KEY, and LLM_MODEL must all be set together")
+    if settings.zhipanda_api_url and not settings.llm_model:
+        failures.append("ZHIPANDA_API_URL requires LLM_BASE_URL, LLM_API_KEY, and LLM_MODEL")
+    if settings.llm_extra_json:
+        try:
+            parsed = json.loads(settings.llm_extra_json)
+        except json.JSONDecodeError:
+            failures.append("LLM_EXTRA_JSON must be valid JSON")
+        else:
+            if not isinstance(parsed, dict):
+                failures.append("LLM_EXTRA_JSON must be a JSON object")
     if bool(settings.aihot_url) != bool(settings.aihot_token):
         failures.append("AIHOT_URL and AIHOT_INGEST_TOKEN must both be set")
 
@@ -196,6 +210,7 @@ async def run_doctor(
         for name, url in (
             ("xhs_mcp", settings.xhs_mcp_url),
             ("douyin_api", settings.douyin_api_url),
+            ("zhipanda_api", settings.zhipanda_api_url),
             ("aihot", settings.aihot_url),
         ):
             if url:
