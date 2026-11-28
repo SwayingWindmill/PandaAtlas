@@ -217,20 +217,20 @@ export function VenueQuickTools({
 }) {
   const stacked = useStacked();
   const [packOpen, setPackOpen] = useState(false);
-  const { manifest, downloading, progress, error, startDownload, cancelDownload, removePack } = useOfflinePack(
-    institution.slug,
-  );
+  const { manifest, downloading, progress, error, startDownload, cancelDownload, clearError, removePack } =
+    useOfflinePack(institution.slug);
   const primaryLocation = institution.facilities.find((facility) => facility.coordinates);
   const liveCamUrl = resolveVenueLiveCamUrl(institution.slug, institution.liveCamUrl);
   const websiteUrl = institution.websiteUrl;
 
   const pct = progress ? offlinePackPercent(progress) : 0;
-  const offlineLabel = manifest ? "已离线" : downloading ? `${pct}%` : "离线包";
-  const offlineSpoken = manifest
-    ? `${institution.name}离线包，已离线`
-    : downloading
-      ? `正在下载${institution.name}离线包`
+  const offlineLabel = downloading ? `${pct}%` : manifest ? "已离线" : "离线包";
+  const offlineSpoken = downloading
+    ? `正在下载${institution.name}离线包，${pct}%`
+    : manifest
+      ? `${institution.name}离线包，已离线`
       : `${institution.name}离线包`;
+  const showPanel = packOpen || downloading || Boolean(error);
 
   const tools = [
     primaryLocation?.coordinates
@@ -273,15 +273,21 @@ export function VenueQuickTools({
       icon: manifest ? Check : Download,
       label: offlineLabel,
       spoken: offlineSpoken,
-      active: Boolean(manifest) || packOpen,
-      onPress: () => setPackOpen((open) => !open),
+      active: Boolean(manifest) || showPanel,
+      onPress: () => {
+        if (showPanel && !downloading) {
+          setPackOpen(false);
+          clearError();
+        } else {
+          setPackOpen(true);
+        }
+      },
     },
   ].filter((tool) => tool !== null);
 
   if (tools.length === 0) return null;
 
   const wrapTiles = tools.length >= 4 && !stacked;
-  const showPanel = packOpen || downloading || Boolean(error);
 
   return (
     <View className="gap-3">
@@ -364,6 +370,11 @@ export function VenueQuickTools({
                   {estimatePackSummary(manifest)}
                 </Text>
               </View>
+              {error ? (
+                <Text variant="footnote" className="text-destructive" accessibilityLiveRegion="polite">
+                  {error}
+                </Text>
+              ) : null}
               <View className={cn("gap-2", stacked ? "flex-col" : "flex-row items-center")}>
                 <Button
                   variant="secondary"

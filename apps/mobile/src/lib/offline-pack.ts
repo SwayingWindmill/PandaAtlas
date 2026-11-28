@@ -32,10 +32,12 @@ interface PackRuntimeState {
   error: string | null;
 }
 
+let cacheEpoch = 0;
 let manifestsCache: Record<string, OfflinePackManifest> | null = null;
 let hydratePromise: Promise<Record<string, OfflinePackManifest>> | null = null;
 const runtimeBySlug = new Map<string, PackRuntimeState>();
 const controllersBySlug = new Map<string, AbortController>();
+const activePinTokensBySlug = new Map<string, symbol>();
 const listeners = new Set<() => void>();
 
 function notifyListeners() {
@@ -43,9 +45,11 @@ function notifyListeners() {
 }
 
 registerOfflineCacheReset(() => {
+  cacheEpoch += 1;
   for (const controller of controllersBySlug.values()) controller.abort();
   controllersBySlug.clear();
   runtimeBySlug.clear();
+  activePinTokensBySlug.clear();
   manifestsCache = {};
   hydratePromise = null;
   notifyListeners();
@@ -54,7 +58,8 @@ registerOfflineCacheReset(() => {
 async function loadManifests(): Promise<Record<string, OfflinePackManifest>> {
   if (manifestsCache) return manifestsCache;
   if (!hydratePromise) {
-    hydratePromise = AsyncStorage.getItem(OFFLINE_PACKS_KEY)
+    const epoch = cacheEpoch;
+    const promise = AsyncStorage.getItem(OFFLINE_PACKS_KEY)
       .then((raw) => {
         const next: Record<string, OfflinePackManifest> = {};
         if (raw) {
@@ -67,13 +72,17 @@ async function loadManifests(): Promise<Record<string, OfflinePackManifest>> {
             }
           }
         }
-        manifestsCache = next;
-        return next;
+        if (epoch === cacheEpoch) manifestsCache = next;
+        return epoch === cacheEpoch ? next : (manifestsCache ?? {});
       })
       .catch(() => {
-        manifestsCache = {};
-        return manifestsCache;
+        if (epoch === cacheEpoch) manifestsCache = {};
+        return manifestsCache ?? {};
+      })
+      .finally(() => {
+        if (hydratePromise === promise) hydratePromise = null;
       });
+    hydratePromise = promise;
   }
   return hydratePromise;
 }
@@ -90,8 +99,14 @@ function utf8ByteLength(value: unknown): number {
   return json.length * 2;
 }
 
-function throwIfAborted(signal?: AbortSignal) {
-  if (signal?.aborted) throw new Error("offline.aborted");
+function throwIfCancelled(signal: AbortSignal | undefined, startEpoch: number) {
+  if (signal?.aborted || startEpoch !== cacheEpoch) throw new Error("offline.aborted");
+}
+
+async function requireIndexOk<T>(request: () => Promise<{ data?: T; error?: unknown }>): Promise<T> {
+  const { data, error } = await request();
+  if (error || !data) throw new Error("Offline index unavailable");
+  return data;
 }
 
 /** Downloads and pins an institution's full detail, shared indexes, resident panda dossiers, and disk cover cache. */
@@ -100,6 +115,9 @@ export async function downloadOfflinePack(
   options?: { signal?: AbortSignal; onProgress?: (progress: OfflinePackProgress) => void },
 ): Promise<OfflinePackManifest> {
   const signal = options?.signal;
+  const startEpoch = cacheEpoch;
+  const pinToken = Symbol(institution.slug);
+  activePinTokensBySlug.set(institution.slug, pinToken);
   const emit = (progress: OfflinePackProgress) => options?.onProgress?.(progress);
   const candidatePins = [
     `${OFFLINE_PREFIX}/api/v2/institutions/${institution.slug}`,
@@ -112,11 +130,11 @@ export async function downloadOfflinePack(
 
   try {
     const sharedTasks: (() => Promise<unknown>)[] = [
-      () => api.GET("/api/v2/pandas"),
-      () => api.GET("/api/v2/places"),
-      () => api.GET("/api/v2/residencies"),
-      () => api.GET("/api/v2/institutions"),
-      () => api.GET("/api/v2/lineage"),
+      () => requireIndexOk(() => api.GET("/api/v2/pandas")),
+      () => requireIndexOk(() => api.GET("/api/v2/places")),
+      () => requireIndexOk(() => api.GET("/api/v2/residencies")),
+      () => requireIndexOk(() => api.GET("/api/v2/institutions")),
+      () => requireIndexOk(() => api.GET("/api/v2/lineage")),
       () => api.GET("/api/v2/venue-news").catch(() => null),
       () => api.GET("/api/v2/venue-news", { params: { query: { institution: institution.slug } } }).catch(() => null),
     ];
@@ -124,14 +142,16 @@ export async function downloadOfflinePack(
     emit({ phase: "index", done: 0, total: sharedTasks.length + 1 });
     let doneIndex = 0;
     for (const run of sharedTasks) {
-      throwIfAborted(signal);
+      throwIfCancelled(signal, startEpoch);
       await run();
+      throwIfCancelled(signal, startEpoch);
       doneIndex += 1;
       emit({ phase: "index", done: doneIndex, total: sharedTasks.length + 1 });
     }
-    throwIfAborted(signal);
+    throwIfCancelled(signal, startEpoch);
     const instRes = await api.GET("/api/v2/institutions/{slug}", { params: { path: { slug: institution.slug } } });
-    if (!instRes.data) throw new Error(`Institution ${institution.slug} unavailable`);
+    if (instRes.error || !instRes.data) throw new Error(`Institution ${institution.slug} unavailable`);
+    throwIfCancelled(signal, startEpoch);
     jsonBytes += utf8ByteLength(instRes.data);
     emit({ phase: "index", done: sharedTasks.length + 1, total: sharedTasks.length + 1 });
 
@@ -141,27 +161,30 @@ export async function downloadOfflinePack(
     emit({ phase: "pandas", done: 0, total: residents.length });
 
     for (let start = 0; start < residents.length; start += PANDAS_CONCURRENCY) {
-      throwIfAborted(signal);
+      throwIfCancelled(signal, startEpoch);
       if (jsonBytes >= MAX_PACK_JSON_BYTES) break;
       const chunk = residents.slice(start, start + PANDAS_CONCURRENCY);
       await Promise.all(
         chunk.map(async (resident) => {
-          if (signal?.aborted) return;
-          const { data } = await api.GET("/api/v2/pandas/{slug}", { params: { path: { slug: resident.slug } } });
-          if (!data) throw new Error(`Panda ${resident.slug} unavailable`);
+          if (signal?.aborted || startEpoch !== cacheEpoch) return;
+          const { data, error } = await api.GET("/api/v2/pandas/{slug}", { params: { path: { slug: resident.slug } } });
+          if (error || !data) throw new Error(`Panda ${resident.slug} unavailable`);
+          if (signal?.aborted || startEpoch !== cacheEpoch) return;
           queryClient.setQueryData(["public", "panda", resident.slug], data);
           jsonBytes += utf8ByteLength(data);
           pinnedKeys.add(`${OFFLINE_PREFIX}/api/v2/pandas/${resident.slug}`);
           downloadedPandas += 1;
         }),
       );
+      throwIfCancelled(signal, startEpoch);
       completedResidents += chunk.length;
       emit({ phase: "pandas", done: completedResidents, total: residents.length });
     }
 
-    throwIfAborted(signal);
+    throwIfCancelled(signal, startEpoch);
     emit({ phase: "covers", done: 0, total: 1 });
     const coverMap = await fetchAndCachePandaCovers(residents.map((resident) => resident.id));
+    throwIfCancelled(signal, startEpoch);
     const coverUrls = [...new Set(coverMap.values())];
     emit({ phase: "covers", done: 1, total: 1 });
 
@@ -169,9 +192,10 @@ export async function downloadOfflinePack(
       let prefetched = 0;
       emit({ phase: "photos", done: 0, total: coverUrls.length });
       for (let start = 0; start < coverUrls.length; start += PHOTOS_CONCURRENCY) {
-        throwIfAborted(signal);
+        throwIfCancelled(signal, startEpoch);
         const chunk = coverUrls.slice(start, start + PHOTOS_CONCURRENCY);
         await Image.prefetch(chunk, "disk").catch(() => false);
+        throwIfCancelled(signal, startEpoch);
         prefetched += chunk.length;
         emit({ phase: "photos", done: prefetched, total: coverUrls.length });
       }
@@ -179,10 +203,13 @@ export async function downloadOfflinePack(
       emit({ phase: "photos", done: coverUrls.length, total: coverUrls.length });
     }
 
+    throwIfCancelled(signal, startEpoch);
     // Persist every response body before recording the manifest so immediate offline restarts never lose entries.
     await flushOfflineCacheWrites();
+    throwIfCancelled(signal, startEpoch);
 
     const existing = await loadManifests();
+    throwIfCancelled(signal, startEpoch);
     const manifest: OfflinePackManifest = {
       slug: institution.slug,
       name: institution.name,
@@ -195,7 +222,10 @@ export async function downloadOfflinePack(
     await saveManifests({ ...existing, [institution.slug]: manifest });
     return manifest;
   } finally {
-    setTransientOfflinePins(institution.slug, null);
+    if (activePinTokensBySlug.get(institution.slug) === pinToken) {
+      activePinTokensBySlug.delete(institution.slug);
+      setTransientOfflinePins(institution.slug, null);
+    }
   }
 }
 
@@ -242,27 +272,30 @@ export function useOfflinePack(slug: string) {
     void downloadOfflinePack(institution, {
       signal: controller.signal,
       onProgress: (progress) => {
-        if (controller.signal.aborted) return;
+        if (controller.signal.aborted || controllersBySlug.get(institution.slug) !== controller) return;
         runtimeBySlug.set(institution.slug, { progress, error: null });
         notifyListeners();
       },
     })
       .then(() => {
+        if (controllersBySlug.get(institution.slug) !== controller) return;
         controllersBySlug.delete(institution.slug);
         runtimeBySlug.delete(institution.slug);
         notifyListeners();
       })
       .catch(() => {
-        controllersBySlug.delete(institution.slug);
-        if (controller.signal.aborted) {
-          runtimeBySlug.delete(institution.slug);
-        } else {
-          runtimeBySlug.set(institution.slug, {
-            progress: null,
-            error: "下载没有完成，请在联网后重试。",
-          });
+        if (controllersBySlug.get(institution.slug) === controller) {
+          controllersBySlug.delete(institution.slug);
+          if (controller.signal.aborted) {
+            runtimeBySlug.delete(institution.slug);
+          } else {
+            runtimeBySlug.set(institution.slug, {
+              progress: null,
+              error: "下载没有完成，请在联网后重试。",
+            });
+          }
+          notifyListeners();
         }
-        notifyListeners();
       });
   }
 
@@ -271,6 +304,11 @@ export function useOfflinePack(slug: string) {
     controllersBySlug.delete(slug);
     runtimeBySlug.delete(slug);
     notifyListeners();
+  }
+
+  function clearError() {
+    if (controllersBySlug.has(slug)) return;
+    if (runtimeBySlug.delete(slug)) notifyListeners();
   }
 
   async function removePack() {
@@ -285,6 +323,7 @@ export function useOfflinePack(slug: string) {
     error: runtime?.error ?? null,
     startDownload,
     cancelDownload,
+    clearError,
     removePack,
   };
 }

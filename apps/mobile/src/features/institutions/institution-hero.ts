@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { api, publicMediaUrl } from "@/lib/api";
+import { readOfflineCover } from "@/lib/covers";
 
 import { heroCandidates, pickInstitutionHero } from "./hero-pick";
 
@@ -41,7 +42,14 @@ export function useInstitutionHero(
           hero: { url: publicMediaUrl(cover.objectKey), credit: credit || null, pandaName: panda.name },
         });
       })
-      .catch(() => {
+      .catch(async () => {
+        for (const panda of candidates) {
+          const cachedUrl = await readOfflineCover(panda.id);
+          if (cachedUrl) {
+            if (active) setFound({ ids, hero: { url: cachedUrl, credit: null, pandaName: panda.name } });
+            return;
+          }
+        }
         if (active) setFound({ ids, hero: null });
       });
     return () => {

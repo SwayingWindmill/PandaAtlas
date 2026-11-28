@@ -82,16 +82,20 @@ export function upsertQueuedCheckin(
     (trimmedNote !== null && trimmedNote !== existing.note);
   const visitSynced = needsVisitSync ? false : existing.visitSynced;
 
-  const updated: QueuedCheckin = {
-    ...existing,
+  const updatedBase: QueuedCheckin = {
+    key: existing.key,
+    accountId: existing.accountId,
+    placeId: existing.placeId,
+    visitedOn: existing.visitedOn,
     note: mergedNote,
     visitSynced,
     pandaIds: mergedPandas,
+    createdAt: existing.createdAt,
     updatedAt: nowIso,
     ...(incoming.lastError ? { lastError: incoming.lastError } : {}),
   };
 
-  return sortQueuedCheckins(list.map((item) => (item.key === key ? updated : item)));
+  return sortQueuedCheckins(list.map((item) => (item.key === key ? updatedBase : item)));
 }
 
 export function removeQueuedCheckinByKey(list: readonly QueuedCheckin[], key: string): QueuedCheckin[] {
@@ -105,6 +109,7 @@ export function pruneQueuedCheckinProgress(
   visitSynced: boolean,
   syncedPandaIds: ReadonlySet<string>,
   lastError?: string,
+  flushedNote?: string | null,
 ): QueuedCheckin[] {
   const next: QueuedCheckin[] = [];
   for (const item of list) {
@@ -112,13 +117,20 @@ export function pruneQueuedCheckinProgress(
       next.push(item);
       continue;
     }
-    const nextVisitSynced = item.visitSynced || visitSynced;
+    const noteChangedMidFlight = flushedNote !== undefined && item.note !== flushedNote;
+    const nextVisitSynced = noteChangedMidFlight ? item.visitSynced : item.visitSynced || visitSynced;
     const remainingPandas = item.pandaIds.filter((id) => !syncedPandaIds.has(id));
     if (nextVisitSynced && remainingPandas.length === 0) continue;
     next.push({
-      ...item,
+      key: item.key,
+      accountId: item.accountId,
+      placeId: item.placeId,
+      visitedOn: item.visitedOn,
+      note: item.note,
       visitSynced: nextVisitSynced,
       pandaIds: remainingPandas,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
       ...(lastError ? { lastError } : {}),
     });
   }

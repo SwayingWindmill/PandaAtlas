@@ -281,7 +281,10 @@ export default function VisitsScreen() {
     [institutionList.data],
   );
 
-  const failed = session.status === "unavailable" || (!hasQueued && failedWithoutData(list)) || failedWithoutData(placeList);
+  const failed =
+    session.status === "unavailable" ||
+    (!hasQueued && !list.isFetching && failedWithoutData(list)) ||
+    failedWithoutData(placeList);
 
   async function syncNow() {
     if (!accountId || syncingQueue) return;
@@ -303,9 +306,12 @@ export default function VisitsScreen() {
       const queuedKey = isQueuedVisitId(visit.checkinId)
         ? queueKeyFromVisitId(visit.checkinId)
         : queuedKeyByPlaceDay.get(`${visit.placeId}|${visit.visitedOn}`);
-      if (queuedKey) await removeOfflineCheckin(queuedKey);
-      if (isQueuedVisitId(visit.checkinId)) return;
+      if (isQueuedVisitId(visit.checkinId)) {
+        if (queuedKey) await removeOfflineCheckin(queuedKey);
+        return;
+      }
       await removeVisit(visit.checkinId);
+      if (queuedKey) await removeOfflineCheckin(queuedKey);
       if (accountId) {
         const queryKey = visitsQueryKey(accountId);
         await queryClient.cancelQueries({ queryKey });

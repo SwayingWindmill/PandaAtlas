@@ -59,7 +59,33 @@ describe("offline-checkin-queue-model", () => {
     expect(partial).toHaveLength(1);
     expect(partial[0]).toMatchObject({ visitSynced: true, pandaIds: ["p-2"], lastError: "network error" });
 
-    const done = pruneQueuedCheckinProgress(partial, key, true, new Set(["p-2"]));
+    const updatedMidFlight = upsertQueuedCheckin(partial, {
+      accountId: "acc-1",
+      placeId: "place-cd",
+      visitedOn: "2026-11-28",
+      note: "补记一句小记",
+      nowIso: "2026-11-28T10:00:00Z",
+    });
+    expect(updatedMidFlight[0]!.lastError).toBeUndefined();
+    expect(updatedMidFlight[0]!.visitSynced).toBe(false);
+
+    // Flushing the older null note in parallel must not mark the newer note as visitSynced.
+    const preservedNewNote = pruneQueuedCheckinProgress(
+      updatedMidFlight,
+      key,
+      true,
+      new Set(["p-2"]),
+      undefined,
+      null,
+    );
+    expect(preservedNewNote).toHaveLength(1);
+    expect(preservedNewNote[0]).toMatchObject({
+      note: "补记一句小记",
+      visitSynced: false,
+      pandaIds: [],
+    });
+
+    const done = pruneQueuedCheckinProgress(preservedNewNote, key, true, new Set(), undefined, "补记一句小记");
     expect(done).toHaveLength(0);
   });
 

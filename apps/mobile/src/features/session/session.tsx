@@ -1,8 +1,14 @@
 import type { Session } from "@supabase/supabase-js";
+import { onlineManager } from "@tanstack/react-query";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { syncGuestToAccount } from "@/features/engagement/guest-sync";
 import { unregisterStoredPushDevice } from "@/features/notifications/push";
+import {
+  clearCachedAccountId,
+  readCachedAccountId,
+  writeCachedAccountId,
+} from "@/features/session/account-cache";
 import {
   type AuthProvider,
   authenticateWithApple,
@@ -49,55 +55,138 @@ function signInMessage(error: { status?: number; code?: string; message: string 
   return "没能完成，请稍后再试。";
 }
 
-/** The application account behind a Supabase user; created on first sign-in. */
-async function provision(session: Session): Promise<SessionState> {
+function sameSessionState(left: SessionState, right: SessionState): boolean {
+  if (left.status !== right.status) return false;
+  if (left.status === "signedIn" && right.status === "signedIn") {
+    return left.accountId === right.accountId && left.email === right.email && left.authProvider === right.authProvider;
+  }
+  if (left.status === "unavailable" && right.status === "unavailable") {
+    return left.email === right.email;
+  }
+  return true;
+}
+
+interface ProvisionResult {
+  state: SessionState;
+  confirmedOnline: boolean;
+}
+
+/** The application account behind a Supabase user; created on first sign-in with cached offline continuity. */
+async function provision(session: Session): Promise<ProvisionResult> {
   const email = session.user.email ?? null;
   const authProvider = resolveAuthProvider(session.user);
-  // Repeating it is harmless: the API returns the existing account. A suspended account answers 403.
-  const { data } = await authedApi.POST("/api/v2/me/account");
-  if (!data) return { status: "unavailable", email };
-  await syncGuestToAccount(data.accountId).catch(() => undefined);
-  return { status: "signedIn", email, accountId: data.accountId, authProvider };
+
+  const offlineFallback = async (): Promise<ProvisionResult> => {
+    const cachedAccountId = await readCachedAccountId(session.user.id);
+    if (cachedAccountId) {
+      return {
+        state: { status: "signedIn", email, accountId: cachedAccountId, authProvider },
+        confirmedOnline: false,
+      };
+    }
+    return { state: { status: "unavailable", email }, confirmedOnline: false };
+  };
+
+  try {
+    // Repeating it is harmless: the API returns the existing account. A suspended or revoked account answers 401/403.
+    const { data, response } = await authedApi.POST("/api/v2/me/account");
+    if (data) {
+      await writeCachedAccountId(session.user.id, data.accountId);
+      await syncGuestToAccount(data.accountId).catch(() => undefined);
+      return {
+        state: { status: "signedIn", email, accountId: data.accountId, authProvider },
+        confirmedOnline: true,
+      };
+    }
+    if (response.status === 401 || response.status === 403) {
+      await clearCachedAccountId();
+      return { state: { status: "unavailable", email }, confirmedOnline: true };
+    }
+    return await offlineFallback();
+  } catch {
+    return await offlineFallback();
+  }
 }
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<SessionState>({ status: "loading" });
   const activeProvisionRef = useRef<{ userId: string; task: Promise<SessionState> } | null>(null);
+  const currentUserIdRef = useRef<string | null | undefined>(undefined);
+  const unconfirmedSessionRef = useRef<Session | null>(null);
 
-  const ensureProvisioned = useCallback((session: Session): Promise<SessionState> => {
+  const ensureProvisioned = useCallback((session: Session, options?: { force?: boolean }): Promise<SessionState> => {
     const userId = session.user.id;
-    if (activeProvisionRef.current?.userId === userId) {
+    if (!options?.force && activeProvisionRef.current?.userId === userId) {
       return activeProvisionRef.current.task;
     }
-    const task = provision(session).catch<SessionState>(() => ({
-      status: "unavailable",
-      email: session.user.email ?? null,
-    }));
-    activeProvisionRef.current = { userId, task };
-    return task;
+    const entry: { userId: string; task: Promise<SessionState> } = {
+      userId,
+      task: Promise.resolve({ status: "loading" }),
+    };
+    entry.task = provision(session)
+      .then((result) => {
+        if (currentUserIdRef.current === userId) {
+          unconfirmedSessionRef.current = result.confirmedOnline ? null : session;
+        }
+        if (!result.confirmedOnline && activeProvisionRef.current === entry) {
+          activeProvisionRef.current = null;
+        }
+        return result.state;
+      })
+      .catch<SessionState>(() => {
+        if (currentUserIdRef.current === userId) {
+          unconfirmedSessionRef.current = session;
+        }
+        if (activeProvisionRef.current === entry) {
+          activeProvisionRef.current = null;
+        }
+        return {
+          status: "unavailable",
+          email: session.user.email ?? null,
+        };
+      });
+    activeProvisionRef.current = entry;
+    return entry.task;
   }, []);
 
   useEffect(() => {
     // undefined until the stored session is read, so a first "no session" still settles the state.
-    let current: string | null | undefined;
     const apply = (session: Session | null) => {
       const userId = session?.user.id ?? null;
-      if (userId === current) return;
-      if (current !== undefined) queryClient.removeQueries({ queryKey: ["private"] });
-      current = userId;
+      if (userId === currentUserIdRef.current) return;
+      if (currentUserIdRef.current !== undefined) queryClient.removeQueries({ queryKey: ["private"] });
+      currentUserIdRef.current = userId;
       if (!session || userId === null) {
         activeProvisionRef.current = null;
+        unconfirmedSessionRef.current = null;
+        void clearCachedAccountId();
         setState({ status: "signedOut" });
         return;
       }
+      unconfirmedSessionRef.current = session;
       setState({ status: "loading" });
       void ensureProvisioned(session).then((next) => {
-        if (current === userId) setState(next);
+        if (currentUserIdRef.current === userId) setState(next);
       });
     };
+
     void supabase.auth.getSession().then(({ data }) => apply(data.session));
     const { data } = supabase.auth.onAuthStateChange((_event, session) => apply(session));
-    return () => data.subscription.unsubscribe();
+    const unsubscribeOnline = onlineManager.subscribe((isOnline) => {
+      if (!isOnline) return;
+      const pending = unconfirmedSessionRef.current;
+      if (!pending || pending.user.id !== currentUserIdRef.current) return;
+      void ensureProvisioned(pending, { force: true }).then((next) => {
+        if (currentUserIdRef.current === pending.user.id) {
+          setState((prev) => (sameSessionState(prev, next) ? prev : next));
+        }
+      });
+    });
+
+    return () => {
+      data.subscription.unsubscribe();
+      unsubscribeOnline();
+    };
   }, [ensureProvisioned]);
 
   const value = useMemo<SessionValue>(
@@ -117,7 +206,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         const result = await authenticateWithApple();
         if (result.status === "cancelled") return "cancelled";
         const { data } = await supabase.auth.getSession();
-        const settled = data.session ? await ensureProvisioned(data.session) : undefined;
+        const settled = data.session ? await ensureProvisioned(data.session, { force: true }) : undefined;
         if (settled?.status === "signedIn") {
           await storeAppleRevocationToken(result.authorizationCode);
         }
@@ -131,6 +220,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       },
       async signOut() {
         await unregisterStoredPushDevice();
+        activeProvisionRef.current = null;
+        unconfirmedSessionRef.current = null;
+        await clearCachedAccountId();
         await supabase.auth.signOut();
       },
     }),

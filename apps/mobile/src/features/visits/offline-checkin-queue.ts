@@ -109,49 +109,71 @@ export function removeOfflineCheckin(key: string): Promise<QueuedCheckin[]> {
 }
 
 async function flushOnce(accountId: string): Promise<{ synced: number; remaining: number }> {
-  const snapshot = (await loadQueue()).filter((item) => item.accountId === accountId);
-  if (snapshot.length === 0) return { synced: 0, remaining: 0 };
-
   let synced = 0;
-  for (const item of snapshot) {
-    let visitSynced = item.visitSynced;
-    let errorMessage: string | undefined;
+  const attemptedVersions = new Map<string, string>();
 
-    if (!visitSynced) {
-      try {
-        await recordVisit(item.placeId, item.visitedOn, item.note);
-        visitSynced = true;
-        synced += 1;
-      } catch (error) {
-        errorMessage = error instanceof Error ? error.message : "visit sync failed";
-      }
-    }
+  while (true) {
+    const candidates = (await loadQueue()).filter(
+      (item) => item.accountId === accountId && attemptedVersions.get(item.key) !== item.updatedAt,
+    );
+    if (candidates.length === 0) break;
 
-    const syncedPandas = new Set<string>();
-    if (visitSynced && item.pandaIds.length > 0) {
-      for (const pandaId of item.pandaIds) {
+    for (const item of candidates) {
+      attemptedVersions.set(item.key, item.updatedAt);
+      let visitSynced = item.visitSynced;
+      let errorMessage: string | undefined;
+
+      if (!visitSynced) {
         try {
-          const ok = await markSeen(pandaId, item.visitedOn, item.placeId);
-          if (ok) {
-            syncedPandas.add(pandaId);
-            synced += 1;
-          } else {
-            errorMessage ??= "seen sync failed";
-          }
+          await recordVisit(item.placeId, item.visitedOn, item.note);
+          visitSynced = true;
+          synced += 1;
         } catch (error) {
-          errorMessage ??= error instanceof Error ? error.message : "seen sync failed";
+          errorMessage = error instanceof Error ? error.message : "visit sync failed";
         }
       }
+
+      const syncedPandas = new Set<string>();
+      if (visitSynced && item.pandaIds.length > 0) {
+        for (const pandaId of item.pandaIds) {
+          try {
+            const ok = await markSeen(pandaId, item.visitedOn, item.placeId);
+            if (ok) {
+              syncedPandas.add(pandaId);
+              synced += 1;
+            } else {
+              errorMessage ??= "seen sync failed";
+            }
+          } catch (error) {
+            errorMessage ??= error instanceof Error ? error.message : "seen sync failed";
+          }
+        }
+      }
+
+      const madeProgress = (!item.visitSynced && visitSynced) || syncedPandas.size > 0;
+      if (madeProgress) {
+        // Trigger refetch before pruning the queue so `/visits` never flashes LoadFailed between empty queue and fresh data.
+        void queryClient.invalidateQueries({ queryKey: visitsQueryKey(accountId) });
+        void queryClient.invalidateQueries({ queryKey: seenIdsQueryKey(accountId) });
+        void queryClient.invalidateQueries({ queryKey: seenEntriesQueryKey(accountId) });
+      }
+      if (madeProgress || errorMessage) {
+        await serializeMutation(async () => {
+          const latest = await loadQueue();
+          const updated = pruneQueuedCheckinProgress(
+            latest,
+            item.key,
+            visitSynced,
+            syncedPandas,
+            errorMessage,
+            item.note,
+          );
+          await writeQueue(updated);
+        });
+      }
     }
 
-    const madeProgress = (!item.visitSynced && visitSynced) || syncedPandas.size > 0;
-    if (madeProgress || errorMessage) {
-      await serializeMutation(async () => {
-        const latest = await loadQueue();
-        const updated = pruneQueuedCheckinProgress(latest, item.key, visitSynced, syncedPandas, errorMessage);
-        await writeQueue(updated);
-      });
-    }
+    if (!onlineManager.isOnline()) break;
   }
 
   if (synced > 0) {
