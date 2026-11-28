@@ -15,11 +15,7 @@ export interface AuditRepository {
   list(limit: number): Promise<AuditEvidence[]>;
 }
 
-export type AuditPort = AuditRepository;
-export const AUDIT_REPOSITORY = Symbol("AUDIT_REPOSITORY");
-export const AUDIT_PORT = Symbol("AUDIT_PORT");
-
-export class AuditApplication implements AuditPort {
+export class AuditApplication {
   public constructor(private readonly repository: AuditRepository) {}
 
   public list(limit = 50): Promise<AuditEvidence[]> {

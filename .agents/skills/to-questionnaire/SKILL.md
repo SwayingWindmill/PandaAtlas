@@ -1,26 +1,24 @@
 ---
 name: to-questionnaire
-description: Turn a decision you can't fully answer into a questionnaire for someone else to fill in.
+description: Turn a decision you can't fully answer into a structured Markdown questionnaire for someone else to fill in async or in a meeting.
 disable-model-invocation: true
 ---
 
-Turn something the user can't answer alone into a **questionnaire**: a Markdown document they hand to one person to fill in async, or fill out together over a meeting. The recipient holds knowledge the user lacks; the questionnaire pulls it out of them.
+# To Questionnaire
 
-**Grill the send, not the subject.** Interview the user only about the _send_, which they can always answer: who it goes to, and what they need back. The questions in the document then target the **gap** between what the recipient knows and what the user needs.
+Turn something the user cannot answer alone (knowledge held by a curator, institution partner, designer, or colleague) into a **questionnaire**: a Markdown document they hand to one person to fill in async or complete together in a meeting.
 
+**Grill the send, not the subject.** Interview the user only about the _send_, which they can always answer: who it goes to and what they need back. Aim every question at the gap between what the recipient knows and what the user needs.
 
-1. **Who is it going to?** Ask, in one exchange, the recipient's role, expertise, and relationship to the user. This fixes the questionnaire's tone and how much context it must carry. Done when you know who the recipient is and what they know that the user doesn't.
+## Process
 
-2. **What do you need back?** Ask, in one exchange, the specific decisions or facts the user can't resolve alone and needs from this person. Done when you have a concrete list of what the user must walk away able to do or decide.
-
-3. **Write the questionnaire.** Draft questions aimed at the gap from steps 1–2, following the Document structure below. Write it to `to-questionnaire-<slug>.md` in the current directory (slug from the topic) and report the path. Done when the file exists and every item the user named in step 2 is covered by a question.
+1. **Who is it going to?** Ask (via `ask_question` or one concise exchange) the recipient's role, domain expertise, language preference, and relationship to the user. Done when you know who will read it and what context they hold.
+2. **What do you need back?** Ask in one exchange what specific decisions, content constraints, or facts the user must walk away able to act on. Done when you have a concrete list of required outputs.
+3. **Write the questionnaire.** Draft non-compound questions ordered most-important-first using the template below, applying `GLOSSARY.md` terms where shared with the recipient and [`../unslop/SKILL.md`](../unslop/SKILL.md) plain prose. Save to `.audit/to-questionnaire-<slug>.md` by default (unless the user specifies a `docs/` path) and report the clickable path. Done when every item from Step 2 is covered.
 
 ## Document structure
 
-Frame the document as a **discovery questionnaire**: the user lacks context, the recipient holds it. Order questions most-important-first, since async means you may only get one pass, and group them under `##` headings by theme once there are more than a handful. Write it using the template below.
-
-<questionnaire-template>
-
+```markdown
 # <Questionnaire title>
 
 **Purpose:** why this questionnaire exists and the decision riding on it.
@@ -29,26 +27,23 @@ Frame the document as a **discovery questionnaire**: the user lacks context, the
 
 ## Context
 
-One paragraph orienting a recipient who wasn't in the user's head. Enough to answer well, not a page.
+One short paragraph orienting a recipient who was not in the session. Enough to answer well, not a full spec.
 
 ## How to answer
 
-Deadline and rough effort. Partial answers and "I don't know" are useful: flag anything you're unsure of rather than skipping it.
+Deadline and rough effort. Partial answers and "I don't know" are useful: flag anything you are unsure of rather than skipping it.
 
 ## <Theme heading>
 
-One `##` section per theme. Under each, its questions, most-important-first. Every question is one idea, never compound, with an answer stub directly beneath, and a one-line _why this matters_ only where the question could be misread or invite a throwaway answer.
+One `##` section per theme when there are more than a handful of questions. Each question covers one idea, never compound, with an answer stub beneath and a one-line _Why this matters_ hint only where the question could be misread.
 
-<question-example>
-### What load is the system expected to handle at launch?
+### Which zoo records may show real-time enclosure links publicly?
 
-_Why this matters: it decides whether we provision for burst traffic now or defer it._
+_Why this matters: it determines whether the public release snapshot exports stream URLs or hides them behind institution review._
 
 >
-</question-example>
 
 ## Anything else?
 
-A closing catch-all: anything we didn't ask that we should know?
-
-</questionnaire-template>
+Anything we did not ask that we should know before deciding?
+```

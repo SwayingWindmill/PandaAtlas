@@ -1,349 +1,86 @@
 import { useQuery } from "@tanstack/react-query";
-import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import * as WebBrowser from "expo-web-browser";
-import { useState } from "react";
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import { useEffect } from "react";
+import { View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCSSVariable } from "uniwind";
 
-import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
-import { Icon } from "@/components/icon";
-import {
-  Cake,
-  CircleQuestionMark,
-  Flower,
-  Hourglass,
-  House,
-  type LucideIcon,
-  Mars,
-  Network,
-  Users,
-  Venus,
-} from "@/components/icons";
-import { LoadFailed } from "@/components/load-failed";
-import { PhotoOutline } from "@/components/photo-outline";
-import { PressScale } from "@/components/press-scale";
 import { HeroHeader, useHeroScroll } from "@/components/hero-header";
+import { Icon } from "@/components/icon";
+import { Flag, FolderHeart, Mars, Venus } from "@/components/icons";
+import { LoadFailed } from "@/components/load-failed";
+import { HeroFade } from "@/components/scrim";
 import { StretchyHero } from "@/components/stretchy-hero";
-import { PAGE_ENTER } from "@/design/motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { CompareRows } from "@/features/compare/compare-rows";
+import { PAGE_ENTER } from "@/design/motion";
 import { PandaActions } from "@/features/engagement/panda-actions";
-import { type FamilyMember, relativesOf } from "@/features/family/family";
-import { sourceLine } from "@/features/on-this-day/memory-group";
-import { useMilestonesOn } from "@/features/milestones/prefs";
-import { DECEASED_POLICY, isCubDay } from "@/features/on-this-day/on-this-day";
-import { openPanda } from "@/features/pandas/panda-row";
-import { type Profile, longDate, profileQueryOptions } from "@/features/pandas/profile";
-import { type Stat, UNKNOWN } from "@/features/pandas/profile-facts";
-import { RADIUS } from "@/lib/surface";
+import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { profileQueryOptions } from "@/features/pandas/profile";
+import {
+  Memories,
+  PandaFaceGuideCard,
+  PandaVenueLive,
+  openPandaCorrection,
+} from "@/features/pandas/profile-overview";
+import {
+  FamilyStripSection,
+  HighlightCarousel,
+  JourneyRouteSection,
+  LifeStageSection,
+  NoPhotoIdentityHeader,
+  PandaVenueNewsCard,
+  PhotoPeekStrip,
+  QuickToolsBar,
+  QuietProfileFooter,
+  RecommendedArticleCard,
+  SameCohortSection,
+  TraitsAndCareSection,
+  UnifiedMetricStrip,
+} from "@/features/pandas/profile-sections";
+import { recordView } from "@/features/pandas/recent";
+import { queryClient } from "@/lib/query-client";
+import { PAGE_COLUMN } from "@/lib/surface";
 
 /** Hero height below the status bar. The photo runs under the status bar too. */
-const HERO = 340;
-
-function correct(slug: string) {
-  router.push({ pathname: "/pandas/[slug]/correct", params: { slug } });
-}
-
-/** A section's footnote header, aligned with the text inside the group below it. */
-function SectionHeader({ children }: { children: string }) {
-  return (
-    <Text variant="footnote" role="heading" className="px-4 text-muted-foreground">
-      {children}
-    </Text>
-  );
-}
-
-/** The glyph beside each stat's label. 性别 shows the sex itself, so it reads at a glance. */
-function statIcon(stat: Stat, deceased: boolean): LucideIcon {
-  if (stat.key === "sex") return stat.value === "雄" ? Mars : stat.value === "雌" ? Venus : CircleQuestionMark;
-  if (stat.key === "age") return deceased ? Hourglass : Cake;
-  return deceased ? Flower : House;
-}
-
-/** How much of the row each block takes: the place needs room for a zoo's name. */
-const STAT_FLEX: Record<Stat["key"], number> = { sex: 1, age: 1.25, place: 1.9 };
-/** Below this width three tiles leave the sex tile too narrow for its label, so the place takes its own row. */
-const STAT_ROW_MIN_WIDTH = 360;
-
-function StatBlock({
-  stat,
-  deceased,
-  onPress,
-  stacked,
-  wrapped,
-}: {
-  stat: Stat;
-  deceased: boolean;
-  onPress?: () => void;
-  stacked: boolean;
-  wrapped: boolean;
-}) {
-  const body = (
-    <View
-      className="gap-1 bg-card p-3"
-      style={{ flex: 1, borderRadius: RADIUS.tile, borderCurve: "continuous", minHeight: 96 }}
-    >
-      <View className="flex-row items-center gap-1">
-        <Icon icon={statIcon(stat, deceased)} size="footnote" tone="secondary" />
-        <Text variant="footnote" className="flex-1 text-muted-foreground" numberOfLines={1}>
-          {stat.label}
-        </Text>
-        {onPress ? <Chevron /> : null}
-      </View>
-      <Text variant="stat" numberOfLines={stacked ? undefined : 2}>
-        {stat.value}
-      </Text>
-      {stat.detail ? (
-        <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
-          {stat.detail}
-        </Text>
-      ) : null}
-    </View>
-  );
-  const style = stacked
-    ? undefined
-    : wrapped && stat.key === "place"
-      ? { flexBasis: "100%" as const }
-      : { flex: STAT_FLEX[stat.key] };
-  if (!onPress) {
-    return (
-      <View style={style} accessible accessibilityLabel={`${stat.label}，${stat.value}${stat.detail ? `，${stat.detail}` : ""}`}>
-        {body}
-      </View>
-    );
-  }
-  return (
-    <PressScale
-      onPress={onPress}
-      role="link"
-      accessibilityLabel={`${stat.label}，${stat.value}，参观指南`}
-      containerStyle={style}
-      style={{ flex: 1 }}
-    >
-      {body}
-    </PressScale>
-  );
-}
-
-/** Sex, age and where it lives as three tiles, the way Health leads with its summary. */
-function Stats({ profile }: { profile: Profile }) {
-  const stacked = useStacked();
-  const wrapped = useWindowDimensions().width < STAT_ROW_MIN_WIDTH;
-  const visit = profile.visit;
-  const fact = (label: string) => profile.facts.find((item) => item.label === label)?.value;
-  const born = fact("出生");
-  const birthPlace = fact("出生地");
-  const birthLine =
-    born && born !== UNKNOWN
-      ? `${born}出生${birthPlace && birthPlace !== UNKNOWN ? `于${birthPlace}` : ""}`
-      : null;
-  return (
-    <View className="gap-2">
-    <View className={stacked ? "gap-2" : wrapped ? "flex-row flex-wrap gap-2" : "flex-row gap-2"}>
-      {profile.stats.map((stat) => (
-        <StatBlock
-          key={stat.key}
-          stat={stat}
-          deceased={profile.deceased}
-          stacked={stacked}
-          wrapped={wrapped}
-          onPress={
-            stat.key === "place" && visit
-              ? () => router.push({ pathname: "/institutions/[slug]", params: { slug: visit.institutionSlug } })
-              : undefined
-          }
-        />
-      ))}
-    </View>
-      {birthLine ? (
-        <Text variant="footnote" className="px-1 text-muted-foreground">
-          {birthLine}
-        </Text>
-      ) : null}
-    </View>
-  );
-}
-
-/** Avatar 44 inside a 52pt capsule with 4pt padding: the circles share a centre. */
-const AVATAR = 44;
-const CHIP_PAD = 4;
-
-function FamilyChip({ member }: { member: FamilyMember }) {
-  return (
-    <PressScale onPress={() => openPanda(member.slug)} role="link" accessibilityLabel={`${member.name}，${member.relation}`}>
-      <View
-        className="flex-row items-center gap-2.5 bg-card"
-        style={{ padding: CHIP_PAD, paddingRight: 16, borderRadius: (AVATAR + CHIP_PAD * 2) / 2, borderCurve: "continuous" }}
-      >
-        <View
-          className="items-center justify-center overflow-hidden bg-muted"
-          style={{ width: AVATAR, height: AVATAR, borderRadius: AVATAR / 2 }}
-        >
-          {member.photoUrl ? (
-            <Image source={member.photoUrl} style={{ width: AVATAR, height: AVATAR }} contentFit="cover" accessible={false} />
-          ) : (
-            <Text variant="body" className="font-semibold text-muted-foreground">
-              {member.name.slice(0, 1)}
-            </Text>
-          )}
-          <PhotoOutline radius={AVATAR / 2} />
-        </View>
-        <View>
-          <Text variant="body" className="font-semibold" numberOfLines={1}>
-            {member.name}
-          </Text>
-          <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
-            {member.relation}
-          </Text>
-        </View>
-      </View>
-    </PressScale>
-  );
-}
-
-function Family({ profile }: { profile: Profile }) {
-  const relatives = profile.family ? relativesOf(profile.family) : [];
-  const parents = profile.facts.find((fact) => fact.label === "父母");
-  if (relatives.length === 0) {
-    return (
-      <ListSection title="家族">
-        <ListCell icon={Users} label="父母" meta={parents?.value ?? UNKNOWN} last />
-      </ListSection>
-    );
-  }
-  return (
-    <View className="gap-1.5">
-      <SectionHeader>家族</SectionHeader>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        className="-mx-4"
-        contentContainerClassName="gap-2 px-4 pb-1.5"
-      >
-        {relatives.map((member) => (
-          <FamilyChip key={member.id} member={member} />
-        ))}
-      </ScrollView>
-      <ListSection>
-        {/* 查关系 now opens from the family, where the tree it starts from is on screen. */}
-        <ListCell icon={Network} label="查看家族" href={{ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } }} last />
-      </ListSection>
-    </View>
-  );
-}
-
-/** Where it lived before. Where it lives now is the 所在地 tile, which opens the institution. */
-function PlacesLived({ profile }: { profile: Profile }) {
-  const past = profile.placesLived.filter((place) => !place.current);
-  if (past.length === 0) return null;
-  return (
-    <ListSection title={profile.deceased ? "生活过的地方" : "以前住过"}>
-      {past.map((place, index) => (
-        <ListCell
-          key={`${place.place}-${place.years}`}
-          label={place.place}
-          meta={place.years || undefined}
-          last={index === past.length - 1}
-        />
-      ))}
-    </ListSection>
-  );
-}
+const HERO = 292;
+/** How far the name block rides up onto the photo's faded bottom. */
+const OVERLAP = 52;
 
 /**
- * 那年今天 on the panda's own page; for a panda that has died it is 纪念, and quiet: no countdown, no
- * celebration, just what happened on this day, with where it is written down.
+ * Whether the profile will open on a photo, from the list and cover already loaded on the way here: most pandas
+ * have no cover, and a skeleton that always reserves one jumps by the hero's height when the profile lands.
+ * Unknown (opened from a link) counts as a photo.
  */
-function Memories({ profile }: { profile: Profile }) {
-  const sources = new Map(profile.sources.map((source) => [source.id, source]));
-  // 满月 and 满百天 are 里程碑, and go with its switch.
-  const milestonesOn = useMilestonesOn();
-  const memories = profile.memories.filter((memory) => milestonesOn || !isCubDay(memory));
-  if (memories.length === 0) return null;
-  return (
-    <ListSection title={profile.deceased ? DECEASED_POLICY.heading : "那年今天"}>
-      {memories.map((memory, index) => (
-        <ListCell
-          key={memory.key}
-          label={memory.text}
-          detail={sourceLine(memory, memory.sourceIds.map((id) => sources.get(id)).find(Boolean)) ?? undefined}
-          lines={3}
-          last={index === memories.length - 1}
-        />
-      ))}
-    </ListSection>
-  );
+function expectsPhoto(slug: string): boolean {
+  const id = queryClient.getQueryData(pandaIndexQueryOptions().queryKey)?.find((item) => item.slug === slug)?.id;
+  return id === undefined || queryClient.getQueryData(["public", "panda-cover", id]) !== null;
 }
 
-function Events({ profile }: { profile: Profile }) {
-  // Newest first, the way a feed reads.
-  const events = [...profile.events].reverse();
-  // The whole life, oldest first and with a source on each line, is one tap away under the latest news.
-  const timeline = (
-    <ListCell
-      label="看时间线"
-      detail="一生的大事按年排好，附上出处"
-      href={{ pathname: "/pandas/[slug]/timeline", params: { slug: profile.slug } }}
-      last={events.length > 0}
-    />
-  );
-  return (
-    <ListSection title="动态">
-      {events.length === 0 ? (
-        <>
-          <ListCell label={UNKNOWN} />
-          {timeline}
-          <ListCell label="知道它的经历？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
-        </>
-      ) : (
-        <>
-          {events.map((event) => (
-            <ListCell key={event.id} label={event.text} meta={event.date} lines={3} />
-          ))}
-          {timeline}
-        </>
-      )}
-    </ListSection>
-  );
-}
-
-/** Sources a fan sees before asking for the rest; a long list would bury the actions below it. */
-const SOURCES_SHOWN = 5;
-
-function Sources({ sources }: { sources: Profile["sources"] }) {
-  const [all, setAll] = useState(false);
-  const shown = all ? sources : sources.slice(0, SOURCES_SHOWN);
-  const hidden = sources.length - shown.length;
-  return (
-    <ListSection title="资料来源">
-      {shown.map((source, index) => (
-        <ListCell
-          key={source.id}
-          role="link"
-          label={source.title}
-          detail={`${source.publisher}　核实于 ${longDate(source.lastVerifiedOn)}`}
-          accessibilityLabel={`${source.publisher}，${source.title}`}
-          accessibilityHint="在浏览器中打开"
-          onPress={() => void WebBrowser.openBrowserAsync(source.url)}
-          last={hidden === 0 && index === shown.length - 1}
-        />
-      ))}
-      {hidden > 0 ? <ListCell tone="tint" label={`显示全部 ${sources.length} 条`} onPress={() => setAll(true)} last /> : null}
-    </ListSection>
-  );
-}
-
-function NoPhoto({ profile }: { profile: Profile }) {
+function ProfileSkeleton({ slug }: { slug: string }) {
   const insets = useSafeAreaInsets();
+  const photo = expectsPhoto(slug);
   return (
-    <View style={{ paddingTop: insets.top + 64 }} className="px-4">
-      <ListSection>
-        <ListCell label="暂无照片" />
-        <ListCell label="有它的照片？告诉我们" tone="tint" onPress={() => correct(profile.slug)} last />
-      </ListSection>
+    <View accessibilityLabel="正在加载资料">
+      {photo ? (
+        <Skeleton className="w-full rounded-none" style={{ height: HERO + insets.top }} />
+      ) : (
+        <View className="flex-row items-center gap-3.5 px-gutter pb-3" style={[PAGE_COLUMN, { paddingTop: insets.top + 58 }]}>
+          <Skeleton className="rounded-tile" style={{ width: 60, height: 60 }} />
+          <View className="flex-1 gap-2">
+            <Skeleton className="h-9 w-28" />
+            <Skeleton className="h-4 w-24" />
+          </View>
+        </View>
+      )}
+      <View className="gap-4 px-gutter" style={[PAGE_COLUMN, photo ? { marginTop: -OVERLAP } : null]}>
+        {photo ? <Skeleton className="h-10 w-32" /> : null}
+        <Skeleton className="h-5 w-4/5" />
+        <Skeleton className="h-12 w-full rounded-pill" />
+        <Skeleton className="h-20 w-full rounded-group" />
+        <Skeleton className="h-24 w-full rounded-group" />
+      </View>
     </View>
   );
 }
@@ -352,39 +89,45 @@ export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const { data: profile, isError: failed, refetch } = useQuery(profileQueryOptions(slug));
   const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
+  const page = String(useCSSVariable("--color-background"));
+  const viewedId = profile?.id;
+  useEffect(() => {
+    if (viewedId) void recordView(viewedId);
+  }, [viewedId]);
 
   if (!profile) {
     return (
       <View className="flex-1 bg-background">
         <HeroHeader title="" pastHero={false} />
         {failed ? (
-          <View className="px-4 pt-28">
+          <View className="px-gutter pt-28" style={PAGE_COLUMN}>
             <LoadFailed message="资料暂时打不开。" onRetry={() => void refetch()} />
           </View>
         ) : (
-          <View className="gap-4" accessibilityLabel="正在加载资料">
-            <Skeleton className="h-96 w-full rounded-none" />
-            <View className="gap-3 px-4">
-              <Skeleton className="h-10 w-32" />
-              <View className="flex-row gap-2">
-                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.sex }} />
-                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.age }} />
-                <Skeleton className="h-24 rounded-tile" style={{ flex: STAT_FLEX.place }} />
-              </View>
-            </View>
-          </View>
+          <ProfileSkeleton slug={slug} />
         )}
       </View>
     );
   }
 
   const cover = profile.photos[0];
+  const share = () => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } });
+  const sexIcon = profile.sex === "male" ? Mars : profile.sex === "female" ? Venus : null;
+
   return (
     <View className="flex-1 bg-background">
       <HeroHeader
         title={profile.name}
         pastHero={pastHero}
-        onShare={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })}
+        onShare={share}
+        menu={[
+          {
+            label: "加入合集",
+            icon: FolderHeart,
+            onPress: () => router.push({ pathname: "/pandas/[slug]/collect", params: { slug: profile.slug } }),
+          },
+          { label: "资料有误", icon: Flag, onPress: () => openPandaCorrection(profile.slug) },
+        ]}
       />
       <Animated.ScrollView
         className="flex-1"
@@ -400,35 +143,68 @@ export default function ProfileScreen() {
             scrollY={scrollY}
             label={`查看${profile.name}的照片，共 ${profile.photos.length} 张`}
             onPress={() => router.push({ pathname: "/pandas/[slug]/photos", params: { slug: profile.slug } })}
+            overlay={<HeroFade id={`hero-${profile.id}`} page={page} />}
           />
         ) : (
-          <NoPhoto profile={profile} />
+          <NoPhotoIdentityHeader profile={profile} adoptionName={profile.rich.adoptionName} leadBio={profile.rich.leadBio} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-7 bg-background px-4 pt-5">
-          <View className="gap-3">
-            <Text variant="display">{profile.name}</Text>
-            {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
-          </View>
-          <Stats profile={profile} />
-          <Family profile={profile} />
-          <PlacesLived profile={profile} />
-          <CompareRows slug={profile.slug} />
-          {profile.memories.length > 0 ? <Memories profile={profile} /> : null}
-          <Events profile={profile} />
-          {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
-          <ListSection>
-            <ListCell
-              label="加入合集"
-              tone="tint"
-              onPress={() => router.push({ pathname: "/pandas/[slug]/collect", params: { slug: profile.slug } })}
-            />
-            <ListCell label="资料有误？纠错" tone="tint" onPress={() => correct(profile.slug)} last />
-          </ListSection>
-          {cover?.credit ? (
-            <Text variant="footnote" className="px-4 text-muted-foreground">
-              {`封面照片：${cover.credit}`}
-            </Text>
+        <Animated.View
+          entering={PAGE_ENTER}
+          className="gap-4 px-gutter"
+          style={[PAGE_COLUMN, cover ? { marginTop: -OVERLAP } : { marginTop: 14 }]}
+        >
+          {cover ? (
+            <View className="gap-1.5">
+              <View>
+                <View className="flex-row items-baseline justify-between gap-2">
+                  <Text variant="display" role="heading" className="min-w-0 shrink">
+                    {profile.name}
+                  </Text>
+                  {profile.rich.adoptionName ? (
+                    <Text variant="footnote" className="shrink-0 font-semibold text-primary">
+                      {`认养名　${profile.rich.adoptionName}`}
+                    </Text>
+                  ) : null}
+                </View>
+                {profile.nameEn || sexIcon ? (
+                  <View
+                    className="flex-row items-center gap-1.5"
+                    accessible
+                    accessibilityLabel={`${profile.nameEn ?? ""}${profile.sex === "male" ? "，雄性" : profile.sex === "female" ? "，雌性" : ""}`}
+                  >
+                    {profile.nameEn ? (
+                      <Text variant="subheadline" className="min-w-0 shrink text-muted-foreground" numberOfLines={2}>
+                        {profile.nameEn}
+                      </Text>
+                    ) : null}
+                    {sexIcon ? <Icon icon={sexIcon} size="footnote" tone="secondary" strokeWidth={2.4} /> : null}
+                  </View>
+                ) : null}
+              </View>
+              {profile.rich.leadBio ? (
+                <Text variant="subheadline" className="text-muted-foreground">
+                  {profile.rich.leadBio}
+                </Text>
+              ) : null}
+            </View>
           ) : null}
+
+          <PandaActions pandaId={profile.id} name={profile.name} deceased={profile.deceased} />
+          <UnifiedMetricStrip profile={profile} />
+          <PandaVenueLive profile={profile} />
+          <PhotoPeekStrip profile={profile} />
+          <HighlightCarousel highlights={profile.rich.highlights} />
+          <TraitsAndCareSection name={profile.name} traits={profile.rich.traits} />
+          <PandaFaceGuideCard slug={profile.slug} pandaId={profile.id} />
+          <LifeStageSection stage={profile.rich.lifeStage} />
+          <JourneyRouteSection profile={profile} />
+          <FamilyStripSection profile={profile} />
+          <QuickToolsBar slug={profile.slug} name={profile.name} />
+          <SameCohortSection profile={profile} />
+          {profile.memories.length > 0 ? <Memories profile={profile} /> : null}
+          <PandaVenueNewsCard slug={profile.slug} />
+          <RecommendedArticleCard articleSlug={profile.rich.recommendedArticleSlug} />
+          <QuietProfileFooter profile={profile} />
         </Animated.View>
       </Animated.ScrollView>
     </View>

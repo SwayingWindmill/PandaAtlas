@@ -11,6 +11,7 @@ import { openPanda } from "@/features/pandas/panda-row";
 import type { Evidence } from "@/features/timeline/timeline";
 import { selectionHaptic } from "@/lib/haptics";
 import { HAIRLINE } from "@/lib/surface";
+import { useBackToClose } from "@/lib/use-back-to-close";
 import { cn } from "@/lib/utils";
 
 import { type Memory, ownRecord } from "./on-this-day";
@@ -31,20 +32,18 @@ export function lessLabel(memory: Memory): string {
   return memory.subject.kind === "panda" ? "少显示这只" : "少显示这里";
 }
 
-function open(memory: Memory) {
+/** Opens what a memory is about: the panda's page, or the place's. */
+export function openMemory(memory: Memory) {
   const { subject } = memory;
   if (subject.kind === "panda" && subject.slug) openPanda(subject.slug);
   else if (subject.kind === "place" && subject.slug) router.push({ pathname: "/places/[slug]", params: { slug: subject.slug } });
 }
 
-function Thumb({ memory }: { memory: Memory }) {
-  if (memory.subject.kind === "panda") return <PandaThumb pandaId={memory.subject.id} name={memory.subject.name} size={PHOTO} />;
-  // A place has no cover: its pin, on the same fill a panda without a photo gets.
+export function Thumb({ memory, size = PHOTO }: { memory: Memory; size?: number }) {
+  if (memory.subject.kind === "panda") return <PandaThumb pandaId={memory.subject.id} name={memory.subject.name} size={size} />;
+  // A place has no cover: its bare pin in the photo's slot, so the rows still line up.
   return (
-    <View
-      className="items-center justify-center rounded-control bg-secondary"
-      style={{ width: PHOTO, height: PHOTO, borderCurve: "continuous" }}
-    >
+    <View className="items-center justify-center" style={{ width: size, height: size }}>
       <Icon icon={MapPin} size="title3" />
     </View>
   );
@@ -67,6 +66,7 @@ export function MemoryGroup({
   onOff: () => void;
 }) {
   const [menu, setMenu] = useState<string | null>(null);
+  useBackToClose(menu !== null, () => setMenu(null));
   // At accessibility sizes, or in a window as narrow as 200% browser zoom, the photo goes above the words,
   // which then take the row's whole width.
   const stacked = useStacked();
@@ -99,7 +99,7 @@ export function MemoryGroup({
           <Fragment key={memory.key}>
             <View className={cn("flex-row", stacked ? "items-start" : "items-center")}>
               <Pressable
-                onPress={() => open(memory)}
+                onPress={() => openMemory(memory)}
                 role="link"
                 accessibilityLabel={[name, memory.text, from].filter(Boolean).join("，")}
                 className={cn(

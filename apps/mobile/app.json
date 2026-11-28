@@ -7,18 +7,47 @@
     "icon": "./assets/images/icon.png",
     "scheme": "zhipanda",
     "userInterfaceStyle": "automatic",
+    "runtimeVersion": { "policy": "appVersion" },
+    "updates": { "checkAutomatically": "NEVER", "fallbackToCacheTimeout": 0 },
     "ios": {
       "bundleIdentifier": "com.zhipanda.app",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "associatedDomains": ["applinks:www.zhipanda.com"],
+      "infoPlist": {
+        "NSPhotoLibraryAddUsageDescription": "把熊猫分享卡片保存到你的相册。"
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          { "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults", "NSPrivacyAccessedAPITypeReasons": ["CA92.1"] },
+          { "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp", "NSPrivacyAccessedAPITypeReasons": ["C617.1"] },
+          { "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime", "NSPrivacyAccessedAPITypeReasons": ["35F9.1"] },
+          { "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace", "NSPrivacyAccessedAPITypeReasons": ["E174.1"] }
+        ]
+      }
     },
     "android": {
       "package": "com.zhipanda.app",
       "adaptiveIcon": {
-        "backgroundColor": "#F2F2F7",
+        "backgroundColor": "#FFFFFF",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      }
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/zh/pandas/" },
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/zh/institutions/" },
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/zh/places/" },
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/en/pandas/" },
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/en/institutions/" },
+            { "scheme": "https", "host": "www.zhipanda.com", "pathPrefix": "/en/places/" }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
@@ -28,9 +57,13 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#F2F2F7",
+          "backgroundColor": "#FFFFFF",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "imageWidth": 160,
+          "dark": {
+            "backgroundColor": "#000000",
+            "image": "./assets/images/splash-icon-dark.png"
+          }
         }
       ],
       "expo-secure-store",
@@ -49,6 +82,7 @@
       "reactCompiler": true
     },
     "extra": {
+      "otaCriticalIndex": 0,
       "eas": { "projectId": "22e9d9ee-f59a-4e55-b2c4-2d160beca2e5" }
     },
     "owner": "swayingwindmill"

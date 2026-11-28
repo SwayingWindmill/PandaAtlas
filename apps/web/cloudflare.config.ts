@@ -24,7 +24,8 @@ export default defineConfig(({ mode }) => ({
     env: {
       ASSETS: bindings.assets(),
       HOME_MEDIA: bindings.r2({ name: "panda-atlas-media" }),
-      ...(mode === "production" ? { V2_API: bindings.worker({ worker: "zhipanda-v2-api" }) } : {}),
+      AUTH_OTP_RATE_LIMIT: bindings.rateLimit({ namespace: "1004", simple: { limit: 5, period: 60 } }),
+      ...(mode === "production" ? { V2_API: bindings.worker({ worker: "zhipanda-v2-api", props: { trustedWebClientIp: true } }) } : {}),
       API_TRANSPORT: bindings.text(mode === "production" ? "service-binding" : "http"),
       API_BASE_URL: bindings.text(mode === "production" ? "https://api.zhipanda.com" : (process.env.API_BASE_URL ?? "http://localhost:3001")),
       NEXT_PUBLIC_API_BASE_URL: bindings.text(mode === "production" ? "https://api.zhipanda.com" : (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001")),
@@ -33,8 +34,6 @@ export default defineConfig(({ mode }) => ({
       NEXT_PUBLIC_SITE_URL: bindings.text("https://www.zhipanda.com"),
       NEXT_PUBLIC_SUPABASE_URL: bindings.text(mode === "production" ? "https://gsnpkwlezpdkdupizjdb.supabase.co" : (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "http://127.0.0.1:65534")),
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: bindings.text(mode === "production" ? "sb_publishable_-JoUNsIVaSHreJXJ0hrd2g_6Skn9Dmm" : (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "test-publishable-key")),
-      // Production never serves the staff console; local and admin test runtimes opt in explicitly.
-      ADMIN_SHELL_ENABLED: bindings.text(mode === "production" ? "false" : (process.env.ADMIN_SHELL_ENABLED ?? "false")),
     },
   },
 }));

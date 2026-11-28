@@ -45,6 +45,7 @@ export interface MapPandaInput {
   id: string;
   slug: string;
   name: string;
+  hasFullBleedCover: boolean;
 }
 
 export interface MapItem {
@@ -58,6 +59,10 @@ export interface MapItem {
   residentNames: string | null;
   residents: MapPandaInput[];
   point: { x: number; y: number } | null;
+  /** The release's place ids this item stands for, so residencies and events can find it. */
+  placeIds: string[];
+  /** Where the place is, for a route in the phone's map app. */
+  coordinates: { longitude: number; latitude: number } | null;
 }
 
 export interface MapCluster {
@@ -174,6 +179,8 @@ function toItem(
     residentNames: residentNames(residents),
     residents,
     point: first ? projectToWorld(first.longitude, first.latitude) : null,
+    coordinates: first ?? null,
+    placeIds: places.map((place) => place.placeId),
   };
 }
 

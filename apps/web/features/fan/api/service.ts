@@ -1,8 +1,10 @@
-import type { V2ContributionInput, V2ContributionList, V2ContributionRecord } from "@/features/contribute/types";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import { ApiRequestError, requestJson } from "@/lib/api/request";
 
 import type {
+  V2ContributionInput,
+  V2ContributionList,
+  V2ContributionRecord,
   Checkin,
   DailyPandaGuessResult,
   DailyPandaPuzzle,

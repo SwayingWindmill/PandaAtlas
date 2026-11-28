@@ -3,11 +3,12 @@ import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestj
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { Public } from "../../../platform/auth/public.decorator.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
-import { DAILY_PANDA_PORT, type DailyPandaApplication } from "../application/daily-panda.application.js";
+import { DailyPandaApplication } from "../application/daily-panda.application.js";
 import { GAME_PORT, type GamePort } from "../application/game.application.js";
-import { PANDA_BOOK_PORT, type PandaBookApplication } from "../application/panda-book.application.js";
+import { PandaBookApplication } from "../application/panda-book.application.js";
 import {
   DailyPandaGuessesDto,
   DailyPandaGuessResultDto,
@@ -70,6 +71,7 @@ export class GameController {
   @Post("guess/answer")
   @HttpCode(200)
   @Public()
+  @RateLimit("write", { keyStrategy: "ip" })
   @ApiOperation({ operationId: "answerGuessQuestion" })
   @ApiOkResponse({ type: GuessResultDto })
   public async answerGuess(@Body() input: GuessAnswerDto) {
@@ -96,7 +98,7 @@ function dailyPandaGuessProblem(kind: "unknown_panda" | "too_many_guesses" | "un
 @ApiTags("Games")
 @Controller("games/daily-panda")
 export class DailyPandaController {
-  public constructor(@Inject(DAILY_PANDA_PORT) private readonly dailyPanda: DailyPandaApplication) {}
+  public constructor(@Inject(DailyPandaApplication) private readonly dailyPanda: DailyPandaApplication) {}
 
   @Get()
   @Public()
@@ -111,6 +113,7 @@ export class DailyPandaController {
   @Post("guesses")
   @HttpCode(200)
   @Public()
+  @RateLimit("write", { keyStrategy: "ip" })
   @ApiOperation({ operationId: "guessDailyPanda" })
   @ApiOkResponse({ type: DailyPandaGuessResultDto })
   public async guess(@Body() input: DailyPandaGuessesDto) {
@@ -135,6 +138,7 @@ export class GameAttemptController {
 
   @Post()
   @RequireCapabilities("game.attempt.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "saveGameAttempt" })
   @ApiCreatedResponse({ type: SavedGameAttemptDto })
   public async saveAttempt(@Req() request: HttpRequest, @Body() input: GuessAnswerDto) {
@@ -147,7 +151,7 @@ export class GameAttemptController {
 @ApiTags("Games")
 @Controller("me")
 export class PandaBookController {
-  public constructor(@Inject(PANDA_BOOK_PORT) private readonly pandaBook: PandaBookApplication) {}
+  public constructor(@Inject(PandaBookApplication) private readonly pandaBook: PandaBookApplication) {}
 
   @Get("panda-book")
   @RequireCapabilities("game.attempt.read")
@@ -163,6 +167,7 @@ export class PandaBookController {
 
   @Post("daily-panda-results")
   @RequireCapabilities("game.attempt.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "saveDailyPandaResult" })
   @ApiCreatedResponse({ type: SavedDailyPandaDto })
   public async saveDailyPanda(@Req() request: HttpRequest, @Body() input: DailyPandaGuessesDto) {

@@ -2,11 +2,13 @@
 
 本文件规定 AI 编程助手在本项目中的工作方式。目标是：**理解现有实现、进行最小必要修改、保持代码简单、验证真实结果**。项目已有的规范、配置和测试要求优先；不要凭习惯替换现有技术方案。
 
+工作流程以 pstack 为准（见下方「pstack」一节）。本文件只补充 pstack 不知道的项目事实和约束。
+
 ## 1. 开始任务前
 
 - 先阅读与任务相关的 README、项目配置、现有实现和测试；不要在不了解上下文时直接改代码。
 - 优先沿用项目已经采用的目录结构、命名方式、依赖和设计模式。
-- 确定修改范围和潜在影响；复杂任务先给出简短计划，再实施。
+- 确定修改范围和潜在影响。开工时先说清用户的目标和预期的最小改动，然后直接做，不等确认；下文列出的需要用户同意的事项除外。
 - 不要擅自扩大需求。发现无关问题时，说明问题而不是顺手重构。
 
 ## 2. 架构与修改范围
@@ -29,7 +31,7 @@
 - 尽量保持函数职责清晰；复杂逻辑可以拆分，但不要为了拆分而拆分。
 - 优先使用清晰的命名、提前返回和不可变变量；仅在确有需要时使用可变状态。
 - 删除无用代码、无用导入和调试输出；不要保留没有价值的兼容分支。
-- 注释应解释**为什么**这样做以及重要约束，而不是重复代码表面含义。
+- 注释只写代码本身看不出的原因或外部约束，不复述代码。提交前跑 `/deslop`，请人审查前跑 `/no-comments`。
 - 对 TypeScript 项目：避免 `any`，优先利用类型推断；在公共接口和重要边界处明确类型。
 
 ## 5. 数据、错误与安全
@@ -46,15 +48,41 @@
 - 验证真实运行结果，而不只依赖编译和测试通过；重复出现的问题优先通过类型、Lint、测试或脚本固化约束。
 - 修复 Bug 时，条件允许应增加能复现问题的回归测试；新增功能应覆盖关键路径和合理的边界情况。
 - 先查看项目提供的测试、Lint、类型检查和构建命令，再使用对应命令；不要臆造脚本。
-- 优先运行与修改范围直接相关的检查；必要时再扩大到完整项目。
+- 优先运行与修改范围直接相关的检查；必要时再扩大到完整项目。`npm run verify:dev` 只看未提交的改动，提交之后要加 `-- --base origin/main`。
+- Windows 上 Hyper-V 会占掉一段端口，本地 Supabase 的 543xx 可能起不来。`npm run infra:start` 会先检查，并打印需要用户用管理员权限执行的修复命令；那是系统设置，agent 不要自己改。本机跑不了时，移动端 e2e 改用 GitHub Actions 的 `Mobile E2E` 工作流跑（见 verify skill 的 On CI）。
 - 不得声称未运行的测试已通过。受环境限制无法验证时，明确说明未验证的内容和原因。
 
 ## 7. Git 与交付
 
-- 不要未经要求创建提交、推送分支、重写 Git 历史或修改远程仓库。
+- `E:\Code\PandaAtlas` 是多个会话共用的检出，别的会话会在里面切分支。每个任务在自己的 git worktree 里开分支、提交；不要在共用检出里提交或切分支。共用检出的 `.git` 里有标记文件 `pandaatlas-shared-checkout`，`.githooks/pre-commit` 据此拒绝 Claude Code agent（`CLAUDECODE` 已设置）在那里提交；别的克隆和手工提交不受影响。
+- 开新 worktree：先 `git fetch --prune origin`，在共用检出同级目录建 `git worktree add ../PandaAtlas-<task> -b <branch> origin/main`，并在新 worktree 里跑 `npm ci`（约 5 分钟）。统一放 `../PandaAtlas-<task>`，不建在仓库内的 `.claude/worktrees/` 或 `.worktrees/`；任务 worktree 不检出本地 `main`（只读预览用 `--detach origin/main`）。不要把 `node_modules` 用 junction 或软链接连到共用检出：npm workspace 的链接会指回共用检出的包，Expo Router 也会找错 app 目录，打开就是 "Welcome to Expo"。
+- 清理 worktree 是任务完成的必要条件：PR 合并（或放弃分支且确认无未推送改动）后，必须完成以下收尾才算结束：
+  1. 切出该 worktree 目录并停掉其中启动的进程（Windows 会锁住当前目录和 `node_modules`）；
+  2. 跑 `git -C <worktree> status --short` 确认没有要保留的未提交改动；
+  3. 跑 `git worktree remove <path>`（确认只剩 `.audit/` 或构建产物等无关文件时再加 `--force`；若 Windows 留下 `node_modules` 空壳，删掉残留目录后再跑 `git worktree prune`）；
+  4. 确认 PR 已合入后用 `git branch -D <branch>` 删除本地分支（squash 合并会生成新提交，`-d` 会拒绝），再跑 `git worktree prune` 和 `git fetch --prune origin`。
+- 只清理本次任务自己创建的 worktree 和分支。发现 `git worktree list` 中有其他会话遗留的 worktree 时，列出各自状态（已合并 / 未合并 / 有未提交改动），征得用户明确同意后再删。
+- 不要用 `git stash`：所有 worktree 共用一个 stash 列表，会拿错别人的修改。`.claude/settings.json`（Claude Code）和 `.agents/hooks.json`（Antigravity）都会调用 `scripts/development/agent-guard.mjs` 在执行前拦下它。
 - 不覆盖用户已有的未提交修改；遇到冲突或不确定的修改来源时先说明情况。
-- 提交信息应简洁、描述实际变更；如项目已有 Commit/PR 规范，优先遵守。
+- 提交信息和 PR 用中文，提交信息用 Conventional Commits 前缀（如 `fix(mobile): …`）。PR 正文按 `.github/PULL_REQUEST_TEMPLATE.md` 的小节写，`## Why` 开头写用户的目标。
+- 不要提交本地调试时对 `apps/mobile/package.json` 做的临时改动。
 - 完成后简要说明：**修改了什么、为什么这样改、执行了哪些验证、还有哪些风险或限制**。
+
+### 合并与上线
+
+- `main` 有规则集「main: CI must pass」：Development Verification 的三个检查和 Mobile E2E 的两个检查必须通过，没有人能绕过。它是兜底：GitHub 会挡住 CI 没跑完或没通过的合并。
+- GitHub 管不了的那一半由 agent 自己守：合并前至少一个独立 reviewer（不是写代码的那个 agent）给出 PASS。自己的审查、测试和 CI 都不算独立审查。
+- 不要开自动合并：规则集只管 CI，不管审查，有写权限的人再推一次也不会取消自动合并，没审查过的提交就可能合进去。等 PR 的 CI 跑绿、独立审查 PASS 之后，用 `gh pr merge <n> --squash --match-head-commit <审查过的 head>` 当场合并（仓库已开启合并后自动删远端分支，不要传 `--delete-branch`，避免 `gh` 在本地切分支或因 worktree 占用报错）；合并后按上面步骤清理本任务的 worktree 与本地分支，再看 `main` 上那次 Development Verification。
+- 以上合并流程只用于你在本次对话里自己开的 PR。其他 PR，包括以前对话里开的，都按下面「每次都要用户在对话里明确同意」那一条处理。
+- 合并前确认 PR 的目标分支是 `main`（`gh pr view <n> --json baseRefName`）。叠在别的分支上的 PR 会合进那个分支，而不是 `main`；不是 `main` 就停下来问用户。
+- 下面这些每次都要用户在对话里明确同意：合并本次对话以外开的 PR；删除本次任务以外的其他会话 worktree；生产部署（`Production` 环境审批）；批量内容发布（`production-batch`）；强推共享分支；删除数据；改 GitHub 仓库设置、分支保护、环境或密钥。
+
+## UI 与内容
+
+- 改界面布局前先出效果图，用户批准后再写代码。
+- 图标直接放，不要放进有底色的方块或圆里。
+- 示例、占位数据不能上线。
+- 组件选型见 `docs/design/ui-component-sourcing-policy.md`，前端审查见 `docs/agents/frontend-review.md`。
 
 ## 8. 决策原则
 
@@ -64,15 +92,26 @@
 - **用户明确要求的范围优先于顺带优化。**
 - 如果存在多种合理方案，优先选择修改范围小、维护成本低、符合当前架构的方案。
 
-## Matt Pocock 技能与 Issue 工作流
+## pstack
 
-Matt Pocock skills are tracked under `.agents/skills/` as the synced release (v1.3.1) for agents without the plugin. The installed `mattpocock-skills` plugin of the same release is equivalent; use whichever your harness loads.
+49 个仓库内置技能（44 个 `pstack` 0.15.48 技能与 5 个互补技能）检入 `.agents/skills/`（Antigravity），并与 `.claude/skills/`（Claude Code）保持逐字节 1:1 镜像，由 `npm run check:repository-hygiene`（以及 `npm run verify:dev`）自动校对。仓库不再引用外部 `pstack@pstack-claude` 插件，也不启用外部 `SessionStart` 路由钩子；日常非简单任务直接以 `.agents/skills/poteto-mode/SKILL.md` 为入口（内含 22 套剧本、`references/principles/` 24 条原则细则、`references/agy-tools.md` 工具映射与子 Agent 底线 `worker.md`）。
+
+This file adds project facts pstack cannot know. Where the two disagree, this file wins on every rule in sections 1–8 and 「UI 与内容」 above, including the shared checkout and worktrees, no `git stash`, merge and deploy gates, the actions that need the user's consent, language, and the UI and data rules.
+
+- Commit messages and PR text are Chinese. Apply `/unslop` to them (short declarative sentences, no filler). The English STE vocabulary rules in `/technical-writing` apply only to English text.
+- Todo checklists, scratch probes, and decision trails go in `.audit/<task-slug>.todo.md` and `.audit/<task-slug>.tsv`. `.audit/` is git-ignored and blocked from tracking by `npm run check:repository-hygiene`.
+- PandaAtlas's PR merge gate and UI layout mockup-first rules are folded directly into `.agents/skills/poteto-mode/playbooks/opening-a-pr.md` and `.agents/skills/poteto-mode/playbooks/feature.md`.
+- The mobile app's driver skill is `apps/mobile/.claude/skills/verify/` (`verify`): doctor, launch (local stack, the same journeys on CI, or production preview), drive, evidence, cleanup, and a feature map. Use it for any change a user can see in `apps/mobile`. Keep its `features/` map current when a feature changes (`/maintain-verification-skill`).
+
+## 互补技能与 Issue 工作流
+
+5 个互补技能（`codebase-design`、`grilling`、`improve-codebase-architecture`、`to-questionnaire`、`wizard`）与 `pstack` 一并镜像在 `.agents/skills/` 和 `.claude/skills/`；其余外部前端与动效技能（如 `emilkowalski/skills`、`make-interfaces-feel-better`）继续记录在 `skills-lock.json` 中按需由客户端插件加载。同名的 `tdd` 和 `teach` 以仓库内嵌的 `pstack` 技能为准。
 
 ### Issue tracker
 
 Work is tracked in GitHub Issues for `SwayingWindmill/PandaAtlas`. For project-status or next-work questions, use live `main` plus GitHub state as described in `docs/agents/issue-tracker.md`.
 
-For issue implementation, create a branch in the existing `E:\Code\PandaAtlas` checkout. Create a worktree only when the user explicitly requests parallel work.
+For issue implementation, create a branch in your own worktree (see 「Git 与交付」).
 
 ### Issue completion
 
@@ -81,3 +120,7 @@ When an issue is merged and closed, report it and its verification to the user. 
 ### Triage labels
 
 Use the repository's five canonical triage roles. See `docs/agents/triage-labels.md`.
+
+### Other agent docs
+
+`docs/agents/domain.md` (glossary and ADRs), `docs/agents/codegraph.md` (optional CodeGraph MCP).

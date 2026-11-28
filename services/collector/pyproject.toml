@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "zhipanda-collector"
+version = "0.1.0"
+description = "Continuous multi-platform panda content collector for ZhiPanda."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "feedparser>=6.0.11,<7",
+  "httpx>=0.28,<1",
+  "psycopg[binary,pool]>=3.2,<4",
+  "pyyaml>=6.0.2,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.4,<10",
+  "ruff>=0.12,<1",
+]
+
+[project.scripts]
+collector = "collector.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/collector"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p anyio"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

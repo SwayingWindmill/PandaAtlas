@@ -17,19 +17,17 @@ const source = { title: text, url: null, citedOn: null };
 const bundled: LearningDocument = {
   version: "2026.10.29.1",
   articles: [],
-  cards: [
-    { slug: "draft-card", status: "draft", title: text, summary: text, body: text, sources: [source] },
+  terms: [
+    { slug: "draft-term", status: "draft", term: text, definition: text, relatedSlugs: [], sources: [source] },
     {
-      slug: "live-card",
+      slug: "live-term",
       status: "published",
-      title: { zh: "已发布", en: "Published" },
-      summary: text,
-      body: text,
+      term: { zh: "已发布", en: "Published" },
+      definition: text,
+      relatedSlugs: [],
       sources: [{ title: text, url: "https://www.panda.org.cn/", citedOn: "2026-10-29" }],
     },
   ],
-  topics: [],
-  terms: [],
   faceGuides: [],
   challenges: [
     {
@@ -55,11 +53,11 @@ describe("assembleCatalog", () => {
   it("shows only the published API catalog in a production build", () => {
     const remote = assembleCatalog(null, bundled, true);
     const production = assembleCatalog(
-      { version: "2026.10.29.1", articles: [], cards: remote.cards.filter((card) => card.slug === "live-card"), topics: [], terms: [], faceGuides: [], challenges: [] },
+      { version: "2026.10.29.1", articles: [], terms: remote.terms.filter((term) => term.slug === "live-term"), faceGuides: [], challenges: [] },
       bundled,
       false,
     );
-    expect(production.cards.map((card) => card.slug)).toEqual(["live-card"]);
+    expect(production.terms.map((term) => term.slug)).toEqual(["live-term"]);
     expect(production.challenges).toEqual([]);
   });
 
@@ -68,9 +66,7 @@ describe("assembleCatalog", () => {
       {
         version: "2026.11.01.1",
         articles: [],
-        cards: [{ slug: "live-card", title: { zh: "新正文", en: "New" }, summary: text, body: text, sources: [source] }],
-        topics: [],
-        terms: [],
+        terms: [{ slug: "live-term", term: { zh: "新正文", en: "New" }, definition: text, relatedSlugs: [], sources: [source] }],
         faceGuides: [],
         challenges: [],
       },
@@ -78,7 +74,7 @@ describe("assembleCatalog", () => {
       true,
     );
     expect(catalog.version).toBe("2026.11.01.1");
-    expect(catalog.cards.map((card) => card.title.zh)).toEqual(["[草稿] 黑眼圈", "新正文"]);
+    expect(catalog.terms.map((term) => term.term.zh)).toEqual(["[草稿] 黑眼圈", "新正文"]);
     expect(catalog.challenges).toHaveLength(1);
     expect(catalogIsEmpty(catalog)).toBe(false);
   });
@@ -98,6 +94,15 @@ describe("resolveChallenge", () => {
     expect(resolved?.photoPandaId).toBe("1");
     expect(resolved?.options.map((option) => option.slug)).toEqual(["bao-li", "lei-lei", "lun-lun", "yang-yang"]);
     expect(learningText(challenge.tip)).toBe("[草稿] 占位提示。");
+  });
+
+  it("shows Chinese when English is missing, blank, or requested", () => {
+    expect(learningText({ zh: "黑眼圈" })).toBe("黑眼圈");
+    expect(learningText({ zh: "黑眼圈", en: "" })).toBe("黑眼圈");
+    expect(learningText({ zh: "黑眼圈", en: "   " })).toBe("黑眼圈");
+    expect(learningText({ zh: "黑眼圈" }, "en")).toBe("黑眼圈");
+    expect(learningText({ zh: "黑眼圈", en: "Eye patches" }, "en")).toBe("Eye patches");
+    expect(learningText({ zh: "", en: "Eye patches" })).toBe("Eye patches");
   });
 
   it("hides a face-guide tip whose body is empty", () => {

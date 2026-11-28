@@ -1,0 +1,5 @@
+{
+  "name": "@panda-atlas/statechart-skill",
+  "private": true,
+  "type": "module"
+}

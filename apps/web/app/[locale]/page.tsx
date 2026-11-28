@@ -4,8 +4,8 @@ import { notFound } from "next/navigation";
 import { HomePage } from "@/features/home/home-page";
 import { buildHomeV09ViewModel, homeV09PandaIds, withHomeV09Media } from "@/features/home/home-v09-view-model";
 import { loadV2PandaCovers, loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface LocalizedHomePageProps {
   params: Promise<{ locale: string }>;

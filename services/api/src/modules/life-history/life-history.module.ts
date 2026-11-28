@@ -8,9 +8,7 @@ import { PlacesModule } from "../places/places.module.js";
 import { LIFE_HISTORY_PUBLICATION_PORT } from "./application/life-history-publication.application.js";
 import {
   LIFE_HISTORY_PORT,
-  LIFE_HISTORY_REPOSITORY,
   LifeHistoryApplication,
-  type LifeHistoryRepository,
 } from "./application/life-history.application.js";
 import { PostgresLifeHistoryPublicationQuery } from "./infrastructure/postgres-life-history-publication.query.js";
 import { PostgresLifeHistoryRepository } from "./infrastructure/postgres-life-history.repository.js";
@@ -19,18 +17,13 @@ import { PostgresLifeHistoryRepository } from "./infrastructure/postgres-life-hi
   imports: [DatabaseModule, PandaModule, PlacesModule],
   providers: [
     {
-      provide: LIFE_HISTORY_REPOSITORY,
-      useFactory: (database: DatabaseService) => new PostgresLifeHistoryRepository(database),
-      inject: [DatabaseService],
-    },
-    {
       provide: LIFE_HISTORY_PORT,
       useFactory: (
-        repository: LifeHistoryRepository,
+        database: DatabaseService,
         pandas: PandaReferencePort,
         places: PlaceReferencePort,
-      ) => new LifeHistoryApplication(repository, pandas, places),
-      inject: [LIFE_HISTORY_REPOSITORY, PANDA_REFERENCE_PORT, PLACE_REFERENCE_PORT],
+      ) => new LifeHistoryApplication(new PostgresLifeHistoryRepository(database), pandas, places),
+      inject: [DatabaseService, PANDA_REFERENCE_PORT, PLACE_REFERENCE_PORT],
     },
     {
       provide: LIFE_HISTORY_PUBLICATION_PORT,

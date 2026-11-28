@@ -140,7 +140,6 @@ export interface ReviewPort {
   ): Promise<ReviewDecisionResult>;
 }
 
-export const REVIEW_REPOSITORY = Symbol("REVIEW_REPOSITORY");
 export const REVIEW_PORT = Symbol("REVIEW_PORT");
 
 export class ReviewApplication implements ReviewPort {

@@ -4,7 +4,6 @@
 
 - [`development`](development/) provides the shared command catalog.
 - [`release`](release/) provides policy and acceptance checks.
-- [`research`](research/) contains reusable research modules governed by declarative manifests.
 - [`batch`](batch/) contains the fixed-command batch control plane.
 
-Routine commands must be registered in [Development Operations](../docs/development-operations.md). Batch and research execution must remain behind their machine-readable contracts and fail-closed validators.
+Routine commands must be registered in [Development Operations](../docs/development-operations.md). Batch execution must remain behind its machine-readable contracts and fail-closed validators.

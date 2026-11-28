@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { resolvePreferredPublicLocale } from "@/foundation/content/locales";
-import { isAdminPath, isAdminShellEnabled } from "@/lib/server/admin-shell";
+import { resolvePreferredPublicLocale } from "@/lib/locales";
 import { refreshSupabaseSession } from "@/lib/supabase/middleware";
+import { requiresSupabaseSessionRefresh } from "@/lib/supabase/session-refresh-policy";
 
 // Unlocalized paths, including retired aliases, and the localized route each one now lives at.
 const UNLOCALIZED_ROUTES = new Map([
@@ -58,9 +58,6 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
 }
 
 export async function proxy(request: NextRequest) {
-  if (isAdminPath(request.nextUrl.pathname) && !isAdminShellEnabled()) {
-    return new NextResponse("Not found", { status: 404, headers: { "Cache-Control": "no-store, private" } });
-  }
   const redirect = redirectToCanonicalRoute(request);
   if (redirect) return redirect;
   const requestHeaders = new Headers(request.headers);
@@ -68,19 +65,13 @@ export async function proxy(request: NextRequest) {
   const language = pathname === "/en" || pathname.startsWith("/en/") ? "en" : "zh-CN";
   requestHeaders.set("x-panda-page-language", language);
   const response = NextResponse.next({ request: { headers: requestHeaders } });
-  const refreshedResponse = await refreshSupabaseSession(request, response);
+  const refreshedResponse = requiresSupabaseSessionRefresh(pathname)
+    ? await refreshSupabaseSession(request, response)
+    : response;
   const isPrivateContributionPath =
     /^\/(zh|en)\/contribute$/.test(pathname) ||
     /^\/(zh|en)\/me\/submissions(?:\/|$)/.test(pathname);
   if (isPrivateContributionPath) {
-    refreshedResponse.headers.set(
-      "Cache-Control",
-      "no-store, no-cache, private, max-age=0, must-revalidate",
-    );
-    refreshedResponse.headers.set("Pragma", "no-cache");
-    refreshedResponse.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");
-  }
-  if (isAdminPath(pathname)) {
     refreshedResponse.headers.set(
       "Cache-Control",
       "no-store, no-cache, private, max-age=0, must-revalidate",

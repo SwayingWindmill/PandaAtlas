@@ -18,7 +18,9 @@ Show this to the user, then immediately proceed to Step 2. The user reads and th
 
 ### 2. Spawn sub-agents
 
-Spawn 3+ sub-agents in parallel. Each must produce a **radically different** interface for the deepened module.
+Spawn 3+ sub-agents in parallel, each with a fresh context window. Each must produce a **radically different** interface for the deepened module.
+
+On Antigravity, dispatch via `invoke_subagent` (`TypeName: "research"` when proposals stay read-only inline text, or `TypeName: "self"` with `Workspace: "share"` if runners write scratch files; `Model` per [`../poteto-mode/references/agy-tools.md`](../poteto-mode/references/agy-tools.md)). On Claude Code, spawn parallel `Agent` calls.
 
 Prompt each sub-agent with a separate technical brief (file paths, coupling details, dependency category from [DEEPENING.md](DEEPENING.md), what sits behind the seam). The brief is independent of the user-facing problem-space explanation in Step 1. Give each agent a different design constraint:
 
@@ -27,7 +29,7 @@ Prompt each sub-agent with a separate technical brief (file paths, coupling deta
 - Agent 3: "Optimise for the most common caller: make the default case trivial."
 - Agent 4 (if applicable): "Design around ports & adapters for cross-seam dependencies."
 
-Include both [SKILL.md](SKILL.md) vocabulary and GLOSSARY.md vocabulary in the brief so each sub-agent names things consistently with the architecture language and the project's domain language.
+Include both [SKILL.md](SKILL.md) vocabulary and `GLOSSARY.md` vocabulary in the brief so each sub-agent names things consistently with the architecture language and the project's domain language.
 
 Each sub-agent outputs:
 
@@ -42,3 +44,5 @@ Each sub-agent outputs:
 Present designs sequentially so the user can absorb each one, then compare them in prose. Contrast by **depth** (leverage at the interface), **locality** (where change concentrates), and **seam placement**.
 
 After comparing, give your own recommendation: which design you think is strongest and why. If elements from different designs would combine well, propose a hybrid. Be opinionated: the user wants a strong read, not a menu.
+
+When moving from interface selection into actual refactoring in `PandaAtlas`, hand off to [`../architect/SKILL.md`](../architect/SKILL.md) (if multi-module sketches/contracts are needed) and [`../poteto-mode/playbooks/refactoring.md`](../poteto-mode/playbooks/refactoring.md).

@@ -1,0 +1,9 @@
+# Nicknames fans use that are not the published name, by canonical slug
+# (`data/curation/learning/published-pandas.json`).
+# The lexicon tags an item with a slug when its text contains a published name or one of these.
+# Add a nickname only when it is in common use for that panda; a short common word here tags
+# unrelated posts.
+#
+# he-hua-chengdu: [花花]
+he-hua-chengdu:
+  - 花花

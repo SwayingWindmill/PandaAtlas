@@ -1,16 +1,18 @@
 import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
+import { OpenInAppBar } from "@/features/app-download/open-in-app-bar";
 import { loadPublicPandaActivity } from "@/features/feed/feed-api";
+import { appDownloadLinks } from "@/lib/app-download";
 import { loadV2PublicPandaProfile } from "@/features/public-content/public-v2";
 import { readPublicMetadata } from "@/lib/server/public-read";
 import { buildTrustedProfilePageViewModel } from "@/features/profile/profile-page-view-model";
 import { TrustedProfilePage } from "@/features/profile/trusted-profile-page";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 import {
   localizedPublicDestination,
   type PublicSearchParams,
-} from "@/foundation/routing/public-redirects";
+} from "@/lib/public-redirects";
 
 interface LocalizedPandaPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -62,13 +64,20 @@ export default async function LocalizedPandaPage({ params, searchParams }: Local
   const activityResult = await loadPublicPandaActivity(profile.stableId, activityCursor);
 
   return (
-    <TrustedProfilePage
-      locale={locale}
-      profile={profile}
-      envelope={envelope}
-      activity={activityResult.state === "ready" ? activityResult.page : undefined}
-      activityUnavailable={activityResult.state === "unavailable"}
-      activityPandas={envelope.data.lineage.nodes}
-    />
+    <>
+      <TrustedProfilePage
+        locale={locale}
+        profile={profile}
+        envelope={envelope}
+        activity={activityResult.state === "ready" ? activityResult.page : undefined}
+        activityUnavailable={activityResult.state === "unavailable"}
+        activityPandas={envelope.data.lineage.nodes}
+      />
+      <OpenInAppBar
+        locale={locale}
+        links={appDownloadLinks()}
+        message={locale === "zh" ? `关注${profile.displayName}，收到它的新动态` : `Follow ${profile.displayName} for updates`}
+      />
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { StructuredDataScript } from "@/components/structured-data-script";
 import { loadV2FamilyStory } from "@/features/public-content/public-v2";
 import {
   getFamilyStory,
@@ -8,7 +9,9 @@ import {
   localizedEditorial,
 } from "@/features/public-experiences/stories";
 import styles from "@/features/public-experiences/public-experiences.module.css";
-import { parsePublicLocale, PUBLIC_LOCALES } from "@/foundation/content/locales";
+import { parsePublicLocale, PUBLIC_LOCALES } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
+import { buildFamilyStructuredData } from "@/lib/structured-data";
 import type { PandaDetail, PublicParentageAssertionSummary } from "@/lib/types";
 
 interface FamilyStoryPageProps {
@@ -92,7 +95,12 @@ export async function generateMetadata({ params }: FamilyStoryPageProps): Promis
   const story = getFamilyStory(slug);
   if (!locale || !story) return {};
   const content = localizedEditorial(story.localized_content, locale);
-  return { title: content.title, description: content.summary };
+  return buildPublicMetadata({
+    locale,
+    title: `${content.title} | ${locale === "zh" ? "吱熊猫" : "ZhiPanda"}`,
+    description: content.summary,
+    path: `/families/${story.slug}`,
+  });
 }
 
 export default async function FamilyStoryPage({ params }: FamilyStoryPageProps) {
@@ -112,6 +120,16 @@ export default async function FamilyStoryPage({ params }: FamilyStoryPageProps) 
 
   return (
     <div className={styles.page}>
+      <StructuredDataScript
+        testId="family-structured-data"
+        data={buildFamilyStructuredData({
+          locale,
+          slug: story.slug,
+          title: content.title,
+          summary: content.summary,
+          members: members.map((member) => ({ slug: member.slug, name: displayName(locale, member) })),
+        })}
+      />
       <main id="main-content">
         <div className={styles.shell}>
           <section className={styles.hero} aria-labelledby="family-title">

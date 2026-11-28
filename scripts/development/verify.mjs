@@ -99,16 +99,15 @@ export function classifyDevelopmentScopes(paths) {
     }
 
     if (
+      changedPath.startsWith(".agents/") ||
+      changedPath.startsWith(".claude/") ||
       changedPath.startsWith(".github/workflows/") ||
       changedPath.startsWith("scripts/release/") ||
       changedPath.startsWith("scripts/development/") ||
       changedPath.startsWith("scripts/batch/") ||
-      changedPath.startsWith("scripts/research/") ||
       changedPath === "contracts/batch-operations.v1.json" ||
       changedPath === "apps/web/cloudflare.config.ts" ||
-      changedPath === "services/api/cloudflare.config.ts" ||
-      changedPath.startsWith("data/research-batches/") ||
-      changedPath === "contracts/research-batch.v1.json"
+      changedPath === "services/api/cloudflare.config.ts"
     ) addScope(scopes, "release");
 
     if (changedPath.startsWith("apps/web/")) addScope(scopes, "web");
@@ -123,6 +122,7 @@ export function classifyDevelopmentScopes(paths) {
     if (
       changedPath === "scripts/development/check-api-contract.mjs" ||
       changedPath === "scripts/development/check-api-db-types.mjs" ||
+      changedPath === "scripts/development/dump-db-schema.mjs" ||
       changedPath === "scripts/development/generated-output-drift.mjs" ||
       // services/api's integration suite runs these administrator scripts and their tests.
       /^scripts\/development\/(tests\/)?(first-admin-bootstrap|production-staff-admin)[.\w]*\.mjs$/u.test(changedPath)
@@ -140,9 +140,16 @@ export function classifyDevelopmentScopes(paths) {
 
     if (
       changedPath.startsWith("scripts/curation/") ||
-      changedPath.startsWith("data/curation/") ||
-      changedPath.startsWith("data/acquisition-sources/")
+      changedPath.startsWith("data/curation/")
     ) addScope(scopes, "curation");
+
+    if (
+      changedPath.startsWith("services/collector/") ||
+      changedPath.startsWith("data/collector/") ||
+      changedPath.startsWith("infra/collector/") ||
+      // The collector tags items with names from the published panda release snapshot.
+      changedPath === "data/curation/learning/published-pandas.json"
+    ) addScope(scopes, "collector");
 
     if (
       changedPath.startsWith("scripts/golden-dataset/") ||

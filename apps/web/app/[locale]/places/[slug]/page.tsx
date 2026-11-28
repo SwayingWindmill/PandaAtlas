@@ -1,20 +1,22 @@
 import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { PublicEntityPage } from "@/components/patterns/public-entity-page";
-import { PlaceCheckinControl } from "@/components/places/place-checkin-control";
+import { StructuredDataScript } from "@/components/structured-data-script";
+import { PublicEntityPage } from "@/features/places/public-entity-page";
+import { PlaceCheckinControl } from "@/features/places/place-checkin-control";
 import { buildPlacePageViewModel } from "@/features/places/place-page-view-model";
 import {
   loadV2PublicPlace,
   resolveV2InstitutionSlugForPlace,
   resolveV2PublicPlaceReference,
 } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
+import { buildPlaceStructuredData } from "@/lib/structured-data";
 import { readPublicMetadata } from "@/lib/server/public-read";
 import {
   localizedPublicDestination,
   type PublicSearchParams,
-} from "@/foundation/routing/public-redirects";
+} from "@/lib/public-redirects";
 
 interface PlacePageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -56,22 +58,37 @@ export default async function PlacePage({ params, searchParams }: PlacePageProps
   const envelope = await loadV2PublicPlace(reference.slug, locale);
   if (!envelope) notFound();
   const entity = buildPlacePageViewModel(envelope, locale);
+  const { place } = envelope.data;
   return (
-    <PublicEntityPage
-      locale={locale}
-      entity={entity}
-      release={envelope.release}
-      delivery={envelope.delivery}
-      coverage={envelope.coverage}
-      localeDelivery={envelope.locale}
-      fanAction={(
-        <PlaceCheckinControl
-          placeId={entity.stableId}
-          slug={entity.canonicalSlug}
-          name={entity.displayName}
-          locale={locale}
-        />
-      )}
-    />
+    <>
+      <StructuredDataScript
+        testId="place-structured-data"
+        data={buildPlaceStructuredData({
+          locale,
+          stableId: entity.stableId,
+          slug: entity.canonicalSlug,
+          name: entity.displayName,
+          alternateName: entity.alternateName,
+          country: place.country_code,
+          locality: place.locality,
+        })}
+      />
+      <PublicEntityPage
+        locale={locale}
+        entity={entity}
+        release={envelope.release}
+        delivery={envelope.delivery}
+        coverage={envelope.coverage}
+        localeDelivery={envelope.locale}
+        fanAction={(
+          <PlaceCheckinControl
+            placeId={entity.stableId}
+            slug={entity.canonicalSlug}
+            name={entity.displayName}
+            locale={locale}
+          />
+        )}
+      />
+    </>
   );
 }

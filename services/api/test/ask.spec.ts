@@ -16,7 +16,9 @@ import type {
   RetrievedChunk,
 } from "../src/modules/ask/application/ask.ports.js";
 import { modelText } from "../src/modules/ask/infrastructure/cloudflare-ask-runtime.js";
-import type { PublicLearningCatalog } from "../src/modules/learning/application/learning-catalog.js";
+import { PublicReadAskCorpus } from "../src/modules/ask/application/public-read-ask-corpus.js";
+import type { PublicLearningCatalog } from "../src/modules/catalog/application/learning-catalog.js";
+import type { PublicReadPort } from "../src/modules/public-read/application/public-read.application.js";
 
 const catalog = JSON.parse(
   readFileSync(new URL("./ask-eval/learning-catalog.2026.11.01.2.json", import.meta.url), "utf8"),
@@ -52,7 +54,7 @@ describe("ask guard", () => {
 
 describe("ask answer checks", () => {
   const passages: AskPassage[] = [
-    { label: "S1", itemKey: "card/black-eye-patches", text: "大熊猫的耳朵、眼斑、口鼻、四肢和肩部是黑色，身体其余部分是白色。" },
+    { label: "S1", itemKey: "article/black-eye-patches/s1", text: "大熊猫的耳朵、眼斑、口鼻、四肢和肩部是黑色，身体其余部分是白色。" },
     { label: "S2", itemKey: "term/eye-patch", text: "The black fur patches around a giant panda's eyes." },
   ];
 
@@ -71,7 +73,7 @@ describe("ask answer checks", () => {
 
   it("accepts verbatim quotes and refuses anything else", () => {
     const ok = checkCitations({ answer: "耳朵和眼斑是黑色的。", citations: [{ source: "S1", quote: "耳朵 眼斑 口鼻" }], refused: false }, passages);
-    expect(ok).toEqual({ ok: true, answer: "耳朵和眼斑是黑色的。", itemKeys: ["card/black-eye-patches"] });
+    expect(ok).toEqual({ ok: true, answer: "耳朵和眼斑是黑色的。", itemKeys: ["article/black-eye-patches/s1"] });
     expect(checkCitations({ answer: "a", citations: [{ source: "S9", quote: "耳朵、眼斑、口鼻" }], refused: false }, passages)).toMatchObject({ reason: "unknownSource" });
     expect(checkCitations({ answer: "a", citations: [{ source: "S1", quote: "尾巴是黑色的尾巴" }], refused: false }, passages)).toMatchObject({ reason: "quoteMismatch" });
     expect(checkCitations({ answer: "a", citations: [{ source: "S1", quote: "耳朵" }], refused: false }, passages)).toMatchObject({ reason: "quoteMismatch" });
@@ -93,7 +95,7 @@ describe("ask corpus", () => {
   it("turns every published learning entry into passages that link back into the app", () => {
     const documents = learningDocuments(catalog);
     const kinds = new Set(documents.map((document) => document.kind));
-    expect(kinds).toEqual(new Set(["article", "card", "topic", "term", "faceGuide", "challenge"]));
+    expect(kinds).toEqual(new Set(["article", "term", "faceGuide", "challenge"]));
     for (const document of documents) {
       expect(document.key.length).toBeLessThanOrEqual(128);
       // AI Search rejects uploads whose name has no supported extension.
@@ -269,9 +271,9 @@ function application(options: {
 }
 
 describe("ask application", () => {
-  const card = learningDocuments(catalog).find((document) => document.key === "card/black-eye-patches.md")!;
-  const chunk = { itemKey: card.key, text: card.text, score: 0.8 };
-  const quote = card.text.replace(/\s+/gu, " ").slice(0, 20);
+  const article = learningDocuments(catalog).find((document) => document.key === "article/black-eye-patches/s1.md")!;
+  const chunk = { itemKey: article.key, text: article.text, score: 0.8 };
+  const quote = article.text.replace(/\s+/gu, " ").slice(0, 20);
 
   it("answers with sources when every citation checks out", async () => {
     const { app, calls, traces } = application({
@@ -363,5 +365,209 @@ describe("ask application", () => {
   it("reports status without counting when switched off", async () => {
     expect(await application({ enabled: false }).app.status("a")).toEqual({ enabled: false, dailyLimit: 20, remainingToday: 0 });
     expect(await application({}).app.status("a")).toEqual({ enabled: true, dailyLimit: 20, remainingToday: 20 });
+  });
+});
+
+describe("PublicReadAskCorpus", () => {
+  const releaseA = { releaseId: "release-a", version: "2026.11.01.1" };
+  const releaseB = { releaseId: "release-b", version: "2026.11.01.2" };
+
+  function stubPublicRead(
+    overrides: Partial<{
+      pandas: Awaited<ReturnType<PublicReadPort["listPandas"]>>;
+      lineage: Awaited<ReturnType<PublicReadPort["listLineage"]>>;
+      residencies: Awaited<ReturnType<PublicReadPort["listResidencies"]>>;
+      places: Awaited<ReturnType<PublicReadPort["listPlaces"]>>;
+      corpus: Awaited<ReturnType<PublicReadPort["getDeliverableCorpusSources"]>>;
+    }> = {},
+  ): Pick<PublicReadPort, "listPandas" | "listLineage" | "listResidencies" | "listPlaces" | "getDeliverableCorpusSources"> {
+    const defaultPandas = {
+      kind: "ok" as const,
+      value: {
+        release: releaseA,
+        items: [
+          {
+            pandaId: "panda-1",
+            canonicalSlug: "baoli",
+            legacySlugs: [],
+            names: [
+              { languageTag: "zh-CN", nameKind: "primary", value: "宝力", isPrimary: true },
+              { languageTag: "en", nameKind: "primary", value: "Bao Li", isPrimary: true },
+            ],
+            facts: [],
+          },
+        ],
+      },
+    };
+    const defaultLineage = {
+      kind: "ok" as const,
+      value: {
+        release: releaseA,
+        items: [],
+      },
+    };
+    const defaultResidencies = {
+      kind: "ok" as const,
+      value: {
+        release: releaseA,
+        items: [
+          {
+            residencyId: "res-1",
+            pandaId: "panda-1",
+            placeId: "place-1",
+            residencyType: "current",
+            startOn: "2024-01-01",
+            startPrecision: "day",
+            status: "confirmed",
+            sourceIds: [],
+          },
+        ],
+      },
+    };
+    const defaultPlaces = {
+      kind: "ok" as const,
+      value: {
+        release: releaseA,
+        items: [
+          {
+            placeId: "place-1",
+            slug: "chengdu",
+            placeType: "facility",
+            nameZh: "成都基地",
+            nameEn: "Chengdu Base",
+          },
+        ],
+      },
+    };
+    const defaultCorpus = {
+      kind: "ok" as const,
+      value: {
+        release: releaseA,
+        pandas: [
+          {
+            pandaId: "panda-1",
+            facts: [
+              {
+                fieldKey: "sex",
+                value: "male",
+                status: "confirmed",
+                lastVerifiedOn: "2026-11-01",
+                conclusionVersion: 1,
+              },
+              {
+                fieldKey: "birthplace",
+                value: "成都",
+                status: "provisional",
+                lastVerifiedOn: "2026-11-01",
+                conclusionVersion: 1,
+              },
+              {
+                fieldKey: "local.curator_note",
+                value: "ignored-local-note",
+                status: "confirmed",
+                lastVerifiedOn: "2026-11-01",
+                conclusionVersion: 1,
+              },
+              {
+                fieldKey: "life_status",
+                value: "ignored-disputed-status",
+                status: "disputed",
+                lastVerifiedOn: "2026-11-01",
+                conclusionVersion: 1,
+              },
+            ],
+            evidenceSourceIds: ["src-https", "src-ftp"],
+          },
+        ],
+        evidence: [
+          {
+            sourceId: "src-https",
+            publisher: "Panda News",
+            title: "Bao Li Profile",
+            url: "https://example.com/baoli",
+            lastVerifiedOn: "2026-11-01",
+            languageTag: "zh",
+            accessState: "public",
+          },
+          {
+            sourceId: "src-ftp",
+            publisher: "Legacy",
+            title: "Ignored FTP",
+            url: "ftp://example.com/ignored",
+            lastVerifiedOn: "2026-11-01",
+            languageTag: "zh",
+            accessState: "public",
+          },
+        ],
+      },
+    };
+
+    return {
+      listPandas: async () => overrides.pandas ?? defaultPandas,
+      listLineage: async () => overrides.lineage ?? defaultLineage,
+      listResidencies: async () => overrides.residencies ?? defaultResidencies,
+      listPlaces: async () => overrides.places ?? defaultPlaces,
+      getDeliverableCorpusSources: async () => overrides.corpus ?? defaultCorpus,
+    };
+  }
+
+  it("assembles deliverable panda documents with confirmed and provisional facts and filters non-http links", async () => {
+    const corpus = new PublicReadAskCorpus({ published: async () => catalog }, stubPublicRead());
+    const documents = await corpus.documents();
+    const pandaDocs = documents.filter((doc) => doc.kind === "panda");
+
+    expect(pandaDocs).toHaveLength(1);
+    const [doc] = pandaDocs;
+    expect(doc?.key).toBe("panda/baoli.md");
+    expect(doc?.appPath).toBe("/pandas/baoli");
+    expect(doc?.sources).toEqual([{ title: "Bao Li Profile", publisher: "Panda News", url: "https://example.com/baoli" }]);
+    expect(doc?.text).toContain("宝力");
+    expect(doc?.text).toContain("Bao Li");
+    expect(doc?.text).toContain("成都");
+    expect(doc?.text).toContain("成都基地");
+    expect(doc?.text).not.toContain("ignored-local-note");
+    expect(doc?.text).not.toContain("ignored-disputed-status");
+  });
+
+  it("returns only learning documents when public read is unavailable", async () => {
+    const corpus = new PublicReadAskCorpus(
+      { published: async () => catalog },
+      stubPublicRead({ pandas: { kind: "unavailable" } }),
+    );
+    const documents = await corpus.documents();
+
+    expect(documents.filter((doc) => doc.kind === "panda")).toHaveLength(0);
+    expect(documents.length).toBeGreaterThan(0);
+  });
+
+  it("returns no panda documents when concurrent public read calls observe different release ids", async () => {
+    const corpusMismatch = new PublicReadAskCorpus(
+      { published: async () => catalog },
+      stubPublicRead({
+        corpus: {
+          kind: "ok",
+          value: {
+            release: releaseB,
+            pandas: [],
+            evidence: [],
+          },
+        },
+      }),
+    );
+    const lineageMismatch = new PublicReadAskCorpus(
+      { published: async () => catalog },
+      stubPublicRead({
+        lineage: {
+          kind: "ok",
+          value: {
+            release: releaseB,
+            items: [],
+          },
+        },
+      }),
+    );
+
+    expect((await corpusMismatch.documents()).filter((doc) => doc.kind === "panda")).toHaveLength(0);
+    expect((await lineageMismatch.documents()).filter((doc) => doc.kind === "panda")).toHaveLength(0);
   });
 });

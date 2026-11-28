@@ -1,0 +1,389 @@
+{
+  "version": "2026.11.22.1",
+  "items": [
+    {
+      "status": "published",
+      "pandaSlug": "yuandudu",
+      "stage": "return_announced",
+      "institutionSlug": "zooparc-de-beauval",
+      "expectedReturn": {
+        "on": "2026-12-17",
+        "precision": "day"
+      },
+      "sourceUrl": "https://actus.zoobeauval.com/en/yuandudu-and-huanlili-will-return-to-china-on-17-december-the-pandas-story-continues-at-beauval/",
+      "sourcePublisher": "ZooParc de Beauval",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "huanlili",
+      "stage": "return_announced",
+      "institutionSlug": "zooparc-de-beauval",
+      "expectedReturn": {
+        "on": "2026-12-17",
+        "precision": "day"
+      },
+      "sourceUrl": "https://actus.zoobeauval.com/en/yuandudu-and-huanlili-will-return-to-china-on-17-december-the-pandas-story-continues-at-beauval/",
+      "sourcePublisher": "ZooParc de Beauval",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "rui-bao",
+      "stage": "return_announced",
+      "institutionSlug": "everland",
+      "expectedReturn": {
+        "on": "2026-12",
+        "precision": "month"
+      },
+      "sourceUrl": "https://news.samsungcnt.com/en/features/resort/2026-10-a-new-chapter-ahead-everlands-twin-pandas-rui-bao-and-hui-bao-set-for-december-move-to-china/",
+      "sourcePublisher": "Samsung C&T Newsroom",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "hui-bao",
+      "stage": "return_announced",
+      "institutionSlug": "everland",
+      "expectedReturn": {
+        "on": "2026-12",
+        "precision": "month"
+      },
+      "sourceUrl": "https://news.samsungcnt.com/en/features/resort/2026-10-a-new-chapter-ahead-everlands-twin-pandas-rui-bao-and-hui-bao-set-for-december-move-to-china/",
+      "sourcePublisher": "Samsung C&T Newsroom",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "bao-li",
+      "stage": "abroad",
+      "institutionSlug": "smithsonian-national-zoo",
+      "sourceUrl": "https://nationalzoo.si.edu/news/two-new-giant-pandas-debut-smithsonians-national-zoo-and-conservation-biology-institute",
+      "sourcePublisher": "Smithsonian's National Zoo",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "qing-bao",
+      "stage": "abroad",
+      "institutionSlug": "smithsonian-national-zoo",
+      "sourceUrl": "https://nationalzoo.si.edu/news/two-new-giant-pandas-debut-smithsonians-national-zoo-and-conservation-biology-institute",
+      "sourcePublisher": "Smithsonian's National Zoo",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "yun-chuan",
+      "stage": "abroad",
+      "institutionSlug": "san-diego-zoo",
+      "sourceUrl": "https://sandiegozoowildlifealliance.org/PR/pandas-public-debut",
+      "sourcePublisher": "San Diego Zoo Wildlife Alliance",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xin-bao",
+      "stage": "abroad",
+      "institutionSlug": "san-diego-zoo",
+      "sourceUrl": "https://sandiegozoowildlifealliance.org/PR/pandas-public-debut",
+      "sourcePublisher": "San Diego Zoo Wildlife Alliance",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "ping-ping-atlanta",
+      "stage": "abroad",
+      "institutionSlug": "zoo-atlanta",
+      "sourceUrl": "https://zooatlanta.org/pandas-have-landed/",
+      "sourcePublisher": "Zoo Atlanta",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "fu-shuang-atlanta",
+      "stage": "abroad",
+      "institutionSlug": "zoo-atlanta",
+      "sourceUrl": "https://zooatlanta.org/pandas-have-landed/",
+      "sourcePublisher": "Zoo Atlanta",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "meng-meng-berlin",
+      "stage": "abroad",
+      "institutionSlug": "berlin-zoo",
+      "sourceUrl": "https://www.zoo-berlin.de/en/animals/panda-garden",
+      "sourcePublisher": "Zoo Berlin",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "jiao-qing",
+      "stage": "abroad",
+      "institutionSlug": "berlin-zoo",
+      "sourceUrl": "https://www.zoo-berlin.de/en/animals/panda-garden",
+      "sourcePublisher": "Zoo Berlin",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "meng-tian",
+      "stage": "abroad",
+      "institutionSlug": "berlin-zoo",
+      "sourceUrl": "https://www.zoo-berlin.de/en/latest/news/detail/panda-party-hoch-zwei",
+      "sourcePublisher": "Zoo Berlin",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "jin-xi-madrid",
+      "stage": "abroad",
+      "institutionSlug": "zoo-aquarium-madrid",
+      "sourceUrl": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/a-new-pair-of-pandas-will-arrive-at-zoo-aquarium-madrid-at-the-end-of-april",
+      "sourcePublisher": "Zoo Aquarium Madrid",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "zhu-yu-madrid",
+      "stage": "abroad",
+      "institutionSlug": "zoo-aquarium-madrid",
+      "sourceUrl": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/a-new-pair-of-pandas-will-arrive-at-zoo-aquarium-madrid-at-the-end-of-april",
+      "sourcePublisher": "Zoo Aquarium Madrid",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "he-feng-vienna",
+      "stage": "abroad",
+      "institutionSlug": "tiergarten-schonbrunn",
+      "sourceUrl": "https://www.zoovienna.at/de/news/panda-paar-ist-angekommen/",
+      "sourcePublisher": "Tiergarten Schönbrunn",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "lan-yun-vienna",
+      "stage": "abroad",
+      "institutionSlug": "tiergarten-schonbrunn",
+      "sourceUrl": "https://www.zoovienna.at/de/news/panda-paar-ist-angekommen/",
+      "sourcePublisher": "Tiergarten Schönbrunn",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "kai-kai-singapore",
+      "stage": "abroad",
+      "institutionSlug": "river-wonders",
+      "sourceUrl": "https://www.mandai.com/en/river-wonders/animals-and-zones/giant-panda-forest.html",
+      "sourcePublisher": "Mandai Wildlife Group",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "jia-jia-singapore",
+      "stage": "abroad",
+      "institutionSlug": "river-wonders",
+      "sourceUrl": "https://www.mandai.com/en/river-wonders/animals-and-zones/giant-panda-forest.html",
+      "sourcePublisher": "Mandai Wildlife Group",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "ai-bao",
+      "stage": "abroad",
+      "institutionSlug": "everland",
+      "sourceUrl": "https://news.samsungcnt.com/en/features/resort/2026-06-everland-welcomes-new-baby-panda-as-panda-conservation-research-marks-10-years/",
+      "sourcePublisher": "Samsung C&T Newsroom",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "le-bao",
+      "stage": "abroad",
+      "institutionSlug": "everland",
+      "sourceUrl": "https://news.samsungcnt.com/en/features/resort/2026-06-everland-welcomes-new-baby-panda-as-panda-conservation-research-marks-10-years/",
+      "sourcePublisher": "Samsung C&T Newsroom",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "everland-cub-2026",
+      "stage": "abroad",
+      "institutionSlug": "everland",
+      "sourceUrl": "https://news.samsungcnt.com/en/features/resort/2026-11-everlands-youngest-panda-shubao-makes-her-public-debut-at-panda-world/",
+      "sourcePublisher": "Samsung C&T Newsroom",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xiao-xiao",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2026-01-28",
+      "sourceUrl": "https://www.tokyo-zoo.net/en/ueno/news/5238/index.html",
+      "sourcePublisher": "Tokyo Zoological Park Society",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "lei-lei",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2026-01-28",
+      "sourceUrl": "https://www.tokyo-zoo.net/en/ueno/news/5238/index.html",
+      "sourcePublisher": "Tokyo Zoological Park Society",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "lun-lun",
+      "stage": "returned",
+      "institutionSlug": "chengdu-research-base",
+      "returnedOn": "2024-10-13",
+      "sourceUrl": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+      "sourcePublisher": "Zoo Atlanta",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "yang-yang-atlanta",
+      "stage": "returned",
+      "institutionSlug": "chengdu-research-base",
+      "returnedOn": "2024-10-13",
+      "sourceUrl": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+      "sourcePublisher": "Zoo Atlanta",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "ya-lun",
+      "stage": "returned",
+      "institutionSlug": "chengdu-research-base",
+      "returnedOn": "2024-10-13",
+      "sourceUrl": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+      "sourcePublisher": "Zoo Atlanta",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xi-lun",
+      "stage": "returned",
+      "institutionSlug": "chengdu-research-base",
+      "returnedOn": "2024-10-13",
+      "sourceUrl": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+      "sourcePublisher": "Zoo Atlanta",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "ri-ri",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2024-09-29",
+      "sourceUrl": "https://www.tokyo-zoo.net/en/topics/news/ueno/355_28750_2024-09-29.html",
+      "sourcePublisher": "Tokyo Zoological Park Society",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "shin-shin",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2024-09-29",
+      "sourceUrl": "https://www.tokyo-zoo.net/en/topics/news/ueno/355_28750_2024-09-29.html",
+      "sourcePublisher": "Tokyo Zoological Park Society",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "fu-bao",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2024-04-03",
+      "sourceUrl": "https://www.forestry.gov.cn/c/www/gjgysp/565544.jhtml",
+      "sourcePublisher": "国家林业和草原局",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "le-le-singapore",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2024-01-16",
+      "sourceUrl": "https://www.forestry.gov.cn/c/dxm/hzjl/543238.jhtml",
+      "sourcePublisher": "中国大熊猫保护研究中心",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "mei-xiang",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2023-11-09",
+      "sourceUrl": "https://www.forestry.gov.cn/c/www/lcdt/530946.jhtml",
+      "sourcePublisher": "国家林业和草原局",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "tian-tian",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2023-11-09",
+      "sourceUrl": "https://www.forestry.gov.cn/c/www/lcdt/530946.jhtml",
+      "sourcePublisher": "国家林业和草原局",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xiao-qi-ji",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2023-11-09",
+      "sourceUrl": "https://www.forestry.gov.cn/c/www/lcdt/530946.jhtml",
+      "sourcePublisher": "国家林业和草原局",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "yi-yi-malaysia",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2023-08-30",
+      "sourceUrl": "https://www.forestry.gov.cn/c/dxm/hzjl/521413.jhtml",
+      "sourcePublisher": "中国大熊猫保护研究中心",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "sheng-yi",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2023-08-30",
+      "sourceUrl": "https://www.forestry.gov.cn/c/dxm/hzjl/521413.jhtml",
+      "sourcePublisher": "中国大熊猫保护研究中心",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "ya-ya-memphis",
+      "stage": "returned",
+      "institutionSlug": "beijing-zoo",
+      "returnedOn": "2023-04-27",
+      "sourceUrl": "https://www.forestry.gov.cn/c/www/dzbhdt/504626.jhtml",
+      "sourcePublisher": "国家林业和草原局",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    },
+    {
+      "status": "published",
+      "pandaSlug": "xiang-xiang",
+      "stage": "returned",
+      "institutionSlug": "ccrcgp",
+      "returnedOn": "2023-02-21",
+      "sourceUrl": "https://www.forestry.gov.cn/c/www/dzwzbh/366644.jhtml",
+      "sourcePublisher": "国家林业和草原局",
+      "updatedAt": "2026-11-22T17:00:00+08:00"
+    }
+  ]
+}

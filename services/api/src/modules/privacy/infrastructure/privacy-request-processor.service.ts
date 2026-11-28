@@ -2,7 +2,9 @@ import { sql } from "kysely";
 import type { JsonObject } from "../../../platform/database/database.privacy.generated.js";
 import type { DatabaseService, DatabaseTransaction } from "../../../platform/database/database.service.js";
 import type { IntegrationOutboxService } from "../../../platform/integration/integration-outbox.service.js";
+import type { AskPrivacyPort } from "../../ask/application/ask-privacy.port.js";
 import type { ContributionPrivacyPort } from "../../contribution/application/contribution-privacy.port.js";
+import type { DailyCheckinPrivacyPort } from "../../daily-checkin/application/daily-checkin-privacy.port.js";
 import type { EngagementPrivacyPort } from "../../engagement/application/engagement-privacy.port.js";
 import type { GamePrivacyPort } from "../../game/application/game-privacy.port.js";
 import type { AuthUserDeletion } from "../../identity/application/auth-user-deletion.js";
@@ -19,6 +21,13 @@ class PrivacyParticipantFailure extends Error {
   }
 }
 
+class AuthDeletionPending extends Error {
+  public constructor(cause: unknown) {
+    super(cause instanceof Error ? cause.message : "Finishing an erased account deletion failed", { cause });
+    this.name = "AuthDeletionPending";
+  }
+}
+
 export interface PrivacyProcessorResult {
   selected: number;
   completed: number;
@@ -32,6 +41,8 @@ export class PrivacyRequestProcessorService {
     private readonly outbox: IntegrationOutboxService,
     private readonly identity: IdentityPrivacyPort,
     private readonly engagement: EngagementPrivacyPort,
+    private readonly dailyCheckin: DailyCheckinPrivacyPort,
+    private readonly ask: AskPrivacyPort,
     private readonly game: GamePrivacyPort,
     private readonly notification: NotificationPrivacyPort,
     private readonly contribution: ContributionPrivacyPort,
@@ -42,36 +53,51 @@ export class PrivacyRequestProcessorService {
     if (!Number.isInteger(limit) || limit < 1 || limit > 20) {
       throw new Error("Privacy processor limit must be an integer between 1 and 20");
     }
-    const rows = await this.database.db
-      .selectFrom("privacy.subject_requests")
-      .select("request_id")
-      .where("state", "=", "pending")
-      .orderBy("requested_at")
-      .orderBy("request_id")
-      .limit(limit)
-      .execute();
+    // Erased deletions waiting on Auth get their own budget: if they shared one with pending
+    // requests, a few that keep failing would hold every slot and starve new requests.
+    const due = (state: "pending" | "processing") =>
+      this.database.db
+        .selectFrom("privacy.subject_requests")
+        .select("request_id")
+        .where("state", "=", state)
+        .$if(state === "processing", (query) => query.where("kind", "=", "account_deletion"))
+        .orderBy("requested_at")
+        .orderBy("request_id")
+        .limit(limit)
+        .execute();
+    const rows = [...(await due("pending")), ...(await due("processing"))];
     const result: PrivacyProcessorResult = { selected: rows.length, completed: 0, failed: 0, skipped: 0 };
+    let stalled: unknown;
     for (const row of rows) {
       try {
         const completed = await this.processRequest(row.request_id);
         result[completed ? "completed" : "skipped"] += 1;
       } catch (error) {
-        await this.markFailed(row.request_id, error);
         result.failed += 1;
+        if (error instanceof AuthDeletionPending) stalled ??= error;
       }
+    }
+    // An erased account not yet finished (Auth user, completion) stays processing and retries each
+    // cycle. Failing the stage stops the async heartbeat, so one that keeps failing reaches /health/async.
+    if (stalled !== undefined) {
+      throw new Error(`Privacy erasure is waiting on Auth user deletion (${JSON.stringify(result)})`, {
+        cause: stalled,
+      });
     }
     return result;
   }
 
   private async processRequest(requestId: string): Promise<boolean> {
-    return this.database.transaction(async (transaction) => {
+    const outcome = await this.database.transaction(async (transaction) => {
       const request = await transaction
         .selectFrom("privacy.subject_requests")
         .selectAll()
         .where("request_id", "=", requestId)
         .forUpdate()
         .executeTakeFirst();
-      if (request === undefined || request.state !== "pending") return false;
+      if (request === undefined) return false;
+      if (request.state === "processing" && request.kind === "account_deletion") return request;
+      if (request.state !== "pending") return false;
 
       const processingAt = new Date();
       await transaction
@@ -95,9 +121,18 @@ export class PrivacyRequestProcessorService {
           this.identity.exportPrivacySubject(transaction, request.account_id),
         );
         await this.completeStep(transaction, requestId, "identity");
-        const engagement = await this.runParticipant("engagement", () =>
-          this.engagement.exportPrivacySubject(transaction, request.account_id),
-        );
+        const engagement = await this.runParticipant<Record<string, unknown>>("engagement", async () => {
+          const [base, dailyCheckins, askQuestionCounts] = await Promise.all([
+            this.engagement.exportPrivacySubject(transaction, request.account_id),
+            this.dailyCheckin.exportPrivacySubject(transaction, request.account_id),
+            this.ask.exportPrivacySubject(transaction, request.account_id),
+          ]);
+          return {
+            ...base,
+            dailyCheckins,
+            askQuestionCounts,
+          };
+        });
         await this.completeStep(transaction, requestId, "engagement");
         const game = await this.runParticipant("game", () =>
           this.game.exportPrivacySubject(transaction, request.account_id),
@@ -118,9 +153,11 @@ export class PrivacyRequestProcessorService {
       } else if (request.kind === "account_deletion") {
         await this.identity.beginPrivacyErasure(transaction, request.account_id, requestId, request.correlation_id);
         await this.contribution.erasePrivacySubject(transaction, request.account_id);
-        await this.runParticipant("engagement", () =>
-          this.engagement.erasePrivacySubject(transaction, request.account_id),
-        );
+        await this.runParticipant("engagement", async () => {
+          await this.engagement.erasePrivacySubject(transaction, request.account_id);
+          await this.dailyCheckin.erasePrivacySubject(transaction, request.account_id);
+          await this.ask.erasePrivacySubject(transaction, request.account_id);
+        });
         await this.completeStep(transaction, requestId, "engagement");
         await this.runParticipant("game", () => this.game.erasePrivacySubject(transaction, request.account_id));
         await this.completeStep(transaction, requestId, "game");
@@ -132,38 +169,67 @@ export class PrivacyRequestProcessorService {
           this.identity.erasePrivacySubject(transaction, request.account_id, requestId, request.correlation_id),
         );
         await this.completeStep(transaction, requestId, "identity");
-        await this.authUsers.deleteUser(request.account_id);
+        return request;
       } else {
         throw new Error(`Unsupported privacy request kind ${request.kind}`);
       }
 
-      const completedAt = new Date();
-      await transaction
-        .updateTable("privacy.subject_requests")
-        .set({ state: "completed", completed_at: completedAt, updated_at: completedAt })
-        .where("request_id", "=", requestId)
-        .executeTakeFirstOrThrow();
-      await transaction
-        .insertInto("privacy.subject_request_events")
-        .values({
-          request_id: requestId,
-          event_type: "privacy.request.completed",
-          previous_state: "processing",
-          next_state: "completed",
-          correlation_id: request.correlation_id,
-        })
-        .execute();
-      await this.outbox.append(transaction, {
-        eventType: "privacy.request.completed",
-        sourceContext: "privacy",
-        aggregateType: "privacy_request",
-        aggregateId: requestId,
-        idempotencyKey: `request-completed:${requestId}`,
-        correlationId: request.correlation_id,
-        occurredAt: completedAt,
-        payload: { requestId, accountId: request.account_id, kind: request.kind },
-      });
+      await this.completeRequest(transaction, request);
       return true;
+    }).catch(async (error: unknown) => {
+      await this.markFailed(requestId, error);
+      throw error;
+    });
+    if (typeof outcome === "boolean") return outcome;
+
+    try {
+      await this.authUsers.deleteUser(outcome.account_id);
+      return await this.database.transaction(async (transaction) => {
+        const request = await transaction
+          .selectFrom("privacy.subject_requests")
+          .selectAll()
+          .where("request_id", "=", requestId)
+          .forUpdate()
+          .executeTakeFirst();
+        if (request === undefined || request.state !== "processing") return false;
+        await this.completeRequest(transaction, request);
+        return true;
+      });
+    } catch (error) {
+      throw new AuthDeletionPending(error);
+    }
+  }
+
+  private async completeRequest(
+    transaction: DatabaseTransaction,
+    request: { request_id: string; account_id: string; correlation_id: string; kind: string },
+  ): Promise<void> {
+    const requestId = request.request_id;
+    const completedAt = new Date();
+    await transaction
+      .updateTable("privacy.subject_requests")
+      .set({ state: "completed", completed_at: completedAt, updated_at: completedAt })
+      .where("request_id", "=", requestId)
+      .executeTakeFirstOrThrow();
+    await transaction
+      .insertInto("privacy.subject_request_events")
+      .values({
+        request_id: requestId,
+        event_type: "privacy.request.completed",
+        previous_state: "processing",
+        next_state: "completed",
+        correlation_id: request.correlation_id,
+      })
+      .execute();
+    await this.outbox.append(transaction, {
+      eventType: "privacy.request.completed",
+      sourceContext: "privacy",
+      aggregateType: "privacy_request",
+      aggregateId: requestId,
+      idempotencyKey: `request-completed:${requestId}`,
+      correlationId: request.correlation_id,
+      occurredAt: completedAt,
+      payload: { requestId, accountId: request.account_id, kind: request.kind },
     });
   }
 

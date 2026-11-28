@@ -1,55 +1,56 @@
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { View } from "react-native";
 
-import { ICON_INSET, ListCell, ListSection, useStacked } from "@/components/grouped-list";
+import { ICON_INSET, ListSection, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import { CalendarCheck } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { guestVisitsQueryOptions, recordGuestVisit } from "@/features/engagement/guest-store";
 import { localToday, shortDay } from "@/features/engagement/seen";
 import { useSession } from "@/features/session/session";
 import { HAIRLINE } from "@/lib/surface";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { cn } from "@/lib/utils";
 
-import { type Visit, lastVisitByPlace, loadVisits, recordVisit } from "./visits";
+import { type Visit, lastVisitByPlace, recordVisit, sortVisits, visitsQueryKey, visitsQueryOptions } from "./visits";
 
 /** 到访 on an institution page: one row per facility with the last day the fan went, and 记下今天去过. */
 export function FacilityVisits({ facilities }: { facilities: { id: string; name: string }[] }) {
   const { state: session } = useSession();
+  const queryClient = useQueryClient();
   const stacked = useStacked();
-  const [visits, setVisits] = useState<Visit[]>([]);
   const [failed, setFailed] = useState(false);
   const signedIn = session.status === "signedIn";
+  const signedOut = session.status === "signedOut";
+  const accountId = signedIn ? session.accountId : "";
 
-  useFocusEffect(
-    useCallback(() => {
-      if (!signedIn) return;
-      loadVisits()
-        .then(setVisits)
-        .catch(() => undefined);
-    }, [signedIn]),
-  );
+  const remote = useQuery({ ...visitsQueryOptions(accountId), enabled: signedIn });
+  const guest = useQuery({ ...guestVisitsQueryOptions(), enabled: signedOut });
+  useRefetchOnFocus(remote.refetch, signedIn);
 
   async function record(placeId: string) {
     setFailed(false);
     try {
-      const visit = await recordVisit(placeId, localToday());
-      setVisits((current) => [visit, ...current]);
+      const today = localToday();
+      if (signedOut) {
+        await recordGuestVisit(placeId, today);
+        return;
+      }
+      if (!signedIn) return;
+      const visit = await recordVisit(placeId, today);
+      const key = visitsQueryKey(accountId);
+      await queryClient.cancelQueries({ queryKey: key });
+      queryClient.setQueryData<Visit[]>(key, (current) => sortVisits([visit, ...(current ?? [])]));
     } catch {
       setFailed(true);
     }
   }
 
-  if (session.status === "signedOut") {
-    return (
-      <ListSection title="到访">
-        <ListCell icon={CalendarCheck} label="登录后记下到访" tone="tint" onPress={() => router.push("/sign-in")} last />
-      </ListSection>
-    );
-  }
-  if (!signedIn) return null;
+  if (!signedIn && !signedOut) return null;
 
+  const visits = (signedOut ? guest.data : remote.data) ?? [];
   const today = localToday();
   const last = lastVisitByPlace(visits);
   return (

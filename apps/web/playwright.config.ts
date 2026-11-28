@@ -80,7 +80,6 @@ export default defineConfig({
         NEXT_PUBLIC_ENGAGEMENT_ENABLED: "true",
         NEXT_PUBLIC_FEED_ENABLED: "true",
         NEXT_PUBLIC_NOTIFICATION_ENABLED: "true",
-        ADMIN_SHELL_ENABLED: "false",
       },
     },
   ],

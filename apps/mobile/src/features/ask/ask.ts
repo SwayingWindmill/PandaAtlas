@@ -1,4 +1,5 @@
 import type { components } from "@zhipanda/api-client";
+import { queryOptions } from "@tanstack/react-query";
 
 import { authedApi } from "@/lib/api";
 
@@ -82,7 +83,7 @@ const KIND_LABEL: Record<string, string> = {
 /** The second line under a source: who published what it rests on, or what kind of page it is. */
 export function sourceDetail(link: AskLink): string {
   const publishers = [...new Set(link.references.map((reference) => reference.publisher ?? reference.title))];
-  return publishers.length > 0 ? publishers.join(" · ") : (KIND_LABEL[link.kind] ?? "");
+  return publishers.length > 0 ? publishers.join("　") : (KIND_LABEL[link.kind] ?? "");
 }
 
 /** https references only; anything else is shown as plain text. */
@@ -108,6 +109,10 @@ export async function loadAskStatus(): Promise<AskStatus> {
   const { data, error, response } = await authedApi.GET("/api/v2/ask/status");
   if (data) return data;
   throw new AskError(failureOf(response.status, error));
+}
+
+export function askStatusQueryOptions(accountId: string) {
+  return queryOptions({ queryKey: ["private", accountId, "ask-status"], queryFn: loadAskStatus, staleTime: 0 });
 }
 
 export async function askPanda(question: string): Promise<AskAnswer> {

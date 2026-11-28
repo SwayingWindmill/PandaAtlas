@@ -17,7 +17,7 @@ import type {
   PublicationResourceKind,
   ReleaseLifecycleState,
 } from "../application/publication.application.js";
-import type { PublicReadCache } from "./public-read-cache.js";
+import type { PublicReadCache } from "../../public-read/infrastructure/public-read-cache.js";
 
 interface MembershipInput {
   resourceKind: string;

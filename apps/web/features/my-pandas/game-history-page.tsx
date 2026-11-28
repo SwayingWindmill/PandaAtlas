@@ -8,7 +8,7 @@ import { useMemo } from "react";
 
 import { gameAttemptsQueryOptions } from "@/features/fan/api/queries";
 import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 interface PandaReference {
   id: string;

@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { publicShellClassName } from "@/components/patterns/public-shell";
 import { GameHistoryPage } from "@/features/my-pandas/game-history-page";
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface GameHistoryRouteProps {
   params: Promise<{ locale: string }>;
@@ -50,7 +49,7 @@ export default async function GameHistoryRoute({ params }: GameHistoryRouteProps
   return (
     <>
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
-        <div className={publicShellClassName}>
+        <div className="pa-shell">
           <GameHistoryPage locale={locale} pandas={pandas} />
         </div>
       </main>

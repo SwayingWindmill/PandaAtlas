@@ -1,14 +1,16 @@
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
 
 import { PandaTile } from "@/components/panda-tile";
+import { Cake } from "@/components/icons";
 import { SectionHeader } from "@/components/section-header";
 import { type CalendarEntry, calendarMonth, shiftMonth } from "@/features/calendar/calendar";
 import { loadCalendarSources } from "@/features/calendar/sources";
 import { localToday } from "@/features/engagement/seen";
 import { useMemoryPrefs } from "@/features/on-this-day/prefs";
 import { openPanda } from "@/features/pandas/panda-row";
+import { pageColumn } from "@/lib/surface";
 
 /** How many tiles the shelf shows before 看日历 takes over. */
 const SHOWN = 10;
@@ -34,56 +36,53 @@ function monthDay(date: string) {
  */
 export function TodayBirthdays() {
   const { width, fontScale } = useWindowDimensions();
-  const [shelf, setShelf] = useState<Shelf | null>(null);
   const prefs = useMemoryPrefs();
   const onThisDay = prefs ? !prefs.off : null;
+  const { data } = useQuery({
+    queryKey: ["public", "calendar-sources"],
+    queryFn: loadCalendarSources,
+    staleTime: 300_000,
+    networkMode: "always",
+  });
 
-  useFocusEffect(
-    useCallback(() => {
-      if (onThisDay === null) return;
-      const today = localToday();
-      const year = Number(today.slice(0, 4));
-      const month = Number(today.slice(5, 7));
-      loadCalendarSources()
-        .then(({ pandas, events }) => {
-          const next = shiftMonth(year, month, 1);
-          const days = [
-            ...calendarMonth(pandas, events, year, month),
-            ...calendarMonth(pandas, events, next.year, next.month),
-          ];
-          const todays = days.find((day) => day.date === today)?.entries.filter(isBirthday) ?? [];
-          if (todays.length > 0 && !onThisDay) {
-            setShelf({ today: true, entries: todays });
-            return;
-          }
-          const upcoming = days.filter((day) => day.date > today).flatMap((day) => day.entries.filter(isBirthday));
-          setShelf({ today: false, entries: upcoming });
-        })
-        .catch(() => setShelf(null));
-    }, [onThisDay]),
-  );
+  const shelf = useMemo<Shelf | null>(() => {
+    if (onThisDay === null || !data) return null;
+    const today = localToday();
+    const year = Number(today.slice(0, 4));
+    const month = Number(today.slice(5, 7));
+    const next = shiftMonth(year, month, 1);
+    const days = [
+      ...calendarMonth(data.pandas, data.events, year, month),
+      ...calendarMonth(data.pandas, data.events, next.year, next.month),
+    ];
+    const todays = days.find((day) => day.date === today)?.entries.filter(isBirthday) ?? [];
+    if (todays.length > 0 && !onThisDay) return { today: true, entries: todays };
+    const upcoming = days.filter((day) => day.date > today).flatMap((day) => day.entries.filter(isBirthday));
+    return { today: false, entries: upcoming };
+  }, [data, onThisDay]);
 
   if (!shelf || shelf.entries.length === 0) return null;
   // About two and a half tiles show, so the next one peeks in; they widen at large text sizes.
-  const tile = Math.round(Math.min((Math.min(width, 700) - 32) * 0.4, 180) * Math.min(Math.max(fontScale, 1), 1.4));
+  const tile = Math.round(Math.min(pageColumn(width) * 0.4, 180) * Math.min(Math.max(fontScale, 1), 1.4));
   const more = shelf.entries.length - SHOWN;
 
   return (
     <View className="gap-row">
       <SectionHeader
         title={shelf.today ? "今天生日" : "快过生日了"}
+        icon={Cake}
         count={shelf.today ? `${shelf.entries.length} 只` : undefined}
         action={{
-          label: more > 0 ? `还有 ${more} 只` : "看日历",
-          href: "/calendar",
-          accessibilityLabel: more > 0 ? `还有 ${more} 只，看日历` : "看日历",
+          label: more > 0 ? `还有 ${more} 只` : shelf.today ? "看日历" : "生日周",
+          href: more > 0 || shelf.today ? "/calendar" : "/birthdays",
+          accessibilityLabel: more > 0 ? `还有 ${more} 只，看日历` : shelf.today ? "看日历" : "看生日周",
         }}
       />
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        className="-mx-inset"
-        contentContainerClassName="px-inset"
+        className="-mx-gutter"
+        contentContainerClassName="px-gutter"
         contentContainerStyle={{ gap: GAP }}
         snapToInterval={tile + GAP}
         snapToAlignment="start"

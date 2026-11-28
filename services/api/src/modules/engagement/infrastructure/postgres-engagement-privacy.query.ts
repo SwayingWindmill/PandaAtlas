@@ -6,7 +6,7 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
     transaction: DatabaseTransaction,
     accountId: string,
   ): Promise<Record<string, unknown>> {
-    const [favorites, collections, checkins, seenPandas, dailyCheckins, askUsage] = await Promise.all([
+    const [favorites, collections, checkins, seenPandas, venueFollows] = await Promise.all([
       transaction
         .selectFrom("engagement.favorites")
         .select(["panda_id", "favorited_at"])
@@ -34,17 +34,10 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
         .orderBy("first_seen_at")
         .execute(),
       transaction
-        .selectFrom("engagement.daily_checkins")
-        .select(["checkin_on", "kind", "retroactive", "created_at", "updated_at"])
+        .selectFrom("engagement.venue_follows")
+        .select(["institution_id", "followed_at"])
         .where("account_id", "=", accountId)
-        .orderBy("checkin_on")
-        .execute(),
-      // 问问熊猫 keeps only how many questions an account asked each day, never the questions.
-      transaction
-        .selectFrom("ask.account_daily_usage")
-        .select(["usage_on", "question_count"])
-        .where("account_id", "=", accountId)
-        .orderBy("usage_on")
+        .orderBy("followed_at")
         .execute(),
     ]);
 
@@ -63,6 +56,7 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
 
     return {
       favorites: favorites.map((row) => ({ pandaId: row.panda_id, favoritedAt: row.favorited_at.toISOString() })),
+      followedVenues: venueFollows.map((row) => ({ institutionId: row.institution_id, followedAt: row.followed_at.toISOString() })),
       collections: [...collectionMap.values()],
       checkins: checkins.map((row) => ({
         checkinId: row.checkin_id,
@@ -80,23 +74,14 @@ export class PostgresEngagementPrivacyQuery implements EngagementPrivacyPort {
         firstSeenAt: row.first_seen_at.toISOString(),
         updatedAt: row.updated_at.toISOString(),
       })),
-      dailyCheckins: dailyCheckins.map((row) => ({
-        day: row.checkin_on,
-        kind: row.kind,
-        retroactive: row.retroactive,
-        createdAt: row.created_at.toISOString(),
-        updatedAt: row.updated_at.toISOString(),
-      })),
-      askQuestionCounts: askUsage.map((row) => ({ day: row.usage_on, questions: row.question_count })),
     };
   }
 
   public async erasePrivacySubject(transaction: DatabaseTransaction, accountId: string): Promise<void> {
     await transaction.deleteFrom("engagement.favorites").where("account_id", "=", accountId).execute();
+    await transaction.deleteFrom("engagement.venue_follows").where("account_id", "=", accountId).execute();
     await transaction.deleteFrom("engagement.collections").where("account_id", "=", accountId).execute();
     await transaction.deleteFrom("engagement.location_checkins").where("account_id", "=", accountId).execute();
     await transaction.deleteFrom("engagement.seen_pandas").where("account_id", "=", accountId).execute();
-    await transaction.deleteFrom("engagement.daily_checkins").where("account_id", "=", accountId).execute();
-    await transaction.deleteFrom("ask.account_daily_usage").where("account_id", "=", accountId).execute();
   }
 }

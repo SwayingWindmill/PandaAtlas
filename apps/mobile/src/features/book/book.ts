@@ -1,8 +1,10 @@
 // The 图鉴 as a personal life list: every panda a fan has met, in the two ways the app knows —
 // 见过 (marked in person) and 认出 (picked out in 每日一猫 or 猜熊猫) — plus the places they have
-// been (去过). Completion is only ever counted against finite, real groups: the pandas living at
-// one base, or one family. There is no bar against the whole catalog, which no fan can fill.
+// been (去过). One ring counts the pandas met against the published catalog (点亮); each base
+// counts the pandas living there now.
 // Pure functions over API data, so the screen stays a view and the rules are unit tested.
+
+import type { PandaListItem } from "@/features/pandas/pandas";
 
 export type Game = "daily_panda" | "guess_panda";
 
@@ -78,7 +80,7 @@ const GAME_LABEL: Record<Game, string> = { daily_panda: "每日一猫", guess_pa
 
 /**
  * The line under a panda's name: each way the fan met it, oldest first, with the day and, for a
- * 见过, the place. "6月1日每日一猫认出，遇到 3 次 · 8月14日在史密森国家动物园见过"
+ * 见过, the place. "6月1日每日一猫认出，遇到 3 次　8月14日在史密森国家动物园见过"
  */
 export function entryDetail(entry: LifeEntry, placeName: (placeId: string) => string | null): string {
   const parts: { on: string; text: string }[] = [];
@@ -93,7 +95,7 @@ export function entryDetail(entry: LifeEntry, placeName: (placeId: string) => st
   return parts
     .sort((a, b) => a.on.localeCompare(b.on))
     .map((part) => part.text)
-    .join(" · ");
+    .join("　");
 }
 
 export type Filter = "all" | "seen" | "recognized";
@@ -159,53 +161,6 @@ export function baseGroups(
   return sortGroups(groups);
 }
 
-/**
- * Families from the lineage: each connected set of parents and children is one family, named by
- * its eldest generation ("添添和美香家"), opening on the family page of its first elder.
- */
-export function familyGroups(
-  links: { childId: string; parentId: string }[],
-  pandas: Map<string, { name: string; slug: string }>,
-  known: Set<string>,
-): Group[] {
-  const parent = new Map<string, string>();
-  const find = (id: string): string => {
-    let root = id;
-    while (parent.get(root) !== undefined && parent.get(root) !== root) root = parent.get(root)!;
-    parent.set(id, root);
-    return root;
-  };
-  const union = (a: string, b: string) => {
-    if (!parent.has(a)) parent.set(a, a);
-    if (!parent.has(b)) parent.set(b, b);
-    const ra = find(a);
-    const rb = find(b);
-    if (ra !== rb) parent.set(ra, rb);
-  };
-  const usable = links.filter((link) => pandas.has(link.childId) && pandas.has(link.parentId));
-  for (const link of usable) union(link.childId, link.parentId);
-
-  const children = new Set(usable.map((link) => link.childId));
-  const components = new Map<string, string[]>();
-  for (const id of parent.keys()) components.set(find(id), [...(components.get(find(id)) ?? []), id]);
-
-  const byName = (a: string, b: string) => pandas.get(a)!.name.localeCompare(pandas.get(b)!.name, "zh-CN");
-  const groups = [...components.values()].map((ids): Group => {
-    const members = [...ids].sort(byName);
-    const elders = members.filter((id) => !children.has(id));
-    const names = elders.slice(0, 2).map((id) => pandas.get(id)!.name);
-    return {
-      key: elders[0] ?? members[0]!,
-      title: `${names.join("和")}${elders.length > 2 ? "等" : ""}家`,
-      slug: pandas.get(elders[0] ?? members[0]!)!.slug,
-      members,
-      known: members.filter((id) => known.has(id)).length,
-      visitedOn: null,
-    };
-  });
-  return sortGroups(groups);
-}
-
 function sortGroups(groups: Group[]): Group[] {
   const started = (group: Group) => Number(group.known > 0 || group.visitedOn !== null);
   return groups.sort(
@@ -217,9 +172,33 @@ function sortGroups(groups: Group[]): Group[] {
   );
 }
 
-/** "认识 2/3 只", or "全部认识" when every panda in a group is known. */
-export function groupProgress(group: Pick<Group, "known" | "members">): string {
-  if (group.members.length === 0) return "现在没有熊猫住在这里";
-  if (group.known === group.members.length) return `${group.members.length} 只全部认识`;
-  return `认识 ${group.known}/${group.members.length} 只`;
+/** "1 / 2": pandas met out of those living at a base now; null when nobody lives there any more. */
+export function baseProgress(group: Pick<Group, "known" | "members">): string | null {
+  return group.members.length === 0 ? null : `${group.known} / ${group.members.length}`;
+}
+
+/** Whole percent of living residents known at a base (0 when none known or empty; at least 1% when >= 1 known). */
+export function basePercent(group: Pick<Group, "known" | "members">): number {
+  return catalogPercent(group.known, group.members.length);
+}
+
+/** Picks a base's lead resident avatar, preferring the first resident with a reviewed full-bleed cover. */
+export function pickBaseLeadPandaId(
+  memberIds: readonly string[],
+  byId: ReadonlyMap<string, Pick<PandaListItem, "id" | "hasFullBleedCover">>,
+): string | null {
+  if (memberIds.length === 0) return null;
+  for (const id of memberIds) {
+    if (byId.get(id)?.hasFullBleedCover) return id;
+  }
+  return memberIds[0] ?? null;
+}
+
+/**
+ * 点亮: the share of the published catalog the fan has met, as a whole percent rounded down, so the
+ * ring never claims more than is true; any panda met shows at least 1%.
+ */
+export function catalogPercent(met: number, total: number): number {
+  if (total <= 0 || met <= 0) return 0;
+  return Math.min(100, Math.max(1, Math.floor((met / total) * 100)));
 }

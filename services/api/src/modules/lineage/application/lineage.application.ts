@@ -29,7 +29,6 @@ export interface LineageRepository {
 
 export type LineagePort = LineageRepository;
 
-export const LINEAGE_REPOSITORY = Symbol("LINEAGE_REPOSITORY");
 export const LINEAGE_PORT = Symbol("LINEAGE_PORT");
 
 export class LineageApplication implements LineagePort {

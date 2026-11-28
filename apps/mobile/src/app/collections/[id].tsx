@@ -1,6 +1,7 @@
+import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AccessibilityInfo, type HostInstance, Platform, Pressable, TextInput, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useCSSVariable } from "uniwind";
 
@@ -18,13 +19,23 @@ import {
   NAME_MAX,
   collectionName,
   deleteCollection,
-  loadCollections,
+  collectionsQueryOptions,
+  patchCollections,
   renameCollection,
   setInCollection,
 } from "@/features/collections/collections";
 import { Mosaic } from "@/features/collections/mosaic";
+import {
+  deleteGuestCollection,
+  guestCollectionsQueryOptions,
+  renameGuestCollection,
+  setInGuestCollection,
+} from "@/features/engagement/guest-store";
 import { openPanda } from "@/features/pandas/panda-row";
-import { type PandaListItem, listMeta, loadPandaIndex } from "@/features/pandas/pandas";
+import { type PandaListItem, listMeta, pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { useAccount } from "@/features/session/account";
+import { useSession } from "@/features/session/session";
+import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +49,15 @@ function updatedOn(stamp: string): string {
 }
 
 /** Reminders' rename: the name field and 完成 share one grouped row, with the limit under it. */
-function Rename({ collection, onDone }: { collection: Collection; onDone: (next: Collection | null) => void }) {
+function Rename({
+  collection,
+  onSaveName,
+  onDone,
+}: {
+  collection: Collection;
+  onSaveName: (name: string) => Promise<Collection>;
+  onDone: (next: Collection | null) => void;
+}) {
   const muted = String(useCSSVariable("--color-muted-foreground"));
   const [name, setName] = useState(collection.name);
   const [status, setStatus] = useState<"idle" | "saving" | "failed">("idle");
@@ -50,7 +69,7 @@ function Rename({ collection, onDone }: { collection: Collection; onDone: (next:
     if (valid === collection.name) return onDone(null);
     setStatus("saving");
     try {
-      onDone(await renameCollection(collection.collectionId, valid));
+      onDone(await onSaveName(valid));
     } catch {
       setStatus("failed");
     }
@@ -174,7 +193,7 @@ function Loading() {
       <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
         {[0, 1, 2, 3].map((row) => (
           <View key={row} className="flex-row items-center gap-row px-inset py-stack-tight">
-            <Skeleton className="rounded-tile" style={{ width: PHOTO, height: PHOTO }} />
+            <Skeleton className="rounded-full" style={{ width: PHOTO, height: PHOTO }} />
             <View className="flex-1 gap-stack-tight">
               <Skeleton className="h-4 w-24 rounded-control" />
               <Skeleton className="h-3 w-40 rounded-control" />
@@ -186,41 +205,47 @@ function Loading() {
   );
 }
 
-type Load = { status: "loading" } | { status: "failed" } | { status: "missing" } | { status: "ready"; collection: Collection };
-
 export default function CollectionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [state, setState] = useState<Load>({ status: "loading" });
-  const [pandas, setPandas] = useState<Map<string, PandaListItem>>(new Map());
+  const { state: session } = useSession();
+  const { accountId } = useAccount();
+  const signedIn = accountId !== null;
+  const signedOut = session.status === "signedOut";
+  const remoteList = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: signedIn });
+  const guestList = useQuery({ ...guestCollectionsQueryOptions(), enabled: signedOut });
+  const list = signedOut ? guestList : remoteList;
+  const index = useQuery(pandaIndexQueryOptions());
+  const pandas = useMemo(() => new Map(index.data?.map((panda) => [panda.id, panda])), [index.data]);
+  // A deleted collection stays on screen while the screen pops, instead of the "已经不在了" state.
+  const [leaving, setLeaving] = useState<Collection | null>(null);
+  const collection = list.data?.find((item) => item.collectionId === id) ?? leaving ?? undefined;
   const [mode, setMode] = useState<"view" | "edit" | "rename" | "confirmDelete">("view");
   const [removed, setRemoved] = useState<PandaListItem | null>(null);
   const [actionFailed, setActionFailed] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const stacked = useStacked();
+  const confirmHeading = useRef<HostInstance>(null);
+  // The confirmation replaces the button a screen-reader user just pressed, so their focus would land
+  // nowhere. Move it to the question, which reads the heading and the consequence in one stop.
+  useEffect(() => {
+    // react-native-web has no sendAccessibilityEvent; calling it there crashes the screen.
+    if (mode !== "confirmDelete" || Platform.OS === "web") return;
+    if (confirmHeading.current) AccessibilityInfo.sendAccessibilityEvent(confirmHeading.current, "focus");
+  }, [mode]);
 
-  const load = useCallback(() => {
-    Promise.all([loadCollections(), loadPandaIndex()])
-      .then(([collections, index]) => {
-        setPandas(new Map(index.map((panda) => [panda.id, panda])));
-        const found = collections.find((item) => item.collectionId === id);
-        setState(found ? { status: "ready", collection: found } : { status: "missing" });
-      })
-      .catch(() => setState({ status: "failed" }));
-  }, [id]);
-  useEffect(load, [load]);
-
-  if (state.status !== "ready") {
+  if (!collection || !index.data) {
+    const failed = session.status === "unavailable" || failedWithoutData(list) || failedWithoutData(index);
     return (
       <Page title="合集">
-        {state.status === "failed" ? (
+        {failed ? (
           <LoadFailed
             message="这个合集暂时打不开。"
             onRetry={() => {
-              setState({ status: "loading" });
-              load();
+              if (failedWithoutData(list)) void list.refetch();
+              if (failedWithoutData(index)) void index.refetch();
             }}
           />
-        ) : state.status === "missing" ? (
+        ) : list.data && index.data && !list.isFetching ? (
           <ScreenState message="这个合集已经不在了。" actionLabel="回到我的合集" onAction={() => router.back()} />
         ) : (
           <Loading />
@@ -229,8 +254,9 @@ export default function CollectionScreen() {
     );
   }
 
-  const { collection } = state;
-  const set = (next: Collection) => setState({ status: "ready", collection: next });
+  const set = async (next: Collection) => {
+    if (accountId) await patchCollections(accountId, (current) => current.map((item) => (item.collectionId === next.collectionId ? next : item)));
+  };
 
   async function run(work: () => Promise<void>) {
     setActionFailed(false);
@@ -243,20 +269,31 @@ export default function CollectionScreen() {
 
   const remove = (panda: PandaListItem) =>
     run(async () => {
-      set(await setInCollection(collection.collectionId, panda.id, false));
+      const next = signedOut
+        ? await setInGuestCollection(collection.collectionId, panda.id, false)
+        : await setInCollection(collection.collectionId, panda.id, false);
+      if (!signedOut) await set(next);
       setRemoved(panda);
     });
   const undo = (panda: PandaListItem) =>
     run(async () => {
-      set(await setInCollection(collection.collectionId, panda.id, true));
+      const next = signedOut
+        ? await setInGuestCollection(collection.collectionId, panda.id, true)
+        : await setInCollection(collection.collectionId, panda.id, true);
+      if (!signedOut) await set(next);
       setRemoved(null);
     });
   const destroy = () =>
     run(async () => {
       setDeleting(true);
       try {
-        await deleteCollection(collection.collectionId);
+        if (signedOut) await deleteGuestCollection(collection.collectionId);
+        else await deleteCollection(collection.collectionId);
+        setLeaving(collection);
         router.back();
+        if (accountId) {
+          await patchCollections(accountId, (current) => current.filter((item) => item.collectionId !== collection.collectionId));
+        }
       } finally {
         setDeleting(false);
       }
@@ -275,16 +312,21 @@ export default function CollectionScreen() {
               {members.length > 0 ? `${members.length} 只熊猫` : "还没有熊猫"}
             </Text>
             <Text variant="footnote" className="text-muted-foreground">
-              {`${updatedOn(collection.updatedAt)}更新 · 只有你看得到`}
+              {`${updatedOn(collection.updatedAt)}更新　${signedOut ? "保存在本机" : "只有你看得到"}`}
             </Text>
           </View>
         </View>
         {mode === "rename" ? (
           <Rename
             collection={collection}
+            onSaveName={(valid) =>
+              signedOut
+                ? renameGuestCollection(collection.collectionId, valid)
+                : renameCollection(collection.collectionId, valid)
+            }
             onDone={(next) => {
-              if (next) set(next);
               setMode("view");
+              if (next && !signedOut) void run(() => set(next));
             }}
           />
         ) : null}
@@ -358,7 +400,7 @@ export default function CollectionScreen() {
             className="gap-row rounded-card bg-card p-stack"
             style={{ borderCurve: "continuous" }}
           >
-            <View className="gap-hair-gap">
+            <View ref={confirmHeading} accessible className="gap-hair-gap">
               <Text variant="headline" role="heading">{`删除「${collection.name}」？`}</Text>
               <Text variant="subheadline" className="text-muted-foreground">
                 只删除这个合集，里面的熊猫和你的关注、图鉴都不受影响。

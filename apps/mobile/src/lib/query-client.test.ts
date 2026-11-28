@@ -1,12 +1,38 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { onlineManager } from "@tanstack/react-query";
+import { notifyManager, onlineManager } from "@tanstack/react-query";
 
-import { queryClient } from "./query-client";
+import { queryClient, reportCacheErrors } from "./query-client";
 
 afterEach(() => {
   queryClient.clear();
   onlineManager.setOnline(true);
   vi.useRealTimers();
+});
+
+describe("reportCacheErrors", () => {
+  it("reports a failed query", async () => {
+    const report = vi.fn();
+    const stop = reportCacheErrors(queryClient, report);
+    const failure = new Error("offline");
+    await expect(
+      queryClient.fetchQuery({ queryKey: ["test", "fails"], queryFn: () => Promise.reject(failure), retry: false }),
+    ).rejects.toBe(failure);
+    stop();
+    expect(report).toHaveBeenCalledWith(failure, "query");
+  });
+
+  it("reports a failed mutation only when nothing handles it", async () => {
+    const report = vi.fn();
+    const stop = reportCacheErrors(queryClient, report);
+    const failure = new Error("rejected");
+    const mutate = (options: { onError?: () => void }) =>
+      queryClient.getMutationCache().build(queryClient, { mutationFn: () => Promise.reject(failure), ...options }).execute(undefined);
+    await expect(mutate({ onError: () => undefined })).rejects.toBe(failure);
+    expect(report).not.toHaveBeenCalled();
+    await expect(mutate({})).rejects.toBe(failure);
+    stop();
+    expect(report).toHaveBeenCalledWith(failure, "mutation");
+  });
 });
 
 describe("mobile query cache", () => {
@@ -27,5 +53,40 @@ describe("mobile query cache", () => {
     const load = vi.fn(async () => "saved public data");
     const result = await queryClient.fetchQuery({ queryKey: ["test", "offline"], queryFn: load, networkMode: "always" });
     expect(result).toBe("saved public data");
+  });
+
+  it("tells React about every query that settled in the same tick in one task", () => {
+    vi.useFakeTimers();
+    const order: string[] = [];
+    for (const name of ["a", "b", "c"]) notifyManager.schedule(() => order.push(name));
+    expect(vi.getTimerCount()).toBe(1);
+    vi.runOnlyPendingTimers();
+    expect(order).toEqual(["a", "b", "c"]);
+
+    notifyManager.schedule(() => order.push("d"));
+    expect(vi.getTimerCount()).toBe(1);
+    vi.runOnlyPendingTimers();
+    expect(order).toEqual(["a", "b", "c", "d"]);
+  });
+
+  it("still runs the rest of the task when one listener throws", () => {
+    vi.useFakeTimers();
+    const ran = vi.fn();
+    const thrown: unknown[] = [];
+    const microtask = vi.spyOn(globalThis, "queueMicrotask").mockImplementation((callback) => {
+      try {
+        callback();
+      } catch (error) {
+        thrown.push(error);
+      }
+    });
+    notifyManager.schedule(() => {
+      throw new Error("listener failed");
+    });
+    notifyManager.schedule(ran);
+    vi.runOnlyPendingTimers();
+    microtask.mockRestore();
+    expect(ran).toHaveBeenCalledTimes(1);
+    expect(thrown).toEqual([new Error("listener failed")]);
   });
 });

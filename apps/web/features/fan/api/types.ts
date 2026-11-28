@@ -1,8 +1,18 @@
 import type { components } from "@zhipanda/api-client";
 
-import type { DailyPandaClue } from "@/features/games/daily-panda-clues";
-
 type Schemas = components["schemas"];
+
+export type V2ContributionRecord = Schemas["ContributionRecordDto"];
+export type V2ContributionList = Schemas["ContributionListDto"];
+export type V2ContributionInput = Schemas["SubmitContributionDto"];
+
+export type DailyPandaClue =
+  | { kind: "sex"; value: "female" | "male" }
+  | { kind: "birth_year"; value: number }
+  | { kind: "life_status"; value: "alive" | "deceased" }
+  | { kind: "birthplace"; value: string }
+  | { kind: "name_initial"; value: string }
+  | { kind: "photo"; imageUrl: string };
 
 export type FanSession = Schemas["CurrentAccountDto"];
 export type Favorite = Schemas["FavoriteDto"];
@@ -34,7 +44,7 @@ export type NotificationPreferenceInput = Schemas["NotificationPreferenceInputDt
 // Composed by the Web app's own routes rather than one API operation.
 export interface PassportEntry {
   pandaId: string;
-  relationshipState: "active" | "inactive" | null;
+  relationshipState: "active" | null;
   firstFollowedAt: string | null;
   contributionCount: number;
 }

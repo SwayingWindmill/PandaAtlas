@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { isNotificationCenterEnabled } from "@/features/notification-center/config";
+import { isNotificationCenterEnabled } from "@/lib/feature-flags";
 import { NotificationCenterPage } from "@/features/notification-center/notification-center-page";
-import { parsePublicLocale } from "@/foundation/content/locales";
+import { parsePublicLocale } from "@/lib/locales";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

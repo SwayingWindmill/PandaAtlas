@@ -21,6 +21,29 @@ export interface PandaChange {
   publishedAt: string;
 }
 
+export type FollowedChangesSessionStatus = "loading" | "signedOut" | "signedIn" | "unavailable";
+export type FollowedChangesViewState = "signedOut" | "pending" | "empty" | "failed" | "ready";
+
+export function shouldLoadFollowedChanges(
+  sessionStatus: FollowedChangesSessionStatus,
+  followedCount: number | null,
+): boolean {
+  return sessionStatus === "signedIn" && followedCount !== null && followedCount > 0;
+}
+
+export function followedChangesViewState(input: {
+  sessionStatus: FollowedChangesSessionStatus;
+  followedCount: number | null;
+  hasSources: boolean;
+  failed: boolean;
+}): FollowedChangesViewState {
+  if (input.sessionStatus === "signedOut") return "signedOut";
+  if (input.sessionStatus !== "signedIn" || input.followedCount === null) return "pending";
+  if (input.followedCount === 0) return "empty";
+  if (input.failed) return "failed";
+  return input.hasSources ? "ready" : "pending";
+}
+
 const LABELS = [
   { kind: "panda", added: "新收录", changed: "资料有更新" },
   { kind: "life_event", added: "新增经历", changed: "经历有更新" },

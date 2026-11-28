@@ -1,3 +1,5 @@
+import { queryOptions } from "@tanstack/react-query";
+
 import { authedApi } from "@/lib/api";
 
 import type { Message, Preference } from "./notifications";
@@ -7,6 +9,17 @@ export async function loadInbox(): Promise<Message[]> {
   const { data } = await authedApi.GET("/api/v2/me/notifications", { params: { query: { limit: 50 } } });
   if (!data) throw new Error("Notifications unavailable");
   return data;
+}
+
+export const inboxQueryKey = (accountId: string) => ["private", accountId, "inbox"] as const;
+export const preferencesQueryKey = (accountId: string) => ["private", accountId, "notification-preferences"] as const;
+
+export function inboxQueryOptions(accountId: string) {
+  return queryOptions({ queryKey: inboxQueryKey(accountId), queryFn: loadInbox, staleTime: 0 });
+}
+
+export function preferencesQueryOptions(accountId: string) {
+  return queryOptions({ queryKey: preferencesQueryKey(accountId), queryFn: loadPreferences, staleTime: 0 });
 }
 
 export async function markRead(messageId: string): Promise<Message> {

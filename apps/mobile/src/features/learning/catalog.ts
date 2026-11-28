@@ -14,30 +14,6 @@ export interface LearningSource {
   citedOn: string | null;
 }
 
-export interface LearningCard {
-  slug: string;
-  status: LearningStatus;
-  title: LearningText;
-  summary: LearningText;
-  body: LearningText;
-  sources: LearningSource[];
-}
-
-export interface LearningSection {
-  heading: LearningText;
-  body: LearningText;
-}
-
-export interface LearningTopic {
-  slug: string;
-  status: LearningStatus;
-  title: LearningText;
-  summary: LearningText;
-  sections: LearningSection[];
-  cardSlugs: string[];
-  sources: LearningSource[];
-}
-
 export interface LearningTerm {
   slug: string;
   status: LearningStatus;
@@ -124,8 +100,6 @@ export interface LearningArticle {
   relatedArticles: string[];
   stats: { bodyChars: number; bodyCjkChars: number; sectionCount: number; referenceCount: number };
   glossaryTerms: { slug: string; label: string; inLearningJson: boolean }[];
-  sourceCardSlug?: string;
-  sourceTopicSlug?: string;
 }
 
 export function articleHero(article: { images: LearningArticleImage[] }): LearningArticleImage | undefined {
@@ -144,16 +118,12 @@ export function readingMinutes(article: { body: { sections: LearningArticleSecti
 export interface LearningDocument {
   version: string;
   articles: LearningArticle[];
-  cards: LearningCard[];
-  topics: LearningTopic[];
   terms: LearningTerm[];
   faceGuides: LearningFaceGuide[];
   challenges: LearningChallenge[];
 }
 
 export type CatalogArticle = Omit<LearningArticle, "status">;
-export type CatalogCard = Omit<LearningCard, "status">;
-export type CatalogTopic = Omit<LearningTopic, "status">;
 export type CatalogTerm = Omit<LearningTerm, "status">;
 export type CatalogFaceGuide = Omit<LearningFaceGuide, "status">;
 export type CatalogChallenge = Omit<LearningChallenge, "status">;
@@ -161,8 +131,6 @@ export type CatalogChallenge = Omit<LearningChallenge, "status">;
 export interface LearningCatalog {
   version: string;
   articles: CatalogArticle[];
-  cards: CatalogCard[];
-  topics: CatalogTopic[];
   terms: CatalogTerm[];
   faceGuides: CatalogFaceGuide[];
   challenges: CatalogChallenge[];
@@ -201,11 +169,16 @@ export interface PresentedChallenge {
 
 export class CatalogUnavailable extends Error {}
 
-/** Chinese, then English. The app has no locale switch; the file keeps both. */
-export function learningText(value: LearningText | undefined): string {
-  const zh = value?.zh?.trim();
-  if (zh) return zh;
-  return value?.en?.trim() ?? "";
+/**
+ * Text for the requested language, then the other language.
+ * The app has no locale switch and asks for Chinese. A blank or missing English string is the
+ * same as no translation, so a Chinese-only item stays visible instead of an empty line.
+ */
+export function learningText(value: LearningText | undefined, locale: "zh" | "en" = "zh"): string {
+  const zh = value?.zh?.trim() ?? "";
+  const en = value?.en?.trim() ?? "";
+  if (locale === "en") return en || zh;
+  return zh || en;
 }
 
 /** A face-guide tip with no body is a slot the writer left blank, so the screen omits it. */
@@ -253,16 +226,12 @@ export function assembleCatalog(
     return remote;
   }
   const draftArticles = bundled ? visible(bundled.articles, true) : [];
-  const draftCards = bundled ? visible(bundled.cards, true) : [];
-  const draftTopics = bundled ? visible(bundled.topics, true) : [];
   const draftTerms = bundled ? visible(bundled.terms, true) : [];
   const draftGuides = bundled ? visible(bundled.faceGuides, true) : [];
   const draftChallenges = bundled ? visible(bundled.challenges, true) : [];
   return {
     version: remote?.version || bundled?.version || "",
     articles: mergeBySlug(draftArticles, remote?.articles ?? []),
-    cards: mergeBySlug(draftCards, remote?.cards ?? []),
-    topics: mergeBySlug(draftTopics, remote?.topics ?? []),
     terms: mergeBySlug(draftTerms, remote?.terms ?? []),
     faceGuides: mergeBySlug(draftGuides, remote?.faceGuides ?? []),
     challenges: mergeBySlug(draftChallenges, remote?.challenges ?? []),
@@ -272,8 +241,6 @@ export function assembleCatalog(
 export function catalogIsEmpty(catalog: LearningCatalog): boolean {
   return (
     catalog.articles.length === 0 &&
-    catalog.cards.length === 0 &&
-    catalog.topics.length === 0 &&
     catalog.terms.length === 0 &&
     catalog.faceGuides.length === 0 &&
     catalog.challenges.length === 0

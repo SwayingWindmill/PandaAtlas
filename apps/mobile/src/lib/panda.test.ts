@@ -1,7 +1,7 @@
 import type { components } from "@zhipanda/api-client";
 import { describe, expect, it } from "vitest";
 
-import { chineseName, displayChineseName, displayName } from "./panda";
+import { chineseName, displayChineseName, displayName, nameInitial, pandaBirthDate, pandaDeathDate, pandaFactStatus, pandaIsDeceased, pandaSex } from "./panda";
 
 type PandaSummary = components["schemas"]["PublicPandaSummaryDto"];
 type Name = PandaSummary["names"][number];
@@ -115,5 +115,68 @@ describe("displayName: display-only name cleanup (docs/data/2026-10-31-name-clea
       const shown = displayName(item);
       expect(item.names.some((name) => name.value === shown || name.value.includes(shown))).toBe(true);
     }
+  });
+});
+
+describe("nameInitial: the character a photo-less avatar shows", () => {
+  it("takes the first Han character, past digits and romanization", () => {
+    expect(nameInitial("2016 Ai Bang's Cub / 爱浜2016仔")).toBe("爱");
+    expect(nameInitial("九九 / 99")).toBe("九");
+    expect(nameInitial("福宝")).toBe("福");
+  });
+
+  it("falls back to the first letter, capitalised, for a name with no Han characters", () => {
+    expect(nameInitial("Shin Shin and Ri Ri's unnamed male cub")).toBe("S");
+    expect(nameInitial("bao")).toBe("B");
+  });
+
+  it("never splits a surrogate pair, and keeps a name with no letters readable", () => {
+    expect(nameInitial("🐼 Panda")).toBe("P");
+    expect(nameInitial("🐼")).toBe("🐼");
+    expect(nameInitial("99")).toBe("9");
+    expect(nameInitial("")).toBe("");
+  });
+});
+
+describe("core fact fallback onto verified local.* fields", () => {
+  it("uses local.* values when canonical facts are absent and preserves certainty status", () => {
+    const record: PandaSummary = {
+      pandaId: "id-local",
+      canonicalSlug: "local-only",
+      legacySlugs: [],
+      names: [{ value: "宝妹", nameKind: "official", isPrimary: true, languageTag: "zh-Hans" }],
+      facts: [
+        { fieldKey: "local.sex", value: "female", status: "provisional", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+        { fieldKey: "local.birth_date", value: "2019-07-06", status: "confirmed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+        { fieldKey: "local.life_status", value: "alive", status: "confirmed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+      ],
+    };
+    expect(pandaSex(record)).toBe("female");
+    expect(pandaBirthDate(record)).toBe("2019-07-06");
+    expect(pandaIsDeceased(record)).toBe(false);
+    expect(pandaFactStatus(record, "sex")).toBe("pending");
+    expect(pandaFactStatus(record, "birth_date")).toBe("confirmed");
+  });
+
+  it("ignores disputed or empty fallback values and prefers canonical keys", () => {
+    const record: PandaSummary = {
+      pandaId: "id-mixed",
+      canonicalSlug: "mixed",
+      legacySlugs: [],
+      names: [{ value: "双宝", nameKind: "official", isPrimary: true, languageTag: "zh-Hans" }],
+      facts: [
+        { fieldKey: "sex", value: "male", status: "confirmed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+        { fieldKey: "local.sex", value: "female", status: "confirmed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+        { fieldKey: "local.birth_date", value: "", status: "disputed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+        { fieldKey: "death_date", value: "", status: "confirmed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+        { fieldKey: "local.death_date", value: "2016-10-16", status: "confirmed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+        { fieldKey: "local.life_status", value: "deceased", status: "disputed", lastVerifiedOn: "2026-07-01", conclusionVersion: 1 },
+      ],
+    };
+    expect(pandaSex(record)).toBe("male");
+    expect(pandaBirthDate(record)).toBeNull();
+    expect(pandaDeathDate(record)).toBe("2016-10-16");
+    expect(pandaIsDeceased(record)).toBe(false);
+    expect(pandaFactStatus(record, "birth_date")).toBeNull();
   });
 });

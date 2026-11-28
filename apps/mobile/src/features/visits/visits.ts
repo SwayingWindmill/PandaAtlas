@@ -1,4 +1,5 @@
 import type { components } from "@zhipanda/api-client";
+import { queryOptions } from "@tanstack/react-query";
 
 import { authedApi } from "@/lib/api";
 
@@ -28,8 +29,17 @@ export async function loadVisits(): Promise<Visit[]> {
   return sortVisits(data.items);
 }
 
-export async function recordVisit(placeId: string, visitedOn: string): Promise<Visit> {
-  const { data } = await authedApi.POST("/api/v2/me/checkins", { body: { placeId, visitedOn } });
+export const visitsQueryKey = (accountId: string) => ["private", accountId, "visits"] as const;
+
+export function visitsQueryOptions(accountId: string) {
+  return queryOptions({ queryKey: visitsQueryKey(accountId), queryFn: loadVisits, staleTime: 0 });
+}
+
+export async function recordVisit(placeId: string, visitedOn: string, note?: string | null): Promise<Visit> {
+  const trimmedNote = note?.trim();
+  const { data } = await authedApi.POST("/api/v2/me/checkins", {
+    body: { placeId, visitedOn, ...(trimmedNote ? { note: trimmedNote } : {}) },
+  });
   if (!data) throw new Error("Visit not recorded");
   return data;
 }

@@ -50,6 +50,20 @@ jobs:
     needs: plan
     if: needs.plan.outputs.run_checks == 'true'
     runs-on: ubuntu-latest
+    # The collector scope's store and scheduler tests run against a real PostgreSQL.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: collector
+          POSTGRES_PASSWORD: collector
+          POSTGRES_DB: collector
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U collector -d collector"
+          --health-interval 5s
+          --health-retries 10
     steps:
       # Runs the scopes the plan selected, so only the plan job needs history.
       - name: Check out candidate

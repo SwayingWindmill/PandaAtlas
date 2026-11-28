@@ -1,26 +1,28 @@
-import { Redirect } from "expo-router";
 import { NativeTabs } from "expo-router/native-tabs";
 import { DynamicColorIOS, Platform } from "react-native";
 
-import { useWelcomeSeen } from "@/features/onboarding/welcome";
 import { NATIVE_SYMBOLS, nanoSymbol } from "@/lib/native-symbols";
 import { IOS, useIOSColors } from "@/lib/theme";
 
 /**
- * Lucide glyphs (sun, search, layout-grid, user-round), because the system tab bar takes images,
+ * Lucide glyphs (compass, search, map, user-round; unified 4-tab 探索/找熊猫/地图/我的 layout), because the system tab bar takes images,
  * not components. The bar tints them: secondary label at rest, tint when selected. A native build
  * uses them as custom SF Symbols and VectorDrawables (see `lib/native-symbols.ts`), which scale with
  * the bar and follow the symbol weight; Expo Go uses the same glyphs as template PNGs at 25pt.
  * Regenerate both from Lucide with `node scripts/tab-icons.mjs`.
  */
 const TAB_ICON = {
-  today: require("../../../assets/tab-icons/today.png"),
+  discover: require("../../../assets/tab-icons/discover.png"),
   find: require("../../../assets/tab-icons/search.png"),
-  book: require("../../../assets/tab-icons/atlas.png"),
+  map: require("../../../assets/tab-icons/map.png"),
   me: require("../../../assets/tab-icons/me.png"),
 };
 
-function TabIcon({ symbol, png }: { symbol: Parameters<typeof nanoSymbol>[0]; png: number }) {
+/**
+ * A tab's icon element. This is a function, not a component: `NativeTabs.Trigger` reads its direct
+ * children by type, so an icon inside a `<TabIcon>` wrapper is never found and the bar draws no glyph.
+ */
+function tabIcon(symbol: Parameters<typeof nanoSymbol>[0], png: number) {
   return NATIVE_SYMBOLS ? (
     <NativeTabs.Trigger.Icon {...nanoSymbol(symbol)} renderingMode="template" />
   ) : (
@@ -31,30 +33,31 @@ function TabIcon({ symbol, png }: { symbol: Parameters<typeof nanoSymbol>[0]; pn
 const iosTint = Platform.OS === "ios" ? DynamicColorIOS({ light: IOS.light.tint, dark: IOS.dark.tint }) : null;
 
 export default function TabsLayout() {
-  const welcomeSeen = useWelcomeSeen();
-  const { tint: schemeTint } = useIOSColors();
-  const tint = iosTint ?? schemeTint;
-  if (welcomeSeen === null) return null;
-  if (!welcomeSeen) return <Redirect href="/welcome" />;
+  const colors = useIOSColors();
+  const tint = iosTint ?? colors.tint;
   // iOS 26 draws this bar in Liquid Glass and ignores backgroundColor and blurEffect.
-  // Earlier iOS uses the system tab bar. Android uses Material 3. Web uses _layout.web.tsx.
+  // Earlier iOS uses the system tab bar. Android uses _layout.android.tsx, web _layout.web.tsx.
   return (
-    <NativeTabs tintColor={tint} minimizeBehavior="onScrollDown" disableTransparentOnScrollEdge>
+    <NativeTabs
+      tintColor={tint}
+      minimizeBehavior="never"
+      disableTransparentOnScrollEdge
+    >
       <NativeTabs.Trigger name="(today)">
-        <NativeTabs.Trigger.Label>今天</NativeTabs.Trigger.Label>
-        <TabIcon symbol="today" png={TAB_ICON.today} />
+        <NativeTabs.Trigger.Label>探索</NativeTabs.Trigger.Label>
+        {tabIcon("discover", TAB_ICON.discover)}
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="find">
         <NativeTabs.Trigger.Label>找熊猫</NativeTabs.Trigger.Label>
-        <TabIcon symbol="search" png={TAB_ICON.find} />
+        {tabIcon("search", TAB_ICON.find)}
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="book">
-        <NativeTabs.Trigger.Label>图鉴</NativeTabs.Trigger.Label>
-        <TabIcon symbol="atlas" png={TAB_ICON.book} />
+      <NativeTabs.Trigger name="map">
+        <NativeTabs.Trigger.Label>地图</NativeTabs.Trigger.Label>
+        {tabIcon("map", TAB_ICON.map)}
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="me">
         <NativeTabs.Trigger.Label>我的</NativeTabs.Trigger.Label>
-        <TabIcon symbol="me" png={TAB_ICON.me} />
+        {tabIcon("me", TAB_ICON.me)}
       </NativeTabs.Trigger>
     </NativeTabs>
   );

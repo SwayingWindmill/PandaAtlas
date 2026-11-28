@@ -17,7 +17,6 @@ For Web behavior that reaches the browser boundary:
 
 ```powershell
 npm run smoke:web
-npm run test:admin-shell -w web
 ```
 
 The fixture and ownership rules for those suites are documented in [`apps/web/tests/README.md`](../../apps/web/tests/README.md).
@@ -36,8 +35,8 @@ Web-only production Build Output can also be checked with the Web workspace's `b
 
 1. installs the locked npm workspace;
 2. installs (or restores from cache) Playwright Chromium;
-3. runs the Web smoke suite and the Admin shell browser suite;
-4. builds the Cloudflare Web and API artifacts and boots the API Worker in workerd.
+3. runs the Web smoke suite;
+4. builds the Cloudflare Web and API artifacts and boots the Web and API Workers in workerd.
 
 A runtime change that needs more deployability proof extends this workflow rather than adding a parallel gate.
 

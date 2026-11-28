@@ -1,5 +1,5 @@
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -11,13 +11,16 @@ import { PandaThumb } from "@/components/panda-thumb";
 import { ScreenState } from "@/components/screen-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PAGE_ENTER } from "@/design/motion";
-import { loadMilestones } from "@/features/milestones/load";
+import { guestMilestonesQueryOptions, milestonesQueryOptions } from "@/features/milestones/load";
 import type { PersonalMilestone } from "@/features/milestones/milestones";
 import { setMilestonePrefs, useMilestonePrefs } from "@/features/milestones/prefs";
 import { MilestoneSettings } from "@/features/milestones/settings-section";
 import { longDate } from "@/features/pandas/profile";
+import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
 import { tapHaptic } from "@/lib/haptics";
+import { failedWithoutData } from "@/lib/query-failed";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
 const THUMB = 40;
 /** A milestone's title is the whole point of its row: let it wrap rather than cut off in a narrow window. */
@@ -37,19 +40,16 @@ function open(milestone: PersonalMilestone) {
 export default function MilestonesScreen() {
   const { state } = useSession();
   const prefs = useMilestonePrefs();
-  const [milestones, setMilestones] = useState<PersonalMilestone[] | null>(null);
-  const [failed, setFailed] = useState(false);
-  const signedIn = state.status === "signedIn";
-
-  const load = useCallback(() => {
-    if (!signedIn) return;
-    setFailed(false);
-    loadMilestones()
-      .then(setMilestones)
-      .catch(() => setFailed(true));
-  }, [signedIn]);
+  const { accountId } = useAccount();
+  const signedIn = accountId !== null;
+  const signedOut = state.status === "signedOut";
+  const remoteList = useQuery({ ...milestonesQueryOptions(accountId ?? ""), enabled: signedIn });
+  const guestList = useQuery({ ...guestMilestonesQueryOptions(), enabled: signedOut });
+  const list = signedOut ? guestList : remoteList;
   // Read again on return, so a panda just marked 见过 counts at once.
-  useFocusEffect(load);
+  useRefetchOnFocus(list.refetch, signedIn || signedOut);
+  const milestones = list.data ?? null;
+  const failed = state.status === "unavailable" || failedWithoutData(list);
 
   if (!prefs || state.status === "loading") {
     return (
@@ -72,20 +72,16 @@ export default function MilestonesScreen() {
       </Page>
     );
   }
-  if (!signedIn) {
+  if (!signedIn && !signedOut) {
     return (
       <Page title="里程碑">
-        <ScreenState
-          message="登录后，你认出、见过的熊猫和去过的地方，数到整数时会记在这里。"
-          actionLabel="登录"
-          onAction={() => router.push("/sign-in")}
-        />
+        <ScreenState message="账号暂时不可用，请稍后再试。" />
       </Page>
     );
   }
   if (!milestones) {
     return (
-      <Page title="里程碑">{failed ? <LoadFailed message="里程碑暂时打不开。" onRetry={load} /> : <MilestonesSkeleton />}</Page>
+      <Page title="里程碑">{failed ? <LoadFailed message="里程碑暂时打不开。" onRetry={() => void list.refetch()} /> : <MilestonesSkeleton />}</Page>
     );
   }
 
@@ -106,7 +102,7 @@ export default function MilestonesScreen() {
                 leading={<PandaThumb pandaId={milestone.subject.id} name={milestone.subject.name} size={THUMB} />}
                 label={milestone.title}
                 lines={TITLE_LINES}
-                detail={`${milestone.subject.name} · ${longDate(milestone.date)}`}
+                detail={`${milestone.subject.name}　${longDate(milestone.date)}`}
                 onPress={milestone.subject.slug ? () => open(milestone) : undefined}
                 last={index === pandas.length - 1}
               />

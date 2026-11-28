@@ -1,46 +1,60 @@
 # Panda Atlas Glossary Map
 
+Bounded contexts in the current V2 system (`services/api/src/modules/`):
+
 ## Trusted Archive
 
-Owns stable panda identities, structured names, sourced assertions, relationships, residencies, domain events, publication readiness, and the Mei Xiang family golden dataset.
+Owns stable panda identities (`panda`), structured names, sourced assertions, parentage assertions (`lineage`), places and institutions (`places`), residency/life-event history (`life-history`), source evidence (`evidence`), reviewed media metadata (`media`), and the Mei Xiang family golden dataset.
 
 Glossary: [`contracts/golden-dataset/GLOSSARY.md`](contracts/golden-dataset/GLOSSARY.md)
 
 ## Curation Intake
 
-Owns source discovery and working records that have not yet become trusted archive conclusions. Intake data can be incomplete, contradictory, or awaiting review.
+Owns source discovery, continuous social/official collection (`services/collector`), offline curation validation/media tooling (`tools/panda-data`), and working records (`data/curation/`) that have not yet become trusted archive conclusions. Intake data can be incomplete, contradictory, or awaiting review.
 
-Working area: `data/curation/`
+## Public Projection & Updates
 
-## Public Projection
+Owns immutable public release control (`publication`), derived `public_read` snapshots consumed by Web and Mobile clients (`public-read`), edge-cache purge coordination, public release update changelogs (`updates`), and follow-derived popularity counts (`popularity`). It does not own professional or restricted truth.
 
-Owns the reviewed, versioned, public-safe representation consumed by the public API, downloadable snapshots, and browser experiences. It does not own professional or restricted truth.
+Glossaries and decisions: [`docs/architecture/GLOSSARY.md`](docs/architecture/GLOSSARY.md), [`docs/architecture/adr-0001-single-source-api-boundary.md`](docs/architecture/adr-0001-single-source-api-boundary.md)
 
-Architecture decision: [`docs/architecture/adr-0001-single-source-api-boundary.md`](docs/architecture/adr-0001-single-source-api-boundary.md)
+## Learning & Curated Catalogs
 
-## Public Activity
+Owns published 科普 articles, terms, face guides, and reference datasets (`learning`, `comparisons`, `overseas-status`, `venue-news`) under the unified `catalog` module.
 
-Owns the rebuildable public-safe ActivityItem projection, source-event consumption receipts, stable Panda/institution targets, correction and retraction presentation state, editorial announcements, and the integration events consumed by Feed and Notification Orchestration. It does not own Archive facts, Follows, Feed eligibility, notification preferences, submissions, review state, or private evidence.
+## Ask Panda
 
-## Personalized Feed
+Owns grounded Q&A responses over published archive facts, cited public sources, and per-account daily usage limits (`ask`).
 
-Owns account-scoped Activity eligibility derived from current Follow state, signed pagination cursors, explicit last-viewed state, private Feed queries, and Feed operational metrics. It does not own Activity content, Follow commands, notification delivery, recommendations, public user profiles, or social graphs.
+## Fan Engagement & Games
+
+Owns authenticated fan follows, place visits, seen-panda marks, collections (`engagement`), daily online check-ins and leave days (`daily-checkin`), and panda discovery games (`game`).
+
+Product glossary: [`docs/architecture/GLOSSARY.md`](docs/architecture/GLOSSARY.md)
+
+## Identity & Access
+
+Owns application account state, staff role assignments, database-driven capabilities (`identity.capabilities`), suspensions/revocations, and recent-authentication checks layered over Supabase Auth (`identity`).
+
+## Community Intake & Review
+
+Owns authenticated structured contribution drafts, immutable submission revisions, contributor-supplied references (`contribution`), and editorial review cases (`review`) whose accepted decisions write approved facts to the Trusted Archive. It does not own publication or public media rights.
 
 ## Notification Orchestration
 
-Owns source-event Notification Intents, audience and preference snapshots, native Inbox/read state, channel decisions, delivery attempts, immutable Digest batches, correction/retraction propagation, and notification metrics. It does not own Activity content, Follow commands, account state, submission decisions, or email/web-push transport.
+Owns account notification preferences, native inbox/read state, outbox-driven notification intents, delivery attempts, and digest batches (`notification`). It does not own Archive facts, Follow commands, or submission decisions.
 
-## Community Intake
+## Privacy & Audit
 
-Owns authenticated structured contribution drafts, immutable SubmissionRevisions, contributor SubmittedSource records, private evidence metadata, quarantine and malware-scan state, contributor-visible status history and per-assertion outcomes, sensitive-read audit, account-scoped journey analytics, and contribution retention/anonymization facts. It does not own Trusted Archive Sources, ReviewCase decisions, Change Sets, publication, or public media rights.
+Owns authenticated data export and erasure workflows (`privacy`) and append-only downstream audit projections (`audit`).
 
-## Relationships
+## Relationships & Canonical Vocabulary Freeze
 
-- Curation Intake proposes evidence and candidate records to the Trusted Archive.
-- The Trusted Archive decides which conclusions and dependencies are publishable.
-- Public Projection derives only from published Trusted Archive state.
-- Public Activity consumes explicit public-safe events from published Archive Releases or authorized editorial commands; projection failure never rolls back Archive publication.
-- Personalized Feed reads Public Activity and current Follow state, but never mutates either source while serving a query.
-- Notification Orchestration consumes Public Activity events and contributor-visible Community Intake status events, while retaining ownership of preferences, channels, Inbox state, and delivery.
-- Community Intake accepts authenticated structured contributions and private evidence; a Review decision that accepts a contribution writes its selected facts to the Trusted Archive.
+- Curation Intake proposes evidence and curated records for review or batch ingestion into the Trusted Archive.
+- The Trusted Archive owns canonical facts and decides which conclusions and dependencies are publishable.
+- Public Projection (`publication` + `public-read`) derives immutable snapshots solely from published Trusted Archive state and drives `updates` changelog records.
+- Community Intake accepts authenticated structured contributions; an approved `review` decision writes accepted facts into the Trusted Archive.
+- Notification Orchestration consumes publication, update, and contributor-visible review events while retaining ownership of preferences, inbox state, and delivery.
+- Fan Engagement & Games (`engagement`, `daily-checkin`, `game`) and Ask Panda (`ask`) read public projections and write only account-scoped state; Privacy coordinates export and erasure across owning modules.
 - The golden dataset is the shared acceptance fixture spanning the archive and projection contexts; it is not a replacement for production data.
+- **Vocabulary freeze:** All new contracts, tests, and documentation must use the canonical terms frozen in [`docs/architecture/GLOSSARY.md`](docs/architecture/GLOSSARY.md) and [`contracts/golden-dataset/GLOSSARY.md`](contracts/golden-dataset/GLOSSARY.md) instead of coining new synonyms for `Place`, `Follow`, `Place Visit`, `Daily Check-in`, or `Public Update`.

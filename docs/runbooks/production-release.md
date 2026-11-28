@@ -36,9 +36,31 @@ rclone check .release-export/<version> r2:pandaatlas-research-backup/production-
 
 The export reads every public list and every panda, place and institution page of the active release, fails if the release changes while it runs, and writes `manifest.json` (version, release ID, each file's SHA-256, bytes and count) and `SHA256SUMS`. It holds only public data: accounts, contributions, drafts and audit records stay in the database and its Supabase backups. To check a downloaded copy, run `sha256sum -c SHA256SUMS` in its folder.
 
+### Sync the published photo allowlist
+
+`apps/web/worker/published-photo-keys.json` lists the R2 photo object keys the Web Worker is allowed to serve from `HOME_MEDIA`. After publishing a release that adds or removes photos, regenerate or check the manifest against `.release-export/<version>` or the active public API and commit any diff in a pull request:
+
+```bash
+npm run sync:published-photo-keys -- --from-export .release-export/<version>
+npm run check:published-photo-keys -- --from-export .release-export/<version>
+```
+
+CI checks formatting, uniqueness and sort order on every `web` verification run via `npm run check:published-photo-keys` (or `--from-api https://api.zhipanda.com` when checking against live production).
+
 ### Update 科普 content
 
-The 科普 catalog is `data/curation/learning/learning.json`, validated in CI by `scripts/curation/validate_learning_content.py`. After the change is merged, give the file a new `version`, then run the workflow on `main` with operation `curation.learning`, manifest `data/curation/learning/learning.json`, **execute** checked and the pull request as change reference, and approve `production-batch`. The job writes the catalog into `learning.catalog` and lists the published entries per collection; the same content again is reported as already current, and changed content under an unchanged version is refused. Earlier catalogs were shipped as `*_learning_content.sql` migrations; those stay as applied history.
+The 科普 catalog is `data/curation/learning/learning.json`, validated in CI by `scripts/curation/validate_learning_content.py`. Published entries may be Chinese only: `en` may be omitted or blank on every item type. After the change is merged, give the file a new `version`, then run the workflow on `main` with operation `curation.learning`, manifest `data/curation/learning/learning.json`, **execute** checked and the pull request as change reference, and approve `production-batch`. The job writes the catalog into `learning.catalog` and lists the published entries per collection; the same content again is reported as already current, and changed content under an unchanged version is refused. `GET /api/v2/learning` returns those Chinese-only entries with `en` as an empty string. Earlier catalogs were shipped as `*_learning_content.sql` migrations; those stay as applied history.
+
+### Update venue, venue news and overseas status content
+
+The owner enters this content alone, as [content entry](content-entry.md) describes: edit `data/curation/institutions/institutions.json`, `data/curation/panda-enrichment/top-pandas.json`, `data/curation/venue-news/venue-news.json` or `data/curation/overseas-status/overseas-status.json` in a pull request, and CI validates it. After merge, run the workflow on `main` with operation `curation.content`, that file as manifest, **execute** checked and the pull request as change reference, and approve `production-batch`. Venue news and overseas status each go into their one catalog row: the same content again is reported as already current, and changed content under an unchanged version is refused. Institutions and named facility places are upserted by slug; top panda enrichment (`data/curation/panda-enrichment/top-pandas.json`) transactionally upserts official sources, core facts, current primary residencies, and confirmed parentage by canonical slug. When updating both venues and top panda facts, run in this exact order:
+
+1. `curation.content` with `data/curation/institutions/institutions.json`
+2. `curation.content` with `data/curation/panda-enrichment/top-pandas.json`
+3. `release.publish` with the release manifest (for example `data/release-manifests/2026.11.22.1.json`)
+4. `curation.guess-questions` with the question batch manifest (for example `data/curation/guess-questions/2026.11.22.1.json`)
+
+Publish a content release afterwards so the app serves institution and top-panda updates. Earlier content was shipped as `*_institution_content.sql` migrations; those stay as applied history.
 
 ### Add 猜熊猫 questions
 

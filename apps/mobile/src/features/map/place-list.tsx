@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { Pressable, View } from "react-native";
 
 import { Chevron, useStacked } from "@/components/grouped-list";
@@ -8,6 +9,11 @@ import { Text } from "@/components/ui/text";
 import { HAIRLINE } from "@/lib/surface";
 
 import { type MapItem, mapItemLabel, pandaCountLabel } from "./model";
+
+export function openVenue(item: Pick<MapItem, "kind" | "slug">) {
+  if (item.kind === "institution") router.push({ pathname: "/institutions/[slug]", params: { slug: item.slug } });
+  else router.push({ pathname: "/places/[slug]", params: { slug: item.slug } });
+}
 
 const THUMB = 52;
 /** The separator starts under the name, past the photo: inset 16 + photo + gap 12. */
@@ -25,14 +31,11 @@ export interface PlaceRow {
   onPress: () => void;
 }
 
-/** The place's first resident, or a glyph on the fill when nobody lives there now. */
+/** The place's first resident, or a bare glyph in its slot when nobody lives there now. */
 function Thumb({ lead, icon }: { lead: PlaceRow["lead"]; icon: LucideIcon }) {
   if (lead) return <PandaThumb pandaId={lead.id} name={lead.name} size={THUMB} />;
   return (
-    <View
-      className="items-center justify-center rounded-control bg-secondary"
-      style={{ width: THUMB, height: THUMB, borderCurve: "continuous" }}
-    >
+    <View className="items-center justify-center" style={{ width: THUMB, height: THUMB }}>
       <Icon icon={icon} tone="secondary" />
     </View>
   );

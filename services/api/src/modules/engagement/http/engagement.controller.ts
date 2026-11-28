@@ -9,17 +9,16 @@ import {
   Patch,
   Post,
   Put,
-  Query,
   Req,
 } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import {
   ENGAGEMENT_PORT,
-  type DailyCheckinResult,
   type EngagementPort,
 } from "../application/engagement.application.js";
 import {
@@ -29,13 +28,14 @@ import {
   CollectionListDto,
   CollectionNameDto,
   CreateCheckinDto,
-  DailyCheckinSummaryDto,
-  DailyCheckinTodayDto,
   DeletedCheckinDto,
   DeletedCollectionDto,
   DeletedSeenPandaDto,
   FavoriteDto,
   FavoriteListDto,
+  FollowedVenueDto,
+  FollowedVenueListDto,
+  UnfollowVenueDto,
   SaveSeenPandaDto,
   SeenPandaDto,
   SeenPandaListDto,
@@ -54,25 +54,11 @@ function collectionNotFound(): never {
   throw new ProblemException(404, "engagement.collectionNotFound", "The collection does not exist.");
 }
 
-const DAY_PARAM = /^\d{4}-\d{2}-\d{2}$/;
+const VENUE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-function dailyCheckinSummary(result: DailyCheckinResult) {
-  if (result.ok) return result.summary;
-  switch (result.refusal) {
-    case "todayOutOfRange":
-      throw new ProblemException(422, "engagement.todayOutOfRange", "The local date is more than a day away from the server date.");
-    case "quotaUsed":
-      throw new ProblemException(409, "engagement.leaveQuotaUsed", "This month's leave days are already used.");
-    case "dayClosed":
-      throw new ProblemException(409, "engagement.leaveDayClosed", "Leave cannot change for this day.");
-  }
-}
-
-function leaveDay(day: string): string {
-  if (!DAY_PARAM.test(day)) {
-    throw new ProblemException(400, "request.invalid", "The day must be a YYYY-MM-DD date.");
-  }
-  return day;
+function venueSlug(slug: string): string {
+  if (!VENUE_SLUG.test(slug)) throw new ProblemException(400, "request.invalid", "The venue must be a slug.");
+  return slug;
 }
 
 @ApiTags("Engagement")
@@ -90,6 +76,7 @@ export class EngagementController {
 
   @Post("favorites/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "favoritePanda" })
   @ApiCreatedResponse({ type: FavoriteDto })
   public favorite(
@@ -101,6 +88,7 @@ export class EngagementController {
 
   @Delete("favorites/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "unfavoritePanda" })
   @ApiOkResponse({ type: UnfavoriteDto })
   public async unfavorite(
@@ -109,6 +97,35 @@ export class EngagementController {
   ) {
     await this.engagement.unfavorite(accountId(request), pandaId);
     return { pandaId, favorited: false as const, favoritedAt: null };
+  }
+
+  @Get("followed-venues")
+  @RequireCapabilities("engagement.read")
+  @ApiOperation({ operationId: "listFollowedVenues" })
+  @ApiOkResponse({ type: FollowedVenueListDto })
+  public async listFollowedVenues(@Req() request: HttpRequest) {
+    return { items: await this.engagement.listFollowedVenues(accountId(request)) };
+  }
+
+  @Post("followed-venues/:slug")
+  @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
+  @ApiOperation({ operationId: "followVenue" })
+  @ApiCreatedResponse({ type: FollowedVenueDto })
+  public async followVenue(@Req() request: HttpRequest, @Param("slug") slug: string) {
+    const followed = await this.engagement.followVenue(accountId(request), venueSlug(slug));
+    if (!followed) throw new ProblemException(404, "engagement.venueNotFound", "No venue has this slug.");
+    return followed;
+  }
+
+  @Delete("followed-venues/:slug")
+  @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
+  @ApiOperation({ operationId: "unfollowVenue" })
+  @ApiOkResponse({ type: UnfollowVenueDto })
+  public async unfollowVenue(@Req() request: HttpRequest, @Param("slug") slug: string) {
+    await this.engagement.unfollowVenue(accountId(request), venueSlug(slug));
+    return { institutionSlug: slug, followed: false as const };
   }
 
   @Get("collections")
@@ -121,6 +138,7 @@ export class EngagementController {
 
   @Post("collections")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "createCollection" })
   @ApiCreatedResponse({ type: CollectionDto })
   public createCollection(@Req() request: HttpRequest, @Body() input: CollectionNameDto) {
@@ -129,6 +147,7 @@ export class EngagementController {
 
   @Patch("collections/:collectionId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "renameCollection" })
   @ApiOkResponse({ type: CollectionDto })
   public async renameCollection(
@@ -144,6 +163,7 @@ export class EngagementController {
 
   @Delete("collections/:collectionId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "deleteCollection" })
   @ApiOkResponse({ type: DeletedCollectionDto })
   public async deleteCollection(
@@ -158,6 +178,7 @@ export class EngagementController {
 
   @Post("collections/:collectionId/pandas/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "addPandaToCollection" })
   @ApiCreatedResponse({ type: CollectionDto })
   public async addPandaToCollection(
@@ -173,6 +194,7 @@ export class EngagementController {
 
   @Delete("collections/:collectionId/pandas/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "removePandaFromCollection" })
   @ApiOkResponse({ type: CollectionDto })
   public async removePandaFromCollection(
@@ -196,6 +218,7 @@ export class EngagementController {
 
   @Post("checkins")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "createCheckin" })
   @ApiCreatedResponse({ type: CheckinDto })
   public createCheckin(@Req() request: HttpRequest, @Body() input: CreateCheckinDto) {
@@ -208,6 +231,7 @@ export class EngagementController {
 
   @Delete("checkins/:checkinId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "deleteCheckin" })
   @ApiOkResponse({ type: DeletedCheckinDto })
   public async deleteCheckin(
@@ -245,6 +269,7 @@ export class EngagementController {
 
   @Put("seen-pandas/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "saveSeenPanda" })
   @ApiOkResponse({ type: SeenPandaDto })
   public saveSeenPanda(
@@ -262,6 +287,7 @@ export class EngagementController {
 
   @Delete("seen-pandas/:pandaId")
   @RequireCapabilities("engagement.manage")
+  @RateLimit("write")
   @ApiOperation({ operationId: "deleteSeenPanda" })
   @ApiOkResponse({ type: DeletedSeenPandaDto })
   public async deleteSeenPanda(
@@ -272,45 +298,5 @@ export class EngagementController {
       throw new ProblemException(404, "engagement.seenPandaNotFound", "The seen-panda entry does not exist.");
     }
     return { pandaId, deleted: true as const };
-  }
-
-  @Get("daily-checkins")
-  @RequireCapabilities("engagement.read")
-  @ApiOperation({ operationId: "getDailyCheckins" })
-  @ApiOkResponse({ type: DailyCheckinSummaryDto })
-  public async dailyCheckins(@Req() request: HttpRequest, @Query() query: DailyCheckinTodayDto) {
-    return dailyCheckinSummary(await this.engagement.dailyCheckins(accountId(request), query.today));
-  }
-
-  @Post("daily-checkins")
-  @RequireCapabilities("engagement.manage")
-  @ApiOperation({ operationId: "recordDailyCheckin" })
-  @ApiCreatedResponse({ type: DailyCheckinSummaryDto })
-  public async recordDailyCheckin(@Req() request: HttpRequest, @Body() input: DailyCheckinTodayDto) {
-    return dailyCheckinSummary(await this.engagement.recordDailyVisit(accountId(request), input.today));
-  }
-
-  @Put("daily-checkins/leave/:day")
-  @RequireCapabilities("engagement.manage")
-  @ApiOperation({ operationId: "takeDailyLeave" })
-  @ApiOkResponse({ type: DailyCheckinSummaryDto })
-  public async takeDailyLeave(
-    @Req() request: HttpRequest,
-    @Param("day") day: string,
-    @Body() input: DailyCheckinTodayDto,
-  ) {
-    return dailyCheckinSummary(await this.engagement.takeDailyLeave(accountId(request), leaveDay(day), input.today));
-  }
-
-  @Delete("daily-checkins/leave/:day")
-  @RequireCapabilities("engagement.manage")
-  @ApiOperation({ operationId: "cancelDailyLeave" })
-  @ApiOkResponse({ type: DailyCheckinSummaryDto })
-  public async cancelDailyLeave(
-    @Req() request: HttpRequest,
-    @Param("day") day: string,
-    @Query() query: DailyCheckinTodayDto,
-  ) {
-    return dailyCheckinSummary(await this.engagement.cancelDailyLeave(accountId(request), leaveDay(day), query.today));
   }
 }

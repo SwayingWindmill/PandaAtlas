@@ -4,7 +4,6 @@
  * 1. Brand primitives: Radix Colors olive (neutrals), amber (warning) and red (danger), plus fonts.
  * 2. Public semantic tokens (--pa-*): what public pages and the navigation read.
  * 3. shadcn/ui semantic tokens: read through Tailwind's @theme mapping in app/globals.css.
- * 4. Admin context: the staff console's dense palette, scoped to .pa-admin-shell.
  */
 
 :root {
@@ -13,10 +12,17 @@
    * the Radix scale's roles: 1-2 page backgrounds, 3-5 component fills (rest, hover, pressed),
    * 6-8 borders, 9-10 solid fills, 11-12 text.
    */
+  /*
+   * Chinese uses the system's own font: a web CJK font is hundreds of KB per page on a slow network and
+   * reflows the text when it lands. Every target has one: PingFang SC (Apple), Microsoft YaHei (Windows),
+   * Noto Sans CJK SC / Source Han Sans SC (Android, Linux), HarmonyOS Sans SC (Huawei).
+   */
+  --zp-font-cjk: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC",
+    "HarmonyOS Sans SC", system-ui, sans-serif;
   --zp-font-display-latin: "Archivo Variable", "Arial Narrow", sans-serif;
-  --zp-font-display-cjk: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --zp-font-body: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --zp-font-ui-latin: "Archivo Variable", "Noto Sans SC Variable", sans-serif;
+  --zp-font-display-cjk: var(--zp-font-cjk);
+  --zp-font-body: var(--zp-font-cjk);
+  --zp-font-ui-latin: "Archivo Variable", var(--zp-font-cjk);
 
   --font-display: var(--zp-font-display-latin);
   --font-body: var(--zp-font-body);
@@ -71,7 +77,8 @@
   --pa-ease: cubic-bezier(0.215, 0.61, 0.355, 1);
   --pa-duration: 250ms;
   --pa-focus-ring: 0 0 0 0.125rem var(--pa-color-canvas), 0 0 0 0.25rem var(--pa-color-highlight);
-  --pa-space-page: clamp(1rem, 4vw, 4rem);
+  /* viewport-fit=cover lets a landscape iPhone put its notch inside the page; every page margin clears it. */
+  --pa-space-page: max(clamp(1rem, 4vw, 4rem), env(safe-area-inset-left), env(safe-area-inset-right));
   --pa-content-max: 77.5rem;
 
   /* The type scale: four sizes, nothing below 12px. */
@@ -110,47 +117,8 @@
   --input: var(--pa-color-line);
   --ring: var(--pa-color-accent);
   --destructive: var(--pa-color-danger);
-  --sidebar: var(--pa-color-surface);
-  --sidebar-foreground: var(--pa-color-ink);
-  --sidebar-primary: var(--pa-color-accent);
-  --sidebar-primary-foreground: var(--pa-color-on-accent);
-  --sidebar-accent: var(--pa-color-accent-soft);
-  --sidebar-accent-foreground: var(--pa-color-ink);
-  --sidebar-border: var(--pa-color-line);
-  --sidebar-ring: var(--pa-color-accent);
 }
 
 html[lang="zh-CN"] {
   --font-display: var(--zp-font-display-cjk);
-}
-
-/* 4. Admin context: shared across every authorized Admin route. */
-.pa-admin-shell {
-  --background: #f8fafc;
-  --foreground: #192733;
-  --primary: #176b5a;
-  --primary-foreground: #fff;
-  --secondary: #f1f5f6;
-  --secondary-foreground: #20303c;
-  --muted-ui: #f3f6f7;
-  --muted-foreground: #526474;
-  --accent-ui: #e8f5f0;
-  --accent-foreground: #135949;
-  --card: #fff;
-  --card-foreground: #192733;
-  --popover: #fff;
-  --popover-foreground: #192733;
-  --border: #dde6e8;
-  --input: #d8e2e4;
-  --ring: #227a68;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #415363;
-  --sidebar-primary: #176b5a;
-  --sidebar-primary-foreground: #fff;
-  --sidebar-accent: #e9f5f1;
-  --sidebar-accent-foreground: #135949;
-  --sidebar-border: #e6eced;
-  --sidebar-ring: #227a68;
-  background: #f3f6f8;
-  color: var(--foreground);
 }

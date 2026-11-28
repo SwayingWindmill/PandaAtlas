@@ -1,11 +1,13 @@
 ---
 name: codebase-design
-description: Shared vocabulary for designing deep modules. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary.
+description: "Shared vocabulary and deepening reference for deep modules (module, interface, depth, seam, adapter, leverage, locality). Use alongside improve-codebase-architecture or architect when evaluating module depth, placing seams/adapters, deepening shallow modules, or making code more testable."
 ---
 
 # Codebase Design
 
 Design **deep modules**: a lot of behaviour behind a small interface, placed at a clean seam, testable through that interface. Use this language and these principles wherever code is being designed or restructured. The aim is leverage for callers, locality for maintainers, and testability for everyone.
+
+Relation to `pstack` workflows: when starting non-trivial feature design or sketching types, signatures, and module boundaries, [`../architect/SKILL.md`](../architect/SKILL.md) owns the design brief (and [`../arena/SKILL.md`](../arena/SKILL.md) runs parallel candidates for large or contested designs). `codebase-design` supplies the deep-module vocabulary, dependency categories, and interface-as-test-surface rules used by [`../improve-codebase-architecture/SKILL.md`](../improve-codebase-architecture/SKILL.md) and architecture reviews.
 
 ## Glossary
 
@@ -33,10 +35,10 @@ Use these terms exactly: don't substitute "component," "service," "API," or "bou
 
 ```
 ┌─────────────────────┐
-│   Small Interface   │  ← Few methods, simple params
+│   Small Interface   │  <- Few methods, simple params
 ├─────────────────────┤
 │                     │
-│  Deep Implementation│  ← Complex logic hidden
+│  Deep Implementation│  <- Complex logic hidden
 │                     │
 └─────────────────────┘
 ```
@@ -45,9 +47,9 @@ Use these terms exactly: don't substitute "component," "service," "API," or "bou
 
 ```
 ┌─────────────────────────────────┐
-│       Large Interface           │  ← Many methods, complex params
+│       Large Interface           │  <- Many methods, complex params
 ├─────────────────────────────────┤
-│  Thin Implementation            │  ← Just passes through
+│  Thin Implementation            │  <- Just passes through
 └─────────────────────────────────┘
 ```
 

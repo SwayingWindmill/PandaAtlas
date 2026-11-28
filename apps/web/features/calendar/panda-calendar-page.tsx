@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 
 import type { PublicMomentOccurrence } from "@/features/public-experiences/moments";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 interface PandaCalendarPageProps {
   locale: PublicLocale;

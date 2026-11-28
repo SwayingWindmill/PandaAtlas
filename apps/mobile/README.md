@@ -16,6 +16,10 @@ No Mac or Xcode is needed for this. Code changes reload on the phone as you save
 The app talks to `https://api.zhipanda.com` by default. To point it at a local API, set
 `EXPO_PUBLIC_API_BASE_URL` (for example `http://192.168.1.20:3000`) before starting.
 
+Crash reports go to Sentry only when `EXPO_PUBLIC_SENTRY_DSN` is set at build time. Without it, local
+runs and e2e send nothing. Before setting it for a store build, name Sentry as a processor in the privacy
+policy (`apps/web/features/legal/documents.ts`) and turn off IP storage in the Sentry project.
+
 ## Styling and components
 
 Screens are styled with Tailwind class names through [Uniwind](https://docs.uniwind.dev/)
@@ -47,12 +51,14 @@ Both run in CI when files under `apps/mobile/` change (`npm run verify:dev -- --
 
 ## End-to-end journeys
 
-`apps/mobile/e2e/` drives the app's web build with Playwright against the real local stack: Supabase Auth (sign-in codes are read from its Mailpit inbox) and the NestJS API on the local database, with a fresh `@example.test` user per run. Start Supabase, then run the suite; it starts the API on port 3101 and the app on port 8792 itself:
+`apps/mobile/tests/` holds the journeys, run by [e2e](https://github.com/tester-army/e2e) (`e2e.config.ts`) against the app's web build and the real local stack: Supabase Auth (sign-in codes are read from its Mailpit inbox) and the NestJS API on the local database, with a fresh `@example.test` user per journey. `tests/support/stack.ts` is the app e2e starts: it builds the API, publishes this run's fixture data through the API's own modules, and serves the API on port 3101 and the app on port 8792. Start Supabase, then run the suite:
 
 ```powershell
 npm run infra:start
 npm run test:e2e -w @zhipanda/mobile
 ```
+
+One journey: `npx e2e run tests/<file>.e2e.ts:<line>` from `apps/mobile`, the line its `test(` opens on. A failure names its trace page, `.e2e/results/<test>/trace.md`, with the screen at the failure. The journeys use locators and exact values only, so they need no model; an `agent.act` goal would need a model under `agents` in the config. `npx e2e telemetry disable` turns off e2e's usage telemetry on a machine.
 
 Sign-in uses Supabase Auth directly: `src/lib/supabase.ts` keeps the session in SecureStore (split into chunks under Android's size limit) and refreshes it while the app is in the foreground; `src/features/session/session.tsx` owns the signed-in state and provisions the application account once; `authedApi` in `src/lib/api.ts` adds the access token to personal API calls.
 
@@ -63,3 +69,31 @@ Store builds are made in the cloud with EAS Build, so they also work without a M
 EAS signs and uploads the build. The bundle identifier is `com.zhipanda.app` (see `app.json`).
 
 Add a native dependency with `npx expo install <package>` so its version matches the Expo SDK.
+
+### Store screenshots
+
+`npm run store:screenshots -w @zhipanda/mobile` saves six screens (探索, 找熊猫, 地图, a panda, its family, a venue) in light and dark at 1320×2868 (iPhone 6.9"), 1242×2688 (iPhone 6.5"), 2064×2752 (iPad 13") and 1080×1920 (Android) to `store-screenshots/`. It drives the web build with production's public data, so start `node apps/mobile/scripts/preview-production.mjs` first. `--panda <slug>` and `--venue <slug>` pick the subjects; `--only <device>` makes one size. It is the web rendering, with no iOS status bar.
+
+### Over-the-air updates
+
+`expo-updates` ships JavaScript fixes to installed builds through EAS Update. Each build profile has a channel: `preview` and `production` (`eas.json`). The runtime version follows the app version (`runtimeVersion.policy: appVersion`), so an update only reaches builds of the same `version` in `app.json`; a change to native code needs a new store build and a new `version`.
+
+`src/lib/ota.ts` checks at launch and when the app returns to the foreground, at most every 30 minutes. An update downloads in the background and runs from the next cold start, so nothing changes under a fan mid-screen. For an emergency fix, raise `extra.otaCriticalIndex` in `app.json` by one in the same commit: a running app that downloads an update with a higher mark reloads into it at once (`src/lib/ota-policy.ts`).
+
+One-time setup, on an Expo account with access to the project (until then `expo-updates` stays disabled and the app runs the bundle it shipped with):
+
+```powershell
+npx eas-cli init
+```
+
+```powershell
+npx eas-cli update:configure
+```
+
+The first links the Expo project and writes `extra.eas.projectId`; the second writes `updates.url`. Commit both, then make new store builds. To publish:
+
+```powershell
+npx eas-cli update --channel production --message "<what changed>"
+```
+
+Publish to `preview` first and check it on an internal build. To roll back, republish the previous update to the channel with `npx eas-cli update:republish`.

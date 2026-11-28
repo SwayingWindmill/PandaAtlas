@@ -1,6 +1,6 @@
 import * as WebBrowser from "expo-web-browser";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -13,7 +13,7 @@ import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { MilestoneBadge } from "@/features/milestones/badge";
 import { useMilestonePrefs } from "@/features/milestones/prefs";
-import { type PandaTimeline, loadTimeline } from "@/features/timeline/load";
+import { timelineQueryOptions } from "@/features/timeline/load";
 import type { Milestone, MilestoneSource } from "@/features/timeline/timeline";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
@@ -27,26 +27,13 @@ function correct(slug: string) {
 
 export default function TimelineScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
-  const [timeline, setTimeline] = useState<PandaTimeline | null>(null);
-  const [failed, setFailed] = useState(false);
+  const { data: timeline, isError: failed, refetch } = useQuery(timelineQueryOptions(slug));
   const milestones = useMilestonePrefs();
-
-  const load = useCallback(() => {
-    loadTimeline(slug)
-      .then(setTimeline)
-      .catch(() => setFailed(true));
-  }, [slug]);
-  useEffect(load, [load]);
-
-  function retry() {
-    setFailed(false);
-    load();
-  }
 
   if (!timeline || !milestones) {
     return (
       <Page title="时间线">
-        {failed ? <LoadFailed message="时间线暂时打不开。" onRetry={retry} /> : <TimelineSkeleton />}
+        {failed ? <LoadFailed message="时间线暂时打不开。" onRetry={() => void refetch()} /> : <TimelineSkeleton />}
       </Page>
     );
   }
@@ -79,7 +66,7 @@ export default function TimelineScreen() {
     <Page title={`${timeline.name}的时间线`} label={timeline.summary ?? undefined}>
       <Animated.View entering={PAGE_ENTER} className="gap-section">
         {years.map((year) => (
-          <ListSection key={year.year} title={year.age ? `${year.year} · ${year.age}` : year.year}>
+          <ListSection key={year.year} title={year.age ? `${year.year}　${year.age}` : year.year}>
             {year.milestones.map((milestone, index) => (
               <MilestoneRow key={milestone.id} milestone={milestone} last={index === year.milestones.length - 1} />
             ))}
@@ -145,7 +132,7 @@ function MilestoneRow({ milestone, last }: { milestone: Milestone; last: boolean
   );
 }
 
-/** "出处 Giant Panda FAQs · Smithsonian…": the title tells two sources from one publisher apart, so it leads. */
+/** "出处 Giant Panda FAQs　Smithsonian…": the title tells two sources from one publisher apart, so it leads. */
 function SourceLink({ source }: { source: MilestoneSource }) {
   const stacked = useStacked();
   return (
@@ -162,7 +149,7 @@ function SourceLink({ source }: { source: MilestoneSource }) {
         <Text variant="footnote" className="text-primary">
           {source.title}
         </Text>
-        {` · ${source.publisher}`}
+        {`　${source.publisher}`}
       </Text>
     </Pressable>
   );

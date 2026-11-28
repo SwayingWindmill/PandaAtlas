@@ -1,5 +1,4 @@
 import { spawn } from "node:child_process";
-import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
@@ -8,37 +7,13 @@ import {
   listDevelopmentCommands,
   repoRoot,
 } from "./catalog.mjs";
+import { resolveCommandInvocation } from "./command-runner.mjs";
 
-export function resolveDevelopmentInvocation(
-  command,
-  args,
-  {
-    platform = process.platform,
-    npmExecPath = process.env.npm_execpath,
-    nodeExecutable = process.execPath,
-    shell = false,
-  } = {},
-) {
-  if (platform === "win32" && ["npm", "npx"].includes(command)) {
-    if (!npmExecPath) {
-      throw new Error(
-        `Development command ${command} requires npm_execpath on Windows; run it through npm run ops`,
-      );
-    }
-    const npmBinDirectory = path.win32.dirname(npmExecPath);
-    const cliPath =
-      command === "npm" ? npmExecPath : path.win32.join(npmBinDirectory, "npx-cli.js");
-    return {
-      executable: nodeExecutable,
-      args: [cliPath, ...args],
-      shell: false,
-    };
-  }
-  return {
-    executable: command,
-    args,
-    shell: Boolean(shell),
-  };
+export function resolveDevelopmentInvocation(command, args, options = {}) {
+  return resolveCommandInvocation(command, args, {
+    ...options,
+    requireNpmExecPath: true,
+  });
 }
 
 function quote(value) {

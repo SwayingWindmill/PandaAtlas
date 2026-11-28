@@ -37,7 +37,9 @@ updates:
         patterns: ["@supabase/*", "supabase"]
         update-types: ["minor", "patch"]
       testing:
-        patterns: ["vitest", "@vitest/*", "@playwright/test", "@axe-core/*", "light-my-request"]
+        # playwright-core (pinned by apps/mobile) moves with @playwright/test: a split leaves two copies at the
+        # root, and @axe-core/playwright's Page type then no longer matches @playwright/test's in apps/web.
+        patterns: ["vitest", "@vitest/*", "@playwright/test", "playwright-core", "@axe-core/*", "light-my-request"]
         update-types: ["minor", "patch"]
       lint-and-types:
         patterns: ["eslint", "@eslint/*", "typescript", "typescript-eslint", "@types/*", "globals", "dependency-cruiser"]

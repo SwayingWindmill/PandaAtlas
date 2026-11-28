@@ -1,17 +1,16 @@
-import { sql } from "kysely";
-import type { DatabaseService, DatabaseTransaction } from "../../../platform/database/database.service.js";
-import type { DailyCheckinDecision, DailyCheckinRecord } from "../application/daily-checkin.js";
+import type { DatabaseService } from "../../../platform/database/database.service.js";
 import type {
   CollectionRecord,
   CreateCheckinInput,
-  EngagementRepository,
+  EngagementPort,
   FavoriteRecord,
+  VenueFollowRecord,
   LocationCheckinRecord,
   SaveSeenPandaInput,
   SeenPandaRecord,
 } from "../application/engagement.application.js";
 
-export class PostgresEngagementRepository implements EngagementRepository {
+export class PostgresEngagementRepository implements EngagementPort {
   public constructor(private readonly database: DatabaseService) {}
 
   public async listFavorites(accountId: string): Promise<FavoriteRecord[]> {
@@ -50,6 +49,51 @@ export class PostgresEngagementRepository implements EngagementRepository {
       .where("account_id", "=", accountId)
       .where("panda_id", "=", pandaId)
       .returning("panda_id")
+      .executeTakeFirst();
+    return deleted !== undefined;
+  }
+
+  public async listFollowedVenues(accountId: string): Promise<VenueFollowRecord[]> {
+    const rows = await this.database.db
+      .selectFrom("engagement.venue_follows as follow")
+      .innerJoin("place.institutions as institution", "institution.institution_id", "follow.institution_id")
+      .select(["institution.slug", "follow.followed_at"])
+      .where("follow.account_id", "=", accountId)
+      .orderBy("follow.followed_at", "desc")
+      .orderBy("institution.slug")
+      .execute();
+    return rows.map((row) => ({ institutionSlug: row.slug, followedAt: row.followed_at }));
+  }
+
+  public async followVenue(accountId: string, institutionSlug: string): Promise<VenueFollowRecord | undefined> {
+    const institution = await this.database.db
+      .selectFrom("place.institutions")
+      .select("institution_id")
+      .where("slug", "=", institutionSlug)
+      .executeTakeFirst();
+    if (institution === undefined) return undefined;
+    await this.database.db
+      .insertInto("engagement.venue_follows")
+      .values({ account_id: accountId, institution_id: institution.institution_id })
+      .onConflict((conflict) => conflict.columns(["account_id", "institution_id"]).doNothing())
+      .execute();
+    const row = await this.database.db
+      .selectFrom("engagement.venue_follows")
+      .select("followed_at")
+      .where("account_id", "=", accountId)
+      .where("institution_id", "=", institution.institution_id)
+      .executeTakeFirstOrThrow();
+    return { institutionSlug, followedAt: row.followed_at };
+  }
+
+  public async unfollowVenue(accountId: string, institutionSlug: string): Promise<boolean> {
+    const deleted = await this.database.db
+      .deleteFrom("engagement.venue_follows")
+      .where("account_id", "=", accountId)
+      .where("institution_id", "in", (query) =>
+        query.selectFrom("place.institutions").select("institution_id").where("slug", "=", institutionSlug),
+      )
+      .returning("institution_id")
       .executeTakeFirst();
     return deleted !== undefined;
   }
@@ -320,56 +364,5 @@ export class PostgresEngagementRepository implements EngagementRepository {
       firstSeenAt: row.first_seen_at,
       updatedAt: row.updated_at,
     };
-  }
-
-  public listDailyCheckins(accountId: string): Promise<DailyCheckinRecord[]> {
-    return this.readDailyCheckins(this.database.db, accountId);
-  }
-
-  public editDailyCheckins(
-    accountId: string,
-    decide: (records: DailyCheckinRecord[]) => DailyCheckinDecision,
-  ): Promise<{ decision: DailyCheckinDecision; records: DailyCheckinRecord[] }> {
-    return this.database.transaction(async (transaction) => {
-      // One member's quota checks must not interleave (two taps on two devices).
-      await sql`select pg_advisory_xact_lock(hashtext(${`engagement.daily_checkins:${accountId}`}))`.execute(transaction);
-      const records = await this.readDailyCheckins(transaction, accountId);
-      const decision = decide(records);
-      if (!decision.ok || decision.change.kind === "none") return { decision, records };
-      if (decision.change.kind === "remove") {
-        await transaction
-          .deleteFrom("engagement.daily_checkins")
-          .where("account_id", "=", accountId)
-          .where("checkin_on", "=", decision.change.day)
-          .execute();
-      } else {
-        const { day, kind, retroactive } = decision.change.record;
-        await transaction
-          .insertInto("engagement.daily_checkins")
-          .values({ account_id: accountId, checkin_on: day, kind, retroactive })
-          .onConflict((conflict) =>
-            conflict.columns(["account_id", "checkin_on"]).doUpdateSet({ kind, retroactive, updated_at: new Date() }),
-          )
-          .execute();
-      }
-      return { decision, records: await this.readDailyCheckins(transaction, accountId) };
-    });
-  }
-
-  private async readDailyCheckins(
-    db: DatabaseService["db"] | DatabaseTransaction,
-    accountId: string,
-  ): Promise<DailyCheckinRecord[]> {
-    const rows = await db
-      .selectFrom("engagement.daily_checkins")
-      .select(["checkin_on", "kind", "retroactive"])
-      .where("account_id", "=", accountId)
-      .orderBy("checkin_on")
-      .execute();
-    return rows.map((row) => ({
-      day: row.checkin_on,
-      kind: row.kind === "leave" ? "leave" : "visit",
-      retroactive: row.retroactive,
-    }));
   }
 }

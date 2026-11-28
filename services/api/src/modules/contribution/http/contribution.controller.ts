@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Inject, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Optional, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { OpsAlertService } from "../../../platform/observability/ops-alert.service.js";
+import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
@@ -11,10 +13,8 @@ import {
   type ContributionPort,
 } from "../application/contribution.application.js";
 import {
-  ContributionAttachmentDto,
   ContributionListDto,
   ContributionRecordDto,
-  RegisterContributionAttachmentDto,
   SubmitContributionDto,
 } from "./contribution.dto.js";
 
@@ -32,18 +32,20 @@ export class ContributionController {
   public constructor(
     @Inject(CONTRIBUTION_PORT) private readonly contribution: ContributionPort,
     private readonly requestContext: RequestContextService,
+    @Optional() private readonly opsAlert?: OpsAlertService,
   ) {}
 
   @Post("contributions")
   @RequireCapabilities("contribution.manage")
+  @RateLimit("sensitive", { keyStrategy: "ip_and_account" })
   @ApiOperation({ operationId: "submitContribution" })
   @ApiCreatedResponse({ type: ContributionRecordDto })
-  public submit(@Req() request: HttpRequest, @Body() input: SubmitContributionDto) {
+  public async submit(@Req() request: HttpRequest, @Body() input: SubmitContributionDto) {
     const correlationId = this.requestContext.current?.correlationId;
     if (correlationId === undefined) {
       throw new ProblemException(500, "system.internal", "The request context is unavailable.");
     }
-    return this.contribution.submit({
+    const created = await this.contribution.submit({
       accountId: accountId(request),
       submissionType: input.submissionType,
       targetPandaId: input.targetPandaId,
@@ -66,6 +68,21 @@ export class ContributionController {
       })),
       correlationId,
     });
+    void this.opsAlert?.notify({
+      severity: "info",
+      category: "contribution_submitted",
+      title: "收到新社区投稿",
+      summary: `${created.submissionType} (${created.submissionId})`,
+      dedupeKey: `contribution:${created.submissionId}`,
+      cooldownMs: 300_000,
+      metadata: {
+        submissionId: created.submissionId,
+        submissionType: created.submissionType,
+        targetPandaId: created.targetPandaId,
+        requestId: this.requestContext.current?.requestId,
+      },
+    });
+    return created;
   }
 
   @Get("me/contributions")
@@ -89,30 +106,5 @@ export class ContributionController {
       throw new ProblemException(404, "contribution.notFound", "The contribution does not exist.");
     }
     return contribution;
-  }
-
-  @Post("contributions/:submissionId/attachments")
-  @RequireCapabilities("contribution.manage")
-  @ApiOperation({ operationId: "registerContributionAttachment" })
-  @ApiCreatedResponse({ type: ContributionAttachmentDto })
-  public async registerAttachment(
-    @Req() request: HttpRequest,
-    @Param("submissionId", ParseUUIDPipe) submissionId: string,
-    @Body() input: RegisterContributionAttachmentDto,
-  ) {
-    const attachment = await this.contribution.registerAttachment({
-      accountId: accountId(request),
-      submissionId,
-      storageObjectKey: input.storageObjectKey,
-      objectVersion: input.objectVersion,
-      originalFilename: input.originalFilename,
-      mediaType: input.mediaType,
-      byteSize: input.byteSize,
-      contentSha256: input.contentSha256,
-    });
-    if (attachment === undefined) {
-      throw new ProblemException(404, "contribution.notFound", "The contribution does not exist.");
-    }
-    return attachment;
   }
 }

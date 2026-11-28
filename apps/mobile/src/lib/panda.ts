@@ -61,20 +61,49 @@ export function displayName(panda: PandaSummary): string {
   return displayChineseName(panda) ?? englishName(panda) ?? panda.canonicalSlug;
 }
 
-function fact(panda: PandaSummary, key: string): unknown {
-  return panda.facts.find((item) => item.fieldKey === key)?.value;
+function factEntry(panda: PandaSummary, key: string, fallbackKey?: string) {
+  const usable = (k: string) =>
+    panda.facts.find(
+      (item) => item.fieldKey === k && item.status !== "disputed" && item.value !== null && item.value !== undefined && item.value !== "",
+    );
+  return usable(key) ?? (fallbackKey ? usable(fallbackKey) : undefined);
+}
+
+/**
+ * How sure the record is of one fact: confirmed, or anything else (provisional) as pending.
+ * Null when the record has no usable fact (disputed or empty entries are skipped).
+ */
+export function pandaFactStatus(panda: PandaSummary, key: string): "confirmed" | "pending" | null {
+  const item = factEntry(panda, key, `local.${key}`);
+  if (!item) return null;
+  return item.status === "confirmed" ? "confirmed" : "pending";
 }
 
 export function pandaSex(panda: PandaSummary): "male" | "female" | null {
-  const value = fact(panda, "sex");
+  const value = factEntry(panda, "sex", "local.sex")?.value;
   return value === "male" || value === "female" ? value : null;
 }
 
 export function pandaBirthDate(panda: PandaSummary): string | null {
-  const value = fact(panda, "birth_date");
+  const value = factEntry(panda, "birth_date", "local.birth_date")?.value;
+  return typeof value === "string" && /^\d{4}/.test(value) ? value : null;
+}
+
+export function pandaDeathDate(panda: PandaSummary): string | null {
+  const value = factEntry(panda, "death_date", "local.death_date")?.value;
   return typeof value === "string" && /^\d{4}/.test(value) ? value : null;
 }
 
 export function pandaIsDeceased(panda: PandaSummary): boolean {
-  return fact(panda, "life_status") === "deceased";
+  return factEntry(panda, "life_status", "local.life_status")?.value === "deceased";
+}
+
+/**
+ * The one character a photo-less avatar shows. Imported names start with years and romanization
+ * ("2016 Ai Bang's Cub / 爱浜2016仔"), so the first Han character wins, then the first letter.
+ */
+export function nameInitial(name: string): string {
+  const chars = [...name.trim()];
+  const initial = chars.find((char) => HAN.test(char)) ?? chars.find((char) => /\p{L}/u.test(char)) ?? chars[0] ?? "";
+  return initial.toUpperCase();
 }

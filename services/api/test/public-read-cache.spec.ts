@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import type { PublicReadPort } from "../src/modules/publication/application/public-read.application.js";
-import { CachingPublicReadRepository } from "../src/modules/publication/infrastructure/caching-public-read.repository.js";
-import { PostgresPublicReadRepository } from "../src/modules/publication/infrastructure/postgres-public-read.repository.js";
-import { PublicReadCache } from "../src/modules/publication/infrastructure/public-read-cache.js";
+import type { PublicReadPort } from "../src/modules/public-read/application/public-read.application.js";
+import { CachingPublicReadRepository } from "../src/modules/public-read/infrastructure/caching-public-read.repository.js";
+import { PostgresPublicReadRepository } from "../src/modules/public-read/infrastructure/postgres-public-read.repository.js";
+import { PublicReadCache } from "../src/modules/public-read/infrastructure/public-read-cache.js";
 
 const RELEASE = { releaseId: "release-1", version: "2026.10.28.1" };
 
@@ -135,6 +135,22 @@ describe("CachingPublicReadRepository", () => {
     expect(details).toBe(1);
     expect(releases).toBe(2);
   });
+
+  it("delegates corpus source reads directly without pinning the full corpus in isolate memory", async () => {
+    let corpusReads = 0;
+    const inner = {
+      getDeliverableCorpusSources: () => {
+        corpusReads += 1;
+        return Promise.resolve({ kind: "ok", value: { release: RELEASE, pandas: [], evidence: [] } });
+      },
+    } as unknown as PublicReadPort;
+    const repository = new CachingPublicReadRepository(inner, new PublicReadCache());
+
+    await repository.getDeliverableCorpusSources();
+    await repository.getDeliverableCorpusSources();
+
+    expect(corpusReads).toBe(2);
+  });
 });
 
 describe("PostgresPublicReadRepository snapshot", () => {
@@ -175,7 +191,7 @@ describe("PostgresPublicReadRepository snapshot", () => {
     expect(calls.filter((call) => call.startsWith("one:publication.current_release"))).toHaveLength(1);
     expect(calls.filter((call) => call.includes("delivery_control_events"))).toHaveLength(1);
     expect(calls.filter((call) => call === "many:public_read.pandas")).toHaveLength(1);
-    expect(calls.filter((call) => call === "many:public_read.places")).toHaveLength(1);
+    expect(calls.filter((call) => call === "many:public_read.places")).toHaveLength(2);
   });
 
   it("hides the release when the newest suspension applies", async () => {
@@ -236,5 +252,304 @@ describe("PostgresPublicReadRepository snapshot", () => {
         }],
       },
     });
+  });
+
+  it("returns deliverable corpus sources filtered by panda and evidence takedowns", async () => {
+    const db = chain((table, many) => {
+      if (table.startsWith("publication.current_release")) {
+        return { release_id: RELEASE.releaseId, version: RELEASE.version, lifecycle_state: "sealed" };
+      }
+      if (table === "publication.delivery_control_events") {
+        return [
+          { control_kind: "resource_takedown", resource_kind: "panda", resource_id: "panda-hidden", action: "apply" },
+          { control_kind: "resource_takedown", resource_kind: "evidence", resource_id: "src-hidden", action: "apply" },
+        ];
+      }
+      if (table === "public_read.pandas") {
+        return [
+          { panda_id: "panda-hidden", facts: [], evidence_source_ids: ["src-shown"] },
+          {
+            panda_id: "panda-shown",
+            facts: [
+              {
+                fieldKey: "sex",
+                value: "female",
+                status: "confirmed",
+                lastVerifiedOn: "2026-10-28",
+                conclusionVersion: 1,
+              },
+            ],
+            evidence_source_ids: ["src-shown", "src-hidden"],
+          },
+        ];
+      }
+      if (table === "public_read.evidence_sources") {
+        return [
+          {
+            source_id: "src-hidden",
+            publisher: "Pub",
+            title: "Hidden",
+            url: "https://example.com/hidden",
+            published_on: null,
+            last_verified_on: "2026-10-28",
+            language_tag: "zh",
+            access_state: "public",
+            evidence_tier: null,
+            public_summary: null,
+          },
+          {
+            source_id: "src-shown",
+            publisher: "Pub",
+            title: "Shown",
+            url: "https://example.com/shown",
+            published_on: "2026-10-01",
+            last_verified_on: "2026-10-28",
+            language_tag: "zh",
+            access_state: "public",
+            evidence_tier: "primary",
+            public_summary: "Summary",
+          },
+        ];
+      }
+      return many ? [] : undefined;
+    });
+    const repository = new PostgresPublicReadRepository({ db } as never, new PublicReadCache());
+
+    await expect(repository.getDeliverableCorpusSources()).resolves.toEqual({
+      kind: "ok",
+      value: {
+        release: RELEASE,
+        pandas: [
+          {
+            pandaId: "panda-shown",
+            facts: [
+              {
+                fieldKey: "sex",
+                value: "female",
+                status: "confirmed",
+                lastVerifiedOn: "2026-10-28",
+                conclusionVersion: 1,
+              },
+            ],
+            evidenceSourceIds: ["src-shown", "src-hidden"],
+          },
+        ],
+        evidence: [
+          {
+            sourceId: "src-shown",
+            publisher: "Pub",
+            title: "Shown",
+            url: "https://example.com/shown",
+            publishedOn: "2026-10-01",
+            lastVerifiedOn: "2026-10-28",
+            languageTag: "zh",
+            accessState: "public",
+            evidenceTier: "primary",
+            publicSummary: "Summary",
+          },
+        ],
+      },
+    });
+  });
+
+  it("returns unavailable for deliverable corpus sources when release suspension applies", async () => {
+    const db = chain((table, many) => {
+      if (table.startsWith("publication.current_release")) {
+        return { release_id: RELEASE.releaseId, version: RELEASE.version, lifecycle_state: "sealed" };
+      }
+      if (table === "publication.delivery_control_events") {
+        return [{ control_kind: "release_suspension", resource_kind: null, resource_id: null, action: "apply" }];
+      }
+      return many ? [] : undefined;
+    });
+    const repository = new PostgresPublicReadRepository({ db } as never, new PublicReadCache());
+
+    await expect(repository.getDeliverableCorpusSources()).resolves.toEqual({ kind: "unavailable" });
+  });
+
+  it("enriches listPandas with currentPlace and hasFullBleedCover while respecting place and media takedowns", async () => {
+    const curatedPandaId = "00893b59-81d9-50ff-9156-7e47bcd10036";
+    const curatedHash = `a5e1dd9e75722038${"0".repeat(48)}`;
+    const db = chain((table, many) => {
+      if (table.startsWith("publication.current_release")) {
+        return { release_id: RELEASE.releaseId, version: RELEASE.version, lifecycle_state: "sealed" };
+      }
+      if (table === "publication.delivery_control_events") {
+        return [
+          { control_kind: "resource_takedown", resource_kind: "place", resource_id: "place-hidden", action: "apply" },
+          { control_kind: "resource_takedown", resource_kind: "media", resource_id: "asset-blocked", action: "apply" },
+        ];
+      }
+      if (table === "public_read.pandas") {
+        return [
+          { panda_id: curatedPandaId, canonical_slug: "curated", legacy_slugs: [], names: [], listing_facts: [] },
+          { panda_id: "panda-plain", canonical_slug: "plain", legacy_slugs: [], names: [], listing_facts: [] },
+        ];
+      }
+      if (table === "public_read.residencies") {
+        return [
+          { panda_id: curatedPandaId, place_id: "place-hidden", residency_type: "primary" },
+          { panda_id: curatedPandaId, place_id: "place-secondary", residency_type: "managed_care" },
+          { panda_id: curatedPandaId, place_id: "place-primary", residency_type: "primary" },
+          { panda_id: "panda-plain", place_id: "place-hidden", residency_type: "primary" },
+        ];
+      }
+      if (table === "public_read.places") {
+        return [
+          { place_id: "place-hidden", slug: "hidden", place_type: "zoo", name_zh: "隐藏馆", name_en: null, country_code: "CN", region: "成都" },
+          { place_id: "place-secondary", slug: "sec", place_type: "zoo", name_zh: "次要馆", name_en: null, country_code: "CN", region: "雅安" },
+          { place_id: "place-primary", slug: "pri", place_type: "facility", name_zh: "主馆", name_en: "Primary", country_code: "CN", region: "Chengdu, Sichuan" },
+        ];
+      }
+      if (table === "public_read.media") {
+        return [
+          { asset_id: "asset-blocked", panda_id: curatedPandaId, content_sha256: "f".repeat(64), creator: null, attribution_text: null },
+          { asset_id: "asset-ok", panda_id: curatedPandaId, content_sha256: curatedHash, creator: "Zoo", attribution_text: null },
+          { asset_id: "asset-plain", panda_id: "panda-plain", content_sha256: "e".repeat(64), creator: null, attribution_text: null },
+        ];
+      }
+      return many ? [] : undefined;
+    });
+    const repository = new PostgresPublicReadRepository({ db } as never, new PublicReadCache());
+
+    await expect(repository.listPandas()).resolves.toEqual({
+      kind: "ok",
+      value: {
+        release: RELEASE,
+        items: [
+          {
+            pandaId: curatedPandaId,
+            canonicalSlug: "curated",
+            legacySlugs: [],
+            names: [],
+            facts: [],
+            currentPlace: {
+              placeId: "place-primary",
+              slug: "pri",
+              placeType: "facility",
+              nameZh: "主馆",
+              nameEn: "Primary",
+              countryCode: "CN",
+              region: "Chengdu, Sichuan",
+            },
+            hasFullBleedCover: true,
+          },
+          {
+            pandaId: "panda-plain",
+            canonicalSlug: "plain",
+            legacySlugs: [],
+            names: [],
+            facts: [],
+          },
+        ],
+      },
+    });
+  });
+
+  it("summarizes institution residents, former residents and bornHereCount while filtering takedowns", async () => {
+    const residentId = "00893b59-81d9-50ff-9156-7e47bcd10036";
+    const curatedHash = `a5e1dd9e75722038${"0".repeat(48)}`;
+    const db = chain((table, many) => {
+      if (table.startsWith("publication.current_release")) {
+        return { release_id: RELEASE.releaseId, version: RELEASE.version, lifecycle_state: "sealed" };
+      }
+      if (table === "publication.delivery_control_events") {
+        return [
+          { control_kind: "resource_takedown", resource_kind: "place", resource_id: "place-hidden", action: "apply" },
+          { control_kind: "resource_takedown", resource_kind: "panda", resource_id: "panda-hidden", action: "apply" },
+        ];
+      }
+      if (table === "public_read.institutions") {
+        return { institution_id: "inst-1", slug: "chengdu", name_zh: "成都基地", name_en: null, country_code: "CN", profile: null };
+      }
+      if (table === "public_read.places") {
+        return [
+          {
+            place_id: "place-hidden",
+            institution_id: "inst-1",
+            slug: "hidden-wing",
+            place_type: "facility",
+            name_zh: "隐藏馆",
+            name_en: null,
+            country_code: "CN",
+            region: "Chengdu",
+            longitude: null,
+            latitude: null,
+            visit_guide: null,
+            legacy_slugs: [],
+          },
+          {
+            place_id: "place-open",
+            institution_id: "inst-1",
+            slug: "sun-nursery",
+            place_type: "facility",
+            name_zh: "太阳产房",
+            name_en: null,
+            country_code: "CN",
+            region: "Chengdu",
+            longitude: null,
+            latitude: null,
+            visit_guide: null,
+            legacy_slugs: [],
+          },
+        ];
+      }
+      if (table === "public_read.residencies") {
+        return [
+          { residency_id: "r1", panda_id: residentId, place_id: "place-open", residency_type: "primary", start_on: "2024-01-01", start_precision: "day", end_on: null },
+          { residency_id: "r2", panda_id: "panda-former", place_id: "place-open", residency_type: "managed_care", start_on: "2013-08-23", start_precision: "day", end_on: "2020-05-01" },
+          { residency_id: "r3", panda_id: "panda-hidden", place_id: "place-open", residency_type: "primary", start_on: "2020-01-01", start_precision: "day", end_on: null },
+        ];
+      }
+      if (table === "public_read.pandas") {
+        return [
+          { panda_id: residentId, canonical_slug: "curated", legacy_slugs: [], names: [], listing_facts: [] },
+          {
+            panda_id: "panda-former",
+            canonical_slug: "former-star",
+            legacy_slugs: [],
+            names: [],
+            listing_facts: [{ fieldKey: "birth_date", value: "2013-08-23", status: "confirmed", lastVerifiedOn: "2026-10-28", conclusionVersion: 1 }],
+          },
+        ];
+      }
+      if (table === "public_read.media") {
+        return [{ asset_id: "asset-ok", panda_id: residentId, content_sha256: curatedHash, creator: "Zoo", attribution_text: null }];
+      }
+      return many ? [] : undefined;
+    });
+    const repository = new PostgresPublicReadRepository({ db } as never, new PublicReadCache());
+
+    const result = await repository.getInstitution("chengdu");
+    expect(result.kind).toBe("ok");
+    if (result.kind !== "ok") return;
+    expect(result.value.places.map((place) => place.placeId)).toEqual(["place-open"]);
+    expect(result.value.residents).toEqual([
+      {
+        pandaId: residentId,
+        canonicalSlug: "curated",
+        legacySlugs: [],
+        names: [],
+        facts: [],
+        currentPlace: {
+          placeId: "place-open",
+          slug: "sun-nursery",
+          placeType: "facility",
+          nameZh: "太阳产房",
+          countryCode: "CN",
+          region: "Chengdu",
+        },
+        hasFullBleedCover: true,
+      },
+    ]);
+    expect(result.value.former).toMatchObject([
+      {
+        panda: { pandaId: "panda-former", canonicalSlug: "former-star" },
+        fromYear: 2013,
+        toYear: 2020,
+        bornHere: true,
+      },
+    ]);
+    expect(result.value.bornHereCount).toBe(1);
   });
 });

@@ -52,6 +52,5 @@ Additional structural errors cover duplicate IDs, missing public/restricted enve
 
 - Node validation and public-experience generation: `scripts/golden-dataset/lib.mjs`
 - Web browser fixtures: `apps/web/tests/fixtures/golden-dataset.ts`
-- panda-data identity reconciliation: `tools/panda-data/src/panda_data/acquisition/reconciliation.py`
 
 Every adapter reads the same JSON file. Derived fixtures may change shape for their test layer, but must not copy or re-author the underlying business truth.

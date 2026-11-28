@@ -1,6 +1,6 @@
-import { Image } from "expo-image";
+import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -10,6 +10,7 @@ import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { ScreenState } from "@/components/screen-state";
 import { Segmented } from "@/components/segmented";
 import { Button } from "@/components/ui/button";
@@ -26,10 +27,12 @@ import {
   NoQuestionError,
   answerQuestion,
   difficultyOf,
-  loadQuestion,
+  levelChecksQueryOptions,
   offeredLevels,
-  probeLevels,
+  questionQueryOptions,
 } from "@/features/guess/guess";
+import { recordGuestGame } from "@/features/engagement/guest-store";
+import { localToday } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
 import { useSession } from "@/features/session/session";
 import { selectionHaptic, successHaptic } from "@/lib/haptics";
@@ -86,56 +89,31 @@ function pairs<T>(items: readonly T[]): T[][] {
 export default function GuessScreen() {
   const colors = useIOSColors();
   const { state: session } = useSession();
-  const [load, setLoad] = useState<Load>({ status: "loading" });
   const [round, setRound] = useState(1);
   const [chosen, setChosen] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<GuessOutcome | null>(null);
   const [answerFailed, setAnswerFailed] = useState(false);
   const [level, setLevel] = useState<Level>("any");
-  const [probes, setProbes] = useState<Probes | null>(null);
-  // A question each level returned while being checked, shown the first time that level is chosen.
-  const prefetched = useRef(new Map<GuessDifficulty, GuessQuestion>());
+  const [emptyLevels, setEmptyLevels] = useState<Probes>({});
 
-  useEffect(() => {
-    let live = true;
-    probeLevels()
-      .then((checks) => {
-        if (!live) return;
-        const found: Probes = {};
-        for (const { value } of DIFFICULTIES) {
-          found[value] = checks[value].probe;
-          const question = checks[value].question;
-          if (question) prefetched.current.set(value, question);
-        }
-        setProbes(found);
-      })
-      .catch(() => live && setProbes({}));
-    return () => {
-      live = false;
-    };
-  }, []);
-
-  const next = useCallback(() => {
-    const show = (question: GuessQuestion) => {
-      setChosen(null);
-      setOutcome(null);
-      setLoad({ status: "ready", question });
-    };
-    const ready = level === "any" ? undefined : prefetched.current.get(level);
-    if (ready && level !== "any") {
-      prefetched.current.delete(level);
-      show(ready);
-      return;
-    }
-    loadQuestion(level === "any" ? undefined : level)
-      .then(show)
-      .catch((error: unknown) => {
-        const empty = error instanceof NoQuestionError;
-        if (empty && level !== "any") setProbes((current) => ({ ...current, [level]: "empty" }));
-        setLoad({ status: empty ? "empty" : "failed" });
-      });
-  }, [level]);
-  useEffect(next, [next]);
+  const checks = useQuery(levelChecksQueryOptions());
+  const drawn = useQuery(questionQueryOptions(level === "any" ? undefined : level, round));
+  const empty = drawn.error instanceof NoQuestionError;
+  const load: Load = drawn.data
+    ? { status: "ready", question: drawn.data }
+    : drawn.isError
+      ? { status: empty ? "empty" : "failed" }
+      : { status: "loading" };
+  // A level found to have no question to draw stays out of the picker for the session, even if its first check said otherwise.
+  if (empty && level !== "any" && emptyLevels[level] !== "empty") setEmptyLevels({ ...emptyLevels, [level]: "empty" });
+  const probes: Probes | null = checks.data
+    ? {
+        ...Object.fromEntries(DIFFICULTIES.map(({ value }) => [value, checks.data[value].probe])),
+        ...emptyLevels,
+      }
+    : checks.isError
+      ? {}
+      : null;
 
   function changeLevel(value: Level) {
     if (value === level) return;
@@ -143,12 +121,11 @@ export default function GuessScreen() {
     setChosen(null);
     setOutcome(null);
     setAnswerFailed(false);
-    setLoad({ status: "loading" });
     setLevel(value);
   }
 
   function choose(question: GuessQuestion, pandaId: string) {
-    if (chosen) return;
+    if (chosen || drawn.isPlaceholderData) return;
     setChosen(pandaId);
     setAnswerFailed(false);
     answerQuestion(question.questionId, pandaId, session.status === "signedIn")
@@ -156,6 +133,9 @@ export default function GuessScreen() {
         if (result.correct) successHaptic();
         else selectionHaptic();
         setOutcome(result);
+        if (session.status === "signedOut") {
+          void recordGuestGame(result.answerPandaId, "guess_panda", localToday()).catch(() => undefined);
+        }
       })
       .catch(() => {
         setChosen(null);
@@ -184,7 +164,7 @@ export default function GuessScreen() {
             />
           )
         ) : null}
-        {load.status === "failed" ? <LoadFailed message="题目暂时打不开。" onRetry={next} /> : null}
+        {load.status === "failed" ? <LoadFailed message="题目暂时打不开。" onRetry={() => void drawn.refetch()} /> : null}
       </Page>
     );
   }
@@ -197,7 +177,7 @@ export default function GuessScreen() {
     <Page label={`猜熊猫　第 ${round} 题`} title={TITLE}>
       <LevelPicker value={level} probes={probes} onChange={changeLevel} />
       <View className="overflow-hidden rounded-card bg-media-placeholder" style={{ borderCurve: "continuous" }}>
-        <Image
+        <RemoteImage
           source={question.photoUrl}
           style={{ width: "100%", aspectRatio: 4 / 3 }}
           contentFit="cover"
@@ -221,7 +201,7 @@ export default function GuessScreen() {
                 <PressScale
                   key={option.pandaId}
                   onPress={() => choose(question, option.pandaId)}
-                  disabled={chosen !== null}
+                  disabled={chosen !== null || drawn.isPlaceholderData}
                   role="button"
                   accessibilityLabel={
                     isAnswer ? `${option.name}，是它` : wrongPick ? `${option.name}，不是它` : option.name
@@ -274,8 +254,9 @@ export default function GuessScreen() {
           <View className="gap-stack-tight pt-stack-tight">
             <Button
               onPress={() => {
+                setChosen(null);
+                setOutcome(null);
                 setRound((value) => value + 1);
-                next();
               }}
             >
               <Text>下一题</Text>

@@ -1,0 +1,99 @@
+name: Mobile E2E
+
+# The app's e2e journeys against a local Supabase on a Linux runner, where Windows port reservations do not
+# apply. A pull request that touches the app or what it runs on runs every journey; a manual run can pick
+# one with `gh workflow run mobile-e2e.yml -f journey=tests/map.e2e.ts:60`. Traces are kept for every run
+# and uploaded as the `mobile-e2e-results` artifact.
+on:
+  # Every pull request, so the required check always reports: the plan job skips the journeys when nothing
+  # they run on changed, and a skipped job counts as passed.
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      journey:
+        description: "One journey as tests/<file>.e2e.ts:<line>, or empty for all"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  # A new push replaces a pull request's run; manual runs of different journeys on one branch each finish.
+  group: mobile-e2e-${{ github.ref }}-${{ inputs.journey }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  plan:
+    name: Plan mobile e2e
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.plan.outputs.run }}
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      # What the journeys run on: the app, the API and its database, the workspace packages, the learning
+      # data Metro bundles, the infra scripts, the root package files, and this workflow.
+      - name: Decide whether the journeys run
+        id: plan
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != "pull_request" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          pattern='^(apps/mobile/|services/api/|packages/|data/curation/learning/|infra/supabase/|scripts/development/|package\.json$|package-lock\.json$|tsconfig\.base\.json$|\.github/workflows/mobile-e2e\.yml$)'
+          # A git failure fails this step, so it can never read as "nothing changed". --no-renames lists a moved
+          # file's old path too.
+          changed=$(git diff --name-only --no-renames "origin/$BASE_REF...HEAD")
+          if grep -qE "$pattern" <<<"$changed"; then run=true; else run=false; fi
+          echo "run=$run" | tee -a "$GITHUB_OUTPUT"
+
+  e2e:
+    name: Run mobile e2e against local Supabase
+    needs: plan
+    if: needs.plan.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Install Chromium and its system libraries
+        run: npx playwright-core install --with-deps --only-shell chromium
+
+      - name: Start pinned local Supabase foundation
+        run: npm run infra:start
+
+      - name: Run journeys
+        working-directory: apps/mobile
+        env:
+          JOURNEY: ${{ inputs.journey }}
+          # Keep Playwright test workers (todayLabel) in sync with e2e.config.ts timezoneId across 16:00-23:59 UTC;
+          # e2e-fixture.service.ts formats Asia/Shanghai explicitly because e2e ManagedProcess strips TZ.
+          TZ: Asia/Shanghai
+        run: npx e2e run $JOURNEY --trace on
+
+      - name: Upload traces and logs
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: mobile-e2e-results
+          include-hidden-files: true
+          retention-days: 14
+          path: apps/mobile/.e2e/
+          if-no-files-found: warn
+
+      - name: Stop local Supabase foundation
+        if: always()
+        run: npm run infra:stop

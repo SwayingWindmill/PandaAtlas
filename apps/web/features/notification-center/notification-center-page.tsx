@@ -9,7 +9,7 @@ import { useMemo, useState } from "react";
 import { fanMutationOptions, inboxQueryOptions, preferencesQueryOptions } from "@/features/fan/api/queries";
 import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 import type { NotificationMessage, NotificationPreference } from "@/features/fan/api/types";
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 
 interface NotificationCenterPageProps {
   locale: PublicLocale;

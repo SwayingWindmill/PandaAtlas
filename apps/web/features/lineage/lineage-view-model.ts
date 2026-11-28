@@ -1,4 +1,4 @@
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import type {
   PandaLineageNode,
   PublicParentageAssertionSummary,

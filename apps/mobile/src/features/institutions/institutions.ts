@@ -1,9 +1,17 @@
 import type { components } from "@zhipanda/api-client";
 import { queryOptions } from "@tanstack/react-query";
 
-import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
+import { comparePandas } from "@/features/pandas/order";
+import { type PandaListItem, toPandaListItem } from "@/features/pandas/pandas";
 import { api } from "@/lib/api";
 import { queryClient } from "@/lib/query-client";
+
+export interface FormerResident {
+  panda: PandaListItem;
+  from: number | null;
+  to: number | null;
+  bornHere: boolean;
+}
 
 type Schemas = components["schemas"];
 type Institution = Schemas["PublicInstitutionSummaryDto"];
@@ -42,6 +50,15 @@ export interface Facility {
   verifiedOn: string | null;
   sourceUrls: string[];
   coordinates: { latitude: number; longitude: number } | null;
+  /** When the pandas are usually up and resting, as the facility publishes it. */
+  viewing: { active: TimeWindow[]; nap: TimeWindow | null } | null;
+  photoSpots: { name: string; window: TimeWindow | null }[];
+}
+
+/** A same-day local span, "HH:MM". */
+export interface TimeWindow {
+  start: string;
+  end: string;
 }
 
 export interface InstitutionDetail {
@@ -55,7 +72,8 @@ export interface InstitutionDetail {
   sources: string[];
   facilities: Facility[];
   residents: PandaListItem[];
-  former: PandaListItem[];
+  former: FormerResident[];
+  bornHere: number;
 }
 
 const nameOf = (institution: Institution) => institution.nameZh ?? institution.nameEn ?? institution.slug;
@@ -84,8 +102,7 @@ export function institutionListQueryOptions() {
   });
 }
 
-export async function loadInstitutions(): Promise<InstitutionListItem[]> {
-  const institutions = await loadInstitutionList();
+export function toListItems(institutions: Institution[]): InstitutionListItem[] {
   return institutions.map((institution) => ({
     slug: institution.slug,
     name: nameOf(institution),
@@ -109,42 +126,54 @@ function facilityOf(place: Place): Facility {
     tips: (guide?.tips ?? []).flatMap((tip) => (tip.text.zh ? [{ label: TIP[tip.topic], text: tip.text.zh }] : [])),
     verifiedOn: guide?.verifiedOn ?? null,
     sourceUrls: guide?.sourceUrls ?? [],
+    viewing: guide?.viewing
+      ? {
+          active: [...guide.viewing.activeWindows].sort((a, b) => a.start.localeCompare(b.start)),
+          nap: guide.viewing.napWindow ?? null,
+        }
+      : null,
+    photoSpots: (guide?.photoSpots ?? []).flatMap((spot) => (spot.name.zh ? [{ name: spot.name.zh, window: spot.window ?? null }] : [])),
     coordinates:
       place.latitude !== undefined && place.longitude !== undefined ? { latitude: place.latitude, longitude: place.longitude } : null,
   };
 }
 
-export async function loadInstitution(slug: string): Promise<InstitutionDetail> {
-  const [detail, residencies, pandas] = await Promise.all([
-    api.GET("/api/v2/institutions/{slug}", { params: { path: { slug } } }),
-    api.GET("/api/v2/residencies"),
-    loadPandaIndex(),
-  ]);
-  if (!detail.data || !residencies.data) throw new Error(`Institution ${slug} unavailable`);
-  const { institution, places } = detail.data;
-  const placeIds = new Set(places.map((place) => place.placeId));
-  const pandasById = new Map(pandas.map((panda) => [panda.id, panda]));
-  const here = residencies.data.items.filter((residency) => placeIds.has(residency.placeId));
-  const pandasOf = (current: boolean) => [
-    ...new Set(here.filter((residency) => !residency.endOn === current).flatMap((residency) => pandasById.get(residency.pandaId) ?? [])),
-  ];
-  const residents = pandasOf(true);
-  const profile = institution.profile;
+export function institutionQueryOptions(slug: string) {
+  return queryOptions({
+    queryKey: ["public", "institution", slug],
+    staleTime: 300_000,
+    networkMode: "always",
+    queryFn: async (): Promise<InstitutionDetail> => {
+      const { data } = await api.GET("/api/v2/institutions/{slug}", { params: { path: { slug } } });
+      if (!data) throw new Error(`Institution ${slug} unavailable`);
+      const { institution, places, residents = [], former = [], bornHereCount = 0 } = data;
+      const profile = institution.profile;
 
-  return {
-    slug: institution.slug,
-    name: nameOf(institution),
-    meta: metaOf(institution),
-    summary: profile?.summary?.zh ?? null,
-    liveCamUrl: profile?.liveCamUrl ?? null,
-    websiteUrl: profile?.websiteUrl ?? null,
-    verifiedOn: profile?.verifiedOn ?? null,
-    sources: profile?.sourceUrls ?? [],
-    facilities: places.map(facilityOf),
-    residents,
-    // A panda that moved between this institution's facilities is a resident, not a former one.
-    former: pandasOf(false).filter((panda) => !residents.includes(panda)),
-  };
+      return {
+        slug: institution.slug,
+        name: nameOf(institution),
+        meta: metaOf(institution),
+        summary: profile?.summary?.zh ?? null,
+        liveCamUrl: profile?.liveCamUrl ?? null,
+        websiteUrl: profile?.websiteUrl ?? null,
+        verifiedOn: profile?.verifiedOn ?? null,
+        sources: profile?.sourceUrls ?? [],
+        facilities: places.map(facilityOf),
+        residents: residents.map(toPandaListItem).sort(comparePandas),
+        former: former.map((item) => ({
+          panda: toPandaListItem(item.panda),
+          from: item.fromYear ?? null,
+          to: item.toYear ?? null,
+          bornHere: item.bornHere,
+        })),
+        bornHere: bornHereCount,
+      };
+    },
+  });
+}
+
+export function loadInstitution(slug: string): Promise<InstitutionDetail> {
+  return queryClient.fetchQuery(institutionQueryOptions(slug));
 }
 
 /** "https://www.panda.org.cn/about" → "panda.org.cn", for naming a source in one line. */
@@ -154,7 +183,20 @@ export function hostname(url: string): string {
 
 /** A facility worth a 参观攻略 entry: it has at least one published guide line, or somewhere to navigate to. */
 export function hasGuide(facility: Facility): boolean {
-  return facility.guide.length + facility.tips.length > 0 || facility.coordinates !== null;
+  return (
+    facility.guide.length + facility.tips.length + facility.photoSpots.length > 0 ||
+    facility.viewing !== null ||
+    facility.coordinates !== null
+  );
+}
+
+export function isFreeEntry(facilities: Facility[]): boolean {
+  const tickets = facilities.flatMap((facility) => facility.guide.filter((row) => row.label === "门票"));
+  return tickets.length > 0 && tickets.every((row) => row.value.startsWith("免费"));
+}
+
+export function addressOf(facility: Facility): string | undefined {
+  return facility.guide.find((row) => row.label === "地址")?.value;
 }
 
 /** The most recent day any of these guides was checked, so the section can say how fresh it is. */

@@ -14,7 +14,7 @@ function apply(path, { method = "GET", requestHeaders = {}, status = 200, header
 const page = { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": VINEXT_DYNAMIC } };
 
 test("public page renders are cached at the edge and revalidated by browsers", async () => {
-  for (const path of ["/zh", "/en/pandas", "/zh/pandas/mei-xiang", "/zh/families/ueno-twins", "/zh/moments?year=2026", "/en/map?mode=wild", "/zh/places/ueno-zoo", "/zh/games/guess"]) {
+  for (const path of ["/zh", "/en/pandas", "/zh/pandas/mei-xiang", "/zh/families/ueno-twins", "/zh/moments?year=2026", "/en/map?mode=wild", "/zh/places/ueno-zoo", "/zh/institutions/chengdu-research-base", "/zh/games/guess", "/en/search?q=mei", "/zh/terms", "/en/privacy", "/zh/about", "/en/learn", "/zh/learn/articles/cubs", "/en/learn/terms/eye-patch", "/zh/app"]) {
     const response = apply(path, page);
     assert.equal(response.headers.get("Cloudflare-CDN-Cache-Control"), PUBLIC_EDGE_CACHE_CONTROL, path);
     assert.equal(response.headers.get("Cache-Control"), "public, max-age=0, must-revalidate", path);

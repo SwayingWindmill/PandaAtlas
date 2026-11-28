@@ -1,14 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsIn } from "class-validator";
+import { IsBoolean, IsIn, IsString, Matches, MaxLength } from "class-validator";
+import { EXPO_PUSH_TOKEN_PATTERN } from "../application/notification.application.js";
 
 export class NotificationPreferenceInputDto {
   @ApiProperty({ enum: ["knowledge_update", "correction"] })
   @IsIn(["knowledge_update", "correction"])
   public declare category: "knowledge_update" | "correction";
 
-  @ApiProperty({ enum: ["station", "email"] })
-  @IsIn(["station", "email"])
-  public declare channel: "station" | "email";
+  @ApiProperty({ enum: ["station", "email", "push"] })
+  @IsIn(["station", "email", "push"])
+  public declare channel: "station" | "email" | "push";
 
   @ApiProperty()
   @IsBoolean()
@@ -19,7 +20,7 @@ export class NotificationPreferenceDto {
   @ApiProperty({ enum: ["knowledge_update", "correction"] })
   public declare category: string;
 
-  @ApiProperty({ enum: ["station", "email"] })
+  @ApiProperty({ enum: ["station", "email", "push"] })
   public declare channel: string;
 
   @ApiProperty()
@@ -55,4 +56,46 @@ export class NotificationMessageDto {
 export class NotificationBulkReadResultDto {
   @ApiProperty({ type: Number })
   public declare updatedCount: number;
+}
+
+export class NotificationDeviceInputDto {
+  @ApiProperty({ example: "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]" })
+  @IsString()
+  @MaxLength(255)
+  @Matches(EXPO_PUSH_TOKEN_PATTERN, {
+    message: "expoPushToken must match ExponentPushToken[...] or ExpoPushToken[...]",
+  })
+  public declare expoPushToken: string;
+
+  @ApiProperty({ enum: ["ios", "android"] })
+  @IsIn(["ios", "android"])
+  public declare platform: "ios" | "android";
+}
+
+export class NotificationDeviceDto {
+  @ApiProperty({ format: "uuid" })
+  public declare deviceTokenId: string;
+
+  @ApiProperty()
+  public declare expoPushToken: string;
+
+  @ApiProperty({ enum: ["ios", "android"] })
+  public declare platform: string;
+
+  @ApiProperty()
+  public declare active: boolean;
+
+  @ApiProperty({ format: "date-time" })
+  public declare lastActiveAt: string;
+
+  @ApiProperty({ format: "date-time" })
+  public declare updatedAt: string;
+}
+
+export class NotificationDeviceDeleteResultDto {
+  @ApiProperty({ format: "uuid" })
+  public declare deviceTokenId: string;
+
+  @ApiProperty()
+  public declare removed: boolean;
 }

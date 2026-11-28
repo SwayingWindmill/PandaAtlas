@@ -1,9 +1,11 @@
-import type { components } from "@zhipanda/api-client";
+import type {
+  V2ContributionInput,
+  V2ContributionList,
+  V2ContributionRecord,
+} from "@/features/fan/api/types";
+import type { PublicLocale } from "@/lib/locales";
 
-export type Locale = "zh" | "en";
-
-export type V2ContributionRecord = components["schemas"]["ContributionRecordDto"];
-export type V2ContributionList = components["schemas"]["ContributionListDto"];
+export type Locale = PublicLocale;
+export type { V2ContributionInput, V2ContributionList, V2ContributionRecord };
 export type ContributorStatus = V2ContributionRecord["status"];
-export type V2ContributionInput = components["schemas"]["SubmitContributionDto"];
 export type SubmissionType = V2ContributionInput["submissionType"];

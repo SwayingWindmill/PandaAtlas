@@ -27,13 +27,31 @@ def build_snapshot(payload: dict, source: str, fetched_on: str) -> dict:
     items = payload.get("items")
     if not isinstance(items, list) or not items:
         raise ValueError("the panda list has no items")
-    slugs = sorted({item["canonicalSlug"] for item in items if isinstance(item.get("canonicalSlug"), str)})
+    pandas_by_slug: dict[str, set[str]] = {}
+    for item in items:
+        slug = item.get("canonicalSlug")
+        if not isinstance(slug, str) or not slug:
+            continue
+        zh_names = pandas_by_slug.setdefault(slug, set())
+        for name in item.get("names") or []:
+            if not isinstance(name, dict):
+                continue
+            if str(name.get("languageTag", "")).startswith("zh"):
+                value = str(name.get("value", "")).strip()
+                if value:
+                    zh_names.add(value)
+    slugs = sorted(pandas_by_slug)
+    pandas = [{"slug": slug, "namesZh": sorted(pandas_by_slug[slug])} for slug in slugs]
     return {
-        "$comment": "Canonical slugs in the published panda release. Refresh with scripts/curation/refresh_published_pandas.py.",
+        "$comment": (
+            "Canonical slugs and Chinese names in the published panda release. "
+            "Refresh with scripts/curation/refresh_published_pandas.py."
+        ),
         "source": source,
         "fetchedOn": fetched_on,
         "releaseVersion": release.get("version"),
         "slugs": slugs,
+        "pandas": pandas,
     }
 
 

@@ -1,3 +1,4 @@
+import { queryOptions } from "@tanstack/react-query";
 import { randomUUID } from "expo-crypto";
 import { File, Paths } from "expo-file-system";
 import { shareAsync } from "expo-sharing";
@@ -8,17 +9,17 @@ import { downloadOnWeb } from "@/lib/download";
 
 import { type PrivacyKind, type PrivacyRequest, exportFileName } from "./privacy";
 
-/** The API wants a recent two-step verification (AAL2) before privacy requests. */
+/** The API wants a recent email-code verification before privacy requests. */
 export class VerificationRequired extends Error {
   public constructor() {
-    super("Two-step verification required");
+    super("Recent verification required");
     this.name = "VerificationRequired";
   }
 }
 
 function throwIfUnverified(error: unknown): void {
   const code = (error as { code?: unknown } | undefined)?.code;
-  if (code === "auth.aalRequired" || code === "auth.recentAuthRequired") throw new VerificationRequired();
+  if (code === "auth.recentAuthRequired") throw new VerificationRequired();
 }
 
 export async function loadPrivacyRequests(): Promise<PrivacyRequest[]> {
@@ -26,6 +27,25 @@ export async function loadPrivacyRequests(): Promise<PrivacyRequest[]> {
   throwIfUnverified(error);
   if (!data) throw new Error("Privacy requests unavailable");
   return data.items;
+}
+
+export const privacyRequestsQueryKey = (accountId: string) => ["private", accountId, "privacy-requests"] as const;
+
+/**
+ * Nothing outlives the screen (`gcTime: 0`): the list sits behind a recent verification, so a cached copy
+ * must not show before the API has checked it again. A lapsed verification is not worth a retry, and no refetch on
+ * focus or reconnect: coming back from the mail app would reset the query to pending and lose the code form.
+ */
+export function privacyRequestsQueryOptions(accountId: string) {
+  return queryOptions({
+    queryKey: privacyRequestsQueryKey(accountId),
+    queryFn: loadPrivacyRequests,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: (count, error) => !(error instanceof VerificationRequired) && count < 1,
+  });
 }
 
 /** A key for one request the fan means to file; send it again on a retry so the API files it once. */

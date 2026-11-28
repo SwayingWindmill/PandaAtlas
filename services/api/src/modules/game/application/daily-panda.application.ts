@@ -1,7 +1,7 @@
 import type {
   PublicPandaSummary,
   PublicReadPort,
-} from "../../publication/application/public-read.application.js";
+} from "../../public-read/application/public-read.application.js";
 
 export const DAILY_PANDA_MAX_GUESSES = 6;
 // A panda chosen for one day is not chosen again within this many days.
@@ -60,9 +60,6 @@ export interface DailyPandaRepository {
   /** Records the day's panda unless another request already did; returns the day's panda. */
   choosePanda(puzzleDate: string, pandaId: string): Promise<string>;
 }
-
-export const DAILY_PANDA_REPOSITORY = Symbol("DAILY_PANDA_REPOSITORY");
-export const DAILY_PANDA_PORT = Symbol("DAILY_PANDA_PORT");
 
 type PandaFacts = PublicPandaSummary["facts"];
 

@@ -1,3 +1,5 @@
+import { queryOptions } from "@tanstack/react-query";
+
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { api } from "@/lib/api";
 import { fetchLifeEvents, fetchResidencies } from "@/lib/public-data";
@@ -27,4 +29,13 @@ export async function loadWeek(now = new Date()): Promise<Week> {
   const pandas = new Map(index.map((panda) => [panda.id, panda]));
   const known = new Map(index.map((panda) => [panda.id, panda.birthDate]));
   return { digest: weekDigest(updates.data, { residencies, events }, known, now), pandas };
+}
+
+export function weekQueryOptions() {
+  return queryOptions({
+    queryKey: ["public", "week"],
+    queryFn: () => loadWeek(),
+    staleTime: 60_000,
+    networkMode: "always",
+  });
 }

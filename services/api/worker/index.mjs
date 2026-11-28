@@ -7,33 +7,56 @@ const { AsyncDownstreamRunnerService } = await import("../dist/jobs/async-downst
 const { runScheduledCycle } = await import("../dist/jobs/scheduled-cycle.js");
 const { webPublicCache } = await import("../dist/jobs/web-public-cache.js");
 const { StructuredLoggerService } = await import("../dist/platform/observability/structured-logger.service.js");
+const { OpsAlertRuntimeService } = await import("../dist/platform/observability/ops-alert-runtime.service.js");
+const { OpsAlertService } = await import("../dist/platform/observability/ops-alert.service.js");
 const { AskRuntimeService } = await import("../dist/modules/ask/infrastructure/cloudflare-ask-runtime.js");
 const { AskIndexSyncService } = await import("../dist/modules/ask/infrastructure/ask-index-sync.service.js");
+const { RateLimitRuntimeService } = await import("../dist/platform/rate-limit/rate-limit-runtime.service.js");
 const { createColdStartReporter } = await import("../dist/platform/observability/cold-start.js");
 const application = await createApplication();
 const database = application.get(DatabaseService);
 const runner = application.get(AsyncDownstreamRunnerService);
 const logger = application.get(StructuredLoggerService);
+const opsAlertRuntime = application.get(OpsAlertRuntimeService);
+const opsAlert = application.get(OpsAlertService);
 const askRuntime = application.get(AskRuntimeService);
 const askIndexSync = application.get(AskIndexSyncService);
+const rateLimitRuntime = application.get(RateLimitRuntimeService);
 const bridge = httpServerHandler(application.getHttpServer());
 const coldStart = createColdStartReporter(logger);
 
 export default {
   fetch(request, bindings, context) {
     coldStart.report("fetch", { method: request.method, path: new URL(request.url).pathname });
-    return askRuntime.withBindings(bindings, () =>
-      database.withRequest(bindings.HYPERDRIVE.connectionString, () =>
-        bridge.fetch(request, bindings, context),
+    const trustedWebClientIp = context?.props?.trustedWebClientIp === true;
+    return opsAlertRuntime.withContext(context, bindings, () =>
+      rateLimitRuntime.withBindings(
+        bindings,
+        () =>
+          askRuntime.withBindings(bindings, () =>
+            database.withRequest(bindings.HYPERDRIVE.connectionString, () =>
+              bridge.fetch(request, bindings, context),
+            ),
+          ),
+        { trustedWebClientIp },
       ),
     );
   },
   scheduled(_controller, bindings, context) {
     coldStart.report("scheduled");
     // waitUntil records a failed cycle as the Cron Trigger invocation status.
-    context.waitUntil(runScheduledCycle(database, runner, bindings.HYPERDRIVE.connectionString, {
-      publicCache: webPublicCache(bindings.PUBLIC_WEB),
-    }, logger));
+    context.waitUntil(
+      opsAlertRuntime.withContext(context, bindings, () =>
+        runScheduledCycle(
+          database,
+          runner,
+          bindings.HYPERDRIVE.connectionString,
+          { publicCache: webPublicCache(bindings.PUBLIC_WEB) },
+          logger,
+          opsAlert,
+        ),
+      ),
+    );
     // A separate waitUntil: the Ask Panda index sync logs its own failures and never fails the cycle.
     context.waitUntil(database.withRequest(bindings.HYPERDRIVE.connectionString, () => askIndexSync.run(bindings)));
   },

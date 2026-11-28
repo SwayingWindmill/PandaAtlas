@@ -1,8 +1,8 @@
-import { Image } from "expo-image";
 import { View } from "react-native";
 
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
+import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { Text } from "@/components/ui/text";
 import { semantic } from "@/design/tokens";
@@ -53,7 +53,7 @@ export function PandaTile({
         }}
       >
         {cover ? (
-          <Image
+          <RemoteImage
             source={cover}
             style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
             contentFit="cover"
@@ -63,11 +63,11 @@ export function PandaTile({
         ) : null}
         <Scrim id={`tile-${pandaId}`} height="55%" />
         <View className="absolute right-0 bottom-0 left-0 gap-hair-gap p-row">
-          <Text variant="headline" role="none" className="text-white" numberOfLines={1}>
+          <Text variant="headline" role="none" className="text-on-media" numberOfLines={1}>
             {name}
           </Text>
           {caption ? (
-            <Text variant="footnote" className="text-white/85 tabular-nums" numberOfLines={1}>
+            <Text variant="footnote" className="text-on-media/85 tabular-nums" numberOfLines={1}>
               {caption}
             </Text>
           ) : null}

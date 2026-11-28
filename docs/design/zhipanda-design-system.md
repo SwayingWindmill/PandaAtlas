@@ -2,7 +2,7 @@
 
 - **状态：** 当前生效。网站公开页面以第 1–9 节为准。App 以根目录 `DESIGN.md` 为准（第 10 节只留链接）。
 - **生效日期：** 2026-10-29（App 改为 iOS 26 系统语义；网站仍用 Radix）
-- **适用范围：** `apps/web` 的公开页面和共享组件，以及 `apps/mobile`（App，写法见根目录 `DESIGN.md`）；Admin 有自己的作用域样式，不受本文约束。
+- **适用范围：** `apps/web` 的公开页面和共享组件，以及 `apps/mobile`（App，写法见根目录 `DESIGN.md`）。
 - **取值来源：** 网站的数值在 `apps/web/styles/tokens.css`。App 的数值在 `apps/mobile/src/design/tokens.ts`，由它生成 `apps/mobile/src/global.css` 和 `DESIGN.md` 的 front matter。两份不再共用色阶和字号。本文和对应 token 文件不一致时以 token 文件为准，并修正本文。
 - **样板页面：** 网站是首页 `features/home/`、熊猫列表 `app/[locale]/pandas/`、熊猫资料页 `features/profile/`；App 是家谱 `apps/mobile/src/app/pandas/[slug]/family.tsx`。新页面先照着样板的写法做。
 
@@ -97,13 +97,13 @@ Tailwind 对应：`text-xs`（12）、`text-base`（16）、`text-xl`（20）。
 
 ### 3.3 字体
 
-中文 Noto Sans SC Variable，西文标题 Archivo Variable（字体已作为依赖安装）。Logo 文字只有「吱熊猫」，不再有小号的 ZHIPANDA 字样。
+中文用系统字体（苹方、微软雅黑、思源黑体 / Noto Sans CJK SC），不加载网络中文字体：可变中文字体每页要几百 KB，弱网下拖慢首屏，字体到达时文字还会重排。西文标题 Archivo Variable（已作为依赖安装）。Logo 文字只有「吱熊猫」，不再有小号的 ZHIPANDA 字样。
 
 ## 4. 间距、圆角、线条、阴影
 
 ### 4.1 内容宽度与页边距
 
-- 内容最大宽度 `--pa-content-max`（77.5rem），页边距 `--pa-space-page`（16–64px 随屏宽变化）。共享写法是 `publicShellClassName`。
+- 内容最大宽度 `--pa-content-max`（77.5rem），页边距 `--pa-space-page`（16–64px 随屏宽变化）。共享写法是 `.pa-shell`（`className="pa-shell"`）。
 - 区块之间 56px（3.5rem）；标题与内容之间 20–24px。
 
 ### 4.2 圆角

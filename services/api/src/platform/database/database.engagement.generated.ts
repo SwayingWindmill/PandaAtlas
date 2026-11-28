@@ -60,6 +60,12 @@ export interface EngagementSeenPandas {
   updated_at: Generated<Timestamp>;
 }
 
+export interface EngagementVenueFollows {
+  account_id: string;
+  followed_at: Generated<Timestamp>;
+  institution_id: string;
+}
+
 export interface DB {
   "engagement.collection_pandas": EngagementCollectionPandas;
   "engagement.collections": EngagementCollections;
@@ -67,4 +73,5 @@ export interface DB {
   "engagement.favorites": EngagementFavorites;
   "engagement.location_checkins": EngagementLocationCheckins;
   "engagement.seen_pandas": EngagementSeenPandas;
+  "engagement.venue_follows": EngagementVenueFollows;
 }

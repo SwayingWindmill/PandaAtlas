@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
+import { guestFavoritesQueryOptions } from "@/features/engagement/guest-store";
 import { useSession } from "@/features/session/session";
 import { authedApi } from "@/lib/api";
 import { queryClient } from "@/lib/query-client";
@@ -45,14 +46,23 @@ export async function setFollowing(accountId: string, pandaId: string, following
   }
 }
 
-/** Followed panda IDs, or null while loading and when signed out. */
+/** Followed panda IDs (signed-in or local guest), or null while loading or unavailable. */
 export function useFollowed(): ReadonlySet<string> | null {
   const { state } = useSession();
   const accountId = state.status === "signedIn" ? state.accountId : null;
-  const { data } = useQuery({
+  const signedOut = state.status === "signedOut";
+  const remote = useQuery({
     queryKey: favoritesKey(accountId ?? ""),
     queryFn: loadFavorites,
     enabled: accountId !== null,
   });
-  return useMemo(() => accountId !== null && data ? new Set(data) : null, [accountId, data]);
+  const guest = useQuery({
+    ...guestFavoritesQueryOptions(),
+    enabled: signedOut,
+  });
+  return useMemo(() => {
+    if (accountId !== null) return remote.data ? new Set(remote.data) : null;
+    if (signedOut) return guest.data ? new Set(guest.data) : null;
+    return null;
+  }, [accountId, guest.data, remote.data, signedOut]);
 }

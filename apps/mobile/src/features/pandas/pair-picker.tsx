@@ -48,7 +48,7 @@ function Slot({
       accessibilityLabel={`${SLOT_LABEL[slot]}，${panda ? panda.name : "未选"}`}
       accessibilityState={{ selected: active }}
       className={cn(
-        "min-w-0 items-center gap-stack-tight rounded-tile border-2 bg-card px-row py-inset active:bg-accent",
+        "min-w-0 items-center gap-stack-tight rounded-group border-2 bg-card px-row py-inset active:bg-accent",
         stacked ? "flex-row self-stretch" : "flex-1",
         active ? "border-primary" : "border-card",
       )}
@@ -57,10 +57,7 @@ function Slot({
       {panda ? (
         <PandaThumb pandaId={panda.id} name={panda.name} size={AVATAR} shape="round" />
       ) : (
-        <View
-          className="items-center justify-center rounded-full bg-secondary"
-          style={{ width: AVATAR, height: AVATAR }}
-        >
+        <View className="items-center justify-center" style={{ width: AVATAR, height: AVATAR }}>
           <Icon icon={PawPrint} tone="secondary" />
         </View>
       )}

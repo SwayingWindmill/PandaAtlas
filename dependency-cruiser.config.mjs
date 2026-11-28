@@ -8,12 +8,6 @@ export default {
       to: { circular: true },
     },
     {
-      name: "domain-does-not-import-platform",
-      severity: "error",
-      from: { path: "^services/api/src/modules/[^/]+/domain" },
-      to: { path: "^services/api/src/platform" },
-    },
-    {
       name: "application-does-not-import-http",
       severity: "error",
       from: { path: "^services/api/src/modules/[^/]+/application" },

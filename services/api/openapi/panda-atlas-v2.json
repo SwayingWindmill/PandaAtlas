@@ -182,47 +182,6 @@
         ]
       }
     },
-    "/api/v2/contributions/{submissionId}/attachments": {
-      "post": {
-        "operationId": "registerContributionAttachment",
-        "parameters": [
-          {
-            "name": "submissionId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterContributionAttachmentDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ContributionAttachmentDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "Contributions"
-        ]
-      }
-    },
     "/api/v2/review/cases": {
       "post": {
         "operationId": "openReviewCase",
@@ -556,6 +515,88 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnfavoriteDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/followed-venues": {
+      "get": {
+        "operationId": "listFollowedVenues",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowedVenueListDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/followed-venues/{slug}": {
+      "post": {
+        "operationId": "followVenue",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowedVenueDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "delete": {
+        "operationId": "unfollowVenue",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnfollowVenueDto"
                 }
               }
             }
@@ -2262,9 +2303,116 @@
             "description": "The stored learning catalog is missing or invalid."
           }
         },
-        "summary": "Published 科普 cards, topics, terms, face guides and face challenges",
+        "summary": "Published 科普 articles, terms, face guides, face challenges and month themes",
         "tags": [
           "Learning"
+        ]
+      }
+    },
+    "/api/v2/overseas-status": {
+      "get": {
+        "operationId": "listOverseasStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverseasStatusDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The stored overseas status catalog is invalid."
+          }
+        },
+        "summary": "Published 海外大熊猫状态: location, announced return and quarantine stage, each with its source",
+        "tags": [
+          "Overseas status"
+        ]
+      }
+    },
+    "/api/v2/venue-news": {
+      "get": {
+        "operationId": "listVenueNews",
+        "parameters": [
+          {
+            "name": "institution",
+            "required": false,
+            "in": "query",
+            "description": "Institution slug",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VenueNewsDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The stored venue news catalog is invalid."
+          }
+        },
+        "summary": "Published 场馆动态: neutral facts from institutions' own announcements, each with its source",
+        "tags": [
+          "Venue news"
+        ]
+      }
+    },
+    "/api/v2/comparisons": {
+      "get": {
+        "operationId": "listComparisons",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComparisonsDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The stored comparison catalog is invalid."
+          }
+        },
+        "summary": "Published 比一比: pairs of pandas the team compares side by side, newest first",
+        "tags": [
+          "Comparisons"
+        ]
+      }
+    },
+    "/api/v2/popular-pandas": {
+      "get": {
+        "operationId": "listPopularPandas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PopularPandasDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "大家常看: published pandas most fans began following in the last 30 days, at least five fans each",
+        "tags": [
+          "Popularity"
         ]
       }
     },
@@ -2522,6 +2670,107 @@
           }
         ],
         "summary": "Set one notification channel preference",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v2/me/notifications/devices": {
+      "get": {
+        "operationId": "listMyNotificationDevices",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationDeviceDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "List registered push notification devices",
+        "tags": [
+          "Notification"
+        ]
+      },
+      "post": {
+        "operationId": "registerMyNotificationDevice",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationDeviceInputDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDeviceDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Register or refresh an Expo push token",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v2/me/notifications/devices/{tokenId}": {
+      "delete": {
+        "operationId": "removeMyNotificationDevice",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDeviceDeleteResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Unregister an Expo push token",
         "tags": [
           "Notification"
         ]
@@ -3012,71 +3261,6 @@
           "items"
         ]
       },
-      "RegisterContributionAttachmentDto": {
-        "type": "object",
-        "properties": {
-          "storageObjectKey": {
-            "type": "string"
-          },
-          "objectVersion": {
-            "type": "string"
-          },
-          "originalFilename": {
-            "type": "string"
-          },
-          "mediaType": {
-            "type": "string",
-            "enum": [
-              "application/pdf",
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ]
-          },
-          "byteSize": {
-            "type": "number",
-            "minimum": 1,
-            "maximum": 10485760
-          },
-          "contentSha256": {
-            "type": "string",
-            "pattern": "^[0-9a-f]{64}$"
-          }
-        },
-        "required": [
-          "storageObjectKey",
-          "objectVersion",
-          "originalFilename",
-          "mediaType",
-          "byteSize",
-          "contentSha256"
-        ]
-      },
-      "ContributionAttachmentDto": {
-        "type": "object",
-        "properties": {
-          "attachmentId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "mediaType": {
-            "type": "string"
-          },
-          "byteSize": {
-            "type": "number",
-            "minimum": 1
-          },
-          "state": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "attachmentId",
-          "mediaType",
-          "byteSize",
-          "state"
-        ]
-      },
       "OpenReviewCaseDto": {
         "type": "object",
         "properties": {
@@ -3363,12 +3547,6 @@
             "items": {
               "$ref": "#/components/schemas/ContributionReviewSourceDto"
             }
-          },
-          "attachments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ContributionAttachmentDto"
-            }
           }
         },
         "required": [
@@ -3377,8 +3555,7 @@
           "revisionNumber",
           "publicVersionSeen",
           "assertions",
-          "sources",
-          "attachments"
+          "sources"
         ]
       },
       "ReviewCaseSurfaceDto": {
@@ -3543,6 +3720,55 @@
           "pandaId",
           "favorited",
           "favoritedAt"
+        ]
+      },
+      "FollowedVenueDto": {
+        "type": "object",
+        "properties": {
+          "institutionSlug": {
+            "type": "string",
+            "description": "Institution slug."
+          },
+          "followedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "institutionSlug",
+          "followedAt"
+        ]
+      },
+      "FollowedVenueListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FollowedVenueDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "UnfollowVenueDto": {
+        "type": "object",
+        "properties": {
+          "institutionSlug": {
+            "type": "string"
+          },
+          "followed": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          }
+        },
+        "required": [
+          "institutionSlug",
+          "followed"
         ]
       },
       "CollectionDto": {
@@ -4455,6 +4681,38 @@
           "conclusionVersion"
         ]
       },
+      "PublicPandaCurrentPlaceSummaryDto": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "placeType": {
+            "type": "string"
+          },
+          "nameZh": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "placeId",
+          "slug",
+          "placeType"
+        ]
+      },
       "PublicPandaSummaryDto": {
         "type": "object",
         "properties": {
@@ -4482,6 +4740,12 @@
             "items": {
               "$ref": "#/components/schemas/PublicPandaFactDto"
             }
+          },
+          "currentPlace": {
+            "$ref": "#/components/schemas/PublicPandaCurrentPlaceSummaryDto"
+          },
+          "hasFullBleedCover": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -4700,6 +4964,9 @@
           "takenAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "fullBleedReady": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -4868,6 +5135,62 @@
           "text"
         ]
       },
+      "TimeWindowDto": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "description": "Local time, HH:MM."
+          },
+          "end": {
+            "type": "string",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "description": "Local time, HH:MM."
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ]
+      },
+      "ViewingTimingDto": {
+        "type": "object",
+        "properties": {
+          "activeWindows": {
+            "description": "When the pandas are usually active, as the facility publishes.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimeWindowDto"
+            }
+          },
+          "napWindow": {
+            "description": "The usual midday rest.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimeWindowDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "activeWindows"
+        ]
+      },
+      "PhotoSpotDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/LocalizedTextDto"
+          },
+          "window": {
+            "$ref": "#/components/schemas/TimeWindowDto"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "FacilityVisitGuideDto": {
         "type": "object",
         "properties": {
@@ -4887,6 +5210,15 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FacilityVisitTipDto"
+            }
+          },
+          "viewing": {
+            "$ref": "#/components/schemas/ViewingTimingDto"
+          },
+          "photoSpots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhotoSpotDto"
             }
           },
           "verifiedOn": {
@@ -5086,6 +5418,27 @@
           "items"
         ]
       },
+      "PublicFormerResidentSummaryDto": {
+        "type": "object",
+        "properties": {
+          "panda": {
+            "$ref": "#/components/schemas/PublicPandaSummaryDto"
+          },
+          "fromYear": {
+            "type": "number"
+          },
+          "toYear": {
+            "type": "number"
+          },
+          "bornHere": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "panda",
+          "bornHere"
+        ]
+      },
       "PublicInstitutionDetailDto": {
         "type": "object",
         "properties": {
@@ -5101,12 +5454,31 @@
             "items": {
               "$ref": "#/components/schemas/PublicPlaceSummaryDto"
             }
+          },
+          "residents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicPandaSummaryDto"
+            }
+          },
+          "former": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicFormerResidentSummaryDto"
+            }
+          },
+          "bornHereCount": {
+            "type": "number",
+            "minimum": 0
           }
         },
         "required": [
           "release",
           "institution",
-          "places"
+          "places",
+          "residents",
+          "former",
+          "bornHereCount"
         ]
       },
       "PublicLineageListDto": {
@@ -5627,10 +5999,12 @@
         "type": "object",
         "properties": {
           "zh": {
-            "type": "string"
+            "type": "string",
+            "description": "Chinese text."
           },
           "en": {
-            "type": "string"
+            "type": "string",
+            "description": "English text. An empty string means the item was published in Chinese only; clients that ask for English show zh instead of a blank line."
           }
         },
         "required": [
@@ -5865,91 +6239,6 @@
           "citedOn"
         ]
       },
-      "LearningCardDto": {
-        "type": "object",
-        "properties": {
-          "slug": {
-            "type": "string"
-          },
-          "title": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "summary": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "body": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "sources": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LearningSourceDto"
-            }
-          }
-        },
-        "required": [
-          "slug",
-          "title",
-          "summary",
-          "body",
-          "sources"
-        ]
-      },
-      "LearningTopicSectionDto": {
-        "type": "object",
-        "properties": {
-          "heading": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "body": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          }
-        },
-        "required": [
-          "heading",
-          "body"
-        ]
-      },
-      "LearningTopicDto": {
-        "type": "object",
-        "properties": {
-          "slug": {
-            "type": "string"
-          },
-          "title": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "summary": {
-            "$ref": "#/components/schemas/LearningTextDto"
-          },
-          "sections": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LearningTopicSectionDto"
-            }
-          },
-          "cardSlugs": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "sources": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LearningSourceDto"
-            }
-          }
-        },
-        "required": [
-          "slug",
-          "title",
-          "summary",
-          "sections",
-          "cardSlugs",
-          "sources"
-        ]
-      },
       "LearningTermDto": {
         "type": "object",
         "properties": {
@@ -6079,6 +6368,52 @@
           "sources"
         ]
       },
+      "MonthTaskKind": {
+        "type": "string",
+        "enum": [
+          "daily",
+          "guess",
+          "learn",
+          "checkin",
+          "collections",
+          "compare"
+        ]
+      },
+      "LearningMonthThemeDto": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "example": "2026-11"
+          },
+          "title": {
+            "$ref": "#/components/schemas/LearningTextDto"
+          },
+          "intro": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LearningTextDto"
+              }
+            ]
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonthTaskKind"
+            }
+          }
+        },
+        "required": [
+          "month",
+          "title",
+          "intro",
+          "tasks"
+        ]
+      },
       "LearningCatalogDto": {
         "type": "object",
         "properties": {
@@ -6090,18 +6425,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LearningArticleDto"
-            }
-          },
-          "cards": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LearningCardDto"
-            }
-          },
-          "topics": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LearningTopicDto"
             }
           },
           "terms": {
@@ -6121,16 +6444,283 @@
             "items": {
               "$ref": "#/components/schemas/LearningChallengeDto"
             }
+          },
+          "monthThemes": {
+            "description": "月度主题挑战 themes. A month not listed uses the app's default checklist.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningMonthThemeDto"
+            }
           }
         },
         "required": [
           "version",
           "articles",
-          "cards",
-          "topics",
           "terms",
           "faceGuides",
-          "challenges"
+          "challenges",
+          "monthThemes"
+        ]
+      },
+      "PartialDateDto": {
+        "type": "object",
+        "properties": {
+          "on": {
+            "type": "string",
+            "description": "YYYY-MM-DD, YYYY-MM or YYYY, matching precision."
+          },
+          "precision": {
+            "type": "string",
+            "enum": [
+              "day",
+              "month",
+              "year"
+            ]
+          }
+        },
+        "required": [
+          "on",
+          "precision"
+        ]
+      },
+      "OverseasStatusItemDto": {
+        "type": "object",
+        "properties": {
+          "pandaSlug": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "abroad",
+              "return_announced",
+              "in_transit",
+              "quarantine",
+              "returned"
+            ]
+          },
+          "institutionSlug": {
+            "type": "string",
+            "description": "Where the panda is now: the overseas home, or the quarantine base once back."
+          },
+          "expectedReturn": {
+            "description": "The return as announced.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PartialDateDto"
+              }
+            ]
+          },
+          "returnedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "sourceUrl": {
+            "type": "string",
+            "description": "The announcement this entry rests on (https)."
+          },
+          "sourcePublisher": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this entry was last checked against the source."
+          }
+        },
+        "required": [
+          "pandaSlug",
+          "stage",
+          "institutionSlug",
+          "sourceUrl",
+          "sourcePublisher",
+          "updatedAt"
+        ]
+      },
+      "OverseasStatusDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OverseasStatusItemDto"
+            }
+          }
+        },
+        "required": [
+          "version",
+          "items"
+        ]
+      },
+      "VenueNewsItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "institutionSlug": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "enclosure",
+              "schedule",
+              "closure",
+              "arrival",
+              "departure",
+              "event",
+              "other"
+            ]
+          },
+          "headline": {
+            "type": "string",
+            "description": "The announcement's own headline, verbatim."
+          },
+          "pandaSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sourceUrl": {
+            "type": "string",
+            "description": "The institution's announcement (https)."
+          },
+          "sourcePublisher": {
+            "type": "string"
+          },
+          "publishedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this entry was last checked against the source."
+          }
+        },
+        "required": [
+          "id",
+          "institutionSlug",
+          "kind",
+          "headline",
+          "pandaSlugs",
+          "sourceUrl",
+          "sourcePublisher",
+          "publishedOn",
+          "updatedAt"
+        ]
+      },
+      "VenueNewsDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VenueNewsItemDto"
+            }
+          }
+        },
+        "required": [
+          "version",
+          "items"
+        ]
+      },
+      "ComparisonDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "description": "What the pair is, 16 characters or fewer."
+          },
+          "dek": {
+            "type": "string",
+            "description": "One line on what tells them apart, 30 characters or fewer."
+          },
+          "pandaSlugs": {
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "Two different pandas, in display order.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this entry was last checked."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "dek",
+          "pandaSlugs",
+          "updatedAt"
+        ]
+      },
+      "ComparisonsDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComparisonDto"
+            }
+          }
+        },
+        "required": [
+          "version",
+          "items"
+        ]
+      },
+      "PopularPandaDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pandaId",
+          "slug"
+        ]
+      },
+      "PopularPandasDto": {
+        "type": "object",
+        "properties": {
+          "windowDays": {
+            "type": "number",
+            "description": "How many days back the follows are counted."
+          },
+          "items": {
+            "description": "Most new followers first. No counts are published.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PopularPandaDto"
+            }
+          }
+        },
+        "required": [
+          "windowDays",
+          "items"
         ]
       },
       "AskStatusDto": {
@@ -6198,8 +6788,6 @@
             "type": "string",
             "enum": [
               "article",
-              "card",
-              "topic",
               "term",
               "faceGuide",
               "challenge",
@@ -6433,7 +7021,8 @@
             "type": "string",
             "enum": [
               "station",
-              "email"
+              "email",
+              "push"
             ]
           },
           "enabled": {
@@ -6472,7 +7061,8 @@
             "type": "string",
             "enum": [
               "station",
-              "email"
+              "email",
+              "push"
             ]
           },
           "enabled": {
@@ -6483,6 +7073,80 @@
           "category",
           "channel",
           "enabled"
+        ]
+      },
+      "NotificationDeviceDto": {
+        "type": "object",
+        "properties": {
+          "deviceTokenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expoPushToken": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "ios",
+              "android"
+            ]
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "lastActiveAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "deviceTokenId",
+          "expoPushToken",
+          "platform",
+          "active",
+          "lastActiveAt",
+          "updatedAt"
+        ]
+      },
+      "NotificationDeviceInputDto": {
+        "type": "object",
+        "properties": {
+          "expoPushToken": {
+            "type": "string",
+            "example": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "ios",
+              "android"
+            ]
+          }
+        },
+        "required": [
+          "expoPushToken",
+          "platform"
+        ]
+      },
+      "NotificationDeviceDeleteResultDto": {
+        "type": "object",
+        "properties": {
+          "deviceTokenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "removed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "deviceTokenId",
+          "removed"
         ]
       },
       "CreatePrivacyRequestDto": {

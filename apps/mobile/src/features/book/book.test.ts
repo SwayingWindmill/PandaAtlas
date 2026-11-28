@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { baseGroups, buildLifeList, entryDetail, familyGroups, filterEntries, groupProgress, monthDay } from "./book";
+import { baseGroups, basePercent, baseProgress, buildLifeList, catalogPercent, entryDetail, filterEntries, monthDay, pickBaseLeadPandaId } from "./book";
 
 describe("buildLifeList", () => {
   const list = buildLifeList(
@@ -38,7 +38,7 @@ describe("buildLifeList", () => {
     const [mengLan, fuBao, heHua] = list.entries;
     expect(entryDetail(heHua!, names)).toBe("7月12日在成都基地见过");
     expect(entryDetail(fuBao!, names)).toBe("7月20日每日一猫认出，遇到 3 次");
-    expect(entryDetail(mengLan!, names)).toBe("7月30日见过 · 9月9日猜熊猫认出");
+    expect(entryDetail(mengLan!, names)).toBe("7月30日见过　9月9日猜熊猫认出");
     expect(monthDay("2026-01-05")).toBe("1月5日");
   });
 });
@@ -75,35 +75,49 @@ describe("baseGroups", () => {
     ]);
   });
 
-  it("says how far along a group is", () => {
-    expect(groupProgress(groups[0]!)).toBe("认识 1/2 只");
-    expect(groupProgress(groups[1]!)).toBe("现在没有熊猫住在这里");
-    expect(groupProgress({ known: 2, members: ["a", "b"] })).toBe("2 只全部认识");
+  it("says how far along a base is", () => {
+    expect(baseProgress(groups[0]!)).toBe("1 / 2");
+    expect(baseProgress(groups[1]!)).toBeNull();
   });
 });
 
-describe("familyGroups", () => {
-  const pandas = new Map(
-    ["添添", "美香", "宝宝", "宝力", "泰山", "伦伦", "喜伦"].map((name) => [name, { name, slug: `slug-${name}` }]),
-  );
-  const groups = familyGroups(
-    [
-      { childId: "宝宝", parentId: "添添" },
-      { childId: "宝宝", parentId: "美香" },
-      { childId: "泰山", parentId: "美香" },
-      { childId: "宝力", parentId: "宝宝" },
-      { childId: "喜伦", parentId: "伦伦" },
-      { childId: "喜伦", parentId: "unpublished" },
-    ],
-    pandas,
-    new Set(["宝力", "喜伦"]),
-  );
+describe("catalogPercent", () => {
+  it("rounds down, but shows at least 1% once a panda is met", () => {
+    expect(catalogPercent(18, 942)).toBe(1);
+    expect(catalogPercent(30, 942)).toBe(3);
+    expect(catalogPercent(0, 942)).toBe(0);
+    expect(catalogPercent(5, 0)).toBe(0);
+    expect(catalogPercent(942, 942)).toBe(100);
+  });
+});
 
-  it("joins parents and children into families named by the eldest generation", () => {
-    expect(groups.map((group) => [group.title, group.members.length, group.known])).toEqual([
-      ["伦伦家", 2, 1],
-      ["美香和添添家", 5, 1],
-    ]);
-    expect(groups[1]!.slug).toBe("slug-美香");
+describe("basePercent", () => {
+  it("computes the share of living residents known at a base", () => {
+    expect(basePercent({ known: 0, members: ["a", "b"] })).toBe(0);
+    expect(basePercent({ known: 1, members: [] })).toBe(0);
+    expect(basePercent({ known: 1, members: ["a", "b"] })).toBe(50);
+    expect(basePercent({ known: 2, members: ["a", "b"] })).toBe(100);
+    expect(basePercent({ known: 1, members: Array.from({ length: 200 }, (_, i) => `p-${i}`) })).toBe(1);
+  });
+});
+
+describe("pickBaseLeadPandaId", () => {
+  const byId = new Map([
+    ["a", { id: "a", hasFullBleedCover: false }],
+    ["b", { id: "b", hasFullBleedCover: true }],
+    ["c", { id: "c", hasFullBleedCover: true }],
+  ]);
+
+  it("prefers the first resident with a full-bleed cover", () => {
+    expect(pickBaseLeadPandaId(["missing", "a", "b", "c"], byId)).toBe("b");
+  });
+
+  it("falls back to the first member when none have a cover", () => {
+    expect(pickBaseLeadPandaId(["missing", "a"], byId)).toBe("missing");
+    expect(pickBaseLeadPandaId(["a"], byId)).toBe("a");
+  });
+
+  it("returns null when the base has no living residents", () => {
+    expect(pickBaseLeadPandaId([], byId)).toBeNull();
   });
 });

@@ -1,4 +1,4 @@
-import type { PublicLocale } from "@/foundation/content/locales";
+import type { PublicLocale } from "@/lib/locales";
 import type { PandaDetail, PublicFacilitySummary } from "@/lib/types";
 import { ATLAS_PAGE_SIZE, type AtlasQueryState } from "./atlas-query";
 

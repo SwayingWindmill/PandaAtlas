@@ -4,8 +4,8 @@ import { notFound } from "next/navigation";
 import { MyPandasPage } from "@/features/my-pandas/my-pandas-page";
 import { buildMyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface LocalizedMyPandasPageProps {
   params: Promise<{ locale: string }>;

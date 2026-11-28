@@ -22,20 +22,7 @@ function route<P extends ApiPath>(web: string, api: P, ...methods: ApiMethod<P>[
 
 // The first matching entry wins, so a literal segment is listed before a parameter at the same place.
 const ROUTES: readonly ForwardedRoute[] = [
-  route("/api/admin/session", "/api/v2/me", "GET"),
   route("/api/identity/session", "/api/v2/me", "GET"),
-  route("/api/admin/audit/evidence", "/api/v2/audit/evidence", "GET"),
-  route("/api/admin/publication/releases", "/api/v2/publication/releases", "GET", "POST"),
-  route("/api/admin/publication/releases/:releaseId", "/api/v2/publication/releases/{releaseId}/inspection", "GET"),
-  route("/api/admin/review/cases", "/api/v2/review/cases", "GET", "POST"),
-  route("/api/admin/review/cases/:reviewCaseId/surface", "/api/v2/review/cases/{reviewCaseId}/surface", "GET"),
-  route("/api/admin/review/cases/:reviewCaseId/claim", "/api/v2/review/cases/{reviewCaseId}/claim", "POST"),
-  route(
-    "/api/admin/review/cases/:reviewCaseId/source-verifications",
-    "/api/v2/review/cases/{reviewCaseId}/source-verifications",
-    "POST",
-  ),
-  route("/api/admin/review/cases/:reviewCaseId/decision", "/api/v2/review/cases/{reviewCaseId}/decision", "POST"),
   route("/api/community-intake/submissions", "/api/v2/me/contributions", "GET"),
   route("/api/community-intake/submissions", "/api/v2/contributions", "POST"),
   route("/api/community-intake/submissions/:submissionId", "/api/v2/me/contributions/{submissionId}", "GET"),
@@ -60,6 +47,25 @@ const ROUTES: readonly ForwardedRoute[] = [
   route("/api/notification/inbox/read-all", "/api/v2/me/notifications/read-all", "PATCH"),
   route("/api/notification/inbox/:inboxItemId/read", "/api/v2/me/notifications/{messageId}/read", "PATCH"),
 ];
+
+export const FORWARDED_CLIENT_IP_HEADER = "x-zhipanda-client-ip";
+
+export function forwardedClientIpHeaders(headers: Headers): Record<string, string> {
+  const clientIp = headers.get("cf-connecting-ip")?.trim();
+  return clientIp ? { [FORWARDED_CLIENT_IP_HEADER]: clientIp } : {};
+}
+
+export function forwardedResponseHeaders(
+  upstreamHeaders: Headers,
+  extraNames: readonly string[] = [],
+): Headers {
+  const headers = new Headers({ "Cache-Control": "no-store, private" });
+  for (const name of [...extraNames, "www-authenticate", "retry-after"]) {
+    const value = upstreamHeaders.get(name);
+    if (value !== null) headers.set(name, value);
+  }
+  return headers;
+}
 
 export interface ForwardingDependencies {
   baseUrl: string;
@@ -153,6 +159,7 @@ export async function forwardToV2(request: Request, dependencies: ForwardingDepe
     Accept: "application/json",
     Authorization: `Bearer ${accessToken}`,
     "X-Correlation-Id": crypto.randomUUID(),
+    ...forwardedClientIpHeaders(request.headers),
   });
   let body: string | undefined;
   if (request.method !== "GET") {
@@ -167,10 +174,6 @@ export async function forwardToV2(request: Request, dependencies: ForwardingDepe
   const upstream = await dependencies.transport(
     new Request(`${dependencies.baseUrl}${apiPath}${url.search}`, { method: request.method, headers, body }),
   );
-  const responseHeaders = new Headers({ "Cache-Control": "no-store, private" });
-  for (const name of ["content-type", "www-authenticate"]) {
-    const value = upstream.headers.get(name);
-    if (value !== null) responseHeaders.set(name, value);
-  }
+  const responseHeaders = forwardedResponseHeaders(upstream.headers, ["content-type"]);
   return new Response(upstream.status === 204 ? null : upstream.body, { status: upstream.status, headers: responseHeaders });
 }

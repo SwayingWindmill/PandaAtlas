@@ -3,12 +3,14 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { areaOf } from "@/features/pandas/areas";
 import { api } from "@/lib/api";
-import { loadResidencies } from "@/lib/public-data";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
 import { queryClient } from "@/lib/query-client";
+import { comparePandas } from "./order";
 
 type Schemas = components["schemas"];
+type PandaSummary = Schemas["PublicPandaSummaryDto"];
 type Place = Schemas["PublicPlaceSummaryDto"];
+type PlaceNameInput = Pick<Place, "nameZh" | "nameEn">;
 type Residency = Schemas["PublicResidencySummaryDto"];
 
 export interface PandaListItem {
@@ -23,11 +25,17 @@ export interface PandaListItem {
   placeId: string | null;
   /** The 找熊猫 area chip it falls under: a base area in China, or 海外. */
   area: string | null;
-  /** Slug, every name and the current place, normalized for matching. */
+  hasFullBleedCover: boolean;
+  /** International or local studbook number formatted as `#1237`, or null when unrecorded. */
+  studbookNumber?: string | null;
+  /** Slug, every name, studbook number and the current place, normalized for matching. */
   terms: string[];
+  /**
+   * Pinyin initials of each multi-word Latin name ("He Hua" gives "hh"), matched by prefix only. A panda with no
+   * Latin name falls back to its slugs; slugs come last because they carry extra words (a place, a year).
+   */
+  initials: string[];
 }
-
-const collator = new Intl.Collator("zh-CN", { sensitivity: "base", numeric: true });
 
 /** Case, accents, spaces and separators don't matter: "Fu Bao", "fubao" and "fu-bao" match. */
 export function normalizeTerm(value: string): string {
@@ -38,8 +46,21 @@ export function normalizeTerm(value: string): string {
     .replace(/[\s_\-:]+/g, "");
 }
 
+/** Numbers and the Chinese half of a mixed name are skipped. A single word gives nothing: one letter would match every panda. */
+function initialsOf(source: string): string | null {
+  const initials = source
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .split(/[\s_\-:]+/)
+    .filter((word) => /^[a-z]/.test(word))
+    .map((word) => word[0])
+    .join("");
+  return initials.length >= 2 ? initials : null;
+}
+
 /** Chinese names only: coarse locations carry English text, except the country-level "China". */
-export function placeName(place: Place | undefined): string | null {
+export function placeName(place: PlaceNameInput | undefined): string | null {
   if (!place) return null;
   if (place.nameZh) return place.nameZh;
   return place.nameEn === "China" ? "中国" : null;
@@ -52,7 +73,11 @@ export function currentPlaceId(residencies: Residency[]): string | null {
 }
 
 export function loadPlaces(): Promise<Map<string, Place>> {
-  return queryClient.fetchQuery({
+  return queryClient.fetchQuery(placesQueryOptions());
+}
+
+export function placesQueryOptions() {
+  return queryOptions({
     queryKey: ["public", "places"],
     networkMode: "always",
     staleTime: 300_000,
@@ -64,34 +89,69 @@ export function loadPlaces(): Promise<Map<string, Place>> {
   });
 }
 
-async function buildIndex(): Promise<PandaListItem[]> {
-  const [pandas, residencies, placesById] = await Promise.all([api.GET("/api/v2/pandas"), loadResidencies(), loadPlaces()]);
-  if (!pandas.data) throw new Error("Panda list unavailable");
-  const residenciesByPanda = new Map<string, Residency[]>();
-  for (const residency of residencies) {
-    residenciesByPanda.set(residency.pandaId, [...(residenciesByPanda.get(residency.pandaId) ?? []), residency]);
-  }
+const STUDBOOK_KEYS = [
+  "studbook_number",
+  "local.studbook_number",
+  "international_studbook_number",
+  "local.international_studbook_number",
+] as const;
 
-  const items = pandas.data.items.map((panda) => {
-    const placeId = currentPlaceId(residenciesByPanda.get(panda.pandaId) ?? []);
-    const placeRecord = placeId ? placesById.get(placeId) : undefined;
-    const place = placeName(placeRecord);
-    const names = [panda.canonicalSlug, ...panda.legacySlugs, ...panda.names.map((name) => name.value)];
-    return {
-      id: panda.pandaId,
-      slug: panda.canonicalSlug,
-      name: displayName(panda),
-      sex: pandaSex(panda),
-      birthDate: pandaBirthDate(panda),
-      deceased: pandaIsDeceased(panda),
-      place,
-      placeId,
-      area: areaOf(placeRecord),
-      terms: (place ? [...names, place] : names).map(normalizeTerm),
-    };
-  });
-  // Living pandas first: they are the ones people can still go and see.
-  return items.sort((a, b) => Number(a.deceased) - Number(b.deceased) || collator.compare(a.name, b.name));
+/** Parses studbook number from panda facts aligned with `rich-facts.ts`, returning `#<id>` or `null`. */
+function parseStudbookNumber(facts: PandaSummary["facts"]): string | null {
+  for (const key of STUDBOOK_KEYS) {
+    const entry = facts.find(
+      (item) =>
+        item.fieldKey === key &&
+        item.status !== "disputed" &&
+        item.value !== null &&
+        item.value !== undefined &&
+        item.value !== "",
+    );
+    if (!entry) continue;
+    const raw =
+      typeof entry.value === "number"
+        ? Number.isFinite(entry.value)
+          ? String(entry.value)
+          : ""
+        : typeof entry.value === "string"
+          ? entry.value.trim()
+          : "";
+    const normalized = raw.replace(/^#+/, "").trim();
+    if (normalized && /^[A-Za-z0-9-]+$/.test(normalized)) return `#${normalized}`;
+  }
+  return null;
+}
+
+export function toPandaListItem(panda: PandaSummary): PandaListItem {
+  const placeRecord = panda.currentPlace;
+  const place = placeName(placeRecord);
+  const studbookNumber = parseStudbookNumber(panda.facts);
+  const studbookTerms = studbookNumber ? [studbookNumber, studbookNumber.slice(1)] : [];
+  const names = panda.names.map((name) => name.value);
+  const latin = [panda.canonicalSlug, ...panda.legacySlugs, ...names, ...studbookTerms];
+  const latinNames = names.filter((name) => /[A-Za-z]/.test(name));
+  const initialSources = latinNames.length > 0 ? latinNames : [panda.canonicalSlug, ...panda.legacySlugs];
+  return {
+    id: panda.pandaId,
+    slug: panda.canonicalSlug,
+    name: displayName(panda),
+    sex: pandaSex(panda),
+    birthDate: pandaBirthDate(panda),
+    deceased: pandaIsDeceased(panda),
+    place,
+    placeId: placeRecord?.placeId ?? null,
+    area: areaOf(placeRecord),
+    hasFullBleedCover: Boolean(panda.hasFullBleedCover),
+    studbookNumber,
+    terms: (place ? [...latin, place] : latin).map(normalizeTerm),
+    initials: initialSources.flatMap((source) => initialsOf(source) ?? []),
+  };
+}
+
+async function buildIndex(): Promise<PandaListItem[]> {
+  const { data } = await api.GET("/api/v2/pandas");
+  if (!data) throw new Error("Panda list unavailable");
+  return data.items.map(toPandaListItem).sort(comparePandas);
 }
 
 /** Every published panda, shared across screens while the result is fresh. */
@@ -103,16 +163,24 @@ export function pandaIndexQueryOptions() {
   return queryOptions({ queryKey: ["public", "panda-index"], queryFn: buildIndex, staleTime: 300_000, networkMode: "always" });
 }
 
-/** Exact matches first, then names starting with the query, then the rest, each in list order. */
-export function searchPandas(items: PandaListItem[], query: string): PandaListItem[] {
+export function searchPandas(items: PandaListItem[], query: string, famous: readonly string[] = []): PandaListItem[] {
   const needle = normalizeTerm(query);
   if (!needle) return items;
-  const rank = (item: PandaListItem) =>
-    item.terms.some((term) => term === needle) ? 0 : item.terms.some((term) => term.startsWith(needle)) ? 1 : 2;
+  const rank = (item: PandaListItem) => {
+    if (item.terms.some((term) => term === needle)) return 0;
+    if (item.terms.some((term) => term.startsWith(needle))) return 1;
+    if (item.initials.some((initials) => initials.startsWith(needle))) return 2;
+    return item.terms.some((term) => term.includes(needle)) ? 3 : null;
+  };
+  const fame = new Map<string, number>();
+  famous.forEach((slug, index) => {
+    if (!fame.has(slug)) fame.set(slug, index);
+  });
+  const fameOf = (item: PandaListItem) => fame.get(item.slug) ?? famous.length;
   return items
-    .filter((item) => item.terms.some((term) => term.includes(needle)))
     .map((item) => ({ item, rank: rank(item) }))
-    .sort((a, b) => a.rank - b.rank)
+    .filter((entry): entry is { item: PandaListItem; rank: number } => entry.rank !== null)
+    .sort((a, b) => a.rank - b.rank || fameOf(a.item) - fameOf(b.item))
     .map(({ item }) => item);
 }
 

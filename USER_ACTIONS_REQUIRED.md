@@ -2,11 +2,11 @@
 
 Items that need the owner: credentials, approvals or product decisions. Work that depends on them is skipped until they are done; everything else continues. Newest first within each group.
 
-## Approvals
-
-- **Two-step verification before export and deletion.** The API's `privacy.request.manage` policy requires AAL2 and a recent sign-in, so the app asks fans to set up an authenticator app (Supabase Auth TOTP) before their first data export or account deletion. Keep this, or decide on a lighter step (for example a fresh email code, which gives recent authentication but not AAL2) and change the policy in a migration.
-
 ## Credentials and accounts
+
+- **Ops alert webhook (`OPS_ALERT_WEBHOOK_URL`).** Both `.github/workflows/production-probe.yml` (failed production probes) and the API Worker (`zhipanda-v2-api` for 5xx errors, failed Cron cycles, new community contributions and account-deletion requests) send webhook alerts without PII when configured; leaving it unset keeps alerts off without affecting requests.
+  - Set `OPS_ALERT_WEBHOOK_URL` (`https://...` webhook for Feishu, WeCom or generic JSON) as a GitHub Actions repository secret and as a Cloudflare Worker secret (`wrangler secret put OPS_ALERT_WEBHOOK_URL --name zhipanda-v2-api`).
+  - Optionally set `OPS_ALERT_WEBHOOK_FORMAT` (`feishu`, `wecom` or `generic`, defaulting to `feishu`) as a GitHub Actions repository variable and Worker environment variable/secret if not using a Feishu bot webhook.
 
 - **Supabase Auth: leaked-password protection.** The Supabase security advisor flags it as off (Authentication → Policies → Password security, which checks passwords against HaveIBeenPwned). Fans sign in with email codes and staff with email codes plus TOTP, so no password is in use today; turning it on costs nothing and covers any future password sign-in. It is an account setting, so it is yours to switch.
 
@@ -34,8 +34,6 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
   - `[生效日期]` / `[Effective date]`
 
 ## Product and content decisions
-
-- **Files attached to 纠错.** The API can register an attachment on a report, but the private upload path behind it (bucket, malware scanning, retention) was retired in #633, and the website does not upload either. Fans can cite a link or a book page. Decide whether fans may upload screenshots or documents; if so, the architecture baseline (§14) has them uploaded to R2 through short-lived presigned URLs the API authorizes and verifies, which still needs malware scanning and a retention rule before the app offers it.
 
 - **猜熊猫 tips and difficulty.** 433 questions are live, generated from the active release ([run 40374378674](https://github.com/SwayingWindmill/PandaAtlas/actions/runs/40374378674)): tips come from confirmed birth dates and current homes (201 have one), and 424 are `easy` because few pandas have a recorded current home. Hand-written recognition tips, or a rerun now that `2026.10.31.1` brought more current homes, would make them richer.
 

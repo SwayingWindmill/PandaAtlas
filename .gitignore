@@ -49,8 +49,18 @@ htmlcov/
 .env
 .env.*
 
+# Collector host state: login cookies and per-run output, never committed.
+infra/collector/data/
+.collector/
+
 # Local agent/planning state
-.claude/
+.claude/*
+# Shared Claude Code hooks live in committed project settings.
+!.claude/settings.json
+# Mirrored pstack/complementary skills live in .claude/skills/ (1:1 with .agents/skills/).
+!.claude/skills/
+# Ephemeral pstack checklists, scratch probes, and decision trails.
+.audit/
 .ai-bridge/
 .codegraph/
 .codex/

@@ -5,9 +5,7 @@ import { PLACES_PUBLICATION_PORT } from "./application/places-publication.applic
 import {
   PLACE_REFERENCE_PORT,
   PLACES_PORT,
-  PLACES_REPOSITORY,
   PlacesApplication,
-  type PlacesRepository,
 } from "./application/places.application.js";
 import { PostgresPlacesPublicationQuery } from "./infrastructure/postgres-places-publication.query.js";
 import { PostgresPlacesRepository } from "./infrastructure/postgres-places.repository.js";
@@ -16,14 +14,9 @@ import { PostgresPlacesRepository } from "./infrastructure/postgres-places.repos
   imports: [DatabaseModule],
   providers: [
     {
-      provide: PLACES_REPOSITORY,
-      useFactory: (database: DatabaseService) => new PostgresPlacesRepository(database),
-      inject: [DatabaseService],
-    },
-    {
       provide: PlacesApplication,
-      useFactory: (repository: PlacesRepository) => new PlacesApplication(repository),
-      inject: [PLACES_REPOSITORY],
+      useFactory: (database: DatabaseService) => new PlacesApplication(new PostgresPlacesRepository(database)),
+      inject: [DatabaseService],
     },
     { provide: PLACES_PUBLICATION_PORT, useFactory: () => new PostgresPlacesPublicationQuery() },
     { provide: PLACES_PORT, useExisting: PlacesApplication },

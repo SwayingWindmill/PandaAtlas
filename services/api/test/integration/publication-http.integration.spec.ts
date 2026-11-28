@@ -10,7 +10,7 @@ import { MEDIA_PORT, type MediaPort } from "../../src/modules/media/application/
 import { PANDA_PORT, type PandaPort } from "../../src/modules/panda/application/panda.application.js";
 import { PLACES_PORT, type PlacesPort } from "../../src/modules/places/application/places.application.js";
 import { PUBLICATION_PORT, type PublicationPort } from "../../src/modules/publication/application/publication.application.js";
-import type { PublicPandaDetail, PublicReadRelease } from "../../src/modules/publication/application/public-read.application.js";
+import type { PublicPandaDetail, PublicReadRelease } from "../../src/modules/public-read/application/public-read.application.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 import { injectHttp } from "../inject-http.js";
 
@@ -225,8 +225,15 @@ describe("V2 publication and release-scoped public reads", () => {
     expect(factKeys(firstBody.relatives.find((item) => item.pandaId === father.pandaId)!)).toEqual(["sex"]);
     const list = await injectHttp(app, { method: "GET", url: "/api/v2/pandas" });
     expect(list.statusCode, list.body).toBe(200);
-    const listed = list.json<{ items: PublicPandaDetail["relatives"] }>().items;
+    const listed = list.json<{
+      items: Array<PublicPandaDetail["relatives"][number] & { currentPlace?: { placeId: string; slug: string } }>;
+    }>().items;
     expect(listed.filter((item) => [panda.pandaId, father.pandaId].includes(item.pandaId)).map(factKeys)).toEqual([["sex"], ["sex"]]);
+    expect(listed.find((item) => item.pandaId === panda.pandaId)?.currentPlace).toMatchObject({
+      placeId: place.placeId,
+      slug: place.slug,
+      placeType: "facility",
+    });
     const byId = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.pandaId}` });
     expect(byId.statusCode, byId.body).toBe(200);
     expect(byId.json<PublicPandaDetail>().panda.canonicalSlug).toBe(panda.canonicalSlug);
@@ -239,10 +246,20 @@ describe("V2 publication and release-scoped public reads", () => {
     const institutionBody = institutionRead.json<{
       institution: { slug: string; profile?: { kind: string } };
       places: Array<{ placeId: string; visitGuide?: { openingHours?: { en?: string } } }>;
+      residents: Array<{ pandaId: string; currentPlace?: { placeId: string } }>;
+      former: unknown[];
+      bornHereCount: number;
     }>();
     expect(institutionBody.institution.profile?.kind).toBe("breeding_center");
     expect(institutionBody.places.map((item) => item.placeId)).toEqual([place.placeId]);
     expect(institutionBody.places[0]?.visitGuide?.openingHours).toEqual({ en: "9 a.m. to 5 p.m." });
+    expect(institutionBody.residents).toHaveLength(1);
+    expect(institutionBody.residents[0]).toMatchObject({
+      pandaId: panda.pandaId,
+      currentPlace: { placeId: place.placeId },
+    });
+    expect(institutionBody.former).toEqual([]);
+    expect(institutionBody.bornHereCount).toBe(0);
     const institutionList = await injectHttp(app, { method: "GET", url: "/api/v2/institutions" });
     expect(institutionList.statusCode, institutionList.body).toBe(200);
     expect(institutionList.json<{ items: Array<{ slug: string }> }>().items).toContainEqual(expect.objectContaining({ slug: institution.slug }));

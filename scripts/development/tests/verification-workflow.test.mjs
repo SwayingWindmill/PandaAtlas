@@ -36,24 +36,6 @@ test("every pull request reaches the shared planner and API scopes run database-
   assert.match(workflow, /npm run infra:stop/);
 });
 
-test("crawler PoC workflow targets the active panda-data runtime", async () => {
-  const workflow = await readFile(
-    path.join(repoRoot, ".github", "workflows", "crawler-poc.yml"),
-    "utf8",
-  );
-
-  assert.match(workflow, /on:\s*\r?\n\s*workflow_dispatch:/u);
-  assert.match(workflow, /npm run lint:crawler-poc/u);
-  assert.match(workflow, /npm run test:crawler-poc/u);
-  assert.match(workflow, /npm run source:xi-lun/u);
-  assert.match(workflow, /npm run crawler:poc:strict/u);
-  assert.match(workflow, /uv run --isolated --directory tools\/panda-data --frozen --extra crawler playwright install --with-deps chromium/u);
-  assert.match(workflow, /uv run --isolated --directory tools\/panda-data --frozen --extra crawler scrapling install/u);
-  assert.match(workflow, /git diff --exit-code/u);
-  assert.match(workflow, /path: \.release-gate\//u);
-  assert.doesNotMatch(workflow, /services\/api\//u);
-});
-
 test("the Cloudflare deployability build also verifies main and reuses cached Playwright browsers", async () => {
   const workflow = await readFile(
     path.join(repoRoot, ".github", "workflows", "cloudflare-deployability.yml"),
@@ -126,4 +108,16 @@ test("the planner loads without npm dependencies", async () => {
   };
   await visit(path.join(repoRoot, "scripts", "development", "verify.mjs"));
   assert.deepEqual(bare, []);
+});
+
+test("Mobile E2E CI sets TZ=Asia/Shanghai to match Playwright e2e.config.ts timezoneId", async () => {
+  const [workflow, config] = await Promise.all([
+    readFile(path.join(repoRoot, ".github", "workflows", "mobile-e2e.yml"), "utf8"),
+    readFile(path.join(repoRoot, "apps", "mobile", "e2e.config.ts"), "utf8"),
+  ]);
+
+  assert.match(config, /timezoneId:\s*["']Asia\/Shanghai["']/u);
+  const stepMatch = workflow.match(/- name:\s*Run journeys\r?\n([\s\S]*?)(?=\r?\n\s*- name:|\s*$)/u);
+  assert.ok(stepMatch?.[1], "expected Run journeys step in mobile-e2e.yml");
+  assert.match(stepMatch[1], /^\s+TZ:\s*Asia\/Shanghai\s*$/mu);
 });

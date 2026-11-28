@@ -1,9 +1,9 @@
-import { Image } from "expo-image";
 import { View } from "react-native";
 
 import { Icon } from "@/components/icon";
 import { FolderHeart } from "@/components/icons";
 import { PhotoOutline } from "@/components/photo-outline";
+import { RemoteImage } from "@/components/remote-image";
 import { usePandaCover } from "@/lib/covers";
 import { RADIUS } from "@/lib/surface";
 
@@ -15,7 +15,7 @@ function Cover({ pandaId, size }: { pandaId: string; size: number }) {
   return (
     <View className="bg-secondary" style={{ width: size, height: size }}>
       {photo ? (
-        <Image source={photo} style={{ width: size, height: size }} contentFit="cover" transition={200} accessible={false} />
+        <RemoteImage source={photo} style={{ width: size, height: size }} contentFit="cover" transition={200} accessible={false} />
       ) : null}
     </View>
   );
@@ -26,7 +26,8 @@ export function Mosaic({ pandaIds, size }: { pandaIds: string[]; size: number })
   const half = (size - SEAM) / 2;
   return (
     <View
-      className="overflow-hidden rounded-tile bg-secondary"
+      // An empty album shows the bare folder glyph in the cover's slot: no tile behind an icon.
+      className={pandaIds.length === 0 ? "items-center justify-center" : "overflow-hidden rounded-tile bg-secondary"}
       style={{ width: size, height: size, borderCurve: "continuous" }}
     >
       {pandaIds.length === 0 ? (

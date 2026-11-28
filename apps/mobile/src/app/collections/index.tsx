@@ -1,5 +1,6 @@
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
+import { useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useCSSVariable } from "uniwind";
@@ -18,14 +19,26 @@ import {
   NAME_MAX,
   collectionName,
   createCollection,
-  loadCollections,
+  collectionsQueryOptions,
+  patchCollections,
 } from "@/features/collections/collections";
 import { Mosaic } from "@/features/collections/mosaic";
+import { createGuestCollection, guestCollectionsQueryOptions } from "@/features/engagement/guest-store";
+import { useAccount } from "@/features/session/account";
+import { useSession } from "@/features/session/session";
+import { failedWithoutData } from "@/lib/query-failed";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { cn } from "@/lib/utils";
 
 const GAP = semantic.spacing.inset.value;
 
-function NewCollection({ onCreated }: { onCreated: (collection: Collection) => void }) {
+function NewCollection({
+  onCreate,
+  onCreated,
+}: {
+  onCreate: (name: string) => Promise<Collection>;
+  onCreated: (collection: Collection) => Promise<void>;
+}) {
   const muted = String(useCSSVariable("--color-muted-foreground"));
   const [name, setName] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "failed">("idle");
@@ -36,7 +49,7 @@ function NewCollection({ onCreated }: { onCreated: (collection: Collection) => v
     if (!valid) return;
     setStatus("saving");
     try {
-      onCreated(await createCollection(valid));
+      await onCreated(await onCreate(valid));
       setName("");
       setStatus("idle");
     } catch {
@@ -120,18 +133,16 @@ function Albums({ collections }: { collections: Collection[] }) {
 }
 
 export default function CollectionsScreen() {
-  const [collections, setCollections] = useState<Collection[] | null>(null);
-  const [failed, setFailed] = useState(false);
-
-  const load = useCallback(() => {
-    loadCollections()
-      .then((loaded) => {
-        setCollections(loaded);
-        setFailed(false);
-      })
-      .catch(() => setFailed(true));
-  }, []);
-  useFocusEffect(load);
+  const { state: session } = useSession();
+  const { accountId } = useAccount();
+  const signedIn = accountId !== null;
+  const signedOut = session.status === "signedOut";
+  const remoteList = useQuery({ ...collectionsQueryOptions(accountId ?? ""), enabled: signedIn });
+  const guestList = useQuery({ ...guestCollectionsQueryOptions(), enabled: signedOut });
+  const list = signedOut ? guestList : remoteList;
+  useRefetchOnFocus(remoteList.refetch, signedIn);
+  const collections = list.data ?? null;
+  const failed = session.status === "unavailable" || failedWithoutData(list);
 
   return (
     <Page
@@ -140,7 +151,7 @@ export default function CollectionsScreen() {
       keyboardShouldPersistTaps="handled"
     >
       {failed ? (
-        <LoadFailed message="合集暂时打不开。" onRetry={load} />
+        <LoadFailed message="合集暂时打不开。" onRetry={() => void list.refetch()} />
       ) : collections === null ? (
         <View className="gap-section" accessibilityLabel="正在加载合集">
           <Skeleton className="h-11 w-full rounded-group" />
@@ -151,7 +162,12 @@ export default function CollectionsScreen() {
         </View>
       ) : (
         <Animated.View entering={PAGE_ENTER} className="gap-section">
-          <NewCollection onCreated={(created) => setCollections((current) => [created, ...(current ?? [])])} />
+          <NewCollection
+            onCreate={signedOut ? createGuestCollection : createCollection}
+            onCreated={async (created) => {
+              if (accountId) await patchCollections(accountId, (current) => [created, ...current]);
+            }}
+          />
           {collections.length === 0 ? (
             <ScreenState message="还没有合集。" className="py-stack" />
           ) : (

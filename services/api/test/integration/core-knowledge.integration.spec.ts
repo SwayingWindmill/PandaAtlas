@@ -55,16 +55,6 @@ describe("V2 core panda knowledge against local PostgreSQL/PostGIS", () => {
       evidenceTier: "institutional",
       publicSummary: "Integration-only source metadata.",
     });
-    const attachment = await evidence.addAttachment({
-      sourceId,
-      storageBucket: "evidence-private",
-      storageKey: `integration/${suffix}.html`,
-      objectVersion: "v1",
-      contentSha256: "d".repeat(64),
-      byteSize: 512,
-      mediaType: "text/html",
-    });
-    expect(attachment.sourceId).toBe(sourceId);
     const reverifiedSource = await evidence.updateVerification({
       sourceId,
       lastVerifiedOn: "2026-08-27",

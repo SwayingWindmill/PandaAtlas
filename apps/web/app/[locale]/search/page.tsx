@@ -6,8 +6,8 @@ import { listFamilyStories } from "@/features/public-experiences/stories";
 import styles from "@/features/public-experiences/public-experiences.module.css";
 import { buildSearchViewModel, parseSearchQuery } from "@/features/search/archive-search";
 import { SearchWorkspace } from "@/features/search/search-workspace";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface SearchPageProps {
   params: Promise<{ locale: string }>;

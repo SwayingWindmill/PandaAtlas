@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 
 import { legalDocument } from "@/features/legal/documents";
 import { LegalDocumentPage } from "@/features/legal/legal-document-page";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 
 interface LegalPageProps {
   params: Promise<{ locale: string }>;

@@ -100,22 +100,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/contributions/{submissionId}/attachments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["registerContributionAttachment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v2/review/cases": {
         parameters: {
             query?: never;
@@ -239,6 +223,38 @@ export interface paths {
         put?: never;
         post: operations["favoritePanda"];
         delete: operations["unfavoritePanda"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/followed-venues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listFollowedVenues"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/followed-venues/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["followVenue"];
+        delete: operations["unfollowVenue"];
         options?: never;
         head?: never;
         patch?: never;
@@ -915,8 +931,76 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Published 科普 cards, topics, terms, face guides and face challenges */
+        /** Published 科普 articles, terms, face guides, face challenges and month themes */
         get: operations["getLearningCatalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/overseas-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Published 海外大熊猫状态: location, announced return and quarantine stage, each with its source */
+        get: operations["listOverseasStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/venue-news": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Published 场馆动态: neutral facts from institutions' own announcements, each with its source */
+        get: operations["listVenueNews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/comparisons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Published 比一比: pairs of pandas the team compares side by side, newest first */
+        get: operations["listComparisons"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/popular-pandas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 大家常看: published pandas most fans began following in the last 30 days, at least five fans each */
+        get: operations["listPopularPandas"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1040,6 +1124,41 @@ export interface paths {
         put: operations["setMyNotificationPreference"];
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/notifications/devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List registered push notification devices */
+        get: operations["listMyNotificationDevices"];
+        put?: never;
+        /** Register or refresh an Expo push token */
+        post: operations["registerMyNotificationDevice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/notifications/devices/{tokenId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Unregister an Expo push token */
+        delete: operations["removeMyNotificationDevice"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1192,22 +1311,6 @@ export interface components {
         ContributionListDto: {
             items: components["schemas"]["ContributionRecordDto"][];
         };
-        RegisterContributionAttachmentDto: {
-            storageObjectKey: string;
-            objectVersion: string;
-            originalFilename: string;
-            /** @enum {string} */
-            mediaType: "application/pdf" | "image/jpeg" | "image/png" | "image/webp";
-            byteSize: number;
-            contentSha256: string;
-        };
-        ContributionAttachmentDto: {
-            /** Format: uuid */
-            attachmentId: string;
-            mediaType: string;
-            byteSize: number;
-            state: string;
-        };
         OpenReviewCaseDto: {
             /** Format: uuid */
             submissionId: string;
@@ -1287,7 +1390,6 @@ export interface components {
             publicVersionSeen: string;
             assertions: components["schemas"]["ContributionReviewAssertionDto"][];
             sources: components["schemas"]["ContributionReviewSourceDto"][];
-            attachments: components["schemas"]["ContributionAttachmentDto"][];
         };
         ReviewCaseSurfaceDto: {
             reviewCase: components["schemas"]["ReviewCaseDto"];
@@ -1335,6 +1437,20 @@ export interface components {
             /** @enum {boolean} */
             favorited: false;
             favoritedAt: null;
+        };
+        FollowedVenueDto: {
+            /** @description Institution slug. */
+            institutionSlug: string;
+            /** Format: date-time */
+            followedAt: string;
+        };
+        FollowedVenueListDto: {
+            items: components["schemas"]["FollowedVenueDto"][];
+        };
+        UnfollowVenueDto: {
+            institutionSlug: string;
+            /** @enum {boolean} */
+            followed: false;
         };
         CollectionDto: {
             /** Format: uuid */
@@ -1605,6 +1721,16 @@ export interface components {
             lastVerifiedOn: string;
             conclusionVersion: number;
         };
+        PublicPandaCurrentPlaceSummaryDto: {
+            /** Format: uuid */
+            placeId: string;
+            slug: string;
+            placeType: string;
+            nameZh?: string;
+            nameEn?: string;
+            countryCode?: string;
+            region?: string;
+        };
         PublicPandaSummaryDto: {
             /** Format: uuid */
             pandaId: string;
@@ -1612,6 +1738,8 @@ export interface components {
             legacySlugs: string[];
             names: components["schemas"]["PublicPandaNameDto"][];
             facts: components["schemas"]["PublicPandaFactDto"][];
+            currentPlace?: components["schemas"]["PublicPandaCurrentPlaceSummaryDto"];
+            hasFullBleedCover?: boolean;
         };
         PublicPandaListDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
@@ -1677,6 +1805,7 @@ export interface components {
             attributionText?: string;
             /** Format: date-time */
             takenAt?: string;
+            fullBleedReady?: boolean;
         };
         PublicEvidenceSummaryDto: {
             sourceId: string;
@@ -1718,12 +1847,30 @@ export interface components {
             topic: "best_time" | "finding_pandas" | "getting_there" | "good_to_know";
             text: components["schemas"]["LocalizedTextDto"];
         };
+        TimeWindowDto: {
+            /** @description Local time, HH:MM. */
+            start: string;
+            /** @description Local time, HH:MM. */
+            end: string;
+        };
+        ViewingTimingDto: {
+            /** @description When the pandas are usually active, as the facility publishes. */
+            activeWindows: components["schemas"]["TimeWindowDto"][];
+            /** @description The usual midday rest. */
+            napWindow?: components["schemas"]["TimeWindowDto"];
+        };
+        PhotoSpotDto: {
+            name: components["schemas"]["LocalizedTextDto"];
+            window?: components["schemas"]["TimeWindowDto"];
+        };
         FacilityVisitGuideDto: {
             address?: components["schemas"]["LocalizedTextDto"];
             openingHours?: components["schemas"]["LocalizedTextDto"];
             admission?: components["schemas"]["LocalizedTextDto"];
             pandaArea?: components["schemas"]["LocalizedTextDto"];
             tips: components["schemas"]["FacilityVisitTipDto"][];
+            viewing?: components["schemas"]["ViewingTimingDto"];
+            photoSpots?: components["schemas"]["PhotoSpotDto"][];
             /**
              * Format: date
              * @description Opening hours and prices change; this is the day they were last checked.
@@ -1788,11 +1935,20 @@ export interface components {
             release: components["schemas"]["PublicReadReleaseDto"];
             items: components["schemas"]["PublicInstitutionSummaryDto"][];
         };
+        PublicFormerResidentSummaryDto: {
+            panda: components["schemas"]["PublicPandaSummaryDto"];
+            fromYear?: number;
+            toYear?: number;
+            bornHere: boolean;
+        };
         PublicInstitutionDetailDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
             institution: components["schemas"]["PublicInstitutionSummaryDto"];
             /** @description The institution's deliverable facilities. */
             places: components["schemas"]["PublicPlaceSummaryDto"][];
+            residents: components["schemas"]["PublicPandaSummaryDto"][];
+            former: components["schemas"]["PublicFormerResidentSummaryDto"][];
+            bornHereCount: number;
         };
         PublicLineageListDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
@@ -1923,7 +2079,9 @@ export interface components {
             resourceId: string;
         };
         LearningTextDto: {
+            /** @description Chinese text. */
             zh: string;
+            /** @description English text. An empty string means the item was published in Chinese only; clients that ask for English show zh instead of a blank line. */
             en: string;
         };
         LearningArticleParagraphDto: {
@@ -1981,25 +2139,6 @@ export interface components {
             /** Format: date */
             citedOn: string;
         };
-        LearningCardDto: {
-            slug: string;
-            title: components["schemas"]["LearningTextDto"];
-            summary: components["schemas"]["LearningTextDto"];
-            body: components["schemas"]["LearningTextDto"];
-            sources: components["schemas"]["LearningSourceDto"][];
-        };
-        LearningTopicSectionDto: {
-            heading: components["schemas"]["LearningTextDto"];
-            body: components["schemas"]["LearningTextDto"];
-        };
-        LearningTopicDto: {
-            slug: string;
-            title: components["schemas"]["LearningTextDto"];
-            summary: components["schemas"]["LearningTextDto"];
-            sections: components["schemas"]["LearningTopicSectionDto"][];
-            cardSlugs: string[];
-            sources: components["schemas"]["LearningSourceDto"][];
-        };
         LearningTermDto: {
             slug: string;
             term: components["schemas"]["LearningTextDto"];
@@ -2029,15 +2168,104 @@ export interface components {
             tip: components["schemas"]["LearningTextDto"];
             sources: components["schemas"]["LearningSourceDto"][];
         };
+        /** @enum {string} */
+        MonthTaskKind: "daily" | "guess" | "learn" | "checkin" | "collections" | "compare";
+        LearningMonthThemeDto: {
+            /** @example 2026-11 */
+            month: string;
+            title: components["schemas"]["LearningTextDto"];
+            intro: (components["schemas"]["LearningTextDto"] | null) & components["schemas"]["LearningTextDto"];
+            tasks: components["schemas"]["MonthTaskKind"][];
+        };
         LearningCatalogDto: {
             /** @example 2026.10.29.2 */
             version: string;
             articles: components["schemas"]["LearningArticleDto"][];
-            cards: components["schemas"]["LearningCardDto"][];
-            topics: components["schemas"]["LearningTopicDto"][];
             terms: components["schemas"]["LearningTermDto"][];
             faceGuides: components["schemas"]["LearningFaceGuideDto"][];
             challenges: components["schemas"]["LearningChallengeDto"][];
+            /** @description 月度主题挑战 themes. A month not listed uses the app's default checklist. */
+            monthThemes: components["schemas"]["LearningMonthThemeDto"][];
+        };
+        PartialDateDto: {
+            /** @description YYYY-MM-DD, YYYY-MM or YYYY, matching precision. */
+            on: string;
+            /** @enum {string} */
+            precision: "day" | "month" | "year";
+        };
+        OverseasStatusItemDto: {
+            pandaSlug: string;
+            /** @enum {string} */
+            stage: "abroad" | "return_announced" | "in_transit" | "quarantine" | "returned";
+            /** @description Where the panda is now: the overseas home, or the quarantine base once back. */
+            institutionSlug: string;
+            /** @description The return as announced. */
+            expectedReturn?: components["schemas"]["PartialDateDto"];
+            /** Format: date */
+            returnedOn?: string;
+            /** @description The announcement this entry rests on (https). */
+            sourceUrl: string;
+            sourcePublisher: string;
+            /**
+             * Format: date-time
+             * @description When this entry was last checked against the source.
+             */
+            updatedAt: string;
+        };
+        OverseasStatusDto: {
+            version: string;
+            items: components["schemas"]["OverseasStatusItemDto"][];
+        };
+        VenueNewsItemDto: {
+            id: string;
+            institutionSlug: string;
+            /** @enum {string} */
+            kind: "enclosure" | "schedule" | "closure" | "arrival" | "departure" | "event" | "other";
+            /** @description The announcement's own headline, verbatim. */
+            headline: string;
+            pandaSlugs: string[];
+            /** @description The institution's announcement (https). */
+            sourceUrl: string;
+            sourcePublisher: string;
+            /** Format: date */
+            publishedOn: string;
+            /**
+             * Format: date-time
+             * @description When this entry was last checked against the source.
+             */
+            updatedAt: string;
+        };
+        VenueNewsDto: {
+            version: string;
+            items: components["schemas"]["VenueNewsItemDto"][];
+        };
+        ComparisonDto: {
+            id: string;
+            /** @description What the pair is, 16 characters or fewer. */
+            title: string;
+            /** @description One line on what tells them apart, 30 characters or fewer. */
+            dek: string;
+            /** @description Two different pandas, in display order. */
+            pandaSlugs: string[];
+            /**
+             * Format: date-time
+             * @description When this entry was last checked.
+             */
+            updatedAt: string;
+        };
+        ComparisonsDto: {
+            version: string;
+            items: components["schemas"]["ComparisonDto"][];
+        };
+        PopularPandaDto: {
+            pandaId: string;
+            slug: string;
+        };
+        PopularPandasDto: {
+            /** @description How many days back the follows are counted. */
+            windowDays: number;
+            /** @description Most new followers first. No counts are published. */
+            items: components["schemas"]["PopularPandaDto"][];
         };
         AskStatusDto: {
             enabled: boolean;
@@ -2056,7 +2284,7 @@ export interface components {
         };
         AskLinkDto: {
             /** @enum {string} */
-            kind: "article" | "card" | "topic" | "term" | "faceGuide" | "challenge" | "panda" | "learn";
+            kind: "article" | "term" | "faceGuide" | "challenge" | "panda" | "learn";
             title: string;
             /** @description A path inside the app, such as /learn/articles/bamboo. */
             appPath: string;
@@ -2120,7 +2348,7 @@ export interface components {
             /** @enum {string} */
             category: "knowledge_update" | "correction";
             /** @enum {string} */
-            channel: "station" | "email";
+            channel: "station" | "email" | "push";
             enabled: boolean;
             version: number;
             /** Format: date-time */
@@ -2130,8 +2358,31 @@ export interface components {
             /** @enum {string} */
             category: "knowledge_update" | "correction";
             /** @enum {string} */
-            channel: "station" | "email";
+            channel: "station" | "email" | "push";
             enabled: boolean;
+        };
+        NotificationDeviceDto: {
+            /** Format: uuid */
+            deviceTokenId: string;
+            expoPushToken: string;
+            /** @enum {string} */
+            platform: "ios" | "android";
+            active: boolean;
+            /** Format: date-time */
+            lastActiveAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        NotificationDeviceInputDto: {
+            /** @example ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx] */
+            expoPushToken: string;
+            /** @enum {string} */
+            platform: "ios" | "android";
+        };
+        NotificationDeviceDeleteResultDto: {
+            /** Format: uuid */
+            deviceTokenId: string;
+            removed: boolean;
         };
         CreatePrivacyRequestDto: {
             /** @enum {string} */
@@ -2335,31 +2586,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ContributionRecordDto"];
-                };
-            };
-        };
-    };
-    registerContributionAttachment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                submissionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RegisterContributionAttachmentDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ContributionAttachmentDto"];
                 };
             };
         };
@@ -2580,6 +2806,67 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UnfavoriteDto"];
+                };
+            };
+        };
+    };
+    listFollowedVenues: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FollowedVenueListDto"];
+                };
+            };
+        };
+    };
+    followVenue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FollowedVenueDto"];
+                };
+            };
+        };
+    };
+    unfollowVenue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnfollowVenueDto"];
                 };
             };
         };
@@ -3851,6 +4138,106 @@ export interface operations {
             };
         };
     };
+    listOverseasStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverseasStatusDto"];
+                };
+            };
+            /** @description The stored overseas status catalog is invalid. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listVenueNews: {
+        parameters: {
+            query?: {
+                /** @description Institution slug */
+                institution?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VenueNewsDto"];
+                };
+            };
+            /** @description The stored venue news catalog is invalid. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listComparisons: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ComparisonsDto"];
+                };
+            };
+            /** @description The stored comparison catalog is invalid. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listPopularPandas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PopularPandasDto"];
+                };
+            };
+        };
+    };
     getAskStatus: {
         parameters: {
             query?: never;
@@ -4013,6 +4400,69 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotificationPreferenceDto"];
+                };
+            };
+        };
+    };
+    listMyNotificationDevices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationDeviceDto"][];
+                };
+            };
+        };
+    };
+    registerMyNotificationDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationDeviceInputDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationDeviceDto"];
+                };
+            };
+        };
+    };
+    removeMyNotificationDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tokenId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationDeviceDeleteResultDto"];
                 };
             };
         };

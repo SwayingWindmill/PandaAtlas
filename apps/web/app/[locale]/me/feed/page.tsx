@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 
-import { isFeedUiEnabled } from "@/features/feed/config";
+import { isFeedUiEnabled } from "@/lib/feature-flags";
 import { loadPersonalizedFeed } from "@/features/feed/feed-api";
 import { PersonalizedFeedPage } from "@/features/feed/personalized-feed-page";
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";

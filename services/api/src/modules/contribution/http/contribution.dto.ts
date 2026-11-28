@@ -6,14 +6,11 @@ import {
   IsArray,
   IsDefined,
   IsIn,
-  IsInt,
   IsOptional,
   IsString,
   IsUUID,
   Matches,
-  Max,
   MaxLength,
-  Min,
   MinLength,
   ValidateNested,
 } from "class-validator";
@@ -143,43 +140,6 @@ export class SubmitContributionDto {
   public sources!: ContributionSourceDto[];
 }
 
-export class RegisterContributionAttachmentDto {
-  @ApiProperty()
-  @Transform(({ value }) => trim(value))
-  @IsString()
-  @MinLength(1)
-  @MaxLength(1000)
-  public storageObjectKey!: string;
-
-  @ApiProperty()
-  @Transform(({ value }) => trim(value))
-  @IsString()
-  @MinLength(1)
-  @MaxLength(255)
-  public objectVersion!: string;
-
-  @ApiProperty()
-  @Transform(({ value }) => trim(value))
-  @IsString()
-  @MinLength(1)
-  @MaxLength(255)
-  public originalFilename!: string;
-
-  @ApiProperty({ enum: ["application/pdf", "image/jpeg", "image/png", "image/webp"] })
-  @IsIn(["application/pdf", "image/jpeg", "image/png", "image/webp"])
-  public mediaType!: "application/pdf" | "image/jpeg" | "image/png" | "image/webp";
-
-  @ApiProperty({ minimum: 1, maximum: 10_485_760 })
-  @IsInt()
-  @Min(1)
-  @Max(10_485_760)
-  public byteSize!: number;
-
-  @ApiProperty({ pattern: "^[0-9a-f]{64}$" })
-  @Matches(/^[0-9a-f]{64}$/)
-  public contentSha256!: string;
-}
-
 export class ContributionRecordDto {
   @ApiProperty({ format: "uuid" })
   public declare submissionId: string;
@@ -209,20 +169,6 @@ export class ContributionRecordDto {
 export class ContributionListDto {
   @ApiProperty({ type: () => ContributionRecordDto, isArray: true })
   public declare items: ContributionRecordDto[];
-}
-
-export class ContributionAttachmentDto {
-  @ApiProperty({ format: "uuid" })
-  public declare attachmentId: string;
-
-  @ApiProperty()
-  public declare mediaType: string;
-
-  @ApiProperty({ minimum: 1 })
-  public declare byteSize: number;
-
-  @ApiProperty()
-  public declare state: string;
 }
 
 export class ContributionReviewAssertionDto {
@@ -295,7 +241,4 @@ export class ContributionReviewSurfaceDto {
 
   @ApiProperty({ type: () => ContributionReviewSourceDto, isArray: true })
   public declare sources: ContributionReviewSourceDto[];
-
-  @ApiProperty({ type: () => ContributionAttachmentDto, isArray: true })
-  public declare attachments: ContributionAttachmentDto[];
 }

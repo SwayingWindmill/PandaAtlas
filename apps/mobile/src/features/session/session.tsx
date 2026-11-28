@@ -1,6 +1,7 @@
 import type { Session } from "@supabase/supabase-js";
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
+import { syncGuestToAccount } from "@/features/engagement/guest-sync";
 import { authedApi } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 import { queryClient } from "@/lib/query-client";
@@ -24,10 +25,17 @@ interface SessionValue {
 
 const SessionContext = createContext<SessionValue | null>(null);
 
-export class SignInError extends Error {}
+export class SignInError extends Error {
+  /** Supabase refused the code: wrong or expired, which only the code's age can tell apart. */
+  public constructor(message: string, public readonly codeRejected = false) {
+    super(message);
+  }
+}
 
 function signInMessage(error: { status?: number; code?: string; message: string }): string {
-  if (error.status === 429 || error.code === "over_email_send_rate_limit") return "发送太频繁了，请稍后再试。";
+  if (error.status === 429 || error.code === "over_email_send_rate_limit" || error.code === "over_request_rate_limit") {
+    return "请求太频繁，请稍后再试。";
+  }
   if (error.code === "validation_failed" || error.code === "email_address_invalid") return "邮箱格式不对。";
   return "没能完成，请稍后再试。";
 }
@@ -38,6 +46,7 @@ async function provision(session: Session): Promise<SessionState> {
   // Repeating it is harmless: the API returns the existing account. A suspended account answers 403.
   const { data } = await authedApi.POST("/api/v2/me/account");
   if (!data) return { status: "unavailable", email };
+  await syncGuestToAccount(data.accountId).catch(() => undefined);
   return { status: "signedIn", email, accountId: data.accountId };
 }
 
@@ -56,6 +65,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         setState({ status: "signedOut" });
         return;
       }
+      setState({ status: "loading" });
       provision(session)
         .then((next) => {
           if (current === userId) setState(next);
@@ -78,8 +88,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       },
       async verifyCode(email, code) {
         const { error } = await supabase.auth.verifyOtp({ email, token: code, type: "email" });
-        // Supabase answers otp_expired for a wrong code too, so the message covers both.
-        if (error) throw new SignInError(error.code === "otp_expired" ? "验证码不对或已过期，请检查或重新获取。" : signInMessage(error));
+        if (!error) return;
+        if (error.code === "otp_expired") throw new SignInError("验证码不对或已过期，请检查或重新获取。", true);
+        throw new SignInError(signInMessage(error));
       },
       async signOut() {
         await supabase.auth.signOut();

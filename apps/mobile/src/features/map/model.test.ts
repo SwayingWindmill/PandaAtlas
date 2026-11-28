@@ -33,8 +33,8 @@ function place(overrides: Partial<MapPlaceInput> = {}): MapPlaceInput {
   };
 }
 
-function panda(id: string, name: string): MapPandaInput {
-  return { id, slug: id, name };
+function panda(id: string, name: string, hasFullBleedCover = false): MapPandaInput {
+  return { id, slug: id, name, hasFullBleedCover };
 }
 
 function residency(pandaId: string, placeId: string, startOn: string, endOn?: string): MapResidencyInput {
@@ -136,13 +136,13 @@ describe("buildPlacePage", () => {
       [place({ slug: "hall", nameZh: "熊猫馆" })],
       [institution({ nameZh: "成都基地" })],
       [residency("bao", "place-1", "2020-01-01"), residency("lan", "place-1", "2019-01-01", "2020-01-01")],
-      [panda("bao", "宝"), panda("lan", "兰")],
+      [panda("bao", "宝", true), panda("lan", "兰")],
     );
     expect(page).toEqual({
       name: "熊猫馆",
       where: "中国",
       institution: { slug: "chengdu-base", name: "成都基地" },
-      residents: [panda("bao", "宝")],
+      residents: [panda("bao", "宝", true)],
     });
   });
 

@@ -6,27 +6,6 @@
   "artifact_directory": ".batch-work",
   "operations": [
     {
-      "id": "research.validate",
-      "status": "ready",
-      "effect": "read-only",
-      "approval_required": false,
-      "manifest_required": false,
-      "idempotency": "Read-only validation; repeated runs inspect the same repository state.",
-      "command": [
-        "node",
-        "scripts/release/check-research-script-policy.mjs"
-      ]
-    },
-    {
-      "id": "research.build",
-      "status": "planned",
-      "effect": "generated-output",
-      "approval_required": false,
-      "manifest_required": true,
-      "idempotency": "A future generic runner must derive deterministic candidate output from one immutable research manifest.",
-      "blocked_reason": "No generic research batch runner is committed yet."
-    },
-    {
       "id": "curation.validate",
       "status": "ready",
       "effect": "read-only",
@@ -34,18 +13,16 @@
       "manifest_required": false,
       "idempotency": "Read-only validation; repeated runs inspect the same curation records.",
       "command": [
-        "python",
-        "scripts/curation/validate_panda_curation.py"
+        "uv",
+        "run",
+        "--isolated",
+        "--directory",
+        "tools/panda-data",
+        "--frozen",
+        "panda-data",
+        "curation",
+        "validate"
       ]
-    },
-    {
-      "id": "curation.apply",
-      "status": "planned",
-      "effect": "authoritative-write",
-      "approval_required": true,
-      "manifest_required": true,
-      "idempotency": "A future generic patch applier must use an immutable patch identity and reject replay with different content.",
-      "blocked_reason": "Current apply scripts are cohort-specific and cannot be exposed as one generic write entrypoint."
     },
     {
       "id": "curation.guess-questions",
@@ -68,6 +45,16 @@
       "artifact_paths": [".batch-work/learning"]
     },
     {
+      "id": "curation.content",
+      "status": "ready",
+      "effect": "production-write",
+      "approval_required": true,
+      "manifest_required": true,
+      "idempotency": "Writes one curated content file (venue news, overseas status, comparisons, institutions or panda enrichment) into the database. A catalog file goes into its one row: the same content is reported as already current, and changed content needs a new version. Institutions are upserted by slug and existing facility places updated by slug, and panda enrichment idempotently upserts curated facts, current primary residencies and confirmed parentage by canonical slug, so a repeated run changes nothing.",
+      "command": ["node", "services/api/dist/content-command.js"],
+      "artifact_paths": [".batch-work/content"]
+    },
+    {
       "id": "media.process",
       "status": "ready",
       "effect": "generated-output",
@@ -79,27 +66,19 @@
         "run",
         "--isolated",
         "--directory",
-        "services/api",
+        "tools/panda-data",
         "--frozen",
         "--extra",
-        "dev",
-        "python",
-        "../../scripts/curation/process_panda_media.py",
+        "media",
+        "panda-data",
+        "media",
+        "process",
         "--output-dir",
         "../../.batch-work/media"
       ],
       "artifact_paths": [
         ".batch-work/media"
       ]
-    },
-    {
-      "id": "media.publish",
-      "status": "planned",
-      "effect": "external-write",
-      "approval_required": true,
-      "manifest_required": true,
-      "idempotency": "A future publisher must address immutable objects by checksum and verify the remote object after upload.",
-      "blocked_reason": "Current upload scripts are source-specific and require explicit remote verification."
     },
     {
       "id": "release.publish",
@@ -110,15 +89,6 @@
       "idempotency": "Builds, seals and activates the release a data/release-manifests manifest names, or moves the pointer back to an older sealed release; versions are unique and a step that already happened is reported, not repeated.",
       "command": ["node", "services/api/dist/release-command.js", "publish"],
       "artifact_paths": [".batch-work/release"]
-    },
-    {
-      "id": "recovery.drill",
-      "status": "planned",
-      "effect": "isolated-state",
-      "approval_required": false,
-      "manifest_required": true,
-      "idempotency": "The drill must target an isolated environment and produce a new evidence package without mutating production.",
-      "blocked_reason": "The existing drills use separate environment-specific commands and need one explicit drill manifest."
     }
   ],
   "rules": {

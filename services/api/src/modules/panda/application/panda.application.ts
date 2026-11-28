@@ -132,7 +132,6 @@ export interface PandaReferencePort {
   exists(pandaId: string): Promise<boolean>;
 }
 
-export const PANDA_REPOSITORY = Symbol("PANDA_REPOSITORY");
 export const PANDA_PORT = Symbol("PANDA_PORT");
 export const PANDA_REFERENCE_PORT = Symbol("PANDA_REFERENCE_PORT");
 export const PANDA_FACT_PARTICIPANT = Symbol("PANDA_FACT_PARTICIPANT");

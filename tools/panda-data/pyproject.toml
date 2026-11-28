@@ -5,21 +5,16 @@ build-backend = "hatchling.build"
 [project]
 name = "zhipanda-panda-data"
 version = "0.1.0"
-description = "Independent PandaAtlas acquisition, curation validation, media and offline artifact runtime."
+description = "Independent PandaAtlas curation validation, media and offline artifact runtime."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
   "httpx>=0.28,<1",
   "jsonschema>=4.25,<5",
-  "psycopg[binary]>=3.2,<4",
   "pydantic>=2.11,<3",
 ]
 
 [project.optional-dependencies]
-crawler = [
-  "scrapling[fetchers]==0.5",
-  "scrapy==2.19.0",
-]
 media = [
   "pillow>=12,<14",
 ]

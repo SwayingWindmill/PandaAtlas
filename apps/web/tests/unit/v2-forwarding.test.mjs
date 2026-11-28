@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { forwardToV2, refuseStateChange } from "../../lib/server/v2-forwarding.ts";
+import {
+  FORWARDED_CLIENT_IP_HEADER,
+  forwardedClientIpHeaders,
+  forwardedResponseHeaders,
+  forwardToV2,
+  refuseStateChange,
+} from "../../lib/server/v2-forwarding.ts";
 
 const ORIGIN = "https://www.example.test";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
@@ -37,8 +43,10 @@ test("a request without a session is refused before anything is forwarded", asyn
 test("only listed paths and methods are forwarded", async () => {
   const { dependencies, upstream } = harness();
   assert.equal((await forwardToV2(request("GET", "/api/v2/pandas"), dependencies)).status, 404);
-  assert.equal((await forwardToV2(request("GET", "/api/admin/review/cases/abc/claim"), dependencies)).status, 405);
-  assert.equal((await forwardToV2(request("DELETE", "/api/admin/review/cases"), dependencies)).status, 405);
+  assert.equal((await forwardToV2(request("GET", "/api/admin/session"), dependencies)).status, 404);
+  assert.equal((await forwardToV2(request("POST", "/api/admin/review/cases"), dependencies)).status, 404);
+  assert.equal((await forwardToV2(request("GET", "/api/engagement/daily-panda-results"), dependencies)).status, 405);
+  assert.equal((await forwardToV2(request("DELETE", "/api/engagement/favorites"), dependencies)).status, 405);
   assert.deepEqual(upstream, []);
 });
 
@@ -59,7 +67,7 @@ test("a state-changing request from another site is refused", async () => {
 
 test("a body that is not JSON is refused", async () => {
   const { dependencies, upstream } = harness();
-  const form = request("POST", "/api/admin/review/cases", {
+  const form = request("POST", "/api/community-intake/submissions", {
     headers: { "sec-fetch-site": "same-origin", "content-type": "application/x-www-form-urlencoded" },
     body: "submissionId=1",
   });
@@ -89,8 +97,8 @@ test("a write without a body is forwarded without one, and a parameter fills the
   assert.equal(upstream[0].request.headers.has("content-type"), false);
   assert.equal(upstream[0].body, "");
 
-  await forwardToV2(request("GET", "/api/admin/publication/releases/r-1"), dependencies);
-  assert.equal(upstream[1].request.url, "https://api.example.test/api/v2/publication/releases/r-1/inspection");
+  await forwardToV2(request("GET", "/api/community-intake/submissions/sub-1"), dependencies);
+  assert.equal(upstream[1].request.url, "https://api.example.test/api/v2/me/contributions/sub-1");
 });
 
 test("refusals are Problem Details with a code", async () => {
@@ -110,12 +118,12 @@ test("a listed GET is forwarded with the bearer token, a correlation id and its 
   const { dependencies, upstream } = harness({
     reply: () => new Response('{"items":[]}', { status: 200, headers: { "content-type": "application/json" } }),
   });
-  const response = await forwardToV2(request("GET", "/api/admin/review/cases?limit=25&state=new"), dependencies);
+  const response = await forwardToV2(request("GET", "/api/community-intake/submissions?limit=25&state=new"), dependencies);
 
   assert.equal(upstream.length, 1);
   const forwarded = upstream[0].request;
   assert.equal(forwarded.method, "GET");
-  assert.equal(forwarded.url, "https://api.example.test/api/v2/review/cases?limit=25&state=new");
+  assert.equal(forwarded.url, "https://api.example.test/api/v2/me/contributions?limit=25&state=new");
   assert.equal(forwarded.headers.get("authorization"), "Bearer session-token");
   assert.match(forwarded.headers.get("x-correlation-id"), UUID);
   assert.equal(response.status, 200);
@@ -149,4 +157,39 @@ test("the API's status, body and challenge come back unchanged", async () => {
   assert.equal(response.status, 401);
   assert.equal(response.headers.get("www-authenticate"), 'Bearer error="invalid_token"');
   assert.deepEqual(await response.json(), { status: 401, code: "auth.invalidToken" });
+});
+
+test("forwardToV2 forwards trimmed client IP from cf-connecting-ip and preserves Retry-After on 429", async () => {
+  const { dependencies, upstream } = harness({
+    reply: () =>
+      Response.json(
+        { status: 429, code: "request.rateLimited" },
+        { status: 429, headers: { "retry-after": "60" } },
+      ),
+  });
+
+  const response = await forwardToV2(
+    request("POST", "/api/community-intake/submissions", {
+      headers: {
+        "sec-fetch-site": "same-origin",
+        "content-type": "application/json",
+        "cf-connecting-ip": " 198.51.100.42 ",
+      },
+      body: "{}",
+    }),
+    dependencies,
+  );
+
+  assert.equal(upstream.length, 1);
+  assert.equal(upstream[0].request.headers.get(FORWARDED_CLIENT_IP_HEADER), "198.51.100.42");
+  assert.equal(response.status, 429);
+  assert.equal(response.headers.get("retry-after"), "60");
+  assert.equal(response.headers.get("cache-control"), "no-store, private");
+
+  assert.deepEqual(forwardedClientIpHeaders(new Headers({ "cf-connecting-ip": "   " })), {});
+  assert.deepEqual(forwardedClientIpHeaders(new Headers()), {});
+  const jsonHeaders = forwardedResponseHeaders(new Headers({ "retry-after": "45", "www-authenticate": "Bearer" }));
+  assert.equal(jsonHeaders.get("retry-after"), "45");
+  assert.equal(jsonHeaders.get("www-authenticate"), "Bearer");
+  assert.equal(jsonHeaders.get("cache-control"), "no-store, private");
 });

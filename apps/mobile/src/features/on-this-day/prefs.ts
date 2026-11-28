@@ -1,16 +1,9 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { createStoredPref } from "@/lib/stored-pref";
 
 import { DEFAULT_PREFS, type MemoryPrefs } from "./on-this-day";
 
 // 那年今天's two switches, 少显示 (per panda or place) and 关闭, kept on this device. They are a viewing
 // preference with no value elsewhere, so they need no account, work signed out, and cost no server change.
-
-const KEY = "onThisDay";
-let current: MemoryPrefs | undefined;
-let reading: Promise<MemoryPrefs> | undefined;
-let pendingWrite = Promise.resolve();
-const listeners = new Set<(prefs: MemoryPrefs) => void>();
 
 function parse(stored: string | null): MemoryPrefs {
   if (!stored) return DEFAULT_PREFS;
@@ -25,34 +18,16 @@ function parse(stored: string | null): MemoryPrefs {
   }
 }
 
-function read(): Promise<MemoryPrefs> {
-  reading ??= AsyncStorage.getItem(KEY)
-    .catch(() => null)
-    .then((stored) => {
-      current ??= parse(stored);
-      return current;
-    });
-  return reading;
-}
+const pref = createStoredPref<MemoryPrefs>({
+  key: "onThisDay",
+  parse,
+  serialize: (next) => JSON.stringify(next),
+});
 
-export function setMemoryPrefs(next: MemoryPrefs): void {
-  current = next;
-  for (const listener of listeners) listener(next);
-  pendingWrite = pendingWrite.then(() => AsyncStorage.setItem(KEY, JSON.stringify(next))).catch(() => undefined);
-}
+export const setMemoryPrefs = pref.set;
 
 /** The stored switches; null until read, so nothing flashes in and out. */
-export function useMemoryPrefs(): MemoryPrefs | null {
-  const [prefs, setPrefs] = useState<MemoryPrefs | null>(current ?? null);
-  useEffect(() => {
-    listeners.add(setPrefs);
-    if (current === undefined) void read().then(setPrefs);
-    return () => {
-      listeners.delete(setPrefs);
-    };
-  }, []);
-  return prefs;
-}
+export const useMemoryPrefs = pref.useValue;
 
 export function showLess(prefs: MemoryPrefs, subjectKey: string): MemoryPrefs {
   return prefs.less.includes(subjectKey) ? prefs : { ...prefs, less: [...prefs.less, subjectKey] };

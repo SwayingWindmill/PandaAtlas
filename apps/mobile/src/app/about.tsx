@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -10,35 +10,14 @@ import { StatTile } from "@/components/stat-tile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
-import { api } from "@/lib/api";
-
-interface Counts {
-  version: string;
-  pandas: number;
-  sources: number;
-  photos: number;
-}
+import { statsQueryOptions } from "@/features/about/stats";
+import { failedWithoutData } from "@/lib/query-failed";
 
 /** 内容和照片从哪来: what the published release holds, and where a fan sees each source and credit. */
 export default function AboutScreen() {
-  const [counts, setCounts] = useState<Counts | null>(null);
-  const [failed, setFailed] = useState(false);
-
-  const load = useCallback(() => {
-    api
-      .GET("/api/v2/stats")
-      .then(({ data }) => {
-        if (!data) throw new Error("Stats unavailable");
-        setCounts({
-          version: data.release.version,
-          pandas: data.stats.pandaCount,
-          sources: data.stats.evidenceSourceCount,
-          photos: data.stats.mediaCount,
-        });
-      })
-      .catch(() => setFailed(true));
-  }, []);
-  useEffect(load, [load]);
+  const stats = useQuery(statsQueryOptions());
+  const { data: counts, refetch } = stats;
+  const failed = failedWithoutData(stats);
 
   const stacked = useStacked();
   const count = (value: number, unit: string) => `${value.toLocaleString("zh-CN")} ${unit}`;
@@ -48,12 +27,9 @@ export default function AboutScreen() {
       {failed ? (
         <LoadFailed
           message="暂时打不开。"
-          onRetry={() => {
-            setFailed(false);
-            load();
-          }}
+          onRetry={() => void refetch()}
         />
-      ) : counts === null ? (
+      ) : !counts ? (
         <View className="gap-row" accessibilityLabel="正在加载">
           <Skeleton className="h-20 w-full rounded-tile" />
           <Skeleton className="h-20 w-full rounded-tile" />

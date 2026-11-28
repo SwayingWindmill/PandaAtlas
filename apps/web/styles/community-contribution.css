@@ -1,5 +1,6 @@
 .contribution-page {
   min-height: 100vh;
+  min-height: 100dvh;
   background:
     radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 28rem),
     var(--bg);
@@ -283,7 +284,6 @@
   margin-top: 0.2rem;
 }
 
-.contribution-attachment-list,
 .contribution-source-list,
 .contribution-result-list,
 .contribution-timeline,
@@ -294,7 +294,6 @@
   list-style: none;
 }
 
-.contribution-attachment-list li,
 .contribution-source-list li,
 .contribution-result-list li,
 .contribution-revisions li {
@@ -306,14 +305,12 @@
   background: color-mix(in srgb, var(--accent) 3%, var(--bg));
 }
 
-.contribution-attachment-list span,
 .contribution-source-list span,
 .contribution-result-list p,
 .contribution-revisions p {
   overflow-wrap: anywhere;
 }
 
-.contribution-attachment-list small,
 .contribution-result-list small {
   color: var(--muted);
 }

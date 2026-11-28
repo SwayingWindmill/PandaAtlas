@@ -19,8 +19,8 @@ import {
   subscribeToProfilePreferences,
   type StoredProfilePreferenceEntry,
 } from "@/features/preferences/profile-preferences";
-import type { PublicLocale } from "@/foundation/content/locales";
-import { isEngagementUiEnabled } from "@/lib/engagement/config";
+import type { PublicLocale } from "@/lib/locales";
+import { isEngagementUiEnabled } from "@/lib/feature-flags";
 
 interface Props {
   locale: PublicLocale;
@@ -40,7 +40,6 @@ function formatDate(value: string, locale: PublicLocale): string {
 
 function relationshipLabel(entry: PassportEntry, locale: PublicLocale): string {
   if (entry.relationshipState === "active") return locale === "zh" ? "已收藏" : "Favorited";
-  if (entry.relationshipState === "inactive") return locale === "zh" ? "收藏历史" : "Favorite history";
   return locale === "zh" ? "贡献记录" : "Contribution record";
 }
 

@@ -24,8 +24,9 @@ test("the production Web Worker serves cacheable responses from Workers Cache", 
   assert.deepEqual(workers.web.exports.PublicPages, { type: "worker", cache: { enabled: true } });
 });
 
-test("the API authorizes Web public-cache purges through its service binding props, not a secret", () => {
+test("the API authorizes Web public-cache purges and Web client-IP forwarding through service binding props", () => {
   assert.deepEqual(workers.api.env.PUBLIC_WEB, { type: "worker", worker: "zhipanda-v2-web", props: { publicCachePurge: true } });
+  assert.deepEqual(workers.web.env.V2_API, { type: "worker", worker: "zhipanda-v2-api", props: { trustedWebClientIp: true } });
   for (const key of ["PUBLIC_REVALIDATION_AUTH", "PUBLIC_WEB_BASE_URL"]) assert.equal(key in workers.api.env, false, key);
 });
 
@@ -70,13 +71,37 @@ test("no production text binding points at a workers.dev origin", () => {
   }
 });
 
-test("the production Web Worker keeps the admin shell off whatever the deployer's environment says", () => {
+test("the production Web Worker does not expose an admin shell flag", () => {
   const previous = process.env.ADMIN_SHELL_ENABLED;
   process.env.ADMIN_SHELL_ENABLED = "true";
   try {
-    assert.deepEqual(webConfig(production).worker.env.ADMIN_SHELL_ENABLED, { type: "text", value: "false" });
+    assert.equal("ADMIN_SHELL_ENABLED" in webConfig(production).worker.env, false);
   } finally {
     if (previous === undefined) delete process.env.ADMIN_SHELL_ENABLED;
     else process.env.ADMIN_SHELL_ENABLED = previous;
+  }
+});
+
+test("the production API excludes E2E fixture endpoints and tokens", () => {
+  const workerEntry = readFileSync(new URL("../../../services/api/worker/index.mjs", import.meta.url), "utf8");
+  const appModule = readFileSync(new URL("../../../services/api/src/app.module.ts", import.meta.url), "utf8");
+  assert.doesNotMatch(workerEntry, /e2e-fixture/u);
+  assert.doesNotMatch(appModule, /e2e-fixture/u);
+  assert.equal("E2E_FIXTURE_TOKEN" in workers.api.env, false);
+});
+
+test("production Workers configure distinct Cloudflare rate-limit namespaces for ask, writes, sensitive ops and OTP", () => {
+  const bindings = [
+    ["api", "ASK_RATE_LIMIT", workers.api.env.ASK_RATE_LIMIT],
+    ["api", "WRITE_RATE_LIMIT", workers.api.env.WRITE_RATE_LIMIT],
+    ["api", "SENSITIVE_RATE_LIMIT", workers.api.env.SENSITIVE_RATE_LIMIT],
+    ["web", "AUTH_OTP_RATE_LIMIT", workers.web.env.AUTH_OTP_RATE_LIMIT],
+  ];
+  const namespaces = new Set();
+  for (const [worker, name, binding] of bindings) {
+    assert.ok(binding, `${worker}.${name} must be configured`);
+    assert.equal(binding.type, "rate-limit", `${worker}.${name} must be a rateLimit binding`);
+    assert.ok(!namespaces.has(binding.namespace), `duplicate rate-limit namespace ${binding.namespace}`);
+    namespaces.add(binding.namespace);
   }
 });

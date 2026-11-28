@@ -1,8 +1,8 @@
 import type { AuditEventConsumerService } from "../modules/audit/infrastructure/audit-event-consumer.service.js";
 import type { NotificationEventConsumerService } from "../modules/notification/infrastructure/notification-event-consumer.service.js";
 import type { NotificationProviderWorkerService } from "../modules/notification/infrastructure/notification-provider-worker.service.js";
-import type { PublicCachePort } from "../modules/publication/application/public-cache.port.js";
-import type { PublicCacheConsumerService } from "../modules/publication/infrastructure/public-cache-consumer.service.js";
+import type { PublicCachePort } from "../modules/public-read/application/public-cache.port.js";
+import type { PublicCacheConsumerService } from "../modules/public-read/infrastructure/public-cache-consumer.service.js";
 import type { PrivacyRequestProcessorService } from "../modules/privacy/infrastructure/privacy-request-processor.service.js";
 import type { UpdatesEventConsumerService } from "../modules/updates/infrastructure/updates-event-consumer.service.js";
 import type { AsyncDownstreamHeartbeat } from "../platform/integration/async-downstream-heartbeat.js";

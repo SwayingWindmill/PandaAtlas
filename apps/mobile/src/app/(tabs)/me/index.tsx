@@ -1,153 +1,125 @@
-import { Image } from "expo-image";
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { Pressable, ScrollView, TextInput, View } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import { Stack, router } from "expo-router";
+import { useMemo, useState } from "react";
+import { Platform, Pressable, ScrollView, TextInput, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
-import { ListCell, ListSection } from "@/components/grouped-list";
+import { Chevron, ListCell, ListSection, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Bell, CalendarHeart, Flag, FolderHeart, LayoutGrid, MapPin, PawPrint, Settings } from "@/components/icons";
-import { Page } from "@/components/page";
-import { SectionHeader } from "@/components/section-header";
+import { Bell, FilePen, Flag, Heart, MapPin, Pencil, Plus, Settings } from "@/components/icons";
+import { BARLESS_TOP } from "@/components/page";
+import { PandaThumb } from "@/components/panda-thumb";
+import { ProgressRing } from "@/components/progress-ring";
+import { StatusBarCover } from "@/components/status-bar-cover";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { CheckinCard } from "@/features/checkin/checkin-card";
-import { statusLabel } from "@/features/corrections/correction";
-import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
+import { type SeenEntry, buildLifeList } from "@/features/book/book";
+import { Mosaic } from "@/features/collections/mosaic";
+import { collectionsQueryOptions } from "@/features/collections/collections";
+import { contributionsQueryOptions } from "@/features/corrections/submissions";
 import { useFollowed } from "@/features/engagement/favorites";
-import { localToday, shortDay } from "@/features/engagement/seen";
-import { loadMilestones } from "@/features/milestones/load";
-import { useMilestonesOn } from "@/features/milestones/prefs";
-import { loadInbox } from "@/features/notifications/inbox";
+import { useFollowedVenues } from "@/features/engagement/followed-venues";
+import {
+  guestCollectionsQueryOptions,
+  guestGamesQueryOptions,
+  guestSeenQueryOptions,
+  guestVisitsQueryOptions,
+} from "@/features/engagement/guest-store";
+import { localToday } from "@/features/engagement/seen";
+import { guestMilestonesQueryOptions, milestonesQueryOptions } from "@/features/milestones/load";
+import { useMilestonePrefs } from "@/features/milestones/prefs";
+import { inboxQueryOptions } from "@/features/notifications/inbox";
 import { unreadCount } from "@/features/notifications/notifications";
-import { openPanda } from "@/features/pandas/panda-row";
-import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
+import { type PandaListItem, pandaIndexQueryOptions, placeName, placesQueryOptions } from "@/features/pandas/pandas";
 import { ProfileAvatar } from "@/features/profile/avatar";
 import { NICKNAME_MAX, displayName, useProfile } from "@/features/profile/profile";
+import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
-import { PandaAvatar } from "@/features/today/followed-strip";
-import { StoryPhotoTile } from "@/features/today/story-photo-tile";
-import { type StoryPhoto, useStoryPhotos } from "@/features/today/story-photos";
+import { useStoryPhotos } from "@/features/today/story-photos";
+import { visitsQueryOptions } from "@/features/visits/visits";
+import { YearReviewBanner } from "@/features/year-review/banner";
+import { authedApi } from "@/lib/api";
+import { useBottomClearance } from "@/lib/bottom-clearance";
 import { successHaptic } from "@/lib/haptics";
-import { HAIRLINE } from "@/lib/surface";
-import { cn } from "@/lib/utils";
+import { usePullToRefresh } from "@/lib/pull-to-refresh";
+import { PAGE_COLUMN } from "@/lib/surface";
+import { useIOSColors } from "@/lib/theme";
+import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 
-const AVATAR = 72;
+const HEADER_AVATAR = 48;
+const STACKED_FACE = 26;
+const COLLECTION_MOSAIC = 56;
+const MILESTONE_THUMB = 40;
 
-/** The round 设置 button in the corner of the profile card, as Music and the App Store put the account. */
-function SettingsButton() {
-  return (
-    <Pressable
-      onPress={() => router.push("/settings")}
-      role="button"
-      accessibilityLabel="设置"
-      className="absolute right-row top-row size-11 items-center justify-center rounded-full bg-secondary active:opacity-70"
-    >
-      <Icon icon={Settings} size="subhead" tone="label" />
-    </Pressable>
-  );
+async function loadCloudLifeCounts() {
+  const [games, seen] = await Promise.all([
+    authedApi.GET("/api/v2/me/panda-book"),
+    authedApi.GET("/api/v2/me/seen-pandas"),
+  ]);
+  if (!games.data || !seen.data) throw new Error("Book summary unavailable");
+  return buildLifeList(games.data.items, seen.data.items);
 }
 
-function ProfileCard({ children }: { children: React.ReactNode }) {
-  return (
-    <View className="gap-stack rounded-card bg-card p-stack" style={{ borderCurve: "continuous" }}>
-      {children}
-      <SettingsButton />
-    </View>
-  );
+function yearMonthLabel(date: string): string {
+  const [year, month] = date.split("-");
+  return year && month ? `${year}年${Number(month)}月` : date;
 }
 
-/** Photos in the signed-out card, then the 今天的熊猫 strip under it. */
-const COLLAGE = 3;
-const STRIP = 6;
-const STRIP_TILE = 128;
-const COLLAGE_HEIGHT = 196;
-
-function CollagePhoto({ photo, style }: { photo: StoryPhoto | undefined; style: object }) {
-  return (
-    <View className="overflow-hidden bg-secondary" style={style}>
-      {photo ? (
-        <Image source={photo.url} style={{ flex: 1 }} contentFit="cover" transition={200} accessible={false} />
-      ) : null}
-    </View>
-  );
+function formatCount(value: number | undefined): string | undefined {
+  return value === undefined || value === 0 ? undefined : value.toLocaleString("zh-CN");
 }
 
-/**
- * Three of today's reviewed panda photos across the top of the signed-out card, one large and two
- * stacked, as the App Store fronts a story. Real pandas, named in the footnote under the title.
- */
-function Collage({ photos }: { photos: StoryPhoto[] }) {
+function OverlappingFaces({
+  pandas,
+  limit,
+  borderColor,
+}: {
+  pandas: PandaListItem[];
+  limit: number;
+  borderColor: string;
+}) {
+  const shown = pandas.slice(0, limit);
+  if (shown.length === 0) return null;
   return (
-    <View className="flex-row gap-hair-gap" style={{ height: COLLAGE_HEIGHT }} accessible={false}>
-      <CollagePhoto photo={photos[0]} style={{ flex: 3 }} />
-      <View className="gap-hair-gap" style={{ flex: 2 }}>
-        <CollagePhoto photo={photos[1]} style={{ flex: 1 }} />
-        <CollagePhoto photo={photos[2]} style={{ flex: 1 }} />
-      </View>
-    </View>
-  );
-}
-
-function SignedOut() {
-  const photos = useStoryPhotos(localToday(), COLLAGE + STRIP);
-  const pictured = photos.slice(0, COLLAGE).map((photo) => photo.name);
-  const strip = photos.slice(COLLAGE);
-  return (
-    <View className="gap-section">
-      <View className="overflow-hidden rounded-card bg-card" style={{ borderCurve: "continuous" }}>
-        <Collage photos={photos} />
-        <View className="gap-stack p-stack">
-          <View className="gap-hair-gap">
-            <Text variant="title">把喜欢的熊猫留在身边</Text>
-            <Text variant="subheadline" className="text-muted-foreground">
-              登录后，关注的熊猫、图鉴和去过的地点都保存在你的账号里，换手机也不会丢。
-            </Text>
-            {pictured.length > 0 ? (
-              <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
-                {`照片：${pictured.join("、")}`}
-              </Text>
-            ) : null}
-          </View>
-          <Button onPress={() => router.push("/sign-in")}>
-            <Text>登录</Text>
-          </Button>
+    <View className="flex-row items-center" accessible={false} importantForAccessibility="no-hide-descendants">
+      {shown.map((panda, index) => (
+        <View
+          key={panda.id}
+          style={{
+            marginLeft: index === 0 ? 0 : -8,
+            borderWidth: 2,
+            borderColor,
+            borderRadius: STACKED_FACE / 2 + 2,
+          }}
+        >
+          <PandaThumb pandaId={panda.id} name={panda.name} size={STACKED_FACE} />
         </View>
-        <SettingsButton />
-      </View>
-      <ListSection title="登录后可以">
-        <ListCell icon={PawPrint} label="关注熊猫" detail="在今天页第一时间看到它们的新动态" />
-        <ListCell icon={LayoutGrid} label="点亮图鉴" detail="猜中每日一猫、去现场见过，都记进你的图鉴" />
-        <ListCell icon={FolderHeart} label="收进合集" detail="把喜欢的熊猫按自己的方式分组" />
-        <ListCell icon={MapPin} label="记下去过的地点" detail="去过的基地和动物园，一处不落" />
-        <ListCell icon={CalendarHeart} label="每日打卡" detail="每天打开每日一猫就记一天，累计不清零" />
-        <ListCell icon={Bell} label="收到通知" detail="关注的熊猫资料更新时告诉你" last />
-      </ListSection>
-      {strip.length > 0 ? (
-        <View className="gap-row">
-          <SectionHeader title="今天的熊猫" action={{ label: "找熊猫", href: "/find" }} />
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            className="-mx-inset"
-            contentContainerClassName="gap-row px-inset"
-          >
-            {strip.map((photo) => (
-              <StoryPhotoTile key={photo.pandaId} photo={photo} width={STRIP_TILE} slot={`me-${photo.pandaId}`} />
-            ))}
-          </ScrollView>
-        </View>
-      ) : null}
+      ))}
     </View>
   );
 }
 
-function Profile({ email }: { email: string | null }) {
+function PassportHeader({
+  signedIn,
+  email,
+  followedCount,
+  litCount,
+  leadPanda,
+}: {
+  signedIn: boolean;
+  email: string | null;
+  followedCount: number;
+  litCount: number;
+  leadPanda: PandaListItem | undefined;
+}) {
   const muted = String(useCSSVariable("--color-muted-foreground"));
+  const story = useStoryPhotos(localToday(), 1);
   const { profile, rename } = useProfile();
-  const [draft, setDraft] = useState("");
   const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "failed">("idle");
 
   async function save() {
@@ -161,23 +133,56 @@ function Profile({ email }: { email: string | null }) {
     setStatus("idle");
   }
 
-  if (!profile) return <Skeleton className="h-44 w-full rounded-card" accessibilityLabel="正在加载" />;
-  const name = displayName(profile, email);
+  if (signedIn && !profile) {
+    return <Skeleton className="h-14 w-full rounded-card" accessibilityLabel="正在加载" />;
+  }
+
+  const title = signedIn && profile ? displayName(profile, email) : "熊猫护照";
+  const subtitle = signedIn
+    ? `已云端同步　${followedCount} 关注　${litCount} 点亮`
+    : `本机已记 ${followedCount} 关注　${litCount} 点亮`;
+  const guestPhoto = !leadPanda ? story[0] : undefined;
 
   return (
-    <ProfileCard>
-      <ProfileAvatar name={name} size={AVATAR} />
-      <View className="gap-hair-gap">
-        <Text variant="title" numberOfLines={1}>
-          {name}
-        </Text>
-        {email && email !== name ? (
-          <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
-            {email}
+    <View className="gap-row">
+      <View className="flex-row items-center gap-row">
+        {leadPanda ? (
+          <PandaThumb pandaId={leadPanda.id} name={leadPanda.name} size={HEADER_AVATAR} />
+        ) : guestPhoto ? (
+          <PandaThumb pandaId={guestPhoto.pandaId} name={guestPhoto.name} photoUrl={guestPhoto.url} size={HEADER_AVATAR} />
+        ) : (
+          <ProfileAvatar name={signedIn ? title : null} size={HEADER_AVATAR} quiet />
+        )}
+        <View className="min-w-0 flex-1 gap-hair-gap">
+          <Text variant="title" role="heading" numberOfLines={1}>
+            {title}
           </Text>
-        ) : null}
+          <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
+            {subtitle}
+          </Text>
+        </View>
+        {signedIn ? (
+          editing ? null : (
+            <Pressable
+              onPress={() => {
+                setDraft(profile?.nickname ?? "");
+                setEditing(true);
+              }}
+              role="button"
+              accessibilityLabel="改名字"
+              className="size-11 items-center justify-center active:opacity-70"
+            >
+              <Icon icon={Pencil} tone="tint" />
+            </Pressable>
+          )
+        ) : (
+          <Button variant="tinted" size="sm" onPress={() => router.push("/sign-in")}>
+            <Text>绑定同步</Text>
+          </Button>
+        )}
       </View>
-      {editing ? (
+
+      {signedIn && editing ? (
         <View className="gap-stack-tight">
           <TextInput
             value={draft}
@@ -204,182 +209,369 @@ function Profile({ email }: { email: string | null }) {
             </Text>
           ) : null}
         </View>
-      ) : (
-        <Button
-          variant="tinted"
-          size="sm"
-          className="self-start"
-          onPress={() => {
-            setDraft(profile.nickname);
-            setEditing(true);
-          }}
-        >
-          <Text>改名字</Text>
-        </Button>
-      )}
-    </ProfileCard>
-  );
-}
-
-function Following() {
-  const followed = useFollowed();
-  const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
-  useEffect(() => {
-    void loadPandaIndex().then(setPandas);
-  }, []);
-  if (followed === null || pandas === null) return null;
-  const items = pandas.filter((panda) => followed.has(panda.id));
-  return (
-    <View className="gap-row">
-      <SectionHeader
-        title="关注的熊猫"
-        count={String(items.length)}
-        action={items.length === 0 ? { label: "找熊猫", href: "/find" } : undefined}
-      />
-      {items.length === 0 ? (
-        <Text variant="subheadline" className="text-muted-foreground">
-          在熊猫资料页点「关注」，它们会排在这里。
-        </Text>
-      ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="-mx-inset"
-          contentContainerClassName="gap-row px-inset"
-        >
-          {items.map((panda) => (
-            <PandaAvatar key={panda.id} panda={panda} />
-          ))}
-        </ScrollView>
-      )}
+      ) : null}
     </View>
   );
 }
 
-function Destinations() {
-  const [unread, setUnread] = useState(0);
-  const milestonesOn = useMilestonesOn();
-  // The latest 里程碑, said beside the row as 通知 says its unread count; nothing while there is none.
-  const [latest, setLatest] = useState<string | undefined>(undefined);
-  useFocusEffect(
-    useCallback(() => {
-      loadInbox()
-        .then((messages) => setUnread(unreadCount(messages)))
-        .catch(() => setUnread(0));
-    }, []),
-  );
-  useFocusEffect(
-    useCallback(() => {
-      if (!milestonesOn) return;
-      loadMilestones()
-        .then((items) => setLatest(items[0]?.title))
-        .catch(() => setLatest(undefined));
-    }, [milestonesOn]),
-  );
-  return (
-    <ListSection>
-      <ListCell label="我的合集" icon={FolderHeart} href="/collections" />
-      <ListCell label="去过的地点" icon={MapPin} href="/visits" />
-      {milestonesOn ? <ListCell label="里程碑" icon={Flag} meta={latest} href="/milestones" /> : null}
-      <ListCell
-        label="通知"
-        icon={Bell}
-        meta={unread > 0 ? `${unread} 条未读` : undefined}
-        href="/notifications"
-        last
-      />
-    </ListSection>
-  );
-}
+function BentoDashboard({ signedIn, email }: { signedIn: boolean; email: string | null }) {
+  const colors = useIOSColors();
+  const [wildInk] = useCSSVariable(["--color-map-wild-ink"]).map(String) as [string];
+  const stacked = useStacked();
+  const { accountId } = useAccount();
+  const id = accountId ?? "";
+  const signedOut = !signedIn;
 
-function Contributions() {
-  const [items, setItems] = useState<ContributionRecord[] | null>(null);
-  const [pandas, setPandas] = useState<Map<string, PandaListItem>>(new Map());
-  // Read again whenever 我的 shows, so a report sent from a profile appears on return.
-  useFocusEffect(
-    useCallback(() => {
-      loadMyContributions()
-        .then(setItems)
-        .catch(() => setItems(null));
-      loadPandaIndex()
-        .then((list) => setPandas(new Map(list.map((panda) => [panda.id, panda]))))
-        .catch(() => undefined);
-    }, []),
+  const followed = useFollowed();
+  const followedVenues = useFollowedVenues();
+  const milestonePrefs = useMilestonePrefs();
+  const milestonesOn = !(milestonePrefs?.off ?? false);
+
+  const indexQuery = useQuery(pandaIndexQueryOptions());
+  const placesQuery = useQuery(placesQueryOptions());
+
+  const cloudBook = useQuery({
+    queryKey: ["private", id, "me-book"],
+    queryFn: loadCloudLifeCounts,
+    enabled: signedIn && id.length > 0,
+  });
+  const guestSeen = useQuery({ ...guestSeenQueryOptions(), enabled: signedOut });
+  const guestGames = useQuery({ ...guestGamesQueryOptions(), enabled: signedOut });
+
+  const cloudVisits = useQuery({ ...visitsQueryOptions(id), enabled: signedIn && id.length > 0 });
+  const guestVisits = useQuery({ ...guestVisitsQueryOptions(), enabled: signedOut });
+
+  const cloudCollections = useQuery({ ...collectionsQueryOptions(id), enabled: signedIn && id.length > 0 });
+  const guestCollections = useQuery({ ...guestCollectionsQueryOptions(), enabled: signedOut });
+
+  const cloudMilestones = useQuery({ ...milestonesQueryOptions(id), enabled: signedIn && id.length > 0 && milestonesOn });
+  const guestMilestones = useQuery({ ...guestMilestonesQueryOptions(), enabled: signedOut && milestonesOn });
+
+  const inbox = useQuery({ ...inboxQueryOptions(id), enabled: signedIn && id.length > 0, select: unreadCount });
+  const contributions = useQuery({
+    ...contributionsQueryOptions(id),
+    enabled: signedIn && id.length > 0,
+    select: (items) => items.length,
+  });
+
+  useRefetchOnFocus(cloudBook.refetch, signedIn && id.length > 0);
+  useRefetchOnFocus(cloudVisits.refetch, signedIn && id.length > 0);
+  useRefetchOnFocus(cloudCollections.refetch, signedIn && id.length > 0);
+  useRefetchOnFocus(cloudMilestones.refetch, signedIn && id.length > 0 && milestonesOn);
+  useRefetchOnFocus(inbox.refetch, signedIn && id.length > 0);
+  useRefetchOnFocus(contributions.refetch, signedIn && id.length > 0);
+
+  const guestLifeList = useMemo(() => {
+    if (!signedOut || !guestSeen.data || !guestGames.data) return undefined;
+    const seenEntries: SeenEntry[] = Object.entries(guestSeen.data).map(([pandaId, entry]) => ({
+      pandaId,
+      seenOn: entry.seenOn,
+      placeId: entry.placeId ?? null,
+      firstSeenAt: entry.firstSeenAt,
+    }));
+    return buildLifeList(guestGames.data, seenEntries);
+  }, [guestGames.data, guestSeen.data, signedOut]);
+
+  const lifeList = signedIn ? cloudBook.data : guestLifeList;
+  const visits = signedIn ? cloudVisits.data : guestVisits.data;
+  const collections = (signedIn ? cloudCollections.data : guestCollections.data) ?? [];
+  const milestones = (signedIn ? cloudMilestones.data : guestMilestones.data) ?? [];
+
+  const pandasById = useMemo(
+    () => new Map((indexQuery.data ?? []).map((panda) => [panda.id, panda])),
+    [indexQuery.data],
   );
-  if (!items || items.length === 0) return null;
+  const catalog = indexQuery.data?.length ?? 0;
+  const litPandas = useMemo(
+    () => (lifeList?.entries ?? []).flatMap((entry) => pandasById.get(entry.pandaId) ?? []),
+    [lifeList?.entries, pandasById],
+  );
+  const followedPandas = useMemo(
+    () => [...(followed ?? [])].flatMap((pandaId) => pandasById.get(pandaId) ?? []),
+    [followed, pandasById],
+  );
+
+  const litCount = lifeList?.entries.length ?? 0;
+  const seenCount = lifeList?.seenCount ?? 0;
+  const recognizedCount = lifeList?.recognizedCount ?? 0;
+  const followedCount = followed?.size ?? 0;
+  const followedVenueCount = followedVenues?.size ?? 0;
+  const placeCount = visits ? new Set(visits.map((visit) => visit.placeId)).size : 0;
+  const latestVisitPlace = visits?.[0] ? placesQuery.data?.get(visits[0].placeId) : undefined;
+  const latestPlaceName = latestVisitPlace ? placeName(latestVisitPlace) : null;
+  const latestMilestone = milestones[0];
+  const leadPanda = followedPandas[0] ?? litPandas[0];
+
   return (
-    <View className="gap-row">
-      <SectionHeader title="我的纠错" count={String(items.length)} />
-      <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
-        {items.map((item, index) => {
-          const panda = pandas.get(item.targetPandaId);
-          const name = panda?.name ?? "熊猫";
-          const status = statusLabel(item.status);
-          return (
-            <View key={item.submissionId}>
-              <Pressable
-                disabled={!panda}
-                onPress={() => panda && openPanda(panda.slug)}
-                role="button"
-                accessibilityLabel={`${name}，${status}`}
-                className="min-h-11 gap-hair-gap px-inset py-row active:bg-accent"
-              >
-                <View className="flex-row items-center justify-between gap-row">
-                  <Text variant="headline" className="min-w-0 flex-1" numberOfLines={1}>
-                    {name}
-                  </Text>
-                  <Text
-                    variant="subheadline"
-                    className={cn(
-                      item.status === "accepted" ? "font-semibold text-foreground" : "text-muted-foreground",
-                    )}
-                  >
-                    {status}
+    <View className="gap-stack">
+      <PassportHeader
+        signedIn={signedIn}
+        email={email}
+        followedCount={followedCount}
+        litCount={litCount}
+        leadPanda={leadPanda}
+      />
+
+      <View className="gap-3">
+        <Pressable
+          role="button"
+          accessibilityLabel={`我的图鉴，已点亮 ${litCount} 只${catalog > 0 ? `，共 ${catalog} 只` : ""}`}
+          onPress={() => router.push("/book")}
+          className="active:opacity-80"
+        >
+          <Card className="flex-row items-center gap-row rounded-group p-inset">
+            <ProgressRing
+              value={catalog > 0 ? litCount / catalog : 0}
+              label={String(litCount)}
+              accessibilityLabel={`点亮 ${litCount}${catalog > 0 ? ` / ${catalog}` : ""}`}
+            />
+            <View className="min-w-0 flex-1 gap-stack-tight">
+              <View className="flex-row items-baseline justify-between gap-2">
+                <Text variant="headline">我的图鉴</Text>
+                <Text variant="subheadline" className="text-muted-foreground tabular-nums">
+                  {catalog > 0 ? `${litCount} / ${catalog}` : String(litCount)}
+                </Text>
+              </View>
+              {litCount > 0 ? (
+                <View className="flex-row items-center gap-2">
+                  <OverlappingFaces pandas={litPandas} limit={4} borderColor={colors.card} />
+                  <Text variant="footnote" className="min-w-0 flex-1 text-muted-foreground tabular-nums" numberOfLines={1}>
+                    {`${seenCount} 见过　${recognizedCount} 猜中`}
                   </Text>
                 </View>
-                <Text variant="footnote" className="text-muted-foreground tabular-nums">
-                  {`${shortDay(item.submittedAt.slice(0, 10))}提交`}
+              ) : (
+                <Text variant="footnote" className="text-muted-foreground" numberOfLines={1}>
+                  见过和猜中的熊猫会点亮在这里
                 </Text>
-                {item.statusExplanation ? (
-                  <Text variant="subheadline" className="text-muted-foreground">
-                    {item.statusExplanation}
+              )}
+            </View>
+            <Chevron />
+          </Card>
+        </Pressable>
+
+        <View className={stacked ? "gap-3" : "flex-row gap-3"}>
+          <Pressable
+            role="button"
+            accessibilityLabel={`关注 ${followedCount} 只`}
+            onPress={() => router.push("/following")}
+            className="flex-1 active:opacity-80"
+          >
+            <Card className="gap-stack-tight rounded-group p-inset">
+              <View className="flex-row items-center gap-1.5">
+                <Icon icon={Heart} size="subhead" tone="tint" strokeWidth={2} />
+                <Text variant="headline" className="min-w-0 flex-1" numberOfLines={1}>
+                  关注
+                </Text>
+                <Chevron />
+              </View>
+              <View className="flex-row items-center justify-between gap-2 pt-1">
+                <View className="flex-row items-baseline gap-1">
+                  <Text variant="stat">{followedCount}</Text>
+                  <Text variant="footnote" className="text-muted-foreground">
+                    只
+                  </Text>
+                </View>
+                {followedPandas.length > 0 ? (
+                  <OverlappingFaces pandas={followedPandas} limit={3} borderColor={colors.card} />
+                ) : followedVenueCount > 0 ? (
+                  <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
+                    {`含 ${followedVenueCount} 场馆`}
                   </Text>
                 ) : null}
-              </Pressable>
-              {index < items.length - 1 ? <View className="ml-inset bg-border" style={{ height: HAIRLINE }} /> : null}
-            </View>
-          );
-        })}
+              </View>
+            </Card>
+          </Pressable>
+
+          <Pressable
+            role="button"
+            accessibilityLabel={`去过的基地 ${placeCount} 处`}
+            onPress={() => router.push("/visits")}
+            className="flex-1 active:opacity-80"
+          >
+            <Card className="gap-stack-tight rounded-group p-inset">
+              <View className="flex-row items-center gap-1.5">
+                <Icon icon={MapPin} size="subhead" color={wildInk} strokeWidth={2} />
+                <Text variant="headline" className="min-w-0 flex-1" numberOfLines={1}>
+                  去过的基地
+                </Text>
+                <Chevron />
+              </View>
+              <View className="flex-row items-baseline justify-between gap-2 pt-1">
+                <View className="flex-row items-baseline gap-1">
+                  <Text variant="stat">{placeCount}</Text>
+                  <Text variant="footnote" className="text-muted-foreground">
+                    处
+                  </Text>
+                </View>
+                <Text variant="footnote" className="min-w-0 flex-1 text-right text-muted-foreground" numberOfLines={1}>
+                  {latestPlaceName ?? "去记录"}
+                </Text>
+              </View>
+            </Card>
+          </Pressable>
+        </View>
       </View>
+
+      <View className="gap-stack-tight">
+        <View className="flex-row items-center justify-between gap-row">
+          <Text variant="title" role="heading">
+            我的合集
+          </Text>
+          <Pressable
+            role="button"
+            accessibilityLabel={collections.length > 0 ? `我的合集，${collections.length}` : "我的合集"}
+            onPress={() => router.push("/collections")}
+            hitSlop={8}
+            className="min-h-11 flex-row items-center gap-0.5 active:opacity-70"
+          >
+            <Text variant="subheadline" className="font-semibold text-primary">
+              全部
+            </Text>
+            <Chevron />
+          </Pressable>
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="-mx-gutter"
+          contentContainerClassName="gap-3 px-gutter"
+        >
+          {collections.map((col) => (
+            <Pressable
+              key={col.collectionId}
+              role="button"
+              accessibilityLabel={`${col.name}，${col.pandaIds.length} 只熊猫`}
+              onPress={() => router.push({ pathname: "/collections/[id]", params: { id: col.collectionId } })}
+              className="flex-row items-center gap-3 rounded-group bg-card p-3 active:opacity-80"
+              style={{ minWidth: 214, maxWidth: 256, borderCurve: "continuous" }}
+            >
+              <Mosaic pandaIds={col.pandaIds} size={COLLECTION_MOSAIC} />
+              <View className="min-w-0 flex-1 gap-hair-gap">
+                <Text variant="headline" numberOfLines={1}>
+                  {col.name}
+                </Text>
+                <Text variant="footnote" className="text-muted-foreground tabular-nums">
+                  {col.pandaIds.length > 0 ? `${col.pandaIds.length} 只熊猫` : "还没有熊猫"}
+                </Text>
+              </View>
+            </Pressable>
+          ))}
+          <Pressable
+            role="button"
+            accessibilityLabel="新建合集"
+            onPress={() => router.push("/collections")}
+            className="items-center justify-center gap-1 rounded-group border border-dashed border-border px-4 py-3 active:opacity-75"
+            style={{ width: 132, minHeight: 80, borderCurve: "continuous" }}
+          >
+            <Icon icon={Plus} size="body" tone="tint" strokeWidth={2} />
+            <Text variant="footnote" className="font-medium text-muted-foreground">
+              新建合集
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </View>
+
+      {milestonesOn || signedIn ? (
+        <View className="gap-row">
+          {milestonesOn ? (
+            <Pressable
+              role="button"
+              accessibilityLabel={latestMilestone ? `里程碑，${latestMilestone.title}` : "里程碑"}
+              onPress={() => router.push("/milestones")}
+              className="flex-row items-center gap-row rounded-group bg-card px-inset py-3.5 active:opacity-80"
+              style={{ borderCurve: "continuous" }}
+            >
+              {latestMilestone?.subject.kind === "panda" ? (
+                <PandaThumb pandaId={latestMilestone.subject.id} name={latestMilestone.subject.name} size={MILESTONE_THUMB} />
+              ) : (
+                <Icon icon={Flag} size="title3" tone="tint" strokeWidth={2} />
+              )}
+              <View className="min-w-0 flex-1 gap-hair-gap">
+                <View className="flex-row items-center gap-1.5">
+                  <Icon icon={Flag} size="footnote" tone="tint" strokeWidth={2} />
+                  <Text variant="headline" className="min-w-0 flex-1" numberOfLines={1}>
+                    {latestMilestone ? `里程碑　${latestMilestone.title}` : "里程碑"}
+                  </Text>
+                </View>
+                <Text variant="footnote" className="text-muted-foreground tabular-nums" numberOfLines={1}>
+                  {latestMilestone
+                    ? `${latestMilestone.subject.name}　${yearMonthLabel(latestMilestone.date)}　共 ${milestones.length} 项记录`
+                    : "认出或见过第一只熊猫就会记在这里"}
+                </Text>
+              </View>
+              <Chevron />
+            </Pressable>
+          ) : null}
+          {signedIn ? <YearReviewBanner /> : null}
+        </View>
+      ) : null}
+
+      <ListSection>
+        <ListCell
+          label="通知与提醒"
+          icon={Bell}
+          meta={inbox.data ? `${inbox.data} 条未读` : undefined}
+          href="/notifications"
+        />
+        <ListCell
+          label="我的纠错"
+          icon={FilePen}
+          meta={formatCount(contributions.data)}
+          href="/contributions"
+        />
+        <ListCell label="设置" icon={Settings} href="/settings" last />
+      </ListSection>
     </View>
   );
 }
 
 export default function MeScreen() {
   const { state } = useSession();
+  const insets = useSafeAreaInsets();
+  const bottom = useBottomClearance();
+  const refreshControl = usePullToRefresh();
+  const top = Platform.OS === "android" ? insets.top + BARLESS_TOP : insets.top + 6;
+
   return (
-    <Page title="我的" back={false}>
-      {state.status === "loading" ? (
-        <Skeleton className="h-44 w-full rounded-card" accessibilityLabel="正在加载" />
-      ) : null}
-      {state.status === "signedOut" ? <SignedOut /> : null}
-      {state.status === "unavailable" ? (
-        <ProfileCard>
-          <ProfileAvatar name={null} size={AVATAR} />
-          <Text variant="subheadline" className="text-muted-foreground">
-            账号暂时不可用，请稍后再试。
-          </Text>
-        </ProfileCard>
-      ) : null}
-      {state.status === "signedIn" ? (
-        <View className="gap-section">
-          <Profile email={state.email} />
-          <Following />
-          <CheckinCard />
-          <Destinations />
-          <Contributions />
-        </View>
-      ) : null}
-    </Page>
+    <>
+      <StatusBarCover />
+      <ScrollView
+        className="flex-1 bg-background"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerClassName="gap-section px-gutter"
+        refreshControl={refreshControl}
+        contentContainerStyle={[PAGE_COLUMN, { paddingTop: top, paddingBottom: bottom }]}
+      >
+        <Stack.Screen options={{ title: "我的", headerShown: false }} />
+        {state.status === "loading" ? (
+          <View className="gap-stack" accessibilityLabel="正在加载">
+            <Skeleton className="h-14 w-full rounded-card" />
+            <Skeleton className="h-24 w-full rounded-group" />
+            <View className="flex-row gap-3">
+              <Skeleton className="h-24 flex-1 rounded-group" />
+              <Skeleton className="h-24 flex-1 rounded-group" />
+            </View>
+            <Skeleton className="h-44 w-full rounded-group" />
+          </View>
+        ) : state.status === "unavailable" ? (
+          <View className="gap-stack">
+            <Card className="flex-row items-center gap-row rounded-group p-inset">
+              <ProfileAvatar name={null} size={HEADER_AVATAR} quiet />
+              <Text variant="subheadline" className="min-w-0 flex-1 text-muted-foreground">
+                账号暂时不可用，请稍后再试。
+              </Text>
+            </Card>
+            <ListSection>
+              <ListCell label="设置" icon={Settings} href="/settings" last />
+            </ListSection>
+          </View>
+        ) : (
+          <BentoDashboard
+            signedIn={state.status === "signedIn"}
+            email={state.status === "signedIn" ? state.email : null}
+          />
+        )}
+      </ScrollView>
+    </>
   );
 }

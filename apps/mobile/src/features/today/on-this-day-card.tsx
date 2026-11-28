@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
 
+import { CalendarHeart } from "@/components/icons";
 import { SectionHeader } from "@/components/section-header";
 import { MemoryGroup, UndoLine } from "@/features/on-this-day/memory-group";
 import { type Memory, type MemoryPrefs, pickForCard, visibleMemories } from "@/features/on-this-day/on-this-day";
@@ -56,6 +57,7 @@ export function OnThisDayCard() {
     <View className="gap-row">
       <SectionHeader
         title="那年今天"
+        icon={CalendarHeart}
         action={more ? { label: "全部", href: "/on-this-day", accessibilityLabel: `那年今天全部 ${shown.length} 条` } : undefined}
       />
       {undoLine}

@@ -1,5 +1,4 @@
 import { loadPandaIndex, loadPlaces, placeName } from "@/features/pandas/pandas";
-import { localToday } from "@/features/engagement/seen";
 import type { Evidence } from "@/features/timeline/timeline";
 import { loadVisits } from "@/features/visits/visits";
 import { api, authedApi } from "@/lib/api";
@@ -45,10 +44,11 @@ async function loadPersonal(): Promise<PersonalRecords> {
 }
 
 /**
- * Today's memories. The panda list is needed; life events and stays are each optional, so an older data
- * release without them still tells birthdays, and a signed-out fan gets the public ones only.
+ * Each day's memories, the data read once. The panda list is needed; life events and stays are each
+ * optional, so an older data release without them still tells birthdays, and a signed-out fan gets the
+ * public ones only.
  */
-export async function loadMemories({ signedIn, today = localToday() }: { signedIn: boolean; today?: string }): Promise<Memory[]> {
+export async function loadMemoryDays({ signedIn, days }: { signedIn: boolean; days: string[] }): Promise<MemoryDay[]> {
   const [pandas, places, events, residencies, personal] = await Promise.all([
     loadPandaIndex(),
     loadPlaces().catch(() => new Map<string, Place>()),
@@ -56,7 +56,13 @@ export async function loadMemories({ signedIn, today = localToday() }: { signedI
     loadResidencies().catch(() => []),
     signedIn ? loadPersonal() : Promise.resolve(null),
   ]);
-  return memoriesOn({ today, pandas, events, residencies, places: memoryPlaces(places), personal });
+  const where = memoryPlaces(places);
+  return days.map((date) => ({ date, memories: memoriesOn({ today: date, pandas, events, residencies, places: where, personal }) }));
+}
+
+export interface MemoryDay {
+  date: string;
+  memories: Memory[];
 }
 
 const sources = new Map<string, Promise<Evidence | null>>();

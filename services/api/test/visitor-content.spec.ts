@@ -54,4 +54,16 @@ describe("visitor content", () => {
       codeOf(() => assertFacilityVisitGuide({ ...guide, tips: [{ topic: "food" as never, text: { en: "Snacks" } }] })),
     ).toBe("places.visitTipTopic");
   });
+
+  it("checks viewing windows and photo spots", () => {
+    const viewing = { activeWindows: [{ start: "09:00", end: "11:00" }, { start: "14:30", end: "16:30" }], napWindow: { start: "12:00", end: "14:30" } };
+    expect(() => assertFacilityVisitGuide({ ...guide, viewing, photoSpots: [{ name: { zh: "外场东侧" }, window: { start: "09:00", end: "10:00" } }] })).not.toThrow();
+    expect(codeOf(() => assertFacilityVisitGuide({ ...guide, viewing: { activeWindows: [] } }))).toBe("places.visitorViewing");
+    expect(codeOf(() => assertFacilityVisitGuide({ ...guide, viewing: { activeWindows: [{ start: "9:00", end: "11:00" }] } }))).toBe("places.visitorTime");
+    expect(codeOf(() => assertFacilityVisitGuide({ ...guide, viewing: { activeWindows: [{ start: "11:00", end: "10:00" }] } }))).toBe("places.visitorTime");
+    expect(
+      codeOf(() => assertFacilityVisitGuide({ ...guide, viewing: { activeWindows: [{ start: "09:00", end: "11:00" }, { start: "10:30", end: "12:00" }] } })),
+    ).toBe("places.visitorViewing");
+    expect(codeOf(() => assertFacilityVisitGuide({ ...guide, photoSpots: [{ name: {} }] }))).toBe("places.visitorTextEmpty");
+  });
 });

@@ -6,9 +6,7 @@ import {
   PANDA_FACT_PARTICIPANT,
   PANDA_PORT,
   PANDA_REFERENCE_PORT,
-  PANDA_REPOSITORY,
   PandaApplication,
-  type PandaRepository,
 } from "./application/panda.application.js";
 import { PostgresPandaFactParticipant } from "./infrastructure/postgres-panda-fact.participant.js";
 import { PostgresPandaPublicationQuery } from "./infrastructure/postgres-panda-publication.query.js";
@@ -18,14 +16,9 @@ import { PostgresPandaRepository } from "./infrastructure/postgres-panda.reposit
   imports: [DatabaseModule],
   providers: [
     {
-      provide: PANDA_REPOSITORY,
-      useFactory: (database: DatabaseService) => new PostgresPandaRepository(database),
-      inject: [DatabaseService],
-    },
-    {
       provide: PandaApplication,
-      useFactory: (repository: PandaRepository) => new PandaApplication(repository),
-      inject: [PANDA_REPOSITORY],
+      useFactory: (database: DatabaseService) => new PandaApplication(new PostgresPandaRepository(database)),
+      inject: [DatabaseService],
     },
     { provide: PostgresPandaFactParticipant, useClass: PostgresPandaFactParticipant },
     {

@@ -1,108 +1,118 @@
-import { Stack } from "expo-router";
-import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
+import { Stack, router } from "expo-router";
+import { Platform, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { Icon } from "@/components/icon";
+import { Calendar } from "@/components/icons";
+import { BARLESS_TOP } from "@/components/page";
+import { StatusBarCover } from "@/components/status-bar-cover";
 import { Text } from "@/components/ui/text";
 import { localToday } from "@/features/engagement/seen";
+import { CuratedGallerySection } from "@/features/explore/curated-gallery";
+import { DailyPlaySection } from "@/features/explore/daily-play-section";
+import { FeaturedPandaCard } from "@/features/explore/featured-panda-card";
+import { LearningAndPlaySection } from "@/features/explore/learning-and-play";
+import { LiveClockSection } from "@/features/explore/live-clock";
+import { StarOrFollowedStrip } from "@/features/explore/star-strip";
+import { SoundStripSection } from "@/features/sounds/sound-strip";
 import { FollowedChanges } from "@/features/today/followed-changes";
-import { FollowedStrip } from "@/features/today/followed-strip";
-import { OnThisDayCard } from "@/features/today/on-this-day-card";
-import { StoryCard } from "@/features/today/story-card";
-import { useStoryPhotos } from "@/features/today/story-photos";
-import { TodayBirthdays } from "@/features/today/today-birthdays";
-import { WeekCard } from "@/features/today/week-card";
+import { TodayVenueNews } from "@/features/today/venue-blocks";
+import { WeekHero, useWeekMemory } from "@/features/today/week-hero";
 import { useBottomClearance } from "@/lib/bottom-clearance";
+import { usePullToRefresh } from "@/lib/pull-to-refresh";
+import { PAGE_COLUMN, pageColumn } from "@/lib/surface";
 
-const STORIES = [
-  { id: "daily", title: "今天是哪只熊猫？", feature: "每日一猫", href: "/daily" },
-  { id: "guess", title: "看照片认熊猫", feature: "猜熊猫", href: "/guess" },
-  { id: "learn", title: "认识大熊猫", feature: "科普", href: "/learn" },
-  { id: "calendar", title: "这个月谁过生日", feature: "熊猫日历", href: "/calendar" },
-] as const;
+const WEEKDAYS = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"] as const;
 
-const WEEKDAY = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-
-/** "10月29日 星期四", as the date line under News' title. */
-function dateLine(now = new Date()) {
-  return `${now.getMonth() + 1}月${now.getDate()}日 ${WEEKDAY[now.getDay()]}`;
+function todayEyebrowLabel(): string {
+  const today = localToday();
+  const [year, month, day] = today.split("-").map(Number);
+  const weekday = WEEKDAYS[new Date(Date.UTC(year ?? 2026, (month ?? 1) - 1, day ?? 1)).getUTCDay()] ?? "";
+  return `${month} 月 ${day} 日　${weekday}`;
 }
 
-/**
- * iOS and Android draw 今天 in the system bar: on iOS the large title, which collapses into the bar
- * as the page scrolls. The web has no bar on a tab root, so the column draws the title there.
- */
-const TITLE_IN_COLUMN = Platform.OS === "web";
+function ExploreHeader() {
+  return (
+    <View className="flex-row items-end justify-between gap-3">
+      <View className="min-w-0 flex-1 gap-0.5">
+        <Text variant="footnote" className="font-medium text-muted-foreground tabular-nums" numberOfLines={1}>
+          {todayEyebrowLabel()}
+        </Text>
+        <Text variant="display" role="heading">
+          探索
+        </Text>
+      </View>
+      <Pressable
+        role="link"
+        accessibilityLabel="熊猫日历，查看日历"
+        onPress={() => router.push("/calendar")}
+        hitSlop={6}
+        className="mb-0.5 min-h-11 flex-row items-center gap-1.5 rounded-pill border-hairline border-border bg-card px-3 active:opacity-70"
+        style={{ borderCurve: "continuous" }}
+      >
+        <Icon icon={Calendar} size="footnote" tone="tint" strokeWidth={2} />
+        <Text variant="footnote" className="font-semibold" numberOfLines={1}>
+          熊猫日历
+        </Text>
+      </Pressable>
+    </View>
+  );
+}
 
-/** Gap between the small cards in the scroller, and what each snap moves past. */
-const GAP = 12;
-
-export default function TodayScreen() {
+export default function ExploreScreen() {
   const insets = useSafeAreaInsets();
   const bottom = useBottomClearance();
-  const { width, fontScale } = useWindowDimensions();
-  const photos = useStoryPhotos(localToday(), STORIES.length);
-  const column = Math.min(width, 700) - 32;
-  // The featured story is close to a 4:5 portrait. The smaller cards show about one and a half
-  // at a time, so the next one peeks in and says the row scrolls; they grow at big text sizes.
-  const lead = Math.round(column * 1.2);
-  const small = Math.round(Math.min(column * 0.72, 300));
-  const smallHeight = Math.round(Math.max(small * 1.22, 220 * Math.min(fontScale, 1.6)));
-  const [featured, ...rest] = STORIES;
+  const refreshControl = usePullToRefresh();
+  const { width } = useWindowDimensions();
+  const memory = useWeekMemory();
+
+  const top = Platform.OS === "android" ? insets.top + BARLESS_TOP : insets.top + 6;
+  const heroHeight = Math.round(pageColumn(width) * 0.62);
 
   return (
-    <ScrollView
-      className="flex-1 bg-background"
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerClassName="gap-section px-4"
-      contentContainerStyle={{ paddingTop: TITLE_IN_COLUMN ? insets.top + 12 : 0, paddingBottom: bottom }}
-    >
-      <Stack.Screen options={{ title: "今天" }} />
-      <View className="gap-stack">
-        {/* The date is the screen's one 笋金 mark: it says when, under the title as News dates its issue. */}
-        <View>
-          {TITLE_IN_COLUMN ? <Text variant="display">今天</Text> : null}
-          <Text variant="body" className="text-warm">
-            {dateLine()}
-          </Text>
+    <>
+      <StatusBarCover />
+      <ScrollView
+        className="flex-1 bg-background"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerClassName="gap-section px-gutter"
+        refreshControl={refreshControl}
+        contentContainerStyle={[PAGE_COLUMN, { paddingTop: top, paddingBottom: bottom }]}
+      >
+        <Stack.Screen options={{ title: "探索", headerShown: false }} />
+
+        <View className="gap-stack">
+          <ExploreHeader />
+          {memory ? (
+            <View className="relative">
+              <WeekHero hero={memory} height={heroHeight} />
+              <Pressable
+                role="link"
+                accessibilityLabel="查看全部那年今天记忆"
+                hitSlop={6}
+                onPress={() => router.push("/on-this-day")}
+                className="absolute top-3 right-3 min-h-9 justify-center rounded-pill bg-glass-fallback px-3 active:opacity-75"
+                style={{ borderCurve: "continuous" }}
+              >
+                <Text variant="footnote" className="font-semibold text-on-media">
+                  全部记忆
+                </Text>
+              </Pressable>
+            </View>
+          ) : (
+            <FeaturedPandaCard />
+          )}
+          <StarOrFollowedStrip />
+          <LiveClockSection />
         </View>
-        <StoryCard
-          featured
-          id={featured.id}
-          title={featured.title}
-          feature={featured.feature}
-          href={featured.href}
-          photo={photos[0]}
-          height={lead}
-        />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="-mx-4"
-          contentContainerClassName="px-4"
-          contentContainerStyle={{ gap: GAP }}
-          snapToInterval={small + GAP}
-          snapToAlignment="start"
-          decelerationRate="fast"
-        >
-          {rest.map((story, index) => (
-            <StoryCard
-              key={story.id}
-              id={story.id}
-              title={story.title}
-              feature={story.feature}
-              href={story.href}
-              photo={photos[index + 1]}
-              width={small}
-              height={smallHeight}
-            />
-          ))}
-        </ScrollView>
-      </View>
-      <OnThisDayCard />
-      <WeekCard />
-      <FollowedStrip />
-      <TodayBirthdays />
-      <FollowedChanges />
-    </ScrollView>
+
+        <DailyPlaySection />
+        <CuratedGallerySection />
+        <SoundStripSection />
+        <LearningAndPlaySection />
+        <TodayVenueNews />
+        <FollowedChanges />
+      </ScrollView>
+    </>
   );
 }

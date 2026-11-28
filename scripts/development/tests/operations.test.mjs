@@ -13,9 +13,13 @@ import {
   listDevelopmentCommands,
 } from "../catalog.mjs";
 import {
+  resolveCommandInvocation,
+} from "../command-runner.mjs";
+import {
   renderDevelopmentCommand,
   resolveDevelopmentInvocation,
 } from "../operations.mjs";
+import { formatSchemaSnapshot } from "../dump-db-schema.mjs";
 import { classifyDevelopmentScopes, createPlanForScopes, developmentPlanOutputs } from "../verify.mjs";
 
 const repoRoot = fileURLToPath(new URL("../../../", import.meta.url));
@@ -70,11 +74,19 @@ test("command rendering exposes the executable interface", () => {
 test("API client and Supabase foundation changes select the API verification scope", () => {
   assert.deepEqual(classifyDevelopmentScopes(["packages/api-client/src/schema.generated.ts"]), ["api"]);
   assert.deepEqual(classifyDevelopmentScopes(["infra/supabase/migrations/20260101000000_example.sql"]), ["release", "api"]);
+  assert.deepEqual(classifyDevelopmentScopes(["infra/supabase/schema.current.sql"]), ["release", "api"]);
   assert.deepEqual(classifyDevelopmentScopes(["scripts/development/check-api-db-types.mjs"]), ["release", "api"]);
+  assert.deepEqual(classifyDevelopmentScopes(["scripts/development/dump-db-schema.mjs"]), ["release", "api"]);
 });
 
 test("changed-path routing stays centralized in the development scope classifier", () => {
   assert.deepEqual(classifyDevelopmentScopes([".github/workflows/example.yml"]), ["release"]);
+  assert.deepEqual(classifyDevelopmentScopes([".agents/hooks.json"]), ["release"]);
+  assert.deepEqual(classifyDevelopmentScopes([".claude/settings.json"]), ["release"]);
+  assert.deepEqual(
+    classifyDevelopmentScopes([".agents/skills/poteto-mode/scripts/resume.ts"]),
+    ["release"],
+  );
   assert.deepEqual(classifyDevelopmentScopes(["apps/web/app/page.tsx"]), ["web"]);
   assert.deepEqual(classifyDevelopmentScopes(["apps/mobile/src/app/daily.tsx"]), ["mobile"]);
   assert.deepEqual(classifyDevelopmentScopes(["packages/world-map/src/world-land.generated.ts"]), ["web", "mobile"]);
@@ -83,6 +95,9 @@ test("changed-path routing stays centralized in the development scope classifier
   assert.deepEqual(classifyDevelopmentScopes(["scripts/development/tests/first-admin-bootstrap.test.mjs"]), ["release", "api"]);
   assert.deepEqual(classifyDevelopmentScopes(["tools/panda-data/src/panda_data/cli.py"]), ["curation", "data"]);
   assert.deepEqual(classifyDevelopmentScopes(["contracts/panda-data/pipeline-job.v1.schema.json"]), ["curation", "data"]);
+  assert.deepEqual(classifyDevelopmentScopes(["services/collector/src/collector/store.py"]), ["collector"]);
+  assert.deepEqual(classifyDevelopmentScopes(["data/collector/targets.yaml"]), ["collector"]);
+  assert.deepEqual(classifyDevelopmentScopes(["data/curation/learning/published-pandas.json"]), ["curation", "collector"]);
   // Documentation and ignore-rule changes run the release scope, whose verification checks doc references.
   assert.deepEqual(classifyDevelopmentScopes(["docs/architecture/example.md"]), ["release"]);
   assert.deepEqual(classifyDevelopmentScopes(["README.md"]), ["release"]);
@@ -126,6 +141,30 @@ test("Windows npm and npx commands run through the Node CLI without a shell", ()
       }),
     /requires npm_execpath/,
   );
+  assert.deepEqual(
+    resolveCommandInvocation("npm", ["run", "lint"], {
+      platform: "win32",
+      npmExecPath,
+      nodeExecutable,
+    }),
+    {
+      executable: nodeExecutable,
+      args: [npmExecPath, "run", "lint"],
+      shell: false,
+    },
+  );
+  assert.deepEqual(
+    resolveCommandInvocation("npm", ["run", "lint", "-w", "@zhipanda/api"], {
+      platform: "win32",
+      npmExecPath: "",
+      comSpec: "C:\\Windows\\System32\\cmd.exe",
+    }),
+    {
+      executable: "C:\\Windows\\System32\\cmd.exe",
+      args: ["/d", "/s", "/c", "npm run lint -w @zhipanda/api"],
+      shell: false,
+    },
+  );
 });
 
 test("operations CLI lists and describes catalog commands", () => {
@@ -137,9 +176,9 @@ test("operations CLI lists and describes catalog commands", () => {
   assert.equal(listed.status, 0, listed.stderr);
   assert.match(listed.stdout, /web\.dev/);
   assert.match(listed.stdout, /api\.dev/);
-  assert.match(listed.stdout, /admin\.dev/);
-  assert.match(listed.stdout, /admin\.status/);
-  assert.match(listed.stdout, /admin\.stop/);
+  assert.doesNotMatch(listed.stdout, /admin\.dev/);
+  assert.doesNotMatch(listed.stdout, /admin\.status/);
+  assert.doesNotMatch(listed.stdout, /admin\.stop/);
   assert.match(listed.stdout, /admin\.bootstrap/);
   assert.doesNotMatch(listed.stdout, /worker\./);
 
@@ -171,18 +210,9 @@ test("root package exposes the current canonical development interface", async (
     packageJson.scripts["dev:api"],
     "node scripts/development/operations.mjs run api.dev",
   );
-  assert.equal(
-    packageJson.scripts["dev:admin"],
-    "node scripts/development/operations.mjs run admin.dev",
-  );
-  assert.equal(
-    packageJson.scripts["status:admin"],
-    "node scripts/development/operations.mjs run admin.status",
-  );
-  assert.equal(
-    packageJson.scripts["stop:admin"],
-    "node scripts/development/operations.mjs run admin.stop",
-  );
+  assert.equal(packageJson.scripts["dev:admin"], undefined);
+  assert.equal(packageJson.scripts["status:admin"], undefined);
+  assert.equal(packageJson.scripts["stop:admin"], undefined);
   assert.equal(
     packageJson.scripts["bootstrap:admin"],
     "node scripts/development/operations.mjs run admin.bootstrap",
@@ -194,10 +224,6 @@ test("root package exposes the current canonical development interface", async (
   assert.equal(
     packageJson.scripts["check:repository-hygiene"],
     "node scripts/development/operations.mjs run release.check-repository-hygiene",
-  );
-  assert.equal(
-    packageJson.scripts["check:research-script-policy"],
-    "node scripts/development/operations.mjs run release.check-research-script-policy",
   );
   assert.equal(
     packageJson.scripts["check:batch-workflow-interface"],
@@ -236,4 +262,27 @@ test("Python-only scopes still install workspace dependencies for documentation 
   assert.equal(outputs.requires_python, "true");
   assert.equal(outputs.requires_uv, "true");
   assert.equal(developmentPlanOutputs(createPlanForScopes([])).requires_node_modules, "false");
+});
+
+test("formatSchemaSnapshot strips undeclared public extension ACL noise while preserving user functions and grants", () => {
+  const raw = [
+    'CREATE SCHEMA IF NOT EXISTS "identity";\r',
+    '\r',
+    '\r',
+    '\r',
+    'CREATE OR REPLACE FUNCTION "public"."set_updated_at"() RETURNS "trigger" AS $$ BEGIN RETURN NEW; END; $$ LANGUAGE plpgsql;\r',
+    'REVOKE ALL ON FUNCTION "public"."set_updated_at"() FROM PUBLIC;\r',
+    'GRANT ALL ON FUNCTION "public"."st_area"("geom" "public"."geometry") TO "anon";\r',
+    'REVOKE ALL ON FUNCTION "public"."postgis_version"() FROM PUBLIC;\r',
+    'GRANT ALL ON FUNCTION "identity"."auth_email_status"("requested_account_id" "uuid") TO "zhipanda_app";\r',
+    '\r',
+  ].join("\n");
+
+  const formatted = formatSchemaSnapshot(raw);
+  assert.doesNotMatch(formatted, /\r/u);
+  assert.doesNotMatch(formatted, /\n{3,}/u);
+  assert.doesNotMatch(formatted, /st_area|postgis_version/u);
+  assert.match(formatted, /CREATE OR REPLACE FUNCTION "public"\."set_updated_at"/u);
+  assert.match(formatted, /REVOKE ALL ON FUNCTION "public"\."set_updated_at"/u);
+  assert.match(formatted, /GRANT ALL ON FUNCTION "identity"\."auth_email_status"/u);
 });

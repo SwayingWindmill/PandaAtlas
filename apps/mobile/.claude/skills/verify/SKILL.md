@@ -1,0 +1,92 @@
+---
+name: verify
+description: Launch and drive the 吱熊猫 mobile app (apps/mobile, Expo) through its web build to prove a change works on the real app. Use after changing anything a user can see or do in apps/mobile, to reproduce a bug there before fixing it, or when a playbook asks for the driver skill. Three launches: the local stack with seeded data and sign-in (e2e journeys), the same journeys on CI when the machine cannot run the stack, or a read-only preview against production data.
+---
+
+# Verify the 吱熊猫 mobile app
+
+The surface is the Expo app in `apps/mobile`, driven through its web build in a 390×844 browser. Native iOS and Android builds are not covered here. A web pass does not prove native-only code (haptics, SecureStore, `AccessibilityInfo.sendAccessibilityEvent`, maps intents), so name what it leaves unproven.
+
+There are three launches. Pick by what the change needs.
+
+| Launch | Data | Sign-in | Use it for |
+|---|---|---|---|
+| Local stack (`e2e`) | A fresh fixture per run on local Supabase | Yes, codes come from Mailpit | Anything that writes, anything signed in, and every proof that ends in a test |
+| Production preview | Production's public API and photos, read only | No | How a screen looks with real content |
+| On CI | The same fixture, on a GitHub Actions runner | Yes | Local-stack journeys when this machine cannot run the stack |
+
+All commands below run from the repo root unless they say `apps/mobile`. Paths in `features/` are app routes.
+
+## Doctor
+
+Run this first, and again whenever a launch or a drive looks wrong:
+
+```bash
+node apps/mobile/scripts/verify-doctor.mjs --mode e2e
+node apps/mobile/scripts/verify-doctor.mjs --mode preview
+```
+
+Every line must read `ok`. It checks these things, read-only:
+
+- `node_modules` is this checkout's own. A worktree whose `node_modules` is a junction into another checkout opens on "Welcome to Expo". Fix it with `npm ci`.
+- The ports are free: 3101 (API) and 8792 (app) for `e2e`, 8796 (app) and 8797 (proxy) for `preview`.
+- For `e2e` only: Docker is running, local Supabase is up, and on Windows its ports are not reserved by Hyper-V.
+
+A busy port line shows the pid and command line of the process holding it. End it only if you started that process yourself in this session; you know its pid from your own launch. A command line alone cannot tell you that. The API always shows as `node dist/cli.js`, whichever worktree or session started it, and another session's live run looks the same as a leftover. For anything you did not start, do not kill it. Report the doctor's line to the user and ask.
+
+## Launch
+
+### Local stack
+
+1. `npm run infra:start` once. It checks the Windows port reservations first. If it stops with a `netsh` command, that is a system setting, so never change it yourself. Run the journeys [on CI](#on-ci) instead, and mention the command to the user as an option.
+2. From `apps/mobile`, run one journey: `npx e2e run tests/<file>.e2e.ts:<line> --trace on`, where `<line>` is the line its `test(` opens on. Without `--trace on`, e2e keeps a trace page only for failures, and a passing run leaves nothing to quote. e2e starts `tests/support/stack.ts` itself. That builds the API, seeds this run's fixture through the API's own modules, then serves the API on 3101 and the app on 8792.
+3. It is ready when the run prints `✓ target "mobile-web" command ready`. The first start takes about two minutes, because it builds the API and bundles the app.
+
+Only one local stack can run per machine. The ports are fixed and every run shares the one local database. If the doctor reports 3101 or 8792 busy, wait for the other run, do not start a second.
+
+To look at a screen live rather than through a journey, start the same stack by hand: `node tests/support/stack.ts 8792` from `apps/mobile`. Open `http://localhost:8792/<route>` in the browser pane. It is ready when `http://127.0.0.1:3101/health` answers 200 and the page renders.
+
+### On CI
+
+When this machine cannot run the local stack (the doctor reports Windows-reserved Supabase ports, or there is no Docker), run journeys on GitHub Actions instead. The `Mobile E2E` workflow (`.github/workflows/mobile-e2e.yml`) starts local Supabase on a Linux runner and runs the same `npx e2e run ... --trace on`.
+
+- A pull request that touches the app or anything its journeys run on (`apps/mobile`, `services/api`, `packages`, `infra/supabase`, the dev scripts, the root package files) runs every journey on its own.
+- For one journey on a pushed branch: `gh workflow run mobile-e2e.yml --ref <branch> -f journey=tests/<file>.e2e.ts:<line>`. Find its run id with `gh run list --workflow mobile-e2e.yml --branch <branch> -L 1`, then `gh run watch <run id>`.
+- The evidence is the run's `mobile-e2e-results` artifact, which holds the same `.e2e/` tree as a local run: `gh run download <run id> -n mobile-e2e-results -D apps/mobile/.e2e/ci-<run id>`. Quote the run URL, the pass line and the trace path.
+
+### Production preview
+
+`node apps/mobile/scripts/preview-production.mjs`, run in the background. It is ready when `http://localhost:8796` answers 200, and the first route then takes about 20 s to bundle. Open routes in the browser pane at a 390-wide viewport. It is read-only: the proxy refuses anything but GET and HEAD, and the app's Supabase URL points at the proxy too, so sign-in and every write fail by design.
+
+Two flags stress a screen with real content (the `break-ui` skill). `--worst-case` rewrites the public reads through `tests/support/worst-case.ts`: unbounded names, eight aliases, missing birth dates and life status, a parent with 32 cubs, a venue with a 30-character name and 120 residents. `--delay <ms>` holds each API response back, to see skeletons and slow-network states. `tests/worst-case.e2e.ts` runs the same rewrite against the local fixture.
+
+## Drive
+
+**Journeys.** The journeys in `apps/mobile/tests/*.e2e.ts` are the drivers. They use roles and accessible names from the app, never coordinates. Write or extend a journey for the behavior you changed, following the e2e skill at `node_modules/e2e/skills/e2e/SKILL.md`. Then run it by `file:line`.
+
+**Live looks.** For a live look in the browser pane, find elements with `find` or `read_page` by the same accessible names the journeys use, for example `radio "攻略"`, `button "打开<场馆>的页面"`, or `image "大熊猫所在地地图"`.
+
+**Feature recipes.** `features/README.md` indexes the recipes, one file per feature.
+
+## Evidence
+
+**Journey proof.** A journey proves its feature when it passes. The run's record survives in `apps/mobile/.e2e/`, which is git-ignored:
+
+- `report.json` holds every result.
+- `results/<test>/trace.md` holds every step, what the app logged, and on a failure the screen at that moment.
+
+Quote the pass line and the trace path in the PR's Verification section.
+
+**Live proof.** For a live look, write the route, the action, and the state after it to `apps/mobile/.e2e/verify/<feature>-<what>.txt`. The state is the `get_page_text` or `read_page` output plus any `aria-checked` or label values. Take a screenshot in the browser pane too when it draws. If the pane is hidden and clicks fail with "not on screen", ask the user to bring it forward. Until then, `find` and `get_page_text` still read the page.
+
+**Standards.**
+- Drive the path a user takes: `app.open` on a route, then taps. Never call internal setters or test-only endpoints.
+- Check side effects too. After a write, reopen the screen or another view that reads it back. For example, a recorded visit must show on `/visits`.
+- A preview proof covers only signed-out, read-only behavior.
+
+## Cleanup
+
+- **e2e.** e2e stops the stack when the run ends. On Windows a watchdog in `stack.ts` should take the API and Expo down with it, but it does not always fire. Run `node apps/mobile/scripts/verify-doctor.mjs --mode e2e` afterwards. If 3101 or 8792 is still busy after e2e exits, the doctor names the process. You launched `npx e2e`, not the API or Expo, so you do not know their pids. Do not end them; report the doctor's line to the user.
+- **Supabase and Docker.** Stop them with `npm run infra:stop` only if you started them this session. Other sessions may be using them. On a machine short of memory, Docker and Expo together can make `npm ci` or Metro fail with an out-of-memory error, so stop what you no longer need.
+- **Production preview.** Stop it by ending the process you started.
+- **What stays.** `apps/mobile/.e2e/` keeps the evidence. Never delete it as part of cleanup.

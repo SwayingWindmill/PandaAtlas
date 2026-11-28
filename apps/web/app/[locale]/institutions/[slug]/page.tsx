@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { StructuredDataScript } from "@/components/structured-data-script";
+import { OpenInAppBar } from "@/features/app-download/open-in-app-bar";
 import { InstitutionPage } from "@/features/institutions/institution-page";
 import { buildInstitutionPageViewModel } from "@/features/institutions/institution-page-view-model";
 import {
@@ -8,8 +10,10 @@ import {
   pandaCoverMedia,
   type PandaCoverMedia,
 } from "@/features/public-content/public-v2";
-import { parsePublicLocale } from "@/foundation/content/locales";
-import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { appDownloadLinks } from "@/lib/app-download";
+import { parsePublicLocale } from "@/lib/locales";
+import { buildPublicMetadata } from "@/lib/public-metadata";
+import { buildInstitutionStructuredData } from "@/lib/structured-data";
 import { readPublicMetadata } from "@/lib/server/public-read";
 
 interface InstitutionRouteProps {
@@ -48,5 +52,18 @@ export default async function InstitutionRoute({ params }: InstitutionRouteProps
     const media = asset ? pandaCoverMedia(asset, panda.name, locale) : null;
     if (media) covers.set(panda.id, media);
   }
-  return <InstitutionPage locale={locale} view={view} covers={covers} />;
+  return (
+    <>
+      <StructuredDataScript
+        testId="institution-structured-data"
+        data={buildInstitutionStructuredData({ locale, ...view })}
+      />
+      <InstitutionPage locale={locale} view={view} covers={covers} />
+      <OpenInAppBar
+        locale={locale}
+        links={appDownloadLinks()}
+        message={locale === "zh" ? `去${view.name}见过熊猫，记进图鉴` : `Seen pandas at ${view.name}? Add them to your panda book`}
+      />
+    </>
+  );
 }

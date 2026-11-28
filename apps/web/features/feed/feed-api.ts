@@ -1,6 +1,6 @@
 import "server-only";
 
-import { isFeedUiEnabled } from "@/features/feed/config";
+import { isFeedUiEnabled } from "@/lib/feature-flags";
 import type {
   ActivityItem,
   ActivityPageData,

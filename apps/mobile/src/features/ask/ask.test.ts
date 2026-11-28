@@ -45,7 +45,7 @@ describe("问问熊猫", () => {
 
   it("names a source by its publishers, or by what kind of page it is", () => {
     const ref = (publisher: string) => ({ title: "t", publisher, url: "https://example.org" });
-    expect(sourceDetail({ kind: "article", title: "a", appPath: "/learn/articles/a", references: [ref("WWF"), ref("WWF"), ref("成都大熊猫繁育研究基地")] })).toBe("WWF · 成都大熊猫繁育研究基地");
+    expect(sourceDetail({ kind: "article", title: "a", appPath: "/learn/articles/a", references: [ref("WWF"), ref("WWF"), ref("成都大熊猫繁育研究基地")] })).toBe("WWF　成都大熊猫繁育研究基地");
     expect(sourceDetail({ kind: "faceGuide", title: "宝力", appPath: "/learn/faces/bao-li", references: [] })).toBe("认脸指南");
   });
 });

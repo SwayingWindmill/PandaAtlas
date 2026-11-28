@@ -9,8 +9,8 @@ import { useCallback, useEffect, useState } from "react";
 import { fanMutationOptions } from "@/features/fan/api/queries";
 import { beginSignIn, signInRequired } from "@/features/fan/api/session";
 import type { GameAttemptInput, GuessAnswer, GuessQuestion } from "@/features/fan/api/types";
-import type { PublicLocale } from "@/foundation/content/locales";
-import { isEngagementUiEnabled } from "@/lib/engagement/config";
+import type { PublicLocale } from "@/lib/locales";
+import { isEngagementUiEnabled } from "@/lib/feature-flags";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 

@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 export const repoRoot = fileURLToPath(new URL("../../", import.meta.url));
 export const defaultCatalogPath = path.join(repoRoot, "contracts", "batch-operations.v1.json");
 
-const OPERATION_ID_PATTERN = /^(research|curation|media|release|recovery)\.[a-z][a-z0-9-]*$/;
+const OPERATION_ID_PATTERN = /^(curation|media|release|recovery)\.[a-z][a-z0-9-]*$/;
 const ALLOWED_STATUSES = new Set(["ready", "planned"]);
 const ALLOWED_EFFECTS = new Set([
   "read-only",
@@ -32,20 +32,28 @@ const APPROVAL_EFFECTS = new Set([
 ]);
 const ALLOWED_EXECUTABLES = new Set(["node", "python", "uv"]);
 const EXPECTED_OPERATION_IDS = new Set([
-  "research.validate",
-  "research.build",
   "curation.validate",
-  "curation.apply",
   "curation.guess-questions",
   "curation.learning",
+  "curation.content",
   "media.process",
-  "media.publish",
   "release.publish",
-  "recovery.drill",
 ]);
 const EXPECTED_READY_COMMANDS = new Map([
-  ["research.validate", ["node", "scripts/release/check-research-script-policy.mjs"]],
-  ["curation.validate", ["python", "scripts/curation/validate_panda_curation.py"]],
+  [
+    "curation.validate",
+    [
+      "uv",
+      "run",
+      "--isolated",
+      "--directory",
+      "tools/panda-data",
+      "--frozen",
+      "panda-data",
+      "curation",
+      "validate",
+    ],
+  ],
   [
     "media.process",
     [
@@ -53,18 +61,20 @@ const EXPECTED_READY_COMMANDS = new Map([
       "run",
       "--isolated",
       "--directory",
-      "services/api",
+      "tools/panda-data",
       "--frozen",
       "--extra",
-      "dev",
-      "python",
-      "../../scripts/curation/process_panda_media.py",
+      "media",
+      "panda-data",
+      "media",
+      "process",
       "--output-dir",
       "../../.batch-work/media",
     ],
   ],
   ["curation.guess-questions", ["node", "services/api/dist/guess-questions-command.js"]],
   ["curation.learning", ["node", "services/api/dist/learning-command.js"]],
+  ["curation.content", ["node", "services/api/dist/content-command.js"]],
   ["release.publish", ["node", "services/api/dist/release-command.js", "publish"]],
 ]);
 
