@@ -5,7 +5,7 @@ import { Platform } from "react-native";
 // Crash reports go to Sentry's envelope endpoint over plain fetch, so the app carries no native SDK yet.
 // Without EXPO_PUBLIC_SENTRY_DSN (local runs, e2e, builds that have not opted in) nothing is sent.
 
-export type ErrorSource = "error-boundary" | "global" | "fatal" | "query" | "mutation";
+export type ErrorSource = "error-boundary" | "global" | "fatal" | "query" | "mutation" | "ota";
 
 interface SentryTarget {
   url: string;
