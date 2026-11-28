@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { usePushNotifications } from "@/features/notifications/push";
 import { SessionProvider } from "@/features/session/session";
+import { useOfflineCheckinFlush } from "@/features/visits/offline-checkin-queue";
 import { installGlobalErrorReporting, reportError } from "@/lib/error-reporting";
 import { QueryProvider } from "@/lib/query-provider";
 import { stackScreenOptions } from "@/lib/screen-options";
@@ -58,6 +59,11 @@ function PushNotificationBridge() {
   return null;
 }
 
+function OfflineQueueBridge() {
+  useOfflineCheckinFlush();
+  return null;
+}
+
 export default function RootLayout() {
   const { scheme } = useIOSColors();
   useSilentUpdates();
@@ -69,6 +75,7 @@ export default function RootLayout() {
     <QueryProvider>
       <SessionProvider>
         <PushNotificationBridge />
+        <OfflineQueueBridge />
         <ThemeProvider value={NAV_THEME[scheme]}>
           <StatusBar style={scheme === "dark" ? "light" : "dark"} />
           <Stack screenOptions={{ ...stackScreenOptions(scheme), headerLargeTitleEnabled: false }}>

@@ -8,7 +8,7 @@ import { useCSSVariable } from "uniwind";
 
 import { Chevron, ListCell, ListSection, SectionTitle, useSingleColumn, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Globe, Heart, History, MapPinCheck, Navigation, PawPrint, Video, Check } from "@/components/icons";
+import { Globe, Heart, History, MapPinCheck, Navigation, PawPrint, Video, Check, Download } from "@/components/icons";
 import { PandaThumb } from "@/components/panda-thumb";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
@@ -37,8 +37,10 @@ import type { PandaListItem } from "@/features/pandas/pandas";
 import { SearchField } from "@/features/pandas/search-field";
 import { useSession } from "@/features/session/session";
 import { resolveVenueLiveCamUrl } from "@/features/viewing/venue-live";
+import { mergeVisitsWithQueue, useQueuedCheckins } from "@/features/visits/offline-checkin-queue";
 import { lastVisitByPlace, visitsQueryOptions } from "@/features/visits/visits";
 import { usePandaCover } from "@/lib/covers";
+import { estimatePackSummary, offlinePackPercent, useOfflinePack } from "@/lib/offline-pack";
 import { PAGE_COLUMN, RADIUS, pageColumn } from "@/lib/surface";
 import { useIOSColors } from "@/lib/theme";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
@@ -117,9 +119,11 @@ export function VenueActionPair({ institution }: { institution: InstitutionDetai
 
   const remoteVisits = useQuery({ ...visitsQueryOptions(accountId), enabled: signedIn && hasFacilities });
   const guestVisits = useQuery({ ...guestVisitsQueryOptions(), enabled: signedOut && hasFacilities });
+  const queuedVisits = useQueuedCheckins(signedIn && hasFacilities ? accountId : null);
   useRefetchOnFocus(remoteVisits.refetch, signedIn && hasFacilities);
 
-  const visits = (signedOut ? guestVisits.data : remoteVisits.data) ?? [];
+  const serverVisits = (signedOut ? guestVisits.data : remoteVisits.data) ?? [];
+  const visits = signedIn ? mergeVisitsWithQueue(serverVisits, queuedVisits) : serverVisits;
   const today = localToday();
   const lastByPlace = lastVisitByPlace(visits);
   const visitedToday = hasFacilities && institution.facilities.some((facility) => lastByPlace.get(facility.id) === today);
@@ -203,7 +207,7 @@ export function VenueMetricStrip({ institution }: { institution: InstitutionDeta
   );
 }
 
-/** Compact 2-to-3 tile utility row (`导航过去` | `官方直播` | `查看官网`). */
+/** Compact 2-to-4 tile utility row (`导航过去` | `官方直播` | `查看官网` | `离线包`) and expandable offline pack drawer. */
 export function VenueQuickTools({
   institution,
   liveCardShown,
@@ -212,9 +216,21 @@ export function VenueQuickTools({
   liveCardShown: boolean;
 }) {
   const stacked = useStacked();
+  const [packOpen, setPackOpen] = useState(false);
+  const { manifest, downloading, progress, error, startDownload, cancelDownload, clearError, removePack } =
+    useOfflinePack(institution.slug);
   const primaryLocation = institution.facilities.find((facility) => facility.coordinates);
   const liveCamUrl = resolveVenueLiveCamUrl(institution.slug, institution.liveCamUrl);
   const websiteUrl = institution.websiteUrl;
+
+  const pct = progress ? offlinePackPercent(progress) : 0;
+  const offlineLabel = downloading ? `${pct}%` : manifest ? "已离线" : "离线包";
+  const offlineSpoken = downloading
+    ? `正在下载${institution.name}离线包，${pct}%`
+    : manifest
+      ? `${institution.name}离线包，已离线`
+      : `${institution.name}离线包`;
+  const showPanel = packOpen || downloading || Boolean(error);
 
   const tools = [
     primaryLocation?.coordinates
@@ -224,6 +240,7 @@ export function VenueQuickTools({
           icon: Navigation,
           label: "导航过去",
           spoken: `导航过去，${primaryLocation.name}`,
+          active: false,
           onPress: () => openFacilityNavigation(primaryLocation.name, primaryLocation.coordinates!),
         }
       : null,
@@ -235,6 +252,7 @@ export function VenueQuickTools({
           label: "官方直播",
           // If the VenueLiveCard is absent for this venue, keep the primary "看官方直播" link label reachable here.
           spoken: liveCardShown ? `打开${institution.name}官方直播页` : "看官方直播",
+          active: false,
           onPress: () => void Linking.openURL(liveCamUrl),
         }
       : null,
@@ -245,33 +263,162 @@ export function VenueQuickTools({
           icon: Globe,
           label: "查看官网",
           spoken: `打开${institution.name}官方网站`,
+          active: false,
           onPress: () => void Linking.openURL(websiteUrl),
         }
       : null,
+    {
+      key: "offline",
+      role: "button" as const,
+      icon: manifest ? Check : Download,
+      label: offlineLabel,
+      spoken: offlineSpoken,
+      active: Boolean(manifest) || showPanel,
+      onPress: () => {
+        if (showPanel && !downloading) {
+          setPackOpen(false);
+          clearError();
+        } else {
+          setPackOpen(true);
+        }
+      },
+    },
   ].filter((tool) => tool !== null);
 
   if (tools.length === 0) return null;
 
+  const wrapTiles = tools.length >= 4 && !stacked;
+
   return (
-    <View className={stacked ? "gap-2" : "flex-row gap-2"}>
-      {tools.map((tool) => (
-        <Pressable
-          key={tool.key}
-          role={tool.role}
-          accessibilityLabel={tool.spoken}
-          onPress={tool.onPress}
-          className={cn(
-            "min-h-11 flex-row items-center justify-center gap-1.5 rounded-control border-hairline border-border bg-card px-3 py-2.5 active:opacity-75",
-            !stacked && "min-w-0 flex-1",
-          )}
+    <View className="gap-3">
+      <View className={stacked ? "gap-2" : wrapTiles ? "flex-row flex-wrap gap-2" : "flex-row gap-2"}>
+        {tools.map((tool) => (
+          <Pressable
+            key={tool.key}
+            role={tool.role}
+            accessibilityLabel={tool.spoken}
+            onPress={tool.onPress}
+            className={cn(
+              "min-h-11 flex-row items-center justify-center gap-1.5 rounded-control border-hairline border-border px-3 py-2.5 active:opacity-75",
+              tool.active ? "border-primary/40 bg-highlight-soft" : "bg-card",
+              !stacked && !wrapTiles && "min-w-0 flex-1",
+            )}
+            style={
+              wrapTiles
+                ? { borderCurve: "continuous", minWidth: "47%", flexGrow: 1 }
+                : { borderCurve: "continuous" }
+            }
+          >
+            <Icon icon={tool.icon} size="footnote" tone="tint" strokeWidth={2} />
+            <Text
+              variant="footnote"
+              className={cn("font-semibold tabular-nums", tool.active && "text-primary")}
+              numberOfLines={1}
+            >
+              {tool.label}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {showPanel ? (
+        <View
+          className="gap-3 rounded-group border-hairline border-border bg-card p-4"
           style={{ borderCurve: "continuous" }}
         >
-          <Icon icon={tool.icon} size="footnote" tone="tint" strokeWidth={2} />
-          <Text variant="footnote" className="font-semibold" numberOfLines={1}>
-            {tool.label}
-          </Text>
-        </Pressable>
-      ))}
+          {downloading ? (
+            <>
+              <View className="flex-row items-center justify-between gap-2">
+                <Text variant="headline" className="min-w-0 flex-1">
+                  正在准备离线包
+                </Text>
+                <Text variant="footnote" className="font-semibold text-primary tabular-nums">
+                  {`${pct}%`}
+                </Text>
+              </View>
+              <View className="h-1.5 overflow-hidden rounded-pill bg-secondary" aria-hidden>
+                <View className="h-full rounded-pill bg-graphic" style={{ width: `${pct}%` }} />
+              </View>
+              <View className="flex-row items-center justify-between gap-2">
+                <Text variant="footnote" className="text-muted-foreground tabular-nums">
+                  {progress?.phase === "photos"
+                    ? `预热封面 ${progress.done} / ${progress.total}`
+                    : progress?.phase === "pandas"
+                      ? `保存熊猫档案 ${progress.done} / ${progress.total}`
+                      : "正在保存场馆与公共索引"}
+                </Text>
+                <Pressable
+                  role="button"
+                  accessibilityLabel="取消下载离线包"
+                  onPress={cancelDownload}
+                  className="-my-1 min-h-11 justify-center px-1 active:opacity-60"
+                >
+                  <Text variant="footnote" className="font-semibold text-primary">
+                    取消
+                  </Text>
+                </Pressable>
+              </View>
+            </>
+          ) : manifest ? (
+            <>
+              <View className="gap-1">
+                <View className="flex-row items-center gap-1.5">
+                  <Icon icon={Check} size="footnote" tone="tint" strokeWidth={2.5} />
+                  <Text variant="headline">{`${institution.name}已可离线浏览`}</Text>
+                </View>
+                <Text variant="footnote" className="text-muted-foreground tabular-nums">
+                  {estimatePackSummary(manifest)}
+                </Text>
+              </View>
+              {error ? (
+                <Text variant="footnote" className="text-destructive" accessibilityLiveRegion="polite">
+                  {error}
+                </Text>
+              ) : null}
+              <View className={cn("gap-2", stacked ? "flex-col" : "flex-row items-center")}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className={cn("border-hairline border-border bg-background", !stacked && "flex-1")}
+                  onPress={() => startDownload(institution)}
+                >
+                  <Text>更新数据</Text>
+                </Button>
+                <Pressable
+                  role="button"
+                  accessibilityLabel={`移除${institution.name}离线包`}
+                  onPress={() => void removePack().then(() => setPackOpen(false))}
+                  className="min-h-11 items-center justify-center rounded-control px-3 active:opacity-60"
+                >
+                  <Text variant="subheadline" className="font-semibold text-destructive">
+                    移除
+                  </Text>
+                </Pressable>
+              </View>
+            </>
+          ) : (
+            <>
+              <View className="gap-0.5">
+                <Text variant="headline">提前下载全园离线包</Text>
+                <Text variant="footnote" className="text-muted-foreground tabular-nums">
+                  {institution.residents.length > 0
+                    ? `${institution.residents.length} 只在馆熊猫档案与封面，无网络也可打开`
+                    : "提前保存场馆攻略与基础信息，无网络也可查看"}
+                </Text>
+              </View>
+              {error ? (
+                <Text variant="footnote" className="text-destructive" accessibilityLiveRegion="polite">
+                  {error}
+                </Text>
+              ) : null}
+              <Button onPress={() => startDownload(institution)} accessibilityLabel="下载全园离线包">
+                <Icon icon={Download} size="subhead" tone="onButton" strokeWidth={2} />
+                <Text>{error ? "重试" : "下载全园离线包"}</Text>
+              </Button>
+            </>
+          )}
+        </View>
+      ) : null}
     </View>
   );
 }

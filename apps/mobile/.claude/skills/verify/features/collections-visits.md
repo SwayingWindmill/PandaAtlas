@@ -6,9 +6,9 @@ A signed-in fan puts a panda into a new collection, finds it under 我的, renam
 
 - `collection-create` creates a collection from a panda's profile (加入合集).
 - `collection-manage` renames, removes a panda, and deletes with a confirmation.
-- `venue-bundle-checkin` opens `/institutions/[slug]/checkin`, saves a visit (with optional `看猫小记`) + selected `见过` pandas (`placeId`), and renders `SouvenirTicket`.
+- `venue-bundle-checkin` opens `/institutions/[slug]/checkin`, saves a visit (with optional `看猫小记`) + selected `见过` pandas (`placeId`), and renders `SouvenirTicket`. While offline, signed-in bundle check-ins queue idempotently under `offline-checkin-queue:v1` (`queuedOffline` ticket notice) and flush automatically via `OfflineQueueBridge` upon reconnect.
 - `visit-record` records today's visit on a venue page (cloud when signed in, local guest storage when signed out).
-- `visit-diary` renders `/visits` vertical timeline with `足迹地图` → `/map?filter=visited`, quoted notes, matched panda chips, and `移除`.
+- `visit-diary` renders `/visits` vertical timeline with `足迹地图` → `/map?filter=visited`, pending offline-queue sync bar (`N 条打卡暂存本机`), quoted notes, matched panda chips, and `移除`.
 - `following-venues` switches `Segmented` on `/following` between `熊猫 N` and `场馆 M`.
 
 ## How to get to it (user POV)

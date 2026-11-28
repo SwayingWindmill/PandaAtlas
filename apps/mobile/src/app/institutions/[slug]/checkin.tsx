@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNetworkState } from "expo-network";
 import { Stack, router, useLocalSearchParams, useNavigation } from "expo-router";
 import { HeaderBackButton } from "expo-router/react-navigation";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -41,6 +42,11 @@ import { type PandaListItem, searchPandas } from "@/features/pandas/pandas";
 import { longDate } from "@/features/pandas/profile";
 import { SearchField } from "@/features/pandas/search-field";
 import { useSession } from "@/features/session/session";
+import {
+  enqueueOfflineCheckin,
+  mergeVisitsWithQueue,
+  useQueuedCheckins,
+} from "@/features/visits/offline-checkin-queue";
 import { SouvenirTicket } from "@/features/visits/souvenir-ticket";
 import { type Visit, recordVisit, sortVisits, visitsQueryKey, visitsQueryOptions } from "@/features/visits/visits";
 import { usePandaCover } from "@/lib/covers";
@@ -199,6 +205,7 @@ interface CompletedCheckin {
   note: string | null;
   newlyLitPandas: PandaListItem[];
   updatedSeenIds: ReadonlySet<string>;
+  queuedOffline: boolean;
 }
 
 export default function VenueCheckinScreen() {
@@ -210,6 +217,8 @@ export default function VenueCheckinScreen() {
   const stacked = useStacked();
   const singleColumn = useSingleColumn();
   const queryClient = useQueryClient();
+  const network = useNetworkState();
+  const isOffline = network.isConnected === false || network.isInternetReachable === false;
   const { state: session } = useSession();
 
   const signedIn = session.status === "signedIn";
@@ -221,6 +230,7 @@ export default function VenueCheckinScreen() {
   const seenIds = useSeenIds();
   const remoteVisits = useQuery({ ...visitsQueryOptions(accountId), enabled: signedIn });
   const guestVisits = useQuery({ ...guestVisitsQueryOptions(), enabled: signedOut });
+  const queuedVisits = useQueuedCheckins(signedIn ? accountId : null);
   useRefetchOnFocus(remoteVisits.refetch, signedIn);
 
   const [selectedFacilityId, setSelectedFacilityId] = useState<string | null>(null);
@@ -299,7 +309,8 @@ export default function VenueCheckinScreen() {
     setSaving(true);
     setErrorMessage(null);
 
-    const existingVisits = (signedOut ? guestVisits.data : remoteVisits.data) ?? [];
+    const serverVisits = (signedOut ? guestVisits.data : remoteVisits.data) ?? [];
+    const existingVisits = signedIn ? mergeVisitsWithQueue(serverVisits, queuedVisits) : serverVisits;
     const facilityIds = new Set(institution.facilities.map((item) => item.id));
     const trimmedNote = note.trim();
     const alreadyVisitedToday = existingVisits.some(
@@ -310,8 +321,58 @@ export default function VenueCheckinScreen() {
       savedVisitRef.current?.visitedOn === today &&
       savedVisitRef.current?.note === trimmedNote;
 
+    const targetIds = [...selectedIds];
+    const needsVisitWrite = !sameAttemptVisitSaved && (!alreadyVisitedToday || trimmedNote.length > 0);
+    const baseVisitSynced = existingVisits.some(
+      (v) => v.placeId === facility.id && v.visitedOn === today && !v.checkinId.startsWith("queued:"),
+    );
+
+    const completeCheckin = (litIds: readonly string[], visitCountDelta: number, queuedOffline: boolean) => {
+      const litSet = new Set(litIds);
+      const newlyLitPandas = institution.residents.filter((panda) => litSet.has(panda.id));
+      const updatedSeenIds = new Set([...(seenIds ?? []), ...litIds]);
+      const priorVenueVisits = existingVisits.filter((visit) => facilityIds.has(visit.placeId)).length;
+      const visitCount = priorVenueVisits + (visitCountDelta > 0 && !alreadyVisitedToday ? 1 : 0);
+
+      successHaptic();
+      setSaving(false);
+      setCompleted({
+        facilityId: facility.id,
+        facilityName: facility.name,
+        visitedOn: today,
+        visitCount: Math.max(1, visitCount),
+        note: trimmedNote || null,
+        newlyLitPandas,
+        updatedSeenIds,
+        queuedOffline,
+      });
+    };
+
+    const queueAndComplete = async (
+      visitSynced: boolean,
+      pendingIds: readonly string[],
+      litIds: readonly string[],
+      visitCountDelta: number,
+    ) => {
+      await enqueueOfflineCheckin({
+        accountId,
+        placeId: facility.id,
+        visitedOn: today,
+        note: trimmedNote || null,
+        visitSynced,
+        pandaIds: pendingIds,
+      });
+      completeCheckin([...new Set([...sessionSavedIds, ...litIds])], visitCountDelta, true);
+    };
+
+    if (signedIn && isOffline) {
+      await queueAndComplete(!needsVisitWrite && baseVisitSynced, targetIds, targetIds, needsVisitWrite ? 1 : 0);
+      return;
+    }
+
     let recordedNewVisit = false;
-    if (!sameAttemptVisitSaved && (!alreadyVisitedToday || trimmedNote.length > 0)) {
+    let visitWriteFailed = false;
+    if (needsVisitWrite) {
       try {
         if (signedOut) {
           await recordGuestVisit(facility.id, today, trimmedNote || null);
@@ -324,13 +385,21 @@ export default function VenueCheckinScreen() {
         savedVisitRef.current = { placeId: facility.id, visitedOn: today, note: trimmedNote };
         recordedNewVisit = true;
       } catch {
-        setSaving(false);
-        setErrorMessage("没能记下这次逛园打卡，请检查网络后再试一次。");
-        return;
+        if (signedIn) {
+          visitWriteFailed = true;
+        } else {
+          setSaving(false);
+          setErrorMessage("没能记下这次逛园打卡，请检查网络后再试一次。");
+          return;
+        }
       }
     }
 
-    const targetIds = [...selectedIds];
+    if (signedIn && visitWriteFailed) {
+      await queueAndComplete(false, targetIds, targetIds, 1);
+      return;
+    }
+
     const results = await Promise.allSettled(
       targetIds.map(async (pandaId) => {
         if (signedOut) {
@@ -379,6 +448,11 @@ export default function VenueCheckinScreen() {
       ]);
     }
 
+    if (signedIn && failedIds.length > 0) {
+      await queueAndComplete(true, failedIds, [...succeededIds, ...failedIds], recordedNewVisit ? 1 : 0);
+      return;
+    }
+
     const combinedSavedIds = [...new Set([...sessionSavedIds, ...succeededIds])];
     if (failedIds.length > 0) {
       const byId = new Map(institution.residents.map((panda) => [panda.id, panda.name]));
@@ -397,23 +471,7 @@ export default function VenueCheckinScreen() {
       return;
     }
 
-    const litSet = new Set(combinedSavedIds);
-    const newlyLitPandas = institution.residents.filter((panda) => litSet.has(panda.id));
-    const updatedSeenIds = new Set([...(seenIds ?? []), ...combinedSavedIds]);
-    const priorVenueVisits = existingVisits.filter((visit) => facilityIds.has(visit.placeId)).length;
-    const visitCount = priorVenueVisits + (recordedNewVisit && !alreadyVisitedToday ? 1 : 0);
-
-    successHaptic();
-    setSaving(false);
-    setCompleted({
-      facilityId: facility.id,
-      facilityName: facility.name,
-      visitedOn: today,
-      visitCount: Math.max(1, visitCount),
-      note: trimmedNote || null,
-      newlyLitPandas,
-      updatedSeenIds,
-    });
+    completeCheckin(combinedSavedIds, recordedNewVisit ? 1 : 0, false);
   }
 
   if (!institution) {
@@ -466,6 +524,7 @@ export default function VenueCheckinScreen() {
           note={completed.note}
           newlyLitPandas={completed.newlyLitPandas}
           seenIds={completed.updatedSeenIds}
+          queuedOffline={completed.queuedOffline}
           onDone={goBackToVenue}
         />
       </ScrollView>

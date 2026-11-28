@@ -1,6 +1,6 @@
 # Venue page
 
-A zoo or base has a single-scroll detail page (`/institutions/[slug]`, no middle `Segmented` tabs): a stretchy hero (`INSTITUTION_HERO_HEIGHT = 276`) with name and meta, intro summary, dual **关注场馆 / 去过打卡** capsules, borderless 3-column metrics (`现在住这里 | 在这里出生 | 门票概况`), inline `VenueLiveCard` (local clock, activity bar, `看直播` → `link "看官方直播"`), and `VenueQuickTools` (`导航过去 / 官方直播 / 查看官网`). Below sit **住在这里** (optional `你在本馆已见过 N / M 只` progress bar, `全部 / 未见过 / 我关注` filter tabs, search for `>= 4` residents, initial 6-item preview expanding via `看全部熊猫`), the 6-layer **参观攻略** (2×2 pre-trip Bento, `DayBand`, curated route timeline when configured, photo spots strip, SVG schematic location map + transit, practical tips + official site), **到访记录** (`FacilityVisits`), **场馆动态**, expandable **以前住过**, and a quiet source footer.
+A zoo or base has a single-scroll detail page (`/institutions/[slug]`, no middle `Segmented` tabs): a stretchy hero (`INSTITUTION_HERO_HEIGHT = 276`) with name and meta, intro summary, dual **关注场馆 / 去过打卡** capsules, borderless 3-column metrics (`现在住这里 | 在这里出生 | 门票概况`), inline `VenueLiveCard` (local clock, activity bar, `看直播` → `link "看官方直播"`), and `VenueQuickTools` (`导航过去 / 官方直播 / 查看官网 / 离线包` with expandable single-base offline pack downloader/manager). Below sit **住在这里** (optional `你在本馆已见过 N / M 只` progress bar, `全部 / 未见过 / 我关注` filter tabs, search for `>= 4` residents, initial 6-item preview expanding via `看全部熊猫`), the 6-layer **参观攻略** (2×2 pre-trip Bento, `DayBand`, curated route timeline when configured, photo spots strip, SVG schematic location map + transit, practical tips + official site), **到访记录** (`FacilityVisits`), **场馆动态**, expandable **以前住过**, and a quiet source footer.
 
 ## Sub-features
 
@@ -8,6 +8,7 @@ A zoo or base has a single-scroll detail page (`/institutions/[slug]`, no middle
 - `venue-open-guide-link` accepts `/institutions/<slug>?tab=guide` harmlessly on the single-scroll page.
 - `venue-residents` filters residents directly in-scroll (`全部 / 未见过 / 我关注`, search, and `看全部熊猫` expansion).
 - `venue-follow` toggles 关注场馆 (cloud when signed in, local guest storage when signed out).
+- `venue-offline-pack` downloads, pins (`offline:packs:v1` + `offline:covers:v1`), updates, and removes a single venue's shared indexes, resident dossiers, and cover photos so opening the venue or its residents works offline past restarts.
 - `venue-visit` opens `/institutions/[slug]/checkin` from the top `去过打卡` / `今天已打卡` capsule (`button /^去过打卡/` or `button /^今天已打卡/`) for bundle check-in + `SouvenirTicket`, or records a quick facility visit via `FacilityVisits` (`记下今天去过<facility>`). This lives in [Collections and visits](./collections-visits.md).
 
 ## How to get to it (user POV)

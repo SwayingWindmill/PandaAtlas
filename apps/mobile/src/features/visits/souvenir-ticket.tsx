@@ -39,6 +39,7 @@ export function SouvenirTicket({
   note,
   newlyLitPandas,
   seenIds,
+  queuedOffline = false,
   onDone,
 }: {
   institution: InstitutionDetail;
@@ -48,6 +49,7 @@ export function SouvenirTicket({
   note: string | null;
   newlyLitPandas: PandaListItem[];
   seenIds: ReadonlySet<string>;
+  queuedOffline?: boolean;
   onDone: () => void;
 }) {
   const colors = useIOSColors();
@@ -300,6 +302,12 @@ export function SouvenirTicket({
               吱熊猫　看猫护照
             </Text>
           </View>
+
+          {queuedOffline ? (
+            <Text variant="footnote" className="font-medium text-warning" accessibilityLiveRegion="polite">
+              已暂存本机，联网后自动同步
+            </Text>
+          ) : null}
         </View>
       </View>
 
