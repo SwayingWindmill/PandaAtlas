@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { onlineManager } from "@tanstack/react-query";
 import * as Network from "expo-network";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useSyncExternalStore } from "react";
 import { AppState, Platform } from "react-native";
 
 import { markSeen, seenEntriesQueryKey, seenIdsQueryKey } from "@/features/engagement/seen";
@@ -26,7 +26,9 @@ export {
   queuedCheckinKey,
 } from "@/features/visits/offline-checkin-queue-model";
 
+const EMPTY_QUEUE: QueuedCheckin[] = [];
 let queueCache: QueuedCheckin[] | null = null;
+let queueSnapshot: QueuedCheckin[] = EMPTY_QUEUE;
 let hydratePromise: Promise<QueuedCheckin[]> | null = null;
 let mutationChain: Promise<void> = Promise.resolve();
 const activeFlushes = new Map<string, Promise<{ synced: number; remaining: number }>>();
@@ -34,6 +36,17 @@ const listeners = new Set<() => void>();
 
 function notifyListeners() {
   for (const listener of listeners) listener();
+}
+
+function subscribeQueue(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function getQueueSnapshot(): QueuedCheckin[] {
+  return queueSnapshot;
 }
 
 function isQueuedCheckin(value: unknown): value is QueuedCheckin {
@@ -55,15 +68,22 @@ async function loadQueue(): Promise<QueuedCheckin[]> {
       .then((raw) => {
         if (!raw) {
           queueCache = [];
-          return queueCache;
+        } else {
+          const parsed = JSON.parse(raw) as unknown;
+          queueCache = Array.isArray(parsed) ? sortQueuedCheckins(parsed.filter(isQueuedCheckin)) : [];
         }
-        const parsed = JSON.parse(raw) as unknown;
-        queueCache = Array.isArray(parsed) ? sortQueuedCheckins(parsed.filter(isQueuedCheckin)) : [];
+        queueSnapshot = queueCache;
+        notifyListeners();
         return queueCache;
       })
       .catch(() => {
         queueCache = [];
+        queueSnapshot = queueCache;
+        notifyListeners();
         return queueCache;
+      })
+      .finally(() => {
+        hydratePromise = null;
       });
   }
   return hydratePromise;
@@ -80,6 +100,7 @@ function serializeMutation<T>(fn: () => Promise<T>): Promise<T> {
 
 async function writeQueue(next: QueuedCheckin[]): Promise<QueuedCheckin[]> {
   queueCache = sortQueuedCheckins(next);
+  queueSnapshot = queueCache;
   await AsyncStorage.setItem(OFFLINE_CHECKIN_QUEUE_KEY, JSON.stringify(queueCache));
   notifyListeners();
   return queueCache;
@@ -117,7 +138,6 @@ async function flushOnce(accountId: string): Promise<{ synced: number; remaining
     const candidates = (await loadQueue()).filter(
       (item) => item.accountId === accountId && attemptedVersions.get(item.key) !== item.updatedAt,
     );
-    console.warn("[diag-flush] flushOnce", { accountId, candidates: candidates.length, keys: candidates.map((c) => c.key) });
     if (candidates.length === 0) break;
 
     for (const item of candidates) {
@@ -153,7 +173,6 @@ async function flushOnce(accountId: string): Promise<{ synced: number; remaining
       }
 
       const madeProgress = (!item.visitSynced && visitSynced) || syncedPandas.size > 0;
-      console.warn("[diag-flush] item", { key: item.key, visitSynced, syncedPandas: syncedPandas.size, errorMessage });
       if (madeProgress) {
         // Trigger refetch before pruning the queue so `/visits` never flashes LoadFailed between empty queue and fresh data.
         void queryClient.invalidateQueries({ queryKey: visitsQueryKey(accountId) });
@@ -172,7 +191,6 @@ async function flushOnce(accountId: string): Promise<{ synced: number; remaining
             item.note,
           );
           await writeQueue(updated);
-          console.warn("[diag-flush] written", { len: updated.length, listeners: listeners.size });
         });
       }
     }
@@ -208,21 +226,18 @@ export function flushOfflineCheckins(accountId: string): Promise<{ synced: numbe
 
 /** Reactive subscription to locally queued check-ins for one signed-in account. */
 export function useQueuedCheckins(accountId: string | null): QueuedCheckin[] {
-  const [, setTick] = useState(0);
+  const items = useSyncExternalStore(subscribeQueue, getQueueSnapshot, getQueueSnapshot);
 
   useEffect(() => {
-    const bump = () => setTick((value) => value + 1);
-    listeners.add(bump);
     if (!queueCache) {
-      void loadQueue().then(() => notifyListeners());
+      void loadQueue();
     }
-    return () => {
-      listeners.delete(bump);
-    };
   }, []);
 
-  if (!accountId || !queueCache) return [];
-  return queueCache.filter((item) => item.accountId === accountId);
+  return useMemo(
+    () => (accountId ? items.filter((item) => item.accountId === accountId) : EMPTY_QUEUE),
+    [accountId, items],
+  );
 }
 
 /** Automatically drains queued check-ins whenever a signed-in user regains connectivity or resumes the app. */
@@ -231,25 +246,18 @@ export function useOfflineCheckinFlush(): void {
   const accountId = session.status === "signedIn" ? session.accountId : null;
 
   useEffect(() => {
-    console.warn("[diag-flush] effect", { accountId, online: onlineManager.isOnline(), cachedLen: queueCache?.length ?? -1 });
     if (!accountId) return;
     if (onlineManager.isOnline()) {
       void flushOfflineCheckins(accountId);
     }
 
     const unsubscribeOnline = onlineManager.subscribe((isOnline) => {
-      console.warn("[diag-flush] onlineManager", { isOnline, accountId });
       if (isOnline) void flushOfflineCheckins(accountId);
     });
 
     const networkSub =
       Platform.OS !== "web" || typeof window !== "undefined"
         ? Network.addNetworkStateListener((state) => {
-            console.warn("[diag-flush] network", {
-              isConnected: state.isConnected,
-              isInternetReachable: state.isInternetReachable,
-              accountId,
-            });
             if (state.isConnected !== false && state.isInternetReachable !== false) {
               void flushOfflineCheckins(accountId);
             }

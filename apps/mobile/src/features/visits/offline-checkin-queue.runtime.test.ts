@@ -5,6 +5,7 @@ import {
   flushOfflineCheckins,
   queuedCheckinKey,
   removeOfflineCheckin,
+  useQueuedCheckins,
 } from "./offline-checkin-queue";
 import { OFFLINE_CHECKIN_QUEUE_KEY } from "./offline-checkin-queue-model";
 
@@ -21,7 +22,8 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("react", () => ({
   useEffect: vi.fn(),
-  useState: (initial: unknown) => [initial, vi.fn()],
+  useMemo: (fn: () => unknown) => fn(),
+  useSyncExternalStore: (_subscribe: unknown, getSnapshot: () => unknown) => getSnapshot(),
 }));
 
 vi.mock("react-native", () => ({
@@ -97,11 +99,13 @@ describe("offline-checkin-queue runtime", () => {
       note: "离线小记",
       pandaIds: ["p-hehua"],
     });
+    expect(useQueuedCheckins(accountId)).toHaveLength(1);
     state.events.length = 0;
 
     const [first, second] = await Promise.all([flushOfflineCheckins(accountId), flushOfflineCheckins(accountId)]);
     expect(first).toEqual({ synced: 2, remaining: 0 });
     expect(second).toEqual({ synced: 2, remaining: 0 });
+    expect(useQueuedCheckins(accountId)).toEqual([]);
     expect(mocks.recordVisit).toHaveBeenCalledTimes(1);
     expect(mocks.markSeen).toHaveBeenCalledTimes(1);
 

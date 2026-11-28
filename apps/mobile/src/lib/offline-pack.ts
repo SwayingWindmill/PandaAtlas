@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { Platform } from "react-native";
 
 import type { InstitutionDetail } from "@/features/institutions/institutions";
@@ -32,6 +32,12 @@ interface PackRuntimeState {
   error: string | null;
 }
 
+interface OfflinePackStoreSnapshot {
+  manifests: Record<string, OfflinePackManifest> | null;
+  runtime: ReadonlyMap<string, PackRuntimeState>;
+  downloading: ReadonlySet<string>;
+}
+
 let cacheEpoch = 0;
 let manifestsCache: Record<string, OfflinePackManifest> | null = null;
 let hydratePromise: Promise<Record<string, OfflinePackManifest>> | null = null;
@@ -39,9 +45,30 @@ const runtimeBySlug = new Map<string, PackRuntimeState>();
 const controllersBySlug = new Map<string, AbortController>();
 const activePinTokensBySlug = new Map<string, symbol>();
 const listeners = new Set<() => void>();
+let packSnapshot: OfflinePackStoreSnapshot = {
+  manifests: null,
+  runtime: new Map(),
+  downloading: new Set(),
+};
 
-function notifyListeners() {
+function publishPackSnapshot() {
+  packSnapshot = {
+    manifests: manifestsCache,
+    runtime: new Map(runtimeBySlug),
+    downloading: new Set(controllersBySlug.keys()),
+  };
   for (const listener of listeners) listener();
+}
+
+function subscribePackStore(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function getPackSnapshot(): OfflinePackStoreSnapshot {
+  return packSnapshot;
 }
 
 registerOfflineCacheReset(() => {
@@ -53,7 +80,7 @@ registerOfflineCacheReset(() => {
   activePinTokensBySlug.clear();
   manifestsCache = {};
   hydratePromise = null;
-  notifyListeners();
+  publishPackSnapshot();
 });
 
 async function loadManifests(): Promise<Record<string, OfflinePackManifest>> {
@@ -73,11 +100,17 @@ async function loadManifests(): Promise<Record<string, OfflinePackManifest>> {
             }
           }
         }
-        if (epoch === cacheEpoch) manifestsCache = next;
+        if (epoch === cacheEpoch) {
+          manifestsCache = next;
+          publishPackSnapshot();
+        }
         return epoch === cacheEpoch ? next : (manifestsCache ?? {});
       })
       .catch(() => {
-        if (epoch === cacheEpoch) manifestsCache = {};
+        if (epoch === cacheEpoch) {
+          manifestsCache = {};
+          publishPackSnapshot();
+        }
         return manifestsCache ?? {};
       })
       .finally(() => {
@@ -91,7 +124,7 @@ async function loadManifests(): Promise<Record<string, OfflinePackManifest>> {
 async function saveManifests(next: Record<string, OfflinePackManifest>): Promise<void> {
   manifestsCache = next;
   await AsyncStorage.setItem(OFFLINE_PACKS_KEY, JSON.stringify(next));
-  notifyListeners();
+  publishPackSnapshot();
 }
 
 function utf8ByteLength(value: unknown): number {
@@ -244,21 +277,16 @@ export async function removeOfflinePack(slug: string): Promise<void> {
 
 /** Reactive hook managing download, cancel, update, and removal of one institution's offline pack. */
 export function useOfflinePack(slug: string) {
-  const [, setTick] = useState(0);
+  const store = useSyncExternalStore(subscribePackStore, getPackSnapshot, getPackSnapshot);
 
   useEffect(() => {
-    const bump = () => setTick((value) => value + 1);
-    listeners.add(bump);
     if (!manifestsCache) {
-      void loadManifests().then(() => notifyListeners());
+      void loadManifests();
     }
-    return () => {
-      listeners.delete(bump);
-    };
   }, [slug]);
 
-  const manifest = manifestsCache?.[slug] ?? null;
-  const runtime = runtimeBySlug.get(slug);
+  const manifest = store.manifests?.[slug] ?? null;
+  const runtime = store.runtime.get(slug);
 
   function startDownload(institution: InstitutionDetail) {
     if (controllersBySlug.has(institution.slug)) return;
@@ -268,21 +296,21 @@ export function useOfflinePack(slug: string) {
       progress: { phase: "index", done: 0, total: 1 },
       error: null,
     });
-    notifyListeners();
+    publishPackSnapshot();
 
     void downloadOfflinePack(institution, {
       signal: controller.signal,
       onProgress: (progress) => {
         if (controller.signal.aborted || controllersBySlug.get(institution.slug) !== controller) return;
         runtimeBySlug.set(institution.slug, { progress, error: null });
-        notifyListeners();
+        publishPackSnapshot();
       },
     })
       .then(() => {
         if (controllersBySlug.get(institution.slug) !== controller) return;
         controllersBySlug.delete(institution.slug);
         runtimeBySlug.delete(institution.slug);
-        notifyListeners();
+        publishPackSnapshot();
       })
       .catch(() => {
         if (controllersBySlug.get(institution.slug) === controller) {
@@ -295,7 +323,7 @@ export function useOfflinePack(slug: string) {
               error: "下载没有完成，请在联网后重试。",
             });
           }
-          notifyListeners();
+          publishPackSnapshot();
         }
       });
   }
@@ -304,12 +332,12 @@ export function useOfflinePack(slug: string) {
     controllersBySlug.get(slug)?.abort();
     controllersBySlug.delete(slug);
     runtimeBySlug.delete(slug);
-    notifyListeners();
+    publishPackSnapshot();
   }
 
   function clearError() {
     if (controllersBySlug.has(slug)) return;
-    if (runtimeBySlug.delete(slug)) notifyListeners();
+    if (runtimeBySlug.delete(slug)) publishPackSnapshot();
   }
 
   async function removePack() {
@@ -319,7 +347,7 @@ export function useOfflinePack(slug: string) {
 
   return {
     manifest,
-    downloading: controllersBySlug.has(slug),
+    downloading: store.downloading.has(slug),
     progress: runtime?.progress ?? null,
     error: runtime?.error ?? null,
     startDownload,
