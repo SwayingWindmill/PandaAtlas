@@ -1,10 +1,16 @@
 import type { Session } from "@supabase/supabase-js";
-import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { syncGuestToAccount } from "@/features/engagement/guest-sync";
+import {
+  type AuthProvider,
+  authenticateWithApple,
+  resolveAuthProvider,
+  storeAppleRevocationToken,
+} from "@/features/session/apple-auth";
 import { authedApi } from "@/lib/api";
-import { supabase } from "@/lib/supabase";
 import { queryClient } from "@/lib/query-client";
+import { supabase } from "@/lib/supabase";
 
 // One place owns sign-in for the whole app. Screens read the state and call these actions; tokens stay in
 // the Supabase client and the authenticated API client.
@@ -12,7 +18,7 @@ import { queryClient } from "@/lib/query-client";
 export type SessionState =
   | { status: "loading" }
   | { status: "signedOut" }
-  | { status: "signedIn"; email: string | null; accountId: string }
+  | { status: "signedIn"; email: string | null; accountId: string; authProvider: AuthProvider }
   | { status: "unavailable"; email: string | null };
 
 interface SessionValue {
@@ -20,6 +26,8 @@ interface SessionValue {
   /** Sends a six-digit code; creates the Supabase user on first use. */
   requestCode(email: string): Promise<void>;
   verifyCode(email: string, code: string): Promise<void>;
+  signInWithApple(): Promise<"signedIn" | "cancelled">;
+  reauthenticateWithApple(): Promise<"verified" | "cancelled">;
   signOut(): Promise<void>;
 }
 
@@ -43,15 +51,30 @@ function signInMessage(error: { status?: number; code?: string; message: string 
 /** The application account behind a Supabase user; created on first sign-in. */
 async function provision(session: Session): Promise<SessionState> {
   const email = session.user.email ?? null;
+  const authProvider = resolveAuthProvider(session.user);
   // Repeating it is harmless: the API returns the existing account. A suspended account answers 403.
   const { data } = await authedApi.POST("/api/v2/me/account");
   if (!data) return { status: "unavailable", email };
   await syncGuestToAccount(data.accountId).catch(() => undefined);
-  return { status: "signedIn", email, accountId: data.accountId };
+  return { status: "signedIn", email, accountId: data.accountId, authProvider };
 }
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<SessionState>({ status: "loading" });
+  const activeProvisionRef = useRef<{ userId: string; task: Promise<SessionState> } | null>(null);
+
+  const ensureProvisioned = useCallback((session: Session): Promise<SessionState> => {
+    const userId = session.user.id;
+    if (activeProvisionRef.current?.userId === userId) {
+      return activeProvisionRef.current.task;
+    }
+    const task = provision(session).catch<SessionState>(() => ({
+      status: "unavailable",
+      email: session.user.email ?? null,
+    }));
+    activeProvisionRef.current = { userId, task };
+    return task;
+  }, []);
 
   useEffect(() => {
     // undefined until the stored session is read, so a first "no session" still settles the state.
@@ -61,23 +84,20 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       if (userId === current) return;
       if (current !== undefined) queryClient.removeQueries({ queryKey: ["private"] });
       current = userId;
-      if (!session) {
+      if (!session || userId === null) {
+        activeProvisionRef.current = null;
         setState({ status: "signedOut" });
         return;
       }
       setState({ status: "loading" });
-      provision(session)
-        .then((next) => {
-          if (current === userId) setState(next);
-        })
-        .catch(() => {
-          if (current === userId) setState({ status: "unavailable", email: session.user.email ?? null });
-        });
+      void ensureProvisioned(session).then((next) => {
+        if (current === userId) setState(next);
+      });
     };
     void supabase.auth.getSession().then(({ data }) => apply(data.session));
     const { data } = supabase.auth.onAuthStateChange((_event, session) => apply(session));
     return () => data.subscription.unsubscribe();
-  }, []);
+  }, [ensureProvisioned]);
 
   const value = useMemo<SessionValue>(
     () => ({
@@ -92,11 +112,27 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         if (error.code === "otp_expired") throw new SignInError("验证码不对或已过期，请检查或重新获取。", true);
         throw new SignInError(signInMessage(error));
       },
+      async signInWithApple() {
+        const result = await authenticateWithApple();
+        if (result.status === "cancelled") return "cancelled";
+        const { data } = await supabase.auth.getSession();
+        const settled = data.session ? await ensureProvisioned(data.session) : undefined;
+        if (settled?.status === "signedIn") {
+          await storeAppleRevocationToken(result.authorizationCode);
+        }
+        return "signedIn";
+      },
+      async reauthenticateWithApple() {
+        const result = await authenticateWithApple();
+        if (result.status === "cancelled") return "cancelled";
+        await storeAppleRevocationToken(result.authorizationCode);
+        return "verified";
+      },
       async signOut() {
         await supabase.auth.signOut();
       },
     }),
-    [state],
+    [state, ensureProvisioned],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

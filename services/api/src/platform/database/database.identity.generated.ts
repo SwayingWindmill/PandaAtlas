@@ -52,6 +52,13 @@ export interface IdentityAccountStateEvents {
   reason: string;
 }
 
+export interface IdentityAppleRevocationTokens {
+  account_id: string;
+  created_at: Generated<Timestamp>;
+  refresh_token_ciphertext: string;
+  updated_at: Generated<Timestamp>;
+}
+
 export interface IdentityAuthorizationAuditEvents {
   actor_account_id: string | null;
   assignment_id: string | null;
@@ -135,6 +142,7 @@ export interface IdentityStaffInvitations {
 export interface DB {
   "identity.account_state_events": IdentityAccountStateEvents;
   "identity.accounts": IdentityAccounts;
+  "identity.apple_revocation_tokens": IdentityAppleRevocationTokens;
   "identity.authorization_audit_events": IdentityAuthorizationAuditEvents;
   "identity.capabilities": IdentityCapabilities;
   "identity.profiles": IdentityProfiles;

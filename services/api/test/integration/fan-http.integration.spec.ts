@@ -220,6 +220,25 @@ describe("V2 fan identity, engagement, and games", () => {
       payload: { placeId, visitedOn: "2026-08-26", note: "Saw the habitat" },
     });
     expect(checkin.statusCode).toBe(201);
+    const checkinId = responseBody<{ checkinId: string }>(checkin).checkinId;
+
+    const retryCheckin = await injectHttp(app, {
+      method: "POST",
+      url: "/api/v2/me/checkins",
+      headers,
+      payload: { placeId, visitedOn: "2026-08-26" },
+    });
+    expect(retryCheckin.statusCode).toBe(201);
+    expect(retryCheckin.json()).toMatchObject({ checkinId, note: "Saw the habitat" });
+
+    const updatedCheckin = await injectHttp(app, {
+      method: "POST",
+      url: "/api/v2/me/checkins",
+      headers,
+      payload: { placeId, visitedOn: "2026-08-26", note: "Updated habitat note" },
+    });
+    expect(updatedCheckin.statusCode).toBe(201);
+    expect(updatedCheckin.json()).toMatchObject({ checkinId, note: "Updated habitat note" });
 
     const seen = await injectHttp(app, {
       method: "PUT",

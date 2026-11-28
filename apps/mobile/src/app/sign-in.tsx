@@ -1,3 +1,4 @@
+import * as AppleAuthentication from "expo-apple-authentication";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -11,9 +12,11 @@ import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
 import { localToday } from "@/features/engagement/seen";
 import { SignInConsent } from "@/features/legal/legal-links";
+import { isAppleSignInAvailable } from "@/features/session/apple-auth";
 import { rejectedCodeMessage, secondsUntilResend } from "@/features/session/otp";
 import { SignInError, useSession } from "@/features/session/session";
 import { type StoryPhoto, useStoryPhotos } from "@/features/today/story-photos";
+import { useIOSColors } from "@/lib/theme";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FACE = 72;
@@ -55,14 +58,26 @@ function ResendButton({ sentAt, disabled, onPress }: { sentAt: number; disabled:
 }
 
 export default function SignInScreen() {
-  const { requestCode, verifyCode } = useSession();
+  const { scheme } = useIOSColors();
+  const { requestCode, verifyCode, signInWithApple } = useSession();
   const photos = useStoryPhotos(localToday(), 3);
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [sentTo, setSentTo] = useState<string | null>(null);
   const [sentAt, setSentAt] = useState(0);
+  const [appleAvailable, setAppleAvailable] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void isAppleSignInAvailable().then((available) => {
+      if (active) setAppleAvailable(available);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   async function run(work: () => Promise<void>) {
     setBusy(true);
@@ -103,6 +118,14 @@ export default function SignInScreen() {
       router.back();
     });
 
+  const signInApple = () => {
+    if (busy) return;
+    void run(async () => {
+      const outcome = await signInWithApple();
+      if (outcome === "signedIn") router.back();
+    });
+  };
+
   function enterCode(value: string) {
     const digits = value.replace(/\D/g, "").slice(0, 6);
     setCode(digits);
@@ -111,7 +134,7 @@ export default function SignInScreen() {
   }
 
   return (
-    <Page title={sentTo ? "输入验证码" : "用邮箱登录"} keyboardShouldPersistTaps="handled">
+    <Page title={sentTo ? "输入验证码" : appleAvailable ? "登录" : "用邮箱登录"} keyboardShouldPersistTaps="handled">
       <View className="gap-stack">
         <Faces photos={photos} />
         <Text variant="subheadline" className="text-center text-muted-foreground">
@@ -120,6 +143,28 @@ export default function SignInScreen() {
             : "登录后，关注的熊猫、图鉴、合集和去过的地点都存在你的账号里。"}
         </Text>
       </View>
+      {!sentTo && appleAvailable ? (
+        <View className="gap-row" pointerEvents={busy ? "none" : "auto"}>
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+            buttonStyle={
+              scheme === "dark"
+                ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+                : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+            }
+            cornerRadius={999}
+            style={{ height: 48, width: "100%" }}
+            onPress={signInApple}
+          />
+          <View className="flex-row items-center gap-3 py-1">
+            <View className="h-hairline flex-1 bg-border" />
+            <Text variant="footnote" className="text-muted-foreground">
+              或使用邮箱验证码
+            </Text>
+            <View className="h-hairline flex-1 bg-border" />
+          </View>
+        </View>
+      ) : null}
       {sentTo ? (
         <Animated.View key="code" entering={PAGE_ENTER} className="gap-row">
           <TextField
@@ -156,7 +201,7 @@ export default function SignInScreen() {
             onSubmitEditing={() => {
               if (!busy && EMAIL.test(email.trim())) void send();
             }}
-            autoFocus
+            autoFocus={!appleAvailable}
           />
           <Button onPress={send} disabled={busy || !EMAIL.test(email.trim())}>
             <Text>获取验证码</Text>

@@ -1,9 +1,23 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsString, MaxLength } from "class-validator";
+import { IsString, MaxLength, MinLength } from "class-validator";
 
 function normalizeProfileText(value: unknown): unknown {
   return typeof value === "string" ? value.trim().replace(/\s+/g, " ") : value;
+}
+
+export class StoreAppleTokenDto {
+  @ApiProperty({ maxLength: 2048 })
+  @Transform(({ value }: { value: unknown }) => (typeof value === "string" ? value.trim() : value))
+  @IsString()
+  @MinLength(1)
+  @MaxLength(2048)
+  public authorizationCode!: string;
+}
+
+export class StoreAppleTokenResponseDto {
+  @ApiProperty()
+  public declare stored: boolean;
 }
 
 export class ReplaceProfileDto {

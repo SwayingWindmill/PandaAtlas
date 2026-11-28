@@ -5,6 +5,7 @@ A fan signs in with an emailed six-digit code, which signs in as soon as the six
 ## Sub-features
 
 - `sign-in-code` requests a code and signs in with it.
+- `sign-in-apple` (iOS) signs in via `expo-apple-authentication` (`signInWithIdToken`) and best-effort exchanges/stores the Apple revocation token after account provisioning, merging local guest data automatically.
 - `sign-in-wrong-code` refuses a wrong code.
 - `sign-in-resend` counts down 60 seconds, then sends a new code.
 - `welcome-follow-after-sign-in` keeps the welcome picks on the device and follows them once signed in.

@@ -52,6 +52,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/me/apple-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["storeAppleRevocationToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/contributions": {
         parameters: {
             query?: never;
@@ -1260,6 +1276,12 @@ export interface components {
         ReplaceProfileDto: {
             nickname: string;
             bio: string;
+        };
+        StoreAppleTokenDto: {
+            authorizationCode: string;
+        };
+        StoreAppleTokenResponseDto: {
+            stored: boolean;
         };
         ContributionAssertionDto: {
             assertionKey: string;
@@ -2523,6 +2545,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FanProfileDto"];
+                };
+            };
+        };
+    };
+    storeAppleRevocationToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreAppleTokenDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoreAppleTokenResponseDto"];
                 };
             };
         };

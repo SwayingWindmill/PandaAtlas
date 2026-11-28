@@ -5,6 +5,16 @@ export type AppEnvironment = "development" | "test" | "staging" | "production";
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error" | "fatal";
 export type OpsAlertWebhookFormat = "feishu" | "wecom" | "generic";
 
+export interface AppleRevocationConfig {
+  clientId: string;
+  teamId: string;
+  keyId: string;
+  privateKey: string;
+  encryptionKey: Uint8Array<ArrayBuffer>;
+  tokenEndpoint: string;
+  revokeEndpoint: string;
+}
+
 export interface EnvironmentConfig {
   APP_ENV: AppEnvironment;
   HOST: string;
@@ -29,6 +39,13 @@ export interface EnvironmentConfig {
   RESEND_FROM_EMAIL: string | undefined;
   EXPO_ACCESS_TOKEN: string | undefined;
   EXPO_PUSH_ENDPOINT: string;
+  APPLE_CLIENT_ID: string;
+  APPLE_TEAM_ID: string | undefined;
+  APPLE_KEY_ID: string | undefined;
+  APPLE_PRIVATE_KEY: string | undefined;
+  APPLE_TOKEN_ENCRYPTION_KEY: string | undefined;
+  APPLE_TOKEN_ENDPOINT: string;
+  APPLE_REVOKE_ENDPOINT: string;
   ASK_ENABLED: boolean;
   ASK_GLOBAL_DAILY_CAP: number;
   OPS_ALERT_WEBHOOK_URL: string | undefined;
@@ -126,6 +143,24 @@ export function parseOpsAlertWebhookFormat(value: unknown): OpsAlertWebhookForma
   return raw as OpsAlertWebhookFormat;
 }
 
+function parseBase64Key32(raw: string): string {
+  const cleaned = raw.replace(/\s+/g, "");
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(cleaned) || Buffer.from(cleaned, "base64").length !== 32) {
+    throw new Error("APPLE_TOKEN_ENCRYPTION_KEY must be base64 for a 32-byte key");
+  }
+  return cleaned;
+}
+
+function parseApplePrivateKey(value: unknown): string | undefined {
+  const raw = optionalString(value);
+  return raw?.replace(/\\n/g, "\n");
+}
+
+function parseAppleEndpoint(value: unknown, fallback: string, name: string, appEnv: AppEnvironment): string {
+  const raw = optionalString(value) ?? fallback;
+  return parseHttpsUrlWithLocalHttp(raw, name, appEnv);
+}
+
 export function validateEnvironment(
   input: Record<string, unknown>,
 ): EnvironmentConfig & Record<string, unknown> {
@@ -156,6 +191,16 @@ export function validateEnvironment(
   if (typeof rawLogLevel !== "string" || !LOG_LEVELS.has(rawLogLevel as LogLevel)) {
     throw new Error("LOG_LEVEL must be trace, debug, info, warn, error, or fatal");
   }
+
+  const appleTeamId = optionalString(input.APPLE_TEAM_ID);
+  const appleKeyId = optionalString(input.APPLE_KEY_ID);
+  const applePrivateKey = parseApplePrivateKey(input.APPLE_PRIVATE_KEY);
+  const rawAppleEncryptionKey = optionalString(input.APPLE_TOKEN_ENCRYPTION_KEY);
+  const appleSecretFlags = [appleTeamId, appleKeyId, applePrivateKey, rawAppleEncryptionKey];
+  if (appleSecretFlags.some((entry) => entry !== undefined) && appleSecretFlags.some((entry) => entry === undefined)) {
+    throw new Error("APPLE_TEAM_ID, APPLE_KEY_ID, APPLE_PRIVATE_KEY, and APPLE_TOKEN_ENCRYPTION_KEY must all be set together");
+  }
+  const appleEncryptionKey = rawAppleEncryptionKey === undefined ? undefined : parseBase64Key32(rawAppleEncryptionKey);
 
   return {
     ...input,
@@ -225,6 +270,23 @@ export function validateEnvironment(
     RESEND_FROM_EMAIL: optionalString(input.RESEND_FROM_EMAIL),
     EXPO_ACCESS_TOKEN: optionalString(input.EXPO_ACCESS_TOKEN),
     EXPO_PUSH_ENDPOINT: parseExpoPushEndpoint(input.EXPO_PUSH_ENDPOINT, appEnv),
+    APPLE_CLIENT_ID: optionalString(input.APPLE_CLIENT_ID) ?? "com.zhipanda.app",
+    APPLE_TEAM_ID: appleTeamId,
+    APPLE_KEY_ID: appleKeyId,
+    APPLE_PRIVATE_KEY: applePrivateKey,
+    APPLE_TOKEN_ENCRYPTION_KEY: appleEncryptionKey,
+    APPLE_TOKEN_ENDPOINT: parseAppleEndpoint(
+      input.APPLE_TOKEN_ENDPOINT,
+      "https://appleid.apple.com/auth/token",
+      "APPLE_TOKEN_ENDPOINT",
+      appEnv,
+    ),
+    APPLE_REVOKE_ENDPOINT: parseAppleEndpoint(
+      input.APPLE_REVOKE_ENDPOINT,
+      "https://appleid.apple.com/auth/revoke",
+      "APPLE_REVOKE_ENDPOINT",
+      appEnv,
+    ),
     // 问问熊猫 stays off unless a deploy turns it on; the cap bounds paid model and search use.
     ASK_ENABLED: parseBoolean(input.ASK_ENABLED, false, "ASK_ENABLED"),
     ASK_GLOBAL_DAILY_CAP: parseInteger(input.ASK_GLOBAL_DAILY_CAP, 30, "ASK_GLOBAL_DAILY_CAP", 0, 10_000),
@@ -349,5 +411,29 @@ export class AppConfig {
 
   public get opsAlertWebhookFormat(): OpsAlertWebhookFormat {
     return this.config.get("OPS_ALERT_WEBHOOK_FORMAT", { infer: true });
+  }
+
+  public get appleRevocation(): AppleRevocationConfig | undefined {
+    const teamId = this.config.get("APPLE_TEAM_ID", { infer: true });
+    const keyId = this.config.get("APPLE_KEY_ID", { infer: true });
+    const privateKey = this.config.get("APPLE_PRIVATE_KEY", { infer: true });
+    const rawEncryptionKey = this.config.get("APPLE_TOKEN_ENCRYPTION_KEY", { infer: true });
+    if (
+      teamId === undefined ||
+      keyId === undefined ||
+      privateKey === undefined ||
+      rawEncryptionKey === undefined
+    ) {
+      return undefined;
+    }
+    return {
+      clientId: this.config.get("APPLE_CLIENT_ID", { infer: true }),
+      teamId,
+      keyId,
+      privateKey,
+      encryptionKey: new Uint8Array(Buffer.from(rawEncryptionKey, "base64")),
+      tokenEndpoint: this.config.get("APPLE_TOKEN_ENDPOINT", { infer: true }),
+      revokeEndpoint: this.config.get("APPLE_REVOKE_ENDPOINT", { infer: true }),
+    };
   }
 }

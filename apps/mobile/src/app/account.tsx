@@ -179,6 +179,7 @@ export default function AccountScreen() {
   const { accountId, unavailable } = useAccount();
   const queryClient = useQueryClient();
   const email = session.status === "signedIn" ? session.email : null;
+  const authProvider = session.status === "signedIn" ? session.authProvider : "other";
   // Privacy requests require recent email-code authentication on a live session; the API says when it lapses.
   const list = useQuery({ ...privacyRequestsQueryOptions(accountId ?? ""), enabled: accountId !== null });
   const requests = list.data;
@@ -273,7 +274,7 @@ export default function AccountScreen() {
       {gate === "checking" ? (
         <Skeleton className="h-48 w-full rounded-card" accessibilityLabel="正在加载" />
       ) : null}
-      {gate === "verify" ? <Verification email={email} onVerified={() => void handleVerified()} /> : null}
+      {gate === "verify" ? <Verification email={email} authProvider={authProvider} onVerified={() => void handleVerified()} /> : null}
       {gate === "open" && requests ? (
         <Animated.View entering={PAGE_ENTER} className="gap-section">
           <ExportSection

@@ -1,3 +1,4 @@
+import { sql } from "kysely";
 import type { DatabaseService } from "../../../platform/database/database.service.js";
 import type {
   CollectionRecord,
@@ -235,6 +236,11 @@ export class PostgresEngagementRepository implements EngagementPort {
         visited_on: input.visitedOn,
         note: input.note,
       })
+      .onConflict((conflict) =>
+        conflict.columns(["account_id", "place_id", "visited_on"]).doUpdateSet({
+          note: sql`coalesce(excluded.note, engagement.location_checkins.note)`,
+        }),
+      )
       .returning(["checkin_id", "place_id", "visited_on", "note", "created_at"])
       .executeTakeFirstOrThrow();
     return {

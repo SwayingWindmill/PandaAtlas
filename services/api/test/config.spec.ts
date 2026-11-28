@@ -113,4 +113,42 @@ describe("environment validation", () => {
       }),
     ).toThrow("EXPO_PUSH_ENDPOINT must be a valid URL");
   });
+
+  it("validates optional Apple revocation credentials cleanly", () => {
+    const validKey = Buffer.alloc(32, 7).toString("base64");
+    expect(validateEnvironment({ APP_ENV: "test" })).toMatchObject({
+      APPLE_CLIENT_ID: "com.zhipanda.app",
+      APPLE_TEAM_ID: undefined,
+      APPLE_TOKEN_ENDPOINT: "https://appleid.apple.com/auth/token",
+      APPLE_REVOKE_ENDPOINT: "https://appleid.apple.com/auth/revoke",
+    });
+
+    expect(() =>
+      validateEnvironment({
+        APP_ENV: "test",
+        APPLE_TEAM_ID: "TEAM123456",
+      }),
+    ).toThrow("APPLE_TEAM_ID, APPLE_KEY_ID, APPLE_PRIVATE_KEY, and APPLE_TOKEN_ENCRYPTION_KEY must all be set together");
+
+    expect(() =>
+      validateEnvironment({
+        APP_ENV: "test",
+        APPLE_TEAM_ID: "TEAM123456",
+        APPLE_KEY_ID: "KEY123456",
+        APPLE_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\\nabc\\n-----END PRIVATE KEY-----",
+        APPLE_TOKEN_ENCRYPTION_KEY: "too-short",
+      }),
+    ).toThrow("APPLE_TOKEN_ENCRYPTION_KEY must be base64 for a 32-byte key");
+
+    const configured = validateEnvironment({
+      APP_ENV: "test",
+      APPLE_TEAM_ID: "TEAM123456",
+      APPLE_KEY_ID: "KEY123456",
+      APPLE_PRIVATE_KEY: "line1\\nline2",
+      APPLE_TOKEN_ENCRYPTION_KEY: validKey,
+      APPLE_TOKEN_ENDPOINT: "http://127.0.0.1:8789/token",
+    });
+    expect(configured.APPLE_PRIVATE_KEY).toBe("line1\nline2");
+    expect(configured.APPLE_TOKEN_ENDPOINT).toBe("http://127.0.0.1:8789/token");
+  });
 });

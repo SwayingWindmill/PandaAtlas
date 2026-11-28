@@ -97,6 +97,38 @@
         ]
       }
     },
+    "/api/v2/me/apple-token": {
+      "post": {
+        "operationId": "storeAppleRevocationToken",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StoreAppleTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreAppleTokenResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
     "/api/v2/contributions": {
       "post": {
         "operationId": "submitContribution",
@@ -3057,6 +3089,29 @@
         "required": [
           "nickname",
           "bio"
+        ]
+      },
+      "StoreAppleTokenDto": {
+        "type": "object",
+        "properties": {
+          "authorizationCode": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "authorizationCode"
+        ]
+      },
+      "StoreAppleTokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "stored": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "stored"
         ]
       },
       "ContributionAssertionDto": {
