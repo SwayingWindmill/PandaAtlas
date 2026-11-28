@@ -2,6 +2,7 @@ import type { Session } from "@supabase/supabase-js";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { syncGuestToAccount } from "@/features/engagement/guest-sync";
+import { unregisterStoredPushDevice } from "@/features/notifications/push";
 import {
   type AuthProvider,
   authenticateWithApple,
@@ -129,6 +130,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         return "verified";
       },
       async signOut() {
+        await unregisterStoredPushDevice();
         await supabase.auth.signOut();
       },
     }),

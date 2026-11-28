@@ -1,4 +1,5 @@
 import type { AuditEventConsumerService } from "../modules/audit/infrastructure/audit-event-consumer.service.js";
+import type { BirthdayReminderScannerService } from "../modules/notification/infrastructure/birthday-reminder-scanner.service.js";
 import type { NotificationEventConsumerService } from "../modules/notification/infrastructure/notification-event-consumer.service.js";
 import type { NotificationProviderWorkerService } from "../modules/notification/infrastructure/notification-provider-worker.service.js";
 import type { PublicCachePort } from "../modules/public-read/application/public-cache.port.js";
@@ -33,6 +34,7 @@ export class AsyncDownstreamRunnerService {
     private readonly publicCache: PublicCacheConsumerService,
     private readonly heartbeat: AsyncDownstreamHeartbeat,
     private readonly logger: Pick<StructuredLoggerService, "write">,
+    private readonly birthdayScanner?: Pick<BirthdayReminderScannerService, "scanDueReminders">,
   ) {}
 
   // Runs every stage even when an earlier one fails, so one broken stage cannot hold back the others.
@@ -50,6 +52,11 @@ export class AsyncDownstreamRunnerService {
     };
 
     const failed = (stage: string) => failures.some((failure) => failure.stage === stage);
+    const scanner = this.birthdayScanner;
+    const birthdayReminders =
+      scanner === undefined
+        ? { scanned: 0, emitted: 0 }
+        : await run("birthdayReminders", () => scanner.scanDueReminders());
     const dispatchInitial = await run("dispatchInitial", () => this.dispatcher.dispatchBatch(50));
     const publicCache = await run("publicCache", () => this.publicCache.processBatch(effects.publicCache));
     const updates = await run("updates", () => this.updates.processBatch(25));
@@ -68,6 +75,7 @@ export class AsyncDownstreamRunnerService {
       : IDLE_DISPATCH;
     const audit = await run("audit", () => this.audit.processBatch(50));
     const stages = {
+      birthdayReminders,
       dispatchInitial,
       publicCache,
       updates,

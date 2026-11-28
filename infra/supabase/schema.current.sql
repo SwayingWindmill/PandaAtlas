@@ -1688,7 +1688,7 @@ CREATE TABLE IF NOT EXISTS "notification"."channel_preferences" (
     "enabled" boolean NOT NULL,
     "version" integer DEFAULT 1 NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "channel_preferences_category_check" CHECK (("category" = ANY (ARRAY['knowledge_update'::"text", 'correction'::"text"]))),
+    CONSTRAINT "channel_preferences_category_check" CHECK (("category" = ANY (ARRAY['knowledge_update'::"text", 'correction'::"text", 'birthday_reminder'::"text", 'panda_news'::"text", 'venue_news'::"text"]))),
     CONSTRAINT "channel_preferences_channel_check" CHECK (("channel" = ANY (ARRAY['station'::"text", 'email'::"text", 'push'::"text"]))),
     CONSTRAINT "channel_preferences_version_check" CHECK (("version" >= 1))
 );
@@ -1734,7 +1734,7 @@ CREATE TABLE IF NOT EXISTS "notification"."messages" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "seen_at" timestamp with time zone,
     "read_at" timestamp with time zone,
-    CONSTRAINT "messages_category_check" CHECK (("category" = ANY (ARRAY['knowledge_update'::"text", 'correction'::"text"]))),
+    CONSTRAINT "messages_category_check" CHECK (("category" = ANY (ARRAY['knowledge_update'::"text", 'correction'::"text", 'birthday_reminder'::"text", 'panda_news'::"text", 'venue_news'::"text"]))),
     CONSTRAINT "messages_check" CHECK ((("read_at" IS NULL) OR (("seen_at" IS NOT NULL) AND ("read_at" >= "seen_at")))),
     CONSTRAINT "messages_content_check" CHECK (("jsonb_typeof"("content") = 'object'::"text"))
 );

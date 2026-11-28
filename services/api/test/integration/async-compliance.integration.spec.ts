@@ -22,9 +22,11 @@ import {
   type NotificationPushProviderPort,
   type NotificationPushResult,
 } from "../../src/modules/notification/application/notification-provider.port.js";
+import { BirthdayReminderScannerService } from "../../src/modules/notification/infrastructure/birthday-reminder-scanner.service.js";
 import { NotificationEventConsumerService } from "../../src/modules/notification/infrastructure/notification-event-consumer.service.js";
 import { NotificationProviderWorkerService } from "../../src/modules/notification/infrastructure/notification-provider-worker.service.js";
 import { PANDA_PORT, type PandaPort } from "../../src/modules/panda/application/panda.application.js";
+import { PLACES_PORT, type PlacesPort } from "../../src/modules/places/application/places.application.js";
 import { PRIVACY_PORT, type PrivacyPort } from "../../src/modules/privacy/application/privacy.application.js";
 import {
   PUBLICATION_PORT,
@@ -551,5 +553,201 @@ describe("V2 async downstream and compliance", () => {
         .where("device_token_id", "=", regActive.deviceTokenId)
         .executeTakeFirstOrThrow(),
     ).toEqual({ active: false });
+  });
+
+  it("scans CST panda birthdays with default-on push and projects panda/venue news via audience ports", async () => {
+    const suffix = randomUUID();
+    const database = app.get(DatabaseService);
+    const evidence = app.get<EvidencePort>(EVIDENCE_PORT);
+    const pandas = app.get<PandaPort>(PANDA_PORT);
+    const places = app.get<PlacesPort>(PLACES_PORT);
+    const engagement = app.get<EngagementPort>(ENGAGEMENT_PORT);
+    const publication = app.get<PublicationPort>(PUBLICATION_PORT);
+    const notifications = app.get<NotificationPort>(NOTIFICATION_PORT);
+    const runner = app.get(AsyncDownstreamRunnerService);
+    const effects = { publicCache: { purge: () => Promise.resolve() } };
+    const dispatcher = app.get(OutboxDispatcherService);
+    const notificationConsumer = app.get(NotificationEventConsumerService);
+    const birthdayScanner = app.get(BirthdayReminderScannerService);
+    const outbox = app.get(IntegrationOutboxService);
+    const pgmq = app.get(PgmqService);
+    const contacts = app.get<IdentityNotificationContactPort>(IDENTITY_NOTIFICATION_CONTACT_PORT);
+
+    const fanAccountId = randomUUID();
+    await sql`
+      insert into auth.users (id, aud, role, created_at, updated_at)
+      values (${fanAccountId}::uuid, 'authenticated', 'authenticated', now(), now())
+    `.execute(database.db);
+    await database.db
+      .insertInto("identity.accounts")
+      .values({ account_id: fanAccountId, email: `push-fan-${suffix}@example.test` })
+      .execute();
+    await notifications.registerDevice(fanAccountId, `ExponentPushToken[default-push-${suffix}]`, "ios");
+
+    const sourceId = `bday:${suffix}`;
+    await evidence.createSource({
+      sourceId,
+      publisher: "Birthday Archive",
+      title: "Birthday record",
+      url: `https://example.test/bday/${suffix}`,
+      publishedOn: "2026-07-01",
+      lastVerifiedOn: "2026-07-01",
+      languageTag: "zh-CN",
+      accessState: "accessible",
+      evidenceTier: "institutional",
+      publicSummary: "Birthday source.",
+      contentSha256: "e".repeat(64),
+    });
+    const pandaSlug = `bday-panda-${suffix}`;
+    const panda = await pandas.createPanda({
+      canonicalSlug: pandaSlug,
+      primaryName: { languageTag: "zh-CN", value: "岁岁", sourceIds: [sourceId] },
+    });
+    await pandas.recordFactAssertion({
+      assertionId: `bday:birth:${suffix}`,
+      pandaId: panda.pandaId,
+      fieldKey: "birth_date",
+      value: "2020-07-04",
+      certainty: "confirmed",
+      lastVerifiedOn: "2026-07-01",
+      sourceIds: [sourceId],
+    });
+    await pandas.setFactConclusion({
+      pandaId: panda.pandaId,
+      fieldKey: "birth_date",
+      value: "2020-07-04",
+      status: "confirmed",
+      lastVerifiedOn: "2026-07-01",
+      assertionIds: [`bday:birth:${suffix}`],
+    });
+    await pandas.recordFactAssertion({
+      assertionId: `bday:life:${suffix}`,
+      pandaId: panda.pandaId,
+      fieldKey: "life_status",
+      value: "alive",
+      certainty: "confirmed",
+      lastVerifiedOn: "2026-07-01",
+      sourceIds: [sourceId],
+    });
+    await pandas.setFactConclusion({
+      pandaId: panda.pandaId,
+      fieldKey: "life_status",
+      value: "alive",
+      status: "confirmed",
+      lastVerifiedOn: "2026-07-01",
+      assertionIds: [`bday:life:${suffix}`],
+    });
+
+    const institutionSlug = `venue-${suffix}`;
+    const institution = await places.createInstitution({
+      slug: institutionSlug,
+      nameZh: "测试基地",
+      nameEn: "Test Base",
+      countryCode: "CN",
+      profile: {
+        kind: "zoo",
+        summary: { en: "Integration venue follow target." },
+        websiteUrl: "https://example.org/venue",
+        verifiedOn: "2026-07-01",
+        sourceUrls: ["https://example.org/venue"],
+      },
+    });
+    await engagement.favorite(fanAccountId, panda.pandaId);
+    await engagement.followVenue(fanAccountId, institutionSlug);
+
+    const pubCtx = { actor: { kind: "account" as const, accountId: fanAccountId }, correlationId: randomUUID() };
+    const release = await publication.build(`bday-${suffix}-1`, pubCtx);
+    expect((await publication.seal(release.releaseId, pubCtx, "Seal birthday release")).kind).toBe("ok");
+    expect((await publication.activate(release.releaseId, pubCtx, "Activate birthday release")).kind).toBe("ok");
+    for (let cycle = 0; cycle < 4; cycle += 1) {
+      await runner.runCycle(effects);
+    }
+
+    const scanAt = new Date("2026-07-04T04:00:00.000Z");
+    const firstScan = await birthdayScanner.scanDueReminders(scanAt);
+    expect(firstScan.emitted).toBeGreaterThanOrEqual(1);
+    await expect(birthdayScanner.scanDueReminders(scanAt)).resolves.toMatchObject({ emitted: 0 });
+
+    const correlationId = randomUUID();
+    await database.transaction(async (transaction) => {
+      await outbox.append(transaction, {
+        eventType: "news.panda_item.published",
+        sourceContext: "news",
+        aggregateType: "news_item",
+        aggregateId: `news-panda-${suffix}`,
+        idempotencyKey: `news-panda:${suffix}`,
+        correlationId,
+        occurredAt: scanAt,
+        payload: {
+          pandaId: panda.pandaId,
+          pandaSlug,
+          pandaName: "岁岁",
+          title: "岁岁清晨逛外场",
+        },
+      });
+      await outbox.append(transaction, {
+        eventType: "news.venue_item.published",
+        sourceContext: "news",
+        aggregateType: "news_item",
+        aggregateId: `news-venue-${suffix}`,
+        idempotencyKey: `news-venue:${suffix}`,
+        correlationId,
+        occurredAt: scanAt,
+        payload: {
+          institutionId: institution.institutionId,
+          institutionSlug,
+          institutionName: "测试基地",
+          title: "测试基地开园提示",
+        },
+      });
+    });
+
+    for (let cycle = 0; cycle < 4; cycle += 1) {
+      await dispatcher.dispatchBatch(200);
+      await notificationConsumer.processBatch(100);
+    }
+
+    const delivered: NotificationPushInput[] = [];
+    const pushWorker = new NotificationProviderWorkerService(
+      database,
+      outbox,
+      pgmq,
+      contacts,
+      new RetryableFailureProvider(),
+      {
+        sendPush: (input) => {
+          delivered.push(input);
+          return Promise.resolve({
+            provider: "expo",
+            deliveredTicketIds: [`ticket-${delivered.length}`],
+            unregisteredTokens: [],
+          });
+        },
+      },
+    );
+    for (let cycle = 0; cycle < 4; cycle += 1) {
+      await pushWorker.processBatch(20);
+    }
+
+    const fanDeliveries = delivered.filter((item) =>
+      item.toTokens.includes(`ExponentPushToken[default-push-${suffix}]`),
+    );
+    expect(fanDeliveries.map((item) => item.data.category)).toEqual(
+      expect.arrayContaining(["birthday_reminder", "panda_news", "venue_news"]),
+    );
+    expect(fanDeliveries.find((item) => item.data.category === "birthday_reminder")).toMatchObject({
+      title: "今天是岁岁6岁生日",
+      data: { route: `/pandas/${pandaSlug}` },
+    });
+    expect(fanDeliveries.find((item) => item.data.category === "panda_news")).toMatchObject({
+      title: "岁岁有新动态",
+      body: "岁岁清晨逛外场",
+      data: { route: `/pandas/${pandaSlug}` },
+    });
+    expect(fanDeliveries.find((item) => item.data.category === "venue_news")).toMatchObject({
+      title: "测试基地有新公告",
+      body: "测试基地开园提示",
+      data: { route: `/institutions/${institutionSlug}` },
+    });
   });
 });

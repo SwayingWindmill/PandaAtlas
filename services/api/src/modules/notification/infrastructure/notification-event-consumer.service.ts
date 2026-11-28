@@ -11,12 +11,27 @@ import type { IntegrationOutboxService } from "../../../platform/integration/int
 import type { PgmqService } from "../../../platform/integration/pgmq.service.js";
 import type { EngagementNotificationAudiencePort } from "../../engagement/application/engagement-notification.port.js";
 import type { IdentityNotificationContactPort } from "../../identity/application/identity-notification.port.js";
-import type { NotificationCategory, NotificationChannel } from "../application/notification.application.js";
+import {
+  defaultChannelEnabled,
+  type NotificationCategory,
+  type NotificationChannel,
+} from "../application/notification.application.js";
 
 interface NotificationProjection {
   category: NotificationCategory;
   accountIds: string[];
   content: Record<string, unknown>;
+}
+
+function stringArray(value: unknown, fallback?: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string" && item.trim() !== "");
+  }
+  return typeof fallback === "string" && fallback.trim() !== "" ? [fallback] : [];
+}
+
+function optionalText(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() !== "" ? value : undefined;
 }
 
 export class NotificationEventConsumerService {
@@ -147,6 +162,65 @@ export class NotificationEventConsumerService {
       };
     }
 
+    if (eventType === "notification.birthday.due") {
+      const pandaId = optionalText(payload.pandaId) ?? aggregateId;
+      return {
+        category: "birthday_reminder",
+        accountIds: await this.audience.listAccountsFavoritingPandas(transaction, [pandaId]),
+        content: {
+          kind: "birthday_reminder",
+          pandaId,
+          ...(optionalText(payload.pandaSlug) ? { pandaSlug: payload.pandaSlug } : {}),
+          ...(optionalText(payload.pandaName) ? { pandaName: payload.pandaName } : {}),
+          ...(optionalText(payload.birthdayDate) ? { birthdayDate: payload.birthdayDate } : {}),
+          ...(typeof payload.age === "number" ? { age: payload.age } : {}),
+          ...(typeof payload.leadDays === "number" ? { leadDays: payload.leadDays } : {}),
+        },
+      };
+    }
+
+    if (eventType === "news.panda_item.published") {
+      const pandaIds = stringArray(payload.pandaIds, payload.pandaId);
+      const [firstPandaId] = pandaIds;
+      if (firstPandaId === undefined) return undefined;
+      const pandaId = optionalText(payload.pandaId) ?? firstPandaId;
+      return {
+        category: "panda_news",
+        accountIds: await this.audience.listAccountsFavoritingPandas(transaction, pandaIds),
+        content: {
+          kind: "panda_news",
+          newsItemId: aggregateId,
+          pandaId,
+          ...(optionalText(payload.pandaSlug) ? { pandaSlug: payload.pandaSlug } : {}),
+          ...(optionalText(payload.pandaName) ? { pandaName: payload.pandaName } : {}),
+          ...(optionalText(payload.title) ? { title: payload.title } : {}),
+          ...(optionalText(payload.summary) ? { summary: payload.summary } : {}),
+          ...(optionalText(payload.sourceUrl) ? { sourceUrl: payload.sourceUrl } : {}),
+        },
+      };
+    }
+
+    if (eventType === "news.venue_item.published") {
+      const institutionIds = stringArray(payload.institutionIds, payload.institutionId);
+      const [firstInstitutionId] = institutionIds;
+      if (firstInstitutionId === undefined) return undefined;
+      const institutionId = optionalText(payload.institutionId) ?? firstInstitutionId;
+      return {
+        category: "venue_news",
+        accountIds: await this.audience.listAccountsFollowingInstitutions(transaction, institutionIds),
+        content: {
+          kind: "venue_news",
+          newsItemId: aggregateId,
+          institutionId,
+          ...(optionalText(payload.institutionSlug) ? { institutionSlug: payload.institutionSlug } : {}),
+          ...(optionalText(payload.institutionName) ? { institutionName: payload.institutionName } : {}),
+          ...(optionalText(payload.title) ? { title: payload.title } : {}),
+          ...(optionalText(payload.summary) ? { summary: payload.summary } : {}),
+          ...(optionalText(payload.sourceUrl) ? { sourceUrl: payload.sourceUrl } : {}),
+        },
+      };
+    }
+
     return undefined;
   }
 
@@ -203,7 +277,7 @@ export class NotificationEventConsumerService {
       .where("category", "=", category)
       .where("channel", "=", channel)
       .executeTakeFirst();
-    return row?.enabled === true;
+    return row?.enabled ?? defaultChannelEnabled(channel);
   }
 
   private async hasActiveDeviceToken(transaction: DatabaseTransaction, accountId: string): Promise<boolean> {

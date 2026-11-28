@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useMemo } from "react";
-import { Pressable, View } from "react-native";
+import { useMemo, useState } from "react";
+import { Linking, Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { Icon } from "@/components/icon";
@@ -32,6 +32,7 @@ import {
   preferenceRows,
   unreadCount,
 } from "@/features/notifications/notifications";
+import { registerPushDeviceForAccount } from "@/features/notifications/push";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
@@ -60,7 +61,11 @@ function Inbox({
   return (
     <View className="overflow-hidden rounded-group bg-card" style={{ borderCurve: "continuous" }}>
       {messages.map((message, index) => {
-        const view = messageView(message, (pandaId) => pandas.get(pandaId)?.name ?? null);
+        const view = messageView(
+          message,
+          (pandaId) => pandas.get(pandaId)?.name ?? null,
+          (pandaId) => pandas.get(pandaId)?.slug ?? null,
+        );
         const unread = message.readAt === null;
         const panda = view.pandaId ? pandas.get(view.pandaId) : undefined;
         const time = (
@@ -74,6 +79,7 @@ function Inbox({
               onPress={() => {
                 if (unread) onRead(message);
                 if (panda) openPanda(panda.slug);
+                else if (view.href && view.href !== "/notifications") router.push(view.href);
               }}
               role="button"
               accessibilityLabel={`${unread ? "未读，" : ""}${view.title}`}
@@ -161,6 +167,7 @@ export default function NotificationsScreen() {
   const { state: session } = useSession();
   const { accountId, unavailable } = useAccount();
   const queryClient = useQueryClient();
+  const [pushDenied, setPushDenied] = useState(false);
   const enabled = accountId !== null;
   const inbox = useQuery({ ...inboxQueryOptions(accountId ?? ""), enabled });
   const stored = useQuery({ ...preferencesQueryOptions(accountId ?? ""), enabled });
@@ -221,16 +228,22 @@ export default function NotificationsScreen() {
     readOne.reset();
     readEvery.mutate();
   };
-  const change = (row: PreferenceRow, enabled: boolean) =>
+  const change = (row: PreferenceRow, enabled: boolean) => {
     save.mutate({ category: row.category, channel: row.channel, enabled });
+    if (row.channel === "push" && enabled && accountId) {
+      void registerPushDeviceForAccount(accountId, { promptPermission: true }).then((outcome) => {
+        setPushDenied(outcome === "denied");
+      });
+    }
+  };
 
   const unread = messages ? unreadCount(messages) : 0;
   if (session.status === "signedOut") {
     return (
       <Page title="通知与提醒">
         <ScreenState
-          message="绑定邮箱登录后，关注熊猫有新资料更新或状态变化时会自动通知你。"
-          actionLabel="绑定同步"
+          message="登录后，关注的熊猫过生日或有新动态时会自动通知你。"
+          actionLabel="去登录"
           onAction={() => router.push("/sign-in")}
         />
       </Page>
@@ -271,6 +284,18 @@ export default function NotificationsScreen() {
           </View>
           <View className="gap-1.5">
             <Preferences rows={preferenceRows(preferences)} onChange={change} />
+            {pushDenied ? (
+              <View className="flex-row items-center justify-between gap-row px-inset">
+                <Text variant="footnote" className="min-w-0 flex-1 text-muted-foreground">
+                  系统通知权限未开启，请先在系统设置里允许吱熊猫发送通知。
+                </Text>
+                <Pressable onPress={() => void Linking.openSettings()} role="button" hitSlop={8}>
+                  <Text variant="footnote" className="text-primary">
+                    去系统设置
+                  </Text>
+                </Pressable>
+              </View>
+            ) : null}
             {saveFailed ? (
               <Text variant="footnote" className="px-inset text-destructive">
                 没能保存设置，请再试一次。

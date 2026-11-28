@@ -53,6 +53,9 @@ const copy = {
     category: {
       knowledge_update: "生日动态",
       correction: "重要动态",
+      birthday_reminder: "熊猫生日提醒",
+      panda_news: "关注熊猫动态",
+      venue_news: "关注场馆公告",
     },
     fallbackTitle: "吱熊猫通知",
     fallbackSummary: "打开通知中心查看最新状态。",
@@ -89,6 +92,9 @@ const copy = {
     category: {
       knowledge_update: "Birthday Activity",
       correction: "Major Activity",
+      birthday_reminder: "Birthday Reminder",
+      panda_news: "Panda News",
+      venue_news: "Venue News",
     },
     fallbackTitle: "ZhiPanda notification",
     fallbackSummary: "Open the notification center for the latest state.",

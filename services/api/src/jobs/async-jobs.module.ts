@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { AuditModule } from "../modules/audit/audit.module.js";
 import { AuditEventConsumerService } from "../modules/audit/infrastructure/audit-event-consumer.service.js";
+import { BirthdayReminderScannerService } from "../modules/notification/infrastructure/birthday-reminder-scanner.service.js";
 import { NotificationEventConsumerService } from "../modules/notification/infrastructure/notification-event-consumer.service.js";
 import { NotificationProviderWorkerService } from "../modules/notification/infrastructure/notification-provider-worker.service.js";
 import { NotificationModule } from "../modules/notification/notification.module.js";
@@ -33,6 +34,7 @@ import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.
         publicCache: PublicCacheConsumerService,
         heartbeat: AsyncDownstreamHeartbeat,
         logger: StructuredLoggerService,
+        birthdayScanner: BirthdayReminderScannerService,
       ) =>
         new AsyncDownstreamRunnerService(
           dispatcher,
@@ -44,6 +46,7 @@ import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.
           publicCache,
           heartbeat,
           logger,
+          birthdayScanner,
         ),
       inject: [
         OutboxDispatcherService,
@@ -55,6 +58,7 @@ import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.
         PublicCacheConsumerService,
         AsyncDownstreamHeartbeat,
         StructuredLoggerService,
+        BirthdayReminderScannerService,
       ],
     },
   ],

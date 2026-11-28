@@ -37,6 +37,7 @@ function runner(failing: string | undefined, busy: { name: string; received?: nu
     stage("publicCache", calls, optionsFor("publicCache")) as never,
     { recordSuccess: () => { heartbeats += 1; return Promise.resolve(); } } as never,
     { write: (level: string, message: string, fields?: Record<string, unknown>) => { logs.push({ level, message, fields }); } },
+    { scanDueReminders: () => { calls.push("birthdayReminders"); return Promise.resolve({ scanned: 0, emitted: 0 }); } },
   );
   return { service, calls, logs, heartbeats: () => heartbeats };
 }
@@ -46,7 +47,7 @@ describe("AsyncDownstreamRunnerService", () => {
     const { service, calls, heartbeats } = runner(undefined);
     await expect(service.runCycle(effects)).resolves.toMatchObject({ audit: { received: 0 } });
     expect(calls).toEqual([
-      "dispatch", "publicCache", "updates", "notification", "privacy", "provider", "audit",
+      "birthdayReminders", "dispatch", "publicCache", "updates", "notification", "privacy", "provider", "audit",
     ]);
     expect(heartbeats()).toBe(1);
   });
@@ -55,13 +56,13 @@ describe("AsyncDownstreamRunnerService", () => {
     const { service, calls } = runner(undefined, { name: "updates", received: 2 });
     await service.runCycle(effects);
     expect(calls).toEqual([
-      "dispatch", "publicCache", "updates", "dispatch", "notification", "privacy", "provider", "audit",
+      "birthdayReminders", "dispatch", "publicCache", "updates", "dispatch", "notification", "privacy", "provider", "audit",
     ]);
 
     const followed = runner(undefined, { name: "notification", received: 1 });
     await followed.service.runCycle(effects);
     expect(followed.calls).toEqual([
-      "dispatch", "publicCache", "updates", "notification", "privacy", "provider", "dispatch", "audit",
+      "birthdayReminders", "dispatch", "publicCache", "updates", "notification", "privacy", "provider", "dispatch", "audit",
     ]);
   });
 
@@ -69,7 +70,7 @@ describe("AsyncDownstreamRunnerService", () => {
     const { service, calls, logs, heartbeats } = runner("publicCache");
     await expect(service.runCycle(effects)).rejects.toThrow("Async downstream stages failed: publicCache: publicCache unavailable");
     expect(calls).toEqual([
-      "dispatch", "publicCache", "updates", "notification", "privacy", "provider", "audit",
+      "birthdayReminders", "dispatch", "publicCache", "updates", "notification", "privacy", "provider", "audit",
     ]);
     expect(logs).toMatchObject([
       {

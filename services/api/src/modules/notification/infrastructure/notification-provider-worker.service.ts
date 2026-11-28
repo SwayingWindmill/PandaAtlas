@@ -13,6 +13,16 @@ import type { DatabaseTransaction } from "../../../platform/database/database.se
 const QUEUE = "notification_provider" as const;
 const MAX_ATTEMPTS = 4;
 const RETRY_DELAYS_SECONDS = [60, 300, 1_800] as const;
+const SAFE_SLUG_PATTERN = /^[a-z0-9-]+$/i;
+
+function nonEmptyString(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() !== "" ? value.trim() : undefined;
+}
+
+function safeSlug(value: unknown): string | undefined {
+  const text = nonEmptyString(value);
+  return text !== undefined && SAFE_SLUG_PATTERN.test(text) ? text : undefined;
+}
 
 interface ProviderJobSnapshot {
   jobId: string;
@@ -116,6 +126,7 @@ export class NotificationProviderWorkerService {
           data: {
             messageId: snapshot.messageId,
             category: snapshot.category,
+            route: this.pushRoute(snapshot.content),
             ...snapshot.content,
           },
         });
@@ -453,7 +464,36 @@ export class NotificationProviderWorkerService {
     });
   }
 
+  private pushRoute(content: Record<string, unknown>): string {
+    if (content.kind === "birthday_reminder" || content.kind === "panda_news") {
+      const slug = safeSlug(content.pandaSlug);
+      return slug !== undefined ? `/pandas/${slug}` : content.kind === "birthday_reminder" ? "/birthdays" : "/notifications";
+    }
+    if (content.kind === "venue_news") {
+      const slug = safeSlug(content.institutionSlug);
+      return slug !== undefined ? `/institutions/${slug}` : "/venue-news";
+    }
+    if (content.kind === "publication_control" && content.action === "restored") {
+      const slug = safeSlug(content.pandaSlug);
+      if (slug !== undefined) return `/pandas/${slug}`;
+    }
+    return "/notifications";
+  }
+
   private pushTitle(category: string, content: Record<string, unknown>): string {
+    if (content.kind === "birthday_reminder") {
+      const name = nonEmptyString(content.pandaName) ?? "关注的熊猫";
+      const age = typeof content.age === "number" && Number.isInteger(content.age) && content.age >= 1 ? `${content.age}岁` : "";
+      return content.leadDays === 1 ? `明天是${name}${age}生日` : `今天是${name}${age}生日`;
+    }
+    if (content.kind === "panda_news") {
+      const name = nonEmptyString(content.pandaName) ?? "关注的熊猫";
+      return `${name}有新动态`;
+    }
+    if (content.kind === "venue_news") {
+      const name = nonEmptyString(content.institutionName) ?? "关注的场馆";
+      return `${name}有新公告`;
+    }
     if (content.kind === "knowledge_update") return "关注的熊猫资料更新了";
     if (content.kind === "publication_control") {
       return content.action === "restored" ? "关注的熊猫资料恢复公开了" : "关注的熊猫资料暂时下线核对";
@@ -462,6 +502,16 @@ export class NotificationProviderWorkerService {
   }
 
   private pushBody(category: string, content: Record<string, unknown>): string {
+    if (content.kind === "birthday_reminder") {
+      const name = nonEmptyString(content.pandaName) ?? "它";
+      return content.leadDays === 1 ? `提前祝${name}生日快乐，点击查看档案。` : `去看看${name}的档案和动态吧。`;
+    }
+    if (content.kind === "panda_news") {
+      return nonEmptyString(content.title) ?? nonEmptyString(content.summary) ?? "点击查看最新动态。";
+    }
+    if (content.kind === "venue_news") {
+      return nonEmptyString(content.title) ?? nonEmptyString(content.summary) ?? "点击查看场馆最新公告。";
+    }
     if (content.kind === "knowledge_update") {
       const count = typeof content.changedResourceCount === "number" ? `${content.changedResourceCount} 处变化` : null;
       const version = typeof content.releaseVersion === "string" ? `版本 ${content.releaseVersion}` : null;
@@ -474,6 +524,9 @@ export class NotificationProviderWorkerService {
   }
 
   private subject(category: string): string {
+    if (category === "birthday_reminder") return "PandaAtlas birthday reminder";
+    if (category === "panda_news") return "PandaAtlas panda news";
+    if (category === "venue_news") return "PandaAtlas venue news";
     return category === "correction" ? "PandaAtlas correction notice" : "PandaAtlas knowledge update";
   }
 

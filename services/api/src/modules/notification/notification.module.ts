@@ -17,6 +17,8 @@ import {
   type IdentityNotificationContactPort,
 } from "../identity/application/identity-notification.port.js";
 import { IdentityModule } from "../identity/identity.module.js";
+import { PUBLIC_READ_PORT, type PublicReadPort } from "../public-read/application/public-read.application.js";
+import { PublicReadModule } from "../public-read/public-read.module.js";
 import { NOTIFICATION_PORT, NotificationApplication } from "./application/notification.application.js";
 import {
   NOTIFICATION_PROVIDER_PORT,
@@ -26,6 +28,7 @@ import {
 } from "./application/notification-provider.port.js";
 import { NOTIFICATION_PRIVACY_PORT } from "./application/notification-privacy.port.js";
 import { NotificationController } from "./http/notification.controller.js";
+import { BirthdayReminderScannerService } from "./infrastructure/birthday-reminder-scanner.service.js";
 import { ExpoPushNotificationProvider } from "./infrastructure/expo-push-notification.provider.js";
 import { NotificationEventConsumerService } from "./infrastructure/notification-event-consumer.service.js";
 import { NotificationProviderWorkerService } from "./infrastructure/notification-provider-worker.service.js";
@@ -34,7 +37,7 @@ import { PostgresNotificationRepository } from "./infrastructure/postgres-notifi
 import { ResendNotificationProvider } from "./infrastructure/resend-notification.provider.js";
 
 @Module({
-  imports: [ConfigModule, DatabaseModule, IntegrationModule, EngagementModule, IdentityModule],
+  imports: [ConfigModule, DatabaseModule, IntegrationModule, EngagementModule, IdentityModule, PublicReadModule],
   controllers: [NotificationController],
   providers: [
     {
@@ -92,7 +95,23 @@ import { ResendNotificationProvider } from "./infrastructure/resend-notification
         NOTIFICATION_PUSH_PROVIDER_PORT,
       ],
     },
+    {
+      provide: BirthdayReminderScannerService,
+      useFactory: (
+        database: DatabaseService,
+        outbox: IntegrationOutboxService,
+        audience: EngagementNotificationAudiencePort,
+        publicRead: PublicReadPort,
+      ) => new BirthdayReminderScannerService(database, outbox, audience, publicRead),
+      inject: [DatabaseService, IntegrationOutboxService, ENGAGEMENT_NOTIFICATION_AUDIENCE_PORT, PUBLIC_READ_PORT],
+    },
   ],
-  exports: [NOTIFICATION_PORT, NOTIFICATION_PRIVACY_PORT, NotificationEventConsumerService, NotificationProviderWorkerService],
+  exports: [
+    NOTIFICATION_PORT,
+    NOTIFICATION_PRIVACY_PORT,
+    NotificationEventConsumerService,
+    NotificationProviderWorkerService,
+    BirthdayReminderScannerService,
+  ],
 })
 export class NotificationModule {}

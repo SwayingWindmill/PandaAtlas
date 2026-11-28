@@ -24,22 +24,39 @@ export class IntegrationOutboxService {
   ): Promise<string> {
     const row = await transaction
       .insertInto("integration.outbox_events")
-      .values({
-        event_type: event.eventType,
-        event_version: event.eventVersion ?? 1,
-        source_context: event.sourceContext,
-        aggregate_type: event.aggregateType,
-        aggregate_id: event.aggregateId,
-        aggregate_version: event.aggregateVersion?.toString() ?? null,
-        idempotency_key: event.idempotencyKey,
-        correlation_id: event.correlationId,
-        causation_id: event.causationId ?? null,
-        occurred_at: event.occurredAt,
-        payload: event.payload,
-      })
+      .values(this.eventValues(event))
       .returning("event_id")
       .executeTakeFirstOrThrow();
     return row.event_id;
+  }
+
+  public async appendIfAbsent(
+    transaction: DatabaseTransaction,
+    event: IntegrationEventInput,
+  ): Promise<string | undefined> {
+    const row = await transaction
+      .insertInto("integration.outbox_events")
+      .values(this.eventValues(event))
+      .onConflict((conflict) => conflict.columns(["source_context", "idempotency_key"]).doNothing())
+      .returning("event_id")
+      .executeTakeFirst();
+    return row?.event_id;
+  }
+
+  private eventValues(event: IntegrationEventInput) {
+    return {
+      event_type: event.eventType,
+      event_version: event.eventVersion ?? 1,
+      source_context: event.sourceContext,
+      aggregate_type: event.aggregateType,
+      aggregate_id: event.aggregateId,
+      aggregate_version: event.aggregateVersion?.toString() ?? null,
+      idempotency_key: event.idempotencyKey,
+      correlation_id: event.correlationId,
+      causation_id: event.causationId ?? null,
+      occurred_at: event.occurredAt,
+      payload: event.payload,
+    };
   }
 
   public async load(transaction: DatabaseTransaction, eventId: string): Promise<IntegrationEvent | undefined> {
