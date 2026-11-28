@@ -1,5 +1,6 @@
 import { router } from "expo-router";
-import { Pressable, Share, StyleSheet, View } from "react-native";
+import { type ComponentRef, useRef, useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import Svg, { Defs, Line, LinearGradient, Rect, Stop } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
@@ -20,12 +21,16 @@ import type { InstitutionDetail } from "@/features/institutions/institutions";
 import { openPanda } from "@/features/pandas/panda-row";
 import type { PandaListItem } from "@/features/pandas/pandas";
 import { longDate } from "@/features/pandas/profile";
+import { exportTicketImage } from "@/features/visits/ticket-export";
+import { VisitPhotoCollage } from "@/features/visits/visit-photo-collage";
+import type { LocalVisitPhoto } from "@/features/visits/visit-photos-model";
 import { HAIRLINE, RADIUS } from "@/lib/surface";
 import { useIOSColors } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const HERO_HEIGHT = 168;
 const NOTCH_SIZE = 24;
+const EMPTY_PHOTOS: LocalVisitPhoto[] = [];
 
 /**
  * Collectible notched check-in souvenir ticket shown right after saving a venue visit
@@ -37,6 +42,8 @@ export function SouvenirTicket({
   visitedOn,
   visitCount,
   note,
+  photos = EMPTY_PHOTOS,
+  photoNotice = null,
   newlyLitPandas,
   seenIds,
   queuedOffline = false,
@@ -47,6 +54,8 @@ export function SouvenirTicket({
   visitedOn: string;
   visitCount: number;
   note: string | null;
+  photos?: readonly LocalVisitPhoto[];
+  photoNotice?: string | null;
   newlyLitPandas: PandaListItem[];
   seenIds: ReadonlySet<string>;
   queuedOffline?: boolean;
@@ -56,6 +65,9 @@ export function SouvenirTicket({
   const stacked = useStacked();
   const [tint, cardGround] = useCSSVariable(["--color-highlight-soft", "--color-card"]);
   const hero = useInstitutionHero(institution.residents);
+  const ticketRef = useRef<ComponentRef<typeof View> | null>(null);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState(false);
 
   const totalResidents = institution.residents.length;
   const venueSeenCount = institution.residents.filter((panda) => seenIds.has(panda.id)).length;
@@ -75,21 +87,25 @@ export function SouvenirTicket({
     .filter(Boolean)
     .join("　");
 
-  function shareTicket() {
-    const lines = [
-      "吱熊猫　线下逛园纪念票根",
-      `${institution.name}${facilityName !== institution.name ? `（${facilityName}）` : ""}`,
-      dateBadge,
-      ...(note ? [`“${note}”`] : []),
-      ...(newlyLitPandas.length > 0 ? [`当日点亮见过：${newlyLitPandas.map((p) => p.name).join("、")}`] : []),
-      ...(totalResidents > 0 ? [`本馆已见过 ${venueSeenCount} / ${totalResidents} 只`] : []),
-    ];
-    void Share.share({ message: lines.join("\n") }).catch(() => undefined);
+  async function handleExportTicket() {
+    if (exporting) return;
+    setExporting(true);
+    setExportError(false);
+    try {
+      await exportTicketImage(ticketRef, institution.slug, visitedOn);
+    } catch {
+      setExportError(true);
+    } finally {
+      setExporting(false);
+    }
   }
 
   return (
     <Animated.View entering={PAGE_ENTER} className="gap-stack">
       <View
+        ref={ticketRef}
+        collapsable={false}
+        accessibilityLabel={`${institution.name}的逛园纪念票根`}
         className="rounded-card border-hairline border-border bg-card"
         style={{ borderCurve: "continuous" }}
       >
@@ -104,7 +120,7 @@ export function SouvenirTicket({
                 style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
                 contentFit="cover"
                 accessible={false}
-                transition={200}
+                transition={0}
               />
               <Scrim id="souvenir-ticket-hero" height="72%" />
             </>
@@ -226,6 +242,20 @@ export function SouvenirTicket({
             </View>
           ) : null}
 
+          {photos.length > 0 ? (
+            <View className="gap-1.5">
+              <View className="flex-row items-baseline justify-between gap-2">
+                <Text variant="footnote" className="font-semibold text-foreground">
+                  当日实拍
+                </Text>
+                <Text variant="footnote" className="text-muted-foreground tabular-nums">
+                  {`${photos.length} 张`}
+                </Text>
+              </View>
+              <VisitPhotoCollage photos={photos} />
+            </View>
+          ) : null}
+
           <View className="gap-stack-tight">
             <View className="flex-row items-baseline justify-between gap-2">
               <Text variant="footnote" className="font-semibold text-foreground tabular-nums">
@@ -308,14 +338,24 @@ export function SouvenirTicket({
               已暂存本机，联网后自动同步
             </Text>
           ) : null}
+          {photoNotice ? (
+            <Text variant="footnote" className="font-medium text-warning" accessibilityLiveRegion="polite">
+              {photoNotice}
+            </Text>
+          ) : null}
         </View>
       </View>
 
       <View className="gap-2.5">
-        <Button onPress={shareTicket}>
+        <Button onPress={() => void handleExportTicket()} disabled={exporting} accessibilityLabel="生成分享纪念长图">
           <Icon icon={ShareIcon} size="subhead" tone="onButton" strokeWidth={2} />
-          <Text>分享纪念票根</Text>
+          <Text>{exporting ? "正在生成长图…" : "生成分享纪念长图"}</Text>
         </Button>
+        {exportError ? (
+          <Text variant="footnote" className="text-destructive" accessibilityLiveRegion="polite">
+            没能生成纪念长图，请再试一次。
+          </Text>
+        ) : null}
         <View className={cn("gap-2.5", stacked ? "flex-col" : "flex-row")}>
           <Button
             variant="secondary"

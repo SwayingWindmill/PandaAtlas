@@ -75,13 +75,21 @@
       "expo-secure-store",
       "expo-web-browser",
       "expo-image",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "让你从相册挑选看猫实拍，仅保存在本机手账中。",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
       "expo-sharing",
       "expo-apple-authentication",
       "expo-notifications",
       [
         "expo-media-library",
         {
-          "photosPermission": "吱熊猫不会读取你的相册，只在你点保存时把照片添加进去。",
+          "photosPermission": "让你从相册挑选看猫实拍，仅保存在本机手账中。",
           "savePhotosPermission": "吱熊猫需要把你选中的熊猫照片保存到相册。",
           "granularPermissions": ["photo"]
         }
