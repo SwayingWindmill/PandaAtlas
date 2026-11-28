@@ -6,16 +6,22 @@ import { AppState, Platform } from "react-native";
 import { reportError } from "@/lib/error-reporting";
 import { queryClient, reportCacheErrors } from "@/lib/query-client";
 
-if (Platform.OS !== "web") {
+export function isNetworkOnline(state: Network.NetworkState): boolean {
+  return state.isConnected !== false && state.isInternetReachable !== false;
+}
+
+if (Platform.OS !== "web" || typeof window !== "undefined") {
   onlineManager.setEventListener((setOnline) => {
     let initialized = false;
     const subscription = Network.addNetworkStateListener((state) => {
       initialized = true;
-      if (typeof state.isConnected === "boolean") setOnline(state.isConnected);
+      setOnline(isNetworkOnline(state));
     });
-    void Network.getNetworkStateAsync().then((state) => {
-      if (!initialized && typeof state.isConnected === "boolean") setOnline(state.isConnected);
-    }).catch(() => undefined);
+    void Network.getNetworkStateAsync()
+      .then((state) => {
+        if (!initialized) setOnline(isNetworkOnline(state));
+      })
+      .catch(() => undefined);
     return () => subscription.remove();
   });
 }

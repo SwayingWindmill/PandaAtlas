@@ -1,6 +1,8 @@
 import type { Session } from "@supabase/supabase-js";
 import { onlineManager } from "@tanstack/react-query";
+import * as Network from "expo-network";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { Platform } from "react-native";
 
 import { syncGuestToAccount } from "@/features/engagement/guest-sync";
 import { unregisterStoredPushDevice } from "@/features/notifications/push";
@@ -170,10 +172,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       });
     };
 
-    void supabase.auth.getSession().then(({ data }) => apply(data.session));
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => apply(session));
-    const unsubscribeOnline = onlineManager.subscribe((isOnline) => {
-      if (!isOnline) return;
+    const retryUnconfirmedProvision = () => {
       const pending = unconfirmedSessionRef.current;
       if (!pending || pending.user.id !== currentUserIdRef.current) return;
       void ensureProvisioned(pending, { force: true }).then((next) => {
@@ -181,11 +180,26 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           setState((prev) => (sameSessionState(prev, next) ? prev : next));
         }
       });
+    };
+
+    void supabase.auth.getSession().then(({ data }) => apply(data.session));
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => apply(session));
+    const unsubscribeOnline = onlineManager.subscribe((isOnline) => {
+      if (isOnline) retryUnconfirmedProvision();
     });
+    const networkSub =
+      Platform.OS !== "web" || typeof window !== "undefined"
+        ? Network.addNetworkStateListener((network) => {
+            if (network.isConnected !== false && network.isInternetReachable !== false) {
+              retryUnconfirmedProvision();
+            }
+          })
+        : null;
 
     return () => {
       data.subscription.unsubscribe();
       unsubscribeOnline();
+      networkSub?.remove();
     };
   }, [ensureProvisioned]);
 

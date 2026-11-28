@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { onlineManager } from "@tanstack/react-query";
+import * as Network from "expo-network";
 import { useEffect, useState } from "react";
 import { AppState, Platform } from "react-native";
 
@@ -236,7 +237,21 @@ export function useOfflineCheckinFlush(): void {
       if (isOnline) void flushOfflineCheckins(accountId);
     });
 
-    if (Platform.OS === "web") return unsubscribeOnline;
+    const networkSub =
+      Platform.OS !== "web" || typeof window !== "undefined"
+        ? Network.addNetworkStateListener((state) => {
+            if (state.isConnected !== false && state.isInternetReachable !== false) {
+              void flushOfflineCheckins(accountId);
+            }
+          })
+        : null;
+
+    if (Platform.OS === "web") {
+      return () => {
+        unsubscribeOnline();
+        networkSub?.remove();
+      };
+    }
 
     const appSub = AppState.addEventListener("change", (status) => {
       if (status === "active" && onlineManager.isOnline()) {
@@ -245,6 +260,7 @@ export function useOfflineCheckinFlush(): void {
     });
     return () => {
       unsubscribeOnline();
+      networkSub?.remove();
       appSub.remove();
     };
   }, [accountId]);
