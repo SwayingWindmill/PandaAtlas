@@ -27,6 +27,11 @@
     },
     "android": {
       "package": "com.zhipanda.app",
+      "blockedPermissions": [
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+        "android.permission.READ_EXTERNAL_STORAGE"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#FFFFFF",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -70,6 +75,14 @@
       "expo-web-browser",
       "expo-image",
       "expo-sharing",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "吱熊猫不会读取你的相册，只在你点保存时把照片添加进去。",
+          "savePhotosPermission": "吱熊猫需要把你选中的熊猫照片保存到相册。",
+          "granularPermissions": ["photo"]
+        }
+      ],
       [
         "react-native-nano-icons",
         {

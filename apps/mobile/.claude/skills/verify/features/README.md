@@ -29,6 +29,7 @@ Each feature file starts with an H1 title and one paragraph on the user-visible 
 
 ## Features
 
+- [Photo viewer](./photo-viewer.md) covers a panda's full-screen photos: paging, zoom, share and save.
 - [Explore, live clock & sounds](./explore.md) covers the unified 探索 home tab, Option B star/followed strip, 此刻谁醒着 live clock, 听熊猫 & `/sounds`, `/play` mini-games, and the v4.3 地图 Tab (`我去过 N` passport, `?filter=visited`, `时间轴` button, and vertical timeline rail).
 - [Compare, play, book & editorial](./compare-play-book.md) covers v4.5 比一比 (`/compare` + `/comparisons` redirect), pre-filled `/relationship?a=...&b=...`, `/play`, `/book`, `/learn`, `/returning`, `/pandas/[slug]/family`, and `/week` → `/on-this-day` redirect.
 - [Venue page](./venue-page.md) covers a zoo's single-scroll detail page (`/institutions/[slug]`), `/institutions/[slug]/checkin` bundle check-in + `SouvenirTicket`, and 关注.

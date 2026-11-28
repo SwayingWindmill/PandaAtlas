@@ -1,3 +1,5 @@
+import { stat } from "node:fs/promises";
+
 import { expect } from "e2e";
 
 import { fixture } from "./support/fixture.ts";
@@ -48,4 +50,16 @@ test("tapping a specific photo in the overview strip opens the viewer at that in
   await expect(viewer.getByRole("button", "还原照片大小")).toBeVisible();
   await viewer.getByRole("button", "还原照片大小").tap();
   await expect(viewer.getByRole("button", "放大照片")).toBeVisible();
+});
+
+test("the photo viewer exposes share and saves the photo to download on web", async ({ app, screen, browser }) => {
+  const { panda } = fixture();
+  await app.open(`/pandas/${panda.slug}/photos`);
+
+  const viewer = screen.getByRole("dialog", "照片");
+  await expect(viewer.getByRole("button", "分享")).toBeEnabled();
+  const download = await browser.waitForDownload(() => viewer.getByRole("button", "保存").tap());
+  expect(download.suggestedFilename.startsWith(panda.name)).toBe(true);
+  expect((await stat(download.absolutePath)).size).toBeGreaterThan(0);
+  await expect(viewer.getByRole("status").getByText("已开始下载")).toBeVisible();
 });

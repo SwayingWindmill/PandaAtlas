@@ -1,18 +1,29 @@
+import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { HeaderBackButton } from "expo-router/react-navigation";
-import { useQuery } from "@tanstack/react-query";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FlatList, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { Icon } from "@/components/icon";
+import { Download, Share } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { ScreenState } from "@/components/screen-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { type SaveOutcome, savePhoto, sharePhoto } from "@/features/pandas/photo-actions";
 import { parsePhotoIndex } from "@/features/pandas/photo-zoom";
 import { type Photo, photosQueryOptions } from "@/features/pandas/profile";
 import { ZoomablePhoto } from "@/features/pandas/zoomable-photo";
+
+const SAVED: Record<SaveOutcome, string> = {
+  saved: "已保存到相册",
+  downloaded: "已开始下载",
+  opened: "已在新标签页打开原图",
+  denied: "没有相册权限，照片没有保存。",
+  blocked: "保存需要相册权限，请在系统设置里允许吱熊猫添加照片。",
+};
 
 // Swiping pages through the photos (FlatList paging works on iOS, Android and web); the buttons and zoom
 // control do the same for keyboards and screen readers.
@@ -21,7 +32,9 @@ export default function PhotosScreen() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const list = useRef<FlatList<Photo>>(null);
-  const { data: photos, isError: failed, refetch } = useQuery(photosQueryOptions(slug));
+  const { data, isError: failed, refetch } = useQuery(photosQueryOptions(slug));
+  const photos = data?.photos;
+  const pandaName = data?.name ?? "";
   const requestedIndex = parsePhotoIndex(indexParam, Number.MAX_SAFE_INTEGER);
   const initialIndex = parsePhotoIndex(indexParam, photos?.length ?? 0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -30,6 +43,8 @@ export default function PhotosScreen() {
   const [aligned, setAligned] = useState(requestedIndex === 0);
   // The pager's own height: a percentage height inside a horizontal list resolves to 0 on web.
   const [pageHeight, setPageHeight] = useState(0);
+  const [status, setStatus] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const index = Math.min(selected ?? initialIndex, Math.max((photos?.length ?? 1) - 1, 0));
 
@@ -40,11 +55,29 @@ export default function PhotosScreen() {
     return () => clearTimeout(timer);
   }, [aligned, initialIndex, pageHeight, photos, width]);
 
+  useEffect(() => {
+    if (!status) return;
+    const timer = setTimeout(() => setStatus(null), 3000);
+    return () => clearTimeout(timer);
+  }, [status]);
+
   function go(to: number) {
     setZoomed(false);
     setAligned(true);
     setSelected(to);
     list.current?.scrollToIndex({ index: to, animated: true });
+  }
+
+  async function runAction(action: () => Promise<string | null>, failure: string) {
+    setBusy(true);
+    try {
+      setStatus(await action());
+    } catch (error) {
+      if (__DEV__) console.warn(failure, error);
+      setStatus(failure);
+    } finally {
+      setBusy(false);
+    }
   }
 
   const current = photos?.[index];
@@ -124,7 +157,14 @@ export default function PhotosScreen() {
               />
             )}
           />
-          <View className="gap-3 px-5 pt-4">
+          <View className="gap-2.5 px-5 pt-3">
+            {status ? (
+              <View role="status" accessibilityLiveRegion="polite">
+                <Text variant="footnote" className="text-center text-primary">
+                  {status}
+                </Text>
+              </View>
+            ) : null}
             <Text variant="footnote" className="text-center text-muted-foreground">
               双指缩放　双击放大　左右滑动切换
             </Text>
@@ -132,6 +172,42 @@ export default function PhotosScreen() {
               <Text variant="footnote" className="text-muted-foreground">
                 {current.credit}
               </Text>
+            ) : null}
+            {current ? (
+              <View className="flex-row items-center justify-center gap-3">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={busy}
+                  aria-disabled={busy}
+                  accessibilityLabel="分享"
+                  onPress={() =>
+                    void runAction(async () => {
+                      await sharePhoto(current, pandaName);
+                      return null;
+                    }, "照片暂时分享不了，请稍后再试。")
+                  }
+                >
+                  <Icon icon={Share} size="footnote" tone="label" />
+                  <Text>分享</Text>
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={busy}
+                  aria-disabled={busy}
+                  accessibilityLabel="保存"
+                  onPress={() =>
+                    void runAction(
+                      async () => SAVED[await savePhoto(current, pandaName)],
+                      "照片没有保存下来，请稍后再试。",
+                    )
+                  }
+                >
+                  <Icon icon={Download} size="footnote" tone="label" />
+                  <Text>保存</Text>
+                </Button>
+              </View>
             ) : null}
             <View className="flex-row flex-wrap items-center justify-between gap-2">
               {photos.length > 1 ? (

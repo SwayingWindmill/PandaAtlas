@@ -37,7 +37,7 @@ Fans use the Expo app on a phone, in Chinese. Writers draft 科普 in `data/cura
 - Learning copy is Chinese-first. English fields exist in the catalog and are not the UI.
 - Face tips use the keys `shape`, `leftRight`, `eyePatches`, `ears`. The shape label is 「脸型」. A tip whose body is empty is not shown.
 - The face quiz asks which photo is a named panda when that panda has only one published photo. Choice photos show no names until the answer. A second, different published photo may be used as the question image. The writer's tip text is unchanged.
-- iOS uses the system tab bar, the system stack (five tab roots: `今天`, `发现`, `找熊猫`, `图鉴`, `我的`, inline titles on pushed screens, the system back gesture) and system colors. Android uses Material tabs and a toolbar in the same colors. The web build is for review.
+- iOS uses the system tab bar, the system stack (four tab roots: `探索`, `找熊猫`, `地图`, `我的`, inline titles on pushed screens, the system back gesture) and system colors. Android uses Material tabs and a toolbar in the same colors. The web build is for review.
 - Do not invent panda facts. Draft learning text is the writer's, kept as draft until the owner publishes it.
 - App color and type tokens are shared by every screen, including 科普. The website keeps its own tokens.
 

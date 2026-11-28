@@ -12,7 +12,7 @@ The mockups are in [`mockups/v4/`](mockups/v4/), and [`00-overview.webp`](mockup
 
 ## Tab bar
 
-There are five tabs: 今天, 发现, 找熊猫, 图鉴 and 我的. The bar is the system bar described in DESIGN.md › Navigation. The glyphs follow the mockups: calendar for 今天, compass for 发现, search, book for 图鉴, and the person for 我的. 发现 came after v4; its plan and canvas are the 发现页 design artifact (2026-11-10).
+There are four tabs: `探索` (`/(tabs)/(today)`), `找熊猫` (`/(tabs)/find`), `地图` (`/(tabs)/map`), and `我的` (`/(tabs)/me`). The bar is the system bar described in DESIGN.md › Navigation. The glyphs follow the shipped 4-tab layout: compass for `探索`, search for `找熊猫`, map for `地图`, and person for `我的`. Former `今天` and `发现` tab blocks were unified into `探索`, and `我的图鉴` (`/book`) is reached from `我的` and the map passport.
 
 ## 探索（原今天） — `/(tabs)/(today)` (v4.1 overhaul)
 
@@ -62,9 +62,11 @@ Mockups: 地图 · 现在 and 地图 · 点开场馆 on the 发现、找熊猫�
 
 Status: upgraded in Batch 2 (v4.3).
 
-## 发现 (after v4)
+## 发现 (retired tab; blocks unified into 探索, `/play`, `/compare`, `/learn`)
 
-What to read and play when the fan is not looking for one panda. The three tabs split by intent: 今天 pushes what is timely, 找熊猫 looks up a panda, a venue or a relation, and 发现 holds the articles, 专题, the calendar and the games. Every block is led by photographs from our own media host, each naming the panda pictured. A block with nothing real to show is left out.
+> The standalone `发现` tab from the 5-tab v4 draft was folded into `探索` (`/(tabs)/(today)`) and pushed screens (`/play`, `/compare`, `/learn`, `/calendar`) when the app moved to 4 tabs. Kept here as background for block origins.
+
+What to read and play when the fan is not looking for one panda. Every block is led by photographs from our own media host, each naming the panda pictured. A block with nothing real to show is left out.
 
 1. The large title 发现.
 2. **本期.** The featured `StoryCard`, turning over each day among the published articles whose hero panda has a reviewed cover (shown through that cover, not the article's hotlinked original) and the 专题 with content.
@@ -151,7 +153,7 @@ Status: upgraded in Batch 2 (v4.3).
 6. The data version, as a centered footnote.
 7. 退出登录, in its own group.
 
-Status: built, without 反馈 and 关于 (no pages yet). 场馆动态 turns the 今天 card on and off; it is kept on this device.
+Status: built, without 反馈 and 关于 (no pages yet). 场馆动态 turns the 探索 card on and off; it is kept on this device.
 
 ## 熊猫详情 — `06-panda`, `06-panda-dark`, `06b-panda-family`, `06c-panda-photos` (superseded by v3.7 single-scroll canvas in #931)
 
@@ -199,11 +201,11 @@ The enriched `参观攻略` (`institution-guide.tsx`, `venue-guide-extras.ts`) s
 
 场馆动态 (`07b-venue-news`) is one timeline card (`NewsTimeline`), newest first, the newest dot tinted. Each row has the date (2026.11.06), the venue, the notice's own headline, a countdown (2 天后) on one still to come, or else the photo of the first panda it names, and it opens the original. Ink chips narrow it: 全部, 关注的 (the venues where the followed pandas live, shown when one has a notice), then each venue with a notice. The hosts follow as official `SourceBadge`s. The mockup's bell waits for a news reminder. A venue's page shows its three newest notices on the same card, with 全部动态 when there are more.
 
-生日周 (`08-birthday-week`) has 接下来 7 天 over the title, a strip of the seven days (weekday over date, today on an ink tile, a dot under each day with a birthday), then one group per day (今天 · 11月4日 周三) of 44pt round photos with the age at the right; a row opens the 生日卡. 生日提醒 sits at the foot as a switch, and also in 设置's 提醒 group. The mockup's bell is left out: the reminder lives on 今天, not in a push. 官方生日活动 shows only when an institution's own announcement is curated in `events.ts`.
+生日周 (`08-birthday-week`) has 接下来 7 天 over the title, a strip of the seven days (weekday over date, today on an ink tile, a dot under each day with a birthday), then one group per day (今天 · 11月4日 周三) of 44pt round photos with the age at the right; a row opens the 生日卡. 生日提醒 sits at the foot as a switch, and also in 设置's 提醒 group. The mockup's bell is left out: the reminder lives on 探索, not in a push. 官方生日活动 shows only when an institution's own announcement is curated in `events.ts`.
 
 生日卡 (`09-birthday-card`) has 封面, 奖章 and 海报 in a `Segmented` above the card, the card itself on a 360×480 artboard in palette C (ink ground, white type, sky accent, a silver medal), then 分享 and 分享链接 as glyph actions and 看看{名字} as the filled button. 存到相册 and 复制链接 wait for the media-library and clipboard modules; the page dots wait for a swipeable card.
 
-年度回顾 (`10-year-review`) is the fan's own year, from their records only: the year over the title; a hero with the first panda they met that year (今年第一只, the day at the right); 见过, 打卡 and 去过 as stat tiles; 每月打卡 as twelve bars with the busiest month in `graphic`; the 图鉴点亮 ring card shared with 图鉴 (`LitCard`); 第一次, the year's first 认出, 见过, 去过 and 打卡 on a `Timeline`; and 分享回顾, which saves the top of the page as an image. The mockup's 看得最多 41 次 needs per-year counts the records do not keep, so the hero names the first panda instead. On 我的 the banner (the year's first panda behind 2026 年度回顾) shows once the year holds a record. An earlier build reviewed the public record (births, moves) instead; it was replaced to follow the mockup.
+年度回顾 (`10-year-review`) is the fan's own year, from their records only: the year over the title; a hero with the first panda they met that year (今年第一只, the day at the right); 见过, 打卡 and 去过 as stat tiles; 每月打卡 as twelve bars with the busiest month in `graphic`; the 图鉴点亮 ring card shared with 我的图鉴 (`/book`, `LitCard`); 第一次, the year's first 认出, 见过, 去过 and 打卡 on a `Timeline`; and 分享回顾, which saves the top of the page as an image. The mockup's 看得最多 41 次 needs per-year counts the records do not keep, so the hero names the first panda instead. On 我的 the banner (the year's first panda behind 2026 年度回顾) shows once the year holds a record. An earlier build reviewed the public record (births, moves) instead; it was replaced to follow the mockup.
 
 月度挑战 (`11-monthly-challenge`) has 月度挑战 over 十一月挑战, then a card with a large `ProgressRing` (done over total) and the days left; 任务 as a stepper of discs on a rail, an ink check once done (the disc is the checkbox) and the number until then, each row opening the page that does it; and 往期, a trophy per earlier month joined, ink when complete. Joining is opt-in and kept on this device: before joining the page offers 参加十一月挑战, and 退出本月挑战 sits at the foot. Tasks are ticked by hand. The mockup's tasks that name a panda or read a record (认出晓晓和蕾蕾, 打卡 7 天) wait for a month's theme to be written.
 
