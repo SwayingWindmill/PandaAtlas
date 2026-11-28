@@ -1,7 +1,8 @@
 import { Directory, File, Paths } from "expo-file-system";
 import { Asset, requestPermissionsAsync } from "expo-media-library";
+import { saveToLibraryAsync } from "expo-media-library/legacy";
 import { shareAsync } from "expo-sharing";
-import { Platform, Share } from "react-native";
+import { Platform } from "react-native";
 
 import { fileName, shareText } from "@/features/pandas/photo-viewer";
 import type { Photo } from "@/features/pandas/profile";
@@ -55,8 +56,8 @@ export async function sharePhoto(photo: Photo, name: string): Promise<void> {
   const shared = sharedPhotosDir();
   shared.create();
   const file = await downloadOriginal(photo, name, shared);
-  if (Platform.OS === "ios") await Share.share({ url: file.uri, message: shareText(photo, name) });
-  else await shareAsync(file.uri, { dialogTitle: shareText(photo, name) });
+  // HOLD: RN Share.share leaks its iOS promise when an activity is picked then cancelled; expo-sharing resolves unconditionally.
+  await shareAsync(file.uri, { dialogTitle: shareText(photo, name) });
 }
 
 export async function savePhoto(photo: Photo, name: string): Promise<SaveOutcome> {
@@ -66,7 +67,9 @@ export async function savePhoto(photo: Photo, name: string): Promise<SaveOutcome
   if (!permission.granted) return permission.canAskAgain ? "denied" : "blocked";
   const file = await downloadOriginal(photo, name, Paths.cache);
   try {
-    await Asset.create(file.uri);
+    // HOLD: iOS Asset.create passes raw .webp URLs to PHAssetChangeRequest; saveToLibraryAsync decodes via UIImage first.
+    if (Platform.OS === "ios") await saveToLibraryAsync(file.uri);
+    else await Asset.create(file.uri);
   } finally {
     if (file.exists) file.delete();
   }

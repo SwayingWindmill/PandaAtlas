@@ -12,7 +12,7 @@ The mockups are in [`mockups/v4/`](mockups/v4/), and [`00-overview.webp`](mockup
 
 ## Tab bar
 
-There are four tabs: `探索` (`/(tabs)/(today)`), `找熊猫` (`/(tabs)/find`), `地图` (`/(tabs)/map`), and `我的` (`/(tabs)/me`). The bar is the system bar described in DESIGN.md › Navigation. The glyphs follow the shipped 4-tab layout: compass for `探索`, search for `找熊猫`, map for `地图`, and person for `我的`. Former `今天` and `发现` tab blocks were unified into `探索`, and `我的图鉴` (`/book`) is reached from `我的` and the map passport.
+There are four tabs: `探索` (`/(tabs)/(today)`), `找熊猫` (`/(tabs)/find`), `地图` (`/(tabs)/map`), and `我的` (`/(tabs)/me`). The bar is the system bar described in DESIGN.md › Navigation. The glyphs follow the shipped 4-tab layout: compass for `探索`, search for `找熊猫`, map for `地图`, and person for `我的`. Former `今天` and `发现` tab blocks were unified into `探索`, and `我的图鉴` (`/book`) is reached from `我的`.
 
 ## 探索（原今天） — `/(tabs)/(today)` (v4.1 overhaul)
 

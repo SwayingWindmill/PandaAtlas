@@ -20,10 +20,12 @@ function utf8Length(char: string): number {
  */
 export function fileName(photo: Photo, name: string): string {
   const extension = /\.(jpe?g|png|webp|heic|gif)(?:$|[?#])/i.exec(photo.url)?.[1]?.toLowerCase() ?? "jpg";
+  // HOLD: Android MimeTypeMap.getFileExtensionFromUrl only accepts [a-zA-Z_0-9.-()%] in the URL;
+  // WHATWG URL percent-encodes non-ASCII bytes, so strip all other ASCII punctuation and whitespace.
   const words = [name, photo.credit]
     .filter(Boolean)
     .join(" ")
-    .replace(/[\\/:*?"<>|#%\u0000-\u001f\s]+/g, " ")
+    .replace(/[\u0000-\u0027\u002a-\u002c\u002f\u003a-\u0040\u005b-\u005e\u0060\u007b-\u007f\s]+/g, " ")
     .trim();
   let stem = "";
   let bytes = 0;

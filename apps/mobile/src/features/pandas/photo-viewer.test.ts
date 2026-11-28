@@ -35,4 +35,13 @@ describe("shared photo", () => {
   it("drops characters that would break the file URI or the file system", () => {
     expect(fileName({ ...photo, credit: "#1 100% 熊猫\u0007\u001f图" }, "萌兰")).toBe("萌兰 1 100 熊猫 图.jpg");
   });
+
+  it("keeps file URIs safe for Android MimeTypeMap across realistic credits", () => {
+    for (const credit of ["Smithsonian's National Zoo", "X @NationalZoo, a+b&c=d;e!f$g~h"]) {
+      const name = fileName({ ...photo, credit }, "贝贝");
+      const encoded = new URL(name, "file:///cache/").pathname.slice("/cache/".length);
+      expect(encoded).toMatch(/^[a-zA-Z_0-9.\-()%]+$/);
+    }
+    expect(fileName({ ...photo, credit: "Smithsonian's National Zoo" }, "贝贝")).toBe("贝贝 Smithsonian s National Zoo.jpg");
+  });
 });
