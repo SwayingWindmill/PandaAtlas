@@ -15,6 +15,9 @@ const state = vi.hoisted(() => ({
   stored: new Map<string, string>(),
   deletedFiles: [] as string[],
   copiedFiles: [] as { src: string; dest: string }[],
+  failSecondCopy: false,
+  runEffects: false,
+  getDelay: null as null | (() => Promise<void>),
 }));
 
 const mocks = vi.hoisted(() => ({
@@ -28,7 +31,9 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("react", () => ({
-  useEffect: vi.fn(),
+  useEffect: (fn: () => void) => {
+    if (state.runEffects) fn();
+  },
   useMemo: (fn: () => unknown) => fn(),
   useSyncExternalStore: (_subscribe: unknown, getSnapshot: () => unknown) => getSnapshot(),
 }));
@@ -39,7 +44,11 @@ vi.mock("react-native", () => ({
 
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
-    getItem: async (key: string) => state.stored.get(key) ?? null,
+    getItem: async (key: string) => {
+      const value = state.stored.get(key) ?? null;
+      if (state.getDelay) await state.getDelay();
+      return value;
+    },
     setItem: async (key: string, value: string) => {
       state.stored.set(key, value);
     },
@@ -69,6 +78,9 @@ vi.mock("expo-file-system", () => {
       this.uri = joined.replace("file:/", "file:///");
     }
     async copy(dest: { uri: string }) {
+      if (state.failSecondCopy && state.copiedFiles.length >= 1) {
+        throw new Error("disk full");
+      }
       state.copiedFiles.push({ src: this.uri, dest: dest.uri });
     }
     delete() {
@@ -98,6 +110,9 @@ describe("visit-photos runtime store", () => {
     state.stored.clear();
     state.deletedFiles.length = 0;
     state.copiedFiles.length = 0;
+    state.failSecondCopy = false;
+    state.runEffects = false;
+    state.getDelay = null;
     vi.clearAllMocks();
 
     await clearVisitPhotos("acc-rt", "place-cd", "2026-11-29");
@@ -171,5 +186,61 @@ describe("visit-photos runtime store", () => {
     await migrateSyncedGuestVisitPhotos("acc-rt", [{ placeId: "place-cd", visitedOn: "2026-11-28" }]);
     expect(useAllVisitPhotos()[`${GUEST_PHOTO_SCOPE}:place-cd:2026-11-28`]).toBeUndefined();
     expect(useAllVisitPhotos()["acc-rt:place-cd:2026-11-28"]?.map((p) => p.id)).toEqual(["g-1"]);
+  });
+
+  it("rolls back copied files on partial copy failure and prevents slow readStoredMap from overwriting migration", async () => {
+    state.failSecondCopy = true;
+    await expect(
+      saveVisitPhotos("acc-rt", "place-cd", "2026-11-29", [
+        { id: "c1", uri: "file:///cache/c1.jpg", createdAt: "2026-11-29T00:00:00Z" },
+        { id: "c2", uri: "file:///cache/c2.jpg", createdAt: "2026-11-29T00:01:00Z" },
+      ]),
+    ).rejects.toThrow("disk full");
+    expect(state.deletedFiles).toContain("file:///documents/visit-photos/c1.jpg");
+
+    state.failSecondCopy = false;
+    state.deletedFiles.length = 0;
+    await clearVisitPhotos("acc-rt", "place-cd", "2026-11-28");
+
+    // Reset cache and race a slow initial read against a concurrent guest migration exceeding 4 photos.
+    vi.resetModules();
+    state.stored.set(
+      VISIT_PHOTOS_KEY,
+      JSON.stringify({
+        "guest:place-cd:2026-11-27": [
+          { id: "g1", uri: "file:///documents/visit-photos/g1.jpg", createdAt: "2026-11-27T00:00:00Z" },
+          { id: "g2", uri: "file:///documents/visit-photos/g2.jpg", createdAt: "2026-11-27T00:00:00Z" },
+          { id: "g3", uri: "file:///documents/visit-photos/g3.jpg", createdAt: "2026-11-27T00:00:00Z" },
+        ],
+        "acc-rt:place-cd:2026-11-27": [
+          { id: "a1", uri: "file:///documents/visit-photos/a1.jpg", createdAt: "2026-11-27T00:00:00Z" },
+          { id: "a2", uri: "file:///documents/visit-photos/a2.jpg", createdAt: "2026-11-27T00:00:00Z" },
+        ],
+      }),
+    );
+
+    const freshStore = await import("./visit-photos");
+    let releaseRead!: () => void;
+    let firstReadBlocked = false;
+    state.getDelay = () => {
+      if (firstReadBlocked) return Promise.resolve();
+      firstReadBlocked = true;
+      return new Promise<void>((resolve) => {
+        releaseRead = resolve;
+      });
+    };
+
+    state.runEffects = true;
+    freshStore.useAllVisitPhotos();
+    state.runEffects = false;
+
+    await freshStore.migrateSyncedGuestVisitPhotos("acc-rt", [{ placeId: "place-cd", visitedOn: "2026-11-27" }]);
+    releaseRead();
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    const finalMap = freshStore.useAllVisitPhotos();
+    expect(finalMap["guest:place-cd:2026-11-27"]).toBeUndefined();
+    expect(finalMap["acc-rt:place-cd:2026-11-27"]?.map((p) => p.id)).toEqual(["a1", "a2", "g1", "g2"]);
+    expect(state.deletedFiles).toContain("file:///documents/visit-photos/g3.jpg");
   });
 });

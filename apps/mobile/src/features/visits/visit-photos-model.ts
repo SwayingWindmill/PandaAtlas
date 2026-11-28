@@ -144,9 +144,10 @@ export function migrateGuestVisitPhotosInMap(
   map: VisitPhotoMap,
   accountId: string,
   visits: readonly { placeId: string; visitedOn: string }[],
-): { next: VisitPhotoMap; changed: boolean } {
-  if (!accountId || visits.length === 0) return { next: map, changed: false };
+): { next: VisitPhotoMap; changed: boolean; dropped: LocalVisitPhoto[] } {
+  if (!accountId || visits.length === 0) return { next: map, changed: false, dropped: [] };
   const next: VisitPhotoMap = { ...map };
+  const displaced: LocalVisitPhoto[] = [];
   let changed = false;
 
   for (const visit of visits) {
@@ -155,12 +156,21 @@ export function migrateGuestVisitPhotosInMap(
     if (!guestPhotos || guestPhotos.length === 0) continue;
     const accountKey = visitPhotoKey(accountId, visit.placeId, visit.visitedOn);
     const existing = next[accountKey] ?? [];
-    next[accountKey] = dedupePhotos([...existing, ...guestPhotos]);
+    const merged = dedupePhotos([...existing, ...guestPhotos]);
+    const keptUris = new Set(merged.map((item) => item.uri));
+    for (const item of guestPhotos) {
+      if (!keptUris.has(item.uri)) displaced.push(item);
+    }
+    next[accountKey] = merged;
     delete next[guestKey];
     changed = true;
   }
 
-  return { next: changed ? next : map, changed };
+  return {
+    next: changed ? next : map,
+    changed,
+    dropped: changed ? unreferencedRemoved(displaced, next) : [],
+  };
 }
 
 /** Scales down oversized images to `VISIT_PHOTO_MAX_WIDTH` without upscaling smaller sources. */

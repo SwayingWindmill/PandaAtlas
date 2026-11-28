@@ -70,13 +70,13 @@ test("attaches local photos to check-in, exports ticket PNG collage, survives re
   await screen.getByRole("button", "查看看猫日记").tap();
   await expect(screen.getByRole("heading", "去过的地点")).toBeVisible();
   await expect(screen.getByText("手账实拍仅存本机应用隐私目录　卸载前可通过票根长图保存")).toBeVisible();
-  await expect(screen.getByLabel("第 3 张现场实拍")).toBeVisible();
+  await expect(screen.getByLabel("第 3 张现场实拍", { visible: true })).toBeVisible();
 
   // Restart app on the same device: local photo URIs and timeline collage persist without re-picking.
   await app.restart();
   await app.open("/visits");
   await expect(screen.getByText(`“${note}”`, { visible: true })).toBeVisible();
-  await expect(screen.getByLabel("第 3 张现场实拍")).toBeVisible();
+  await expect(screen.getByLabel("第 3 张现场实拍", { visible: true })).toBeVisible();
 
   // Deleting the visit cleans up its stored local photos too.
   await screen.getByRole("button", new RegExp(`^删除.*去${zoo.facility}的记录$`)).tap();

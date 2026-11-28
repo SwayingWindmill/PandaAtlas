@@ -214,6 +214,7 @@ interface CompletedCheckin {
   visitCount: number;
   note: string | null;
   photos: LocalVisitPhoto[];
+  photoNotice: string | null;
   newlyLitPandas: PandaListItem[];
   updatedSeenIds: ReadonlySet<string>;
   queuedOffline: boolean;
@@ -392,11 +393,13 @@ export default function VenueCheckinScreen() {
     const hasPhotoChanges = facility.id in draftPhotosByFacility || draftPhotos.length > 0;
     const completeCheckin = async (litIds: readonly string[], visitCountDelta: number, queuedOffline: boolean) => {
       let persistedPhotos = draftPhotos;
+      let photoNotice: string | null = null;
       if (hasPhotoChanges) {
         try {
           persistedPhotos = await saveVisitPhotos(photoScope, facility.id, today, draftPhotos);
         } catch {
-          persistedPhotos = draftPhotos;
+          persistedPhotos = savedFacilityPhotos;
+          photoNotice = "打卡已保存，但本机存储空间不足，本次附带的实拍未写入手账；清理部分缓存后可重新进入打卡补附实拍。";
         }
       }
       const litSet = new Set(litIds);
@@ -414,6 +417,7 @@ export default function VenueCheckinScreen() {
         visitCount: Math.max(1, visitCount),
         note: trimmedNote || null,
         photos: persistedPhotos,
+        photoNotice,
         newlyLitPandas,
         updatedSeenIds,
         queuedOffline,
@@ -595,6 +599,7 @@ export default function VenueCheckinScreen() {
           visitCount={completed.visitCount}
           note={completed.note}
           photos={completed.photos}
+          photoNotice={completed.photoNotice}
           newlyLitPandas={completed.newlyLitPandas}
           seenIds={completed.updatedSeenIds}
           queuedOffline={completed.queuedOffline}
@@ -689,23 +694,27 @@ export default function VenueCheckinScreen() {
               {draftPhotos.map((photo, index) => (
                 <View
                   key={photo.id}
-                  className="overflow-hidden rounded-control border-hairline border-border bg-media-placeholder"
-                  style={{ width: photoSlotSize, height: photoSlotSize, borderCurve: "continuous" }}
+                  style={{ width: photoSlotSize, height: photoSlotSize }}
                 >
-                  <Image
-                    source={{ uri: photo.uri }}
-                    style={{ width: "100%", height: "100%" }}
-                    contentFit="cover"
-                    transition={0}
-                    accessible
-                    accessibilityLabel={`已选第 ${index + 1} 张实拍`}
-                  />
+                  <View
+                    className="flex-1 overflow-hidden rounded-control border-hairline border-border bg-media-placeholder"
+                    style={{ borderCurve: "continuous" }}
+                  >
+                    <Image
+                      source={{ uri: photo.uri }}
+                      style={{ width: "100%", height: "100%" }}
+                      contentFit="cover"
+                      transition={0}
+                      accessible
+                      accessibilityLabel={`已选第 ${index + 1} 张实拍`}
+                    />
+                  </View>
                   <Pressable
                     role="button"
                     accessibilityLabel={`移除第 ${index + 1} 张实拍`}
-                    hitSlop={8}
+                    hitSlop={{ top: 8, right: 8, bottom: 10, left: 10 }}
                     onPress={() => handleRemoveDraftPhoto(index)}
-                    className="absolute top-1 right-1 size-6 items-center justify-center rounded-pill bg-glass-fallback active:opacity-75"
+                    className="absolute top-1 right-1 size-7 items-center justify-center rounded-pill bg-glass-fallback active:opacity-75"
                   >
                     <Icon icon={X} size={12} tone="onMedia" strokeWidth={2.5} />
                   </Pressable>

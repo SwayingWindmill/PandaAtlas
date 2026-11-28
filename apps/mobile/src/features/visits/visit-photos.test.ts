@@ -87,6 +87,7 @@ describe("visit-photos-model", () => {
     expect(migrated.changed).toBe(true);
     expect(migrated.next[gKey]).toBeUndefined();
     expect(migrated.next[aKey]?.map((p) => p.id)).toEqual(["a1", "a2", "g1", "g2"]);
+    expect(migrated.dropped.map((p) => p.id)).toEqual(["g3"]);
   });
 
   it("computes resize targets, collage layouts, and safe export filenames", () => {

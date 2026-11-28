@@ -43,6 +43,7 @@ export function SouvenirTicket({
   visitCount,
   note,
   photos = EMPTY_PHOTOS,
+  photoNotice = null,
   newlyLitPandas,
   seenIds,
   queuedOffline = false,
@@ -54,6 +55,7 @@ export function SouvenirTicket({
   visitCount: number;
   note: string | null;
   photos?: readonly LocalVisitPhoto[];
+  photoNotice?: string | null;
   newlyLitPandas: PandaListItem[];
   seenIds: ReadonlySet<string>;
   queuedOffline?: boolean;
@@ -334,6 +336,11 @@ export function SouvenirTicket({
           {queuedOffline ? (
             <Text variant="footnote" className="font-medium text-warning" accessibilityLiveRegion="polite">
               已暂存本机，联网后自动同步
+            </Text>
+          ) : null}
+          {photoNotice ? (
+            <Text variant="footnote" className="font-medium text-warning" accessibilityLiveRegion="polite">
+              {photoNotice}
             </Text>
           ) : null}
         </View>

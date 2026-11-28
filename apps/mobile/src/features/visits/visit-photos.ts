@@ -10,7 +10,6 @@ import {
   MAX_VISIT_PHOTOS,
   VISIT_PHOTOS_KEY,
   VISIT_PHOTO_COMPRESS,
-  VISIT_PHOTO_MAX_WIDTH,
   type VisitPhotoMap,
   computeResizeWidth,
   getVisitPhotos,
@@ -20,6 +19,7 @@ import {
   visitPhotoKey,
 } from "./visit-photos-model";
 import {
+  registerVisitPhotoFileCleaner,
   registerVisitPhotoStorageListener,
   runVisitPhotoStorageTask,
 } from "./visit-photos-storage";
@@ -36,11 +36,13 @@ export { migrateSyncedGuestVisitPhotos } from "./visit-photos-storage";
 
 let photosCache: VisitPhotoMap | null = null;
 let hydratePromise: Promise<VisitPhotoMap> | null = null;
+let snapshotVersion = 0;
 const storeListeners = new Set<() => void>();
 const EMPTY_MAP: VisitPhotoMap = {};
 let snapshot: VisitPhotoMap = EMPTY_MAP;
 
 function publishSnapshot(next: VisitPhotoMap): void {
+  snapshotVersion += 1;
   photosCache = next;
   snapshot = { ...next };
   for (const listener of storeListeners) listener();
@@ -81,17 +83,16 @@ function ensurePrivateDir(): Directory {
   return dir;
 }
 
-async function copyPhotosToPrivateDir(photos: readonly LocalVisitPhoto[]): Promise<{
-  persisted: LocalVisitPhoto[];
-  createdFiles: File[];
-}> {
+async function copyPhotosToPrivateDir(
+  photos: readonly LocalVisitPhoto[],
+  createdFiles: File[],
+): Promise<LocalVisitPhoto[]> {
   if (Platform.OS === "web" || photos.length === 0) {
-    return { persisted: [...photos], createdFiles: [] };
+    return [...photos];
   }
   const dir = ensurePrivateDir();
   const dirPrefix = dir.uri.endsWith("/") ? dir.uri : `${dir.uri}/`;
   const persisted: LocalVisitPhoto[] = [];
-  const createdFiles: File[] = [];
 
   for (const photo of photos) {
     if (photo.uri.startsWith(dirPrefix)) {
@@ -103,7 +104,7 @@ async function copyPhotosToPrivateDir(photos: readonly LocalVisitPhoto[]): Promi
     createdFiles.push(target);
     persisted.push({ ...photo, uri: target.uri });
   }
-  return { persisted, createdFiles };
+  return persisted;
 }
 
 function deletePrivateFiles(photos: readonly LocalVisitPhoto[]): void {
@@ -126,17 +127,32 @@ function deletePrivateFiles(photos: readonly LocalVisitPhoto[]): void {
   }
 }
 
+registerVisitPhotoFileCleaner(deletePrivateFiles);
+
+function revokeWebBlobUris(assets: readonly ImagePicker.ImagePickerAsset[]): void {
+  if (Platform.OS !== "web" || typeof URL === "undefined") return;
+  for (const asset of assets) {
+    if (asset.uri.startsWith("blob:")) URL.revokeObjectURL(asset.uri);
+  }
+}
+
 async function readStoredMap(): Promise<VisitPhotoMap> {
   if (photosCache) return photosCache;
   if (!hydratePromise) {
+    const startVersion = snapshotVersion;
     hydratePromise = AsyncStorage.getItem(VISIT_PHOTOS_KEY)
       .then((raw) => {
+        if (photosCache || snapshotVersion !== startVersion) {
+          return photosCache ?? {};
+        }
         const parsed = parseVisitPhotoMap(raw);
         publishSnapshot(parsed);
         return parsed;
       })
       .catch(() => {
-        if (!photosCache) publishSnapshot({});
+        if (!photosCache && snapshotVersion === startVersion) {
+          publishSnapshot({});
+        }
         return photosCache ?? {};
       })
       .finally(() => {
@@ -163,42 +179,43 @@ export async function pickAndPrepareVisitPhotos(remainingSlots: number): Promise
   const prepared: LocalVisitPhoto[] = [];
   const createdAt = new Date().toISOString();
 
-  for (const asset of chosen) {
-    const resizeWidth = computeResizeWidth(asset.width);
-    const loadOptions = resizeWidth ? { maxWidth: resizeWidth } : undefined;
-    const context = ImageManipulator.manipulate(asset.uri, loadOptions);
-    try {
-      if (resizeWidth) context.resize({ width: resizeWidth });
-      const rendered = await context.renderAsync();
+  try {
+    for (const asset of chosen) {
+      const resizeWidth = computeResizeWidth(asset.width);
+      const loadOptions = resizeWidth ? { maxWidth: resizeWidth } : undefined;
+      const context = ImageManipulator.manipulate(asset.uri, loadOptions);
       try {
-        const saved = await rendered.saveAsync({
-          format: SaveFormat.JPEG,
-          compress: VISIT_PHOTO_COMPRESS,
-          base64: Platform.OS === "web",
-        });
-        const durableUri =
-          Platform.OS === "web" && saved.base64
-            ? `data:image/jpeg;base64,${saved.base64}`
-            : saved.uri;
-        if (Platform.OS === "web" && saved.base64 && saved.uri.startsWith("blob:") && typeof URL !== "undefined") {
-          URL.revokeObjectURL(saved.uri);
+        if (resizeWidth) context.resize({ width: resizeWidth });
+        const rendered = await context.renderAsync();
+        try {
+          const saved = await rendered.saveAsync({
+            format: SaveFormat.JPEG,
+            compress: VISIT_PHOTO_COMPRESS,
+            base64: Platform.OS === "web",
+          });
+          const durableUri =
+            Platform.OS === "web" && saved.base64
+              ? `data:image/jpeg;base64,${saved.base64}`
+              : saved.uri;
+          if (Platform.OS === "web" && saved.base64 && saved.uri.startsWith("blob:") && typeof URL !== "undefined") {
+            URL.revokeObjectURL(saved.uri);
+          }
+          prepared.push({
+            id: createPhotoId(),
+            uri: durableUri,
+            width: saved.width,
+            height: saved.height,
+            createdAt,
+          });
+        } finally {
+          rendered.release();
         }
-        prepared.push({
-          id: createPhotoId(),
-          uri: durableUri,
-          width: saved.width,
-          height: saved.height,
-          createdAt,
-        });
       } finally {
-        rendered.release();
-      }
-    } finally {
-      context.release();
-      if (Platform.OS === "web" && asset.uri.startsWith("blob:") && typeof URL !== "undefined") {
-        URL.revokeObjectURL(asset.uri);
+        context.release();
       }
     }
+  } finally {
+    revokeWebBlobUris(picked.assets);
   }
 
   return prepared;
@@ -213,10 +230,16 @@ export function saveVisitPhotos(
 ): Promise<LocalVisitPhoto[]> {
   return runVisitPhotoStorageTask(async () => {
     const current = await readStoredMap();
-    const { persisted, createdFiles } = await copyPhotosToPrivateDir(photos.slice(0, MAX_VISIT_PHOTOS));
+    const createdFiles: File[] = [];
+    let persisted: LocalVisitPhoto[] = [];
+    let next: VisitPhotoMap;
+    let dropped: LocalVisitPhoto[];
     const key = visitPhotoKey(scope, placeId, visitedOn);
-    const { next, dropped } = setVisitPhotosInMap(current, key, persisted);
     try {
+      persisted = await copyPhotosToPrivateDir(photos.slice(0, MAX_VISIT_PHOTOS), createdFiles);
+      const result = setVisitPhotosInMap(current, key, persisted);
+      next = result.next;
+      dropped = result.dropped;
       await AsyncStorage.setItem(VISIT_PHOTOS_KEY, JSON.stringify(next));
     } catch (error) {
       for (const file of createdFiles) {
