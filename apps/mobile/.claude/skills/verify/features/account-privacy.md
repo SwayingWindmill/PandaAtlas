@@ -6,8 +6,8 @@ A signed-in fan opens 账号与数据 (`/account`) directly with a recent email-
 
 - `privacy-export` requests a JSON data export, waits for the scheduled cycle, and downloads the file.
 - `privacy-deletion` confirms account deletion with an optional reason before submitting.
-- `privacy-recent-email-otp` shows the user-triggered email-code card (`发送验证码`) on `auth.recentAuthRequired`, verifies without auto-sending on mount, and replays the interrupted action.
-- `notifications-push` lists all 5 notification categories (`birthday_reminder`, `panda_news`, `venue_news`, `knowledge_update`, `correction`) across `push` (`手机推送`), `station` (`App 内通知`), and `email` (`邮件`), silently syncs granted native Expo push tokens on sign-in, prompts OS permission only on explicit push toggle, unregisters the stored token on sign-out, and deep-links notification taps cleanly to allowlisted app routes. On iOS when signed in with Apple, shows `通过 Apple 再次验证` (refreshing OAuth `amr` via `signInWithIdToken`) with a `改用邮箱验证码` fallback when an email exists, and revokes the stored Apple refresh token on account deletion.
+- `privacy-recent-email-otp` shows the user-triggered email-code card (`发送验证码`) on `auth.recentAuthRequired`, verifies without auto-sending on mount, and replays the interrupted action. On iOS when signed in with Apple, shows `通过 Apple 再次验证` (refreshing OAuth `amr` via `signInWithIdToken`) with a `改用邮箱验证码` fallback when an email exists, and revokes the stored Apple refresh token on account deletion.
+- `notifications-push` lists all 5 notification categories (`birthday_reminder`, `panda_news`, `venue_news`, `knowledge_update`, `correction`) across `push` (`手机推送`), `station` (`App 内通知`), and `email` (`邮件`), silently syncs granted native Expo push tokens on sign-in, prompts OS permission on `开启手机通知` or explicit push toggle, unregisters the stored token on sign-out, and deep-links notification taps cleanly to allowlisted app routes.
 
 ## How to get to it (user POV)
 

@@ -124,10 +124,10 @@ export class NotificationProviderWorkerService {
           title: this.pushTitle(snapshot.category, snapshot.content),
           body: this.pushBody(snapshot.category, snapshot.content),
           data: {
+            ...snapshot.content,
             messageId: snapshot.messageId,
             category: snapshot.category,
             route: this.pushRoute(snapshot.content),
-            ...snapshot.content,
           },
         });
         const latencyMs = Math.max(0, Date.now() - startedAt);

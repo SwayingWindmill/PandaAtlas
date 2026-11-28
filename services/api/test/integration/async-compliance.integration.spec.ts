@@ -582,7 +582,6 @@ describe("V2 async downstream and compliance", () => {
       .insertInto("identity.accounts")
       .values({ account_id: fanAccountId, email: `push-fan-${suffix}@example.test` })
       .execute();
-    await notifications.registerDevice(fanAccountId, `ExponentPushToken[default-push-${suffix}]`, "ios");
 
     const sourceId = `bday:${suffix}`;
     await evidence.createSource({
@@ -662,6 +661,7 @@ describe("V2 async downstream and compliance", () => {
     for (let cycle = 0; cycle < 4; cycle += 1) {
       await runner.runCycle(effects);
     }
+    await notifications.registerDevice(fanAccountId, `ExponentPushToken[default-push-${suffix}]`, "ios");
 
     const scanAt = new Date("2026-07-04T04:00:00.000Z");
     const firstScan = await birthdayScanner.scanDueReminders(scanAt);
@@ -726,7 +726,7 @@ describe("V2 async downstream and compliance", () => {
       },
     );
     for (let cycle = 0; cycle < 4; cycle += 1) {
-      await pushWorker.processBatch(20);
+      await pushWorker.processBatch(100);
     }
 
     const fanDeliveries = delivered.filter((item) =>

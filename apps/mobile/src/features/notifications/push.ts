@@ -33,6 +33,7 @@ interface StoredPushDevice {
 }
 
 export type PushRegistrationOutcome = "registered" | "denied" | "undetermined" | "unsupported" | "failed";
+export type PushPermissionState = "granted" | "promptable" | "denied" | "unsupported";
 
 let handlerInstalled = false;
 let lastRegisteredSessionToken: string | null = null;
@@ -98,6 +99,18 @@ function parseStoredDevice(raw: string | null): StoredPushDevice | null {
     };
   }
   return null;
+}
+
+export async function checkNativePushPermission(): Promise<PushPermissionState> {
+  if (nativePushPlatform() === null || !isDevice) return "unsupported";
+  try {
+    const status = await getPermissionsAsync();
+    if (hasGrantedPermission(status)) return "granted";
+    return status.canAskAgain ? "promptable" : "denied";
+  } catch (error) {
+    reportError(error, "global");
+    return "unsupported";
+  }
 }
 
 export async function registerPushDeviceForAccount(
@@ -176,6 +189,7 @@ export function usePushNotifications(): void {
   const signedInAccountId = session.status === "signedIn" ? session.accountId : null;
   const handledIdsRef = useRef<Set<string>>(new Set());
   const accountIdRef = useRef<string | null>(signedInAccountId);
+  const pendingReadMessageIdRef = useRef<string | null>(null);
   useEffect(() => {
     accountIdRef.current = signedInAccountId;
   }, [signedInAccountId]);
@@ -183,6 +197,11 @@ export function usePushNotifications(): void {
   useEffect(() => {
     if (!signedInAccountId) return;
     void registerPushDeviceForAccount(signedInAccountId, { promptPermission: false });
+    const pendingMessageId = pendingReadMessageIdRef.current;
+    if (pendingMessageId) {
+      pendingReadMessageIdRef.current = null;
+      void markRead(pendingMessageId).catch((error) => reportError(error, "mutation"));
+    }
   }, [signedInAccountId]);
 
   useEffect(() => {
@@ -200,8 +219,12 @@ export function usePushNotifications(): void {
       router.push(href);
 
       const messageId = data && typeof data.messageId === "string" ? data.messageId : null;
-      if (messageId && accountIdRef.current) {
-        void markRead(messageId).catch((error) => reportError(error, "mutation"));
+      if (messageId) {
+        if (accountIdRef.current) {
+          void markRead(messageId).catch((error) => reportError(error, "mutation"));
+        } else {
+          pendingReadMessageIdRef.current = messageId;
+        }
       }
     };
 

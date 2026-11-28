@@ -25,7 +25,8 @@ interface NotificationProjection {
 
 function stringArray(value: unknown, fallback?: unknown): string[] {
   if (Array.isArray(value)) {
-    return value.filter((item): item is string => typeof item === "string" && item.trim() !== "");
+    const items = value.filter((item): item is string => typeof item === "string" && item.trim() !== "");
+    if (items.length > 0) return items;
   }
   return typeof fallback === "string" && fallback.trim() !== "" ? [fallback] : [];
 }
