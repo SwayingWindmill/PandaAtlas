@@ -12,6 +12,7 @@
     "ios": {
       "bundleIdentifier": "com.zhipanda.app",
       "supportsTablet": true,
+      "usesAppleSignIn": true,
       "associatedDomains": ["applinks:www.zhipanda.com"],
       "infoPlist": {
         "NSPhotoLibraryAddUsageDescription": "把熊猫分享卡片保存到你的相册。"
@@ -75,6 +76,7 @@
       "expo-web-browser",
       "expo-image",
       "expo-sharing",
+      "expo-apple-authentication",
       [
         "expo-media-library",
         {

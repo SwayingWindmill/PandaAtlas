@@ -1,10 +1,15 @@
-import { Body, Controller, Get, Inject, Post, Put, Req } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Inject, Post, Put, Req } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { getVerifiedIdentity } from "../../../platform/auth/request-auth.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RateLimit } from "../../../platform/rate-limit/rate-limit.decorator.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
+import {
+  APPLE_TOKEN_REVOCATION_PORT,
+  AppleAuthorizationCodeInvalidError,
+  type AppleTokenRevocationPort,
+} from "../application/apple-token-revocation.port.js";
 import { AccountProvisioningBlockedError } from "../application/identity.errors.js";
 import { IDENTITY_PORT, type IdentityPort } from "../application/identity.port.js";
 import { AllowUnprovisioned, RequireCapabilities } from "./access.metadata.js";
@@ -13,6 +18,8 @@ import {
   FanProfileDto,
   ProvisionedAccountDto,
   ReplaceProfileDto,
+  StoreAppleTokenDto,
+  StoreAppleTokenResponseDto,
 } from "./profile.dto.js";
 import { getActorContext } from "./request-actor.js";
 
@@ -21,6 +28,7 @@ import { getActorContext } from "./request-actor.js";
 export class MeController {
   public constructor(
     @Inject(IDENTITY_PORT) private readonly identity: IdentityPort,
+    @Inject(APPLE_TOKEN_REVOCATION_PORT) private readonly appleRevocation: AppleTokenRevocationPort,
     private readonly requestContext: RequestContextService,
   ) {}
 
@@ -102,5 +110,33 @@ export class MeController {
       throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
     }
     return this.identity.replaceProfile(actor.accountId, input);
+  }
+
+  @Post("apple-token")
+  @HttpCode(200)
+  @RequireCapabilities("account.session.read")
+  @RateLimit("sensitive", { keyStrategy: "ip_and_account" })
+  @ApiOperation({ operationId: "storeAppleRevocationToken" })
+  @ApiOkResponse({ type: StoreAppleTokenResponseDto })
+  public async storeAppleRevocationToken(
+    @Req() request: HttpRequest,
+    @Body() input: StoreAppleTokenDto,
+  ): Promise<{ stored: boolean }> {
+    const actor = getActorContext(request);
+    if (actor === undefined) {
+      throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
+    }
+    try {
+      return await this.appleRevocation.storeFromAuthorizationCode(actor.accountId, input.authorizationCode);
+    } catch (error) {
+      if (error instanceof AppleAuthorizationCodeInvalidError) {
+        throw new ProblemException(
+          400,
+          "identity.appleAuthorizationCodeInvalid",
+          "The Apple authorization code could not be exchanged.",
+        );
+      }
+      throw error;
+    }
   }
 }

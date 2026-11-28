@@ -141,6 +141,30 @@ describe("syncGuestToAccount", () => {
     expect((await readAllGuestData()).visits).toEqual([]);
   });
 
+  it("uploads same-day guest visit note update cleanly via idempotent check-in endpoint", async () => {
+    await recordGuestVisit("place-1", "2026-11-23", "下午补记");
+
+    api.GET.mockImplementation(async (path: string) => {
+      if (path === "/api/v2/me/checkins") {
+        return {
+          response: { ok: true },
+          data: {
+            items: [{ checkinId: "c1", placeId: "place-1", visitedOn: "2026-11-23", note: null }],
+          },
+        };
+      }
+      return { response: { ok: true }, data: { items: [] } };
+    });
+    api.POST.mockResolvedValue({ response: { ok: true }, data: { checkinId: "c1", note: "下午补记" } });
+
+    await syncGuestToAccount("acc-1");
+
+    expect(api.POST).toHaveBeenCalledWith("/api/v2/me/checkins", {
+      body: { placeId: "place-1", visitedOn: "2026-11-23", note: "下午补记" },
+    });
+    expect((await readAllGuestData()).visits).toEqual([]);
+  });
+
   it("keeps failed items on the device so nothing is dropped", async () => {
     await setGuestFollowing("ok-panda", true);
     await setGuestFollowing("fail-panda", true);

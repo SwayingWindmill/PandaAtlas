@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { Icon } from "@/components/icon";
@@ -6,6 +6,8 @@ import { ShieldCheck } from "@/components/icons";
 import { TextField } from "@/components/text-field";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { type AuthProvider, isAppleSignInAvailable } from "@/features/session/apple-auth";
+import { useSession } from "@/features/session/session";
 import { supabase } from "@/lib/supabase";
 
 const CODE_LENGTH = 6;
@@ -41,15 +43,51 @@ function Header({ title, children }: { title: string; children: string }) {
 }
 
 /**
- * Re-verifies the signed-in fan with a fresh email OTP before sensitive account actions.
- * Sending is strictly user-initiated on button press so mounting the card never mails a code on its own.
+ * Re-verifies the signed-in fan with Apple ID or a fresh email OTP before sensitive account actions.
+ * Sending is strictly user-initiated on button press so mounting the card never prompts or mails on its own.
  */
-export function Verification({ email, onVerified }: { email: string | null; onVerified: () => void }) {
+export function Verification({
+  email,
+  authProvider = "email",
+  onVerified,
+}: {
+  email: string | null;
+  authProvider?: AuthProvider;
+  onVerified: () => void;
+}) {
+  const { reauthenticateWithApple } = useSession();
+  const [appleAvailable, setAppleAvailable] = useState<boolean | null>(null);
+  const [useEmailFallback, setUseEmailFallback] = useState(false);
   const [sent, setSent] = useState(false);
   const [code, setCode] = useState("");
   const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (authProvider !== "apple") return;
+    let active = true;
+    void isAppleSignInAvailable().then((available) => {
+      if (active) setAppleAvailable(available);
+    });
+    return () => {
+      active = false;
+    };
+  }, [authProvider]);
+
+  async function verifyApple() {
+    if (verifying) return;
+    setVerifying(true);
+    setError(null);
+    try {
+      const outcome = await reauthenticateWithApple();
+      if (outcome === "verified") onVerified();
+    } catch {
+      setError("没能完成 Apple 验证，请稍后再试。");
+    } finally {
+      setVerifying(false);
+    }
+  }
 
   async function send() {
     if (!email || sending || verifying) return;
@@ -93,6 +131,38 @@ export function Verification({ email, onVerified }: { email: string | null; onVe
     } finally {
       setVerifying(false);
     }
+  }
+
+  if (authProvider === "apple" && appleAvailable === null) return null;
+
+  const appleMode = authProvider === "apple" && appleAvailable === true && !useEmailFallback;
+
+  if (appleMode) {
+    return (
+      <View className="gap-stack rounded-card bg-card p-stack" style={{ borderCurve: "continuous" }}>
+        <Header title="先验证是你本人">导出数据和注销账号前，需要通过 Apple ID 确认是你本人。</Header>
+        <Button onPress={() => void verifyApple()} disabled={verifying}>
+          <Text>通过 Apple 再次验证</Text>
+        </Button>
+        {email ? (
+          <Button
+            variant="plain"
+            onPress={() => {
+              setError(null);
+              setUseEmailFallback(true);
+            }}
+            disabled={verifying}
+          >
+            <Text>改用邮箱验证码</Text>
+          </Button>
+        ) : null}
+        {error ? (
+          <Text variant="footnote" className="text-center text-destructive" accessibilityLiveRegion="polite">
+            {error}
+          </Text>
+        ) : null}
+      </View>
+    );
   }
 
   return (
