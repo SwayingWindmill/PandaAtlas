@@ -6,9 +6,9 @@ A signed-in fan puts a panda into a new collection, finds it under 我的, renam
 
 - `collection-create` creates a collection from a panda's profile (加入合集).
 - `collection-manage` renames, removes a panda, and deletes with a confirmation.
-- `venue-bundle-checkin` opens `/institutions/[slug]/checkin`, saves a visit (with optional `看猫小记`) + selected `见过` pandas (`placeId`), and renders `SouvenirTicket`. While offline, signed-in bundle check-ins queue idempotently under `offline-checkin-queue:v1` (`queuedOffline` ticket notice) and flush automatically via `OfflineQueueBridge` upon reconnect.
+- `venue-bundle-checkin` opens `/institutions/[slug]/checkin`, saves a visit (with optional `看猫小记`, 1–4 local pre-resized 1200px JPEG photos stored under `visit-photos:v1` / `Paths.document/visit-photos/` without uploading to cloud or requiring Android `READ_MEDIA_IMAGES`) + selected `见过` pandas (`placeId`), and renders `SouvenirTicket` with an adaptive collage and `button "生成分享纪念长图"` (`captureRef` PNG export). While offline, signed-in bundle check-ins queue idempotently under `offline-checkin-queue:v1` (`queuedOffline` ticket notice) and flush automatically via `OfflineQueueBridge` upon reconnect; signed-out guest visit photos migrate to account scope on sign-in.
 - `visit-record` records today's visit on a venue page (cloud when signed in, local guest storage when signed out).
-- `visit-diary` renders `/visits` vertical timeline with `足迹地图` → `/map?filter=visited`, pending offline-queue sync bar (`N 条打卡暂存本机`), quoted notes, matched panda chips, and `移除`.
+- `visit-diary` renders `/visits` vertical timeline with `足迹地图` → `/map?filter=visited`, pending offline-queue sync bar (`N 条打卡暂存本机`), quoted notes, 1–4 photo collage (`第 N 张现场实拍`), matched panda chips, local-storage privacy note, and `移除` (cleaning up associated local photos).
 - `following-venues` switches `Segmented` on `/following` between `熊猫 N` and `场馆 M`.
 
 ## How to get to it (user POV)
@@ -26,7 +26,7 @@ Preconditions:
 - **Collection lifecycle.** Run `npx e2e run tests/collections-visits.e2e.ts:7` from `apps/mobile`. At the end, `button "删除合集"` opens `heading "删除「常去看的」？"`. Confirming returns to `heading "我的合集"`, and `button /^常去看的，/` has count 0.
 - **Record and remove a visit.** Run `npx e2e run tests/collections-visits.e2e.ts:41`. It opens the zoo, confirms `heading "参观攻略"`, then taps `button "记下今天去过<facility>"`. The result is `<today>去过`, and the button `今天已记下去过<facility>` is disabled. On `/visits`, `button /^删除.*去<facility>的记录$/` removes it, and `还没有到访记录。` shows.
 - **Signed out.** Run `npx e2e run tests/collections-visits.e2e.ts:57`. Opens `/institutions/<slug>?tab=guide` signed out and records the visit locally via guest storage.
-- **Bundle check-in, souvenir ticket & diary.** Run `npx e2e run tests/collections-visits.e2e.ts:69`. Taps `button /^去过打卡/`, fills `看猫小记`, checks `checkbox /^<panda.name>/`, taps `button /^保存本次打卡/`, verifies `逛园纪念票根` & note, opens `/visits` via `button "查看看猫日记"`, verifies note + `link "查看<panda.name>"`, and opens `/map?filter=visited` via `link "足迹地图"`.
+- **Bundle check-in, souvenir ticket & diary.** Run `npx e2e run tests/collections-visits.e2e.ts:69` and `npx e2e run tests/photo-diary.e2e.ts`. Verifies `button /^去过打卡/`, picking/removing 1–4 local photos, `看猫小记`, `checkbox /^<panda.name>/`, `button /^保存本次打卡/`, `当日实拍`, `button "生成分享纪念长图"` (>10 KB PNG download), `/visits` collage persistence across restarts, orphan cleanup on deletion, and `link "足迹地图"`.
 - **Following venues tab.** Run `npx e2e run tests/follow-seen.e2e.ts:61`. Follows `zoo`, opens `/following`, switches `radio /^场馆 1/`, and verifies `link /^<zoo.name>/`.
 
 ## Gotchas

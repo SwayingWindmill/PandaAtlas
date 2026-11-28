@@ -42,6 +42,14 @@ import {
   removeOfflineCheckin,
   useQueuedCheckins,
 } from "@/features/visits/offline-checkin-queue";
+import { VisitPhotoCollage } from "@/features/visits/visit-photo-collage";
+import {
+  type LocalVisitPhoto,
+  clearVisitPhotos,
+  photoScopeFor,
+  useAllVisitPhotos,
+} from "@/features/visits/visit-photos";
+import { getVisitPhotos } from "@/features/visits/visit-photos-model";
 import { type Visit, removeVisit, visitsQueryKey, visitsQueryOptions } from "@/features/visits/visits";
 import { failedWithoutData } from "@/lib/query-failed";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
@@ -93,6 +101,7 @@ function VisitTimelineCard({
   institutionSlug,
   placeSlug,
   matchedPandas,
+  photos,
   isLatest,
   isQueued,
   last,
@@ -104,6 +113,7 @@ function VisitTimelineCard({
   institutionSlug: string | null;
   placeSlug: string | null;
   matchedPandas: PandaListItem[];
+  photos: readonly LocalVisitPhoto[];
   isLatest: boolean;
   isQueued: boolean;
   last: boolean;
@@ -169,6 +179,8 @@ function VisitTimelineCard({
             </Text>
           ) : null}
 
+          {photos.length > 0 ? <VisitPhotoCollage photos={photos} compact /> : null}
+
           {matchedPandas.length > 0 ? (
             <ScrollView
               horizontal
@@ -225,6 +237,8 @@ export default function VisitsScreen() {
   const [syncingQueue, setSyncingQueue] = useState(false);
   const stacked = useStacked();
   const today = localToday();
+  const photoScope = photoScopeFor(signedIn ? accountId : null);
+  const photoMap = useAllVisitPhotos();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -296,11 +310,24 @@ export default function VisitsScreen() {
     }
   }
 
+  async function cleanupPhotosAfterRemoval(visit: Visit) {
+    const stillHasPlaceDay = visits?.some(
+      (item) =>
+        item.checkinId !== visit.checkinId &&
+        item.placeId === visit.placeId &&
+        item.visitedOn === visit.visitedOn,
+    );
+    if (!stillHasPlaceDay) {
+      await clearVisitPhotos(photoScope, visit.placeId, visit.visitedOn).catch(() => undefined);
+    }
+  }
+
   async function remove(visit: Visit) {
     setRemoveFailed(false);
     try {
       if (signedOut) {
         await removeGuestVisit(visit.checkinId);
+        await cleanupPhotosAfterRemoval(visit);
         return;
       }
       const queuedKey = isQueuedVisitId(visit.checkinId)
@@ -308,10 +335,12 @@ export default function VisitsScreen() {
         : queuedKeyByPlaceDay.get(`${visit.placeId}|${visit.visitedOn}`);
       if (isQueuedVisitId(visit.checkinId)) {
         if (queuedKey) await removeOfflineCheckin(queuedKey);
+        await cleanupPhotosAfterRemoval(visit);
         return;
       }
       await removeVisit(visit.checkinId);
       if (queuedKey) await removeOfflineCheckin(queuedKey);
+      await cleanupPhotosAfterRemoval(visit);
       if (accountId) {
         const queryKey = visitsQueryKey(accountId);
         await queryClient.cancelQueries({ queryKey });
@@ -422,6 +451,7 @@ export default function VisitsScreen() {
                       ? (institutionSlugById.get(place.institutionId) ?? null)
                       : null;
                     const matchedPandas = matchSeenPandasForVisit(visit, seenEntries, pandaIndexById);
+                    const photos = getVisitPhotos(photoMap, photoScope, visit.placeId, visit.visitedOn);
                     return (
                       <VisitTimelineCard
                         key={visit.checkinId}
@@ -430,6 +460,7 @@ export default function VisitsScreen() {
                         institutionSlug={institutionSlug}
                         placeSlug={place?.slug ?? null}
                         matchedPandas={matchedPandas}
+                        photos={photos}
                         isLatest={groupIndex === 0 && index === 0}
                         isQueued={isQueuedVisitId(visit.checkinId) || queuedKeyByPlaceDay.has(`${visit.placeId}|${visit.visitedOn}`)}
                         last={index === group.visits.length - 1}
@@ -442,6 +473,10 @@ export default function VisitsScreen() {
               </View>
             ))}
           </View>
+
+          <Text variant="footnote" className="text-center text-muted-foreground">
+            手账实拍仅存本机应用隐私目录　卸载前可通过票根长图保存
+          </Text>
         </Animated.View>
       )}
     </Page>

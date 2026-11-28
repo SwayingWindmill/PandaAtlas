@@ -75,6 +75,14 @@
       "expo-secure-store",
       "expo-web-browser",
       "expo-image",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "让你从相册挑选看猫实拍，仅保存在本机手账中。",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
       "expo-sharing",
       "expo-apple-authentication",
       "expo-notifications",

@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Image } from "expo-image";
 import { useNetworkState } from "expo-network";
 import { Stack, router, useLocalSearchParams, useNavigation } from "expo-router";
 import { HeaderBackButton } from "expo-router/react-navigation";
@@ -9,7 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Chip } from "@/components/chip";
 import { ListSection, useSingleColumn, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Check, Landmark, MapPinCheck } from "@/components/icons";
+import { Check, Landmark, MapPinCheck, Photo, X } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { PandaThumb } from "@/components/panda-thumb";
 import { PhotoOutline } from "@/components/photo-outline";
@@ -48,6 +49,14 @@ import {
   useQueuedCheckins,
 } from "@/features/visits/offline-checkin-queue";
 import { SouvenirTicket } from "@/features/visits/souvenir-ticket";
+import {
+  type LocalVisitPhoto,
+  MAX_VISIT_PHOTOS,
+  photoScopeFor,
+  pickAndPrepareVisitPhotos,
+  saveVisitPhotos,
+  useVisitPhotos,
+} from "@/features/visits/visit-photos";
 import { type Visit, recordVisit, sortVisits, visitsQueryKey, visitsQueryOptions } from "@/features/visits/visits";
 import { usePandaCover } from "@/lib/covers";
 import { selectionHaptic, successHaptic } from "@/lib/haptics";
@@ -62,6 +71,7 @@ const GRID_GAP = semantic.spacing.stackTight.value;
 const CHECK_BADGE = 22;
 const COMPACT_AVATAR = 40;
 const NOTE_MAX = 120;
+const EMPTY_PHOTOS: LocalVisitPhoto[] = [];
 
 function ResidentCheckTile({
   panda,
@@ -203,6 +213,7 @@ interface CompletedCheckin {
   visitedOn: string;
   visitCount: number;
   note: string | null;
+  photos: LocalVisitPhoto[];
   newlyLitPandas: PandaListItem[];
   updatedSeenIds: ReadonlySet<string>;
   queuedOffline: boolean;
@@ -224,6 +235,7 @@ export default function VenueCheckinScreen() {
   const signedIn = session.status === "signedIn";
   const signedOut = session.status === "signedOut";
   const accountId = signedIn ? session.accountId : "";
+  const photoScope = photoScopeFor(signedIn ? accountId : null);
   const today = localToday();
 
   const { data: institution, isError, isFetching, refetch } = useQuery(institutionQueryOptions(slug));
@@ -239,6 +251,9 @@ export default function VenueCheckinScreen() {
   const [query, setQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(() => new Set());
   const [sessionSavedIds, setSessionSavedIds] = useState<string[]>([]);
+  const [draftPhotosByFacility, setDraftPhotosByFacility] = useState<Record<string, LocalVisitPhoto[]>>({});
+  const [pickingPhotos, setPickingPhotos] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [completed, setCompleted] = useState<CompletedCheckin | null>(null);
@@ -271,6 +286,9 @@ export default function VenueCheckinScreen() {
     return institution.facilities.find((item) => item.id === selectedFacilityId) ?? institution.facilities[0] ?? null;
   }, [institution, selectedFacilityId]);
 
+  const savedFacilityPhotos = useVisitPhotos(photoScope, facility?.id ?? null, today);
+  const draftPhotos = facility ? (draftPhotosByFacility[facility.id] ?? savedFacilityPhotos) : EMPTY_PHOTOS;
+
   const orderedResidents = useMemo(() => {
     const residents = institution?.residents ?? [];
     if (filter === "all" || !seenIds) return residents;
@@ -287,6 +305,8 @@ export default function VenueCheckinScreen() {
 
   const columns = singleColumn ? 2 : 3;
   const tileWidth = Math.floor((pageColumn(width) - GRID_GAP * (columns - 1)) / columns);
+  const photoInnerWidth = Math.max(200, pageColumn(width) - semantic.spacing.inset.value * 2);
+  const photoSlotSize = Math.floor((photoInnerWidth - GRID_GAP * (MAX_VISIT_PHOTOS - 1)) / MAX_VISIT_PHOTOS);
 
   function togglePanda(pandaId: string) {
     selectionHaptic();
@@ -296,6 +316,48 @@ export default function VenueCheckinScreen() {
       if (next.has(pandaId)) next.delete(pandaId);
       else next.add(pandaId);
       return next;
+    });
+  }
+
+  async function handlePickPhotos() {
+    if (!facility || pickingPhotos) return;
+    const targetFacilityId = facility.id;
+    const existingList = draftPhotosByFacility[targetFacilityId] ?? savedFacilityPhotos;
+    const remaining = MAX_VISIT_PHOTOS - existingList.length;
+    if (remaining <= 0) return;
+
+    setPickingPhotos(true);
+    setPhotoError(null);
+    try {
+      const picked = await pickAndPrepareVisitPhotos(remaining);
+      if (picked.length > 0) {
+        selectionHaptic();
+        setDraftPhotosByFacility((prev) => {
+          const base = prev[targetFacilityId] ?? savedFacilityPhotos;
+          return {
+            ...prev,
+            [targetFacilityId]: [...base, ...picked].slice(0, MAX_VISIT_PHOTOS),
+          };
+        });
+      }
+    } catch {
+      setPhotoError("没能读取这张照片，换一张或再试一次。");
+    } finally {
+      setPickingPhotos(false);
+    }
+  }
+
+  function handleRemoveDraftPhoto(index: number) {
+    if (!facility) return;
+    const targetFacilityId = facility.id;
+    selectionHaptic();
+    setPhotoError(null);
+    setDraftPhotosByFacility((prev) => {
+      const base = prev[targetFacilityId] ?? savedFacilityPhotos;
+      return {
+        ...prev,
+        [targetFacilityId]: base.filter((_, idx) => idx !== index),
+      };
     });
   }
 
@@ -327,7 +389,16 @@ export default function VenueCheckinScreen() {
       (v) => v.placeId === facility.id && v.visitedOn === today && !v.checkinId.startsWith("queued:"),
     );
 
-    const completeCheckin = (litIds: readonly string[], visitCountDelta: number, queuedOffline: boolean) => {
+    const hasPhotoChanges = facility.id in draftPhotosByFacility || draftPhotos.length > 0;
+    const completeCheckin = async (litIds: readonly string[], visitCountDelta: number, queuedOffline: boolean) => {
+      let persistedPhotos = draftPhotos;
+      if (hasPhotoChanges) {
+        try {
+          persistedPhotos = await saveVisitPhotos(photoScope, facility.id, today, draftPhotos);
+        } catch {
+          persistedPhotos = draftPhotos;
+        }
+      }
       const litSet = new Set(litIds);
       const newlyLitPandas = institution.residents.filter((panda) => litSet.has(panda.id));
       const updatedSeenIds = new Set([...(seenIds ?? []), ...litIds]);
@@ -342,6 +413,7 @@ export default function VenueCheckinScreen() {
         visitedOn: today,
         visitCount: Math.max(1, visitCount),
         note: trimmedNote || null,
+        photos: persistedPhotos,
         newlyLitPandas,
         updatedSeenIds,
         queuedOffline,
@@ -362,7 +434,7 @@ export default function VenueCheckinScreen() {
         visitSynced,
         pandaIds: pendingIds,
       });
-      completeCheckin([...new Set([...sessionSavedIds, ...litIds])], visitCountDelta, true);
+      await completeCheckin([...new Set([...sessionSavedIds, ...litIds])], visitCountDelta, true);
     };
 
     if (signedIn && isOffline) {
@@ -471,7 +543,7 @@ export default function VenueCheckinScreen() {
       return;
     }
 
-    completeCheckin(combinedSavedIds, recordedNewVisit ? 1 : 0, false);
+    await completeCheckin(combinedSavedIds, recordedNewVisit ? 1 : 0, false);
   }
 
   if (!institution) {
@@ -522,6 +594,7 @@ export default function VenueCheckinScreen() {
           visitedOn={completed.visitedOn}
           visitCount={completed.visitCount}
           note={completed.note}
+          photos={completed.photos}
           newlyLitPandas={completed.newlyLitPandas}
           seenIds={completed.updatedSeenIds}
           queuedOffline={completed.queuedOffline}
@@ -532,7 +605,11 @@ export default function VenueCheckinScreen() {
   }
 
   const residents = institution.residents;
-  const ctaLabel = `保存本次打卡　1 场馆${selectedIds.size > 0 ? ` ＋ ${selectedIds.size} 只见过` : ""}`;
+  const ctaParts = [
+    selectedIds.size > 0 ? ` ＋ ${selectedIds.size} 只见过` : "",
+    draftPhotos.length > 0 ? ` ＋ ${draftPhotos.length} 张照片` : "",
+  ].join("");
+  const ctaLabel = `保存本次打卡　1 场馆${ctaParts}`;
 
   return (
     <View className="flex-1 bg-background">
@@ -597,6 +674,67 @@ export default function VenueCheckinScreen() {
               returnKeyType="done"
               className="min-h-11 py-2 text-subheadline text-foreground"
             />
+          </View>
+
+          <View className="gap-2 pt-0.5">
+            <View className={cn("gap-1", stacked ? "items-start" : "flex-row items-center justify-between")}>
+              <Text variant="footnote" className="font-semibold text-foreground">
+                附上实拍照片
+              </Text>
+              <Text variant="footnote" className="text-muted-foreground tabular-nums">
+                {`已选 ${draftPhotos.length} / ${MAX_VISIT_PHOTOS} 张　仅存本机`}
+              </Text>
+            </View>
+            <View className="flex-row flex-wrap gap-2">
+              {draftPhotos.map((photo, index) => (
+                <View
+                  key={photo.id}
+                  className="overflow-hidden rounded-control border-hairline border-border bg-media-placeholder"
+                  style={{ width: photoSlotSize, height: photoSlotSize, borderCurve: "continuous" }}
+                >
+                  <Image
+                    source={{ uri: photo.uri }}
+                    style={{ width: "100%", height: "100%" }}
+                    contentFit="cover"
+                    transition={0}
+                    accessible
+                    accessibilityLabel={`已选第 ${index + 1} 张实拍`}
+                  />
+                  <Pressable
+                    role="button"
+                    accessibilityLabel={`移除第 ${index + 1} 张实拍`}
+                    hitSlop={8}
+                    onPress={() => handleRemoveDraftPhoto(index)}
+                    className="absolute top-1 right-1 size-6 items-center justify-center rounded-pill bg-glass-fallback active:opacity-75"
+                  >
+                    <Icon icon={X} size={12} tone="onMedia" strokeWidth={2.5} />
+                  </Pressable>
+                </View>
+              ))}
+              {draftPhotos.length < MAX_VISIT_PHOTOS ? (
+                <Pressable
+                  role="button"
+                  accessibilityLabel="添加实拍照片"
+                  disabled={pickingPhotos}
+                  onPress={() => void handlePickPhotos()}
+                  className={cn(
+                    "items-center justify-center gap-1 rounded-control border-hairline border-border bg-background active:opacity-75",
+                    pickingPhotos && "opacity-50",
+                  )}
+                  style={{ width: photoSlotSize, height: photoSlotSize, borderCurve: "continuous" }}
+                >
+                  <Icon icon={Photo} size="subhead" tone="tint" strokeWidth={2} />
+                  <Text variant="footnote" className="font-medium text-muted-foreground">
+                    {pickingPhotos ? "处理中" : "添实拍"}
+                  </Text>
+                </Pressable>
+              ) : null}
+            </View>
+            {photoError ? (
+              <Text variant="footnote" className="text-destructive" accessibilityLiveRegion="polite">
+                {photoError}
+              </Text>
+            ) : null}
           </View>
         </View>
 

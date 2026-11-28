@@ -1,5 +1,6 @@
 import { authedApi } from "@/lib/api";
 import { queryClient } from "@/lib/query-client";
+import { migrateSyncedGuestVisitPhotos } from "@/features/visits/visit-photos-storage";
 
 import { pruneSyncedGuestData, readAllGuestData } from "./guest-store";
 
@@ -26,6 +27,7 @@ async function syncOnce(accountId: string): Promise<void> {
   const syncedSeen = new Set<string>();
   const syncedVenues = new Set<string>();
   const syncedVisitIds = new Set<string>();
+  const migratedPhotoVisits: { placeId: string; visitedOn: string }[] = [];
   const syncedCollections = new Map<string, Set<string>>();
 
   await Promise.all([
@@ -73,6 +75,7 @@ async function syncOnce(accountId: string): Promise<void> {
       const key = visitSyncKey(visit.placeId, visit.visitedOn, trimmedNote);
       if (existingKeys.has(key)) {
         syncedVisitIds.add(visit.checkinId);
+        migratedPhotoVisits.push({ placeId: visit.placeId, visitedOn: visit.visitedOn });
         continue;
       }
       try {
@@ -86,6 +89,7 @@ async function syncOnce(accountId: string): Promise<void> {
         if (response.ok) {
           existingKeys.add(key);
           syncedVisitIds.add(visit.checkinId);
+          migratedPhotoVisits.push({ placeId: visit.placeId, visitedOn: visit.visitedOn });
         }
       } catch {
         // Keep unsynced visit on the device.
@@ -140,6 +144,14 @@ async function syncOnce(accountId: string): Promise<void> {
     visitIds: syncedVisitIds,
     syncedCollections,
   });
+
+  if (migratedPhotoVisits.length > 0) {
+    try {
+      await migrateSyncedGuestVisitPhotos(accountId, migratedPhotoVisits);
+    } catch {
+      // Never block account sync when optional local photo metadata fails to re-key.
+    }
+  }
 
   if (
     syncedFavorites.size > 0 ||
