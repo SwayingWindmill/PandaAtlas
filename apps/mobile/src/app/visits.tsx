@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNetworkState } from "expo-network";
 import { router, useNavigation } from "expo-router";
 import { useLayoutEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
@@ -32,6 +33,15 @@ import { longDate } from "@/features/pandas/profile";
 import { useAccount } from "@/features/session/account";
 import { useSession } from "@/features/session/session";
 import { groupVisitsByYear, matchSeenPandasForVisit } from "@/features/visits/visit-diary";
+import {
+  flushOfflineCheckins,
+  isQueuedVisitId,
+  mergeSeenWithQueue,
+  mergeVisitsWithQueue,
+  queueKeyFromVisitId,
+  removeOfflineCheckin,
+  useQueuedCheckins,
+} from "@/features/visits/offline-checkin-queue";
 import { type Visit, removeVisit, visitsQueryKey, visitsQueryOptions } from "@/features/visits/visits";
 import { failedWithoutData } from "@/lib/query-failed";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
@@ -84,6 +94,7 @@ function VisitTimelineCard({
   placeSlug,
   matchedPandas,
   isLatest,
+  isQueued,
   last,
   today,
   onRemove,
@@ -94,6 +105,7 @@ function VisitTimelineCard({
   placeSlug: string | null;
   matchedPandas: PandaListItem[];
   isLatest: boolean;
+  isQueued: boolean;
   last: boolean;
   today: string;
   onRemove: () => void;
@@ -117,12 +129,19 @@ function VisitTimelineCard({
           style={{ borderCurve: "continuous" }}
         >
           <View className="flex-row items-center justify-between gap-2">
-            <Text
-              variant="footnote"
-              className={cn("font-semibold tabular-nums", isLatest ? "text-primary" : "text-muted-foreground")}
-            >
-              {longDate(visit.visitedOn)}
-            </Text>
+            <View className="flex-row items-center gap-2">
+              <Text
+                variant="footnote"
+                className={cn("font-semibold tabular-nums", isLatest ? "text-primary" : "text-muted-foreground")}
+              >
+                {longDate(visit.visitedOn)}
+              </Text>
+              {isQueued ? (
+                <Text variant="footnote" className="font-semibold text-warning">
+                  暂存本机
+                </Text>
+              ) : null}
+            </View>
             <Pressable
               onPress={onRemove}
               role="button"
@@ -200,7 +219,10 @@ export default function VisitsScreen() {
   const signedOut = session.status === "signedOut";
   const queryClient = useQueryClient();
   const navigation = useNavigation();
+  const network = useNetworkState();
+  const isOffline = network.isConnected === false || network.isInternetReachable === false;
   const [removeFailed, setRemoveFailed] = useState(false);
+  const [syncingQueue, setSyncingQueue] = useState(false);
   const stacked = useStacked();
   const today = localToday();
 
@@ -227,10 +249,12 @@ export default function VisitsScreen() {
   const remoteList = useQuery({ ...visitsQueryOptions(accountId ?? ""), enabled: signedIn });
   const guestList = useQuery({ ...guestVisitsQueryOptions(), enabled: signedOut });
   const list = signedOut ? guestList : remoteList;
+  const queuedCheckins = useQueuedCheckins(signedIn ? accountId : null);
 
   const remoteSeen = useQuery({ ...seenEntriesQueryOptions(accountId ?? ""), enabled: signedIn });
   const guestSeen = useQuery({ ...guestSeenEntriesQueryOptions(), enabled: signedOut });
-  const seenEntries = (signedOut ? guestSeen.data : remoteSeen.data) ?? [];
+  const serverSeenEntries = (signedOut ? guestSeen.data : remoteSeen.data) ?? [];
+  const seenEntries = signedIn ? mergeSeenWithQueue(serverSeenEntries, queuedCheckins) : serverSeenEntries;
 
   const placeList = useQuery(placesQueryOptions());
   const pandaIndex = useQuery(pandaIndexQueryOptions());
@@ -239,7 +263,13 @@ export default function VisitsScreen() {
   useRefetchOnFocus(remoteList.refetch, signedIn);
   useRefetchOnFocus(remoteSeen.refetch, signedIn);
 
-  const visits = list.data && placeList.data ? list.data : null;
+  const hasQueued = signedIn && queuedCheckins.length > 0;
+  const queuedKeyByPlaceDay = useMemo(
+    () => new Map(queuedCheckins.map((item) => [`${item.placeId}|${item.visitedOn}`, item.key])),
+    [queuedCheckins],
+  );
+  const baseVisits = list.data ?? (hasQueued ? [] : null);
+  const visits = baseVisits && placeList.data ? (signedIn ? mergeVisitsWithQueue(baseVisits, queuedCheckins) : baseVisits) : null;
   const placesById = placeList.data;
 
   const pandaIndexById = useMemo(
@@ -251,7 +281,17 @@ export default function VisitsScreen() {
     [institutionList.data],
   );
 
-  const failed = session.status === "unavailable" || failedWithoutData(list) || failedWithoutData(placeList);
+  const failed = session.status === "unavailable" || (!hasQueued && failedWithoutData(list)) || failedWithoutData(placeList);
+
+  async function syncNow() {
+    if (!accountId || syncingQueue) return;
+    setSyncingQueue(true);
+    try {
+      await flushOfflineCheckins(accountId);
+    } finally {
+      setSyncingQueue(false);
+    }
+  }
 
   async function remove(visit: Visit) {
     setRemoveFailed(false);
@@ -260,6 +300,11 @@ export default function VisitsScreen() {
         await removeGuestVisit(visit.checkinId);
         return;
       }
+      const queuedKey = isQueuedVisitId(visit.checkinId)
+        ? queueKeyFromVisitId(visit.checkinId)
+        : queuedKeyByPlaceDay.get(`${visit.placeId}|${visit.visitedOn}`);
+      if (queuedKey) await removeOfflineCheckin(queuedKey);
+      if (isQueuedVisitId(visit.checkinId)) return;
       await removeVisit(visit.checkinId);
       if (accountId) {
         const queryKey = visitsQueryKey(accountId);
@@ -318,6 +363,39 @@ export default function VisitsScreen() {
             <StatCell label="现场见过" value={`${seenCount} 只`} highlight stacked={stacked} divider />
           </View>
 
+          {hasQueued ? (
+            <View
+              className={cn(
+                "gap-2 rounded-group border-hairline border-border bg-highlight-soft px-4 py-3",
+                stacked ? "items-start" : "flex-row items-center justify-between",
+              )}
+              style={{ borderCurve: "continuous" }}
+            >
+              <View className="min-w-0 flex-1 gap-0.5">
+                <Text variant="headline" className="text-primary tabular-nums">
+                  {`${queuedCheckins.length} 条打卡暂存本机`}
+                </Text>
+                <Text variant="footnote" className="text-muted-foreground">
+                  {isOffline ? "待联网后自动同步" : "网络已恢复，可点按立即同步"}
+                </Text>
+              </View>
+              {isOffline ? null : (
+                <Pressable
+                  role="button"
+                  accessibilityLabel="立即同步暂存打卡"
+                  disabled={syncingQueue}
+                  onPress={() => void syncNow()}
+                  className="min-h-11 justify-center rounded-control border-hairline border-border bg-card px-3 active:opacity-70"
+                  style={{ borderCurve: "continuous" }}
+                >
+                  <Text variant="footnote" className="font-semibold text-primary">
+                    {syncingQueue ? "正在同步…" : "立即同步"}
+                  </Text>
+                </Pressable>
+              )}
+            </View>
+          ) : null}
+
           {removeFailed ? (
             <Text variant="footnote" className="px-inset text-destructive" accessibilityLiveRegion="polite">
               没能移除，请再试一次。
@@ -347,6 +425,7 @@ export default function VisitsScreen() {
                         placeSlug={place?.slug ?? null}
                         matchedPandas={matchedPandas}
                         isLatest={groupIndex === 0 && index === 0}
+                        isQueued={isQueuedVisitId(visit.checkinId) || queuedKeyByPlaceDay.has(`${visit.placeId}|${visit.visitedOn}`)}
                         last={index === group.visits.length - 1}
                         today={today}
                         onRemove={() => void remove(visit)}
