@@ -49,6 +49,7 @@ registerOfflineCacheReset(() => {
   for (const controller of controllersBySlug.values()) controller.abort();
   controllersBySlug.clear();
   runtimeBySlug.clear();
+  for (const slug of activePinTokensBySlug.keys()) setTransientOfflinePins(slug, null);
   activePinTokensBySlug.clear();
   manifestsCache = {};
   hydratePromise = null;

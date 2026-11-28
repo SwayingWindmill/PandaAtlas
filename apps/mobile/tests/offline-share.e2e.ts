@@ -122,13 +122,13 @@ test("downloads a venue offline pack, survives offline restart, and flushes queu
   await expect(screen.getByText("已暂存本机，联网后自动同步")).toBeVisible();
   await screen.getByRole("button", "查看看猫日记").tap();
   await expect(screen.getByText("1 条打卡暂存本机")).toBeVisible();
-  await expect(screen.getByText(`“${note}”`)).toBeVisible();
+  await expect(screen.getByText(`“${note}”`, { visible: true })).toBeVisible();
   await expect(screen.getByRole("link", `查看${panda.name}`)).toBeVisible();
 
   // Reconnect: the offline queue flushes to the server and survives reload.
   await goOnline(browser);
   await expect(screen.getByText("1 条打卡暂存本机")).toHaveCount(0);
   await app.open("/visits");
-  await expect(screen.getByText(`“${note}”`)).toBeVisible();
+  await expect(screen.getByText(`“${note}”`, { visible: true })).toBeVisible();
   await expect(screen.getByRole("link", `查看${panda.name}`)).toBeVisible();
 });
