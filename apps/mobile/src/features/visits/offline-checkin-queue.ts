@@ -117,6 +117,7 @@ async function flushOnce(accountId: string): Promise<{ synced: number; remaining
     const candidates = (await loadQueue()).filter(
       (item) => item.accountId === accountId && attemptedVersions.get(item.key) !== item.updatedAt,
     );
+    console.warn("[diag-flush] flushOnce", { accountId, candidates: candidates.length, keys: candidates.map((c) => c.key) });
     if (candidates.length === 0) break;
 
     for (const item of candidates) {
@@ -152,6 +153,7 @@ async function flushOnce(accountId: string): Promise<{ synced: number; remaining
       }
 
       const madeProgress = (!item.visitSynced && visitSynced) || syncedPandas.size > 0;
+      console.warn("[diag-flush] item", { key: item.key, visitSynced, syncedPandas: syncedPandas.size, errorMessage });
       if (madeProgress) {
         // Trigger refetch before pruning the queue so `/visits` never flashes LoadFailed between empty queue and fresh data.
         void queryClient.invalidateQueries({ queryKey: visitsQueryKey(accountId) });
@@ -170,6 +172,7 @@ async function flushOnce(accountId: string): Promise<{ synced: number; remaining
             item.note,
           );
           await writeQueue(updated);
+          console.warn("[diag-flush] written", { len: updated.length, listeners: listeners.size });
         });
       }
     }
@@ -228,18 +231,25 @@ export function useOfflineCheckinFlush(): void {
   const accountId = session.status === "signedIn" ? session.accountId : null;
 
   useEffect(() => {
+    console.warn("[diag-flush] effect", { accountId, online: onlineManager.isOnline(), cachedLen: queueCache?.length ?? -1 });
     if (!accountId) return;
     if (onlineManager.isOnline()) {
       void flushOfflineCheckins(accountId);
     }
 
     const unsubscribeOnline = onlineManager.subscribe((isOnline) => {
+      console.warn("[diag-flush] onlineManager", { isOnline, accountId });
       if (isOnline) void flushOfflineCheckins(accountId);
     });
 
     const networkSub =
       Platform.OS !== "web" || typeof window !== "undefined"
         ? Network.addNetworkStateListener((state) => {
+            console.warn("[diag-flush] network", {
+              isConnected: state.isConnected,
+              isInternetReachable: state.isInternetReachable,
+              accountId,
+            });
             if (state.isConnected !== false && state.isInternetReachable !== false) {
               void flushOfflineCheckins(accountId);
             }
