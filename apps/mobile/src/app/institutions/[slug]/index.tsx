@@ -118,7 +118,7 @@ export default function InstitutionScreen() {
 
           <VenueQuickTools institution={institution} liveCardShown={liveCardShown} />
 
-          <Residents pandas={institution.residents} seen={seen} followed={followed} />
+          <Residents pandas={institution.residents} seen={seen} followed={followed} institutionSlug={institution.slug} />
 
           <VisitGuide institution={institution} />
 

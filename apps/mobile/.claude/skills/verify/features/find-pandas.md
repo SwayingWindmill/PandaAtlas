@@ -1,8 +1,10 @@
 # Find pandas
 
-找熊猫 lists every published panda (default 2-column 4:5 portrait `画廊` cards for covered pandas with coverless rows below, switchable to `列表` via `radio "画廊模式"` / `radio "列表模式"`). A fan searches by name, place, pinyin initials (`ml` finds 萌兰, `hh` finds 和花), or normalized studbook (`#1237` / `1237`), with unified `匹配场馆` cards above `匹配大熊猫` when searching. Multi-dimensional chips narrow results (`在世` / `有照片` / `双胞胎` / `归国` combine via AND; `在中国` / `在海外` / regional areas combine via OR; `button "全部"` or `重置` clears filters). Idle browsing shows 最近看过, 最近搜索, and visual `FindTools` (`查关系` -> `/relationship`, `认脸图鉴` -> `/learn`). A search with no hit offers 大家常看.
+找熊猫 lists every published panda (default 2-column 4:5 portrait `画廊` cards for covered pandas with coverless rows below, switchable to `列表` via `radio "画廊模式"` / `radio "列表模式"`). A fan searches by name, place, pinyin initials (`ml` finds 萌兰, `hh` finds 和花), or normalized studbook (`#1237` / `1237`), with unified `匹配场馆` cards above `匹配大熊猫` when searching. Multi-dimensional chips narrow results (`在世` / `有照片` / `双胞胎` / `归国` combine via AND; `在中国` / `在海外` / regional areas combine via OR; `button "全部"` or `重置` clears filters). Idle browsing shows 最近看过, 最近搜索, and visual `FindTools` (`现场认熊` -> `/identify`, `查关系` -> `/relationship`, `认脸图鉴` -> `/learn`). A search with no hit offers 大家常看.
 
 ## Sub-features
+
+- `find-identify` (`/identify`, optional `?institution=<slug>`) runs Multi-access Key soft ranking offline on living pandas using venue scoping (`1 先选现在在哪`), sex/relationship/age/face-guide trait chips (`2 点选看到的特征`), instant `最像的 Top-3 候选`, 1-tap `对比前两名`, and sticky `双图比一比` handoff to `/compare?a=...&b=...`. Venues with >= 2 residents also link to `/identify?institution=<slug>` from `住在这里`.
 
 - `find-initials` matches pinyin initials by prefix from the Latin names ("He Hua" gives `hh`). Only a panda with no Latin name uses its slug; a one-word name such as "Qizai" gives none, so `qq` does not find 七仔. Name hits rank above initials hits.
 - `find-studbook` parses `studbook_number` / `international_studbook_number` as `#<id>` and matches `#<id>` or `<id>`.
@@ -20,7 +22,7 @@
 
 ## Driving it with e2e
 
-Covered by `tests/profile.e2e.ts` (area chips, `匹配场馆` aggregate search, `画廊模式` / `列表模式` toggle) and `tests/worst-case.e2e.ts`. Live look with the production preview (`node apps/mobile/scripts/preview-production.mjs`, then `http://localhost:8796`):
+Covered by `tests/profile.e2e.ts` (area chips, `匹配场馆` aggregate search, `画廊模式` / `列表模式` toggle), `tests/identify.e2e.ts` (`现场认熊` Multi-access Key flow + offline deep-link), and `tests/worst-case.e2e.ts`. Live look with the production preview (`node apps/mobile/scripts/preview-production.mjs`, then `http://localhost:8796`):
 
 - Preconditions: the browser is at 390 wide.
 - **Initials & studbook.** Open `/find`, tap `textbox "搜索熊猫"`, type `ml` (萌兰) or `#1237`.

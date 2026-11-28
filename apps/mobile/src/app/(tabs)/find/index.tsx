@@ -65,12 +65,14 @@ function FindToolCard({
   title,
   subtitle,
   stacked,
+  fullWidth = false,
   visual,
 }: {
-  href: "/relationship" | "/learn";
+  href: "/identify" | "/relationship" | "/learn";
   title: string;
   subtitle: string;
   stacked: boolean;
+  fullWidth?: boolean;
   visual: ReactNode;
 }) {
   return (
@@ -81,7 +83,7 @@ function FindToolCard({
       onPress={() => router.push(href)}
       className={cn(
         "min-h-11 flex-row items-center gap-2.5 rounded-group bg-card px-3 py-3 active:opacity-75",
-        !stacked && "min-w-0 flex-1",
+        !stacked && !fullWidth && "min-w-0 flex-1",
       )}
       style={{ borderCurve: "continuous" }}
     >
@@ -110,39 +112,54 @@ function FindTools({ pandas, popular }: { pandas: readonly PandaListItem[]; popu
   const faceTile = coveredTools[2] ?? coveredTools[0] ?? null;
 
   return (
-    <View className={stacked ? "gap-2.5" : "flex-row gap-2.5"}>
+    <View className="gap-2.5">
       <FindToolCard
-        href="/relationship"
-        title="查关系"
-        subtitle="谱系亲缘链"
+        href="/identify"
+        title="现场认熊"
+        subtitle="按场馆与特征快速筛出候选，支持离线双图对比"
         stacked={stacked}
+        fullWidth
         visual={
-          pair ? (
-            <View className="shrink-0 flex-row items-center" aria-hidden>
-              <PandaThumb pandaId={pair[0]!.id} name={pair[0]!.name} size={28} shape="round" />
-              <View className="h-0.5 w-2.5 bg-primary" />
-              <PandaThumb pandaId={pair[1]!.id} name={pair[1]!.name} size={28} shape="round" />
-            </View>
-          ) : (
-            <Icon icon={Waypoints} size="body" tone="tint" strokeWidth={2} />
-          )
-        }
-      />
-      <FindToolCard
-        href="/learn"
-        title="认脸图鉴"
-        subtitle="眼斑与脸型"
-        stacked={stacked}
-        visual={
-          faceTile ? (
-            <View className="shrink-0" style={{ transform: [{ rotate: "-4deg" }] }} aria-hidden>
-              <PandaThumb pandaId={faceTile.id} name={faceTile.name} size={34} shape="tile" />
-            </View>
-          ) : (
+          <View className="shrink-0 flex-row items-center gap-1" aria-hidden>
             <Icon icon={ScanFace} size="body" tone="tint" strokeWidth={2} />
-          )
+            <Chevron />
+          </View>
         }
       />
+      <View className={stacked ? "gap-2.5" : "flex-row gap-2.5"}>
+        <FindToolCard
+          href="/relationship"
+          title="查关系"
+          subtitle="谱系亲缘链"
+          stacked={stacked}
+          visual={
+            pair ? (
+              <View className="shrink-0 flex-row items-center" aria-hidden>
+                <PandaThumb pandaId={pair[0]!.id} name={pair[0]!.name} size={28} shape="round" />
+                <View className="h-0.5 w-2.5 bg-primary" />
+                <PandaThumb pandaId={pair[1]!.id} name={pair[1]!.name} size={28} shape="round" />
+              </View>
+            ) : (
+              <Icon icon={Waypoints} size="body" tone="tint" strokeWidth={2} />
+            )
+          }
+        />
+        <FindToolCard
+          href="/learn"
+          title="认脸图鉴"
+          subtitle="眼斑与脸型"
+          stacked={stacked}
+          visual={
+            faceTile ? (
+              <View className="shrink-0" style={{ transform: [{ rotate: "-4deg" }] }} aria-hidden>
+                <PandaThumb pandaId={faceTile.id} name={faceTile.name} size={34} shape="tile" />
+              </View>
+            ) : (
+              <Icon icon={ScanFace} size="body" tone="tint" strokeWidth={2} />
+            )
+          }
+        />
+      </View>
     </View>
   );
 }

@@ -8,7 +8,7 @@ import { useCSSVariable } from "uniwind";
 
 import { Chevron, ListCell, ListSection, SectionTitle, useSingleColumn, useStacked } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
-import { Globe, Heart, History, MapPinCheck, Navigation, PawPrint, Video, Check, Download } from "@/components/icons";
+import { Globe, Heart, History, MapPinCheck, Navigation, PawPrint, ScanFace, Video, Check, Download } from "@/components/icons";
 import { PandaThumb } from "@/components/panda-thumb";
 import { PhotoOutline } from "@/components/photo-outline";
 import { PressScale } from "@/components/press-scale";
@@ -545,10 +545,12 @@ export function Residents({
   pandas,
   seen = null,
   followed = null,
+  institutionSlug,
 }: {
   pandas: PandaListItem[];
   seen?: ReadonlySet<string> | null;
   followed?: ReadonlySet<string> | null;
+  institutionSlug?: string;
 }) {
   const { width } = useWindowDimensions();
   const columns = useSingleColumn() ? 1 : 2;
@@ -605,6 +607,27 @@ export function Residents({
 
       {seen !== null && pandas.length >= 2 ? (
         <VenueCollectionProgressCard pandas={pandas} seen={seen} />
+      ) : null}
+
+      {institutionSlug && pandas.length >= 2 ? (
+        <Pressable
+          role="button"
+          accessibilityLabel="现场认熊"
+          onPress={() => router.push({ pathname: "/identify", params: { institution: institutionSlug } })}
+          className="min-h-11 flex-row items-center gap-2.5 rounded-group border-hairline border-border bg-card px-3.5 py-2.5 active:opacity-75"
+          style={{ borderCurve: "continuous" }}
+        >
+          <Icon icon={ScanFace} size="body" tone="tint" strokeWidth={2} />
+          <View className="min-w-0 flex-1 gap-hair-gap">
+            <Text variant="subheadline" className="font-semibold text-foreground">
+              现场认熊
+            </Text>
+            <Text variant="footnote" className="text-muted-foreground" numberOfLines={2}>
+              分不清哪只是谁？按特征筛出本馆 Top-3 候选
+            </Text>
+          </View>
+          <Chevron />
+        </Pressable>
       ) : null}
 
       {pandas.length >= 2 && filterPills.length > 1 ? (
