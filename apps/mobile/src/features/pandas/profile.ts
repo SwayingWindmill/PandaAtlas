@@ -173,7 +173,10 @@ export async function loadPhotos(slug: string): Promise<Photo[]> {
 export const photosQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["public", "photos", slug],
-    queryFn: () => loadPhotos(slug),
+    queryFn: async () => {
+      const detail = await loadPandaDetail(slug);
+      return { name: displayName(detail.panda), photos: photosOf(detail.media, detail.evidence) };
+    },
     staleTime: 300_000,
     networkMode: "always",
   });
