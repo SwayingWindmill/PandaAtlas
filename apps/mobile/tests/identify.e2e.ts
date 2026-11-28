@@ -12,14 +12,14 @@ test("from /find, opens 现场认熊, narrows candidates by venue and traits, an
 
   await screen.getByRole("button", zoo.name).tap();
   await expect(screen.getByText("候选 1 只")).toBeVisible();
-  await expect(screen.getByText(panda.name, { exact: false })).toBeVisible();
+  await expect(screen.getByRole("link", new RegExp(`^${panda.name}，`))).toBeVisible();
 
   await screen.getByRole("button", "雌").tap();
   await screen.getByRole("button", "成年（6–15 岁）").tap();
-  await expect(screen.getByText("命中 2/2")).toBeVisible();
+  await expect(screen.getByRole("link", new RegExp(`^${panda.name}，命中 2/2`))).toBeVisible();
 
-  // Switch back to 全部 so all fixture pandas enter the pool while preserving the ranked Top-3.
-  await screen.getByRole("button", "全部").tap();
+  // Scope 全部 to /identify's venue strip so Expo Router's hidden /find filter strip cannot match.
+  await screen.getByLabel("选择场馆").getByRole("button", "全部").tap();
   const pickPanda = screen.getByRole("button", `加入对比${panda.name}`);
   const pickNotice = screen.getByRole("button", `加入对比${notice.name}`);
   if ((await pickNotice.count()) === 0) {
@@ -43,7 +43,7 @@ test("deep-links /identify?institution=<slug> and stays usable offline across re
   await expect(screen.getByRole("heading", "现场认熊")).toBeVisible();
   await expect(screen.getByRole("button", zoo.name)).toBeVisible();
   await expect(screen.getByText("候选 1 只")).toBeVisible();
-  await expect(screen.getByText(panda.name, { exact: false })).toBeVisible();
+  await expect(screen.getByRole("link", new RegExp(`^${panda.name}，`))).toBeVisible();
 
   // Go offline and restart the app: persisted list caches keep /identify working without network.
   await browser.route("**/api/v2/**", (route) => route.abort());
@@ -58,6 +58,5 @@ test("deep-links /identify?institution=<slug> and stays usable offline across re
   await expect(screen.getByRole("heading", "现场认熊")).toBeVisible();
   await expect(screen.getByText("候选 1 只")).toBeVisible();
   await screen.getByRole("button", "雌").tap();
-  await expect(screen.getByText("命中 1/1")).toBeVisible();
-  await expect(screen.getByText(panda.name, { exact: false })).toBeVisible();
+  await expect(screen.getByRole("link", new RegExp(`^${panda.name}，命中 1/1`))).toBeVisible();
 });

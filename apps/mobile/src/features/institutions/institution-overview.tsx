@@ -611,7 +611,7 @@ export function Residents({
 
       {institutionSlug && pandas.length >= 2 ? (
         <Pressable
-          role="link"
+          role="button"
           accessibilityLabel="现场认熊"
           onPress={() => router.push({ pathname: "/identify", params: { institution: institutionSlug } })}
           className="min-h-11 flex-row items-center gap-2.5 rounded-group border-hairline border-border bg-card px-3.5 py-2.5 active:opacity-75"

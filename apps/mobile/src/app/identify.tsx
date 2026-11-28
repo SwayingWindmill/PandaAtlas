@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useLayoutEffect, useMemo, useState } from "react";
-import { Platform, Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Chip, ChipRow } from "@/components/chip";
@@ -29,18 +29,35 @@ import {
   toggleCompareSlug,
   toggleIdentifyTrait,
 } from "@/features/identify/identify";
+import type { CatalogFaceGuide } from "@/features/learning/catalog";
 import { useLearningCatalog } from "@/features/learning/use-catalog";
 import { mapViewQueryOptions } from "@/features/map/load";
 import { openPanda } from "@/features/pandas/panda-row";
-import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
+import { type PandaListItem, pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { fetchLineage } from "@/lib/public-data";
 import { usePullToRefresh } from "@/lib/pull-to-refresh";
 import { failedWithoutData } from "@/lib/query-failed";
 import { PAGE_COLUMN } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
+const EMPTY_PANDAS: PandaListItem[] = [];
+const EMPTY_FACE_GUIDES: CatalogFaceGuide[] = [];
+
 function param(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
+}
+
+function IdentifyHeader({ subtitle }: { subtitle?: string }) {
+  return (
+    <View className="gap-1">
+      <Text variant="display">现场认熊</Text>
+      {subtitle ? (
+        <Text variant="subheadline" className="text-muted-foreground">
+          {subtitle}
+        </Text>
+      ) : null}
+    </View>
+  );
 }
 
 /** Multi-access Key panda identification screen: filter by venue & traits offline, then hand off Top-2 to /compare. */
@@ -61,15 +78,19 @@ export default function IdentifyScreen() {
     networkMode: "always",
   });
   const { state: catalog } = useLearningCatalog();
+  const faceGuides = catalog.status === "ready" ? catalog.catalog.faceGuides : null;
 
-  const [venueOverride, setVenueOverride] = useState<string | null | undefined>(undefined);
+  const [venueChoice, setVenueChoice] = useState<{
+    forInstitution: string | undefined;
+    slug: string | null;
+  } | null>(null);
   const [selectedTraits, setSelectedTraits] = useState<IdentifyTraitId[]>([]);
   const [compareSlugs, setCompareSlugs] = useState<string[]>([]);
   const [expanded, setExpanded] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: Platform.OS === "web" ? "" : "现场认熊",
+      title: "",
       headerLargeTitleEnabled: false,
       headerBackVisible: true,
       headerShown: true,
@@ -78,7 +99,8 @@ export default function IdentifyScreen() {
   }, [navigation]);
 
   const pandas = index.data ?? null;
-  const livingPool = useMemo(() => (pandas ? buildLivingPool(pandas) : []), [pandas]);
+  const livingPool = useMemo(() => (pandas ? buildLivingPool(pandas) : EMPTY_PANDAS), [pandas]);
+  const livingSlugSet = useMemo(() => new Set(livingPool.map((panda) => panda.slug)), [livingPool]);
   const venues = useMemo(
     () => buildIdentifyVenues(livingPool, mapView.data?.items ?? []),
     [livingPool, mapView.data?.items],
@@ -87,7 +109,8 @@ export default function IdentifyScreen() {
     () => resolveInitialVenueSlug(venues, initialInstitution),
     [venues, initialInstitution],
   );
-  const selectedVenueSlug = venueOverride === undefined ? resolvedInitialVenue : venueOverride;
+  const hasVenueOverride = venueChoice !== null && venueChoice.forInstitution === initialInstitution;
+  const selectedVenueSlug = hasVenueOverride ? venueChoice.slug : resolvedInitialVenue;
   const orderedVenues = useMemo(
     () => orderVenueOptions(venues, selectedVenueSlug),
     [venues, selectedVenueSlug],
@@ -96,10 +119,10 @@ export default function IdentifyScreen() {
     () => filterIdentifyPool(livingPool, venues, selectedVenueSlug),
     [livingPool, venues, selectedVenueSlug],
   );
-  const profiles = useMemo(() => {
-    const guides = catalog.status === "ready" ? catalog.catalog.faceGuides : [];
-    return buildIdentifyProfiles(livingPool, lineage.data ?? [], guides);
-  }, [livingPool, lineage.data, catalog]);
+  const profiles = useMemo(
+    () => buildIdentifyProfiles(pandas ?? EMPTY_PANDAS, lineage.data ?? [], faceGuides ?? EMPTY_FACE_GUIDES),
+    [pandas, lineage.data, faceGuides],
+  );
   const traitGroups = useMemo(
     () => buildIdentifyTraitGroups(activePool, profiles),
     [activePool, profiles],
@@ -114,20 +137,19 @@ export default function IdentifyScreen() {
   );
 
   const activeComparePandas = useMemo(() => {
-    if (!pandas) return [];
-    const bySlug = new Map(pandas.map((panda) => [panda.slug, panda]));
+    const bySlug = new Map(livingPool.map((panda) => [panda.slug, panda]));
     return compareSlugs
       .map((slug) => bySlug.get(slug))
       .filter((panda): panda is NonNullable<typeof panda> => Boolean(panda))
       .slice(0, 2);
-  }, [pandas, compareSlugs]);
+  }, [livingPool, compareSlugs]);
   const activeCompareSlugSet = useMemo(
     () => new Set(activeComparePandas.map((panda) => panda.slug)),
     [activeComparePandas],
   );
 
   function selectVenue(slug: string | null) {
-    setVenueOverride(slug);
+    setVenueChoice({ forInstitution: initialInstitution, slug });
     setExpanded(false);
   }
 
@@ -142,27 +164,26 @@ export default function IdentifyScreen() {
   }
 
   function handleToggleCompare(slug: string) {
-    setCompareSlugs((prev) => toggleCompareSlug(prev, slug));
+    setCompareSlugs((prev) =>
+      toggleCompareSlug(
+        prev.filter((item) => livingSlugSet.has(item)),
+        slug,
+      ),
+    );
   }
 
   function openPairCompare(slugA: string, slugB: string) {
     router.push({ pathname: "/compare", params: { a: slugA, b: slugB } });
   }
 
-  if (failedWithoutData(index)) {
-    return (
-      <ScrollView
-        className="flex-1 bg-background"
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerClassName="px-gutter py-stack"
-        contentContainerStyle={PAGE_COLUMN}
-      >
-        <LoadFailed message="熊猫档案暂时打不开。" onRetry={() => void index.refetch()} />
-      </ScrollView>
-    );
-  }
+  const waitingForVenue = Boolean(
+    initialInstitution && !hasVenueOverride && !mapView.data && !mapView.isError && mapView.isPending,
+  );
+  const venueLoadFailed = Boolean(
+    initialInstitution && !hasVenueOverride && !mapView.data && mapView.isError && !mapView.isFetching,
+  );
 
-  if (!pandas) {
+  if (failedWithoutData(index)) {
     return (
       <ScrollView
         className="flex-1 bg-background"
@@ -170,8 +191,42 @@ export default function IdentifyScreen() {
         contentContainerClassName="gap-stack px-gutter py-stack"
         contentContainerStyle={PAGE_COLUMN}
       >
+        <IdentifyHeader />
+        <LoadFailed message="熊猫档案暂时打不开。" onRetry={() => void index.refetch()} />
+      </ScrollView>
+    );
+  }
+
+  if (venueLoadFailed) {
+    return (
+      <ScrollView
+        className="flex-1 bg-background"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerClassName="gap-stack px-gutter py-stack"
+        contentContainerStyle={PAGE_COLUMN}
+      >
+        <IdentifyHeader />
+        <LoadFailed
+          message="该场馆数据暂未缓存，无法直接按场馆筛选。"
+          onRetry={() => void mapView.refetch()}
+        />
+        <Button variant="secondary" onPress={() => selectVenue(null)}>
+          <Text>改为浏览全部熊猫</Text>
+        </Button>
+      </ScrollView>
+    );
+  }
+
+  if (!pandas || waitingForVenue) {
+    return (
+      <ScrollView
+        className="flex-1 bg-background"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerClassName="gap-stack px-gutter py-stack"
+        contentContainerStyle={PAGE_COLUMN}
+      >
+        <IdentifyHeader />
         <View className="gap-3" accessibilityLabel="正在加载">
-          <Skeleton className="h-9 w-40 rounded-control" />
           <Skeleton className="h-10 w-full rounded-control" />
           <Skeleton className="h-24 w-full rounded-group" />
           <Skeleton className="h-24 w-full rounded-group" />
@@ -198,12 +253,7 @@ export default function IdentifyScreen() {
         refreshControl={refreshControl}
         contentContainerStyle={PAGE_COLUMN}
       >
-        <View className="gap-1">
-          <Text variant="footnote" className="font-semibold text-primary">
-            多入口特征筛选
-          </Text>
-          <Text variant="display">现场认熊</Text>
-        </View>
+        <IdentifyHeader subtitle="先选现在在哪，再点选看到的特征" />
 
         <View className="gap-2">
           <View className="flex-row items-center justify-between gap-2">
@@ -334,7 +384,7 @@ export default function IdentifyScreen() {
                       onPress={() => openPanda(panda.slug)}
                       className="min-w-0 flex-1 flex-row items-center gap-3 active:opacity-75"
                     >
-                      <PandaThumb pandaId={panda.id} name={panda.name} size={56} shape="tile" />
+                      <PandaThumb pandaId={panda.id} name={panda.name} size={56} shape="round" />
                       <View className="min-w-0 flex-1 gap-1">
                         <View className="flex-row items-baseline justify-between gap-2">
                           <Text variant="headline" className="min-w-0 flex-1" numberOfLines={stacked ? undefined : 1}>
@@ -364,10 +414,10 @@ export default function IdentifyScreen() {
                             {matchedTraits.map((trait) => (
                               <View
                                 key={trait.id}
-                                className="rounded-control bg-highlight-soft px-1.5 py-0.5"
+                                className="rounded-pill bg-highlight-soft px-2 py-0.5"
                                 style={{ borderCurve: "continuous" }}
                               >
-                                <Text variant="footnote" className="font-medium text-primary">
+                                <Text variant="footnote" className="font-semibold text-primary">
                                   {trait.label}
                                 </Text>
                               </View>
@@ -433,6 +483,7 @@ export default function IdentifyScreen() {
             variant={readyCompare ? "default" : "secondary"}
             disabled={!readyCompare}
             accessibilityLabel={footerLabel}
+            className={stacked ? "h-auto min-h-12 py-2.5" : undefined}
             onPress={() => {
               if (!readyCompare) return;
               openPairCompare(activeComparePandas[0]!.slug, activeComparePandas[1]!.slug);
@@ -444,7 +495,12 @@ export default function IdentifyScreen() {
               tone={readyCompare ? "onButton" : "secondary"}
               strokeWidth={2}
             />
-            <Text numberOfLines={1}>{footerLabel}</Text>
+            <Text
+              numberOfLines={stacked ? undefined : 1}
+              className={cn("min-w-0 shrink text-center", stacked && "whitespace-normal")}
+            >
+              {footerLabel}
+            </Text>
           </Button>
         </View>
       </View>

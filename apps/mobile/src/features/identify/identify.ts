@@ -102,22 +102,43 @@ const FACE_TIP_FALLBACK_LABELS: Record<FaceTipKey, string> = {
 
 const CONTRADICTION_PENALTY = 1;
 
-/** Computes the age-cohort trait ID from a YYYY or YYYY-MM-DD birth date against reference UTC date. */
+/** Computes the age-cohort trait ID from a YYYY or YYYY-MM-DD birth date against local calendar date. */
 export function ageBracketOf(birthDate: string | null, referenceDate = new Date()): IdentifyAgeBracket | null {
   if (!birthDate) return null;
-  const match = /^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?/.exec(birthDate.trim());
-  if (!match) return null;
-  const year = Number(match[1]);
-  const month = match[2] ? Number(match[2]) : null;
-  const day = match[3] ? Number(match[3]) : null;
-  if (!Number.isInteger(year) || year < 1900 || year > 2100) return null;
-  if (month !== null && (month < 1 || month > 12)) return null;
-  if (day !== null && (day < 1 || day > 31)) return null;
+  const trimmed = birthDate.trim();
+  const full = /^(\d{4})-(\d{2})-(\d{2})$/.exec(trimmed);
+  const monthOnly = /^(\d{4})-(\d{2})$/.exec(trimmed);
+  const yearOnly = /^(\d{4})$/.exec(trimmed);
 
-  let age = referenceDate.getUTCFullYear() - year;
+  let year: number;
+  let month: number | null = null;
+  let day: number | null = null;
+
+  if (full) {
+    year = Number(full[1]);
+    month = Number(full[2]);
+    day = Number(full[3]);
+    if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+    const probe = new Date(Date.UTC(year, month - 1, day));
+    if (probe.getUTCFullYear() !== year || probe.getUTCMonth() !== month - 1 || probe.getUTCDate() !== day) {
+      return null;
+    }
+  } else if (monthOnly) {
+    year = Number(monthOnly[1]);
+    month = Number(monthOnly[2]);
+    if (month < 1 || month > 12) return null;
+  } else if (yearOnly) {
+    year = Number(yearOnly[1]);
+  } else {
+    return null;
+  }
+
+  if (!Number.isInteger(year) || year < 1900 || year > 2100) return null;
+
+  let age = referenceDate.getFullYear() - year;
   if (month !== null) {
-    const refMonth = referenceDate.getUTCMonth() + 1;
-    const refDay = referenceDate.getUTCDate();
+    const refMonth = referenceDate.getMonth() + 1;
+    const refDay = referenceDate.getDate();
     if (refMonth < month || (refMonth === month && refDay < (day ?? 1))) {
       age -= 1;
     }
@@ -142,31 +163,46 @@ export function extractFaceGuideTraits(guide: CatalogFaceGuide | undefined): {
   if (shapeBody) {
     if (
       /圆润|蓬松|圆脸|三角脸/.test(shapeBody) &&
-      !/不如[^，。；]*蓬松|不够[^，。；]*蓬松/.test(shapeBody)
+      !/(?:不如|没有|不像|远不如|偏瘦|不够)[^，。；]*(?:蓬松|圆润|圆)/.test(shapeBody)
     ) {
       traits.push("face:fluffy_cheeks");
     }
-    if (/体[形型][^，。；]*大|宽圆|大饼脸|偏宽/.test(shapeBody)) {
+    if (
+      (/体[形型][^，。；]*(?:偏|较|更)?大|宽圆|大饼脸|偏宽/.test(shapeBody) &&
+        !/体[形型][^，。；]*不(?:算?大|宽)/.test(shapeBody))
+    ) {
       traits.push("face:larger_frame");
     }
   }
 
   const eyeBody = bodyOf("eyePatches");
   if (eyeBody) {
-    if (/外翘|上挑|尖端|较宽/.test(eyeBody)) traits.push("face:flared_eyes");
-    if (/短圆|微垂|圆润|花生/.test(eyeBody)) traits.push("face:round_eyes");
+    if (
+      /外翘|上挑|上扬/.test(eyeBody) ||
+      (/较宽/.test(eyeBody) && !/(?:不算|不太|并不)宽/.test(eyeBody))
+    ) {
+      traits.push("face:flared_eyes");
+    }
+    if (/短圆|微垂|圆润|花生/.test(eyeBody) && !/(?:不如|不太)圆/.test(eyeBody)) {
+      traits.push("face:round_eyes");
+    }
   }
 
   const earsBody = bodyOf("ears");
   if (
     earsBody &&
     /雷达耳|宽距|大耳|高耸/.test(earsBody) &&
-    !/把[^，。；]*和[^，。；]*区分|靠[^，。；]*的[“"']?雷达耳/.test(earsBody)
+    !/把[^，。；]*和[^，。；]*区分|靠[^，。；]*的[“"']?雷达耳/.test(earsBody) &&
+    !/(?:不大|不明显)/.test(earsBody)
   ) {
     traits.push("face:wide_ears");
   }
 
-  if (bodyOf("leftRight")) {
+  const leftRightBody = bodyOf("leftRight");
+  if (
+    leftRightBody &&
+    !/(?:对称|差别不大|差别不明显|差异不明显|几乎没有差别|基本一致|看不出差别)/.test(leftRightBody)
+  ) {
     traits.push("face:asymmetric_marks");
   }
 
@@ -241,7 +277,7 @@ export function orderVenueOptions(
   return [pinned, ...venues.filter((venue) => venue.slug !== pinnedSlug)];
 }
 
-/** Filters candidate pandas by selected venue slug (`null` means all venues). */
+/** Filters candidate pandas by selected venue slug (`null` means all venues; unknown slug yields empty list). */
 export function filterIdentifyPool(
   pool: readonly PandaListItem[],
   venues: readonly IdentifyVenueOption[],
@@ -249,7 +285,7 @@ export function filterIdentifyPool(
 ): PandaListItem[] {
   if (!venueSlug) return [...pool];
   const venue = venues.find((item) => item.slug === venueSlug);
-  if (!venue) return [...pool];
+  if (!venue) return [];
   return pool.filter((panda) => venue.pandaIds.has(panda.id));
 }
 

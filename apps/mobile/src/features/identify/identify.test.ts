@@ -61,12 +61,13 @@ function makeVenue(slug: string, name: string, residents: PandaListItem[]): MapI
 }
 
 describe("identify Multi-access Key engine", () => {
-  it("maps birth dates accurately into age cohorts and ignores missing or invalid inputs", () => {
+  it("maps birth dates accurately into age cohorts and ignores missing, rollover, or invalid inputs", () => {
     expect(ageBracketOf("2024-08-15", REF_DATE)).toBe("age:cub");
     expect(ageBracketOf("2021-08-01", REF_DATE)).toBe("age:subadult");
     expect(ageBracketOf("2020-07-20", REF_DATE)).toBe("age:adult");
     expect(ageBracketOf("2010-11-28", REF_DATE)).toBe("age:senior");
     expect(ageBracketOf("2022", REF_DATE)).toBe("age:subadult");
+    expect(ageBracketOf("2020-02-31", REF_DATE)).toBeNull();
     expect(ageBracketOf("2028-01-01", REF_DATE)).toBeNull();
     expect(ageBracketOf("unknown", REF_DATE)).toBeNull();
     expect(ageBracketOf(null, REF_DATE)).toBeNull();
@@ -91,11 +92,23 @@ describe("identify Multi-access Key engine", () => {
       title: { zh: "伦伦" },
       tips: [
         { key: "shape", label: { zh: "脸型" }, body: { zh: "两颊圆润蓬松。" } },
+        { key: "leftRight", label: { zh: "左右差别" }, body: { zh: "左右差别不明显，脸部几乎对称。" } },
+        { key: "eyePatches", label: { zh: "黑眼圈" }, body: { zh: "尖端自然下垂，眼圈不算宽。" } },
         {
           key: "ears",
           label: { zh: "耳朵" },
           body: { zh: "在远处分不清伦伦和洋洋时，先看耳朵：游客常靠洋洋的“雷达耳”把他和伦伦区分开。" },
         },
+      ],
+      sources: [],
+    };
+    const negatedShapeGuide: CatalogFaceGuide = {
+      slug: "slim",
+      pandaSlug: "slim",
+      title: { zh: "瘦长脸示例" },
+      tips: [
+        { key: "shape", label: { zh: "脸型" }, body: { zh: "体型不大，脸型没有同伴圆润。" } },
+        { key: "leftRight", label: { zh: "左右差别" }, body: { zh: "右耳背有一小块白毛，左耳纯黑。" } },
       ],
       sources: [],
     };
@@ -108,17 +121,27 @@ describe("identify Multi-access Key engine", () => {
     const lunLun = extractFaceGuideTraits(lunLunGuide);
     expect(lunLun.traits).toEqual(["face:fluffy_cheeks"]);
     expect(lunLun.traits).not.toContain("face:wide_ears");
+    expect(lunLun.traits).not.toContain("face:flared_eyes");
+    expect(lunLun.traits).not.toContain("face:asymmetric_marks");
     expect(lunLun.faceSummary).toBe("脸型：两颊圆润蓬松。");
+
+    const slim = extractFaceGuideTraits(negatedShapeGuide);
+    expect(slim.traits).toEqual(["face:asymmetric_marks"]);
+    expect(slim.traits).not.toContain("face:larger_frame");
+    expect(slim.traits).not.toContain("face:fluffy_cheeks");
   });
 
-  it("prefers living pandas and builds ordered venue filters", () => {
+  it("prefers living pandas, keeps deceased twin recognition, and builds ordered venue filters", () => {
     const heHua = makePanda({ id: "p-hh", slug: "he-hua", name: "和花", sex: "female", birthDate: "2020-07-04", hasFullBleedCover: true });
     const heYe = makePanda({ id: "p-hy", slug: "he-ye", name: "和叶", sex: "female", birthDate: "2020-07-04" });
     const mengLan = makePanda({ id: "p-ml", slug: "meng-lan", name: "萌兰", sex: "male", birthDate: "2015-07-04", hasFullBleedCover: true });
+    const twinAlive = makePanda({ id: "p-ta", slug: "twin-alive", name: "同胎在世", birthDate: "2018-06-01" });
+    const twinDeceased = makePanda({ id: "p-td", slug: "twin-deceased", name: "同胎已故", birthDate: "2018-06-01", deceased: true });
     const historic = makePanda({ id: "p-old", slug: "pan-pan", name: "盼盼", sex: "male", birthDate: "1985-01-01", deceased: true });
 
-    const living = buildLivingPool([heHua, heYe, mengLan, historic]);
-    expect(living.map((p) => p.slug)).toEqual(["he-hua", "he-ye", "meng-lan"]);
+    const allPandas = [heHua, heYe, mengLan, twinAlive, twinDeceased, historic];
+    const living = buildLivingPool(allPandas);
+    expect(living.map((p) => p.slug)).toEqual(["he-hua", "he-ye", "meng-lan", "twin-alive"]);
 
     const venues = buildIdentifyVenues(living, [
       makeVenue("beijing-zoo", "北京动物园", [mengLan]),
@@ -130,6 +153,18 @@ describe("identify Multi-access Key engine", () => {
     expect(resolveInitialVenueSlug(venues, "missing-zoo")).toBeNull();
     expect(orderVenueOptions(venues, "beijing-zoo").map((v) => v.slug)).toEqual(["beijing-zoo", "chengdu-research-base"]);
     expect(filterIdentifyPool(living, venues, "chengdu-research-base").map((p) => p.slug)).toEqual(["he-hua", "he-ye"]);
+    expect(filterIdentifyPool(living, venues, "empty-zoo")).toEqual([]);
+
+    const profiles = buildIdentifyProfiles(
+      allPandas,
+      [
+        { childId: "p-ta", parentId: "p-hh", parentRole: "mother", sourceIds: ["s1"] },
+        { childId: "p-td", parentId: "p-hh", parentRole: "mother", sourceIds: ["s1"] },
+      ],
+      [],
+      REF_DATE,
+    );
+    expect(profiles.get("p-ta")?.traits.has("companion:twin")).toBe(true);
   });
 
   it("ranks candidates with soft matching, sourced lineage roles, and neutral missing fields", () => {
