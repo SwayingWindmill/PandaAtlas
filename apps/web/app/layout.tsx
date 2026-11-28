@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import "@fontsource-variable/archivo";
-import "@fontsource-variable/noto-sans-sc";
 import {
   DEFAULT_SHARE_IMAGE,
   ZHIPANDA_APPLICATION_NAME,
@@ -43,6 +42,15 @@ export const metadata: Metadata = {
     description: "Discover giant pandas, families, life journeys, and recent updates.",
     images: [DEFAULT_SHARE_IMAGE.url],
   },
+};
+
+// `cover` lets the page reach under the home indicator and the notch, so env(safe-area-inset-*) reports real
+// insets: the open-in-app bar pads by the bottom one, .pa-shell by the side ones. The theme colour is the canvas.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#fcfdfc",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

@@ -66,7 +66,7 @@ function DataVersion() {
   if (!version) return null;
   return (
     <Text variant="footnote" className="text-center tabular-nums text-muted-foreground">
-      {`吱熊猫 · 数据版本 ${version}`}
+      {`吱熊猫　数据版本 ${version}`}
     </Text>
   );
 }

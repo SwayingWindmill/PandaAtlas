@@ -90,7 +90,7 @@ export default function OnThisDayScreen() {
             today={today}
             sources={sources}
             onLess={(memory) => change(showLess(prefs, memory.subject.key), `已少显示${memory.subject.name}。`)}
-            onOff={() => change({ ...prefs, off: true }, "今天页不再显示那年今天。")}
+            onOff={() => change({ ...prefs, off: true }, "探索页不再显示那年今天。")}
           />
         )}
         <OnThisDaySettings />

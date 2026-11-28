@@ -1,6 +1,7 @@
 import type { Session } from "@supabase/supabase-js";
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
+import { syncGuestToAccount } from "@/features/engagement/guest-sync";
 import { authedApi } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 import { queryClient } from "@/lib/query-client";
@@ -45,6 +46,7 @@ async function provision(session: Session): Promise<SessionState> {
   // Repeating it is harmless: the API returns the existing account. A suspended account answers 403.
   const { data } = await authedApi.POST("/api/v2/me/account");
   if (!data) return { status: "unavailable", email };
+  await syncGuestToAccount(data.accountId).catch(() => undefined);
   return { status: "signedIn", email, accountId: data.accountId };
 }
 
@@ -63,6 +65,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         setState({ status: "signedOut" });
         return;
       }
+      setState({ status: "loading" });
       provision(session)
         .then((next) => {
           if (current === userId) setState(next);

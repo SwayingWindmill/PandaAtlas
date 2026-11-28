@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
 import { useMemo } from "react";
 import { Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
@@ -34,6 +35,7 @@ import {
 import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
+import { useSession } from "@/features/session/session";
 import { failedWithoutData } from "@/lib/query-failed";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
@@ -156,6 +158,7 @@ function Preferences({
 }
 
 export default function NotificationsScreen() {
+  const { state: session } = useSession();
   const { accountId, unavailable } = useAccount();
   const queryClient = useQueryClient();
   const enabled = accountId !== null;
@@ -222,6 +225,17 @@ export default function NotificationsScreen() {
     save.mutate({ category: row.category, channel: row.channel, enabled });
 
   const unread = messages ? unreadCount(messages) : 0;
+  if (session.status === "signedOut") {
+    return (
+      <Page title="通知与提醒">
+        <ScreenState
+          message="绑定邮箱登录后，关注熊猫有新资料更新或状态变化时会自动通知你。"
+          actionLabel="绑定同步"
+          onAction={() => router.push("/sign-in")}
+        />
+      </Page>
+    );
+  }
   return (
     <Page title="通知" label={messages && messages.length > 0 ? (unread > 0 ? `${unread} 条未读` : "都读过了") : undefined}>
       {failed ? (

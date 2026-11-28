@@ -99,6 +99,8 @@ export function classifyDevelopmentScopes(paths) {
     }
 
     if (
+      changedPath.startsWith(".agents/") ||
+      changedPath.startsWith(".claude/") ||
       changedPath.startsWith(".github/workflows/") ||
       changedPath.startsWith("scripts/release/") ||
       changedPath.startsWith("scripts/development/") ||

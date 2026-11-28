@@ -115,9 +115,14 @@ test("checks links but not backticked paths in ADRs, which record past decisions
   );
 });
 
-test("does not check vendored agent skills", async () => {
+test("does not check vendored agent skills, while keeping package verify docs checked", async () => {
   assert.deepEqual(
-    await brokenReferencesIn({ ".agents/skills/x/SKILL.md": "See [missing](missing.md) and `docs/missing.md`.\n", "docs/a.md": "" }),
-    [],
+    await brokenReferencesIn({
+      ".agents/skills/x/SKILL.md": "See [missing](missing.md) and `docs/missing.md`.\n",
+      ".claude/skills/x/SKILL.md": "See [missing](missing.md) and `docs/missing.md`.\n",
+      "apps/mobile/.claude/skills/verify/SKILL.md": "See [missing](missing.md).\n",
+      "docs/a.md": "",
+    }),
+    [{ file: "apps/mobile/.claude/skills/verify/SKILL.md", line: 1, reference: "missing.md" }],
   );
 });

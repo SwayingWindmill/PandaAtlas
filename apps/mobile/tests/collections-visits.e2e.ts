@@ -42,7 +42,7 @@ test("a fan records a visit on a zoo's page and removes it from 去过的地点"
   const { zoo } = fixture();
   await signIn(app, screen, testEmail("visits"));
   await app.open(`/institutions/${zoo.slug}`);
-  await screen.getByRole("radio", "攻略").tap();
+  await expect(screen.getByRole("heading", "参观攻略")).toBeVisible();
   await screen.getByRole("button", `记下今天去过${zoo.facility}`).tap();
   await expect(screen.getByText(`${todayLabel()}去过`)).toBeVisible();
   await expect(screen.getByRole("button", `今天已记下去过${zoo.facility}`)).toBeDisabled();
@@ -54,9 +54,41 @@ test("a fan records a visit on a zoo's page and removes it from 去过的地点"
   await expect(screen.getByText("还没有到访记录。", { exact: false })).toBeVisible();
 });
 
-test("signed out, a zoo's page opened on 攻略 asks the fan to sign in to record a visit", async ({ app, screen }) => {
+test("signed out, a zoo's page opened with tab=guide lets the guest record a visit locally", async ({ app, screen }) => {
   const { zoo } = fixture();
   await app.open(`/institutions/${zoo.slug}?tab=guide`);
-  await expect(screen.getByRole("radio", { name: "攻略", checked: true })).toBeVisible();
-  await expect(screen.getByRole("button", "登录后记下到访")).toBeVisible();
+  await expect(screen.getByRole("heading", "参观攻略")).toBeVisible();
+  await screen.getByRole("button", `记下今天去过${zoo.facility}`).tap();
+  await expect(screen.getByText(`${todayLabel()}去过`)).toBeVisible();
+  await expect(screen.getByRole("button", `今天已记下去过${zoo.facility}`)).toBeDisabled();
+
+  await app.open("/visits");
+  await expect(screen.getByRole("button", new RegExp(`^删除.*去${zoo.facility}的记录$`))).toBeVisible();
+});
+
+test("a signed-in fan completes bundle check-in with a note and seen panda, gets a souvenir ticket, and inspects it in 看猫日记", async ({ app, screen }) => {
+  const { panda, zoo } = fixture();
+  const note = "在月亮产房看到吃竹笋";
+  await signIn(app, screen, testEmail("bundle-checkin"));
+  await app.open(`/institutions/${zoo.slug}`);
+  await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
+
+  await screen.getByRole("button", /^去过打卡/).tap();
+  await expect(screen.getByRole("heading", "点选见过的熊猫")).toBeVisible();
+
+  await screen.getByLabel("看猫小记").fill(note);
+  await screen.getByRole("checkbox", new RegExp(`^${panda.name}`)).tap();
+  await screen.getByRole("button", /^保存本次打卡/).tap();
+
+  await expect(screen.getByText(/逛园纪念票根/)).toBeVisible();
+  await expect(screen.getByText(`“${note}”`)).toBeVisible();
+  await expect(screen.getByText("当日点亮见过　1 只")).toBeVisible();
+
+  await screen.getByRole("button", "查看看猫日记").tap();
+  await expect(screen.getByRole("heading", "去过的地点")).toBeVisible();
+  await expect(screen.getByText(`“${note}”`, { visible: true })).toBeVisible();
+  await expect(screen.getByRole("link", `查看${panda.name}`)).toBeVisible();
+  await expect(screen.getByRole("link", "足迹地图")).toBeVisible();
+  await screen.getByRole("link", "足迹地图").tap();
+  await expect(screen.getByRole("tab", { name: /^我去过 1/, selected: true })).toBeVisible();
 });

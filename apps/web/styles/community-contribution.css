@@ -1,5 +1,6 @@
 .contribution-page {
   min-height: 100vh;
+  min-height: 100dvh;
   background:
     radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 28rem),
     var(--bg);

@@ -24,7 +24,7 @@ test("a fan signs in with an emailed code, names the account, stays signed in, a
 
 test("a wrong code is refused as wrong, and the field is cleared for another try", async ({ app, screen }) => {
   await app.open("/me");
-  await screen.getByRole("button", "登录").tap();
+  await screen.getByRole("button", "绑定同步").tap();
   await screen.getByLabel("邮箱").fill(testEmail("wrong-code"));
   await screen.getByRole("button", "获取验证码").tap();
   await screen.getByLabel("验证码").fill("000000");
@@ -35,7 +35,7 @@ test("a wrong code is refused as wrong, and the field is cleared for another try
 test("a fan waits out the minute, asks for a new code, and signs in with it", async ({ app, screen }) => {
   const email = testEmail("resend");
   await app.open("/me");
-  await screen.getByRole("button", "登录").tap();
+  await screen.getByRole("button", "绑定同步").tap();
   await screen.getByLabel("邮箱").fill(email);
   await screen.getByRole("button", "获取验证码").tap();
   const first = await latestCode(email);

@@ -98,7 +98,7 @@ describe("buildTimeline", () => {
     expect(move).toHaveLength(1);
     expect(move[0]!.text).toBe("从上野动物园搬到卧龙神树坪基地");
     expect(move[0]!.sources.map((s) => s.id).sort()).toEqual(["s2", "s3", "s4"]);
-    expect(timeline.summary).toBe("3 条记录 · 2005–2024 · 住过 2 个地方");
+    expect(timeline.summary).toBe("3 条记录　2005–2024　住过 2 个地方");
   });
 
   it("joins two back-to-back stays into one move when no event tells it", () => {
@@ -195,7 +195,7 @@ describe("buildTimeline", () => {
     });
     expect(timeline.years).toEqual([]);
     expect(timeline.undated.map((m) => [m.text, m.note])).toEqual([["住在中国", "只知道所在国家，具体机构暂无记录"]]);
-    expect(timeline.summary).toBe("1 条记录 · 住过 1 个地方");
+    expect(timeline.summary).toBe("1 条记录　住过 1 个地方");
   });
 
   it("tells a mother's entry in her cub's birth as the cub's arrival, not her own birth", () => {

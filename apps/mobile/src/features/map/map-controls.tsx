@@ -1,87 +1,132 @@
-import { Pressable, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
 import { Icon } from "@/components/icon";
-import { Globe, House, LocateFixed, type LucideIcon, Trees } from "@/components/icons";
+import { Globe, History, Layers, type LucideIcon } from "@/components/icons";
 import { Text } from "@/components/ui/text";
+import type { MapFilter, MapFilterCounts } from "@/features/map/map-filter";
 import { HAIRLINE } from "@/lib/surface";
 import { cn } from "@/lib/utils";
 
 export const MAP_BUTTON_SIZE = 44;
+const VIEW_CONTROL_WIDTH = 52;
 export const MAP_FLOAT_SHADOW = "0 1px 2px rgba(0,0,0,0.1), 0 4px 14px rgba(0,0,0,0.1)";
 
-export function FloatingButton({ label, onPress, children }: { label: string; onPress: () => void; children: React.ReactNode }) {
-  return (
-    <Pressable
-      role="button"
-      accessibilityLabel={label}
-      onPress={onPress}
-      className="items-center justify-center rounded-full bg-paper active:opacity-70"
-      style={{ width: MAP_BUTTON_SIZE, height: MAP_BUTTON_SIZE, boxShadow: MAP_FLOAT_SHADOW }}
-    >
-      {children}
-    </Pressable>
-  );
-}
-
-export function LayerToggle({
-  venues,
-  wild,
-  onVenues,
-  onWild,
+export function FilterBar({
+  active,
+  counts,
+  onSelect,
 }: {
-  venues: boolean;
-  wild: boolean;
-  onVenues: () => void;
-  onWild: () => void;
+  active: MapFilter;
+  counts: MapFilterCounts;
+  onSelect: (filter: MapFilter) => void;
 }) {
-  const pill = (on: boolean, icon: LucideIcon, label: string, onPress: () => void) => (
-    <Pressable
-      role="switch"
-      accessibilityLabel={label}
-      aria-checked={on}
-      onPress={onPress}
-      className={cn("h-9 flex-row items-center gap-1 rounded-full px-3 active:opacity-70", on ? "bg-primary" : "")}
-    >
-      <Icon icon={icon} size="subhead" tone={on ? "onButton" : "label"} strokeWidth={2} />
-      <Text variant="subheadline" className={cn("font-semibold", on ? "text-primary-foreground" : "")}>
-        {label}
-      </Text>
-    </Pressable>
-  );
+  const showVisited = counts.visited > 0 || active === "visited";
+  const pills: { key: MapFilter; label: string }[] = [
+    { key: "all", label: counts.all > 0 ? `全部 ${counts.all}` : "全部" },
+    { key: "china", label: counts.china > 0 ? `国内 ${counts.china}` : "国内" },
+    { key: "overseas", label: counts.overseas > 0 ? `海外 ${counts.overseas}` : "海外" },
+    { key: "live", label: "有直播" },
+    ...(showVisited ? [{ key: "visited" as const, label: `我去过 ${counts.visited}` }] : []),
+    { key: "wild", label: "野生区" },
+  ];
   return (
-    <View className="flex-row gap-1 rounded-full bg-paper p-1" style={{ boxShadow: MAP_FLOAT_SHADOW }}>
-      {pill(venues, House, "场馆", onVenues)}
-      {pill(wild, Trees, "野生区", onWild)}
-    </View>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerClassName="gap-2 px-gutter py-1"
+      accessibilityRole="tablist"
+    >
+      {pills.map((pill) => {
+        const selected = active === pill.key;
+        return (
+          <Pressable
+            key={pill.key}
+            role="tab"
+            aria-selected={selected}
+            accessibilityState={{ selected }}
+            accessibilityLabel={pill.label}
+            hitSlop={4}
+            onPress={() => onSelect(pill.key)}
+            className={cn(
+              "h-9 items-center justify-center rounded-full px-3.5 active:opacity-75",
+              selected ? "bg-foreground" : "bg-paper",
+            )}
+            style={{ boxShadow: MAP_FLOAT_SHADOW }}
+          >
+            <Text
+              variant="subheadline"
+              className={cn("font-semibold tabular-nums", selected ? "text-background" : "text-foreground")}
+            >
+              {pill.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
   );
 }
 
-export function ViewControls({ overseas, onOverseas, onHome }: { overseas: number; onOverseas: () => void; onHome: () => void }) {
+export function ViewControls({
+  overseas,
+  worldView,
+  wild,
+  timelineOpen,
+  onToggleWorld,
+  onToggleWild,
+  onToggleTimeline,
+}: {
+  overseas: number;
+  worldView: boolean;
+  wild: boolean;
+  timelineOpen: boolean;
+  onToggleWorld: () => void;
+  onToggleWild: () => void;
+  onToggleTimeline: () => void;
+}) {
   return (
-    <View className="overflow-hidden rounded-control bg-paper" style={{ width: MAP_BUTTON_SIZE, boxShadow: MAP_FLOAT_SHADOW }}>
-      {overseas > 0 ? (
-        <>
-          <Pressable
-            role="button"
-            accessibilityLabel={`看海外的 ${overseas} 个地方`}
-            onPress={onOverseas}
-            className="items-center justify-center active:opacity-60"
-            style={{ height: MAP_BUTTON_SIZE }}
-          >
-            <Icon icon={Globe} size={21} tone="tint" strokeWidth={2} />
-          </Pressable>
-          <View className="mx-2 bg-border" style={{ height: HAIRLINE }} />
-        </>
-      ) : null}
+    <View
+      className="overflow-hidden rounded-control bg-paper"
+      style={{ width: VIEW_CONTROL_WIDTH, boxShadow: MAP_FLOAT_SHADOW }}
+    >
       <Pressable
         role="button"
-        accessibilityLabel="回到中国西南"
-        onPress={onHome}
+        accessibilityLabel={worldView ? "回到中国西南" : `查看全球视野${overseas > 0 ? `，含海外 ${overseas} 个地方` : ""}`}
+        onPress={onToggleWorld}
         className="items-center justify-center active:opacity-60"
         style={{ height: MAP_BUTTON_SIZE }}
       >
-        <Icon icon={LocateFixed} size={21} tone="label" strokeWidth={2} />
+        <Icon icon={Globe} size={21} tone={worldView ? "tint" : "label"} strokeWidth={2} />
+      </Pressable>
+      <View className="mx-2 bg-border" style={{ height: HAIRLINE }} />
+      <Pressable
+        role="switch"
+        accessibilityLabel="野生区图层"
+        aria-checked={wild}
+        onPress={onToggleWild}
+        className="items-center justify-center active:opacity-60"
+        style={{ height: MAP_BUTTON_SIZE }}
+      >
+        <Icon icon={Layers} size={21} tone={wild ? "tint" : "secondary"} strokeWidth={2} />
+      </Pressable>
+      <View className="mx-2 bg-border" style={{ height: HAIRLINE }} />
+      <Pressable
+        role="button"
+        accessibilityLabel="分布时间轴"
+        accessibilityState={{ selected: timelineOpen }}
+        onPress={onToggleTimeline}
+        className={cn("items-center justify-center gap-0.5 py-1.5 active:opacity-60", timelineOpen && "bg-highlight-soft")}
+        style={{ minHeight: MAP_BUTTON_SIZE }}
+      >
+        <Icon icon={History} size={19} tone={timelineOpen ? "tint" : "label"} strokeWidth={2} />
+        <Text
+          variant="footnote"
+          allowFontScaling={false}
+          numberOfLines={1}
+          className={cn("font-medium", timelineOpen ? "text-primary" : "text-foreground")}
+        >
+          时间轴
+        </Text>
       </Pressable>
     </View>
   );

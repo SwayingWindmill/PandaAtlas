@@ -7,7 +7,7 @@ import { test } from "./support/test.ts";
 
 test("a fan reads the draft 科普 pages", async ({ app, screen }) => {
   await app.open("/");
-  await screen.getByRole("link", "认识大熊猫，科普").tap();
+  await screen.getByRole("link", /科普$/).tap();
   await expect(screen.getByRole("heading", { name: "认识大熊猫", level: 1 })).toBeVisible();
 
   await screen.getByRole("button", "黑眼圈不是熬夜熬的：大熊猫眼斑从哪来、有什么用").tap();
@@ -24,7 +24,8 @@ test("a fan reads the draft 科普 pages", async ({ app, screen }) => {
   await app.open("/learn");
   await screen.getByRole("button", "认脸指南：宝力").tap();
   await expect(screen.getByText("两颊不如青宝蓬松。", { exact: false })).toBeVisible();
-  await expect(screen.getByText("脸型")).toBeVisible();
+  // `/learn`'s face guide cards surface the primary trait label too, so only the visible node is on this detail page.
+  await expect(screen.getByText("脸型", { visible: true })).toBeVisible();
   await expect(screen.getByText("左右差别")).toHaveCount(0);
   await expect(screen.getByText("暂无照片", { visible: true })).toBeVisible();
 

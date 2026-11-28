@@ -4,6 +4,8 @@
 // counts the pandas living there now.
 // Pure functions over API data, so the screen stays a view and the rules are unit tested.
 
+import type { PandaListItem } from "@/features/pandas/pandas";
+
 export type Game = "daily_panda" | "guess_panda";
 
 export interface GameEntry {
@@ -78,7 +80,7 @@ const GAME_LABEL: Record<Game, string> = { daily_panda: "每日一猫", guess_pa
 
 /**
  * The line under a panda's name: each way the fan met it, oldest first, with the day and, for a
- * 见过, the place. "6月1日每日一猫认出，遇到 3 次 · 8月14日在史密森国家动物园见过"
+ * 见过, the place. "6月1日每日一猫认出，遇到 3 次　8月14日在史密森国家动物园见过"
  */
 export function entryDetail(entry: LifeEntry, placeName: (placeId: string) => string | null): string {
   const parts: { on: string; text: string }[] = [];
@@ -93,7 +95,7 @@ export function entryDetail(entry: LifeEntry, placeName: (placeId: string) => st
   return parts
     .sort((a, b) => a.on.localeCompare(b.on))
     .map((part) => part.text)
-    .join(" · ");
+    .join("　");
 }
 
 export type Filter = "all" | "seen" | "recognized";
@@ -173,6 +175,23 @@ function sortGroups(groups: Group[]): Group[] {
 /** "1 / 2": pandas met out of those living at a base now; null when nobody lives there any more. */
 export function baseProgress(group: Pick<Group, "known" | "members">): string | null {
   return group.members.length === 0 ? null : `${group.known} / ${group.members.length}`;
+}
+
+/** Whole percent of living residents known at a base (0 when none known or empty; at least 1% when >= 1 known). */
+export function basePercent(group: Pick<Group, "known" | "members">): number {
+  return catalogPercent(group.known, group.members.length);
+}
+
+/** Picks a base's lead resident avatar, preferring the first resident with a reviewed full-bleed cover. */
+export function pickBaseLeadPandaId(
+  memberIds: readonly string[],
+  byId: ReadonlyMap<string, Pick<PandaListItem, "id" | "hasFullBleedCover">>,
+): string | null {
+  if (memberIds.length === 0) return null;
+  for (const id of memberIds) {
+    if (byId.get(id)?.hasFullBleedCover) return id;
+  }
+  return memberIds[0] ?? null;
 }
 
 /**

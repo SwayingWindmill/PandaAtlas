@@ -6,14 +6,14 @@ import { test } from "./support/test.ts";
 test("the map shows a zoo from its marker and from the list, and lists a place with no coordinates", async ({ app, screen }) => {
   const { zoo } = fixture();
   const place = `测试地点${runSuffix()}`;
-  await app.open("/find");
-  await screen.getByRole("link", /^熊猫地图/).tap();
-  await expect(screen.getByRole("heading", "熊猫地图")).toBeVisible();
-  await expect(screen.getByRole("image", "大熊猫所在地地图")).toBeVisible();
+  await app.open("/map");
+  await expect(screen.getByRole("tab", /^全部 /)).toBeVisible();
+  await expect(screen.getByRole("tab", "野生区")).toBeVisible();
+  const map = screen.getByTestId("panda-world-map");
+  await expect(map.getByRole("image", "大熊猫所在地地图")).toBeVisible();
 
   const zooLabel = new RegExp(`^${zoo.name}，`);
   const places = screen.getByTestId("map-places");
-  const map = screen.getByTestId("panda-world-map");
   await expect(places.getByRole("button", zooLabel)).toBeVisible();
   await expect(places.getByRole("button", new RegExp(`^${place}，日本，现在没有熊猫$`))).toBeVisible();
   await expect(map.getByRole("button", new RegExp(place))).toHaveCount(0);
@@ -27,8 +27,8 @@ test("the map shows a zoo from its marker and from the list, and lists a place w
   await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
   await screen.getByRole("button", `打开${zoo.name}的页面`).tap();
   await expect(screen.getByRole("heading", zoo.name)).toBeVisible();
-  await expect(screen.getByRole("radio", "概况")).toBeVisible();
-  await expect(screen.getByRole("radio", "攻略")).toBeVisible();
+  await expect(screen.getByRole("heading", "住在这里")).toBeVisible();
+  await expect(screen.getByRole("heading", "参观攻略")).toBeVisible();
   await screen.getByRole("button", "返回").tap();
 
   await screen.getByRole("button", "关闭").tap();
@@ -37,12 +37,20 @@ test("the map shows a zoo from its marker and from the list, and lists a place w
   await expect(screen.getByText("日本")).toBeVisible();
 });
 
-test("the map shows the wild habitats with their populations, and the venues layer turns off", async ({ app, screen }) => {
+test("filter pills open timeline and switch to the wild habitats view", async ({ app, screen }) => {
   await app.open("/map");
   const map = screen.getByTestId("panda-world-map");
-  const venues = screen.getByRole("switch", "场馆");
-  await expect(venues).toBeChecked();
-  await expect(screen.getByRole("switch", "野生区")).toBeChecked();
+  await expect(screen.getByRole("tab", { name: /^全部 /, selected: true })).toBeVisible();
+  await expect(screen.getByRole("switch", "野生区图层")).toBeChecked();
+
+  await screen.getByRole("button", /^分布时间轴/).tap();
+  await expect(screen.getByRole("heading", "分布时间轴")).toBeVisible();
+  await expect(screen.getByLabel("年份")).toBeVisible();
+  await screen.getByRole("button", "关闭时间轴").tap();
+
+  await screen.getByRole("tab", "野生区").tap();
+  await expect(map.getByRole("button", /熊猫$|点一下放大$/)).toHaveCount(0);
+  await expect(map.getByRole("button", /^邛崃山，/)).toBeVisible();
 
   await map.getByRole("button", /^邛崃山，野生大熊猫 519 只$/).tap();
   await expect(screen.getByRole("heading", "邛崃山")).toBeVisible();
@@ -50,11 +58,6 @@ test("the map shows the wild habitats with their populations, and the venues lay
   await expect(screen.getByRole("link", "打开数据来源")).toBeVisible();
   await expect(screen.getByRole("button", "打开邛崃山的页面")).toBeVisible();
   await screen.getByRole("button", "关闭").tap();
-
-  await venues.tap();
-  await expect(venues).not.toBeChecked();
-  await expect(map.getByRole("button", /熊猫$|点一下放大$/)).toHaveCount(0);
-  await expect(map.getByRole("button", /^邛崃山，/)).toBeVisible();
 });
 
 test("a wild habitat has its own page, with its populations, the other ranges and the source", async ({ app, screen }) => {
@@ -68,4 +71,13 @@ test("a wild habitat has its own page, with its populations, the other ranges an
   await screen.getByRole("button", /^岷山/).tap();
   await expect(screen.getByRole("heading", "岷山")).toBeVisible();
   await expect(screen.getByLabel("野生大熊猫 765 只")).toBeVisible();
+});
+
+test("opening /map?filter=visited selects the visited tab and shows the passport card", async ({ app, screen }) => {
+  await app.open("/map?filter=visited");
+  await expect(screen.getByRole("tab", { name: /^我去过 0/, selected: true })).toBeVisible();
+  await expect(screen.getByText(/^已去过 0 \//)).toBeVisible();
+  await expect(screen.getByText("还没有去过的场馆足迹")).toBeVisible();
+  await screen.getByRole("button", "看看全部场馆").tap();
+  await expect(screen.getByRole("tab", { name: /^全部 /, selected: true })).toBeVisible();
 });

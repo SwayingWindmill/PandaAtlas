@@ -66,7 +66,7 @@ export interface Timeline {
   years: TimelineYear[];
   /** Milestones without a date, after the dated ones. */
   undated: Milestone[];
-  /** "8 条记录 · 2005–2024 · 住过 2 个地方": what is recorded, not the 里程碑 worked out from it. Null when there is nothing. */
+  /** "8 条记录　2005–2024　住过 2 个地方": what is recorded, not the 里程碑 worked out from it. Null when there is nothing. */
   summary: string | null;
   count: number;
 }
@@ -332,7 +332,7 @@ export function buildTimeline(input: {
   const summary =
     count === 0
       ? null
-      : [`${count} 条记录`, span, places.size > 0 ? `住过 ${places.size} 个地方` : null].filter(Boolean).join(" · ");
+      : [`${count} 条记录`, span, places.size > 0 ? `住过 ${places.size} 个地方` : null].filter(Boolean).join("　");
   return { years, undated, summary, count };
 }
 

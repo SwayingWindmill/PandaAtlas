@@ -55,11 +55,11 @@ infra/collector/data/
 
 # Local agent/planning state
 .claude/*
-# Shared project plugins (pstack) live in the committed project settings.
+# Shared Claude Code hooks live in committed project settings.
 !.claude/settings.json
-# A project verify skill is shared too.
+# Mirrored pstack/complementary skills live in .claude/skills/ (1:1 with .agents/skills/).
 !.claude/skills/
-# pstack todo checklists and decision trails.
+# Ephemeral pstack checklists, scratch probes, and decision trails.
 .audit/
 .ai-bridge/
 .codegraph/

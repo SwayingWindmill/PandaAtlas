@@ -204,3 +204,61 @@ describe("searchPandas by pinyin initials", () => {
     ]);
   });
 });
+
+describe("studbook parsing and search", () => {
+  const withFacts = (
+    slug: string,
+    zhName: string,
+    facts: Parameters<typeof toPandaListItem>[0]["facts"],
+  ) =>
+    toPandaListItem({
+      pandaId: slug,
+      canonicalSlug: slug,
+      legacySlugs: [],
+      names: [{ languageTag: "zh-Hans", nameKind: "official", value: zhName, isPrimary: true }],
+      facts,
+    } as Parameters<typeof toPandaListItem>[0]);
+
+  it("parses studbook numbers from canonical and local keys while skipping disputed or empty values", () => {
+    const heHua = withFacts("he-hua", "和花", [
+      { fieldKey: "studbook_number", value: 1237, status: "confirmed", lastVerifiedOn: "2026-10-28", conclusionVersion: 1 },
+    ]);
+    const localOnly = withFacts("bao-mei", "宝妹", [
+      { fieldKey: "studbook_number", value: "999", status: "disputed", lastVerifiedOn: "2026-10-28", conclusionVersion: 1 },
+      { fieldKey: "local.studbook_number", value: "#1186", status: "provisional", lastVerifiedOn: "2026-10-28", conclusionVersion: 1 },
+    ]);
+    const intlFallback = withFacts("lun-lun", "伦伦", [
+      { fieldKey: "international_studbook_number", value: " 453 ", status: "confirmed", lastVerifiedOn: "2026-10-28", conclusionVersion: 1 },
+    ]);
+    const localIntlFallback = withFacts("mei-lun", "美伦", [
+      { fieldKey: "local.international_studbook_number", value: "828", status: "confirmed", lastVerifiedOn: "2026-10-28", conclusionVersion: 1 },
+    ]);
+    const none = withFacts("no-studbook", "无谱系", [
+      { fieldKey: "studbook_number", value: "", status: "confirmed", lastVerifiedOn: "2026-10-28", conclusionVersion: 1 },
+    ]);
+
+    expect(heHua.studbookNumber).toBe("#1237");
+    expect(localOnly.studbookNumber).toBe("#1186");
+    expect(intlFallback.studbookNumber).toBe("#453");
+    expect(localIntlFallback.studbookNumber).toBe("#828");
+    expect(none.studbookNumber).toBeNull();
+  });
+
+  it("indexes both #<digits> and <digits> so #1237 and 1237 both match", () => {
+    const heHua = withFacts("he-hua", "和花", [
+      { fieldKey: "studbook_number", value: "1237", status: "confirmed", lastVerifiedOn: "2026-10-28", conclusionVersion: 1 },
+    ]);
+    const mengLan = withFacts("meng-lan", "萌兰", [
+      { fieldKey: "local.studbook_number", value: 965, status: "confirmed", lastVerifiedOn: "2026-10-28", conclusionVersion: 1 },
+    ]);
+    const unrecorded = withFacts("plain", "路人甲", []);
+    const list = [mengLan, unrecorded, heHua];
+
+    expect(heHua.terms).toContain("#1237");
+    expect(heHua.terms).toContain("1237");
+    expect(searchPandas(list, "#1237").map((item) => item.slug)).toEqual(["he-hua"]);
+    expect(searchPandas(list, "1237").map((item) => item.slug)).toEqual(["he-hua"]);
+    expect(searchPandas(list, "123").map((item) => item.slug)).toEqual(["he-hua"]);
+    expect(searchPandas(list, "965").map((item) => item.slug)).toEqual(["meng-lan"]);
+  });
+});

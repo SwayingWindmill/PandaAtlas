@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 import { useMemo } from "react";
 import { Pressable, View } from "react-native";
 
@@ -14,12 +15,14 @@ import { shortDay } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
 import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
 import { useAccount } from "@/features/session/account";
+import { useSession } from "@/features/session/session";
 import { failedWithoutData } from "@/lib/query-failed";
 import { useRefetchOnFocus } from "@/lib/use-focus-refetch";
 import { HAIRLINE } from "@/lib/surface";
 
 /** 我的纠错, opened from 我的: each report the fan sent, its status and the editors' note. */
 export default function ContributionsScreen() {
+  const { state: session } = useSession();
   const { accountId, unavailable } = useAccount();
   const list = useQuery({ ...contributionsQueryOptions(accountId ?? ""), enabled: accountId !== null });
   // Read again whenever the page shows, so a report sent from a profile appears on return.
@@ -28,6 +31,18 @@ export default function ContributionsScreen() {
   const pandas = useMemo(() => new Map(index.data?.map((panda) => [panda.id, panda])), [index.data]);
   const items = list.data ?? null;
   const failed = unavailable || failedWithoutData(list);
+
+  if (session.status === "signedOut") {
+    return (
+      <Page title="我的纠错">
+        <ScreenState
+          message="绑定邮箱登录后，可以随时查看提交过的资料纠错与编辑处理进度。"
+          actionLabel="绑定同步"
+          onAction={() => router.push("/sign-in")}
+        />
+      </Page>
+    );
+  }
 
   return (
     <Page title="我的纠错">

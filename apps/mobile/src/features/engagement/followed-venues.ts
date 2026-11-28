@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { router } from "expo-router";
 import { useMemo } from "react";
 
+import { guestFollowedVenuesQueryOptions, setGuestFollowingVenue } from "@/features/engagement/guest-store";
 import { useSession } from "@/features/session/session";
 import { authedApi } from "@/lib/api";
 import { tapHaptic } from "@/lib/haptics";
@@ -39,16 +39,25 @@ export async function setFollowingVenue(accountId: string, slug: string, followi
   }
 }
 
-/** Followed venue slugs, or null while loading and when signed out. */
+/** Followed venue slugs (signed-in or local guest), or null while loading or unavailable. */
 export function useFollowedVenues(): ReadonlySet<string> | null {
   const { state } = useSession();
   const accountId = state.status === "signedIn" ? state.accountId : null;
-  const { data } = useQuery({
+  const signedOut = state.status === "signedOut";
+  const remote = useQuery({
     queryKey: followedVenuesKey(accountId ?? ""),
     queryFn: loadFollowedVenues,
     enabled: accountId !== null,
   });
-  return useMemo(() => (accountId !== null && data ? new Set(data) : null), [accountId, data]);
+  const guest = useQuery({
+    ...guestFollowedVenuesQueryOptions(),
+    enabled: signedOut,
+  });
+  return useMemo(() => {
+    if (accountId !== null) return remote.data ? new Set(remote.data) : null;
+    if (signedOut) return guest.data ? new Set(guest.data) : null;
+    return null;
+  }, [accountId, guest.data, remote.data, signedOut]);
 }
 
 export function useFollowVenue(slug: string): { following: boolean; toggle: () => void } {
@@ -58,7 +67,7 @@ export function useFollowVenue(slug: string): { following: boolean; toggle: () =
     following,
     toggle: () => {
       tapHaptic();
-      if (state.status === "signedOut") router.push("/sign-in");
+      if (state.status === "signedOut") void setGuestFollowingVenue(slug, !following);
       else if (state.status === "signedIn") void setFollowingVenue(state.accountId, slug, !following);
     },
   };

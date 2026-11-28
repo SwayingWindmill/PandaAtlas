@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -11,35 +11,42 @@ import { Icon } from "@/components/icon";
 import { Flag, FolderHeart, Mars, Venus } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { HeroFade } from "@/components/scrim";
-import { Segmented } from "@/components/segmented";
 import { StretchyHero } from "@/components/stretchy-hero";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
-import { CompareRows } from "@/features/compare/compare-rows";
 import { PandaActions } from "@/features/engagement/panda-actions";
 import { pandaIndexQueryOptions } from "@/features/pandas/pandas";
-import { recordView } from "@/features/pandas/recent";
 import { profileQueryOptions } from "@/features/pandas/profile";
-import { FamilyTab } from "@/features/pandas/profile-family-tab";
 import {
-  EventsList,
-  Experience,
-  KeyRows,
   Memories,
-  NoPhoto,
-  Sources,
-  Stats,
+  PandaFaceGuideCard,
+  PandaVenueLive,
   openPandaCorrection,
 } from "@/features/pandas/profile-overview";
-import { PhotosTab } from "@/features/pandas/profile-photos-tab";
+import {
+  FamilyStripSection,
+  HighlightCarousel,
+  JourneyRouteSection,
+  LifeStageSection,
+  NoPhotoIdentityHeader,
+  PandaVenueNewsCard,
+  PhotoPeekStrip,
+  QuickToolsBar,
+  QuietProfileFooter,
+  RecommendedArticleCard,
+  SameCohortSection,
+  TraitsAndCareSection,
+  UnifiedMetricStrip,
+} from "@/features/pandas/profile-sections";
+import { recordView } from "@/features/pandas/recent";
 import { queryClient } from "@/lib/query-client";
 import { PAGE_COLUMN } from "@/lib/surface";
 
 /** Hero height below the status bar. The photo runs under the status bar too. */
-const HERO = 320;
+const HERO = 292;
 /** How far the name block rides up onto the photo's faded bottom. */
-const OVERLAP = 64;
+const OVERLAP = 52;
 
 /**
  * Whether the profile will open on a photo, from the list and cover already loaded on the way here: most pandas
@@ -59,36 +66,29 @@ function ProfileSkeleton({ slug }: { slug: string }) {
       {photo ? (
         <Skeleton className="w-full rounded-none" style={{ height: HERO + insets.top }} />
       ) : (
-        <View className="px-gutter pb-4" style={[PAGE_COLUMN, { paddingTop: insets.top + 64 }]}>
-          <Skeleton className="h-24 w-full rounded-group" />
+        <View className="flex-row items-center gap-3.5 px-gutter pb-3" style={[PAGE_COLUMN, { paddingTop: insets.top + 58 }]}>
+          <Skeleton className="rounded-tile" style={{ width: 60, height: 60 }} />
+          <View className="flex-1 gap-2">
+            <Skeleton className="h-9 w-28" />
+            <Skeleton className="h-4 w-24" />
+          </View>
         </View>
       )}
       <View className="gap-4 px-gutter" style={[PAGE_COLUMN, photo ? { marginTop: -OVERLAP } : null]}>
-        <Skeleton className="h-10 w-32" />
+        {photo ? <Skeleton className="h-10 w-32" /> : null}
+        <Skeleton className="h-5 w-4/5" />
         <Skeleton className="h-12 w-full rounded-pill" />
-        <View className="flex-row gap-2.5">
-          {[0, 1, 2].map((key) => (
-            <Skeleton key={key} className="h-24 flex-1 rounded-tile" />
-          ))}
-        </View>
+        <Skeleton className="h-20 w-full rounded-group" />
+        <Skeleton className="h-24 w-full rounded-group" />
       </View>
     </View>
   );
 }
 
-type Tab = "overview" | "family" | "photos" | "events";
-const TABS: { value: Tab; label: string }[] = [
-  { value: "overview", label: "概况" },
-  { value: "family", label: "家族" },
-  { value: "photos", label: "照片" },
-  { value: "events", label: "动态" },
-];
-
 export default function ProfileScreen() {
-  const { slug, tab: opened } = useLocalSearchParams<{ slug: string; tab?: string }>();
+  const { slug } = useLocalSearchParams<{ slug: string }>();
   const { data: profile, isError: failed, refetch } = useQuery(profileQueryOptions(slug));
   const { scrollY, onScroll, pastHero } = useHeroScroll(HERO);
-  const [tab, setTab] = useState<Tab>(() => TABS.find((item) => item.value === opened)?.value ?? "overview");
   const page = String(useCSSVariable("--color-background"));
   const viewedId = profile?.id;
   useEffect(() => {
@@ -113,6 +113,7 @@ export default function ProfileScreen() {
   const cover = profile.photos[0];
   const share = () => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } });
   const sexIcon = profile.sex === "male" ? Mars : profile.sex === "female" ? Venus : null;
+
   return (
     <View className="flex-1 bg-background">
       <HeroHeader
@@ -145,55 +146,65 @@ export default function ProfileScreen() {
             overlay={<HeroFade id={`hero-${profile.id}`} page={page} />}
           />
         ) : (
-          <NoPhoto profile={profile} />
+          <NoPhotoIdentityHeader profile={profile} adoptionName={profile.rich.adoptionName} leadBio={profile.rich.leadBio} />
         )}
-        <Animated.View entering={PAGE_ENTER} className="gap-4 px-gutter" style={[PAGE_COLUMN, cover ? { marginTop: -OVERLAP } : null]}>
-          <View>
-            <View className="flex-row items-center gap-2">
-              <Text variant="display" className="shrink">
-                {profile.name}
-              </Text>
-            </View>
-            {profile.nameEn || sexIcon ? (
-              <View
-                className="flex-row items-center gap-1.5"
-                accessible
-                accessibilityLabel={`${profile.nameEn ?? ""}${profile.sex === "male" ? "，雄性" : profile.sex === "female" ? "，雌性" : ""}`}
-              >
-                {profile.nameEn ? (
-                  <Text variant="subheadline" className="text-muted-foreground">
-                    {profile.nameEn}
+        <Animated.View
+          entering={PAGE_ENTER}
+          className="gap-4 px-gutter"
+          style={[PAGE_COLUMN, cover ? { marginTop: -OVERLAP } : { marginTop: 14 }]}
+        >
+          {cover ? (
+            <View className="gap-1.5">
+              <View>
+                <View className="flex-row items-baseline justify-between gap-2">
+                  <Text variant="display" role="heading" className="min-w-0 shrink">
+                    {profile.name}
                   </Text>
+                  {profile.rich.adoptionName ? (
+                    <Text variant="footnote" className="shrink-0 font-semibold text-primary">
+                      {`认养名　${profile.rich.adoptionName}`}
+                    </Text>
+                  ) : null}
+                </View>
+                {profile.nameEn || sexIcon ? (
+                  <View
+                    className="flex-row items-center gap-1.5"
+                    accessible
+                    accessibilityLabel={`${profile.nameEn ?? ""}${profile.sex === "male" ? "，雄性" : profile.sex === "female" ? "，雌性" : ""}`}
+                  >
+                    {profile.nameEn ? (
+                      <Text variant="subheadline" className="min-w-0 shrink text-muted-foreground" numberOfLines={2}>
+                        {profile.nameEn}
+                      </Text>
+                    ) : null}
+                    {sexIcon ? <Icon icon={sexIcon} size="footnote" tone="secondary" strokeWidth={2.4} /> : null}
+                  </View>
                 ) : null}
-                {sexIcon ? <Icon icon={sexIcon} size="footnote" tone="secondary" strokeWidth={2.4} /> : null}
               </View>
-            ) : null}
-          </View>
-          <PandaActions pandaId={profile.id} name={profile.name} deceased={profile.deceased} />
-          {tab === "overview" ? <Stats profile={profile} /> : null}
-          <View className="pt-0.5">
-            <Segmented value={tab} options={TABS} onChange={setTab} accessibilityLabel="资料分区" />
-          </View>
-          {tab === "overview" ? (
-            <View className="gap-3">
-              <KeyRows profile={profile} />
-              <Experience profile={profile} />
-              <CompareRows slug={profile.slug} />
-              {profile.memories.length > 0 ? <Memories profile={profile} /> : null}
-              {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
-              {cover?.credit ? (
-                <Text variant="footnote" className="px-4 text-muted-foreground">
-                  {`封面照片：${cover.credit}`}
+              {profile.rich.leadBio ? (
+                <Text variant="subheadline" className="text-muted-foreground">
+                  {profile.rich.leadBio}
                 </Text>
               ) : null}
             </View>
-          ) : tab === "family" ? (
-            <FamilyTab profile={profile} />
-          ) : tab === "photos" ? (
-            <PhotosTab profile={profile} />
-          ) : (
-            <EventsList profile={profile} />
-          )}
+          ) : null}
+
+          <PandaActions pandaId={profile.id} name={profile.name} deceased={profile.deceased} />
+          <UnifiedMetricStrip profile={profile} />
+          <PandaVenueLive profile={profile} />
+          <PhotoPeekStrip profile={profile} />
+          <HighlightCarousel highlights={profile.rich.highlights} />
+          <TraitsAndCareSection name={profile.name} traits={profile.rich.traits} />
+          <PandaFaceGuideCard slug={profile.slug} pandaId={profile.id} />
+          <LifeStageSection stage={profile.rich.lifeStage} />
+          <JourneyRouteSection profile={profile} />
+          <FamilyStripSection profile={profile} />
+          <QuickToolsBar slug={profile.slug} name={profile.name} />
+          <SameCohortSection profile={profile} />
+          {profile.memories.length > 0 ? <Memories profile={profile} /> : null}
+          <PandaVenueNewsCard slug={profile.slug} />
+          <RecommendedArticleCard articleSlug={profile.rich.recommendedArticleSlug} />
+          <QuietProfileFooter profile={profile} />
         </Animated.View>
       </Animated.ScrollView>
     </View>

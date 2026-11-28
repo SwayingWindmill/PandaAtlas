@@ -8,6 +8,13 @@ export interface Seen {
   seenOn: string | null;
 }
 
+export interface SeenEntry {
+  pandaId: string;
+  seenOn: string | null;
+  placeId: string | null;
+  note: string | null;
+}
+
 export async function loadSeen(pandaId: string): Promise<Seen | null> {
   const { data, response } = await authedApi.GET("/api/v2/me/seen-pandas/{pandaId}", { params: { path: { pandaId } } });
   if (data) return { seenOn: data.seenOn ?? null };
@@ -21,11 +28,33 @@ export function localToday(now = new Date()): string {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
-/** Every panda the signed-in fan has marked 见过, by ID. */
-export async function loadSeenIds(): Promise<Set<string>> {
+export async function loadSeenEntries(): Promise<SeenEntry[]> {
   const { data } = await authedApi.GET("/api/v2/me/seen-pandas");
   if (!data) throw new Error("Seen pandas unavailable");
-  return new Set(data.items.map((item) => item.pandaId));
+  return data.items.map((item) => ({
+    pandaId: item.pandaId,
+    seenOn: item.seenOn ?? null,
+    placeId: item.placeId ?? null,
+    note: item.note ?? null,
+  }));
+}
+
+export function seenEntriesQueryKey(accountId: string) {
+  return ["private", accountId, "seen-entries"] as const;
+}
+
+export function seenEntriesQueryOptions(accountId: string) {
+  return queryOptions({
+    queryKey: seenEntriesQueryKey(accountId),
+    staleTime: 60_000,
+    queryFn: loadSeenEntries,
+  });
+}
+
+/** Every panda the signed-in fan has marked 见过, by ID. */
+export async function loadSeenIds(): Promise<Set<string>> {
+  const entries = await loadSeenEntries();
+  return new Set(entries.map((item) => item.pandaId));
 }
 
 export function seenIdsQueryKey(accountId: string) {
@@ -40,8 +69,11 @@ export function seenIdsQueryOptions(accountId: string) {
   });
 }
 
-export async function markSeen(pandaId: string, seenOn: string): Promise<boolean> {
-  const { response } = await authedApi.PUT("/api/v2/me/seen-pandas/{pandaId}", { params: { path: { pandaId } }, body: { seenOn } });
+export async function markSeen(pandaId: string, seenOn: string, placeId?: string | null): Promise<boolean> {
+  const { response } = await authedApi.PUT("/api/v2/me/seen-pandas/{pandaId}", {
+    params: { path: { pandaId } },
+    body: { seenOn, ...(placeId ? { placeId } : {}) },
+  });
   return response.ok;
 }
 

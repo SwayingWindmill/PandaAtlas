@@ -12,7 +12,6 @@ import { Text } from "@/components/ui/text";
 import {
   Attempts,
   ClueTile,
-  DailyCheckinRow,
   GuessHistoryList,
   MysteryCard,
   SectionLabel,
@@ -38,7 +37,6 @@ export default function DailyPandaScreen() {
     openedWith,
     savedToBook,
     signedOut,
-    checkin,
     pandasById,
     matches,
     answer,
@@ -103,9 +101,9 @@ export default function DailyPandaScreen() {
               <Text>{answer ? `看${answer.name}的资料` : "看资料"}</Text>
             </Button>
           ) : null}
-          {!savedToBook && signedOut ? (
+          {savedToBook && signedOut ? (
             <Button variant="plain" onPress={() => router.push("/sign-in")}>
-              <Text>登录，收进图鉴</Text>
+              <Text>绑定邮箱同步图鉴</Text>
             </Button>
           ) : null}
           <Text variant="footnote" className="text-center text-muted-foreground">
@@ -167,7 +165,6 @@ export default function DailyPandaScreen() {
       </View>
 
       <GuessHistoryList guesses={state.guesses} pandasById={pandasById} />
-      <DailyCheckinRow checkin={checkin} />
     </Page>
   );
 }

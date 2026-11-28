@@ -2,24 +2,22 @@ import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, useFocusEffect, useLocalSearchParams, useNavigation, usePreventRemove } from "expo-router";
 import { HeaderBackButton } from "expo-router/react-navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Linking, Modal, ScrollView, View } from "react-native";
+import { AccessibilityInfo, Modal, Pressable, ScrollView, View } from "react-native";
 
-import { ListCell, ListSection, useSingleColumn } from "@/components/grouped-list";
-import { FileText, MapPin, Network, Users } from "@/components/icons";
+import { Chevron, useStacked } from "@/components/grouped-list";
+import { Icon } from "@/components/icon";
+import { ChevronRight, MapPin } from "@/components/icons";
 import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { PandaThumb } from "@/components/panda-thumb";
-import { StatTile } from "@/components/stat-tile";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { type Family, type FamilyMember, loadFamily } from "@/features/family/family";
 import { FamilyTree } from "@/features/family/family-tree";
 import type { GenerationGroup, Kin, Lineage } from "@/features/family/lineage";
-import { type LineageSource, loadLineageFor, loadLineageSources } from "@/features/family/lineage-load";
-import { hostname } from "@/features/institutions/institutions";
+import { loadLineageFor } from "@/features/family/lineage-load";
 import { openPanda } from "@/features/pandas/panda-row";
-import { longDate } from "@/features/pandas/profile";
 import { RelationshipContent } from "@/features/relationship/relationship-content";
 import { useBackToClose } from "@/lib/use-back-to-close";
 import { cn } from "@/lib/utils";
@@ -32,19 +30,14 @@ interface Row {
   relation: string;
   birthDate: string | null;
   deceased: boolean;
-  sourceIds: string[];
 }
 
-function rowDetail(row: Row, hosts: ReadonlyMap<string, string>): string {
-  const sources = [...new Set(row.sourceIds.flatMap((id) => hosts.get(id) ?? []))];
-  // When every link on the page shares one publisher the 出处 section below already says so; repeating it per row is noise.
-  const perRow = new Set(hosts.values()).size > 1;
+function rowDetail(row: Row): string {
   return [
     row.relation,
     row.birthDate ? `${row.birthDate.slice(0, 4)} 年出生` : "",
     // DECEASED_POLICY: a panda that has died is marked plainly, never celebrated or pushed.
     row.deceased ? "已离世" : "",
-    perRow && sources.length > 0 ? `出处 ${sources.join("、")}` : "",
   ]
     .filter(Boolean)
     .join("　");
@@ -63,62 +56,193 @@ function familyPageQuery(slug: string) {
   });
 }
 
-function GenerationSection({ title, rows, missing, hosts }: { title: string; rows: Row[]; missing: number; hosts: ReadonlyMap<string, string> }) {
+function GenerationSection({ title, rows, missing }: { title: string; rows: Row[]; missing: number }) {
+  const stacked = useStacked();
   const footer = rows.length > 0 && missing > 0 ? `还有 ${missing} 位暂无公开资料。` : undefined;
   return (
-    <ListSection title={title} footer={footer}>
-      {rows.length === 0 ? (
-        <ListCell label="暂无公开资料" last />
-      ) : (
-        rows.map((row, index) => (
-          <ListCell
-            key={row.id}
-            label={row.name}
-            detail={rowDetail(row, hosts)}
-            leading={<PandaThumb pandaId={row.id} name={row.name} size={40} shape="round" />}
-            onPress={() => openPanda(row.slug)}
-            accessibilityHint="打开它的资料"
-            last={index === rows.length - 1}
-          />
-        ))
-      )}
-    </ListSection>
+    <View className="gap-stack-tight">
+      <Text variant="title" role="heading">
+        {title}
+      </Text>
+      <View>
+        {rows.length === 0 ? (
+          <Text variant="subheadline" className="py-row text-muted-foreground">
+            暂无公开资料
+          </Text>
+        ) : (
+          rows.map((row, index) => {
+            const last = index === rows.length - 1;
+            return (
+              <Pressable
+                key={row.id}
+                role="button"
+                accessibilityLabel={row.name}
+                accessibilityHint="打开它的资料"
+                onPress={() => openPanda(row.slug)}
+                className={cn(
+                  "min-h-11 flex-row items-center gap-row py-row active:opacity-60",
+                  !last && "border-b-hairline border-border",
+                )}
+              >
+                <PandaThumb pandaId={row.id} name={row.name} size={40} shape="round" />
+                <View className="min-w-0 flex-1 gap-0.5">
+                  <Text variant="body" className="min-w-0 shrink font-semibold" numberOfLines={stacked ? undefined : 1}>
+                    {row.name}
+                  </Text>
+                  <Text
+                    variant="footnote"
+                    className="min-w-0 shrink text-muted-foreground"
+                    numberOfLines={stacked ? undefined : 2}
+                  >
+                    {rowDetail(row)}
+                  </Text>
+                </View>
+                <Chevron />
+              </Pressable>
+            );
+          })
+        )}
+      </View>
+      {footer ? (
+        <Text variant="footnote" className="text-muted-foreground">
+          {footer}
+        </Text>
+      ) : null}
+    </View>
   );
 }
 
 const asRow = (kin: Kin): Row => kin;
 
-/** The family's reach in three numbers, as Fitness sums a week: generations up, descendants, places. */
-function Summary({ lineage }: { lineage: Lineage }) {
-  const single = useSingleColumn();
-  const places = lineage.descendantPlaces.length;
+/** Borderless 3-column summary strip (`上溯 | 后代 | 亲缘查询`), stacking cleanly at large text. */
+function SummaryStrip({ lineage, onRelate }: { lineage: Lineage; onRelate: () => void }) {
+  const stacked = useStacked();
+  const depth = lineage.ancestorDepth > 0 ? `${lineage.ancestorDepth} 代` : "—";
+  const descendants = `${lineage.descendantCount} 只`;
   return (
-    <View className={cn("gap-row", single ? "flex-col" : "flex-row")}>
-      <StatTile icon={Network} label="上溯" value={lineage.ancestorDepth > 0 ? `${lineage.ancestorDepth} 代` : "—"} />
-      <StatTile icon={Users} label="后代" value={`${lineage.descendantCount} 只`} />
-      <StatTile icon={MapPin} label="分布" value={places > 0 ? `${places} 处` : "—"} />
+    <View
+      className={cn(
+        "border-t-hairline border-b-hairline border-border py-0.5",
+        stacked ? "gap-1 py-1.5" : "flex-row items-stretch",
+      )}
+    >
+      <View className={stacked ? undefined : "min-w-0 flex-1 flex-row items-stretch"}>
+        <View
+          accessible
+          accessibilityLabel={`上溯 ${depth}`}
+          className={
+            stacked
+              ? "flex-row items-center justify-between gap-3 py-1.5"
+              : "min-w-0 flex-1 items-center justify-center px-1.5 py-2"
+          }
+        >
+          <Text variant="footnote" className={cn("font-medium text-muted-foreground", stacked && "shrink-0")} numberOfLines={1}>
+            上溯
+          </Text>
+          <Text
+            variant="headline"
+            className={cn(
+              "min-w-0 shrink font-bold tabular-nums",
+              lineage.ancestorDepth <= 0 && "text-tertiary-foreground",
+              !stacked && "mt-0.5",
+            )}
+            numberOfLines={1}
+          >
+            {depth}
+          </Text>
+        </View>
+      </View>
+      <View className={stacked ? undefined : "min-w-0 flex-1 flex-row items-stretch"}>
+        {!stacked ? <View className="my-2 w-hairline bg-border" /> : null}
+        <View
+          accessible
+          accessibilityLabel={`后代 ${descendants}`}
+          className={
+            stacked
+              ? "flex-row items-center justify-between gap-3 py-1.5"
+              : "min-w-0 flex-1 items-center justify-center px-1.5 py-2"
+          }
+        >
+          <Text variant="footnote" className={cn("font-medium text-muted-foreground", stacked && "shrink-0")} numberOfLines={1}>
+            后代
+          </Text>
+          <Text variant="headline" className={cn("min-w-0 shrink font-bold tabular-nums", !stacked && "mt-0.5")} numberOfLines={1}>
+            {descendants}
+          </Text>
+        </View>
+      </View>
+      <View className={stacked ? undefined : "min-w-0 flex-1 flex-row items-stretch"}>
+        {!stacked ? <View className="my-2 w-hairline bg-border" /> : null}
+        <Pressable
+          role="button"
+          accessibilityLabel="查关系"
+          onPress={onRelate}
+          className={cn(
+            "min-h-11 active:opacity-60",
+            stacked
+              ? "flex-row items-center justify-between gap-3 py-1.5"
+              : "min-w-0 flex-1 items-center justify-center px-1.5 py-2",
+          )}
+        >
+          <Text variant="footnote" className={cn("font-medium text-muted-foreground", stacked && "shrink-0")} numberOfLines={1}>
+            亲缘查询
+          </Text>
+          <View className={cn("flex-row items-center gap-0.5", !stacked && "mt-0.5")}>
+            <Text variant="headline" className="font-bold text-primary" numberOfLines={1}>
+              查关系
+            </Text>
+            <Icon icon={ChevronRight} size="footnote" tone="tint" strokeWidth={2.2} />
+          </View>
+        </Pressable>
+      </View>
     </View>
   );
 }
 
-function Sources({ sources }: { sources: LineageSource[] }) {
-  if (sources.length === 0) return null;
+function DescendantPlaces({ places, unplaced }: { places: Lineage["descendantPlaces"]; unplaced: number }) {
+  const stacked = useStacked();
+  if (places.length === 0) return null;
   return (
-    <ListSection title="出处" footer="只画有公开出处的亲缘关系；没有出处的，不画也不猜。">
-      {sources.map((source, index) => (
-        <ListCell
-          key={source.sourceId}
-          icon={FileText}
-          label={source.title}
-          detail={`${source.publisher}　核实于 ${longDate(source.lastVerifiedOn)}`}
-          role="link"
-          accessibilityHint="在浏览器中打开"
-          lines={2}
-          onPress={() => void Linking.openURL(source.url)}
-          last={index === sources.length - 1}
-        />
-      ))}
-    </ListSection>
+    <View className="gap-stack-tight">
+      <Text variant="title" role="heading">
+        后代现在住在
+      </Text>
+      <View>
+        {places.map((item, index) => {
+          const last = index === places.length - 1;
+          return (
+            <View
+              key={item.place}
+              accessible
+              accessibilityLabel={`${item.place}，${item.count} 只`}
+              className={cn(
+                "py-row",
+                stacked ? "gap-hair-gap" : "min-h-11 flex-row items-center justify-between gap-row",
+                !last && "border-b-hairline border-border",
+              )}
+            >
+              <View className={cn("flex-row items-center gap-row", !stacked && "min-w-0 flex-1")}>
+                <Icon icon={MapPin} size="subhead" tone="secondary" />
+                <Text variant="body" className="min-w-0 shrink" numberOfLines={stacked ? undefined : 1}>
+                  {item.place}
+                </Text>
+              </View>
+              <Text
+                variant="subheadline"
+                className={cn("text-muted-foreground tabular-nums", stacked ? "pl-7" : "shrink-0")}
+              >
+                {`${item.count} 只`}
+              </Text>
+            </View>
+          );
+        })}
+      </View>
+      {unplaced > 0 ? (
+        <Text variant="footnote" className="text-muted-foreground">
+          {`还有 ${unplaced} 只的具体住处暂无公开资料。`}
+        </Text>
+      ) : null}
+    </View>
   );
 }
 
@@ -129,24 +253,6 @@ export default function FamilyScreen() {
   const { data: loaded, isError, refetch } = useQuery(familyPageQuery(slug));
   const family = loaded?.family;
   const lineage = loaded?.lineage;
-  const sourceIds =
-    family && lineage
-      ? [
-          ...new Set(
-            lineage.sourceIds.concat(
-              family.generation.flatMap((group) => group.members.flatMap((member) => lineage.sourcesOfChild.get(member.id) ?? [])),
-            ),
-          ),
-        ]
-      : [];
-  // Sources name each link; the page reads without them while they load.
-  const { data: sources = [] } = useQuery({
-    queryKey: ["public", "lineage-sources", sourceIds],
-    queryFn: () => loadLineageSources(sourceIds),
-    enabled: sourceIds.length > 0,
-    staleTime: 300_000,
-    networkMode: "always",
-  });
 
   // Tapping a portrait re-centres the tree here instead of pushing a new screen, so the tree can move
   // from one family to the next. `history` is the families walked through; back steps through them first.
@@ -256,15 +362,13 @@ export default function FamilyScreen() {
     );
   }
 
-  const hosts = new Map(sources.map((source) => [source.sourceId, hostname(source.url)]));
   const siblings: Row[] = family.generation
     .flatMap((group) => group.members)
-    .filter((member) => member.id !== family.focus.id)
-    .map((member) => ({ ...member, sourceIds: lineage.sourcesOfChild.get(member.id) ?? [] }));
+    .filter((member) => member.id !== family.focus.id);
   const ancestors = lineage.groups.filter((group) => group.generation < 0);
   const descendants = lineage.groups.filter((group) => group.generation > 0);
   const section = (group: GenerationGroup) => (
-    <GenerationSection key={group.generation} title={group.title} rows={group.members.map(asRow)} missing={group.missing} hosts={hosts} />
+    <GenerationSection key={group.generation} title={group.title} rows={group.members.map(asRow)} missing={group.missing} />
   );
   const known = lineage.ancestorDepth > 0 || lineage.descendantCount > 0 || siblings.length > 0;
 
@@ -283,26 +387,22 @@ export default function FamilyScreen() {
             这个家谱暂时打不开，再点一次头像试试。
           </Text>
         ) : null}
-        <Button variant="secondary" className="self-start" onPress={() => setRelating(true)}>
-          <Text>查关系</Text>
-        </Button>
+        {!known ? (
+          <Button variant="secondary" className="self-start" onPress={() => setRelating(true)}>
+            <Text>查关系</Text>
+          </Button>
+        ) : null}
       </View>
-      {known ? <Summary lineage={lineage} /> : null}
-      {lineage.descendantPlaces.length > 0 ? (
-        <ListSection
-          title="后代现在住在"
-          footer={lineage.descendantsUnplaced > 0 ? `还有 ${lineage.descendantsUnplaced} 只的具体住处暂无公开资料。` : undefined}
-        >
-          {lineage.descendantPlaces.map((item, index) => (
-            <ListCell key={item.place} icon={MapPin} label={item.place} meta={`${item.count} 只`} last={index === lineage.descendantPlaces.length - 1} />
-          ))}
-        </ListSection>
-      ) : null}
+      {known ? <SummaryStrip lineage={lineage} onRelate={() => setRelating(true)} /> : null}
+      <DescendantPlaces places={lineage.descendantPlaces} unplaced={lineage.descendantsUnplaced} />
       {/* Oldest generation first, as a family book reads: the same people as the tree, one per line. */}
       {ancestors.map(section)}
-      {siblings.length > 0 ? <GenerationSection title="同辈" rows={siblings} missing={0} hosts={hosts} /> : null}
+      {siblings.length > 0 ? <GenerationSection title="同辈" rows={siblings} missing={0} /> : null}
       {descendants.map(section)}
-      <Sources sources={sources} />
+
+      <Text variant="footnote" className="pt-stack-tight text-center text-muted-foreground">
+        仅收录有公开档案依据的亲缘关系，不推断未记载亲属
+      </Text>
 
       {/* 查关系 from the family: the system sheet, starting on the panda whose tree is open. */}
       <Modal visible={relating} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setRelating(false)}>

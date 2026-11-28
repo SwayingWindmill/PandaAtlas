@@ -11,7 +11,7 @@ import { listTrackedPaths } from "./repository-paths.mjs";
 export const repoRoot = fileURLToPath(new URL("../../", import.meta.url));
 
 // Vendored agent skills describe other repositories' layouts.
-const UNCHECKED_PREFIXES = [".agents/"];
+const UNCHECKED_PREFIXES = [".agents/", ".claude/skills/"];
 // ADRs record decisions as of their date, so their inline paths may name retired files; their
 // links are still checked.
 const ADR_PATTERN = /(^|\/)adr-\d{4}-[^/]+\.md$/u;

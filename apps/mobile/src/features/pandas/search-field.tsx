@@ -5,7 +5,7 @@ import { Icon } from "@/components/icon";
 import { Search } from "@/components/icons";
 import { component } from "@/design/tokens";
 
-/** The round search field of 找熊猫, the 查关系 picker, 每日一猫 and the welcome picker. */
+/** The round search field of 找熊猫, the 查关系 picker and 每日一猫. */
 export function SearchField({
   value,
   onChange,

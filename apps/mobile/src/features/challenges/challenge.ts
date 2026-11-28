@@ -22,7 +22,7 @@ export const TASK_ROUTES: Record<TaskKind, { label: string; href: string }> = {
   daily: { label: "看一次今日熊猫", href: "/daily" },
   guess: { label: "玩一局猜熊猫", href: "/guess" },
   learn: { label: "完成一次认脸练习", href: "/learn" },
-  checkin: { label: "打卡一次", href: "/checkin" },
+  checkin: { label: "打开我的图鉴", href: "/book" },
   collections: { label: "整理一个收藏夹", href: "/collections" },
   compare: { label: "对比两只熊猫", href: "/compare" },
 };

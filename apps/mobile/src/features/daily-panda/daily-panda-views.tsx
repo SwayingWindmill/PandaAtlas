@@ -3,11 +3,9 @@ import Animated from "react-native-reanimated";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
-import { ListCell, ListSection } from "@/components/grouped-list";
 import { Icon } from "@/components/icon";
 import {
   Cake,
-  CalendarHeart,
   Check,
   Flower,
   HeartPulse,
@@ -25,7 +23,6 @@ import { RemoteImage } from "@/components/remote-image";
 import { Scrim } from "@/components/scrim";
 import { Text } from "@/components/ui/text";
 import { PAGE_ENTER } from "@/design/motion";
-import type { CheckinSummary } from "@/features/checkin/checkin";
 import {
   type DailyPandaClue,
   type DailyPandaState,
@@ -80,7 +77,7 @@ function NewestClue({ state }: { state: DailyPandaState }) {
         {newest ? newest.text : "?"}
       </Text>
       <Text variant="footnote" className="text-muted-foreground tabular-nums">
-        {newest ? `${newest.label}　·　${count}` : count}
+        {newest ? `${newest.label}　${count}` : count}
       </Text>
       <Text variant="subheadline" className="text-muted-foreground">
         猜错一次，多一条线索
@@ -318,21 +315,5 @@ export function GuessHistoryList({
         ))}
       </View>
     </View>
-  );
-}
-
-export function DailyCheckinRow({ checkin }: { checkin: CheckinSummary | null }) {
-  if (!checkin) return null;
-  return (
-    <ListSection>
-      <ListCell
-        icon={CalendarHeart}
-        label="每日打卡"
-        detail="今天来过了"
-        meta={`累计 ${checkin.totalVisitDays.toLocaleString("zh-CN")} 天`}
-        href="/checkin"
-        last
-      />
-    </ListSection>
   );
 }

@@ -66,7 +66,7 @@ export default function TimelineScreen() {
     <Page title={`${timeline.name}的时间线`} label={timeline.summary ?? undefined}>
       <Animated.View entering={PAGE_ENTER} className="gap-section">
         {years.map((year) => (
-          <ListSection key={year.year} title={year.age ? `${year.year} · ${year.age}` : year.year}>
+          <ListSection key={year.year} title={year.age ? `${year.year}　${year.age}` : year.year}>
             {year.milestones.map((milestone, index) => (
               <MilestoneRow key={milestone.id} milestone={milestone} last={index === year.milestones.length - 1} />
             ))}
@@ -132,7 +132,7 @@ function MilestoneRow({ milestone, last }: { milestone: Milestone; last: boolean
   );
 }
 
-/** "出处 Giant Panda FAQs · Smithsonian…": the title tells two sources from one publisher apart, so it leads. */
+/** "出处 Giant Panda FAQs　Smithsonian…": the title tells two sources from one publisher apart, so it leads. */
 function SourceLink({ source }: { source: MilestoneSource }) {
   const stacked = useStacked();
   return (
@@ -149,7 +149,7 @@ function SourceLink({ source }: { source: MilestoneSource }) {
         <Text variant="footnote" className="text-primary">
           {source.title}
         </Text>
-        {` · ${source.publisher}`}
+        {`　${source.publisher}`}
       </Text>
     </Pressable>
   );
